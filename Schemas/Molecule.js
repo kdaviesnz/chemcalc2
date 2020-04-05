@@ -14,3 +14,8 @@
    delete(atom),
    itemAt(index)
 }
+
+// MOLECULE VIEW
+{
+    canonicalSMILES(),
+}
