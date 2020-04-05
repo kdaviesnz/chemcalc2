@@ -1,4 +1,4 @@
-const Container = new Container([])
+const Container = new CContainer([])
 
-Container.add("HCl")
-Container.add("water")
+CContainer.add("HCl")
+CContainer.add("water")
