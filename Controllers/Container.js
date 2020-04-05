@@ -1,5 +1,5 @@
 //  CONTAINER CONTROLLER
-class Container {
+class CContainer {
     // container is a container model
     constructor(container) {
         this.container = container
