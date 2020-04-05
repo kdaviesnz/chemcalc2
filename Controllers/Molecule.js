@@ -11,6 +11,10 @@ const CMolecule = (mmolecule) => {
        delete : (atom) = {
           // mmolecule.delete(atom)
           return mmolecule
+       },
+       itemAt : (index) = {
+          // mmolecule[item]
+          return mmolecule
        }
    }
 }
