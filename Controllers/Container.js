@@ -7,33 +7,39 @@ class CContainer {
    
     add(molecule_array_or_string, units) {
         const molecule =  (typeof molecule_array_or_string === "array"? molecule_array_or_string:todo) 
-        container.push(molecule)
-        // First element is pKa value
-        if (container.length > 2) {
-            const substrate = container[1]
-            const reagent = container[2]
+        this.container.push(molecule)
+        // First element is pKa value,
+        // container[1] is reagent
+        // container[2] is substrate
+        if (this.container.length > 2) {            
             // acid base
-            if (substrate.indexOf("H") !== false && reagent.indexOf("H") === false) {
-                const proton_index = CMolecule(substrate).indexOf("H")
-                delete(substrate[proton_index]) // remove proton
-                substrate[proton_index] += "-" // atom proton was bonded to
-                CMolecule(reagent).push("H")
-                reagent[reagent.length-2] += "+" 
-            } else if (substrate.indexOf("H") === false && reagent.indexOf("H") !== false) {
-                const proton_index = CMolecule(reagent).indexOf("H")
-                delete(reagent[proton_index]) // remove proton
-                reagent[proton_index] += "-" // atom proton was bonded to
-                CMolecule(substrate).push("H")
-                substrate[reagent.length-2] += "+" 
-            } else if (substrate.indexOf("H") !== false && reagent.indexOf("H") !== false) {
+            if (this.container[1].indexOf("H") !== false && container[2].indexOf("H") === false) {
+                const proton_index = CMolecule(container[1]).indexOf("H")
+                delete(container[1][proton_index]) // remove proton
+                container[1][proton_index] += "-" // atom proton was bonded to
+                container[2] = CMolecule(container[2]).push("H")
+                container[2][container[2].length-2] += "+" 
+            } else if (this.container[1].indexOf("H") === false && container[2].indexOf("H") !== false) {
+                const proton_index = CMolecule(container[2]).indexOf("H")
+                delete(container[2][proton_index]) // remove proton
+                container[2][proton_index] += "-" // atom proton was bonded to
+                container[1] = CMolecule(container[1]).push("H")
+                container[1][container[2].length-2] += "+" 
+            } else if (container[1].indexOf("H") !== false && container[2].indexOf("H") !== false) {
                 // First element is pKa value
-                const acid = substrate[0] < reagent[0]? substrate : reagent
-                const base = substrate[0] < reagent[0]? reagent : substrate
-                const proton_index = CMolecule(acid).indexOf("H")
-                delete(acid[proton_index]) // remove proton
-                acid[proton_index] += "-" // atom proton was bonded to
-                CMolecule(base).push("H")
-                base[reagent.length-2] += "+" 
+                if (container[1][0] < container[2][0]) {
+                    const proton_index = CMolecule(container[1]).indexOf("H")
+                    delete(container[1][proton_index]) // remove proton
+                    container[1][proton_index] += "-" // atom proton was bonded to
+                    CMolecule(container[2]).push("H")
+                    container[2][reagent.length-2] += "+" 
+                } else {
+                    const proton_index = CMolecule(container[2]).indexOf("H")
+                    delete(container[2][proton_index]) // remove proton
+                    container[2][proton_index] += "-" // atom proton was bonded to
+                    CMolecule(container[1]).push("H")
+                    container[1][reagent.length-2] += "+" 
+                }
             } else {
                 
             }
