@@ -25,7 +25,9 @@ const CMolecule = (mmolecule) => {
              }, false
           )
           if (atom_to_bond_to_index !== false) {
-             atom.push
+             atom.push(mmolecule[atom_to_bond_to_index][mmolecule[atom_to_bond_to_index].length - 1])
+             mmolecule[atom_to_bond_to_index].push(atom[atom.length - 1])
+             mmolecule.push(atom)
           }
           // mmolecule.push(atom)
           return mmolecule
