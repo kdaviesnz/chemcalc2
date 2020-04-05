@@ -15,30 +15,30 @@ class CContainer {
             // acid base
             if (this.container[1].indexOf("H") !== false && container[2].indexOf("H") === false) {
                 const proton_index = CMolecule(container[1]).indexOf("H")
-                delete(container[1][proton_index]) // remove proton
-                container[1][proton_index] += "-" // atom proton was bonded to
+                delete(CMolecule(container[1]).itemAt(proton_index)) // remove proton
+                CMolecule(container[1]).itemAt(proton_index) += "-" // atom proton was bonded to
                 container[2] = CMolecule(container[2]).push("H")
-                container[2][container[2].length-2] += "+" 
+                CMolecule(container[2]).itemAt(container[2].length-2) += "+" 
             } else if (this.container[1].indexOf("H") === false && container[2].indexOf("H") !== false) {
                 const proton_index = CMolecule(container[2]).indexOf("H")
-                delete(container[2][proton_index]) // remove proton
-                container[2][proton_index] += "-" // atom proton was bonded to
+                delete(CMolecule(container[2]).itemAt(proton_index)) // remove proton
+                CMolecule(container[2]).itemAt(proton_index) += "-" // atom proton was bonded to
                 container[1] = CMolecule(container[1]).push("H")
-                container[1][container[2].length-2] += "+" 
+                CMolecule(container[1]).itemAt(container[2].length-2) += "+" 
             } else if (container[1].indexOf("H") !== false && container[2].indexOf("H") !== false) {
                 // First element is pKa value
                 if (container[1][0] < container[2][0]) {
                     const proton_index = CMolecule(container[1]).indexOf("H")
-                    delete(container[1][proton_index]) // remove proton
-                    container[1][proton_index] += "-" // atom proton was bonded to
+                    delete(CMolecule(container[1]).itemAt(proton_index)) // remove proton
+                    CMolecule(container[1].itemAt(proton_index) += "-" // atom proton was bonded to
                     CMolecule(container[2]).push("H")
-                    container[2][reagent.length-2] += "+" 
+                    CMolecule(container[2].itemAt(reagent.length-2) += "+" 
                 } else {
                     const proton_index = CMolecule(container[2]).indexOf("H")
-                    delete(container[2][proton_index]) // remove proton
-                    container[2][proton_index] += "-" // atom proton was bonded to
+                    delete(CMolecule(container[2]).itemAt(proton_index)) // remove proton
+                    CMolecule(container[2].itemAt(proton_index) += "-" // atom proton was bonded to
                     CMolecule(container[1]).push("H")
-                    container[1][reagent.length-2] += "+" 
+                    CMolecule(container[1].itemAt(container[1].length-2) += "+" 
                 }
             } else {
                 
