@@ -11,5 +11,6 @@
 {
    indexOf(atom),
    push(atom)
-   delete(atom)
+   delete(atom),
+   itemAt(index)
 }
