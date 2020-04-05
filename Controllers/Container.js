@@ -12,6 +12,14 @@ class Container {
         if (container.length > 2) {
             const substrate = container[1]
             const reagent = container[2]
+            // acid base
+            if (substrate.indexOf("H") !== false && reagent.indexOf("H") === false) {
+                const proton_index = substrate.indexOf("H")
+                delete(substrate[proton_index]) // remove proton
+                substrate[proton_index] += "-" // atom proton was bonded to
+                reagent.push("H")
+                reagent[reagent.length-2] += "+" 
+            }
         }
     },
     
