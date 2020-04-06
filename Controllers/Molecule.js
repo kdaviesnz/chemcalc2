@@ -4,7 +4,7 @@ const CMolecule = (mmolecule) => {
    return {
        // mmolecule: [pKa, atom, atom, atom ...]
        // atom: [atomic symbol, proton count, max valence count, velectron1, velectron2,...]
-       indexOf : (atom_or_atomic_symbol) = {
+       indexOf : (atom_or_atomic_symbol) => {
           if (typeof atom_or_atomic_symbol === "string") {
              // find index of atom in molecule with matching atomic symbol
              return mmolecule.reduce((carry, current, index)=>{
@@ -14,7 +14,7 @@ const CMolecule = (mmolecule) => {
              return mmolecule.search(atom_or_atomic_symbol)
           }
        },
-       push : (atom_or_atomic_symbol) = { 
+       push : (atom_or_atomic_symbol) => {
           // Find index of atom to bond to.
           // This must be atom with at least a lone pair.
           const atom =  typeof atom_or_atomic_symbol === "string" ? @todo : atom_or_atomic_symbol
@@ -32,7 +32,7 @@ const CMolecule = (mmolecule) => {
           // mmolecule.push(atom)            
           return mmolecule
        },
-       delete : (atom) = {
+       delete : (atom) => {
           // mmolecule.delete(atom)
           if (typeof atom_or_atomic_symbol === "string") {
              // find index of atom in molecule with matching atomic symbol
@@ -65,10 +65,12 @@ const CMolecule = (mmolecule) => {
 
           return mmolecule
        },
-       itemAt : (index) = {
+       itemAt : (index) => {
           // mmolecule[item]
           return mmolecule
        }
    }
 }
+
+module.exports = CMolecule
 
