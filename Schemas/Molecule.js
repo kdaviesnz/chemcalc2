@@ -10,12 +10,12 @@
 // MOLECULE CONTROLLER
 {
    indexOf(atom),
-   push(atom)
+   push(atom),
    delete(atom),
    itemAt(index)
 }
 
 // MOLECULE VIEW
 {
-    canonicalSMILES(),
+    canonicalSMILES()
 }
