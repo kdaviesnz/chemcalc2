@@ -1,3 +1,4 @@
+const AtomsFactory = require('AtomsFactory')
 
 const MoleculeFactory = (canonicalSmiles) => {
 
