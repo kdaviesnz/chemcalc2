@@ -1,26 +1,10 @@
-const AtomsController = require('../controllers/AtomsController')
-const AtomsFactory = require('../factories/AtomFactory')
 const _ = require('lodash');
 
-const MoleculeFactory = (molecule_data, atoms, add_hydrogens, tag) => {
-
-    const fetchHydrogenAtom = () => {
-        /*
-        "What about the chlorination of larger molecules that have different kinds of hydrogens? In methane only one kind of hydrogen is available to be pulled off — and so only one possible product can be made — but in larger molecules, several products can be formed. For example, butane (see Figure 8-24) has two types of hydrogen. Hydrogens are classified according to the substitution of the carbon to which they’re attached. Hydrogens attached to primary carbons (or carbons bonded to only one other carbon) are called primary hydrogens, hydrogens attached to secondary carbons (or carbons bonded to two other carbons) are called secondary hydrogens, and so on."
-
-        Excerpt from
-        Organic Chemistry I For Dummies
-        Arthur Winter
-        This material may be protected by copyright.
-        */
-
-    }
+const MoleculeFactory = (canonicalSmiles) => {
 
     var SMILESparser = null
-    if (undefined !== molecule_data.CanonicalSMILES) {
-        const Canonical_SMILESParser = require("../CanonicalSMILESParser")
-        SMILESparser = Canonical_SMILESParser(molecule_data.CanonicalSMILES)
-    }
+    const Canonical_SMILESParser = require("CanonicalSMILESParser")
+    SMILESparser = Canonical_SMILESParser(canonicalSmiles)
 
     const extract_SMILE_chains = () => {
         return null === SMILESparser?[]:SMILESparser.chains
