@@ -21,6 +21,7 @@ water.add({"H":1})
 const range = require("range");
 // range.range(1,10,2)
 
+const PeriodicTable = require("PeriodicTable")
 
 // ATOM MODEL
 // atomic symbol, proton count, max valence count*, max number of bonds, velectron1, velectron2, velectron3
@@ -28,17 +29,31 @@ const range = require("range");
 // * Maximum number of electrons in valence shell.
 const AtomFactory = (atomicSymbol) => {
 
-    const atomicNumber = () => {
-        const e = elements.Element.getElementByName(atomicSymbol)
-        return e.number
-    }
+/*
+PeriodicTable:
+    "O": {
+        "group":16,
+        "column":"VIA",
+        "atomic_number":8,
+        "name":"oxygen",
+        "atomic_weight":15.999,
+        "electrons_per_shell": "2-6",
+        "state_of_matter":"gas",
+        "subcategory":"reactive nonmetal"
+    },
+ */
+    // atomic symbol, proton count, valence count,  number of bonds, velectron1, velectron2, velectron3
 
-    // atomic symbol, proton count, max valence count*, max number of bonds, velectron1, velectron2, velectron3
      return [
          atomicSymbol,
-
+         PeriodicTable[atomicSymbol].atomic_number,
+         PeriodicTable[atomicSymbol].electrons_per_shell.split("-").pop(),
+         8 - 1*PeriodicTable[atomicSymbol].electrons_per_shell.split("-").pop(),
+         ...range.range(1,PeriodicTable[atomicSymbol].electrons_per_shell.split("-").pop(),1).map((i)=>{
+             return uniqid()
+         })
      ]
-
+XS
 }
 
 
