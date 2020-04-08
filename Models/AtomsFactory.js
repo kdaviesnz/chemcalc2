@@ -12,6 +12,12 @@ const AtomsFactory = (canonicalSMILES) => {
     //  Convert rows to atom objects
     const atoms_and_tokens = smiles_tokens.map(
         (row, i, arr) => {
+            // row.value is the atomic symbol
+            // If item is AliphaticOrganic add an atom.
+            // If item is ring bond add electron to previous atom.
+            // If item is bond add electron to previous atom and share same electron to current atom, then
+            // share an electron from current atom to previous atom
+            // If item is branch and item value is not "end" then add bond.
             return row.type === "AliphaticOrganic"?AtomFactory(row.value):
                 (
                     row.type === "Ringbond"? arr[i-1].addRingBond(row.value, arr[i-1].branchId) : (
@@ -27,13 +33,7 @@ const AtomsFactory = (canonicalSMILES) => {
     )
 
     return [
-
-        // ATOM MODEL
-       // atomic symbol, proton count, max valence count*, max number of bonds, velectron1, velectron2, velectron3
-// electrons are unique strings, v=valence
-// * Maximum number of electrons in valence shell.
-
-
+       ...atoms_and_tokens
     ]
 
 
