@@ -49,14 +49,13 @@ ccontainer.container[1][0].should.be.a.number()
 ccontainer.container[1][0].should.be.equal(-9999)
 
 ccontainer.container[1][1].should.be.array()
-ccontainer.container[1][1].length.should.be.equal(7)
+ccontainer.container[1][1].length.should.be.equal(5)
 ccontainer.container[1][1][0].should.be.equal("Cl")
 ccontainer.container[1][1][1].should.be.equal(17)
 ccontainer.container[1][1][2].should.be.equal(7)
 ccontainer.container[1][1][3].should.be.equal(1)
 ccontainer.container[1][1][4].should.be.a.string()
-ccontainer.container[1][1][5].should.be.a.string()
-ccontainer.container[1][1][6].should.be.a.string()
+
 
 ccontainer.container[1].length.should.be.equal(1)
 
