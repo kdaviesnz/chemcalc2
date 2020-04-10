@@ -30,5 +30,42 @@ ccontainer.container[1][1][3].should.be.equal(1)
 ccontainer.container[1][1][4].should.be.a.string()
 
 ccontainer.add("water")
+ccontainer.container.length.should.be.equal(3)
+ccontainer.container[2].should.be.array()
+ccontainer.container[2].length.should.be.array(5)
+ccontainer.container[2][0].should.be.a.number()
+ccontainer.container[2][0].should.be.equal(14)
+
+ccontainer.container[1][1][5].should.be.a.string()
+ccontainer.container[2][1].should.be.array()
+ccontainer.container[2][1].length.should.be.equal(6)
+ccontainer.container[2][1][0].should.be.equal("H")
+ccontainer.container[2][1][1].should.be.equal(1)
+ccontainer.container[2][1][2].should.be.equal(1)
+ccontainer.container[2][1][3].should.be.equal(1)
+ccontainer.container[2][1][4].should.be.a.string()
+ccontainer.container[2][1][5].should.be.a.string()
+
+ccontainer.container[2][2][0].should.be.equal("H")
+ccontainer.container[2][2][1].should.be.equal(1)
+ccontainer.container[2][2][2].should.be.equal(1)
+ccontainer.container[2][2][3].should.be.equal(1)
+ccontainer.container[2][2][4].should.be.a.string()
+ccontainer.container[2][2][5].should.be.a.string()
+
+ccontainer.container[2][3][0].should.be.equal("H")
+ccontainer.container[2][3][1].should.be.equal(1)
+ccontainer.container[2][3][2].should.be.equal(1)
+ccontainer.container[2][3][3].should.be.equal(1)
+ccontainer.container[2][3][4].should.be.a.string()
+ccontainer.container[2][3][5].should.be.a.string()
+
+ccontainer.container[2][4][0].should.be.equal("O")
+ccontainer.container[2][4][1].should.be.equal(2)
+ccontainer.container[2][4][2].should.be.equal(2)
+ccontainer.container[2][4][3].should.be.equal(2)
+ccontainer.container[2][4][4].should.be.a.string()
+ccontainer.container[2][4][5].should.be.a.string()
+
 
 // oOf8ZoXI`@.pE/$DLX2H(FKI7PC$I51
