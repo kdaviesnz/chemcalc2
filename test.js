@@ -15,6 +15,10 @@ ccontainer.container.length.should.be.equal(2)
 ccontainer.container[0].should.be.equal(false)
 ccontainer.container[1].should.be.array()
 
+// MOLECULE MODEL
+// pKa, atom, atom, atom ...
+ccontainer.container[1][0].should.be.a.number()
+ccontainer.container[1][0].should.be.equal(100)
 
 ccontainer.add("water")
 
