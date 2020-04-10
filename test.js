@@ -17,20 +17,49 @@ ccontainer.container[1].should.be.array()
 
 // MOLECULE MODEL
 // pKa, atom, atom, atom ...
+ccontainer.container[1].length.should.be.equal(2)
 ccontainer.container[1][0].should.be.a.number()
 ccontainer.container[1][0].should.be.equal(-6.3)
 
 // ATOM MODEL
 // atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
 ccontainer.container[1][1].should.be.array()
+ccontainer.container[1][1].length.should.be.equal(6)
 ccontainer.container[1][1][0].should.be.equal("H")
 ccontainer.container[1][1][1].should.be.equal(1)
 ccontainer.container[1][1][2].should.be.equal(1)
 ccontainer.container[1][1][3].should.be.equal(1)
 ccontainer.container[1][1][4].should.be.a.string()
+ccontainer.container[1][1][5].should.be.a.string()
+
+ccontainer.container[1][2].should.be.array()
+ccontainer.container[1][2].length.should.be.equal(6)
+ccontainer.container[1][2][0].should.be.equal("Cl")
+ccontainer.container[1][2][1].should.be.equal(17)
+ccontainer.container[1][2][2].should.be.equal(7)
+ccontainer.container[1][2][3].should.be.equal(1)
+ccontainer.container[1][2][4].should.be.a.string()
+ccontainer.container[1][2][5].should.be.a.string()
 
 ccontainer.add("water")
 ccontainer.container.length.should.be.equal(3)
+
+ccontainer.container[1].length.should.be.equal(1)
+ccontainer.container[1][0].should.be.a.number()
+ccontainer.container[1][0].should.be.equal(-9999)
+
+ccontainer.container[1][1].should.be.array()
+ccontainer.container[1][1].length.should.be.equal(7)
+ccontainer.container[1][1][0].should.be.equal("Cl")
+ccontainer.container[1][1][1].should.be.equal(17)
+ccontainer.container[1][1][2].should.be.equal(7)
+ccontainer.container[1][1][3].should.be.equal(1)
+ccontainer.container[1][1][4].should.be.a.string()
+ccontainer.container[1][1][5].should.be.a.string()
+ccontainer.container[1][1][6].should.be.a.string()
+
+ccontainer.container[1].length.should.be.equal(1)
+
 ccontainer.container[2].should.be.array()
 ccontainer.container[2].length.should.be.array(5)
 ccontainer.container[2][0].should.be.a.number()
