@@ -36,6 +36,7 @@ class CContainer {
                 
                 
                  // HCl + H2O <-> Cl- + H3O+
+                 // CC(=O)O (C2H4O2, acetic acid) + water
                 
                 // First element is pKa value
                 if (this.container[1][0] < this.container[2][0]) {
