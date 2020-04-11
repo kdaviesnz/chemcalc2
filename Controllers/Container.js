@@ -11,7 +11,7 @@ class CContainer {
     add(molecule_array_or_string, units) {
         const molecule =  (typeof molecule_array_or_string === "array"? 
                            molecule_array_or_string:
-                           CMolecule(molecule_array_or_string)) 
+                           MoleculeFactory(molecule_array_or_string)) 
         this.container.push(molecule)
         // First element is pKa value,
         // container[1] is reagent
