@@ -2,6 +2,10 @@ const AtomsFactory = require('AtomsFactory')
 
 const MoleculeFactory = (canonicalSmiles) => {
 
+    if (canonicalSmiles.toLowerCase() === "water") {
+        return MoleculeFactory("O")
+    }
+    
     let SMILESparser = null
     const Canonical_SMILESParser = require("CanonicalSMILESParser")
     SMILESparser = Canonical_SMILESParser(canonicalSmiles)
