@@ -104,6 +104,6 @@ ccontainer.container[2][4][8].should.be.a.string()
 
 // CC(=O)O (acetic acid) + water
 
-// aluminum chloride (Lewis acid) + dimethyl ether (Lewis base)
+// aluminum chloride ([Al](Cl)(Cl)Cl) (Lewis acid) + dimethyl ether (Lewis base)
 
 // oOf8ZoXI`@.pE/$DLX2H(FKI7PC$I51
