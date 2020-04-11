@@ -40,7 +40,7 @@ const CMolecule = (mmolecule) => {
           // mmolecule.push(atom)            
           return mmolecule
        },
-       delete : (atom) => {
+       remove : (atom) => {
           // mmolecule.delete(atom)
           if (typeof atom_or_atomic_symbol === "string") {
              // find index of atom in molecule with matching atomic symbol
