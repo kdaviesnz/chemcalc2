@@ -23,13 +23,13 @@ class CContainer {
                 CMolecule.remove(CMolecule(this.container[1]).itemAt(proton_index)) // remove proton
        
                 this.container[2] = CMolecule(this.container[2]).push("H")
-                CMolecule(this.container[2]).itemAt(this.container[2].length-2) += "+"
+                
             } else if (this.container[1].indexOf("H") === false && this.container[2].indexOf("H") !== false) {
                 const proton_index = CMolecule(this.container[2]).indexOf("H")
                 CMolecule.remove(CMolecule(this.container[2]).itemAt(proton_index)) // remove proton
                 
                 this.container[1] = CMolecule(this.container[1]).push("H")
-                CMolecule(this.container[1]).itemAt(this.container[2].length-2) += "+"
+                
             } else if (this.container[1].indexOf("H") !== false && this.container[2].indexOf("H") !== false) {
                 // First element is pKa value
                 if (this.container[1][0] < this.container[2][0]) {
@@ -37,13 +37,13 @@ class CContainer {
                     CMolecule.remove(CMolecule(this.container[1]).itemAt(proton_index)) // remove proton
                     
                     CMolecule(this.container[2]).push("H")
-                    CMolecule(this.container[2]).itemAt(reagent.length-2) += "+"
+                    
                 } else {
                     const proton_index = CMolecule(this.container[2]).indexOf("H")
                     CMolecule.remove(CMolecule(this.container[2]).itemAt(proton_index)) // remove proton
                     
                     CMolecule(this.container[1]).push("H")
-                    CMolecule(this.container[1]).itemAt(this.container[1].length-2) += "+"
+                    
                 }
             } else {
                 
