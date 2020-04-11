@@ -19,6 +19,8 @@ class CContainer {
         if (this.container.length > 2) {            
             // acid base
             if (this.container[1].indexOf("H") !== false && this.container[2].indexOf("H") === false) {
+                
+               
                 const proton_index = CMolecule(this.container[1]).indexOf("H")
                 CMolecule.remove(CMolecule(this.container[1]).itemAt(proton_index)) // remove proton
        
@@ -31,6 +33,10 @@ class CContainer {
                 this.container[1] = CMolecule(this.container[1]).push("H")
                 
             } else if (this.container[1].indexOf("H") !== false && this.container[2].indexOf("H") !== false) {
+                
+                
+                 // HCl + H2O <-> Cl- + H3O+
+                
                 // First element is pKa value
                 if (this.container[1][0] < this.container[2][0]) {
                     const proton_index = CMolecule(this.container[1]).indexOf("H")
