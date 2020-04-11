@@ -5,13 +5,23 @@ const CMolecule = (mmolecule) => {
        // mmolecule: [pKa, atom, atom, atom ...]
        // atom: [atomic symbol, proton count, max valence count, velectron1, velectron2,...]
        indexOf : (atom_or_atomic_symbol) => {
-          if (typeof atom_or_atomic_symbol === "string") {
+          
+          if (atom_or_atomic_symbol === "H" || atom_or_atomic_symbol[0] === "H") {
+             // get molecule atoms that have hydrogens, keeping track of hydrogen indexes
+             const candidate_atoms = mmolecule.reduce((carry, current, index)=>{
+                
+             }, [])
+             
+          } 
+          else {
+             if (typeof atom_or_atomic_symbol === "string") {
              // find index of atom in molecule with matching atomic symbol
              return mmolecule.reduce((carry, current, index)=>{
                 return typeof current === "array" && current[0] === atom_or_atomic_symbol?index:carry
              }, false)
           } else {
              return mmolecule.search(atom_or_atomic_symbol)
+          }
           }
        },
        push : (atom_or_atomic_symbol) => {
