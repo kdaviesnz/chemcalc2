@@ -15,6 +15,8 @@ const CMolecule = (mmolecule) => {
           }
        },
        push : (atom_or_atomic_symbol) => {
+          
+         
           // Find index of atom to bond to.
           // This must be atom with at least a lone pair.
           const atom =  typeof atom_or_atomic_symbol === "string" ? @todo : atom_or_atomic_symbol
@@ -25,9 +27,15 @@ const CMolecule = (mmolecule) => {
              }, false
           )
           if (atom_to_bond_to_index !== false) {
+             
+             // Check atom to bond to has at least one lone pair
+             if ((8 - (mmolecule[atom_to_bond_to_index].length-4))/2 > 0) {
+             
              atom.push(mmolecule[atom_to_bond_to_index][mmolecule[atom_to_bond_to_index].length - 1])
              mmolecule[atom_to_bond_to_index].push(atom[atom.length - 2])
              mmolecule.push(atom)
+                
+             }
           }
           // mmolecule.push(atom)            
           return mmolecule
