@@ -1,4 +1,3 @@
-const FunctionalGroups = require('../lib/FunctionalGroups')
 
 const CanonicalSMILESParserV2 = (molecule_json_object, db, rule, render  ) => {
 

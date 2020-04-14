@@ -1,5 +1,5 @@
 const uniqid = require('uniqid')
-const AtomFactory = require('AtomFactory')
+const AtomFactory = require('./AtomFactory')
 
 const AtomsFactory = (canonicalSMILES) => {
 
@@ -7,7 +7,7 @@ const AtomsFactory = (canonicalSMILES) => {
     const smiles = require('smiles')
 
     // parse a SMILES string, returns an array of SMILES tokens [{type: '...', value: '...'}, ...]
-    const smiles_tokens = smiles.parse(canonicalSMILES)
+    const smiles_tokens = smiles.parse(canonicalSMILES.replace("H",""))
 
     //  Convert rows to atom objects
     const atoms_and_tokens = smiles_tokens.map(

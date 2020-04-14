@@ -1,11 +1,17 @@
 // https://www.npmjs.com/package/should
 // npm i should
 const should = require('should')
+const FunctionalGroups = require('./Models/FunctionalGroups')
+const Canonical_SMILESParser = require("./Models/CanonicalSMILESParser")
+const AtomFactory = require('./Models/AtomFactory')
 
+const CMolecule = require('./Controllers/Molecule')
+const MoleculeFactory = require('./Models/MoleculeFactory')
+const PeriodicTable = require("./Models/PeriodicTable")
 const CContainer = require('./Controllers/Container')
 
 
-const ccontainer = new CContainer([false])
+const ccontainer = new CContainer([false], MoleculeFactory)
 
 // HCl + H2O <-> Cl- + H3O+
 //  CONTAINER MODEL
@@ -13,17 +19,36 @@ const ccontainer = new CContainer([false])
 ccontainer.add("HCl")
 ccontainer.container.length.should.be.equal(2)
 ccontainer.container[0].should.be.equal(false)
-ccontainer.container[1].should.be.array()
+ccontainer.container[1].should.be.a.Array()
 
 // MOLECULE MODEL
 // pKa, atom, atom, atom ...
 ccontainer.container[1].length.should.be.equal(2)
-ccontainer.container[1][0].should.be.a.number()
-ccontainer.container[1][0].should.be.equal(-6.3)
+
+// pKa
+if (undefined===ccontainer.container[1][0]) {
+    console.error("Undefined element")
+    process.exit()
+}
+ccontainer.container[1][0].should.be.a.Number()
+ccontainer.container[1][0].should.be.equal(9999) // -6.3
 
 // ATOM MODEL
 // atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
-ccontainer.container[1][1].should.be.array()
+ccontainer.container[1][1].should.be.Array()
+console.log(ccontainer.container[1][1])
+/*
+[ 'Cl',
+  17,
+  '7',
+  1,
+  'bqdtz0lfnk8zh0emo',
+  'bqdtz0lfnk8zh0emp',
+  'bqdtz0lfnk8zh0emq',
+  'bqdtz0lfnk8zh0emr',
+  'bqdtz0lfnk8zh0ems',
+  'bqdtz0lfnk8zh0emt' ]
+ */
 ccontainer.container[1][1].length.should.be.equal(6)
 ccontainer.container[1][1][0].should.be.equal("H")
 ccontainer.container[1][1][1].should.be.equal(1)

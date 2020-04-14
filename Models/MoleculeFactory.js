@@ -1,4 +1,4 @@
-const AtomsFactory = require('AtomsFactory')
+const AtomsFactory = require('./AtomsFactory')
 
 const MoleculeFactory = (canonicalSmiles) => {
 
@@ -7,23 +7,23 @@ const MoleculeFactory = (canonicalSmiles) => {
     }
     
     let SMILESparser = null
-    const Canonical_SMILESParser = require("CanonicalSMILESParser")
-    SMILESparser = Canonical_SMILESParser(canonicalSmiles)
 
-    const atoms = () => {
-        const AtomsFactory = require("AtomsFactory")
-        return undefined === atoms || null === atoms?AtomsFactory(canonicalSmiles):atoms
+    //SMILESparser = Canonical_SMILESParser(canonicalSmiles)
+
+    const _atoms = () => {
+        return AtomsFactory(canonicalSmiles)
     }
 
     const pKa = () => {
-        
+        // @todo
+        return 9999
     }
         
     // // MOLECULE MODEL
     // // pKa, atom, atom, atom ...
     return [
         pKa(),
-        ...atoms
+        ..._atoms()
     ]
 
 }

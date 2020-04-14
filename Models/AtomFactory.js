@@ -5,7 +5,7 @@ const symbols = require('chemical-symbols');
 const chemicalFormula = require('chemical-formula')
 const smiles_parser = require('smiles')
 const molFormula = require('molecular-formula')
-const elements = require('@chemistry/elements/dist/elements')
+//const elements = require('@chemistry/elements/dist/elements')
 const pubchem = require("pubchem-access").domain("compound");
 //console.log(elements.Element.getElementById(1));
 //console.log(elements.Element.getElementByName('C'));
@@ -21,7 +21,7 @@ water.add({"H":1})
 const range = require("range");
 // range.range(1,10,2)
 
-const PeriodicTable = require("PeriodicTable")
+const PeriodicTable = require('./PeriodicTable')
 
 // ATOM MODEL
 // atomic symbol, proton count, max valence count*, max number of bonds, velectron1, velectron2, velectron3
