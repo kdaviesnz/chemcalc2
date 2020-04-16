@@ -16,6 +16,17 @@ watermolecule.length.should.be.equal(4)
 watermolecule[0].should.be.a.Number()
 watermolecule[0].should.be.a.equal(9999)
 watermolecule[1].should.be.a.Array()
+watermolecule[1]length.should.be.a.equal(9999)
+watermolecule[1][0].should.be.a.String()
+watermolecule[1][0].should.be.equal("H")
+watermolecule[1][1].should.be.a.Number()
+watermolecule[1][1].should.be.equal.Number(9999)
+watermolecule[1][2].should.be.a.Number()
+watermolecule[1][2].should.be.equal.Number(9999)
+watermolecule[1][3].should.be.a.Number()
+watermolecule[1][3].should.be.equal.Number(9999)
+watermolecule
+watermolecule[1][3].should.be.a.Number()
 
 
 const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController)
