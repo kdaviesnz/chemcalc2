@@ -10,6 +10,10 @@ const MoleculeFactory = require('./Models/MoleculeFactory')
 const PeriodicTable = require("./Models/PeriodicTable")
 const CContainer = require('./Controllers/Container')
 
+const watermolecule = MoleculeFactory("water")
+watermolecule.should.be.a.Array()
+watermolecule.length.should.be.equal(4)
+
 
 const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController)
 
