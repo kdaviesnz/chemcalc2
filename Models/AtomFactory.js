@@ -46,8 +46,8 @@ PeriodicTable:
 
      return [
          atomicSymbol,
-         PeriodicTable[atomicSymbol].atomic_number,
-         PeriodicTable[atomicSymbol].electrons_per_shell.split("-").pop(),
+         PeriodicTable[atomicSymbol].atomic_number*1,
+         PeriodicTable[atomicSymbol].electrons_per_shell.split("-").pop()*1,
          8 - 1*PeriodicTable[atomicSymbol].electrons_per_shell.split("-").pop(),
          ...range.range(1,PeriodicTable[atomicSymbol].electrons_per_shell.split("-").pop(),1).map((i)=>{
              return uniqid()
