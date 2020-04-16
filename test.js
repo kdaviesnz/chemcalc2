@@ -65,7 +65,7 @@ ccontainer.container[1][2][3].should.be.equal(1)
 ccontainer.container[1][2][4].should.be.a.String()
 ccontainer.container[1][2][5].should.be.a.String()
 
-ccontainer.add("water")
+ccontainer.add("water",1)
 ccontainer.container.length.should.be.equal(3)
 
 ccontainer.container[1].length.should.be.equal(1)
