@@ -19,13 +19,14 @@ watermolecule[1].should.be.a.Array()
 watermolecule[1].length.should.be.a.equal(9999)
 watermolecule[1][0].should.be.a.String()
 watermolecule[1][0].should.be.equal("H")
-watermolecule[1][1].should.be.a.Number()
-watermolecule[1][1].should.be.equal.Number(9999)
-watermolecule[1][2].should.be.a.Number()
-watermolecule[1][2].should.be.equal.Number(9999)
-watermolecule[1][3].should.be.a.Number()
-watermolecule[1][3].should.be.equal.Number(9999)
-watermolecule[1][3].should.be.a.Number()
+range.range(1,3,1).map(
+    (i)=>{
+        watermolecule[1][i].should.be.a.Number()
+    }
+) 
+watermolecule[1][1].should.be.equal(9999)
+watermolecule[1][2].should.be.equal(9999)
+watermolecule[1][3].should.be.equal(9999)
 range.range(4,watermolecule[1].length-1).map(
     (electron)=>{
         electron.should.be.a.String()
@@ -35,13 +36,14 @@ watermolecule[2].should.be.a.Array()
 watermolecule[2].length.should.be.a.equal(9999)
 watermolecule[2][0].should.be.a.String()
 watermolecule[2][0].should.be.equal("O")
-watermolecule[2][1].should.be.a.Number()
-watermolecule[2][1].should.be.equal.Number(9999)
-watermolecule[2][2].should.be.a.Number()
-watermolecule[2][2].should.be.equal.Number(9999)
-watermolecule[2][3].should.be.a.Number()
-watermolecule[2][3].should.be.equal.Number(9999)
-watermolecule[2][3].should.be.a.Number()
+range.range(1,3,1).map(
+    (i)=>{
+        watermolecule[2][i].should.be.a.Number()
+    }
+) 
+watermolecule[2][1].should.be.equal(9999)
+watermolecule[2][2].should.be.equal(9999)
+watermolecule[2][3].should.be.equal(9999)
 range.range(4,watermolecule[2].length-1,1).map(
     (electron)=>{
         electron.should.be.a.String()
@@ -51,19 +53,23 @@ watermolecule[3].should.be.a.Array()
 watermolecule[3].length.should.be.a.equal(9999)
 watermolecule[3][0].should.be.a.String()
 watermolecule[3][0].should.be.equal("H")
-watermolecule[3][1].should.be.a.Number()
-watermolecule[3][1].should.be.equal.Number(9999)
-watermolecule[3][2].should.be.a.Number()
-watermolecule[3][2].should.be.equal.Number(9999)
-watermolecule[3][3].should.be.a.Number()
-watermolecule[3][3].should.be.equal.Number(9999)
-watermolecule[3][3].should.be.a.Number()
+range.range(1,3,1).map(
+    (i)=>{
+        watermolecule[3][i].should.be.a.Number()
+    }
+) 
+watermolecule[3][1].should.be.equal(9999)
+watermolecule[3][2].should.be.equal(9999)
+watermolecule[3][3].should.be.equal(9999)
 range.range(4,watermolecule[3].length-1,1).map(
     (electron)=>{
         electron.should.be.a.String()
     }
 ) 
 watermolecule[3].indexOf(watermolecule[2][watermolecule[2].length-1]).should.not.be.False()
+watermolecule[2].indexOf(watermolecule[3][watermolecule[3].length-1]).should.not.be.False()
+watermolecule[2].indexOf(watermolecule[1][watermolecule[1].length-1]).should.not.be.False()
+watermolecule[1].indexOf(watermolecule[2][watermolecule[2].length-1]).should.not.be.False()
 
 const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController)
 
