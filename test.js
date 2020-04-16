@@ -63,7 +63,7 @@ range.range(4,watermolecule[3].length-1,1).map(
         electron.should.be.a.String()
     }
 ) 
-
+watermolecule[3].indexOf(watermolecule[2][watermolecule[2].length-1]).should.not.be.False()
 
 const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController)
 
