@@ -13,6 +13,9 @@ const CContainer = require('./Controllers/Container')
 const watermolecule = MoleculeFactory("water")
 watermolecule.should.be.a.Array()
 watermolecule.length.should.be.equal(4)
+watermolecule[0].should.be.a.Number()
+watermolecule[0].should.be.a.equal(9999)
+watermolecule[1].should.be.a.Array()
 
 
 const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController)
