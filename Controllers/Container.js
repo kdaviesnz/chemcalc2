@@ -10,7 +10,7 @@ class CContainer {
     }
    
     add(molecule_array_or_string, units) {
-        const molecule =  (typeof molecule_array_or_string === "array"? 
+        const molecule =  (typeof molecule_array_or_string !== "string"?
                            molecule_array_or_string:
                            this.MoleculeFactory(molecule_array_or_string))
         this.container.push(molecule)

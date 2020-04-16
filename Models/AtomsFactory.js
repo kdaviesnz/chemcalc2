@@ -42,7 +42,7 @@ const AtomsFactory = (canonicalSMILES) => {
     // Add hydrogens
     const atoms_and_tokens_with_hydrogens = atoms_and_tokens.reduce(
         (carry, current, index, arr) => {
-            if (typeof current === "array" && current[0]!=='H') { // we have an atom
+            if (typeof current.length === "number" && current[0]!=='H') { // we have an atom
                 // Check how many bonds it currently has
                 const valence_electrons = current.slice(4)
                 // Check each valence electron to see if it is being shared
@@ -52,7 +52,7 @@ const AtomsFactory = (canonicalSMILES) => {
                         // Electron can only be shared once
                          const shared_count =  atoms_and_tokens.filter(
                              (atom_or_token) => {
-                                 if (typeof atom_or_token !== "array") {
+                                 if (typeof atom_or_token.length !== "number") {
                                      return false
                                  }
                                  return atom_or_token.indexOf(current_electron) !==false
@@ -64,12 +64,13 @@ const AtomsFactory = (canonicalSMILES) => {
                 )
                 // current[3] is the number of electrons the atom has when it is neutrally charged
                 const number_of_hydrogens_required = current[3] - actual_number_of_bonds
-                if (number_of_hydrogens_required_required > 0) {
-                    range.range(0, number_of_hydrogens_required_required,1).map(
+                if (number_of_hydrogens_required > 0) {
+                    range.range(0, number_of_hydrogens_required,1).map(
                         (e_index) => {
                             const hydrogen = AtomFactory('H')
                             hydrogen.push(valence_electrons[e_index])
-                            current.push(hydrogen[hydrogen.length-1])
+                            current.push(hydrogen[hydrogen.length-2])
+                            carry.push(hydrogen)
                         }
                     )
                 }
@@ -79,28 +80,25 @@ const AtomsFactory = (canonicalSMILES) => {
         },
         []
     )
-    console.log("atoms and tokens")
-    console.log(atoms_and_tokens)
     //  atomic symbol, proton count, valence count, number of bonds, velectron1, velectron2, velectron3
     /*
-    [ [ 'Cl',
+[ [ 'H', 1, 1, 1, 'bqdtz01jzk928chjx', 'bqdtz01jzk928chjq' ],
+  [ 'Cl',
     17,
-    '7',
+    7,
     1,
-    'bqdtz0lqek923d7kh',
-    'bqdtz0lqek923d7ki',
-    'bqdtz0lqek923d7kj',
-    'bqdtz0lqek923d7kk',
-    'bqdtz0lqek923d7kl',
-    'bqdtz0lqek923d7km' ] ]
+    'bqdtz01jzk928chjq',
+    'bqdtz01jzk928chjr',
+    'bqdtz01jzk928chjs',
+    'bqdtz01jzk928chjt',
+    'bqdtz01jzk928chju',
+    'bqdtz01jzk928chjv',
+    'bqdtz01jzk928chjw',
+    'bqdtz01jzk928chjx' ] ]
+
      */
-    process.exit()
 
-
-    return [
-       ...atoms_and_tokens
-    ]
-
+    return atoms_and_tokens_with_hydrogens
 
 }
 
