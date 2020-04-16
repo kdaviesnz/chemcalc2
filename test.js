@@ -5,13 +5,13 @@ const FunctionalGroups = require('./Models/FunctionalGroups')
 const Canonical_SMILESParser = require("./Models/CanonicalSMILESParser")
 const AtomFactory = require('./Models/AtomFactory')
 
-const CMolecule = require('./Controllers/Molecule')
+const MoleculeController = require('./Controllers/Molecule')
 const MoleculeFactory = require('./Models/MoleculeFactory')
 const PeriodicTable = require("./Models/PeriodicTable")
 const CContainer = require('./Controllers/Container')
 
 
-const ccontainer = new CContainer([false], MoleculeFactory)
+const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController)
 
 // HCl + H2O <-> Cl- + H3O+
 //  CONTAINER MODEL
