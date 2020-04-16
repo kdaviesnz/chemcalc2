@@ -16,7 +16,7 @@ watermolecule.length.should.be.equal(4)
 watermolecule[0].should.be.a.Number()
 watermolecule[0].should.be.a.equal(9999)
 watermolecule[1].should.be.a.Array()
-watermolecule[1]length.should.be.a.equal(9999)
+watermolecule[1].length.should.be.a.equal(9999)
 watermolecule[1][0].should.be.a.String()
 watermolecule[1][0].should.be.equal("H")
 watermolecule[1][1].should.be.a.Number()
@@ -25,8 +25,44 @@ watermolecule[1][2].should.be.a.Number()
 watermolecule[1][2].should.be.equal.Number(9999)
 watermolecule[1][3].should.be.a.Number()
 watermolecule[1][3].should.be.equal.Number(9999)
-watermolecule
 watermolecule[1][3].should.be.a.Number()
+range.range(4,watermolecule[1].length-1).map(
+    (electron)=>{
+        electron.should.be.a.String()
+    }
+)
+watermolecule[2].should.be.a.Array()
+watermolecule[2].length.should.be.a.equal(9999)
+watermolecule[2][0].should.be.a.String()
+watermolecule[2][0].should.be.equal("O")
+watermolecule[2][1].should.be.a.Number()
+watermolecule[2][1].should.be.equal.Number(9999)
+watermolecule[2][2].should.be.a.Number()
+watermolecule[2][2].should.be.equal.Number(9999)
+watermolecule[2][3].should.be.a.Number()
+watermolecule[2][3].should.be.equal.Number(9999)
+watermolecule[2][3].should.be.a.Number()
+range.range(4,watermolecule[2].length-1,1).map(
+    (electron)=>{
+        electron.should.be.a.String()
+    }
+)
+watermolecule[3].should.be.a.Array()
+watermolecule[3].length.should.be.a.equal(9999)
+watermolecule[3][0].should.be.a.String()
+watermolecule[3][0].should.be.equal("H")
+watermolecule[3][1].should.be.a.Number()
+watermolecule[3][1].should.be.equal.Number(9999)
+watermolecule[3][2].should.be.a.Number()
+watermolecule[3][2].should.be.equal.Number(9999)
+watermolecule[3][3].should.be.a.Number()
+watermolecule[3][3].should.be.equal.Number(9999)
+watermolecule[3][3].should.be.a.Number()
+range.range(4,watermolecule[3].length-1,1).map(
+    (electron)=>{
+        electron.should.be.a.String()
+    }
+) 
 
 
 const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController)
