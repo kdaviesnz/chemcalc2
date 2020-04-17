@@ -1,11 +1,34 @@
 //
 
 const CMolecule = (mmolecule) => {
-    return {
-        // mmolecule: [pKa, atom, atom, atom ...]
-        // atom: [atomic symbol, proton count, max valence count, velectron1, velectron2,...]
-        indexOf : (atom_or_atomic_symbol) => {
 
+    const _bondCount = (atom) => {
+        const valence_electrons = atom.slice(4)
+        // Check each valence electron to see if it is being shared
+        return valence_electrons.reduce(
+            (total, current_electron) => {
+                // Look for current electron
+                // Electron can only be shared once
+                const shared_count =  mmolecule.filter(
+                    (molecule_atom) => {
+                        if (typeof molecule_atom.length !== "number") {
+                            return false
+                        }
+                        return molecule_atom.indexOf(current_electron) !==false
+                    }
+                ).length -1 // take into account electron counting itself
+                return total + shared_count // shared_count should be either 0 or 1
+            },
+            0
+        )
+    }
+
+    return {
+// MOLECULE MODEL
+// pKa, atom, atom, atom ...
+// ATOM MODEL
+// atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
+        indexOf : (atom_or_atomic_symbol) => {
             if (atom_or_atomic_symbol === "H" || atom_or_atomic_symbol[0] === "H") {
                 // get molecule atoms that have hydrogens, keeping track of hydrogen indexes
                 const candidate_atoms = mmolecule.reduce((carry, current, index)=>{
@@ -13,17 +36,12 @@ const CMolecule = (mmolecule) => {
                         // check current atom for hydrogens
                         const H_index = mmolecule.reduce((_carry, _current, _index)=>{
                             if (_current[0] === "H") {
-                                // Look for bond
-                                if (array_first.filter(function(x) {
-                                    // checking second array contains the element "x"
-                                    if(array_second.indexOf(x) != -1)
-                                        return true;
-                                    else
-                                        return false;
-                                }) === true) {
-                                    return _index
+                                // Look for bonds
+                                const bonds = _bondCount(_current)
+                                if (bonds > 0) {
+                                    return bonds
                                 } else {
-                                    return _carry
+                                    return carry
                                 }
                             }
                         }, -1)
@@ -113,26 +131,7 @@ const CMolecule = (mmolecule) => {
             // mmolecule[item]
             return mmolecule
         },
-        bondCount : (atom) => {
-                const valence_electrons = atom.slice(4)
-                // Check each valence electron to see if it is being shared
-                return valence_electrons.reduce(
-                     (total, current_electron) => {
-                        // Look for current electron
-                        // Electron can only be shared once
-                         const shared_count =  mmolecule.filter(
-                             (molecule_atom) => {
-                                 if (typeof molecule_atom.length !== "number") {
-                                     return false
-                                 }
-                                 return molecule_atom.indexOf(current_electron) !==false
-                             }
-                         ).length -1 // take into account electron counting itself
-                         return total + shared_count // shared_count should be either 0 or 1
-                    },
-                    0
-                )
-        }
+        bondCount : _bondCount
     }
 }
 
