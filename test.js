@@ -13,6 +13,8 @@ const CContainer = require('./Controllers/Container')
 
 // MOLECULE MODEL
 // pKa, atom, atom, atom ...
+// ATOM MODEL
+// atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
 const watermolecule = MoleculeFactory("water")
 watermolecule.should.be.a.Array()
 watermolecule.length.should.be.equal(4)
@@ -98,9 +100,9 @@ range.range(4,hcl[1].length-1).map(
     }
 )
 hcl[2].should.be.a.Array()
-hcl[2].length.should.be.a.equal(9999)
+hcl[2].length.should.be.a.equal(1)
 hcl[2][0].should.be.a.String()
-hcl[2][0].should.be.equal("O")
+hcl[2][0].should.be.equal("Cl")
 range.range(1,3,1).map(
     (i)=>{
         hcl[2][i].should.be.a.Number()
@@ -122,74 +124,105 @@ const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController)
 // HCl + H2O <-> Cl- + H3O+
 //  CONTAINER MODEL
 // is vacuum, molecule, molecule ...
-ccontainer.add("HCl")
+ccontainer.add("HCl",1)
 ccontainer.container.length.should.be.equal(2)
 ccontainer.container[0].should.be.equal(false)
 ccontainer.container[1].should.be.a.Array()
 
-// ATOM MODEL
-// atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
-
-
 ccontainer.add("water",1)
 ccontainer.container.length.should.be.equal(3)
 
-ccontainer.container[1].length.should.be.equal(1)
-ccontainer.container[1][0].should.be.a.number()
-ccontainer.container[1][0].should.be.equal(-9999)
+const Clneg = ccontainer.container[1]
+Clneg.should.be.a.Array()
+Clneg.length.should.be.a.equal(2)
+Clneg[0][0].should.be.a.String()
+Clneg[0][0].should.be.equal("Cl")
+range.range(1,3,1).map(
+    (i)=>{
+        Clneg[0][i].should.be.a.Number()
+    }
+) 
+Clneg[0][1].should.be.equal(9999)
+Clneg[0][2].should.be.equal(9999)
+Clneg[0][3].should.be.equal(9999)
+range.range(4,Clneg[0].length-1,1).map(
+    (i)=>{
+        Clneg[0][i].should.be.a.String()
+    }
+)
 
-ccontainer.container[1][1].should.be.array()
-ccontainer.container[1][1].length.should.be.equal(5)
-ccontainer.container[1][1][0].should.be.equal("Cl")
-ccontainer.container[1][1][1].should.be.equal(17)
-ccontainer.container[1][1][2].should.be.equal(7)
-ccontainer.container[1][1][3].should.be.equal(1)
-ccontainer.container[1][1][4].should.be.a.string()
+const HthreeO = ccontainer.container[2]
+HthreeO.should.be.a.Array()
+HthreeO.length.should.be.a.equal(3)
 
+HthreeO[0][0].should.be.a.String()
+HthreeO[0][0].should.be.equal("H")
+range.range(1,3,1).map(
+    (i)=>{
+        HthreeO[0][i].should.be.a.Number()
+    }
+) 
+HthreeO[0][1].should.be.equal(9999)
+HthreeO[0][2].should.be.equal(9999)
+HthreeO[0][3].should.be.equal(9999)
+range.range(4,HthreeO[0].length-1,1).map(
+    (i)=>{
+        HthreeO[0][i].should.be.a.String()
+    }
+)
 
-ccontainer.container[1].length.should.be.equal(1)
+HthreeO[1][0].should.be.a.String()
+HthreeO[1][0].should.be.equal("O")
+range.range(1,3,1).map(
+    (i)=>{
+        HthreeO[0][i].should.be.a.Number()
+    }
+) 
+HthreeO[1][1].should.be.equal(9999)
+HthreeO[1][2].should.be.equal(9999)
+HthreeO[1][3].should.be.equal(9999)
+range.range(4,HthreeO[1].length-1,1).map(
+    (i)=>{
+        HthreeO[1][i].should.be.a.String()
+    }
+)
 
-ccontainer.container[2].should.be.array()
-ccontainer.container[2].length.should.be.array(5)
-ccontainer.container[2][0].should.be.a.number()
-ccontainer.container[2][0].should.be.equal(14)
+HthreeO[2][0].should.be.a.String()
+HthreeO[2][0].should.be.equal("H")
+range.range(1,3,1).map(
+    (i)=>{
+        HthreeO[2][i].should.be.a.Number()
+    }
+) 
+HthreeO[2][1].should.be.equal(9999)
+HthreeO[2][2].should.be.equal(9999)
+HthreeO[2][3].should.be.equal(9999)
+range.range(4,HthreeO[2].length-1,1).map(
+    (i)=>{
+        HthreeO[2][i].should.be.a.String()
+    }
+)
 
-ccontainer.container[1][1][5].should.be.a.string()
-ccontainer.container[2][1].should.be.array()
-ccontainer.container[2][1].length.should.be.equal(6)
-ccontainer.container[2][1][0].should.be.equal("H")
-ccontainer.container[2][1][1].should.be.equal(1)
-ccontainer.container[2][1][2].should.be.equal(1)
-ccontainer.container[2][1][3].should.be.equal(1)
-ccontainer.container[2][1][4].should.be.a.string()
-ccontainer.container[2][1][5].should.be.a.string()
+HthreeO[3][0].should.be.a.String()
+HthreeO[3][0].should.be.equal("H")
+range.range(1,3,1).map(
+    (i)=>{
+        HthreeO[3][i].should.be.a.Number()
+    }
+) 
+HthreeO[3][1].should.be.equal(9999)
+HthreeO[3][2].should.be.equal(9999)
+HthreeO[3][3].should.be.equal(9999)
+range.range(4,HthreeO[3].length-1,1).map(
+    (i)=>{
+        HthreeO[3][i].should.be.a.String()
+    }
+)
+HthreeO[2].indexOf(HthreeO[1][HthreeO[1].length-1]).should.not.be.False()
+HthreeO[3].indexOf(HthreeO[1][HthreeO[1].length-2]).should.not.be.False()
+HthreeO[1].indexOf(HthreeO[3][HthreeO[3].length-1]).should.not.be.False()
+HthreeO[1].indexOf(HthreeO[2][HthreeO[2].length-2]).should.not.be.False()
 
-ccontainer.container[2][2].length.should.be.equal(6)
-ccontainer.container[2][2][0].should.be.equal("H")
-ccontainer.container[2][2][1].should.be.equal(1)
-ccontainer.container[2][2][2].should.be.equal(1)
-ccontainer.container[2][2][3].should.be.equal(1)
-ccontainer.container[2][2][4].should.be.a.string()
-ccontainer.container[2][2][5].should.be.a.string()
-
-ccontainer.container[2][3].length.should.be.equal(6)
-ccontainer.container[2][3][0].should.be.equal("H")
-ccontainer.container[2][3][1].should.be.equal(1)
-ccontainer.container[2][3][2].should.be.equal(1)
-ccontainer.container[2][3][3].should.be.equal(1)
-ccontainer.container[2][3][4].should.be.a.string()
-ccontainer.container[2][3][5].should.be.a.string()
-
-ccontainer.container[2][4].length.should.be.equal(9)
-ccontainer.container[2][4][0].should.be.equal("O")
-ccontainer.container[2][4][1].should.be.equal(8)
-ccontainer.container[2][4][2].should.be.equal(6)
-ccontainer.container[2][4][3].should.be.equal(2)
-ccontainer.container[2][4][4].should.be.a.string()
-ccontainer.container[2][4][5].should.be.a.string()
-ccontainer.container[2][4][6].should.be.a.string()
-ccontainer.container[2][4][7].should.be.a.string()
-ccontainer.container[2][4][8].should.be.a.string()
 
 
 // CC(=O)O (acetic acid) + water
