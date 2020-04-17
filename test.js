@@ -10,18 +10,36 @@ const MoleculeFactory = require('./Models/MoleculeFactory')
 const PeriodicTable = require("./Models/PeriodicTable")
 const CContainer = require('./Controllers/Container')
 
+const range = require("range");
 
 // MOLECULE MODEL
 // pKa, atom, atom, atom ...
 // ATOM MODEL
 // atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
 const watermolecule = MoleculeFactory("water")
+/*
+[ 9999,
+  [ 'H', 1, 1, 1, 'cfo6drik94nz8an', 'cfo6drik94nz8ah' ],
+  [ 'H', 1, 1, 1, 'cfo6drik94nz8ao', 'cfo6drik94nz8ai' ],
+  [ 'O',
+    8,
+    6,
+    2,
+    'cfo6drik94nz8ah',
+    'cfo6drik94nz8ai',
+    'cfo6drik94nz8aj',
+    'cfo6drik94nz8ak',
+    'cfo6drik94nz8al',
+    'cfo6drik94nz8am',
+    'cfo6drik94nz8an',
+    'cfo6drik94nz8ao' ] ]
+ */
 watermolecule.should.be.a.Array()
 watermolecule.length.should.be.equal(4)
 watermolecule[0].should.be.a.Number()
 watermolecule[0].should.be.a.equal(9999)
 watermolecule[1].should.be.a.Array()
-watermolecule[1].length.should.be.a.equal(9999)
+watermolecule[1].length.should.be.a.equal(6)
 watermolecule[1][0].should.be.a.String()
 watermolecule[1][0].should.be.equal("H")
 range.range(1,3,1).map(
@@ -29,46 +47,46 @@ range.range(1,3,1).map(
         watermolecule[1][i].should.be.a.Number()
     }
 ) 
-watermolecule[1][1].should.be.equal(9999)
-watermolecule[1][2].should.be.equal(9999)
-watermolecule[1][3].should.be.equal(9999)
+watermolecule[1][1].should.be.equal(1)
+watermolecule[1][2].should.be.equal(1)
+watermolecule[1][3].should.be.equal(1)
 range.range(4,watermolecule[1].length-1).map(
     (i)=>{
-        watermolecule[2][i]should.be.a.String()
+        watermolecule[2][i].should.be.a.String()
     }
 )
 watermolecule[2].should.be.a.Array()
-watermolecule[2].length.should.be.a.equal(9999)
+watermolecule[2].length.should.be.a.equal(6)
 watermolecule[2][0].should.be.a.String()
-watermolecule[2][0].should.be.equal("O")
+watermolecule[2][0].should.be.equal("H")
 range.range(1,3,1).map(
     (i)=>{
         watermolecule[2][i].should.be.a.Number()
     }
 ) 
-watermolecule[2][1].should.be.equal(9999)
-watermolecule[2][2].should.be.equal(9999)
-watermolecule[2][3].should.be.equal(9999)
+watermolecule[2][1].should.be.equal(1)
+watermolecule[2][2].should.be.equal(1)
+watermolecule[2][3].should.be.equal(1)
 range.range(4,watermolecule[2].length-1,1).map(
     (i)=>{
-        watermolecule[2][i]should.be.a.String()
+        watermolecule[2][i].should.be.a.String()
     }
 )
 watermolecule[3].should.be.a.Array()
-watermolecule[3].length.should.be.a.equal(9999)
+watermolecule[3].length.should.be.a.equal(12)
 watermolecule[3][0].should.be.a.String()
-watermolecule[3][0].should.be.equal("H")
+watermolecule[3][0].should.be.equal("O")
 range.range(1,3,1).map(
     (i)=>{
         watermolecule[3][i].should.be.a.Number()
     }
 ) 
-watermolecule[3][1].should.be.equal(9999)
-watermolecule[3][2].should.be.equal(9999)
-watermolecule[3][3].should.be.equal(9999)
+watermolecule[3][1].should.be.equal(8)
+watermolecule[3][2].should.be.equal(6)
+watermolecule[3][3].should.be.equal(2)
 range.range(4,watermolecule[3].length-1,1).map(
     (i)=>{
-        watermolecule[2][i].should.be.a.String()
+        watermolecule[3][i].should.be.a.String()
     }
 ) 
 watermolecule[3].indexOf(watermolecule[2][watermolecule[2].length-1]).should.not.be.False()
@@ -83,7 +101,7 @@ hcl.length.should.be.equal(3)
 hcl[0].should.be.a.Number()
 hcl[0].should.be.a.equal(9999)
 hcl[1].should.be.a.Array()
-hcl[1].length.should.be.a.equal(9999)
+hcl[1].length.should.be.a.equal(6)
 hcl[1][0].should.be.a.String()
 hcl[1][0].should.be.equal("H")
 range.range(1,3,1).map(
@@ -91,16 +109,16 @@ range.range(1,3,1).map(
         hcl[1][i].should.be.a.Number()
     }
 ) 
-hcl[1][1].should.be.equal(9999)
-hcl[1][2].should.be.equal(9999)
-hcl[1][3].should.be.equal(9999)
+hcl[1][1].should.be.equal(1)
+hcl[1][2].should.be.equal(1)
+hcl[1][3].should.be.equal(1)
 range.range(4,hcl[1].length-1).map(
     (i)=>{
         hcl[2][i].should.be.a.String()
     }
 )
 hcl[2].should.be.a.Array()
-hcl[2].length.should.be.a.equal(1)
+hcl[2].length.should.be.a.equal(12)
 hcl[2][0].should.be.a.String()
 hcl[2][0].should.be.equal("Cl")
 range.range(1,3,1).map(
@@ -108,9 +126,9 @@ range.range(1,3,1).map(
         hcl[2][i].should.be.a.Number()
     }
 ) 
-hcl[2][1].should.be.equal(9999)
-hcl[2][2].should.be.equal(9999)
-hcl[2][3].should.be.equal(9999)
+hcl[2][1].should.be.equal(17)
+hcl[2][2].should.be.equal(7)
+hcl[2][3].should.be.equal(1)
 range.range(4,hcl[2].length-1,1).map(
     (i)=>{
         hcl[2][i].should.be.a.String()

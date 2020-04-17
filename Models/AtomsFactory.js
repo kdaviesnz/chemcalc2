@@ -1,5 +1,6 @@
 const uniqid = require('uniqid')
 const AtomFactory = require('./AtomFactory')
+const CMolecule = require('../Controllers/Molecule')
 const range = require("range");
 // range.range(1,10,2)
 
