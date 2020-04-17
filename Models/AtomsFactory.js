@@ -46,22 +46,7 @@ const AtomsFactory = (canonicalSMILES) => {
                 // Check how many bonds it currently has
                 const valence_electrons = current.slice(4)
                 // Check each valence electron to see if it is being shared
-                const actual_number_of_bonds = valence_electrons.reduce(
-                     (total, current_electron) => {
-                        // Look for current electron
-                        // Electron can only be shared once
-                         const shared_count =  atoms_and_tokens.filter(
-                             (atom_or_token) => {
-                                 if (typeof atom_or_token.length !== "number") {
-                                     return false
-                                 }
-                                 return atom_or_token.indexOf(current_electron) !==false
-                             }
-                         ).length -1 // take into account electron counting itself
-                         return total + shared_count // shared_count should be either 0 or 1
-                    },
-                    0
-                )
+                const actual_number_of_bonds = CMolecule(atoms_and_tokens).bondCount(current)
                 // current[3] is the number of electrons the atom has when it is neutrally charged
                 const number_of_hydrogens_required = current[3] - actual_number_of_bonds
                 if (number_of_hydrogens_required > 0) {
