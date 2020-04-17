@@ -10,6 +10,9 @@ const MoleculeFactory = require('./Models/MoleculeFactory')
 const PeriodicTable = require("./Models/PeriodicTable")
 const CContainer = require('./Controllers/Container')
 
+
+// MOLECULE MODEL
+// pKa, atom, atom, atom ...
 const watermolecule = MoleculeFactory("water")
 watermolecule.should.be.a.Array()
 watermolecule.length.should.be.equal(4)
@@ -124,49 +127,9 @@ ccontainer.container.length.should.be.equal(2)
 ccontainer.container[0].should.be.equal(false)
 ccontainer.container[1].should.be.a.Array()
 
-// MOLECULE MODEL
-// pKa, atom, atom, atom ...
-ccontainer.container[1].length.should.be.equal(3)
-
-// pKa
-if (undefined===ccontainer.container[1][0]) {
-    console.error("Undefined element")
-    process.exit()
-}
-ccontainer.container[1][0].should.be.a.Number()
-ccontainer.container[1][0].should.be.equal(9999) // -6.3
-
 // ATOM MODEL
 // atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
-ccontainer.container[1][1].should.be.Array()
-/*
-[ 'Cl',
-  17,
-  '7',
-  1,
-  'bqdtz0lfnk8zh0emo',
-  'bqdtz0lfnk8zh0emp',
-  'bqdtz0lfnk8zh0emq',
-  'bqdtz0lfnk8zh0emr',
-  'bqdtz0lfnk8zh0ems',
-  'bqdtz0lfnk8zh0emt' ]
- */
-ccontainer.container[1][1].length.should.be.equal(6)
-ccontainer.container[1][1][0].should.be.equal("H")
-ccontainer.container[1][1][1].should.be.equal(1)
-ccontainer.container[1][1][2].should.be.equal(1)
-ccontainer.container[1][1][3].should.be.equal(1)
-ccontainer.container[1][1][4].should.be.a.String()
-ccontainer.container[1][1][5].should.be.a.String()
 
-ccontainer.container[1][2].should.be.Array()
-ccontainer.container[1][2].length.should.be.equal(12)
-ccontainer.container[1][2][0].should.be.equal("Cl")
-ccontainer.container[1][2][1].should.be.equal(17)
-ccontainer.container[1][2][2].should.be.equal(7)
-ccontainer.container[1][2][3].should.be.equal(1)
-ccontainer.container[1][2][4].should.be.a.String()
-ccontainer.container[1][2][5].should.be.a.String()
 
 ccontainer.add("water",1)
 ccontainer.container.length.should.be.equal(3)
