@@ -114,7 +114,24 @@ const CMolecule = (mmolecule) => {
             return mmolecule
         },
         bondCount : (atom) => {
-          
+                const valence_electrons = atom.slice(4)
+                // Check each valence electron to see if it is being shared
+                return valence_electrons.reduce(
+                     (total, current_electron) => {
+                        // Look for current electron
+                        // Electron can only be shared once
+                         const shared_count =  mmolecule.filter(
+                             (molecule_atom) => {
+                                 if (typeof molecule_atom.length !== "number") {
+                                     return false
+                                 }
+                                 return molecule_atom.indexOf(current_electron) !==false
+                             }
+                         ).length -1 // take into account electron counting itself
+                         return total + shared_count // shared_count should be either 0 or 1
+                    },
+                    0
+                )
         }
     }
 }
