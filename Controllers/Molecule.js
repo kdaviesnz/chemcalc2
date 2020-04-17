@@ -112,6 +112,9 @@ const CMolecule = (mmolecule) => {
         itemAt : (index) => {
             // mmolecule[item]
             return mmolecule
+        },
+        bondCount : (atom) => {
+          
         }
     }
 }
