@@ -73,18 +73,35 @@ const CMolecule = (mmolecule) => {
                             if (_current[0] === "H") {
                                 const hydrogen_atom = _current[0]
                                 const hydrogen_atom_valence_electrons = hydrogen_atom.slice(4)
-                                if (hydrogen_atom_valence_electrons.intersect(current_molecule_atom_valence_electrons)>0) {
+                                //if (hydrogen_atom_valence_electrons.intersect(current_molecule_atom_valence_electrons)>0) {
+                                if (true) {
                                     return _index // index of hydrogen bonded to current molecule atom
                                 }
                             }
                             return _carry
                         }, -1)
-                        console.log(H_index)
-                        process.exit()
+                        // console.log(H_index) 1
                         return H_index !== -1?[current_molecule_atom, H_index]:carry
                     }
                     return carry
                 }, [])
+                //console.log(candidate_atoms)
+                /*
+                [ [ 'Cl',
+    17,
+    7,
+    1,
+    'cfo6d12rk94vnif6',
+    'cfo6d12rk94vnif7',
+    'cfo6d12rk94vnif8',
+    'cfo6d12rk94vnif9',
+    'cfo6d12rk94vnifa',
+    'cfo6d12rk94vnifb',
+    'cfo6d12rk94vnifc',
+    'cfo6d12rk94vnifd' ],
+  1 ]
+
+                 */
                 // check for oxygen atom and if found return the index of hydogen atom bonded to the oxygen atom
                 const o = candidate_atoms.filter((atom_hydroden_index)=>{
                     return atom_hydroden_index[0]==="O"
