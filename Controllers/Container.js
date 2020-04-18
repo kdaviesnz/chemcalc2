@@ -38,12 +38,12 @@ class CContainer {
                 // First element is pKa value
                 if (this.container[1][0] < this.container[2][0]) {
                     const proton_index = this.MoleculeController(this.container[1]).indexOf("H")
-                    this.MoleculeController.remove(this.MoleculeController(this.container[1]).itemAt(proton_index)) // remove proton
+                    this.MoleculeController(this.container[2]).remove(this.MoleculeController(this.container[1]).itemAt(proton_index)) // remove proton
                     this.MoleculeController(this.container[2]).push("H")
                     
                 } else {
                     const proton_index = this.MoleculeController(this.container[2]).indexOf("H")
-                    this.MoleculeController.remove(this.MoleculeController(this.container[2]).itemAt(proton_index)) // remove proton
+                    this.MoleculeController(this.container[1]).remove(this.MoleculeController(this.container[2]).itemAt(proton_index)) // remove proton
                     
                     this.MoleculeController(this.container[1]).push("H")
                     

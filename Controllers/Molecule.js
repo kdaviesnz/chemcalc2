@@ -56,22 +56,12 @@ const CMolecule = (mmolecule) => {
                             return carry
                         }
                         const current_molecule_atom_valence_electrons = current_molecule_atom.slice(4)
-                        /*
-                        [ 'cfo6d11rk94vjy7q',
-  'cfo6d11rk94vjy7r',
-  'cfo6d11rk94vjy7s',
-  'cfo6d11rk94vjy7t',
-  'cfo6d11rk94vjy7u',
-  'cfo6d11rk94vjy7v',
-  'cfo6d11rk94vjy7w',
-  'cfo6d11rk94vjy7x' ]
 
-                         */
                         // check current atom for hydrogens
                         // find the index of hydrogen atom bonded to the current molecule atom
                         const H_index = mmolecule.reduce((_carry, _current, _index)=>{
                             if (_current[0] === "H") {
-                                const hydrogen_atom = _current[0]
+                                const hydrogen_atom = _current
                                 const hydrogen_atom_valence_electrons = hydrogen_atom.slice(4)
                                 //if (hydrogen_atom_valence_electrons.intersect(current_molecule_atom_valence_electrons)>0) {
                                 const array_intersection = hydrogen_atom_valence_electrons.filter(function(x) {
@@ -81,14 +71,13 @@ const CMolecule = (mmolecule) => {
 	                                else
 		                                 return false;
                                 });
-                                if (array_intersection>0) {
+                                if (array_intersection.length>0) {
                                     return _index // index of hydrogen bonded to current molecule atom
                                 }
                             }
                             return _carry
                         }, -1)
-                        // console.log(H_index) 1
-                        if (H_index !== -1) { 
+                        if (H_index !== -1) {
                             carry.push([current_molecule_atom, H_index])
                         } 
                         return carry
@@ -97,7 +86,6 @@ const CMolecule = (mmolecule) => {
                     }
                     return carry
                 }, [])
-                //console.log(candidate_atoms)
                 /*
                 [ [[ 'Cl',
     17,
@@ -121,6 +109,37 @@ const CMolecule = (mmolecule) => {
                 if (o.length>0) {
                     return o[0][1]
                 }
+                /*
+H
+[ 9999,
+  [ 'H', 1, 1, 1, 'cfo6d171k957iopn', 'cfo6d171k957iopg' ],
+  [ 'Cl',
+    17,
+    7,
+    1,
+    'cfo6d171k957iopg',
+    'cfo6d171k957ioph',
+    'cfo6d171k957iopi',
+    'cfo6d171k957iopj',
+    'cfo6d171k957iopk',
+    'cfo6d171k957iopl',
+    'cfo6d171k957iopm',
+    'cfo6d171k957iopn' ] ]
+[ [ [ 'Cl',
+      17,
+      7,
+      1,
+      'cfo6d171k957iopg',
+      'cfo6d171k957ioph',
+      'cfo6d171k957iopi',
+      'cfo6d171k957iopj',
+      'cfo6d171k957iopk',
+      'cfo6d171k957iopl',
+      'cfo6d171k957iopm',
+      'cfo6d171k957iopn' ],
+    1 ] ]
+
+                 */
                 return candidate_atoms[0][1]
             }
             else { // we are not looking for hydrogen atom
@@ -160,7 +179,7 @@ const CMolecule = (mmolecule) => {
             // mmolecule.push(atom)
             return mmolecule
         },
-        remove : (atom) => {
+        remove : (atom_or_atomic_symbol) => {
             // mmolecule.delete(atom)
             if (typeof atom_or_atomic_symbol === "string") {
                 // find index of atom in molecule with matching atomic symbol
@@ -169,7 +188,7 @@ const CMolecule = (mmolecule) => {
                 }, false)
 
             } else {
-                const atom_index =  mmolecule.search(atom_or_atomic_symbol)
+                const atom_index =  mmolecule.indexOf(atom_or_atomic_symbol[0])
             }
 
             if (atom_index === false || mmolecule[atom_index][3] - mmolecule[atom_index].length - 3 === 0 ) {
