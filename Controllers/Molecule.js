@@ -74,7 +74,14 @@ const CMolecule = (mmolecule) => {
                                 const hydrogen_atom = _current[0]
                                 const hydrogen_atom_valence_electrons = hydrogen_atom.slice(4)
                                 //if (hydrogen_atom_valence_electrons.intersect(current_molecule_atom_valence_electrons)>0) {
-                                if (true) {
+                                const array_intersection = hydrogen_atom_valence_electrons.filter(function(x) {
+	                                // checking second array contains the element "x"
+	                                if(current_molecule_atom_valence_electrons.indexOf(x) != -1)
+		                                 return true;
+	                                else
+		                                 return false;
+                                });
+                                if (array_intersection>0) {
                                     return _index // index of hydrogen bonded to current molecule atom
                                 }
                             }
