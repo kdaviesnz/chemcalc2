@@ -156,6 +156,11 @@ H
         push : (atom_or_atomic_symbol) => {
 
 
+	// MOLECULE MODEL
+// pKa, atom, atom, atom ...
+// ATOM MODEL
+// atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
+       	
             // Find index of atom to bond to.
             // This must be atom with at least a lone pair.
             const atom =  typeof atom_or_atomic_symbol === "string" ? "" : atom_or_atomic_symbol
