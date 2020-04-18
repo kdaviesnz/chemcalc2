@@ -29,11 +29,44 @@ const CMolecule = (mmolecule) => {
 // ATOM MODEL
 // atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
         indexOf : (atom_or_atomic_symbol) => {
+            // console.log(atom_or_atomic_symbol) "H"
+            // console.log(mmolecule)
+            /*
+            [ 9999,
+  [ 'H', 1, 1, 1, 'cfo6d11fk94vfzw0', 'cfo6d11fk94vfzvt' ],
+  [ 'Cl',
+    17,
+    7,
+    1,
+    'cfo6d11fk94vfzvt',
+    'cfo6d11fk94vfzvu',
+    'cfo6d11fk94vfzvv',
+    'cfo6d11fk94vfzvw',
+    'cfo6d11fk94vfzvx',
+    'cfo6d11fk94vfzvy',
+    'cfo6d11fk94vfzvz',
+    'cfo6d11fk94vfzw0' ] ]
+
+             */
             if (atom_or_atomic_symbol === "H" || atom_or_atomic_symbol[0] === "H") {
                 // get molecule atoms that have hydrogens, keeping track of hydrogen indexes
                 const candidate_atoms = mmolecule.reduce((carry, current_molecule_atom, index)=>{
-                    if (current_molecule_atom[0] !== "H") { 
+                    if (current_molecule_atom[0] !== "H") {
+                        if (typeof current_molecule_atom === "number" ) {
+                            return carry
+                        }
                         const current_molecule_atom_valence_electrons = current_molecule_atom.slice(4)
+                        /*
+                        [ 'cfo6d11rk94vjy7q',
+  'cfo6d11rk94vjy7r',
+  'cfo6d11rk94vjy7s',
+  'cfo6d11rk94vjy7t',
+  'cfo6d11rk94vjy7u',
+  'cfo6d11rk94vjy7v',
+  'cfo6d11rk94vjy7w',
+  'cfo6d11rk94vjy7x' ]
+
+                         */
                         // check current atom for hydrogens
                         // find the index of hydrogen atom bonded to the current molecule atom
                         const H_index = mmolecule.reduce((_carry, _current, _index)=>{
@@ -46,6 +79,8 @@ const CMolecule = (mmolecule) => {
                             }
                             return _carry
                         }, -1)
+                        console.log(H_index)
+                        process.exit()
                         return H_index !== -1?[current_molecule_atom, H_index]:carry
                     }
                     return carry
