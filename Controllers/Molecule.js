@@ -146,7 +146,7 @@ H
                 if (typeof atom_or_atomic_symbol === "string") {
                     // find index of atom in molecule with matching atomic symbol
                     return mmolecule.reduce((carry, current, index)=>{
-                        return typeof current === "array" && current[0] === atom_or_atomic_symbol?index:carry
+                        return typeof current.length === "number" && current[0] === atom_or_atomic_symbol?index:carry
                     }, false)
                 } else {
                     return mmolecule.search(atom_or_atomic_symbol)
@@ -165,22 +165,25 @@ H
             // This must be atom with at least a lone pair.
             const atom =  typeof atom_or_atomic_symbol === "string" ? AtomFactory(atom_or_atomic_symbol) : atom_or_atomic_symbol
             const atom_to_bond_to_index = mmolecule.reduce((carry, current_molecule_atom, index)=>{
-                    return typeof current === "array"
-                    && current_molecule_atom[0] !== "H"
-                    && current_molecule_atom[3] - current_molecule_atom.length - 3 > 0?
-			    current_molecule_atom_index:carry
+                    
+		    if (typeof current === "string" || typeof current.length !== "number") {
+			    return carry
+	            )
+		    const bond_count = _bondCount(current_molecule_atom)
+		    const std_number_of_bonds = current_molecule_atom[3]
+                    return current_molecule_atom[0] !== "H"
+                    && std_number_of_bonds - bond_count < 0?
+			    carry:current_molecule_atom_index
                 }, false
             )
             if (atom_to_bond_to_index !== false) {
 
-                // Check atom to bond to has at least one lone pair
-                if ((8 - (mmolecule[atom_to_bond_to_index].length-4))/2 > 0) {
-
+                    // push electrons
                     atom.push(mmolecule[atom_to_bond_to_index][mmolecule[atom_to_bond_to_index].length - 1])
                     mmolecule[atom_to_bond_to_index].push(atom[atom.length - 2])
                     mmolecule.push(atom)
 
-                }
+                
             }
             // mmolecule.push(atom)
             return mmolecule
