@@ -81,13 +81,18 @@ const CMolecule = (mmolecule) => {
                             return _carry
                         }, -1)
                         // console.log(H_index) 1
-                        return H_index !== -1?[current_molecule_atom, H_index]:carry
+                        if (H_index !== -1) { 
+                            carry.push([current_molecule_atom, H_index])
+                        } 
+                        return carry
+                        
+                     
                     }
                     return carry
                 }, [])
                 //console.log(candidate_atoms)
                 /*
-                [ [ 'Cl',
+                [ [[ 'Cl',
     17,
     7,
     1,
@@ -99,19 +104,19 @@ const CMolecule = (mmolecule) => {
     'cfo6d12rk94vnifb',
     'cfo6d12rk94vnifc',
     'cfo6d12rk94vnifd' ],
-  1 ]
+  1 ]]
 
                  */
-                // check for oxygen atom and if found return the index of hydogen atom bonded to the oxygen atom
-                const o = candidate_atoms.filter((atom_hydroden_index)=>{
-                    return atom_hydroden_index[0]==="O"
+                // check for oxygen atom and if found return the index of hydrogen atom bonded to the oxygen atom
+                const o = candidate_atoms.filter((candidate_atom)=>{
+                    return candidate_atom[0]==="O"
                 })
                 if (o.length>0) {
                     return o[0][1]
                 }
                 return candidate_atoms[0][1]
             }
-            else {
+            else { // we are not looking for hydrogen atom
                 if (typeof atom_or_atomic_symbol === "string") {
                     // find index of atom in molecule with matching atomic symbol
                     return mmolecule.reduce((carry, current, index)=>{
