@@ -163,11 +163,12 @@ H
        	
             // Find index of atom to bond to.
             // This must be atom with at least a lone pair.
-            const atom =  typeof atom_or_atomic_symbol === "string" ? "" : atom_or_atomic_symbol
-            const atom_to_bond_to_index = mmolecule.reduce((carry, current_atom, index)=>{
+            const atom =  typeof atom_or_atomic_symbol === "string" ? AtomFactory(atom_or_atomic_symbol) : atom_or_atomic_symbol
+            const atom_to_bond_to_index = mmolecule.reduce((carry, current_molecule_atom, index)=>{
                     return typeof current === "array"
-                    && current_atom[0] !== "H"
-                    && current_atom[3] - current_atom.length - 3 > 0?index:carry
+                    && current_molecule_atom[0] !== "H"
+                    && current_molecule_atom[3] - current_molecule_atom.length - 3 > 0?
+			    current_molecule_atom_index:carry
                 }, false
             )
             if (atom_to_bond_to_index !== false) {
