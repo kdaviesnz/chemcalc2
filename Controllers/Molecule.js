@@ -31,22 +31,24 @@ const CMolecule = (mmolecule) => {
         indexOf : (atom_or_atomic_symbol) => {
             if (atom_or_atomic_symbol === "H" || atom_or_atomic_symbol[0] === "H") {
                 // get molecule atoms that have hydrogens, keeping track of hydrogen indexes
-                const candidate_atoms = mmolecule.reduce((carry, current, index)=>{
-                    if (current[0] !== "H") {
+                const candidate_atoms = mmolecule.reduce((carry, current_molecule_atom, index)=>{
+                    if (current_molecule_atom[0] !== "H") { 
+                        const current_molecule_atom_valence_electrons = current_molecule_atom.slice(4)
                         // check current atom for hydrogens
+                        // find the index of hydrogen atom bonded to the current molecule atom
                         const H_index = mmolecule.reduce((_carry, _current, _index)=>{
                             if (_current[0] === "H") {
-                                // Look for bonds
-                                const bonds = _bondCount(_current)
-                                if (bonds > 0) {
-                                    return bonds
-                                } else {
-                                    return carry
+                                const hydrogen_atom = _current[0]
+                                const hydrogen_atom_valence_electrons = hydrogen_atom.slice(4)
+                                if (hydrogen_atom_valence_electrons.intersect(current_molecule_atom_valence_electrons)>0) {
+                                    return _index // index of hydrogen bonded to current molecule atom
                                 }
                             }
+                            return _carry
                         }, -1)
-                        return H_index !== -1?[current[0], H_index]:carry
+                        return H_index !== -1?[current_molecule_atom, H_index]:carry
                     }
+                    return carry
                 }, [])
                 // check for oxygen atom and if found return the index of hydogen atom bonded to the oxygen atom
                 const o = candidate_atoms.filter((atom_hydroden_index)=>{
