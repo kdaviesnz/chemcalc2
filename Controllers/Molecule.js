@@ -167,8 +167,8 @@ H
             const atom_to_bond_to_index = mmolecule.reduce((carry, current_molecule_atom, index)=>{
                     
 		    if (typeof current === "string" || typeof current.length !== "number") {
-			    return carry
-	            )
+                return carry
+            }
 		    const bond_count = _bondCount(current_molecule_atom)
 		    const std_number_of_bonds = current_molecule_atom[3]
                     return current_molecule_atom[0] !== "H"
@@ -189,24 +189,62 @@ H
             return mmolecule
         },
         remove : (atom_or_atomic_symbol) => {
+            console.log(mmolecule)
+            console.log(atom_or_atomic_symbol)
             // mmolecule.delete(atom)
+            let atom_index = null
             if (typeof atom_or_atomic_symbol === "string") {
                 // find index of atom in molecule with matching atomic symbol
-                const atom_index = mmolecule.reduce((carry, current, index)=>{
+                 atom_index = mmolecule.reduce((carry, current, index)=>{
                     return typeof current === "array" && current[0] === atom_or_atomic_symbol?index:carry
                 }, false)
 
             } else {
-                const atom_index =  mmolecule.indexOf(atom_or_atomic_symbol[0])
+                 atom_index =  mmolecule.indexOf(atom_or_atomic_symbol[0])
             }
 
+            console.log(atom_index)
+            /*
+            [ 9999,
+  [ 'H', 1, 1, 1, 'w2um1k96bivg2', 'w2um1k96bivfv' ],
+  [ 'Cl',
+    17,
+    7,
+    1,
+    'w2um1k96bivfv',
+    'w2um1k96bivfw',
+    'w2um1k96bivfx',
+    'w2um1k96bivfy',
+    'w2um1k96bivfz',
+    'w2um1k96bivg0',
+    'w2um1k96bivg1',
+    'w2um1k96bivg2' ] ]
+
+[ 9999,
+  [ 'H', 1, 1, 1, 'w2um1k96bivg9', 'w2um1k96bivg3' ],
+  [ 'H', 1, 1, 1, 'w2um1k96bivga', 'w2um1k96bivg4' ],
+  [ 'O',
+    8,
+    6,
+    2,
+    'w2um1k96bivg3',
+    'w2um1k96bivg4',
+    'w2um1k96bivg5',
+    'w2um1k96bivg6',
+    'w2um1k96bivg7',
+    'w2um1k96bivg8',
+    'w2um1k96bivg9',
+    'w2um1k96bivga' ] ]
+0
+
+             */
             if (atom_index === false || mmolecule[atom_index][3] - mmolecule[atom_index].length - 3 === 0 ) {
                 return mmolecule
             }
             // Remove bond
             const electron = mmolecule[atom_index].pop()
             const bonded_atom_index = mmolecule.reduce((carry, current_atom, index)=>{
-                return typeof current_atom === "array" && current_atom.indexof(electron) !== false
+                return typeof current_atom !== "string" && typeof current_atom.length === "number" && current_atom.indexof(electron) !== false
             }, false)
             if (bonded_atom_index === false) {
                 // throw an error todo
