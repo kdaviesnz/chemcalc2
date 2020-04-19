@@ -188,7 +188,7 @@ H
             // mmolecule.push(atom)
             return mmolecule
         },
-        remove : (atom_or_atomic_symbol) => {
+        remove : (container, molecule_index, atom_or_atomic_symbol) => {
             console.log(mmolecule)
             console.log(atom_or_atomic_symbol)
             // mmolecule.delete(atom)
@@ -262,12 +262,16 @@ H
             // remove shared electron
             const bonded_atom = mmolecule[bonded_atom_index]
             delete(bonded_atom[bonded_atom.indexof(electron)])
+	    
             const bonded_atom_bonds_count = _bondCount(bonded_atom)
 		
+	    mmolecule[bonded_atom_index] = bonded_atom
 	    if (bonded_atom_bonds_count === 0) {
+		 delete(mmolecule[bonded_atom_index])
 		 container.push(bonded_atom)   
 	    }
-	    container[
+			    
+	    container[molecule_index] = mmolecule
             return container
 		
         },
