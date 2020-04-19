@@ -1,4 +1,5 @@
 //
+const AtomFactory = require('../Models/AtomFactory')
 
 const CMolecule = (mmolecule) => {
 
@@ -29,25 +30,6 @@ const CMolecule = (mmolecule) => {
 // ATOM MODEL
 // atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
         indexOf : (atom_or_atomic_symbol) => {
-            // console.log(atom_or_atomic_symbol) "H"
-            // console.log(mmolecule)
-            /*
-            [ 9999,
-  [ 'H', 1, 1, 1, 'cfo6d11fk94vfzw0', 'cfo6d11fk94vfzvt' ],
-  [ 'Cl',
-    17,
-    7,
-    1,
-    'cfo6d11fk94vfzvt',
-    'cfo6d11fk94vfzvu',
-    'cfo6d11fk94vfzvv',
-    'cfo6d11fk94vfzvw',
-    'cfo6d11fk94vfzvx',
-    'cfo6d11fk94vfzvy',
-    'cfo6d11fk94vfzvz',
-    'cfo6d11fk94vfzw0' ] ]
-
-             */
             if (atom_or_atomic_symbol === "H" || atom_or_atomic_symbol[0] === "H") {
                 // get molecule atoms that have hydrogens, keeping track of hydrogen indexes
                 const candidate_atoms = mmolecule.reduce((carry, current_molecule_atom, index)=>{
@@ -65,11 +47,11 @@ const CMolecule = (mmolecule) => {
                                 const hydrogen_atom_valence_electrons = hydrogen_atom.slice(4)
                                 //if (hydrogen_atom_valence_electrons.intersect(current_molecule_atom_valence_electrons)>0) {
                                 const array_intersection = hydrogen_atom_valence_electrons.filter(function(x) {
-	                                // checking second array contains the element "x"
-	                                if(current_molecule_atom_valence_electrons.indexOf(x) != -1)
-		                                 return true;
-	                                else
-		                                 return false;
+                                    // checking second array contains the element "x"
+                                    if(current_molecule_atom_valence_electrons.indexOf(x) != -1)
+                                        return true;
+                                    else
+                                        return false;
                                 });
                                 if (array_intersection.length>0) {
                                     return _index // index of hydrogen bonded to current molecule atom
@@ -79,10 +61,10 @@ const CMolecule = (mmolecule) => {
                         }, -1)
                         if (H_index !== -1) {
                             carry.push([current_molecule_atom, H_index])
-                        } 
+                        }
                         return carry
-                        
-                     
+
+
                     }
                     return carry
                 }, [])
@@ -155,35 +137,34 @@ H
         },
         push : (atom_or_atomic_symbol) => {
 
-
-	// MOLECULE MODEL
+            // MOLECULE MODEL
 // pKa, atom, atom, atom ...
 // ATOM MODEL
 // atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
-       	
+
             // Find index of atom to bond to.
             // This must be atom with at least a lone pair.
             const atom =  typeof atom_or_atomic_symbol === "string" ? AtomFactory(atom_or_atomic_symbol) : atom_or_atomic_symbol
             const atom_to_bond_to_index = mmolecule.reduce((carry, current_molecule_atom, index)=>{
-                    
-		    if (typeof current === "string" || typeof current.length !== "number") {
-                return carry
-            }
-		    const bond_count = _bondCount(current_molecule_atom)
-		    const std_number_of_bonds = current_molecule_atom[3]
+
+                    if (typeof current_molecule_atom === "string" || typeof current_molecule_atom.length !== "number") {
+                        return carry
+                    }
+                    const bond_count = _bondCount(current_molecule_atom)
+                    const std_number_of_bonds = current_molecule_atom[3]
                     return current_molecule_atom[0] !== "H"
                     && std_number_of_bonds - bond_count < 0?
-			    carry:current_molecule_atom_index
+                        carry:current_molecule_atom_index
                 }, false
             )
             if (atom_to_bond_to_index !== false) {
 
-                    // push electrons
-                    atom.push(mmolecule[atom_to_bond_to_index][mmolecule[atom_to_bond_to_index].length - 1])
-                    mmolecule[atom_to_bond_to_index].push(atom[atom.length - 2])
-                    mmolecule.push(atom)
+                // push electrons
+                atom.push(mmolecule[atom_to_bond_to_index][mmolecule[atom_to_bond_to_index].length - 1])
+                mmolecule[atom_to_bond_to_index].push(atom[atom.length - 2])
+                mmolecule.push(atom)
 
-                
+
             }
             // mmolecule.push(atom)
             return mmolecule
@@ -227,18 +208,15 @@ H
             // 2
             // this.MoleculeController(this.container[2]).itemAt(proton_index)
             // [ 'H', 1, 1, 1, 'w2uspk96mjnji', 'w2uspk96mjnjc' ],
-            console.log(atom_or_atomic_symbol)
-            // mmolecule.delete(atom)
             let atom_index = null
             if (typeof atom_or_atomic_symbol === "string") {
                 // find index of atom in molecule with matching atomic symbol
-                 atom_index = mmolecule.reduce((carry, current, index)=>{
+                atom_index = mmolecule.reduce((carry, current, index)=>{
                     return typeof current !== "string" && typeof current.length === "number" && current[0] === atom_or_atomic_symbol?index:carry
                 }, false)
 
             } else {
-                console.log(mmolecule)
-                 atom_index =  mmolecule.indexOf(atom_or_atomic_symbol)
+                atom_index =  mmolecule.indexOf(atom_or_atomic_symbol)
             }
 
             /*
@@ -279,40 +257,41 @@ H
                 return mmolecule
             }
 
-            console.log("atom_index")
-            console.log(atom_index)
-	    const atom_to_remove = mmolecule[atom_index]
-	    const bond_count = _bondCount(atom_to_remove)
+            const atom_to_remove = mmolecule[atom_index]
+            const bond_count = _bondCount(atom_to_remove)
             if (bond_count===0) {
                 return mmolecule
             }
-		
+
             // Remove electrons
             const electron = mmolecule[atom_index].pop()
             const bonded_atom_index = mmolecule.reduce((carry, current_molecule_atom, index)=>{
-		    //electron is a string
-                return typeof current_molecule_atom !== "string" && typeof current_molecule_atom.length === "number" && current_molecule_atom.indexof(electron) !== false
-                ?carry:index
-	    }, false)
+                //electron is a string
+                if (typeof current_molecule_atom === 'number') {
+                    return false
+                }
+                return typeof current_molecule_atom !== "string" && typeof current_molecule_atom.length === "number" && current_molecule_atom.indexOf(electron) !== false
+                    ?carry:index
+            }, false)
             if (bonded_atom_index === false) {
                 return mmolecule
             }
-		
+
             // remove shared electron
             const bonded_atom = mmolecule[bonded_atom_index]
-            delete(bonded_atom[bonded_atom.indexof(electron)])
-	    
+            delete(bonded_atom[bonded_atom.indexOf(electron)])
+
             const bonded_atom_bonds_count = _bondCount(bonded_atom)
-		
-	    mmolecule[bonded_atom_index] = bonded_atom
-	    if (bonded_atom_bonds_count === 0) {
-		 delete(mmolecule[bonded_atom_index])
-		 container.push(bonded_atom)   
-	    }
-			    
-	    container[molecule_index] = mmolecule
+
+            mmolecule[bonded_atom_index] = bonded_atom
+            if (bonded_atom_bonds_count === 0) {
+                delete(mmolecule[bonded_atom_index])
+                container.push(bonded_atom)
+            }
+
+            container[molecule_index] = mmolecule
             return container
-		
+
         },
         itemAt : (index) => {
             // mmolecule[item]

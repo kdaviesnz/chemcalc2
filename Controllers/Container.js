@@ -36,96 +36,37 @@ class CContainer {
                  // HCl + H2O <-> Cl- + H3O+
                  // CC(=O)O (C2H4O2, acetic acid) + water (water is base and accepts proton)
                 // First element is pKa value
-                if (this.container[1][0] < this.container[2][0]) {
+                // Molecule with highest pka value is the base and accepts the proton (check)
+                if (this.container[1][0] <= this.container[2][0]) {
+
+                    // Move proton from first molecule to second molecule
                     const proton_index = this.MoleculeController(this.container[1]).indexOf("H")
-                    this.container = this.MoleculeController(this.container[2]).remove(this.container, 1,this.MoleculeController(this.container[1]).itemAt(proton_index)) // remove proton
-                    this.MoleculeController(this.container[2]).push("H")
+
+                    this.container = this.MoleculeController(this.container[1]).remove(
+                        this.container,
+                        1,
+                        this.MoleculeController(this.container[1]).itemAt(proton_index)
+                    ) // remove proton
+
+                    // last item of container will now be the proton from the first molecule
+                    const proton = this.container.pop()
+                    // add the proton to first molecule
+                    this.MoleculeController(this.container[1]).push(proton)
                     
                 } else {
-                    const proton_index = this.MoleculeController(this.container[2]).indexOf("H")
-                    console.log("container")
-                    console.log(this.container)
-                    console.log("proton index:")
-                    console.log(proton_index)
-                    /*
-                    container
-[ false,
-  [ 9999,
-    [ 'H', 1, 1, 1, 'w2uspk96mjnja', 'w2uspk96mjnj3' ],
-    [ 'Cl',
-      17,
-      7,
-      1,
-      'w2uspk96mjnj3',
-      'w2uspk96mjnj4',
-      'w2uspk96mjnj5',
-      'w2uspk96mjnj6',
-      'w2uspk96mjnj7',
-      'w2uspk96mjnj8',
-      'w2uspk96mjnj9',
-      'w2uspk96mjnja' ] ],
-  [ 9999,
-    [ 'H', 1, 1, 1, 'w2uspk96mjnjh', 'w2uspk96mjnjb' ],
-    [ 'H', 1, 1, 1, 'w2uspk96mjnji', 'w2uspk96mjnjc' ],
-    [ 'O',
-      8,
-      6,
-      2,
-      'w2uspk96mjnjb',
-      'w2uspk96mjnjc',
-      'w2uspk96mjnjd',
-      'w2uspk96mjnje',
-      'w2uspk96mjnjf',
-      'w2uspk96mjnjg',
-      'w2uspk96mjnjh',
-      'w2uspk96mjnji' ] ] ]
-proton index:
-2
-[ 'H', 1, 1, 1, 'w2uspk96mjnji', 'w2uspk96mjnjc' ]
-[ 9999,
-  [ 'H', 1, 1, 1, 'w2uspk96mjnja', 'w2uspk96mjnj3' ],
-  [ 'Cl',
-    17,
-    7,
-    1,
-    'w2uspk96mjnj3',
-    'w2uspk96mjnj4',
-    'w2uspk96mjnj5',
-    'w2uspk96mjnj6',
-    'w2uspk96mjnj7',
-    'w2uspk96mjnj8',
-    'w2uspk96mjnj9',
-    'w2uspk96mjnja' ] ]
-atom_index
--1
 
-                     */
-                    // this.container[1]
-                    /*
-                    [ 9999,
-    [ 'H', 1, 1, 1, 'w2uspk96mjnja', 'w2uspk96mjnj3' ],
-    [ 'Cl',
-      17,
-      7,
-      1,
-      'w2uspk96mjnj3',
-      'w2uspk96mjnj4',
-      'w2uspk96mjnj5',
-      'w2uspk96mjnj6',
-      'w2uspk96mjnj7',
-      'w2uspk96mjnj8',
-      'w2uspk96mjnj9',
-      'w2uspk96mjnja' ] ]
-                     */
-                    // this.MoleculeController(this.container[2]).itemAt(proton_index)
-                    // [ 'H', 1, 1, 1, 'w2uspk96mjnji', 'w2uspk96mjnjc' ],
-                    this.container = this.MoleculeController(this.container[1]).remove(
+                    // Move proton from second molecule to first molecule
+                    const proton_index = this.MoleculeController(this.container[2]).indexOf("H") // 2
+                    this.container = this.MoleculeController(this.container[2]).remove(
                         this.container,
                         2,
                         this.MoleculeController(this.container[2]).itemAt(proton_index)
                     ) // remove proton
-                    
-                    this.MoleculeController(this.container[1]).push("H")
+
+                    // last item of container will now be the proton from the second molecule
+                    const proton = this.container.pop()
+                    // add the proton to first molecule
+                    this.MoleculeController(this.container[1]).push(proton)
                     
                 }
             } else {
