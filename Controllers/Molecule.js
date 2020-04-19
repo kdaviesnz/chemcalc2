@@ -250,21 +250,26 @@ H
 		
             // Remove electrons
             const electron = mmolecule[atom_index].pop()
-            const bonded_atom_index = mmolecule.reduce((carry, current_atom, index)=>{
-                return typeof current_atom !== "string" && typeof current_atom.length === "number" && current_atom.indexof(electron) !== false
-            }, false)
+            const bonded_atom_index = mmolecule.reduce((carry, current_molecule_atom, index)=>{
+		    //electron is a string
+                return typeof current_molecule_atom !== "string" && typeof current_molecule_atom.length === "number" && current_molecule_atom.indexof(electron) !== false
+                ?carry:index
+	    }, false)
             if (bonded_atom_index === false) {
-                // throw an error todo
-
+                return mmolecule
             }
+		
             // remove shared electron
-            delete(mmolecule[bonded_atom_index][current_atom.indexof(electron)])
-            if ( mmolecule[atom_index][3] - mmolecule[atom_index].length - 3 === 0 ) {
-                delete(mmolecule[atom_index] )
-            }
-
-
-            return mmolecule
+            const bonded_atom = mmolecule[bonded_atom_index]
+            delete(bonded_atom[bonded_atom.indexof(electron)])
+            const bonded_atom_bonds_count = _bondCount(bonded_atom)
+		
+	    if (bonded_atom_bonds_count === 0) {
+		 container.push(bonded_atom)   
+	    }
+	    container[
+            return container
+		
         },
         itemAt : (index) => {
             // mmolecule[item]
