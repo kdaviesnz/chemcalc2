@@ -238,10 +238,17 @@ H
 0
 
              */
-            if (atom_index === false || mmolecule[atom_index][3] - mmolecule[atom_index].length - 3 === 0 ) {
+            if (atom_index === false) {
                 return mmolecule
             }
-            // Remove bond
+		
+	    const atom_to_remove = mmolecule[atom_index]
+	    const bond_count = _bondCount(atom_to_remove)
+            if (bond_count===0) {
+                return mmolecule
+            }
+		
+            // Remove electrons
             const electron = mmolecule[atom_index].pop()
             const bonded_atom_index = mmolecule.reduce((carry, current_atom, index)=>{
                 return typeof current_atom !== "string" && typeof current_atom.length === "number" && current_atom.indexof(electron) !== false
