@@ -261,7 +261,7 @@ H
         },
         itemAt : (index) => {
             // mmolecule[item]
-            return mmolecule
+            return mmolecule[index]
         },
         bondCount : _bondCount
     }
