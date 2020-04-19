@@ -189,21 +189,20 @@ H
             return mmolecule
         },
         remove : (container, molecule_index, atom_or_atomic_symbol) => {
-            console.log(mmolecule)
             console.log(atom_or_atomic_symbol)
             // mmolecule.delete(atom)
             let atom_index = null
             if (typeof atom_or_atomic_symbol === "string") {
                 // find index of atom in molecule with matching atomic symbol
                  atom_index = mmolecule.reduce((carry, current, index)=>{
-                    return typeof current === "array" && current[0] === atom_or_atomic_symbol?index:carry
+                    return typeof current !== "string" && typeof current.length === "number" && current[0] === atom_or_atomic_symbol?index:carry
                 }, false)
 
             } else {
-                 atom_index =  mmolecule.indexOf(atom_or_atomic_symbol[0])
+                console.log(mmolecule)
+                 atom_index =  mmolecule.indexOf(atom_or_atomic_symbol)
             }
 
-            console.log(atom_index)
             /*
             [ 9999,
   [ 'H', 1, 1, 1, 'w2um1k96bivg2', 'w2um1k96bivfv' ],
@@ -241,7 +240,9 @@ H
             if (atom_index === false) {
                 return mmolecule
             }
-		
+
+            console.log("atom_index")
+            console.log(atom_index)
 	    const atom_to_remove = mmolecule[atom_index]
 	    const bond_count = _bondCount(atom_to_remove)
             if (bond_count===0) {

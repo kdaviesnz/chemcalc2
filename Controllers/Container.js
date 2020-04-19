@@ -43,7 +43,7 @@ class CContainer {
                     
                 } else {
                     const proton_index = this.MoleculeController(this.container[2]).indexOf("H")
-                    this.container = this.MoleculeController(this.container[1]).remove(container, 2, this.MoleculeController(this.container[2]).itemAt(proton_index)) // remove proton
+                    this.container = this.MoleculeController(this.container[1]).remove(this.container, 2, this.MoleculeController(this.container[2]).itemAt(proton_index)) // remove proton
                     
                     this.MoleculeController(this.container[1]).push("H")
                     
