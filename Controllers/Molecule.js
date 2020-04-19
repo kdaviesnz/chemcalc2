@@ -189,6 +189,44 @@ H
             return mmolecule
         },
         remove : (container, molecule_index, atom_or_atomic_symbol) => {
+// mmolecule -> this.container[1]
+            /*
+            /*
+                    container
+[ false,
+  [ 9999,
+    [ 'H', 1, 1, 1, 'w2uspk96mjnja', 'w2uspk96mjnj3' ],
+    [ 'Cl',
+      17,
+      7,
+      1,
+      'w2uspk96mjnj3',
+      'w2uspk96mjnj4',
+      'w2uspk96mjnj5',
+      'w2uspk96mjnj6',
+      'w2uspk96mjnj7',
+      'w2uspk96mjnj8',
+      'w2uspk96mjnj9',
+      'w2uspk96mjnja' ] ],
+  [ 9999,
+    [ 'H', 1, 1, 1, 'w2uspk96mjnjh', 'w2uspk96mjnjb' ],
+    [ 'H', 1, 1, 1, 'w2uspk96mjnji', 'w2uspk96mjnjc' ],
+    [ 'O',
+      8,
+      6,
+      2,
+      'w2uspk96mjnjb',
+      'w2uspk96mjnjc',
+      'w2uspk96mjnjd',
+      'w2uspk96mjnje',
+      'w2uspk96mjnjf',
+      'w2uspk96mjnjg',
+      'w2uspk96mjnjh',
+      'w2uspk96mjnji' ] ] ]
+             */
+            // 2
+            // this.MoleculeController(this.container[2]).itemAt(proton_index)
+            // [ 'H', 1, 1, 1, 'w2uspk96mjnji', 'w2uspk96mjnjc' ],
             console.log(atom_or_atomic_symbol)
             // mmolecule.delete(atom)
             let atom_index = null

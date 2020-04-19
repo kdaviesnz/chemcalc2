@@ -100,7 +100,30 @@ atom_index
 -1
 
                      */
-                    this.container = this.MoleculeController(this.container[1]).remove(this.container, 2, this.MoleculeController(this.container[2]).itemAt(proton_index)) // remove proton
+                    // this.container[1]
+                    /*
+                    [ 9999,
+    [ 'H', 1, 1, 1, 'w2uspk96mjnja', 'w2uspk96mjnj3' ],
+    [ 'Cl',
+      17,
+      7,
+      1,
+      'w2uspk96mjnj3',
+      'w2uspk96mjnj4',
+      'w2uspk96mjnj5',
+      'w2uspk96mjnj6',
+      'w2uspk96mjnj7',
+      'w2uspk96mjnj8',
+      'w2uspk96mjnj9',
+      'w2uspk96mjnja' ] ]
+                     */
+                    // this.MoleculeController(this.container[2]).itemAt(proton_index)
+                    // [ 'H', 1, 1, 1, 'w2uspk96mjnji', 'w2uspk96mjnjc' ],
+                    this.container = this.MoleculeController(this.container[1]).remove(
+                        this.container,
+                        2,
+                        this.MoleculeController(this.container[2]).itemAt(proton_index)
+                    ) // remove proton
                     
                     this.MoleculeController(this.container[1]).push("H")
                     
