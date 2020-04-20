@@ -4,24 +4,35 @@ const AtomFactory = require('../Models/AtomFactory')
 const CMolecule = (mmolecule) => {
 
     const _bondCount = (atom) => {
-        const valence_electrons = atom.slice(4)
+
+        const valence_electrons = atom.slice(4).filter(
+            (electron) => {
+                return null !== electron
+            }
+        )
         // Check each valence electron to see if it is being shared
-        return valence_electrons.reduce(
+        const bond_count = valence_electrons.reduce(
             (total, current_electron) => {
                 // Look for current electron
                 // Electron can only be shared once
-                const shared_count =  mmolecule.filter(
-                    (molecule_atom) => {
+                const shared =  mmolecule.reduce(
+                    (atoms, molecule_atom) => {
                         if (typeof molecule_atom.length !== "number") {
-                            return false
+                            return atoms
                         }
-                        return molecule_atom.indexOf(current_electron) !==false
-                    }
-                ).length -1 // take into account electron counting itself
-                return total + shared_count // shared_count should be either 0 or 1
+                        if (molecule_atom.indexOf(current_electron) !== -1) {
+                            atoms.push(molecule_atom)
+                        }
+                        return atoms
+                    },
+                    []
+                )  // take into account electron counting itself
+                return total + shared.length -1 // shared_count should be either 0 or 1
             },
             0
         )
+
+        return bond_count;
     }
 
     return {
@@ -145,7 +156,7 @@ H
             // Find index of atom to bond to.
             // This must be atom with at least a lone pair.
             const atom =  typeof atom_or_atomic_symbol === "string" ? AtomFactory(atom_or_atomic_symbol) : atom_or_atomic_symbol
-            const atom_to_bond_to_index = mmolecule.reduce((carry, current_molecule_atom, index)=>{
+            const atom_to_bond_to_index = mmolecule.reduce((carry, current_molecule_atom, current_molecule_atom_index)=>{
 
                     if (typeof current_molecule_atom === "string" || typeof current_molecule_atom.length !== "number") {
                         return carry
@@ -170,9 +181,15 @@ H
             return mmolecule
         },
         remove : (container, molecule_index, atom_or_atomic_symbol) => {
-            // 2
-            // this.MoleculeController(this.container[2]).itemAt(proton_index)
-            // [ 'H', 1, 1, 1, 'w2uspk96mjnji', 'w2uspk96mjnjc' ],
+            //  HCl + H2O <-> Cl- + H3O+
+            // mmolecule is HCl
+            // Removing hydrogen from HCl
+            // HCl is the first molecule (molecule_index is 1)
+            // H2O is the second molecule
+            //console.log(container)
+            // console.log(mmolecule)
+            //console.log(molecule_index)
+            //console.log(atom_or_atomic_symbol)
             let atom_index = null
             if (typeof atom_or_atomic_symbol === "string") {
                 // find index of atom in molecule with matching atomic symbol
@@ -188,8 +205,11 @@ H
                 return container
             }
 
+            // Hydrogen atom from HCl
             const atom_to_remove = mmolecule[atom_index]
             const bond_count = _bondCount(atom_to_remove)
+
+
             if (bond_count===0) {
                 return container
             }
@@ -211,21 +231,21 @@ H
 
             // remove shared electron
             const bonded_atom = mmolecule[bonded_atom_index]
+
+
+
+            bonded_atom[bonded_atom.indexOf(electron)] = null
             delete(bonded_atom[bonded_atom.indexOf(electron)])
 
+
             const bonded_atom_bonds_count = _bondCount(bonded_atom)
-            console.log("bonded_atom_bonds_count")
-            console.log(bonded_atom_bonds_count)
+
 
             mmolecule[bonded_atom_index] = bonded_atom
-            if (bonded_atom_bonds_count === 0) {
-                delete(mmolecule[bonded_atom_index])
-                container.push(bonded_atom)
-            }
+
 
             container[molecule_index] = mmolecule
 
-            console.log("Returning container 4")
             return container
 
         },

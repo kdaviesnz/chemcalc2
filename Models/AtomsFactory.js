@@ -54,8 +54,8 @@ const AtomsFactory = (canonicalSMILES) => {
                     range.range(0, number_of_hydrogens_required,1).map(
                         (e_index) => {
                             const hydrogen = AtomFactory('H')
-                            hydrogen.push(valence_electrons[e_index])
-                            current.push(hydrogen[hydrogen.length-2])
+                           // hydrogen.push(valence_electrons[e_index])
+                            current.push(hydrogen[hydrogen.length-1])
                             carry.push(hydrogen)
                         }
                     )
@@ -67,22 +67,6 @@ const AtomsFactory = (canonicalSMILES) => {
         []
     )
     //  atomic symbol, proton count, valence count, number of bonds, velectron1, velectron2, velectron3
-    /*
-[ [ 'H', 1, 1, 1, 'bqdtz01jzk928chjx', 'bqdtz01jzk928chjq' ],
-  [ 'Cl',
-    17,
-    7,
-    1,
-    'bqdtz01jzk928chjq',
-    'bqdtz01jzk928chjr',
-    'bqdtz01jzk928chjs',
-    'bqdtz01jzk928chjt',
-    'bqdtz01jzk928chju',
-    'bqdtz01jzk928chjv',
-    'bqdtz01jzk928chjw',
-    'bqdtz01jzk928chjx' ] ]
-
-     */
 
     return atoms_and_tokens_with_hydrogens
 

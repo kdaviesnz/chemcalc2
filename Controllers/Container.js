@@ -42,22 +42,26 @@ class CContainer {
                     // Move proton from first molecule to second molecule
                     const proton_index = this.MoleculeController(this.container[1]).indexOf("H")
 
-                    console.log("Container -- start")
-                    console.log(this.container)
-                    console.log("Container -- start ends")
+                   // console.log("Container -- start")
+                   // console.log(this.container)
+                    //console.log("Container -- start ends")
                     this.container = this.MoleculeController(this.container[1]).remove(
                         this.container,
                         1,
                         this.MoleculeController(this.container[1]).itemAt(proton_index)
                     ) // remove proton
 
-                    console.log("container end")
+                   // console.log("container end")
+                   // console.log(this.container)
+                   // process.exit()
+                    // last item of container will now be the proton from the first molecule
+                    const proton = this.container[proton_index]
+
+                    // add the proton to second molecule
+                    this.MoleculeController(this.container[2]).push(proton)
+
                     console.log(this.container)
                     process.exit()
-                    // last item of container will now be the proton from the first molecule
-                    const proton = this.container.pop()
-                    // add the proton to first molecule
-                    this.MoleculeController(this.container[1]).push(proton)
                     
                 } else {
 
