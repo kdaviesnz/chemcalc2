@@ -170,41 +170,6 @@ H
             return mmolecule
         },
         remove : (container, molecule_index, atom_or_atomic_symbol) => {
-// mmolecule -> this.container[1]
-            /*
-            /*
-                    container
-[ false,
-  [ 9999,
-    [ 'H', 1, 1, 1, 'w2uspk96mjnja', 'w2uspk96mjnj3' ],
-    [ 'Cl',
-      17,
-      7,
-      1,
-      'w2uspk96mjnj3',
-      'w2uspk96mjnj4',
-      'w2uspk96mjnj5',
-      'w2uspk96mjnj6',
-      'w2uspk96mjnj7',
-      'w2uspk96mjnj8',
-      'w2uspk96mjnj9',
-      'w2uspk96mjnja' ] ],
-  [ 9999,
-    [ 'H', 1, 1, 1, 'w2uspk96mjnjh', 'w2uspk96mjnjb' ],
-    [ 'H', 1, 1, 1, 'w2uspk96mjnji', 'w2uspk96mjnjc' ],
-    [ 'O',
-      8,
-      6,
-      2,
-      'w2uspk96mjnjb',
-      'w2uspk96mjnjc',
-      'w2uspk96mjnjd',
-      'w2uspk96mjnje',
-      'w2uspk96mjnjf',
-      'w2uspk96mjnjg',
-      'w2uspk96mjnjh',
-      'w2uspk96mjnji' ] ] ]
-             */
             // 2
             // this.MoleculeController(this.container[2]).itemAt(proton_index)
             // [ 'H', 1, 1, 1, 'w2uspk96mjnji', 'w2uspk96mjnjc' ],
@@ -219,48 +184,16 @@ H
                 atom_index =  mmolecule.indexOf(atom_or_atomic_symbol)
             }
 
-            /*
-            [ 9999,
-  [ 'H', 1, 1, 1, 'w2um1k96bivg2', 'w2um1k96bivfv' ],
-  [ 'Cl',
-    17,
-    7,
-    1,
-    'w2um1k96bivfv',
-    'w2um1k96bivfw',
-    'w2um1k96bivfx',
-    'w2um1k96bivfy',
-    'w2um1k96bivfz',
-    'w2um1k96bivg0',
-    'w2um1k96bivg1',
-    'w2um1k96bivg2' ] ]
-
-[ 9999,
-  [ 'H', 1, 1, 1, 'w2um1k96bivg9', 'w2um1k96bivg3' ],
-  [ 'H', 1, 1, 1, 'w2um1k96bivga', 'w2um1k96bivg4' ],
-  [ 'O',
-    8,
-    6,
-    2,
-    'w2um1k96bivg3',
-    'w2um1k96bivg4',
-    'w2um1k96bivg5',
-    'w2um1k96bivg6',
-    'w2um1k96bivg7',
-    'w2um1k96bivg8',
-    'w2um1k96bivg9',
-    'w2um1k96bivga' ] ]
-0
-
-             */
             if (atom_index === false) {
-                return mmolecule
+                console.log("Returning container 1")
+                return container
             }
 
             const atom_to_remove = mmolecule[atom_index]
             const bond_count = _bondCount(atom_to_remove)
             if (bond_count===0) {
-                return mmolecule
+                console.log("Returning container 2")
+                return container
             }
 
             // Remove electrons
@@ -273,8 +206,10 @@ H
                 return typeof current_molecule_atom !== "string" && typeof current_molecule_atom.length === "number" && current_molecule_atom.indexOf(electron) !== false
                     ?carry:index
             }, false)
+
             if (bonded_atom_index === false) {
-                return mmolecule
+                console.log("Returning container 3")
+                return container
             }
 
             // remove shared electron
@@ -290,6 +225,8 @@ H
             }
 
             container[molecule_index] = mmolecule
+
+            console.log("Returning container 4")
             return container
 
         },
