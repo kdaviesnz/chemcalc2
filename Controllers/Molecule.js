@@ -185,14 +185,12 @@ H
             }
 
             if (atom_index === false) {
-                console.log("Returning container 1")
                 return container
             }
 
             const atom_to_remove = mmolecule[atom_index]
             const bond_count = _bondCount(atom_to_remove)
             if (bond_count===0) {
-                console.log("Returning container 2")
                 return container
             }
 
@@ -201,14 +199,13 @@ H
             const bonded_atom_index = mmolecule.reduce((carry, current_molecule_atom, index)=>{
                 //electron is a string
                 if (typeof current_molecule_atom === 'number') {
-                    return false
+                    return carry
                 }
                 return typeof current_molecule_atom !== "string" && typeof current_molecule_atom.length === "number" && current_molecule_atom.indexOf(electron) !== false
-                    ?carry:index
+                    ?index:carry
             }, false)
 
             if (bonded_atom_index === false) {
-                console.log("Returning container 3")
                 return container
             }
 
@@ -217,6 +214,8 @@ H
             delete(bonded_atom[bonded_atom.indexOf(electron)])
 
             const bonded_atom_bonds_count = _bondCount(bonded_atom)
+            console.log("bonded_atom_bonds_count")
+            console.log(bonded_atom_bonds_count)
 
             mmolecule[bonded_atom_index] = bonded_atom
             if (bonded_atom_bonds_count === 0) {
