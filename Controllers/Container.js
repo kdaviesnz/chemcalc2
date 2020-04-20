@@ -55,12 +55,47 @@ class CContainer {
                    // console.log(this.container)
                    // process.exit()
                     // last item of container will now be the proton from the first molecule
-                    const proton = this.container[proton_index]
+                    const proton = this.container[1][proton_index]
 
                     // add the proton to second molecule
                     this.MoleculeController(this.container[2]).push(proton)
 
                     console.log(this.container)
+                    /*
+                    [ false,
+  [ 9999,
+    [ 'H', 1, 1, 1, 'bqdtz0bgmk980shvs' ],
+    [ 'Cl',
+      17,
+      7,
+      1,
+      'bqdtz0bgmk980shvd',
+      'bqdtz0bgmk980shve',
+      'bqdtz0bgmk980shvf',
+      'bqdtz0bgmk980shvg',
+      'bqdtz0bgmk980shvh',
+      'bqdtz0bgmk980shvi',
+      'bqdtz0bgmk980shvj',
+      null ] ],
+  [ 9999,
+    [ 'H', 1, 1, 1, 'bqdtz0bgmk980shvr' ],
+    [ 'H', 1, 1, 1, 'bqdtz0bgmk980shvs' ],
+    [ 'O',
+      8,
+      6,
+      2,
+      'bqdtz0bgmk980shvl',
+      'bqdtz0bgmk980shvm',
+      'bqdtz0bgmk980shvn',
+      'bqdtz0bgmk980shvo',
+      'bqdtz0bgmk980shvp',
+      'bqdtz0bgmk980shvq',
+      'bqdtz0bgmk980shvr',
+      'bqdtz0bgmk980shvs',
+      1 ],
+    [ 'H', 1, 1, 1, 'bqdtz0bgmk980shvs' ] ] ]
+
+                     */
                     process.exit()
                     
                 } else {
