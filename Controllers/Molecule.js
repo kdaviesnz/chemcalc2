@@ -170,13 +170,52 @@ H
             )
             if (atom_to_bond_to_index !== false) {
 
-                // push electrons
-                atom.push(mmolecule[atom_to_bond_to_index][mmolecule[atom_to_bond_to_index].length - 1])
-                mmolecule[atom_to_bond_to_index].push(atom[atom.length - 2])
+                // push electron
+                AtomController(atom).push(mmolecule[atom_to_bond_to_index])
+                // atom.push(mmolecule[atom_to_bond_to_index][mmolecule[atom_to_bond_to_index].length - 1])
+                
+               // mmolecule[atom_to_bond_to_index].push(atom[atom.length - 2])
+                AtomController(mmolecule[atom_to_bond_to_index]).push(atom)
+                
                 mmolecule.push(atom)
 
 
             }
+            
+               /* containsr
+                    [ false,
+  [ 9999,
+    [ 'H', 1, 1, 1, 'bqdtz0bgmk980shvs' ],
+    [ 'Cl',
+      17,
+      7,
+      1,
+      'bqdtz0bgmk980shvd',
+      'bqdtz0bgmk980shve',
+      'bqdtz0bgmk980shvf',
+      'bqdtz0bgmk980shvg',
+      'bqdtz0bgmk980shvh',
+      'bqdtz0bgmk980shvi',
+      'bqdtz0bgmk980shvj',
+      null ] ],
+  [ 9999,
+    [ 'H', 1, 1, 1, 'bqdtz0bgmk980shvr' ],
+    [ 'H', 1, 1, 1, 'bqdtz0bgmk980shvs' ],
+    [ 'O',
+      8,
+      6,
+      2,
+      'bqdtz0bgmk980shvl',
+      'bqdtz0bgmk980shvm',
+      'bqdtz0bgmk980shvn',
+      'bqdtz0bgmk980shvo',
+      'bqdtz0bgmk980shvp',
+      'bqdtz0bgmk980shvq',
+      'bqdtz0bgmk980shvr',
+      'bqdtz0bgmk980shvs',
+      1 ],
+    [ 'H', 1, 1, 1, 'bqdtz0bgmk980shvs' ] ] ]
+                     */
             // mmolecule.push(atom)
             return mmolecule
         },
