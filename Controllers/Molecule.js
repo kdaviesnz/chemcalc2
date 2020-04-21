@@ -3,6 +3,51 @@ const AtomFactory = require('../Models/AtomFactory')
 
 const CMolecule = (mmolecule) => {
 
+    const __isShared = (electron) => {
+        return mmolecule.reduce(
+            (shared, molecule_atom) => {
+                if (shared || typeof molecule_atom.length !== "number") {
+                    return shared
+                }
+                return molecule_atom.indexOf(atom1_electron) !== -1
+            },
+            false
+        )
+    }
+
+    const __electronToShareIndex = (atom) => {
+        const atom_valence_electrons = atom.slice(4)
+        const atom_electron_to_share_index = atom_valence_electrons.reduce(
+            (carry, atom_electron, index) => {
+                const is_shared = __isShared(atom_electron)
+                return is_shared?carry:index
+            },
+            false
+        )
+    }
+
+    const _makeCovalentBond = (atom1_index, atom2_index) => {
+        // AtomController(atom).push(mmolecule[atom_to_bond_to_index])
+        // atom.push(mmolecule[atom_to_bond_to_index][mmolecule[atom_to_bond_to_index].length - 1])
+/*
+In the molecule H2, the hydrogen atoms share the two electrons via covalent bonding.[7] Covalency is greatest between atoms of similar electronegativities. Thus, covalent bonding does not necessarily require that the two atoms be of the same elements, only that they be of comparable electronegativity. Covalent bonding that entails sharing of electrons over more than two atoms is said to be delocalized.
+ */
+        // Get index of first free electron on first atom
+        const atom1_electron_to_share_index = __electronToShareIndex(mmolecule[atom1_index])
+
+        // Get index of first free electron on second atom
+        const atom2_electron_to_share_index = __electronToShareIndex(mmolecule[atom2_index])
+
+        // add shared electron from first atom to second atom
+        mmolecule[atom2_index].push(mmolecule[atom2_index][3+atom1_electron_to_share_index])
+
+        // add shared electron from second atom to first atom
+        mmolecule[atom1_index].push(mmolecule[atom1_index][3+atom2_electron_to_share_index])
+
+        return mmolecule
+
+    }
+
     const _bondCount = (atom) => {
 
         const valence_electrons = atom.slice(4).filter(
@@ -170,53 +215,21 @@ H
             )
             if (atom_to_bond_to_index !== false) {
 
+                return _makeCovalentBond(atom1, atom_to_bond_to_index) // return molecule
+
                 // push electron
-                AtomController(atom).push(mmolecule[atom_to_bond_to_index])
+                / AtomController(atom).push(mmolecule[atom_to_bond_to_index])
                 // atom.push(mmolecule[atom_to_bond_to_index][mmolecule[atom_to_bond_to_index].length - 1])
                 
                // mmolecule[atom_to_bond_to_index].push(atom[atom.length - 2])
-                AtomController(mmolecule[atom_to_bond_to_index]).push(atom)
+                // AtomController(mmolecule[atom_to_bond_to_index]).push(atom)
                 
-                mmolecule.push(atom)
+               // mmolecule.push(atom)
 
 
             }
             
-               /* containsr
-                    [ false,
-  [ 9999,
-    [ 'H', 1, 1, 1, 'bqdtz0bgmk980shvs' ],
-    [ 'Cl',
-      17,
-      7,
-      1,
-      'bqdtz0bgmk980shvd',
-      'bqdtz0bgmk980shve',
-      'bqdtz0bgmk980shvf',
-      'bqdtz0bgmk980shvg',
-      'bqdtz0bgmk980shvh',
-      'bqdtz0bgmk980shvi',
-      'bqdtz0bgmk980shvj',
-      null ] ],
-  [ 9999,
-    [ 'H', 1, 1, 1, 'bqdtz0bgmk980shvr' ],
-    [ 'H', 1, 1, 1, 'bqdtz0bgmk980shvs' ],
-    [ 'O',
-      8,
-      6,
-      2,
-      'bqdtz0bgmk980shvl',
-      'bqdtz0bgmk980shvm',
-      'bqdtz0bgmk980shvn',
-      'bqdtz0bgmk980shvo',
-      'bqdtz0bgmk980shvp',
-      'bqdtz0bgmk980shvq',
-      'bqdtz0bgmk980shvr',
-      'bqdtz0bgmk980shvs',
-      1 ],
-    [ 'H', 1, 1, 1, 'bqdtz0bgmk980shvs' ] ] ]
-                     */
-            // mmolecule.push(atom)
+
             return mmolecule
         },
         remove : (container, molecule_index, atom_or_atomic_symbol) => {
