@@ -9,7 +9,7 @@ const MoleculeController = require('./Controllers/Molecule')
 const MoleculeFactory = require('./Models/MoleculeFactory')
 const PeriodicTable = require("./Models/PeriodicTable")
 const CContainer = require('./Controllers/Container')
-
+const CMolecule = require('./Controllers/Molecule')
 const range = require("range");
 
 // MOLECULE MODEL
@@ -94,14 +94,21 @@ watermolecule[2].indexOf(watermolecule[3][watermolecule[3].length-1]).should.not
 watermolecule[2].indexOf(watermolecule[1][watermolecule[1].length-1]).should.not.be.False()
 watermolecule[1].indexOf(watermolecule[2][watermolecule[2].length-1]).should.not.be.False()
 
+const WaterController = CMolecule(watermolecule)
+WaterController.bondCount(watermolecule[1]).should.be.equal(1)
+WaterController.bondCount(watermolecule[2]).should.be.equal(1)
+WaterController.bondCount(watermolecule[3]).should.be.equal(2) // Oxygen
 
 const hcl = MoleculeFactory("HCl")
+const HCLController = CMolecule(hcl)
+HCLController.bondCount(hcl[1]).should.be.equal(1)
+HCLController.bondCount(hcl[2]).should.be.equal(1)
 hcl.should.be.a.Array()
 hcl.length.should.be.equal(3)
 hcl[0].should.be.a.Number()
 hcl[0].should.be.a.equal(9999)
 hcl[1].should.be.a.Array()
-hcl[1].length.should.be.a.equal(5)
+hcl[1].length.should.be.a.equal(6)
 hcl[1][0].should.be.a.String()
 hcl[1][0].should.be.equal("H")
 range.range(1,3,1).map(

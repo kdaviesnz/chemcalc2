@@ -9,7 +9,12 @@ const CMolecule = (mmolecule) => {
                 if (shared || typeof molecule_atom.length !== "number") {
                     return shared
                 }
-                return molecule_atom.indexOf(atom1_electron) !== -1
+                console.log(molecule_atom)
+                console.log(electron)
+                console.log(molecule_atom.indexOf(electron))
+                shared = molecule_atom.indexOf(electron) !== -1
+                console.log(shared)
+                return shared
             },
             false
         )
@@ -24,9 +29,17 @@ const CMolecule = (mmolecule) => {
             },
             false
         )
+        return atom_electron_to_share_index
     }
 
-    const _makeCovalentBond = (atom1_index, atom2_index) => {
+    const _makeCovalentBond = (atom, atom2_index) => {
+
+        console.log(mmolecule)
+
+        mmolecule.push(atom)
+
+        const atom1_index = mmolecule.length -1
+
         // AtomController(atom).push(mmolecule[atom_to_bond_to_index])
         // atom.push(mmolecule[atom_to_bond_to_index][mmolecule[atom_to_bond_to_index].length - 1])
 /*
@@ -34,15 +47,21 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
  */
         // Get index of first free electron on first atom
         const atom1_electron_to_share_index = __electronToShareIndex(mmolecule[atom1_index])
+        console.log("atom1_electron_to_share_index")
+        console.log(atom1_electron_to_share_index)
 
         // Get index of first free electron on second atom
         const atom2_electron_to_share_index = __electronToShareIndex(mmolecule[atom2_index])
 
         // add shared electron from first atom to second atom
-        mmolecule[atom2_index].push(mmolecule[atom2_index][3+atom1_electron_to_share_index])
+        mmolecule[atom2_index].push(mmolecule[atom2_index][2+atom1_electron_to_share_index])
 
         // add shared electron from second atom to first atom
-        mmolecule[atom1_index].push(mmolecule[atom1_index][3+atom2_electron_to_share_index])
+        mmolecule[atom1_index].push(mmolecule[atom1_index][2+atom2_electron_to_share_index])
+
+        console.log("_makeCovalentBond")
+        console.log(mmolecule)
+        process.exit()
 
         return mmolecule
 
@@ -56,7 +75,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             }
         )
         // Check each valence electron to see if it is being shared
-        const bond_count = valence_electrons.reduce(
+        const shared_electrons_count = valence_electrons.reduce(
             (total, current_electron) => {
                 // Look for current electron
                 // Electron can only be shared once
@@ -77,7 +96,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             0
         )
 
-        return bond_count;
+        return shared_electrons_count / 2;
     }
 
     return {
@@ -215,10 +234,10 @@ H
             )
             if (atom_to_bond_to_index !== false) {
 
-                return _makeCovalentBond(atom1, atom_to_bond_to_index) // return molecule
+                return _makeCovalentBond(atom, atom_to_bond_to_index) // return molecule
 
                 // push electron
-                / AtomController(atom).push(mmolecule[atom_to_bond_to_index])
+                // AtomController(atom).push(mmolecule[atom_to_bond_to_index])
                 // atom.push(mmolecule[atom_to_bond_to_index][mmolecule[atom_to_bond_to_index].length - 1])
                 
                // mmolecule[atom_to_bond_to_index].push(atom[atom.length - 2])

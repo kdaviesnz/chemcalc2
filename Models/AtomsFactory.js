@@ -54,8 +54,8 @@ const AtomsFactory = (canonicalSMILES) => {
                     range.range(0, number_of_hydrogens_required,1).map(
                         (e_index) => {
                             const hydrogen = AtomFactory('H')
-                           // hydrogen.push(valence_electrons[e_index])
-                            current.push(hydrogen[hydrogen.length-1])
+                            hydrogen.push(valence_electrons[e_index])
+                            current.push(hydrogen[hydrogen.length-2])
                             carry.push(hydrogen)
                         }
                     )
