@@ -21,10 +21,8 @@ const CMolecule = (mmolecule) => {
         const atom_valence_electrons = atom.slice(4)
         const atom_electron_to_share_index = atom_valence_electrons.reduce(
             (carry, atom_electron, index) => {
-                const is_shared = __isShared(atom_electron)
-                console.log(is_shared)
-                carry = is_shared?carry:index
-                console.log("Carry: " + carry)
+                const is_shared = __isShared(atom_electron)                
+                carry = is_shared?carry:index                 
                 return carry
             },
             false
@@ -33,30 +31,17 @@ const CMolecule = (mmolecule) => {
     }
 
     const _makeCovalentBond = (atom, atom2_index) => {
-
-        console.log(mmolecule)
-
+      
         mmolecule.push(atom)
-
-        console.log("0--------")
-        console.log(mmolecule[atom2_index])
-        console.log("1--------")
-
-        console.log(mmolecule)
-      //  process.exit()
-
+             
         const atom1_index = mmolecule.length -1
-
-        console.log(mmolecule[atom1_index])
-        process.exit()
+        
 /*
 In the molecule H2, the hydrogen atoms share the two electrons via covalent bonding.[7] Covalency is greatest between atoms of similar electronegativities. Thus, covalent bonding does not necessarily require that the two atoms be of the same elements, only that they be of comparable electronegativity. Covalent bonding that entails sharing of electrons over more than two atoms is said to be delocalized.
  */
         // Get index of first free electron on first atom
         const atom1_electron_to_share_index = __electronToShareIndex(mmolecule[atom1_index])
-        console.log("atom1_electron_to_share_index")
-        console.log(atom1_electron_to_share_index)
-
+        
         // Get index of first free electron on second atom
         const atom2_electron_to_share_index = __electronToShareIndex(mmolecule[atom2_index])
 
