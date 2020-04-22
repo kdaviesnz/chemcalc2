@@ -42,61 +42,21 @@ class CContainer {
                     // Move proton from first molecule to second molecule
                     const proton_index = this.MoleculeController(this.container[1]).indexOf("H")
 
-                   // console.log("Container -- start")
-                   // console.log(this.container)
-                    //console.log("Container -- start ends")
                     this.container = this.MoleculeController(this.container[1]).remove(
                         this.container,
                         1,
                         this.MoleculeController(this.container[1]).itemAt(proton_index)
                     ) // remove proton
 
-                   // console.log("container end")
-                   // console.log(this.container)
-                   // process.exit()
+                    console.log(this.container[1])
+                    process.exit()
                     // last item of container will now be the proton from the first molecule
                     const proton = this.container[1][proton_index]
 
                     // add the proton to second molecule
                     this.MoleculeController(this.container[2]).push(proton)
 
-                    console.log(this.container)
-                    /*
-                    [ false,
-  [ 9999,
-    [ 'H', 1, 1, 1, 'bqdtz0bgmk980shvs' ],
-    [ 'Cl',
-      17,
-      7,
-      1,
-      'bqdtz0bgmk980shvd',
-      'bqdtz0bgmk980shve',
-      'bqdtz0bgmk980shvf',
-      'bqdtz0bgmk980shvg',
-      'bqdtz0bgmk980shvh',
-      'bqdtz0bgmk980shvi',
-      'bqdtz0bgmk980shvj',
-      null ] ],
-  [ 9999,
-    [ 'H', 1, 1, 1, 'bqdtz0bgmk980shvr' ],
-    [ 'H', 1, 1, 1, 'bqdtz0bgmk980shvs' ],
-    [ 'O',
-      8,
-      6,
-      2,
-      'bqdtz0bgmk980shvl',
-      'bqdtz0bgmk980shvm',
-      'bqdtz0bgmk980shvn',
-      'bqdtz0bgmk980shvo',
-      'bqdtz0bgmk980shvp',
-      'bqdtz0bgmk980shvq',
-      'bqdtz0bgmk980shvr',
-      'bqdtz0bgmk980shvs',
-      1 ],
-    [ 'H', 1, 1, 1, 'bqdtz0bgmk980shvs' ] ] ]
 
-                     */
-                    process.exit()
                     
                 } else {
 

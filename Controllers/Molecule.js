@@ -6,15 +6,16 @@ const CMolecule = (mmolecule) => {
     const __isShared = (electron) => {
         const shared_electrons =  mmolecule.filter(
             (molecule_atom) => {
-                if (shared || typeof molecule_atom.length !== "number") {
+                if ( typeof molecule_atom.length !== "number") {
                     return false
                 }                                
                 return molecule_atom.indexOf(electron) !== -1
             },
             false
         )
-        
-        return shared_electrons < 2 // take into account electron counting itself 
+
+
+        return shared_electrons.length >1 // take into account electron counting itself
     }
 
     const __electronToShareIndex = (atom) => {
@@ -33,7 +34,7 @@ const CMolecule = (mmolecule) => {
     const _makeCovalentBond = (atom, atom2_index) => {
       
         mmolecule.push(atom)
-             
+
         const atom1_index = mmolecule.length -1
         
 /*
@@ -46,14 +47,10 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         const atom2_electron_to_share_index = __electronToShareIndex(mmolecule[atom2_index])
 
         // add shared electron from first atom to second atom
-        mmolecule[atom2_index].push(mmolecule[atom2_index][2+atom1_electron_to_share_index])
+        mmolecule[atom2_index].push(mmolecule[atom1_index][4+atom1_electron_to_share_index])
 
         // add shared electron from second atom to first atom
-        mmolecule[atom1_index].push(mmolecule[atom1_index][2+atom2_electron_to_share_index])
-
-        console.log("_makeCovalentBond")
-        console.log(mmolecule)
-        process.exit()
+        mmolecule[atom1_index].push(mmolecule[atom2_index][4+atom2_electron_to_share_index])
 
         return mmolecule
 
@@ -249,11 +246,6 @@ H
             // Removing hydrogen from HCl
             // HCl is the first molecule (molecule_index is 1)
             // H2O is the second molecule
-            //console.log(container)
-            // console.log(mmolecule)
-            //console.log(molecule_index)
-            //console.log(atom_or_atomic_symbol)
-            let atom_index = null
             if (typeof atom_or_atomic_symbol === "string") {
                 // find index of atom in molecule with matching atomic symbol
                 atom_index = mmolecule.reduce((carry, current, index)=>{

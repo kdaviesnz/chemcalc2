@@ -144,6 +144,7 @@ range.range(4,hcl[2].length-1,1).map(
 hcl[2].indexOf(hcl[1][hcl[1].length-1]).should.not.be.False()
 hcl[1].indexOf(hcl[2][hcl[2].length-1]).should.not.be.False()
 
+
 const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController)
 
 // HCl + H2O <-> Cl- + H3O+
@@ -153,35 +154,12 @@ ccontainer.add("HCl",1)
 ccontainer.container.length.should.be.equal(2)
 ccontainer.container[0].should.be.equal(false)
 ccontainer.container[1].should.be.a.Array()
-//console.log(ccontainer.container)
 ccontainer.add("water",1)
-console.log("Container after adding water:")
-console.log(ccontainer.container)
-/*
-[ false,
-  [ 9999,
-    [ 'H', 1, 1, 1, 'w2u17v1k97q2s6c', 'w2u17v1k97q2s65' ],
-    [ 'Cl',
-      17,
-      7,
-      1,
-      'w2u17v1k97q2s65',
-      'w2u17v1k97q2s66',
-      'w2u17v1k97q2s67',
-      'w2u17v1k97q2s68',
-      'w2u17v1k97q2s69',
-      'w2u17v1k97q2s6a',
-      'w2u17v1k97q2s6b',
-      'w2u17v1k97q2s6c' ] ] ]
-Container after adding water:
-[ 9999, [ 'H', 1, 1, 1, 'w2u17v1k97q2s6c' ] ]
-
- */
-process.exit()
 ccontainer.container.length.should.be.equal(3)
 
 const Clneg = ccontainer.container[1]
 Clneg.should.be.a.Array()
+console.log(Clneg)
 Clneg.length.should.be.a.equal(2)
 Clneg[0][0].should.be.a.String()
 Clneg[0][0].should.be.equal("Cl")
