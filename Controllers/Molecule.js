@@ -4,7 +4,7 @@ const AtomFactory = require('../Models/AtomFactory')
 const CMolecule = (mmolecule) => {
 
     const __isShared = (electron) => {
-        return mmolecule.reduce(
+        const isshared =  mmolecule.reduce(
             (shared, molecule_atom) => {
                 if (shared || typeof molecule_atom.length !== "number") {
                     return shared
@@ -18,6 +18,9 @@ const CMolecule = (mmolecule) => {
             },
             false
         )
+        console.log("isshared")
+        console.log(isshared)
+        return isshared
     }
 
     const __electronToShareIndex = (atom) => {
@@ -25,7 +28,10 @@ const CMolecule = (mmolecule) => {
         const atom_electron_to_share_index = atom_valence_electrons.reduce(
             (carry, atom_electron, index) => {
                 const is_shared = __isShared(atom_electron)
-                return is_shared?carry:index
+                console.log(is_shared)
+                carry = is_shared?carry:index
+                console.log("Carry: " + carry)
+                return carry
             },
             false
         )
@@ -38,10 +44,17 @@ const CMolecule = (mmolecule) => {
 
         mmolecule.push(atom)
 
+        console.log("0--------")
+        console.log(mmolecule[atom2_index])
+        console.log("1--------")
+
+        console.log(mmolecule)
+      //  process.exit()
+
         const atom1_index = mmolecule.length -1
 
-        // AtomController(atom).push(mmolecule[atom_to_bond_to_index])
-        // atom.push(mmolecule[atom_to_bond_to_index][mmolecule[atom_to_bond_to_index].length - 1])
+        console.log(mmolecule[atom1_index])
+        process.exit()
 /*
 In the molecule H2, the hydrogen atoms share the two electrons via covalent bonding.[7] Covalency is greatest between atoms of similar electronegativities. Thus, covalent bonding does not necessarily require that the two atoms be of the same elements, only that they be of comparable electronegativity. Covalent bonding that entails sharing of electrons over more than two atoms is said to be delocalized.
  */
