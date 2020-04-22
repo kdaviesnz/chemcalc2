@@ -4,23 +4,17 @@ const AtomFactory = require('../Models/AtomFactory')
 const CMolecule = (mmolecule) => {
 
     const __isShared = (electron) => {
-        const isshared =  mmolecule.reduce(
-            (shared, molecule_atom) => {
+        const shared_electrons =  mmolecule.filter(
+            (molecule_atom) => {
                 if (shared || typeof molecule_atom.length !== "number") {
-                    return shared
-                }
-                console.log(molecule_atom)
-                console.log(electron)
-                console.log(molecule_atom.indexOf(electron))
-                shared = molecule_atom.indexOf(electron) !== -1
-                console.log(shared)
-                return shared
+                    return false
+                }                                
+                return molecule_atom.indexOf(electron) !== -1
             },
             false
         )
-        console.log("isshared")
-        console.log(isshared)
-        return isshared
+        
+        return shared_electrons < 2 // take into account electron counting itself 
     }
 
     const __electronToShareIndex = (atom) => {
