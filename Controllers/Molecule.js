@@ -262,8 +262,8 @@ H
 
             // Hydrogen atom from HCl
             const atom_to_remove = mmolecule[atom_index]
-            const bond_count = _bondCount(atom_to_remove)
 
+            const bond_count = _bondCount(atom_to_remove)
 
             if (bond_count===0) {
                 return container
@@ -287,14 +287,11 @@ H
             // remove shared electron
             const bonded_atom = mmolecule[bonded_atom_index]
 
-
-
-            bonded_atom[bonded_atom.indexOf(electron)] = null
-            delete(bonded_atom[bonded_atom.indexOf(electron)])
-
+           // bonded_atom[bonded_atom.indexOf(electron)] = null
+           // delete(bonded_atom[bonded_atom.indexOf(electron)])
+            bonded_atom.splice(bonded_atom.indexOf(electron), 1)
 
             const bonded_atom_bonds_count = _bondCount(bonded_atom)
-
 
             mmolecule[bonded_atom_index] = bonded_atom
 
