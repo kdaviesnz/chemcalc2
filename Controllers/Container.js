@@ -24,7 +24,7 @@ class CContainer {
         // container[2] is substrate
         if (this.container.length > 2) {     
             // We've just added a reagent to the container
-            // Acid base reactions
+            // Brønsted and Lowry Acid base reactions
             if (this.MoleculeController(this.container[1]).indexOf("H") !== false && this.MoleculeController(this.container[2]).indexOf("H") === false) {
                 // Here the substrate (acid) has a proton and the reagent (base) doesnt.
                 // So we remove the proton from the substrate and add it to the reagent.
