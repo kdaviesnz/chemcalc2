@@ -159,7 +159,7 @@ ccontainer.container.length.should.be.equal(3)
 
 const Clneg = ccontainer.container[1]
 Clneg.should.be.a.Array()
-console.log(Clneg)
+
 Clneg.length.should.be.a.equal(2)
 Clneg[1][0].should.be.a.String()
 Clneg[1][0].should.be.equal("Cl")
@@ -178,35 +178,20 @@ range.range(4,Clneg[1].length-1,1).map(
 )
 
 const HthreeO = ccontainer.container[2]
-HthreeO.should.be.a.Array()
-HthreeO.length.should.be.a.equal(3)
 
-HthreeO[0][0].should.be.a.String()
-HthreeO[0][0].should.be.equal("H")
-range.range(1,3,1).map(
-    (i)=>{
-        HthreeO[0][i].should.be.a.Number()
-    }
-) 
-HthreeO[0][1].should.be.equal(9999)
-HthreeO[0][2].should.be.equal(9999)
-HthreeO[0][3].should.be.equal(9999)
-range.range(4,HthreeO[0].length-1,1).map(
-    (i)=>{
-        HthreeO[0][i].should.be.a.String()
-    }
-)
+HthreeO.should.be.a.Array()
+HthreeO.length.should.be.a.equal(5)
 
 HthreeO[1][0].should.be.a.String()
-HthreeO[1][0].should.be.equal("O")
+HthreeO[1][0].should.be.equal("H")
 range.range(1,3,1).map(
     (i)=>{
-        HthreeO[0][i].should.be.a.Number()
+        HthreeO[1][i].should.be.a.Number()
     }
 ) 
-HthreeO[1][1].should.be.equal(9999)
-HthreeO[1][2].should.be.equal(9999)
-HthreeO[1][3].should.be.equal(9999)
+HthreeO[1][1].should.be.equal(1)
+HthreeO[1][2].should.be.equal(1)
+HthreeO[1][3].should.be.equal(1)
 range.range(4,HthreeO[1].length-1,1).map(
     (i)=>{
         HthreeO[1][i].should.be.a.String()
@@ -220,9 +205,9 @@ range.range(1,3,1).map(
         HthreeO[2][i].should.be.a.Number()
     }
 ) 
-HthreeO[2][1].should.be.equal(9999)
-HthreeO[2][2].should.be.equal(9999)
-HthreeO[2][3].should.be.equal(9999)
+HthreeO[2][1].should.be.equal(1)
+HthreeO[2][2].should.be.equal(1)
+HthreeO[2][3].should.be.equal(1)
 range.range(4,HthreeO[2].length-1,1).map(
     (i)=>{
         HthreeO[2][i].should.be.a.String()
@@ -230,18 +215,34 @@ range.range(4,HthreeO[2].length-1,1).map(
 )
 
 HthreeO[3][0].should.be.a.String()
-HthreeO[3][0].should.be.equal("H")
+HthreeO[3][0].should.be.equal("O")
 range.range(1,3,1).map(
     (i)=>{
         HthreeO[3][i].should.be.a.Number()
     }
 ) 
-HthreeO[3][1].should.be.equal(9999)
-HthreeO[3][2].should.be.equal(9999)
-HthreeO[3][3].should.be.equal(9999)
+HthreeO[3][1].should.be.equal(8)
+HthreeO[3][2].should.be.equal(6)
+HthreeO[3][3].should.be.equal(2)
 range.range(4,HthreeO[3].length-1,1).map(
     (i)=>{
         HthreeO[3][i].should.be.a.String()
+    }
+)
+
+HthreeO[4][0].should.be.a.String()
+HthreeO[4][0].should.be.equal("H")
+range.range(1,3,1).map(
+    (i)=>{
+        HthreeO[4][i].should.be.a.Number()
+    }
+) 
+HthreeO[4][1].should.be.equal(1)
+HthreeO[4][2].should.be.equal(1)
+HthreeO[4][3].should.be.equal(1)
+range.range(4,HthreeO[4].length-1,1).map(
+    (i)=>{
+        HthreeO[4][i].should.be.a.String()
     }
 )
 HthreeO[2].indexOf(HthreeO[1][HthreeO[1].length-1]).should.not.be.False()
@@ -249,6 +250,7 @@ HthreeO[3].indexOf(HthreeO[1][HthreeO[1].length-2]).should.not.be.False()
 HthreeO[1].indexOf(HthreeO[3][HthreeO[3].length-1]).should.not.be.False()
 HthreeO[1].indexOf(HthreeO[2][HthreeO[2].length-2]).should.not.be.False()
 
+console.log("All tests succeeded")
 
 
 // CC(=O)O (acetic acid) + water
