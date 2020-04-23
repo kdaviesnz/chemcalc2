@@ -215,9 +215,30 @@ range.range(4,HthreeO[2].length-1,1).map(
     }
 )
 
+console.log(HthreeO)
+/*
+[ 9999,
+  [ 'H', 1, 1, 1, 'a9fq447o4k9df3xo5', 'a9fq447o4k9df3xnz' ],
+  [ 'H', 1, 1, 1, 'a9fq447o4k9df3xo6', 'a9fq447o4k9df3xo0' ],
+  [ 'O',
+    8,
+    6,
+    2,
+    'a9fq447o4k9df3xnz',
+    'a9fq447o4k9df3xo0',
+    'a9fq447o4k9df3xo1',
+    'a9fq447o4k9df3xo2',
+    'a9fq447o4k9df3xo3',
+    'a9fq447o4k9df3xo4',
+    'a9fq447o4k9df3xo5',
+    'a9fq447o4k9df3xo6',
+    'a9fq447o4k9df3xny' ],
+  [ 'H', 1, 1, 1, 'a9fq447o4k9df3xny', 'a9fq447o4k9df3xo4' ] ]
+
+ */
 HthreeO[3][0].should.be.a.String()
 HthreeO[3].length.should.be.equal(12) // O on H3O should have 8 valence electrons with 3 being shared
-
+MoleculeController(HthreeO).bondCount(HthreeO[3]).should.be.equal(3)
 HthreeO[3][0].should.be.equal("O")
 range.range(1,3,1).map(
     (i)=>{

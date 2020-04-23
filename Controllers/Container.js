@@ -15,9 +15,12 @@ class CContainer {
                            molecule_array_or_string:
                            this.MoleculeFactory(molecule_array_or_string))
         // Add item to container.
+        this.container.push(molecule)
+        /*
         range.range(1,units,1).map(i)=>{
             this.container.push(molecule)
         }
+        */
         
         // First element is pKa value,
         // container[1] is reagent
