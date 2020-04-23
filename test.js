@@ -161,6 +161,7 @@ const Clneg = ccontainer.container[1]
 Clneg.should.be.a.Array()
 
 Clneg.length.should.be.a.equal(2)
+Clneg[1].length.should.be.a.equal(12) // [Cl-] has 8 valence electrons
 Clneg[1][0].should.be.a.String()
 Clneg[1][0].should.be.equal("Cl")
 range.range(1,3,1).map(
