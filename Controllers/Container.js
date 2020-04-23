@@ -48,16 +48,13 @@ class CContainer {
                         this.MoleculeController(this.container[1]).itemAt(proton_index)
                     ) // remove proton
 
-                    console.log(this.container[1])
-                    process.exit()
                     // last item of container will now be the proton from the first molecule
-                    const proton = this.container[1][proton_index]
+                    const proton = this.container[this.container.length-1][proton_index]
 
                     // add the proton to second molecule
                     this.MoleculeController(this.container[2]).push(proton)
+                    this.container.pop()
 
-
-                    
                 } else {
 
                     // Move proton from second molecule to first molecule

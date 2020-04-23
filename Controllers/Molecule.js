@@ -31,6 +31,19 @@ const CMolecule = (mmolecule) => {
         return atom_electron_to_share_index
     }
 
+    const __electronToRemoveIndex = (atom) => {
+        const atom_valence_electrons = atom.slice(4)
+        const atom_electron_to_remove_index = atom_valence_electrons.reduce(
+            (carry, atom_electron, index) => {
+                const is_shared = __isShared(atom_electron)
+                carry = is_shared?index:carry
+                return carry
+            },
+            false
+        )
+        return atom_electron_to_remove_index
+    }
+
     const _makeCovalentBond = (atom, atom2_index) => {
       
         mmolecule.push(atom)
@@ -246,14 +259,16 @@ H
             // Removing hydrogen from HCl
             // HCl is the first molecule (molecule_index is 1)
             // H2O is the second molecule
+            let atom = null
             if (typeof atom_or_atomic_symbol === "string") {
                 // find index of atom in molecule with matching atomic symbol
                 atom_index = mmolecule.reduce((carry, current, index)=>{
                     return typeof current !== "string" && typeof current.length === "number" && current[0] === atom_or_atomic_symbol?index:carry
                 }, false)
-
+                atom = AtomFactory(atom_or_atomic_symbol)
             } else {
                 atom_index =  mmolecule.indexOf(atom_or_atomic_symbol)
+                atom = atom_or_atomic_symbol
             }
 
             if (atom_index === false) {
@@ -270,7 +285,10 @@ H
             }
 
             // Remove electrons
-            const electron = mmolecule[atom_index].pop()
+            const electron_to_remove_index = __electronToRemoveIndex(mmolecule[atom_index])
+            const electron = mmolecule[atom_index][4+electron_to_remove_index]
+            mmolecule[atom_index].splice(4+electron_to_remove_index,1)
+
             const bonded_atom_index = mmolecule.reduce((carry, current_molecule_atom, index)=>{
                 //electron is a string
                 if (typeof current_molecule_atom === 'number') {
@@ -286,6 +304,7 @@ H
 
             // remove shared electron
             const bonded_atom = mmolecule[bonded_atom_index]
+            bonded_atom.push(electron)
 
            // bonded_atom[bonded_atom.indexOf(electron)] = null
            // delete(bonded_atom[bonded_atom.indexOf(electron)])
@@ -295,6 +314,11 @@ H
 
             mmolecule[bonded_atom_index] = bonded_atom
 
+            mmolecule.splice(atom_index,1)
+
+            // @todo get pka
+            const pka = 9999
+            container.push([pka, atom])
 
             container[molecule_index] = mmolecule
 

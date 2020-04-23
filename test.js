@@ -161,19 +161,19 @@ const Clneg = ccontainer.container[1]
 Clneg.should.be.a.Array()
 console.log(Clneg)
 Clneg.length.should.be.a.equal(2)
-Clneg[0][0].should.be.a.String()
-Clneg[0][0].should.be.equal("Cl")
+Clneg[1][0].should.be.a.String()
+Clneg[1][0].should.be.equal("Cl")
 range.range(1,3,1).map(
     (i)=>{
-        Clneg[0][i].should.be.a.Number()
+        Clneg[1][i].should.be.a.Number()
     }
 ) 
-Clneg[0][1].should.be.equal(9999)
-Clneg[0][2].should.be.equal(9999)
-Clneg[0][3].should.be.equal(9999)
-range.range(4,Clneg[0].length-1,1).map(
+Clneg[1][1].should.be.equal(17)
+Clneg[1][2].should.be.equal(7)
+Clneg[1][3].should.be.equal(1)
+range.range(4,Clneg[1].length-1,1).map(
     (i)=>{
-        Clneg[0][i].should.be.a.String()
+        Clneg[1][i].should.be.a.String()
     }
 )
 
