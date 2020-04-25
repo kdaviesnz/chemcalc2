@@ -45,7 +45,8 @@ const CMolecule = (mmolecule) => {
     }
 
     const _makeCovalentBond = (atom, atom2_index) => {
-      
+
+
         mmolecule.push(atom)
 
         const atom1_index = mmolecule.length -1
@@ -59,11 +60,31 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         // Get index of first free electron on second atom
         const atom2_electron_to_share_index = __electronToShareIndex(mmolecule[atom2_index])
 
-        // add shared electron from first atom to second atom
-        mmolecule[atom2_index].push(mmolecule[atom1_index][4+atom1_electron_to_share_index])
+        if (mmolecule[atom1_index][0]==="H") {
 
-        // add shared electron from second atom to first atom
-        mmolecule[atom1_index].push(mmolecule[atom2_index][4+atom2_electron_to_share_index])
+            // Get index of next free electron on second atom
+            const atom2_electron_to_share_next_index = __electronToShareIndex(mmolecule[atom2_index]) // O
+
+           // console.log(atom2_electron_to_share_next_index) // 5
+           // process.exit()
+
+            // add shared electron from second_atom to first atom
+            mmolecule[atom1_index].push(mmolecule[atom2_index][4 + atom2_electron_to_share_next_index -1])
+
+            // add shared electron from second atom to first atom
+            mmolecule[atom1_index].push(mmolecule[atom2_index][4 + atom2_electron_to_share_index])
+
+        } else {
+            // add shared electron from first atom to second atom
+            mmolecule[atom2_index].push(mmolecule[atom1_index][4 + atom1_electron_to_share_index])
+
+            // add shared electron from second atom to first atom
+            mmolecule[atom1_index].push(mmolecule[atom2_index][4 + atom2_electron_to_share_index])
+
+        }
+
+      //  console.log(mmolecule)
+       // process.exit()
 
         return mmolecule
 
@@ -287,7 +308,11 @@ H
             // Remove electrons
             const electron_to_remove_index = __electronToRemoveIndex(mmolecule[atom_index])
             const electron = mmolecule[atom_index][4+electron_to_remove_index]
-            mmolecule[atom_index].splice(4+electron_to_remove_index,1)
+            if (mmolecule[atom_index][0]==='H') {
+                mmolecule[atom_index].splice(4)
+            } else {
+                mmolecule[atom_index].splice(4 + electron_to_remove_index, 1)
+            }
 
             const bonded_atom_index = mmolecule.reduce((carry, current_molecule_atom, index)=>{
                 //electron is a string
