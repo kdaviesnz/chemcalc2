@@ -17,11 +17,12 @@ const MoleculeFactory = (canonicalSmiles) => {
     const pKa = () => {
         // @todo
         // https://www2.onu.edu/~b-myers/organic/2511_Files/Chapter3-pKa%20table.pdf
+        // https://www.chemteam.info/AcidBase/pKaofH3O+andH2O.pdf
         const map = {
             "CC(=O)O":4.76,
             "Cl":-7,
             "O":14,
-            "[O+]":
+            "[O+]":-1.74
         }
         return 9999
     }
