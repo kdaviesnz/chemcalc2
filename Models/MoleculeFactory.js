@@ -16,6 +16,11 @@ const MoleculeFactory = (canonicalSmiles) => {
 
     const pKa = () => {
         // @todo
+        const map = {
+            "CC(=O)O":4.76,
+            "Cl":-7,
+            "O":
+        }
         return 9999
     }
         
