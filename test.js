@@ -37,7 +37,7 @@ const watermolecule = MoleculeFactory("water")
 watermolecule.should.be.a.Array()
 watermolecule.length.should.be.equal(4)
 watermolecule[0].should.be.a.Number()
-watermolecule[0].should.be.a.equal(9999)
+watermolecule[0].should.be.a.equal(14)
 watermolecule[1].should.be.a.Array()
 //watermolecule[1].length.should.be.a.equal(6)
 watermolecule[1][0].should.be.a.String()
@@ -106,7 +106,7 @@ HCLController.bondCount(hcl[2]).should.be.equal(1)
 hcl.should.be.a.Array()
 hcl.length.should.be.equal(3)
 hcl[0].should.be.a.Number()
-hcl[0].should.be.a.equal(9999)
+hcl[0].should.be.a.equal(-7)
 hcl[1].should.be.a.Array()
 hcl[1].length.should.be.a.equal(6)
 hcl[1][0].should.be.a.String()
@@ -159,7 +159,6 @@ ccontainer.container.length.should.be.equal(3)
 
 const Clneg = ccontainer.container[1]
 Clneg.should.be.a.Array()
-
 Clneg.length.should.be.a.equal(2)
 Clneg[1].length.should.be.a.equal(12) // [Cl-] has 8 valence electrons
 Clneg[1][0].should.be.a.String()
@@ -215,7 +214,7 @@ range.range(4,HthreeO[2].length-1,1).map(
     }
 )
 
-console.log(HthreeO)
+//console.log(HthreeO)
 /*
 [ 9999,
   [ 'H', 1, 1, 1, 'a9fq447o4k9df3xo5', 'a9fq447o4k9df3xnz' ],
@@ -273,6 +272,9 @@ HthreeO[2].indexOf(HthreeO[1][HthreeO[1].length-1]).should.not.be.False()
 HthreeO[3].indexOf(HthreeO[1][HthreeO[1].length-2]).should.not.be.False()
 HthreeO[1].indexOf(HthreeO[3][HthreeO[3].length-1]).should.not.be.False()
 HthreeO[1].indexOf(HthreeO[2][HthreeO[2].length-2]).should.not.be.False()
+
+const ccontainer2 = new CContainer([false], MoleculeFactory, MoleculeController)
+ccontainer2.add(Clneg,1)
 
 console.log("All tests succeeded")
 

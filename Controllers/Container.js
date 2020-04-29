@@ -73,6 +73,8 @@ class CContainer {
 
                 } else {
 
+                    console.log('container 2')
+                    process.exit()
                     // Move proton from second molecule to first molecule
                     const proton_index = this.MoleculeController(this.container[2]).indexOf("H") // 2
                     this.container = this.MoleculeController(this.container[2]).remove(

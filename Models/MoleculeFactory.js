@@ -22,11 +22,12 @@ const MoleculeFactory = (canonicalSmiles) => {
         const map = {
             "CC(=O)O":4.76,
             "Cl":-7,
+            "HCl":-7,
             "O":14,
             "[O+]":-1.74,
             "[Cl-]":2.86
         }
-        return map[canonicalSmiles]
+        return (undefined !== map[canonicalSmiles] )?map[canonicalSmiles]:9999
     }
         
     // // MOLECULE MODEL
