@@ -1,6 +1,8 @@
 const Set = require('./Set')
 const FunctionalGroups = (atoms) => {
 
+    // https://www.masterorganicchemistry.com/2010/06/18/know-your-pkas/
+
     // atoms
     //[[ atomic symbol, proton count, valence count,  number of bonds, velectron1, velectron2, velectron3 ]]
 
@@ -17,13 +19,13 @@ const FunctionalGroups = (atoms) => {
 
         // If carbon double bond on oxygen then not ketone
         if (atoms.filter(
-            (atom) => {
+            (atom, oxygen_atom_index) => {
                 if (atom[0] === "0") {
                     // Determine if there is a double bond
                     // Double bond if we have two electrons linking to the same carbon
                     const oxygen_electrons =
                     atoms.filter(
-                        (_atom) => {
+                        (_atom, carbon_atom_index) => {
                             if (_atom[0] === "C") {
                                 const carbon_electrons = _atom.splice(4)
                                 // Get intersection of carbon electrons and oxygen electrons. If count
@@ -31,6 +33,10 @@ const FunctionalGroups = (atoms) => {
                                 if (Set().intersection(carbon_electrons, oxygen_electrons).length===2){
                                     // We have a ketone
                                     // return indexed carbon and oxygen
+                                    return {
+                                        carbon_atom_index: _atom[0],
+                                        oxygen_atom_index: atom[0]
+                                    }
                                 }
                             }
                             return false
@@ -43,49 +49,39 @@ const FunctionalGroups = (atoms) => {
             return false
         }
 
-
-
-
-
-        if (canonical_SMILES.indexOf("=O") === -1) {
-            return false
-        }
-
-        if (canonical_SMILES.indexOf("=O") === 0) {
-            return [
-                "O",
-                canonical_SMILES.substr(3).replace(/\(.*\)/, ""),
-                canonical_SMILES.substr(3).match(/\(.*\)/) === null ? canonical_SMILES.substr(3) : canonical_SMILES.substr(3).match(/\(.*\)/).pop()
-            ]
-        }
-
-        if (canonical_SMILES.indexOf("=O") ===canonical_SMILES.length-2 ) {
-
-            return [
-                "O",
-                canonical_SMILES.substr(0,canonical_SMILES.length-3),
-                ""
-            ]
-        }
-
-        return [
-            "O",
-            canonical_SMILES.substr(canonical_SMILES.indexOf("(=O") + 4),
-            canonical_SMILES.substr(0, canonical_SMILES.indexOf("(=O")-1), // CC
-        ]
-
     }
 
-
     const amide = () => {
-        if ((canonical_SMILES.indexOf("(=O") !== -1 || canonical_SMILES.indexOf("O=") !== -1) && canonical_SMILES.indexOf("N")!==-1) {
-            return ketone()
-        } else {
+
+        // If no nitrogen atom return false
+        if (atoms.filter(
+            (atom) => {
+                return atom[0] === "N"
+            }
+        ).length === 0) {
             return false
         }
+
+        return ketone()
+
     }
 
     const glycol = () => {
+
+        /*
+        Glycol, any of a class of organic compounds belonging to the alcohol family; in the molecule of a glycol, two hydroxyl (―OH) groups are attached to different carbon atoms. The term is often applied to the simplest member of the class, ethylene glycol.
+         */
+         // If there isn't at least 2 OH groups then not glycol
+        if (atoms.filter(
+            (atom) => {
+                return atom[0] === "O"
+            }
+        ).length < 2) {
+            return false
+        }
+
+
+
 
         // Should be not glycol - C1OC2=C(O1)C=C(C=C2)CC(=O)O
         // Example glycol (propyline glycol)
