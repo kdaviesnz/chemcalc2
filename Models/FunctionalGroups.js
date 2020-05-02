@@ -50,9 +50,11 @@ const FunctionalGroups = (atoms) => {
         // If carbon double bond on oxygen then not ketone
         return atoms.map(
             __carbonToAtomDoubleBondCallback ("O")
+        ).filter(
+            (item) => {
+                return item !== false
+            }
         )
-
-
 
     }
 
