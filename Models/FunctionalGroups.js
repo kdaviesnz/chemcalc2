@@ -6,20 +6,9 @@ const FunctionalGroups = (atoms) => {
     // atoms
     //[[ atomic symbol, proton count, valence count,  number of bonds, velectron1, velectron2, velectron3 ]]
 
-    const ketone = () => {
-
-        // If no oxygen atom then not ketone
-        if (atoms.filter(
-            (atom) => {
-                return atom[0] === "O"
-            }
-        ).length === 0) {
-            return false
-        }
-
-        // If carbon double bond on oxygen then not ketone
-        if (atoms.filter(
-            (atom, oxygen_atom_index) => {
+    
+    const __carbonToAtomDoubleBond = (atom, oxygen_atom_index) => {
+          
                 if (atom[0] === "0") {
                     // Determine if there is a double bond
                     // Double bond if we have two electrons linking to the same carbon
@@ -44,7 +33,25 @@ const FunctionalGroups = (atoms) => {
                     )
                 }
                 return false
+          
+    }
+                                      
+                                      
+    const ketone = () => {
+
+        // If no oxygen atom then not ketone
+        if (atoms.filter(
+            (atom) => {
+                return atom[0] === "O"
             }
+        ).length === 0) {
+            return false
+        }
+
+        // If carbon double bond on oxygen then not ketone
+        if (atoms.filter(
+          return __carbonToAtomDoubleBond = (atom, oxygen_atom_index)
+            
         ).length === 0) {
             return false
         }
