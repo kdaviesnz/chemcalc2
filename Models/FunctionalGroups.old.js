@@ -1,51 +1,12 @@
-const Set = require('./Set')
-const FunctionalGroups = (atoms) => {
+const FunctionalGroups = (molecule_json_object) => {
 
-    // atoms
-    //[[ atomic symbol, proton count, valence count,  number of bonds, velectron1, velectron2, velectron3 ]]
+    const normalizeSMILES = () => {
+        return molecule_json_object.CanonicalSMILES
+    }
+
+    const canonical_SMILES = normalizeSMILES()
 
     const ketone = () => {
-
-        // If no oxygen atom then not ketone
-        if (atoms.filter(
-            (atom) => {
-                return atom[0] === "O"
-            }
-        ).length === 0) {
-            return false
-        }
-
-        // If carbon double bond on oxygen then not ketone
-        if (atoms.filter(
-            (atom) => {
-                if (atom[0] === "0") {
-                    // Determine if there is a double bond
-                    // Double bond if we have two electrons linking to the same carbon
-                    const oxygen_electrons =
-                    atoms.filter(
-                        (_atom) => {
-                            if (_atom[0] === "C") {
-                                const carbon_electrons = _atom.splice(4)
-                                // Get intersection of carbon electrons and oxygen electrons. If count
-                                // is 2 then we have a double bond
-                                if (Set().intersection(carbon_electrons, oxygen_electrons).length===2){
-                                    // We have a ketone
-                                    // return indexed carbon and oxygen
-                                }
-                            }
-                            return false
-                        }
-                    )
-                }
-                return false
-            }
-        ).length === 0) {
-            return false
-        }
-
-
-
-
 
         if (canonical_SMILES.indexOf("=O") === -1) {
             return false

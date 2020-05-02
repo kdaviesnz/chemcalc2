@@ -53,7 +53,7 @@ PeriodicTable:
              return uniqid()
          })
      ]
-XS
+
 }
 
 
