@@ -13,26 +13,25 @@ const FunctionalGroups = (atoms) => {
             if (atom[0] === atomic_symbol) {
                 // Determine if there is a double bond
                 // Double bond if we have two electrons linking to the same carbon
-                const atom_electrons =
-                    atoms.filter(
-                        (_atom, carbon_atom_index) => {
-                            if (_atom[0] === "C") {
-                                const carbon_electrons = _atom.splice(4)
-                                // Get intersection of carbon electrons and atom electrons. If count
-                                // is 2 then we have a double bond
-                                if (Set().intersection(carbon_electrons, arom_electrons).length === 2) {
-                                    // We have a ketone
-                                    // return indexed carbon and atom
-                                    return {
-                                        carbon_atom_index: _atom[0],
-                                        atom_index: atom[0]
-                                    }
+                return atoms.filter(
+                    (_atom, carbon_atom_index) => {
+                        if (_atom[0] === "C") {
+                            const carbon_electrons = _atom.splice(4)
+                            // Get intersection of carbon electrons and atom electrons. If count
+                            // is 2 then we have a double bond
+                            if (Set().intersection(carbon_electrons, atom.slice(4)).length === 2) {
+                                // return indexed carbon and atom
+                                return {
+                                    carbon_atom_index: _atom[0],
+                                    atom_index: atom[0]
                                 }
                             }
-                            return false
                         }
-                    )
+                        return false
+                    }
+                )
             }
+            return false
         }
 
     }
@@ -50,7 +49,7 @@ const FunctionalGroups = (atoms) => {
 
         // If carbon double bond on oxygen then not ketone
         return atoms.map(
-          __carbonToAtomDoubleBondCallback ("O")
+            __carbonToAtomDoubleBondCallback ("O")
         )
 
 
