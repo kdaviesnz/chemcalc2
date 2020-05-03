@@ -7,6 +7,16 @@ const FunctionalGroups = (atoms) => {
     //[[ atomic symbol, proton count, valence count,  number of bonds, velectron1, velectron2, velectron3 ]]
 
 
+    const __hasAtom = (atomic_symbol) => {
+        if (atoms.filter(
+            (atom) => {
+                return atom[0] === atomic_symbol
+            }
+        ).length === 0) {
+            return false
+        }
+    }
+    
     const __carbonToAtomDoubleBondCallback = (atomic_symbol) => {
 
         return (atom, atom_index) => {
@@ -39,14 +49,10 @@ const FunctionalGroups = (atoms) => {
     const ketone = () => {
 
         // If no oxygen atom then not ketone
-        if (atoms.filter(
-            (atom) => {
-                return atom[0] === "O"
-            }
-        ).length === 0) {
+        if (!__hasAtom("O")) {
             return false
         }
-
+            
         // If carbon double bond on oxygen then not ketone
         return atoms.map(
             __carbonToAtomDoubleBondCallback ("O")
@@ -61,11 +67,7 @@ const FunctionalGroups = (atoms) => {
     const amide = () => {
 
         // If no nitrogen atom return false
-        if (atoms.filter(
-            (atom) => {
-                return atom[0] === "N"
-            }
-        ).length === 0) {
+        if (!__hasAtom("N")) {
             return false
         }
 
@@ -122,33 +124,18 @@ const FunctionalGroups = (atoms) => {
                     return false
                 }
             }
-        )
-
-
-
-
-        // Should be not glycol - C1OC2=C(O1)C=C(C=C2)CC(=O)O
-        // Example glycol (propyline glycol)
-        // CC(CO)O
-        if (canonical_SMILES.substr(canonical_SMILES.length-4) !== "CO)O") {
-            return false
-        }
-
-        return [
-
-            canonical_SMILES.match(/^(.*?)C\(.*\).*O$/)===null?"H":canonical_SMILES.match(/^(.*?)C\(.*\).*O$/).pop(),
-
-            canonical_SMILES.match(/^.*C\(.*\)(.*)O$/)===null?"H":canonical_SMILES.match(/^.*C\(.*\)(.*)O$/).pop(),
-
-            canonical_SMILES.match(/^.*C\(C\((.*)\).*O\).*O$/)===null?"H":canonical_SMILES.match(/^.*C\(C\((.*)\).*O\).*O$/).pop(),
-
-            canonical_SMILES.match(/^.*C\(C\(.*\)(.*)O\).*O$/)===null?"H":canonical_SMILES.match(/^.*C\(C\(.*\)(.*)O\).*O$/).pop()
-
-
-        ]
+        )       
     }
 
-    const amine = (() => {
+    const amine = () => {
+        
+        // If no nitrogen atom return false
+        if (!__hasAtom("N")) {
+            return false
+        }
+        
+        
+        
 
         if (!molecule_json_object.CanonicalSMILES) {
             console.log('FunctionalGroups.js (amine) error getting smiles')
@@ -171,7 +158,7 @@ const FunctionalGroups = (atoms) => {
 
         ]
 
-    }).call()
+    }
 
     const primaryAmine = () => {
         return amine === false ? false :
