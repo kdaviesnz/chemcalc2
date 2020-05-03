@@ -134,7 +134,7 @@ const FunctionalGroups = (atoms) => {
         // If no nitrogen atom with a lone pair return false
         return atoms.map(
             (atom, atom_index) => {
-                if atom[0] === "N" && __lonePairs(atom).length === 1){
+                if (atom[0] === "N" && __lonePairs(atom).length === 1){
                     return {
                         atom_index: atom
                     }
@@ -192,6 +192,29 @@ const FunctionalGroups = (atoms) => {
 
 
     const epoxide = () => {
+
+        /*
+        An epoxide is a cyclic ether with a three-atom ring (OCC). This ring approximates an equilateral triangle, which makes it strained, and hence highly reactive, more so than other ethers
+         */
+        return atoms.map(
+            (atom, oxygen_atom_index) => {
+                const carbon_bonds = _carbonBonds(atom)
+                if (atom[0] === "O" && carbon_bonds(atom).length === 2){
+                    // Verify that the carbon atoms are bonded to each other and the oxygen
+                    if (__atomsAreBonded(carbon_bonds[0][1], carbon_bonds[1][1]) &&
+                    __atomsAreBonded(atom, carbon_bonds[0][1]) && __atomsAreBonded(atom, carbon_bonds[1][1])) {
+                        return {
+                            oxygen_atom_index: atom
+                        }
+                    }
+                }
+            }
+        ).filter((item) => {
+            return item !== false
+        })
+
+
+
 
         if ((canonical_SMILES.indexOf("CO1") === -1 && canonical_SMILES.indexOf("C(O1") === -1)
             || canonical_SMILES.substr(canonical_SMILES.length -1) === "O" || canonical_SMILES.indexOf("=O")!==-1) {
