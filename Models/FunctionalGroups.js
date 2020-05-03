@@ -6,13 +6,34 @@ const FunctionalGroups = (atoms) => {
     // atoms
     //[[ atomic symbol, proton count, valence count,  number of bonds, velectron1, velectron2, velectron3 ]]
     
-    const __Bonds = (atom, atomic_symbol) => {
+    const __lonePairs = (atom, current_atom_index) => {
+        const atom_electrons = atom.splice(4)
+        return atom_electrons.filter(
+            (atom_electron) => {                
+                return (atoms.filter(
+                    (_atom, _atom_index) => {
+                        if (current_atom_index === _atom_index) {
+                            return false
+                        }
+                        const _atom_electrons = _atom.splice(4)
+                        return _atom_electrons.indexOf(atom_electron) > -1
+                    }
+                ).length === 0
+                         
+            }
+        ) 
+    }
+    
+    
+    const __Bonds = (atom, current_atom_index, atomic_symbol) => {
         const atom_electrons = atom.splice(4)
         return atoms.map(
             (_atom, _atom_index) => {
-                if (_atom[0] !== atomic_symbol) {
+                
+                if (_atom[0] !== atomic_symbol || current_atom_index === _atom_index) {
                     return false
                 }
+                    
                 const shared_electrons = Set().intersection(atom_electrons, _atom.splice(4)
                 if (  shared_electrons.length === 1 ) {
                     return [
@@ -25,12 +46,12 @@ const FunctionalGroups = (atoms) => {
         )
     }
 
-    const __carbonBonds = (atom) => {
-        return __Bonds = (atom, "C")      
+    const __carbonBonds = (atom, atom_index) => {
+        return __Bonds = (atom, atom_index, "C")      
     }
     
-    const __hydrogenBonds = (atom) => {
-        return __Bonds = (atom, "H")      
+    const __hydrogenBonds = (atom, atom_index) => {
+        return __Bonds = (atom,  atom_index, "H")      
     }
     
     const __hasAtom = (atomic_symbol) => {
