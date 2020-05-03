@@ -24,6 +24,30 @@ const FunctionalGroups = (atoms) => {
         ) 
     }
     
+    const __alcoholGroupBonds = (atom, current_atom_index) => {
+        const atom_electrons = atom.splice(4)
+        return atoms.map(
+            (_atom, _atom_index) => {
+                
+                if (_atom[0] !== "O" || current_atom_index === _atom_index) {
+                    return false
+                }
+                
+                if (__hydrogenBonds(_atom, _atom_index).length !== 1
+                   || __lonePairs(_atom, _atom_index).length !==2 )  {
+                    return false
+                }
+                    
+                
+                    return [
+                        _atom_index,
+                        _atom
+                    ]
+               
+                return false
+            }
+        )  
+    }
     
     const __Bonds = (atom, current_atom_index, atomic_symbol) => {
         const atom_electrons = atom.splice(4)
@@ -97,10 +121,10 @@ const FunctionalGroups = (atoms) => {
 
         return atoms.map(
             (atom, atom_index) => {
-                const carbon_bonds = __carbonBonds(atom)
+                const carbon_bonds = __carbonBonds(atom, atom_index)
                 if (atom[0] === "O" 
                    
-                    && __hydrogenBonds(atom).length === 2
+                    && __hydrogenBonds(atom, atom_index).length === 2
                     
                    ){
                     
@@ -120,10 +144,10 @@ const FunctionalGroups = (atoms) => {
 
         return atoms.map(
             (atom, atom_index) => {
-                const carbon_bonds = __carbonBonds(atom)
+                const carbon_bonds = __carbonBonds(atom, atom_index)
                 if (atom[0] === "O" 
                    
-                    && __hydrogenBonds(atom).length === 3
+                    && __hydrogenBonds(atom, atom_index).length === 3
                     
                    ){
                     
@@ -228,12 +252,12 @@ const FunctionalGroups = (atoms) => {
         atoms.map(
             (atom, oxygen_atom_index) => {
                 if (atom[0] === 'O') {
-                    const carbon_bonds = __carbonBonds(atom)
-                    if (__hydrogenBonds(atom).length === 3 &&  carbon_bonds.length) { // 3 hydrogens, 1 carbon
+                    const carbon_bonds = __carbonBonds(atom, oxygen_atom_index)
+                    if (__hydrogenBonds(atom, oxygen_atom_index).length === 3 &&  carbon_bonds.length) { // 3 hydrogens, 1 carbon
                         const carbon_atom_index = carbon_bonds[0][0]
                         const carbon_atom = carbon_bonds[0][1] // first element is index of atom
                         // Now check of carbon atom has a carbon atom with OH group attached.
-                        const carbon_carbon_bonds = _carbonBonds(carbon_atom)
+                        const carbon_carbon_bonds = _carbonBonds(carbon_atom, carbon_atom_index)
                         if (carbon_carbon_bonds.length > 0) {
                             return carbon_carbon_bonds.map(
                                 (_child_carbon_atom, _child_carbon_atom_index) => {
