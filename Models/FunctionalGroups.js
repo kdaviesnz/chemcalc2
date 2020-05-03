@@ -446,7 +446,7 @@ const FunctionalGroups = (atoms) => {
         "hydrochloric_acid": hydrochloric_acid(),
         "deprotonated_hydrochloric_acid": deprotonated_hydrochloric_acid(),
         "water": water(),
-        "deprotonated_water": deprotonated_water()
+        "protonated_water": protonated_water()
     }
 
     const functionalGroupsList = () => {
