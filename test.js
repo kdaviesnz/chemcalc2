@@ -34,6 +34,8 @@ const watermolecule = MoleculeFactory("water")
     'cfo6drik94nz8an',
     'cfo6drik94nz8ao' ] ]
  */
+console.log(watermolecule)
+process.exit()
 watermolecule.should.be.a.Array()
 watermolecule.length.should.be.equal(4)
 watermolecule[0].should.be.a.Number()

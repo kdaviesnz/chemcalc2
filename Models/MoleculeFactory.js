@@ -1,5 +1,5 @@
 const AtomsFactory = require('./AtomsFactory')
-
+const pKa = require('../Models/pKa')
 const MoleculeFactory = (canonicalSmiles) => {
 
     if (canonicalSmiles.toLowerCase() === "water") {
@@ -14,26 +14,11 @@ const MoleculeFactory = (canonicalSmiles) => {
         return AtomsFactory(canonicalSmiles)
     }
 
-    const pKa = () => {
-        // @todo
-        // https://www2.onu.edu/~b-myers/organic/2511_Files/Chapter3-pKa%20table.pdf
-        // https://www.chemteam.info/AcidBase/pKaofH3O+andH2O.pdf
-        // http://www.mch.estranky.sk/file/24/pka_tables.pdf
-        const map = {
-            "CC(=O)O":4.76,
-            "Cl":-7,
-            "HCl":-7,
-            "O":14,
-            "[O+]":-1.74,
-            "[Cl-]":2.86
-        }
-        return (undefined !== map[canonicalSmiles] )?map[canonicalSmiles]:9999
-    }
-        
+
     // // MOLECULE MODEL
     // // pKa, atom, atom, atom ...
     return [
-        pKa(),
+        pKa(_atoms()),
         ..._atoms()
     ]
 
