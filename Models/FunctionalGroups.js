@@ -256,7 +256,7 @@ const FunctionalGroups = (atoms) => {
             return false
         }
         
-        // Look for ketone groups where carbon atom has at least 1 hydrogen atom and 1 carbon atom
+        // Look for ketone groups where carbon atom has at least 1 hydrogen atom 
         return ketone_groups.filter(
             (ketone_group) => {
                 const props = ketone_group.props()
@@ -268,21 +268,24 @@ const FunctionalGroups = (atoms) => {
     }
 
     const ester = () => {
+        
+        // In chemistry, an ester is a chemical compound derived from an acid (organic or inorganic) 
+        // in which at least one –OH (hydroxyl) group is replaced by an –O–alkyl (alkoxy) group
 
         const k = ketone()
-        if (k===false) {
+        const ketone_groups = ketone()
+        if (ketone_groups.length === 0) {
             return false
         }
 
-        //if (k[0].indexOf("O") !== 0 && (k[2].indexOf("O") ===-1 || k[2].indexOf("O") !== 0)) {
-        if (k[2].indexOf("O") ===-1) {
-            return false
-        }
-        return [
-            k[0],
-            k[0].indexOf("O") === 0 ? k[1] : k[2],
-            k[0].indexOf("O") === 0 ? k[2] : k[1],
-        ]
+        // Look for ketone groups where carbon atom has at least 1 single bonded oxygen atom 
+        return ketone_groups.filter(
+            (ketone_group) => {
+                const props = ketone_group.props()
+                const carbon_atom = ketone_group[props[1]]
+                return __singleOxygenBonds(carbon_atom).length > 0
+            }
+        )     
 
     }
 
