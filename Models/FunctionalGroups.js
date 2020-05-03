@@ -148,30 +148,46 @@ const FunctionalGroups = (atoms) => {
     }
 
     const primaryAmine = () => {
-        return amine === false ? false :
-            (amine.filter((branch) => {
-                    return branch === "H"
-                }).length === 2 ? amine : false
-
-            )
+        const amine_groups = amine()
+        if (amine_groups.length ===  0) {
+            return false
+        }
+        return amine_groups.filter(
+            (amine_group) => {
+                const props = amine_group.props()
+                const atom = amine_group[props[0]]
+                return __hydrogenBonds(atom).length === 2
+            }
+        )
     }
 
     const secondaryAmine = () => {
-        // [ 'N', 'H', 'CC(CC1=CC2=C(C=C1)OCO2)', 'C' ]
-        return amine === false ? false :
-            (amine.filter((branch) => {
-                    return branch === "H"
-                }).length === 1 ? amine : false
-            )
+        const amine_groups = amine()
+        if (amine_groups.length ===  0) {
+            return false
+        }
+        return amine_groups.filter(
+            (amine_group) => {
+                const props = amine_group.props()
+                const atom = amine_group[props[0]]
+                return __hydrogenBonds(atom).length === 1
+            }
+        )
     }
 
 
     const tertiaryAmine = () => {
-        return amine === false ? false :
-            (amine.filter((branch) => {
-                    return branch === "H"
-                }).length === 0 ? amine : false
-            )
+        const amine_groups = amine()
+        if (amine_groups.length ===  0) {
+            return false
+        }
+        return amine_groups.filter(
+            (amine_group) => {
+                const props = amine_group.props()
+                const atom = amine_group[props[0]]
+                return __hydrogenBonds(atom).length === 0
+            }
+        )
     }
 
 
