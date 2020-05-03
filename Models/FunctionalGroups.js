@@ -256,12 +256,12 @@ const FunctionalGroups = (atoms) => {
             return false
         }
         
-        // Look for ketone groups where carbon atom has 1 hydrogen atom and 1 carbon atom
+        // Look for ketone groups where carbon atom has at least 1 hydrogen atom and 1 carbon atom
         return ketone_groups.filter(
             (ketone_group) => {
                 const props = ketone_group.props()
                 const carbon_atom = ketone_group[props[1]]
-                return __hydrogenBonds(carbon_atom).length === 1 && __carbonBonds(carbon_atom).length===1
+                return __hydrogenBonds(carbon_atom).length > 0
             }
         )       
         
