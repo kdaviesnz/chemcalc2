@@ -46,6 +46,24 @@ const FunctionalGroups = (atoms) => {
 
     }
 
+    const hydrochloricacid = () => {
+
+        // If no chlorine atom then not hydrochloricacid
+        if (!__hasAtom("Cl")) {
+            return false
+        }
+        
+        // If no hydrogen atom then not hydrochloricacid
+        if (!__hasAtom("H")) {
+            return false
+        }
+        
+        return [
+            atoms
+         ]
+
+    }
+    
     const ketone = () => {
 
         // If no oxygen atom then not ketone
@@ -358,6 +376,7 @@ const FunctionalGroups = (atoms) => {
         "methyl_ketone": methylKetone(),
         "terminal_alkene": terminalAlkene(),
         "alkene": alkene()
+        "hydrochloric_acid": hydrochloricacid()
 
     }
 
