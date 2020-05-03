@@ -1,5 +1,6 @@
 //
 const AtomFactory = require('../Models/AtomFactory')
+const pKa = require('../Models/pKa')
 
 const CMolecule = (mmolecule) => {
 
