@@ -248,8 +248,23 @@ const FunctionalGroups = (atoms) => {
     }
 
     const aldehyde = () => {
-        const k = ketone()
-        return k[1] === "" || k[2] == "" ? k : false
+        
+        // An aldehyde is a compound containing a functional group with the structure −CHO,
+        // consisting of a carbonyl center with the carbon atom also bonded to hydrogen and to an R group, which is any generic alkyl or side chain.                       
+        const ketone_groups = ketone()
+        if (ketone_groups.length === 0) {
+            return false
+        }
+        
+        // Look for ketone groups where carbon atom has 1 hydrogen atom and 1 carbon atom
+        return ketone_groups.filter(
+            (ketone_group) => {
+                const props = ketone_group.props()
+                const carbon_atom = ketone_group[props[1]]
+                return __hydrogenBonds(carbon_atom).length === 1 && __carbonBonds(carbon_atom).length===1
+            }
+        )       
+        
     }
 
     const ester = () => {
