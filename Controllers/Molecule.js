@@ -85,7 +85,9 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
 
       //  console.log(mmolecule)
        // process.exit()
-
+        // pKa
+        mmolecule[0] = pKa(mmolecule.splice(1)
+       
         return mmolecule
 
     }
@@ -271,7 +273,8 @@ H
 
             }
             
-
+            mmolecule[0] = pKa(mmolecule.splice(1))
+            
             return mmolecule
         },
         remove : (container, molecule_index, atom_or_atomic_symbol) => {
@@ -339,11 +342,9 @@ H
 
             mmolecule[bonded_atom_index] = bonded_atom
 
-            mmolecule.splice(atom_index,1)
-
-            // @todo get pka
-            const pka = 9999
-            container.push([pka, atom])
+            mmolecule.splice(atom_index,1)            
+          
+            mmolecule[0] = pKa(mmolecule.splice(1))
 
             container[molecule_index] = mmolecule
 
