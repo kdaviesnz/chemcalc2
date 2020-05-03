@@ -203,8 +203,12 @@ const FunctionalGroups = (atoms) => {
                     // Verify that the carbon atoms are bonded to each other and the oxygen
                     if (__atomsAreBonded(carbon_bonds[0][1], carbon_bonds[1][1]) &&
                     __atomsAreBonded(atom, carbon_bonds[0][1]) && __atomsAreBonded(atom, carbon_bonds[1][1])) {
+                        const first_carbon_atom_index = carbon_bonds[0][0]
+                        const second_carbon_atom_index = carbon_bonds[1][0]
                         return {
-                            oxygen_atom_index: atom
+                            oxygen_atom_index: atom,
+                            first_carbon_atom_index: carbon_bonds[0][1],
+                            second_carbon_atom_index: carbon_bonds[1][1]
                         }
                     }
                 }
@@ -212,28 +216,6 @@ const FunctionalGroups = (atoms) => {
         ).filter((item) => {
             return item !== false
         })
-
-
-
-
-        if ((canonical_SMILES.indexOf("CO1") === -1 && canonical_SMILES.indexOf("C(O1") === -1)
-            || canonical_SMILES.substr(canonical_SMILES.length -1) === "O" || canonical_SMILES.indexOf("=O")!==-1) {
-            return false
-        }
-
-        /*
-        Atoms to the left of C1 are R1 atoms
-        Atoms to the right of C1(.*) are R2 atoms
-        Atoms branching off epoxide C and not O1 are R3 and R4 atoms
-        */
-
-        return [
-            "O",
-            canonical_SMILES.match(/^(.*)C1/)===null?"H":canonical_SMILES.match(/^(.*)C1/).pop(),// R1
-            canonical_SMILES.match(/C1.*\)(.*)$/)===null?"H":canonical_SMILES.match(/C1.*\)(.*)$/).pop(), // R2
-            canonical_SMILES.match(/.*O1\)\((.*?)\)/)===null?"H":canonical_SMILES.match(/.*O1\)\((.*?)\)/).pop(), // R3
-            canonical_SMILES.match(/.*O1\)\(.*?\)(.*)\)/)  === null? "H":canonical_SMILES.match(/.*O1\)\(.*?\)(.*)\)/).pop()//R4
-        ]
 
     }
 
@@ -243,16 +225,26 @@ const FunctionalGroups = (atoms) => {
         if (glycol()){
             return false
         }
-        if (canonical_SMILES[canonical_SMILES.length- 2] !== "CO" && canonical_SMILES[canonical_SMILES.length- 4] !== "C(O)" && canonical_SMILES[canonical_SMILES.length-2] !== ")O" ) {
-            return false
-        }
-
-        return [
-            "OH",
-            canonical_SMILES[canonical_SMILES.length- 2] !== "CO"?canonical_SMILES.match(/(.*)O/).pop():canonical_SMILES.match(/(.*)\(O/).pop()
-        ]
-
-
+        
+        // Look for oxygen atom with 1 hydrogen bond, 1 carbon bond, and 2 lone pairs
+        return atoms.map(
+            (atom, atom_index) => {
+                const carbon_bonds = __carbonBonds(atom)
+                if (atom[0] === "O" 
+                    && __lonePairs(atom).length === 2
+                    && __hydrogenBonds(atom).length === 1
+                    && carbon_bonds.length === 1
+                   ){
+                    const carbon_atom_index = carbon_bonds[0][0]
+                    return {
+                        atom_index: atom,
+                        carbon_bonds_index: carbon_bonds[0][1]
+                    }
+                }
+            }
+        ).filter((item) => {
+            return item !== false
+        })
     }
 
     const aldehyde = () => {
