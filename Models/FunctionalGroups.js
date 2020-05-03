@@ -306,53 +306,44 @@ const FunctionalGroups = (atoms) => {
         )     
     }
 
-    const terminalAlkene = () => {
-        // C=CCC1=CC2=C(C=C1)OCO2
-        return canonical_SMILES.indexOf("C=C")===0?[canonical_SMILES]:false
-    }
-
-    const __split_alkene = (left, SMILES, right ) => {
-        const alkene_groups = canonical_SMILES.match(/(.*?C[0-9]*?)\=(C[0-9]*.*)/)
-// console.log(alkene_molecule.CanonicalSMILES.match(/(.*?C[0-9]*?)\=(C[0-9]*.*)/))
-        /*
-        [ 'C=CCC1=CC2=C(C=C1)OCO2',
-          'C',
-          'CCC1=CC2=C(C=C1)OCO2',
-          index: 0,
-          input: 'C=CCC1=CC2=C(C=C1)OCO2' ]
-         */
-        if (alkene_groups === null) {
-            return false
-        }
-        return [[left + alkene_groups[1], alkene_groups[2] + right]]
-    }
-
-
     const alkene = () => {
-        // C=CCC1=CC2=C(C=C1)OCO2
-
-        const alkene_groups_formatted = __split_alkene("", canonical_SMILES, "")
-
-        if (alkene_groups_formatted===false) {
-            return false
-        }
-
-        const alkene_group = __split_alkene(alkene_groups_formatted[0], alkene_groups_formatted[0], "")
-
-
-        alkene_groups_formatted.push(alkene_group)
-        return alkene_groups_formatted
-
-        /*
-        return alkene_groups_formatted.reduce(
-           (total, currentValue, currentIndex, arr)=> {
-               const alkene_group = __split_alkene("", canonical_SMILES, "")
-           },
-            alkene_groups_formatted
-            )
-            */
+        
+        // Look for carbon carbon double bonds
+        return atoms.map(
+            (atom, carbon_atom_index) => {
+                const carbon_double_bonds = _doubleCarbonBonds(atom)
+                if (atom[0] === "C" && carbon_double_bonds.length === 1){
+                        const bonded_carbon_index = carbon_double_bonds[0][0]
+                        return {
+                            carbon_atom_index: atom,
+                            bonded_carbon_index: carbon_double_bonds[0][1]                       
+                        }                 
+                }
+                return false
+            }
+        ).filter((item) => {
+            return item !== false
+        })
+        
     }
 
+    
+    const terminalAlkene = () => {
+        const alkene_groups = alkene()
+        // Look for alkene groups where carbon atom has a hydrogen
+        return alkene_groups.filter(
+            (alkene_group) => {
+                const props = alkene_group.props()
+                const first_carbon_atom = alkene_group[props[0]]     
+                const second_carbon_atom = alkene_group[props[1]]
+                return __hydrogenBonds(first_carbon_atom).length > 0 ||
+                    __hydrogenBonds(second_carbon_atom).length > 0
+            }
+        )     
+        
+    }
+
+    
     const functionalGroups = {
         "ketone": ketone(),
         "tertiary_amine": tertiaryAmine(),
