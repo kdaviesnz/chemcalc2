@@ -271,7 +271,6 @@ const FunctionalGroups = (atoms) => {
         
         // In chemistry, an ester is a chemical compound derived from an acid (organic or inorganic) 
         // in which at least one –OH (hydroxyl) group is replaced by an –O–alkyl (alkoxy) group
-
         const k = ketone()
         const ketone_groups = ketone()
         if (ketone_groups.length === 0) {
@@ -292,7 +291,19 @@ const FunctionalGroups = (atoms) => {
     const methylKetone = () => {
         // CC(=O)CC1=CC2=C(C=C1)OCO2
         const k = ketone()
-        return k === false || (k[1]!=="C" && k[2] !=="C")?false:k
+        const ketone_groups = ketone()
+        if (ketone_groups.length === 0) {
+            return false
+        }
+
+        // Look for ketone groups where carbon atom has methyl group 
+        return ketone_groups.filter(
+            (ketone_group) => {
+                const props = ketone_group.props()
+                const carbon_atom = ketone_group[props[1]]               
+                return __methylGroupBonds(carbon_atom).length > 0
+            }
+        )     
     }
 
     const terminalAlkene = () => {
