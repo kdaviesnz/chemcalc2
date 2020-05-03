@@ -129,35 +129,22 @@ const FunctionalGroups = (atoms) => {
 
     const amine = () => {
         
-        // If no nitrogen atom return false
-        if (!__hasAtom("N")) {
-            return false
-        }
+        // In organic chemistry, amines are compounds and functional groups that contain a basic nitrogen atom with a lone pair.
         
+        // If no nitrogen atom with a lone pair return false
+        return atoms.map(
+            (atom, atom_index) => {
+                if atom[0] === "N" && __lonePairs(atom).length === 1){
+                    return {
+                        atom_index: atom
+                    }
+                }
+            }
+        ).filter((item) => {
+            return item !== false
+        })
         
-        
-
-        if (!molecule_json_object.CanonicalSMILES) {
-            console.log('FunctionalGroups.js (amine) error getting smiles')
-            console.log(molecule_json_object)
-            process.exit()
-
-        }
-        if (molecule_json_object.CanonicalSMILES.indexOf("N") === -1) {
-            return false
-        }
-
-        const m1 = canonical_SMILES.match(/(.*)\(.*\)N/)
-        return [
-            "N",
-            canonical_SMILES.substr(canonical_SMILES.indexOf("N") + 1).match(/\(.*\)/) === null ? "H" :
-                canonical_SMILES.substr(canonical_SMILES.indexOf("N") + 1).match(/\(.*\)/) === null ? "H" : canonical_SMILES.substr(canonical_SMILES.indexOf("N") + 1).match(/\(.*\)/).pop(), // C
-
-            m1===null?"H":m1[0].substr(0,m1[0].length-1), // (m[0].length>1?”(“+m[0].substr(0,m[0].length-1)+”)”:””) + “(“ + m[1] + “)”
-            canonical_SMILES.substr(canonical_SMILES.indexOf("N") + 1).replace(/\(.*\)/, "") // C
-
-        ]
-
+               
     }
 
     const primaryAmine = () => {
