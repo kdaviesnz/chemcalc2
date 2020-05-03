@@ -261,9 +261,10 @@ const FunctionalGroups = (atoms) => {
                         if (carbon_carbon_bonds.length > 0) {
                             return carbon_carbon_bonds.map(
                                 (_child_carbon_atom, _child_carbon_atom_index) => {
-                                    if (_alcoholGroupBonds(_child_carbon_atom).length > 0) {
-                                        const child_oxygen_atom_index = _alcoholGroupBonds[0][0]
-                                        const child_oxygen_atom = _alcoholGroupBonds[0][1]
+                                    const alcohol_group_bonds = __alcoholGroupBonds(_child_carbon_atom, _child_carbon_atom_index)
+                                    if (alcohol_group_bonds.length > 0) {
+                                        const child_oxygen_atom_index = alcohol_group_bonds[0][0]
+                                        const child_oxygen_atom = alcohol_group_bonds[0][1]
                                         return {
                                             oxygen_atom_index: atom,
                                             carbon_bonds[0][0]:carbon_atom,
@@ -290,7 +291,7 @@ const FunctionalGroups = (atoms) => {
         // If no nitrogen atom with a lone pair return false
         return atoms.map(
             (atom, atom_index) => {
-                if (atom[0] === "N" && __lonePairs(atom).length === 1){
+                if (atom[0] === "N" && __lonePairs(atom, atom_index).length === 1){
                     return {
                         atom_index: atom
                     }
@@ -311,8 +312,8 @@ const FunctionalGroups = (atoms) => {
         return amine_groups.filter(
             (amine_group) => {
                 const props = amine_group.props()
-                const atom = amine_group[props[0]]
-                return __hydrogenBonds(atom).length === 2
+                const atom = amine_group[props[1]]
+                return __hydrogenBonds(atom, props[0]).length === 2
             }
         )
     }
@@ -325,8 +326,8 @@ const FunctionalGroups = (atoms) => {
         return amine_groups.filter(
             (amine_group) => {
                 const props = amine_group.props()
-                const atom = amine_group[props[0]]
-                return __hydrogenBonds(atom).length === 1
+                const atom = amine_group[props[1]]
+                return __hydrogenBonds(atom, props[0]).length === 1
             }
         )
     }
@@ -340,8 +341,8 @@ const FunctionalGroups = (atoms) => {
         return amine_groups.filter(
             (amine_group) => {
                 const props = amine_group.props()
-                const atom = amine_group[props[0]]
-                return __hydrogenBonds(atom).length === 0
+                const atom = amine_group[props[1]]
+                return __hydrogenBonds(atom,props[0] ).length === 0
             }
         )
     }
@@ -354,7 +355,7 @@ const FunctionalGroups = (atoms) => {
          */
         return atoms.map(
             (atom, oxygen_atom_index) => {
-                const carbon_bonds = _carbonBonds(atom)
+                const carbon_bonds = _carbonBonds(atom, oxygen_atom_index)
                 if (atom[0] === "O" && carbon_bonds(atom).length === 2){
                     // Verify that the carbon atoms are bonded to each other and the oxygen
                     if (__atomsAreBonded(carbon_bonds[0][1], carbon_bonds[1][1]) &&
@@ -385,10 +386,10 @@ const FunctionalGroups = (atoms) => {
         // Look for oxygen atom with 1 hydrogen bond, 1 carbon bond, and 2 lone pairs
         return atoms.map(
             (atom, atom_index) => {
-                const carbon_bonds = __carbonBonds(atom)
+                const carbon_bonds = __carbonBonds(atom, atom_index)
                 if (atom[0] === "O" 
-                    && __lonePairs(atom).length === 2
-                    && __hydrogenBonds(atom).length === 1
+                    && __lonePairs(atom,atom_index ).length === 2
+                    && __hydrogenBonds(atom, atom_index).length === 1
                     && carbon_bonds.length === 1
                    ){
                     const carbon_atom_index = carbon_bonds[0][0]
@@ -417,7 +418,7 @@ const FunctionalGroups = (atoms) => {
             (ketone_group) => {
                 const props = ketone_group.props()
                 const carbon_atom = ketone_group[props[1]]
-                return __hydrogenBonds(carbon_atom).length > 0
+                return __hydrogenBonds(carbon_atom, props[0]).length > 0
             }
         )       
         
