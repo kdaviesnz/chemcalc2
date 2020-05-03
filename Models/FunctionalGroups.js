@@ -92,18 +92,26 @@ const FunctionalGroups = (atoms) => {
 
         // Next take each group and see if it is connected to a CC(O) group.
         atoms.map(
-            (atom) => {
+            (atom, oxygen_atom_index) => {
                 if (atom[0] === 'O') {
                     const carbon_bonds = __carbonBonds(atom)
                     if (__hydrogenBonds(atom).length === 3 &&  carbon_bonds.length) { // 3 hydrogens, 1 carbon
-                        const carbon_atom = carbon_bonds[0]
+                        const carbon_atom_index = carbon_bonds[0][0]
+                        const carbon_atom = carbon_bonds[0][1] // first element is index of atom
                         // Now check of carbon atom has a carbon atom with OH group attached.
                         const carbon_carbon_bonds = _carbonBonds(carbon_atom)
                         if (carbon_carbon_bonds.length > 0) {
                             return carbon_carbon_bonds.map(
-                                (_child_carbon_atom) => {
+                                (_child_carbon_atom, _child_carbon_atom_index) => {
                                     if (_alcoholGroupBonds(_child_carbon_atom).length > 0) {
-                                        return {}
+                                        const child_oxygen_atom_index = _alcoholGroupBonds[0][0]
+                                        const child_oxygen_atom = _alcoholGroupBonds[0][1]
+                                        return {
+                                            oxygen_atom_index: atom,
+                                            carbon_bonds[0][0]:carbon_atom,
+                                            _child_carbon_atom_index: _child_carbon_atom,
+                                            child_oxygen_atom_index: child_oxygen_atom
+                                        }
                                     }
                                     return false
                                 }
