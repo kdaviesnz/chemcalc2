@@ -45,8 +45,54 @@ const FunctionalGroups = (atoms) => {
         }
 
     }
+    
+    const water = () => {
 
-    const hydrochloricacid = () => {
+        return atoms.map(
+            (atom, atom_index) => {
+                const carbon_bonds = __carbonBonds(atom)
+                if (atom[0] === "O" 
+                   
+                    && __hydrogenBonds(atom).length === 2
+                    
+                   ){
+                    
+                    return {
+                        atom_index: atom,
+                        
+                    }
+                }
+            }
+        ).filter((item) => {
+            return item !== false
+        })    
+
+    }
+
+    const protonated_water = () => {
+
+        return atoms.map(
+            (atom, atom_index) => {
+                const carbon_bonds = __carbonBonds(atom)
+                if (atom[0] === "O" 
+                   
+                    && __hydrogenBonds(atom).length === 3
+                    
+                   ){
+                    
+                    return {
+                        atom_index: atom,
+                        
+                    }
+                }
+            }
+        ).filter((item) => {
+            return item !== false
+        })    
+
+    }
+    
+    const hydrochloric_acid = () => {
 
         // If no chlorine atom then not hydrochloricacid
         if (!__hasAtom("Cl")) {
@@ -55,6 +101,27 @@ const FunctionalGroups = (atoms) => {
         
         // If no hydrogen atom then not hydrochloricacid
         if (!__hasAtom("H")) {
+            return false
+        }
+        
+        if (atoms.length !==2) {
+            return false
+        }
+        
+        return [
+            atoms
+         ]
+
+    }
+    
+    const deprotonated_hydrochloric_acid = () => {
+
+        // If no chlorine atom then not hydrochloricacid
+        if (!__hasAtom("Cl")) {
+            return false
+        }       
+          
+        if (atoms.length !==1) {
             return false
         }
         
@@ -376,8 +443,10 @@ const FunctionalGroups = (atoms) => {
         "methyl_ketone": methylKetone(),
         "terminal_alkene": terminalAlkene(),
         "alkene": alkene()
-        "hydrochloric_acid": hydrochloricacid()
-
+        "hydrochloric_acid": hydrochloric_acid(),
+        "deprotonated_hydrochloric_acid": deprotonated_hydrochloric_acid(),
+        "water": water(),
+        "deprotonated_water": deprotonated_water()
     }
 
     const functionalGroupsList = () => {
