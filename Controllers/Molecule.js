@@ -291,6 +291,11 @@ H
                 test_mode = true
             }
                 
+            if (test_mode) {
+                molecule_index.should.be.Equal(2)
+                atom_or_atomic_symbol[0].should.be.Equal("H")
+            }
+            
             //  HCl + H2O <-> Cl- + H3O+
             // mmolecule is HCl
             // Removing hydrogen from HCl
@@ -308,14 +313,24 @@ H
                 atom = atom_or_atomic_symbol
             }
 
+            if (test_mode) {
+                atom_index.should.be.Equal(0)             
+            }
+            
             if (atom_index === false) {
                 return container
             }
 
             // Hydrogen atom from HCl
             const atom_to_remove = mmolecule[atom_index]
+            if (test_mode) {
+                atom_to_remove[0].should.be.Equal("H")             
+            }
 
             const bond_count = _bondCount(atom_to_remove)
+            if (test_mode) {
+                bond_count.should.be.Equal(1)             
+            }
 
             if (bond_count===0) {
                 return container
@@ -323,7 +338,13 @@ H
 
             // Remove electrons
             const electron_to_remove_index = __electronToRemoveIndex(mmolecule[atom_index])
+            if (test_mode) {
+                electron_to_remove_index.should.be.Equal(1)             
+            }
+                        
             const electron = mmolecule[atom_index][4+electron_to_remove_index]
+            electron.should.be.a.String()
+            
             if (mmolecule[atom_index][0]==='H') {
                 mmolecule[atom_index].slice(4)
             } else {
@@ -338,13 +359,21 @@ H
                 return typeof current_molecule_atom !== "string" && typeof current_molecule_atom.length === "number" && current_molecule_atom.indexOf(electron) !== false
                     ?index:carry
             }, false)
-
+            if (test_mode) {
+                bonded_atom_index.should.be.Equal(2)             
+            }
+                   
             if (bonded_atom_index === false) {
                 return container
             }
 
             // remove shared electron
             const bonded_atom = mmolecule[bonded_atom_index]
+            if (test_mode) {
+                bonded_atom[0].should.be.Equal("H")             
+            }
+            
+          
             bonded_atom.push(electron)
 
            // bonded_atom[bonded_atom.indexOf(electron)] = null
