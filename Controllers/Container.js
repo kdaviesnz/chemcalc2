@@ -61,6 +61,12 @@ class CContainer {
                 // HCL is first element
                 if (this.container[1][0] <= this.container[2][0]) {
 
+                    var test_mode = false
+                    if (this.container[1][2][0] === "Cl" && this.container[2][3][0] === "O") {
+                        test_mode = true
+                    }
+                    console.log(test_mode)
+
                     console.log("Got here")
                     console.log("container.js")
 

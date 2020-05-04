@@ -285,15 +285,15 @@ H
             return mmolecule
         },
         remove : (container, molecule_index, atom_or_atomic_symbol) => {
-            
+
             var test_mode = false
-            if (container[1][1][0] === "Cl" && container[2][1][0] === "O") {
+            if (container[1][2][0] === "Cl" && container[2][3][0] === "O") {
                 test_mode = true
             }
-                
+
             if (test_mode) {
-                molecule_index.should.be.Equal(2)
-                atom_or_atomic_symbol[0].should.be.Equal("H")
+                molecule_index.should.be.equal(1)
+                atom_or_atomic_symbol[0].should.be.equal("H")
             }
             
             //  HCl + H2O <-> Cl- + H3O+
@@ -314,7 +314,7 @@ H
             }
 
             if (test_mode) {
-                atom_index.should.be.Equal(0)             
+                atom_index.should.be.equal(1)
             }
             
             if (atom_index === false) {
@@ -324,12 +324,12 @@ H
             // Hydrogen atom from HCl
             const atom_to_remove = mmolecule[atom_index]
             if (test_mode) {
-                atom_to_remove[0].should.be.Equal("H")             
+                atom_to_remove[0].should.be.equal("H")
             }
 
             const bond_count = _bondCount(atom_to_remove)
             if (test_mode) {
-                bond_count.should.be.Equal(1)             
+                bond_count.should.be.equal(1)
             }
 
             if (bond_count===0) {
@@ -339,16 +339,16 @@ H
             // Remove electrons
             const electron_to_remove_index = __electronToRemoveIndex(mmolecule[atom_index])
             if (test_mode) {
-                electron_to_remove_index.should.be.Equal(1)             
+                electron_to_remove_index.should.be.equal(1)
             }
                         
             const electron = mmolecule[atom_index][4+electron_to_remove_index]
             electron.should.be.a.String()
             
             if (mmolecule[atom_index][0]==='H') {
-                mmolecule[atom_index].slice(4)
+                mmolecule[atom_index].splice(4)
             } else {
-                mmolecule[atom_index].slice(4 + electron_to_remove_index, 1)
+                mmolecule[atom_index].splice(4 + electron_to_remove_index, 1)
             }
 
             const bonded_atom_index = mmolecule.reduce((carry, current_molecule_atom, index)=>{
@@ -360,7 +360,7 @@ H
                     ?index:carry
             }, false)
             if (test_mode) {
-                bonded_atom_index.should.be.Equal(2)             
+                bonded_atom_index.should.be.equal(2)
             }
                    
             if (bonded_atom_index === false) {
@@ -370,7 +370,7 @@ H
             // remove shared electron
             const bonded_atom = mmolecule[bonded_atom_index]
             if (test_mode) {
-                bonded_atom[0].should.be.Equal("H")             
+                bonded_atom[0].should.be.equal("Cl")
             }
             
           
