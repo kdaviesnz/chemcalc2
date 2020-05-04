@@ -1,8 +1,10 @@
 //
 const AtomFactory = require('../Models/AtomFactory')
 const pKa = require('../Models/pKa')
+const should = require('should')
 
 const CMolecule = (mmolecule) => {
+    
 
     const __isShared = (electron) => {
         const shared_electrons =  mmolecule.filter(
@@ -283,6 +285,12 @@ H
             return mmolecule
         },
         remove : (container, molecule_index, atom_or_atomic_symbol) => {
+            
+            var test_mode = false
+            if (container[1][1][0] === "Cl" && container[2][1][0] === "O") {
+                test_mode = true
+            }
+                
             //  HCl + H2O <-> Cl- + H3O+
             // mmolecule is HCl
             // Removing hydrogen from HCl
