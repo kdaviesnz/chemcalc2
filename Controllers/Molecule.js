@@ -87,8 +87,12 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
       //  console.log(mmolecule)
        // process.exit()
         // pKa
-        mmolecule[0] = pKa(mmolecule.splice(1)
-       
+
+        mmolecule[0] = pKa(mmolecule.slice(1))
+//        console.log(mmolecule[0])
+  //      console.log("Controllers/Molecule.js")
+    //    process.exit()
+
         return mmolecule
 
     }
@@ -274,7 +278,7 @@ H
 
             }
             
-            mmolecule[0] = pKa(mmolecule.splice(1))
+            mmolecule[0] = pKa(mmolecule.slice(1))
             
             return mmolecule
         },
@@ -313,9 +317,9 @@ H
             const electron_to_remove_index = __electronToRemoveIndex(mmolecule[atom_index])
             const electron = mmolecule[atom_index][4+electron_to_remove_index]
             if (mmolecule[atom_index][0]==='H') {
-                mmolecule[atom_index].splice(4)
+                mmolecule[atom_index].slice(4)
             } else {
-                mmolecule[atom_index].splice(4 + electron_to_remove_index, 1)
+                mmolecule[atom_index].slice(4 + electron_to_remove_index, 1)
             }
 
             const bonded_atom_index = mmolecule.reduce((carry, current_molecule_atom, index)=>{
@@ -337,15 +341,15 @@ H
 
            // bonded_atom[bonded_atom.indexOf(electron)] = null
            // delete(bonded_atom[bonded_atom.indexOf(electron)])
-            bonded_atom.splice(bonded_atom.indexOf(electron), 1)
+            bonded_atom.slice(bonded_atom.indexOf(electron), 1)
 
             const bonded_atom_bonds_count = _bondCount(bonded_atom)
 
             mmolecule[bonded_atom_index] = bonded_atom
 
-            mmolecule.splice(atom_index,1)            
+            mmolecule.slice(atom_index,1)            
           
-            mmolecule[0] = pKa(mmolecule.splice(1))
+            mmolecule[0] = pKa(mmolecule.slice(1))
 
             container[molecule_index] = mmolecule
 

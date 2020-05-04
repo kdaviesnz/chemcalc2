@@ -34,8 +34,6 @@ const watermolecule = MoleculeFactory("water")
     'cfo6drik94nz8an',
     'cfo6drik94nz8ao' ] ]
  */
-console.log(watermolecule)
-process.exit()
 watermolecule.should.be.a.Array()
 watermolecule.length.should.be.equal(4)
 watermolecule[0].should.be.a.Number()
@@ -108,7 +106,7 @@ HCLController.bondCount(hcl[2]).should.be.equal(1)
 hcl.should.be.a.Array()
 hcl.length.should.be.equal(3)
 hcl[0].should.be.a.Number()
-hcl[0].should.be.a.equal(-7)
+hcl[0].should.be.a.equal(-6.3)
 hcl[1].should.be.a.Array()
 hcl[1].length.should.be.a.equal(6)
 hcl[1][0].should.be.a.String()
@@ -156,8 +154,18 @@ ccontainer.add("HCl",1)
 ccontainer.container.length.should.be.equal(2)
 ccontainer.container[0].should.be.equal(false)
 ccontainer.container[1].should.be.a.Array()
+// pKa of HCl is -6.3
+// pKa of water is 14
+
+
 ccontainer.add("water",1)
+console.log(ccontainer.container)
+console.log("test.js")
+process.exit()
+
 ccontainer.container.length.should.be.equal(3)
+
+console.log(ccontainer.container)
 
 const Clneg = ccontainer.container[1]
 Clneg.should.be.a.Array()

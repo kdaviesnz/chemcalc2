@@ -16,6 +16,9 @@ class CContainer {
                            this.MoleculeFactory(molecule_array_or_string))
         // Add item to container.
         this.container.push(molecule)
+        console.log("Container add")
+        console.log(this.container)
+        console.log("-----------")
         /*
         range.range(1,units,1).map(i)=>{
             this.container.push(molecule)
@@ -53,16 +56,31 @@ class CContainer {
                  // CC(=O)O (C2H4O2, acetic acid) + water (water is base and accepts proton)
                 // First element is pKa value
                 // Molecule with highest pka value is the base and accepts the proton (check)
+                // pKa of HCl is -6.3
+               // pKa of water is 14
+                // HCL is first element
                 if (this.container[1][0] <= this.container[2][0]) {
+
+                    console.log("Got here")
+                    console.log("container.js")
+
 
                     // Move proton from first molecule to second molecule
                     const proton_index = this.MoleculeController(this.container[1]).indexOf("H")
+
 
                     this.container = this.MoleculeController(this.container[1]).remove(
                         this.container,
                         1,
                         this.MoleculeController(this.container[1]).itemAt(proton_index)
                     ) // remove proton
+
+
+
+                    //console.log("proton_index: " + proton_index) // 1
+                    console.log(this.container)
+                    console.log("container.js")
+                    process.exit();
 
                     // last item of container will now be the proton from the first molecule
                     const proton = this.container[this.container.length-1][proton_index]
@@ -73,8 +91,6 @@ class CContainer {
 
                 } else {
 
-                    console.log('container 2')
-                    process.exit()
                     // Move proton from second molecule to first molecule
                     const proton_index = this.MoleculeController(this.container[2]).indexOf("H") // 2
                     this.container = this.MoleculeController(this.container[2]).remove(

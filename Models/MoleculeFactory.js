@@ -11,15 +11,21 @@ const MoleculeFactory = (canonicalSmiles) => {
     //SMILESparser = Canonical_SMILESParser(canonicalSmiles)
 
     const _atoms = () => {
-        return AtomsFactory(canonicalSmiles)
+        const a = AtomsFactory(canonicalSmiles)
+        return a
     }
+
+    const atoms = _atoms()
+//    console.log("MoleculeFactory")
+  //  console.log(atoms)
+//    process.exit()
 
 
     // // MOLECULE MODEL
     // // pKa, atom, atom, atom ...
     return [
-        pKa(_atoms()),
-        ..._atoms()
+        pKa(atoms),
+        ...atoms
     ]
 
 }

@@ -1,5 +1,6 @@
 const Set = require('./Set')
-const FunctionalGroups = (atoms) => {
+const FunctionalGroups = (fg_atoms) => {
+
 
     // https://www.masterorganicchemistry.com/2010/06/18/know-your-pkas/
 
@@ -7,7 +8,7 @@ const FunctionalGroups = (atoms) => {
     //[[ atomic symbol, proton count, valence count,  number of bonds, velectron1, velectron2, velectron3 ]]
 
     const __lonePairs = (atom, current_atom_index) => {
-        const atom_electrons = atom.splice(4)
+        const atom_electrons = atom.slice(4)
         return atom_electrons.filter(
             (atom_electron) => {                
                 return atoms.filter(
@@ -15,7 +16,7 @@ const FunctionalGroups = (atoms) => {
                         if (current_atom_index === _atom_index) {
                             return false
                         }
-                        const _atom_electrons = _atom.splice(4)
+                        const _atom_electrons = _atom.slice(4)
                         return _atom_electrons.indexOf(atom_electron) > -1
                     }
                 ).length === 0
@@ -25,8 +26,8 @@ const FunctionalGroups = (atoms) => {
     }
     
     const __alcoholGroupBonds = (atom, current_atom_index) => {
-        const atom_electrons = atom.splice(4)
-        return atoms.map(
+        const atom_electrons = atom.slice(4)
+        return fg_atoms.map(
             (_atom, _atom_index) => {
                 
                 if (_atom[0] !== "O" || current_atom_index === _atom_index) {
@@ -47,15 +48,19 @@ const FunctionalGroups = (atoms) => {
             }
         )  
     }
-    
+
     const __Bonds = (atom, current_atom_index, atomic_symbol, bond_type) => {
-        const atom_electrons = atom.splice(4)
-        return atoms.map(
+        const atom_electrons = atom.slice(4)
+        const r =  fg_atoms.map(
             (_atom, _atom_index) => {
+
+
                 if (_atom[0] !== atomic_symbol || current_atom_index === _atom_index) {
                     return false
                 }
-                const shared_electrons = Set().intersection(atom_electrons, _atom.splice(4))
+
+                const shared_electrons = Set().intersection(atom_electrons, _atom.slice(4))
+
                 if (  shared_electrons.length === bond_type ) {
                     return [
                         _atom_index,
@@ -64,25 +69,34 @@ const FunctionalGroups = (atoms) => {
                 }
                 return false
             }
+        ).filter(
+            (item) => {
+                return item !== false
+            }
         )
+
+        return r
     }
 
     const __carbonBonds = (atom, atom_index) => {
-        return __Bonds(atom, atom_index, "C", 1)
+        const b =  __Bonds(atom, atom_index, "C", 2)
+        return b
+
     }
     
     const __hydrogenBonds = (atom, atom_index) => {
-        return __Bonds(atom,  atom_index, "H", 1)
+        return __Bonds(atom,  atom_index, "H", 2)
     }
     
     const __hasAtom = (atomic_symbol) => {
-        if (atoms.filter(
+        if (fg_atoms.filter(
             (atom) => {
                 return atom[0] === atomic_symbol
             }
         ).length === 0) {
             return false
         }
+        return true
     }
 
     const __singleOxygenBonds = (atom, current_atom_inde) => {
@@ -90,8 +104,8 @@ const FunctionalGroups = (atoms) => {
     }
 
     const __methylGroupBonds = (atom, current_atom_index) => {
-        const atom_electrons = atom.splice(4)
-        return atoms.map(
+        const atom_electrons = atom.slice(4)
+        return fg_atoms.map(
             (_atom, _atom_index) => {
 
                 if (_atom[0] !== "C" || current_atom_index === _atom_index) {
@@ -102,7 +116,7 @@ const FunctionalGroups = (atoms) => {
                     return false
                 }
 
-                const shared_electrons = Set().intersection(atom_electrons, _atom.splice(4)
+                const shared_electrons = Set().intersection(atom_electrons, _atom.slice(4))
                 if (  shared_electrons.length === 1 ) {
                     return [
                         _atom_index,
@@ -128,7 +142,7 @@ const FunctionalGroups = (atoms) => {
                 return atoms.filter(
                     (_atom, carbon_atom_index) => {
                         if (_atom[0] === "C") {
-                            const carbon_electrons = _atom.splice(4)
+                            const carbon_electrons = _atom.slice(4)
                             // Get intersection of carbon electrons and atom electrons. If count
                             // is 2 then we have a double bond
                             if (Set().intersection(carbon_electrons, atom.slice(4)).length === 2) {
@@ -150,42 +164,29 @@ const FunctionalGroups = (atoms) => {
     
     const water = () => {
 
-        return atoms.map(
+        return  fg_atoms.map(
             (atom, atom_index) => {
-                const carbon_bonds = __carbonBonds(atom, atom_index)
-                if (atom[0] === "O" 
-                   
-                    && __hydrogenBonds(atom, atom_index).length === 2
-                    
-                   ){
-                    
-                    return {
-                        atom_index: atom,
-                        
-                    }
+                if (atom[0] === "O" && __hydrogenBonds(atom, atom_index).length === 2){
+                    const res = {}
+                    res[atom_index] = atom
+                    return res
                 }
+                return false
             }
         ).filter((item) => {
             return item !== false
-        })    
+        })
 
     }
 
     const protonated_water = () => {
 
-        return atoms.map(
+        return fg_atoms.map(
             (atom, atom_index) => {
-                const carbon_bonds = __carbonBonds(atom, atom_index)
-                if (atom[0] === "O" 
-                   
-                    && __hydrogenBonds(atom, atom_index).length === 3
-                    
-                   ){
-                    
-                    return {
-                        atom_index: atom,
-                        
-                    }
+                if (atom[0] === "O" && __hydrogenBonds(atom, atom_index).length === 3){
+                    const res = {}
+                    res[atom_index] = atom
+                    return res
                 }
             }
         ).filter((item) => {
@@ -196,35 +197,35 @@ const FunctionalGroups = (atoms) => {
     
     const hydrochloric_acid = () => {
 
-        // If no chlorine atom then not hydrochloricacid
+        // If no chlorine atom then not hydrochloric acid
         if (!__hasAtom("Cl")) {
-            return false
+            return []
         }
         
-        // If no hydrogen atom then not hydrochloricacid
+        // If no hydrogen atom then not hydrochlorica acid
         if (!__hasAtom("H")) {
-            return false
+            return []
         }
         
-        if (atoms.length !==2) {
-            return false
+        if (fg_atoms.length !==2) {
+            return []
         }
         
         return [
-            atoms
+            fg_atoms
          ]
 
     }
     
     const deprotonated_hydrochloric_acid = () => {
 
-        // If no chlorine atom then not hydrochloricacid
+        // If no chlorine atom then not hydrochloric acid
         if (!__hasAtom("Cl")) {
-            return false
+            return []
         }       
           
         if (atoms.length !==1) {
-            return false
+            return []
         }
         
         return [
@@ -237,11 +238,11 @@ const FunctionalGroups = (atoms) => {
 
         // If no oxygen atom then not ketone
         if (!__hasAtom("O")) {
-            return false
+            return []
         }
             
         // If carbon double bond on oxygen then not ketone
-        return atoms.map(
+        return fg_atoms.map(
             __carbonToAtomDoubleBondCallback ("O")
         ).filter(
             (item) => {
@@ -251,11 +252,12 @@ const FunctionalGroups = (atoms) => {
 
     }
 
+
     const amide = () => {
 
         // If no nitrogen atom return false
         if (!__hasAtom("N")) {
-            return false
+            return []
         }
 
         /*
@@ -271,24 +273,24 @@ const FunctionalGroups = (atoms) => {
         Glycol, any of a class of organic compounds belonging to the alcohol family; in the molecule of a glycol, two hydroxyl (―OH) groups are attached to different carbon atoms. The term is often applied to the simplest member of the class, ethylene glycol.
          */
         // If there isn't at least 2 OH groups then not glycol
-        if (atoms.filter(
+        if (fg_atoms.filter(
             (atom) => {
                 return atom[0] === "O"
             }
         ).length < 2) {
-            return false
+            return []
         }
 
         // Next take each group and see if it is connected to a CC(O) group.
-        atoms.map(
+        return fg_atoms.map(
             (atom, oxygen_atom_index) => {
                 if (atom[0] === 'O') {
-                    const carbon_bonds = __carbonBonds(atom, oxygen_atom_index)
+                    const carbon_bonds = ___carbonBonds(atom, oxygen_atom_index)
                     if (__hydrogenBonds(atom, oxygen_atom_index).length === 3 &&  carbon_bonds.length) { // 3 hydrogens, 1 carbon
                         const carbon_atom_index = carbon_bonds[0][0]
                         const carbon_atom = carbon_bonds[0][1] // first element is index of atom
                         // Now check of carbon atom has a carbon atom with OH group attached.
-                        const carbon_carbon_bonds = _carbonBonds(carbon_atom, carbon_atom_index)
+                        const carbon_carbon_bonds = __carbonBonds(carbon_atom, carbon_atom_index)
                         if (carbon_carbon_bonds.length > 0) {
                             return carbon_carbon_bonds.map(
                                 (_child_carbon_atom, _child_carbon_atom_index) => {
@@ -319,15 +321,17 @@ const FunctionalGroups = (atoms) => {
     const amine = () => {
         
         // In organic chemistry, amines are compounds and functional groups that contain a basic nitrogen atom with a lone pair.
-        
+
+
         // If no nitrogen atom with a lone pair return false
-        return atoms.map(
+        return fg_atoms.map(
             (atom, atom_index) => {
                 if (atom[0] === "N" && __lonePairs(atom, atom_index).length === 1){
                     return {
                         atom_index: atom
                     }
                 }
+                return false
             }
         ).filter((item) => {
             return item !== false
@@ -339,7 +343,7 @@ const FunctionalGroups = (atoms) => {
     const primaryAmine = () => {
         const amine_groups = amine()
         if (amine_groups.length ===  0) {
-            return false
+            return []
         }
         return amine_groups.filter(
             (amine_group) => {
@@ -353,7 +357,7 @@ const FunctionalGroups = (atoms) => {
     const secondaryAmine = () => {
         const amine_groups = amine()
         if (amine_groups.length ===  0) {
-            return false
+            return []
         }
         return amine_groups.filter(
             (amine_group) => {
@@ -367,8 +371,9 @@ const FunctionalGroups = (atoms) => {
 
     const tertiaryAmine = () => {
         const amine_groups = amine()
+
         if (amine_groups.length ===  0) {
-            return false
+            return []
         }
         return amine_groups.filter(
             (amine_group) => {
@@ -385,10 +390,10 @@ const FunctionalGroups = (atoms) => {
         /*
         An epoxide is a cyclic ether with a three-atom ring (OCC). This ring approximates an equilateral triangle, which makes it strained, and hence highly reactive, more so than other ethers
          */
-        return atoms.map(
+        return fg_atoms.map(
             (atom, oxygen_atom_index) => {
-                const carbon_bonds = _carbonBonds(atom, oxygen_atom_index)
-                if (atom[0] === "O" && carbon_bonds(atom).length === 2){
+                const carbon_bonds = __carbonBonds(atom, oxygen_atom_index)
+                if (atom[0] === "O" && carbon_bonds.length === 2){
                     // Verify that the carbon atoms are bonded to each other and the oxygen
                     if (__atomsAreBonded(carbon_bonds[0][1], carbon_bonds[1][1]) &&
                     __atomsAreBonded(atom, carbon_bonds[0][1]) && __atomsAreBonded(atom, carbon_bonds[1][1])) {
@@ -412,11 +417,11 @@ const FunctionalGroups = (atoms) => {
     const alcohol = () => {
 
         if (glycol()){
-            return false
+            return []
         }
         
         // Look for oxygen atom with 1 hydrogen bond, 1 carbon bond, and 2 lone pairs
-        return atoms.map(
+        return fg_atoms.map(
             (atom, atom_index) => {
                 const carbon_bonds = __carbonBonds(atom, atom_index)
                 if (atom[0] === "O" 
@@ -442,7 +447,7 @@ const FunctionalGroups = (atoms) => {
         // consisting of a carbonyl center with the carbon atom also bonded to hydrogen and to an R group, which is any generic alkyl or side chain.                       
         const ketone_groups = ketone()
         if (ketone_groups.length === 0) {
-            return false
+            return []
         }
         
         // Look for ketone groups where carbon atom has at least 1 hydrogen atom 
@@ -456,14 +461,18 @@ const FunctionalGroups = (atoms) => {
         
     }
 
+
     const ester = () => {
-        
+
+//        console.log("Functional groups Ester")
         // In chemistry, an ester is a chemical compound derived from an acid (organic or inorganic) 
         // in which at least one –OH (hydroxyl) group is replaced by an –O–alkyl (alkoxy) group
         const k = ketone()
         const ketone_groups = ketone()
+
+
         if (ketone_groups.length === 0) {
-            return false
+            return []
         }
 
         // Look for ketone groups where carbon atom has at least 1 single bonded oxygen atom 
@@ -482,7 +491,7 @@ const FunctionalGroups = (atoms) => {
         const k = ketone()
         const ketone_groups = ketone()
         if (ketone_groups.length === 0) {
-            return false
+            return []
         }
 
         // Look for ketone groups where carbon atom has methyl group 
@@ -498,7 +507,7 @@ const FunctionalGroups = (atoms) => {
     const alkene = () => {
         
         // Look for carbon carbon double bonds
-        return atoms.map(
+        return fg_atoms.map(
             (atom, carbon_atom_index) => {
                 const carbon_double_bonds = __doubleCarbonBonds(atom, carbon_atom_index)
                 if (atom[0] === "C" && carbon_double_bonds.length === 1){
@@ -516,7 +525,9 @@ const FunctionalGroups = (atoms) => {
         
     }
 
-    
+
+
+
     const terminalAlkene = () => {
         const alkene_groups = alkene()
         // Look for alkene groups where carbon atom has a hydrogen
@@ -532,8 +543,8 @@ const FunctionalGroups = (atoms) => {
         
     }
 
-    
-    const functionalGroups = {
+    /*
+    const __functionalGroups = {
         "ketone": ketone(),
         "tertiary_amine": tertiaryAmine(),
         "secondary_amine": secondaryAmine(),
@@ -552,35 +563,22 @@ const FunctionalGroups = (atoms) => {
         "water": water(),
         "protonated_water": protonated_water()
     }
+    */
 
-    const functionalGroupsList = () => {
-        return [
-            functionalGroups.tertiary_amine ? "tertiary amine" : false,
-            functionalGroups.secondary_amine ? "secondary amine" : false,
-            functionalGroups.primary_amine ? "primary amine" : false,
-            functionalGroups.amide ? "amide" : false,
-            functionalGroups.epoxide ? "epoxide" : false,
-            functionalGroups.ester ? "ester" : false,
-            functionalGroups.glycol ? "glycol" : false,
-            functionalGroups.alcohol ? "alcohol" : false,
-            functionalGroups.aldehyde ? "aldehyde" : false,
-            functionalGroups.ketone ? "ketone" : false,
-            functionalGroups.methyl_ketone? "methyl ketone" : false,
-            functionalGroups.terminal_alkene? "terminal alkene" : false,
-            functionalGroups.alkene? "alkene" : false
-        ].filter(
-            (item) => {
-                return item !== false
-            }
-        )
 
+
+    const functionalGroups = {
+        "water": water(),
+        "hydrochloric_acid": hydrochloric_acid(),
+        "deprotonated_hydrochloric_acid":[],
+        "protonated_water":protonated_water()
     }
+
+
 
 
     return {
         functionalGroups: functionalGroups,
-        functionalGroupsList: functionalGroupsList
-
     }
 
 }
