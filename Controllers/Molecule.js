@@ -378,13 +378,13 @@ H
 
            // bonded_atom[bonded_atom.indexOf(electron)] = null
            // delete(bonded_atom[bonded_atom.indexOf(electron)])
-            bonded_atom.slice(bonded_atom.indexOf(electron), 1)
+            bonded_atom.splice(bonded_atom.indexOf(electron), 1)
 
             const bonded_atom_bonds_count = _bondCount(bonded_atom)
 
             mmolecule[bonded_atom_index] = bonded_atom
 
-            mmolecule.slice(atom_index,1)            
+            mmolecule.splice(atom_index,1)            
           
             mmolecule[0] = pKa(mmolecule.slice(1))
 
