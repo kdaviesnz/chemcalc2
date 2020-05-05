@@ -16,10 +16,6 @@ const MoleculeFactory = (canonicalSmiles) => {
     }
 
     const atoms = _atoms()
-//    console.log("MoleculeFactory")
-  //  console.log(atoms)
-//    process.exit()
-
 
     // // MOLECULE MODEL
     // // pKa, atom, atom, atom ...

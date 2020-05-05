@@ -61,19 +61,6 @@ const FunctionalGroups = (fg_atoms) => {
 
                 const shared_electrons = Set().intersection(atom_electrons, _atom.slice(4))
 
-                if (fg_atoms.length === 4) {
-                    console.log("Atom:")
-                    console.log(_atom)
-                    console.log("Current Atom electrons")
-                    console.log(atom_electrons)
-                    console.log("Atom electrons")
-                    console.log(_atom.slice(4))
-                    console.log("Shared electrons:")
-                    console.log(shared_electrons)
-                    console.log(bond_type)
-                    console.log("BOND")
-                }
-
                 if (  shared_electrons.length === bond_type ) {
                     return [
                         _atom_index,
@@ -87,11 +74,6 @@ const FunctionalGroups = (fg_atoms) => {
                 return item !== false
             }
         )
-
-        if (fg_atoms.length === 4) {
-            console.log(r)
-            console.log("__Bonds()")
-        }
 
         return r
     }
@@ -486,8 +468,7 @@ const FunctionalGroups = (fg_atoms) => {
 
     const ester = () => {
 
-//        console.log("Functional groups Ester")
-        // In chemistry, an ester is a chemical compound derived from an acid (organic or inorganic) 
+        // In chemistry, an ester is a chemical compound derived from an acid (organic or inorganic)
         // in which at least one –OH (hydroxyl) group is replaced by an –O–alkyl (alkoxy) group
         const k = ketone()
         const ketone_groups = ketone()

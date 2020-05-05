@@ -87,9 +87,6 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             // Get index of next free electron on second atom
             const atom2_electron_to_share_next_index = __electronToShareIndex(mmolecule[atom2_index]) // O
 
-           // console.log(atom2_electron_to_share_next_index) // 5
-           // process.exit()
-
             // add shared electron from second_atom to first atom
             mmolecule[atom1_index].push(mmolecule[atom2_index][4 + atom2_electron_to_share_next_index -1])
 
@@ -105,14 +102,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
 
         }
 
-      //  console.log(mmolecule)
-       // process.exit()
-        // pKa
-
         mmolecule[0] = pKa(mmolecule.slice(1))
-//        console.log(mmolecule[0])
-  //      console.log("Controllers/Molecule.js")
-    //    process.exit()
 
         return mmolecule
 
@@ -195,19 +185,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                     return carry
                 }, [])
                 /*
-                [ [[ 'Cl',
-    17,
-    7,
-    1,
-    'cfo6d12rk94vnif6',
-    'cfo6d12rk94vnif7',
-    'cfo6d12rk94vnif8',
-    'cfo6d12rk94vnif9',
-    'cfo6d12rk94vnifa',
-    'cfo6d12rk94vnifb',
-    'cfo6d12rk94vnifc',
-    'cfo6d12rk94vnifd' ],
-  1 ]]
+
 
                  */
                 // check for oxygen atom and if found return the index of hydrogen atom bonded to the oxygen atom
@@ -218,36 +196,17 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                     return o[0][1]
                 }
                 /*
-H
-[ 9999,
-  [ 'H', 1, 1, 1, 'cfo6d171k957iopn', 'cfo6d171k957iopg' ],
-  [ 'Cl',
-    17,
-    7,
-    1,
-    'cfo6d171k957iopg',
-    'cfo6d171k957ioph',
-    'cfo6d171k957iopi',
-    'cfo6d171k957iopj',
-    'cfo6d171k957iopk',
-    'cfo6d171k957iopl',
-    'cfo6d171k957iopm',
-    'cfo6d171k957iopn' ] ]
-[ [ [ 'Cl',
-      17,
-      7,
-      1,
-      'cfo6d171k957iopg',
-      'cfo6d171k957ioph',
-      'cfo6d171k957iopi',
-      'cfo6d171k957iopj',
-      'cfo6d171k957iopk',
-      'cfo6d171k957iopl',
-      'cfo6d171k957iopm',
-      'cfo6d171k957iopn' ],
-    1 ] ]
-
                  */
+                if (undefined === candidate_atoms[0] ) {
+                    //console.log(atom_or_atomic_symbol) // H
+                    //console.log(candidate_atoms) // []
+                    //console.log(mmolecule)
+                    //console.log("Molecule.js")
+                    //process.exit()
+                }
+                if (candidate_atoms.length === 0) {
+                    return false;
+                }
                 return candidate_atoms[0][1]
             }
             else { // we are not looking for hydrogen atom

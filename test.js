@@ -163,8 +163,6 @@ ccontainer.add("water",1)
 
 ccontainer.container.length.should.be.equal(3)
 
-console.log(ccontainer.container)
-
 const Clneg = ccontainer.container[1]
 Clneg.should.be.a.Array()
 Clneg.length.should.be.a.equal(2)
@@ -196,9 +194,6 @@ const HthreeO = ccontainer.container[2]
 HthreeO.should.be.a.Array()
 
 HthreeO[0].should.be.equal(-1.74) // pKa of H30+ is -1.74
-console.log(HthreeO)
-console.log("test.js")
-process.exit()
 
 HthreeO.length.should.be.a.equal(5)
 
@@ -234,7 +229,6 @@ range.range(4,HthreeO[2].length-1,1).map(
     }
 )
 
-//console.log(HthreeO)
 /*
 [ 9999,
   [ 'H', 1, 1, 1, 'a9fq447o4k9df3xo5', 'a9fq447o4k9df3xnz' ],
@@ -294,11 +288,10 @@ HthreeO[1].indexOf(HthreeO[3][HthreeO[3].length-1]).should.not.be.False()
 HthreeO[1].indexOf(HthreeO[2][HthreeO[2].length-2]).should.not.be.False()
 
 const ccontainer2 = new CContainer([false], MoleculeFactory, MoleculeController)
-console.log(Clneg)
 ccontainer2.add(Clneg,1)
-console.log(ccontainer2.container)
-//ccontainer2.add(HthreeO,1)
+ccontainer2.add(HthreeO,1)
 
+console.log(ccontainer2.container)
 console.log("All tests succeeded")
 
 

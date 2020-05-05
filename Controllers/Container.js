@@ -38,11 +38,17 @@ class CContainer {
             } else if (this.MoleculeController(this.container[1]).indexOf("H") === false && this.MoleculeController(this.container[2]).indexOf("H") !== false) {
                 // Here the substrate (base) has no proton and the reagent (acid) does.
                 // So we remove the proton from the reagent and add it to the substrate.
-                
-              
                 const proton_index = this.MoleculeController(this.container[2]).indexOf("H")
-                this.container = this.MoleculeController.remove(container, 2, this.MoleculeController(this.container[2]).itemAt(proton_index)) // remove proton
-                
+                proton_index.should.be.greaterThan(0);
+
+               // this.container = this.MoleculeController.remove(this.container, 2, this.MoleculeController(this.container[2]).itemAt(proton_index)) // remove proton
+                this.container = this.MoleculeController(this.container[2]).removeProton(
+                    this.container,
+                    2,
+                    this.MoleculeController(this.container[2]).itemAt(proton_index)
+                )
+
+
                 this.container[1] = this.MoleculeController(this.container[1]).push("H")
                 
             } else if (this.container[1].indexOf("H") !== false && this.MoleculeController(this.container[2]).indexOf("H") !== false) {
