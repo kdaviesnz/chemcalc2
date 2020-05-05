@@ -61,7 +61,7 @@ const FunctionalGroups = (fg_atoms) => {
 
                 const shared_electrons = Set().intersection(atom_electrons, _atom.slice(4))
 
-                if (fg_atoms.length === 44444) {
+                if (fg_atoms.length === 4) {
                     console.log("Atom:")
                     console.log(_atom)
                     console.log("Current Atom electrons")
@@ -70,6 +70,7 @@ const FunctionalGroups = (fg_atoms) => {
                     console.log(_atom.slice(4))
                     console.log("Shared electrons:")
                     console.log(shared_electrons)
+                    console.log(bond_type)
                     console.log("BOND")
                 }
 
@@ -87,10 +88,9 @@ const FunctionalGroups = (fg_atoms) => {
             }
         )
 
-        if (fg_atoms.length === 444444) {
+        if (fg_atoms.length === 4) {
             console.log(r)
             console.log("__Bonds()")
-            process.exit()
         }
 
         return r
@@ -201,13 +201,8 @@ const FunctionalGroups = (fg_atoms) => {
 
         const a = fg_atoms.map(
             (atom, atom_index) => {
-                if (atom[0] === "OOOO"){
-                    // && __hydrogenBonds(atom, atom_index).length === 3
-                    if (fg_atoms.length === 9999) {
-                        console.log("O")
-                        __hydrogenBonds(atom, atom_index)
-                        process.exit("protonated water hydrogen bonds")
-                    }
+                if (atom[0] === "O" && __hydrogenBonds(atom, atom_index).length === 3){
+                    //
                     const res = {}
                     res[atom_index] = atom
                     return res
@@ -217,17 +212,6 @@ const FunctionalGroups = (fg_atoms) => {
         ).filter((item) => {
             return item !== false
         })
-
-        if (fg_atoms.length === 44444) {
-            console.log("protonated_water 2")
-            process.exit()
-        }
-
-        if (fg_atoms.length === 44444) {
-            console.log(a)
-            console.log("protonated_water")
-            process.exit()
-        }
 
         return a
 
