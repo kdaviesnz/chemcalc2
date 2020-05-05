@@ -1,11 +1,12 @@
 // https://www.npmjs.com/package/should
 // npm i should
 const should = require('should')
+
+const MoleculeController = require('./Controllers/Molecule')
 const FunctionalGroups = require('./Models/FunctionalGroups')
 const Canonical_SMILESParser = require("./Models/CanonicalSMILESParser")
 const AtomFactory = require('./Models/AtomFactory')
 
-const MoleculeController = require('./Controllers/Molecule')
 const MoleculeFactory = require('./Models/MoleculeFactory')
 const PeriodicTable = require("./Models/PeriodicTable")
 const CContainer = require('./Controllers/Container')
@@ -159,9 +160,6 @@ ccontainer.container[1].should.be.a.Array()
 
 
 ccontainer.add("water",1)
-console.log(ccontainer.container)
-console.log("test.js")
-process.exit()
 
 ccontainer.container.length.should.be.equal(3)
 
@@ -170,6 +168,10 @@ console.log(ccontainer.container)
 const Clneg = ccontainer.container[1]
 Clneg.should.be.a.Array()
 Clneg.length.should.be.a.equal(2)
+Clneg[0].should.be.equal(2.86) // pKa of Cl- is 2.86
+
+
+
 Clneg[1].length.should.be.a.equal(12) // [Cl-] has 8 valence electrons
 Clneg[1][0].should.be.a.String()
 Clneg[1][0].should.be.equal("Cl")
@@ -189,7 +191,14 @@ range.range(4,Clneg[1].length-1,1).map(
 
 const HthreeO = ccontainer.container[2]
 
+
 HthreeO.should.be.a.Array()
+
+HthreeO[0].should.be.equal(-1.74) // pKa of H30+ is -1.74
+
+console.log("test.js")
+process.exit()
+
 HthreeO.length.should.be.a.equal(5)
 
 HthreeO[1][0].should.be.a.String()

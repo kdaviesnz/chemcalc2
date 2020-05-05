@@ -1,10 +1,29 @@
 //
 const AtomFactory = require('../Models/AtomFactory')
+const CAtom = require('./Atom')
 const pKa = require('../Models/pKa')
 const should = require('should')
 
 const CMolecule = (mmolecule) => {
-    
+
+    const __lonePairs = (atoms, atom, current_atom_index) => {
+
+        const atom_electrons = atom.slice(4)
+        const lone_pairs = atom_electrons.filter(
+            (atom_electron) => {
+                return atoms.filter(
+                    (_atom, _atom_index) => {
+                        if (current_atom_index === _atom_index) {
+                            return true
+                        }
+                        const _atom_electrons = _atom.slice(4)
+                        return _atom_electrons.indexOf(atom_electron) > -1
+                    }
+                ).length === 1
+            }
+        )
+        return lone_pairs
+    }
 
     const __isShared = (electron) => {
         const shared_electrons =  mmolecule.filter(
@@ -384,11 +403,19 @@ H
 
             mmolecule[bonded_atom_index] = bonded_atom
 
-            mmolecule.splice(atom_index,1)            
-          
+            mmolecule.splice(atom_index,1)
+
+
+            if (test_mode) {
+                mmolecule.length.should.be.equal(2)
+            }
+
             mmolecule[0] = pKa(mmolecule.slice(1))
 
             container[molecule_index] = mmolecule
+
+
+
 
             return container
 
@@ -397,7 +424,10 @@ H
             // mmolecule[item]
             return mmolecule[index]
         },
-        bondCount : _bondCount
+        bondCount : _bondCount,
+        lonePairs: (atom, current_atom_index) => {
+            return CAtom(atom, current_atom_index, mmolecule).lonePairs()
+        }
     }
 }
 

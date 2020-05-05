@@ -14,12 +14,12 @@ const FunctionalGroups = (fg_atoms) => {
                 return atoms.filter(
                     (_atom, _atom_index) => {
                         if (current_atom_index === _atom_index) {
-                            return false
+                            return true
                         }
                         const _atom_electrons = _atom.slice(4)
                         return _atom_electrons.indexOf(atom_electron) > -1
                     }
-                ).length === 0
+                ).length === 1
                          
             }
         ) 
@@ -54,12 +54,24 @@ const FunctionalGroups = (fg_atoms) => {
         const r =  fg_atoms.map(
             (_atom, _atom_index) => {
 
-
                 if (_atom[0] !== atomic_symbol || current_atom_index === _atom_index) {
                     return false
                 }
 
+
                 const shared_electrons = Set().intersection(atom_electrons, _atom.slice(4))
+
+                if (fg_atoms.length === 4) {
+                    console.log("Atom:")
+                    console.log(_atom)
+                    console.log("Current Atom electrons")
+                    console.log(atom_electrons)
+                    console.log("Atom electrons")
+                    console.log(_atom.slice(4))
+                    console.log("Shared electrons:")
+                    console.log(shared_electrons)
+                    console.log("BOND")
+                }
 
                 if (  shared_electrons.length === bond_type ) {
                     return [
@@ -74,6 +86,12 @@ const FunctionalGroups = (fg_atoms) => {
                 return item !== false
             }
         )
+
+        if (fg_atoms.length === 4) {
+            console.log(r)
+            console.log("__Bonds()")
+            process.exit()
+        }
 
         return r
     }
@@ -181,17 +199,37 @@ const FunctionalGroups = (fg_atoms) => {
 
     const protonated_water = () => {
 
-        return fg_atoms.map(
+        const a = fg_atoms.map(
             (atom, atom_index) => {
-                if (atom[0] === "O" && __hydrogenBonds(atom, atom_index).length === 3){
+                if (atom[0] === "OOOO"){
+                    // && __hydrogenBonds(atom, atom_index).length === 3
+                    if (fg_atoms.length === 9999) {
+                        console.log("O")
+                        __hydrogenBonds(atom, atom_index)
+                        process.exit("protonated water hydrogen bonds")
+                    }
                     const res = {}
                     res[atom_index] = atom
                     return res
                 }
+                return false
             }
         ).filter((item) => {
             return item !== false
-        })    
+        })
+
+        if (fg_atoms.length === 4) {
+            console.log("protonated_water 2")
+            process.exit()
+        }
+
+        if (fg_atoms.length === 4) {
+            console.log(a)
+            console.log("protonated_water")
+            process.exit()
+        }
+
+        return a
 
     }
     
@@ -224,12 +262,12 @@ const FunctionalGroups = (fg_atoms) => {
             return []
         }       
           
-        if (atoms.length !==1) {
+        if (fg_atoms.length !==1) {
             return []
         }
-        
+
         return [
-            atoms
+            fg_atoms
          ]
 
     }
@@ -570,7 +608,7 @@ const FunctionalGroups = (fg_atoms) => {
     const functionalGroups = {
         "water": water(),
         "hydrochloric_acid": hydrochloric_acid(),
-        "deprotonated_hydrochloric_acid":[],
+        "deprotonated_hydrochloric_acid":deprotonated_hydrochloric_acid(),
         "protonated_water":protonated_water()
     }
 

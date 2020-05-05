@@ -16,9 +16,6 @@ class CContainer {
                            this.MoleculeFactory(molecule_array_or_string))
         // Add item to container.
         this.container.push(molecule)
-        console.log("Container add")
-        console.log(this.container)
-        console.log("-----------")
         /*
         range.range(1,units,1).map(i)=>{
             this.container.push(molecule)
@@ -65,15 +62,13 @@ class CContainer {
                     if (this.container[1][2][0] === "Cl" && this.container[2][3][0] === "O") {
                         test_mode = true
                     }
-                    console.log(test_mode)
-
-                    console.log("Got here")
-                    console.log("container.js")
-
 
                     // Move proton from first molecule to second molecule
                     const proton_index = this.MoleculeController(this.container[1]).indexOf("H")
 
+                    if (test_mode) {
+                        proton_index.should.be.equal(1)
+                    }
 
                     this.container = this.MoleculeController(this.container[1]).remove(
                         this.container,
@@ -82,18 +77,59 @@ class CContainer {
                     ) // remove proton
 
 
-
-                    //console.log("proton_index: " + proton_index) // 1
-                    console.log(this.container)
-                    console.log("container.js")
-                    process.exit();
-
                     // last item of container will now be the proton from the first molecule
                     const proton = this.container[this.container.length-1][proton_index]
 
+                    if (test_mode) {
+                        proton.should.be.Array()
+                        proton.length.should.be.equal(6)
+                        proton[0].should.be.String()
+                        proton[0].should.be.equal("H")
+                    }
+
                     // add the proton to second molecule
                     this.MoleculeController(this.container[2]).push(proton)
-                    this.container.pop()
+
+                    if (test_mode) {
+                        this.container.length.should.be.equal(3)
+                        this.container[1].length.should.be.equal(2)
+                        this.container[1][1].length.should.be.equal(12)
+                        const lone_pairs = this.MoleculeController(this.container[1]).lonePairs(
+                            this.container[1][1],
+                            1)
+                        lone_pairs.length.should.equal(8)
+                        this.container[1][1][0].should.be.equal("Cl")
+                        this.container[2].length.should.be.equal(5)
+                        this.container[2][1].should.be.an.Array()
+                        this.container[2][1].length.should.be.equal(8)
+                        this.container[2][1][0].should.be.equal("H")
+                        this.container[2][1][1].should.be.equal(1)
+                        this.container[2][1][2].should.be.equal(1)
+                        this.container[2][1][3].should.be.equal(1)
+                        this.container[2][1][4].should.be.a.String()
+                        this.container[2][2].should.be.an.Array()
+                        this.container[2][2].length.should.be.equal(6)
+                        this.container[2][2][0].should.be.equal("H")
+                        this.container[2][2][1].should.be.equal(1)
+                        this.container[2][2][2].should.be.equal(1)
+                        this.container[2][2][3].should.be.equal(1)
+                        this.container[2][2][4].should.be.a.String()
+                        this.container[2][3].should.be.an.Array()
+                        this.container[2][3].length.should.be.equal(12)
+                        this.container[2][3][0].should.be.equal("O")
+                        this.container[2][3][1].should.be.equal(8)
+                        this.container[2][3][2].should.be.equal(6)
+                        this.container[2][3][3].should.be.equal(2)
+                        this.container[2][3][4].should.be.a.String()
+                        this.container[2][4].should.be.an.Array()
+                        this.container[2][4].length.should.be.equal(8)
+                        this.container[2][4][0].should.be.equal("H")
+                        this.container[2][4][1].should.be.equal(1)
+                        this.container[2][4][2].should.be.equal(1)
+                        this.container[2][4][3].should.be.equal(1)
+                        this.container[2][4][4].should.be.a.String()
+                    }
+
 
                 } else {
 
