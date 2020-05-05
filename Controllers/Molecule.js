@@ -265,8 +265,14 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         remove : (container, molecule_index, atom_or_atomic_symbol) => {
 
             var test_mode = false
-            if (container[1][2][0] === "Cl" && container[2][3][0] === "O") {
+            var test_mode_2 = false
+            
+            if (undefined !== container[1][2] && container[1][2][0] === "Cl" && container[2][3][0] === "O") {
                 test_mode = true
+            }
+            
+            if (container[1][1][0] === "Cl") {
+                test_mode_2 = true
             }
 
             if (test_mode) {
