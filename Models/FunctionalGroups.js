@@ -61,7 +61,7 @@ const FunctionalGroups = (fg_atoms) => {
 
                 const shared_electrons = Set().intersection(atom_electrons, _atom.slice(4))
 
-                if (fg_atoms.length === 4) {
+                if (fg_atoms.length === 44444) {
                     console.log("Atom:")
                     console.log(_atom)
                     console.log("Current Atom electrons")
@@ -87,7 +87,7 @@ const FunctionalGroups = (fg_atoms) => {
             }
         )
 
-        if (fg_atoms.length === 4) {
+        if (fg_atoms.length === 444444) {
             console.log(r)
             console.log("__Bonds()")
             process.exit()
@@ -218,12 +218,12 @@ const FunctionalGroups = (fg_atoms) => {
             return item !== false
         })
 
-        if (fg_atoms.length === 4) {
+        if (fg_atoms.length === 44444) {
             console.log("protonated_water 2")
             process.exit()
         }
 
-        if (fg_atoms.length === 4) {
+        if (fg_atoms.length === 44444) {
             console.log(a)
             console.log("protonated_water")
             process.exit()

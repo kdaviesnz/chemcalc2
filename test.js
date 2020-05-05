@@ -192,10 +192,11 @@ range.range(4,Clneg[1].length-1,1).map(
 const HthreeO = ccontainer.container[2]
 
 
+
 HthreeO.should.be.a.Array()
 
 HthreeO[0].should.be.equal(-1.74) // pKa of H30+ is -1.74
-
+console.log(HthreeO)
 console.log("test.js")
 process.exit()
 

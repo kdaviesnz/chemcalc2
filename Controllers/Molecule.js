@@ -427,6 +427,78 @@ H
         bondCount : _bondCount,
         lonePairs: (atom, current_atom_index) => {
             return CAtom(atom, current_atom_index, mmolecule).lonePairs()
+        },
+        removeProton: (container, molecule_index, atom_or_atomic_symbol) => {
+
+            var test_mode = false
+            if (container[1][2][0] === "Cl" && container[2][3][0] === "O") {
+                test_mode = true
+            }
+
+            if (test_mode) {
+                molecule_index.should.be.equal(1)
+                atom_or_atomic_symbol[0].should.be.equal("H")
+            }
+
+            //  HCl + H2O <-> Cl- + H3O+
+            // mmolecule is HCl
+            // Removing hydrogen from HCl
+            // HCl is the first molecule (molecule_index is 1)
+            // H2O is the second molecule
+            let atom = null
+            if (typeof atom_or_atomic_symbol === "string") {
+                // find index of atom in molecule with matching atomic symbol
+                atom_index = mmolecule.reduce((carry, current, index)=>{
+                    return typeof current !== "string" && typeof current.length === "number" && current[0] === atom_or_atomic_symbol?index:carry
+                }, false)
+                atom = AtomFactory(atom_or_atomic_symbol)
+            } else {
+                atom_index =  mmolecule.indexOf(atom_or_atomic_symbol)
+                atom = atom_or_atomic_symbol
+            }
+
+            if (test_mode) {
+                atom_index.should.be.equal(1)
+            }
+
+            if (atom_index === false) {
+                return container
+            }
+
+            // Hydrogen atom from HCl
+            const atom_to_remove = mmolecule[atom_index]
+            if (test_mode) {
+                atom_to_remove[0].should.be.equal("H")
+            }
+
+            const bond_count = _bondCount(atom_to_remove)
+            if (test_mode) {
+                bond_count.should.be.equal(1)
+            }
+
+            if (bond_count===0) {
+                return container
+            }
+
+            // Remove all electrons from proton
+            mmolecule[atom_index].splice(4)
+            mmolecule[atom_index].length.should.be.equal(4)
+
+            // Remove proton from molecule and add it to the container as a new molecule
+            const proton = mmolecule[atom_index]
+            mmolecule.splice(atom_index, 1)
+            container.push([null, proton])
+
+            if (test_mode) {
+                mmolecule.length.should.be.equal(2)
+            }
+
+            mmolecule[0] = pKa(mmolecule.slice(1))
+
+          //  container[molecule_index] = mmolecule
+
+            return container
+
         }
     }
 }

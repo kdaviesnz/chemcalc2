@@ -70,24 +70,21 @@ class CContainer {
                         proton_index.should.be.equal(1)
                     }
 
-                    this.container = this.MoleculeController(this.container[1]).remove(
+                    this.container = this.MoleculeController(this.container[1]).removeProton(
                         this.container,
                         1,
                         this.MoleculeController(this.container[1]).itemAt(proton_index)
-                    ) // remove proton
-
+                    )
 
                     // last item of container will now be the proton from the first molecule
                     const proton = this.container[this.container.length-1][proton_index]
+                    proton.should.be.Array()
+                    proton.length.should.be.equal(4)
+                    proton[0].should.be.String()
+                    proton[0].should.be.equal("H")
 
-                    if (test_mode) {
-                        proton.should.be.Array()
-                        proton.length.should.be.equal(6)
-                        proton[0].should.be.String()
-                        proton[0].should.be.equal("H")
-                    }
-
-                    // add the proton to second molecule
+                    // Move the proton to second molecule
+                    this.container.splice(this.container.length-1,1)
                     this.MoleculeController(this.container[2]).push(proton)
 
                     if (test_mode) {
@@ -101,7 +98,7 @@ class CContainer {
                         this.container[1][1][0].should.be.equal("Cl")
                         this.container[2].length.should.be.equal(5)
                         this.container[2][1].should.be.an.Array()
-                        this.container[2][1].length.should.be.equal(8)
+                        this.container[2][1].length.should.be.equal(6)
                         this.container[2][1][0].should.be.equal("H")
                         this.container[2][1][1].should.be.equal(1)
                         this.container[2][1][2].should.be.equal(1)
@@ -122,7 +119,7 @@ class CContainer {
                         this.container[2][3][3].should.be.equal(2)
                         this.container[2][3][4].should.be.a.String()
                         this.container[2][4].should.be.an.Array()
-                        this.container[2][4].length.should.be.equal(8)
+                        this.container[2][4].length.should.be.equal(6)
                         this.container[2][4][0].should.be.equal("H")
                         this.container[2][4][1].should.be.equal(1)
                         this.container[2][4][2].should.be.equal(1)
