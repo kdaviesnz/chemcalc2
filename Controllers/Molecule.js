@@ -301,13 +301,23 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 atom_index.should.be.equal(1)
             }
             
+            if (test_mode_2) {
+                atom_index.should.be.equal(1)
+            }
+            
+            
             if (atom_index === false) {
                 return container
             }
 
-            // Hydrogen atom from HCl
+            // Hydrogen atom from HCl / H3O
+            
             const atom_to_remove = mmolecule[atom_index]
             if (test_mode) {
+                atom_to_remove[0].should.be.equal("H")
+            }
+            
+            if (test_mode_2) {
                 atom_to_remove[0].should.be.equal("H")
             }
 
@@ -322,10 +332,15 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
 
             // Remove electrons
             const electron_to_remove_index = __electronToRemoveIndex(mmolecule[atom_index])
+           
             if (test_mode) {
                 electron_to_remove_index.should.be.equal(1)
             }
-                        
+                      
+            if (test_mode_2) {
+                electron_to_remove_index.should.be.equal(1)
+            }
+            
             const electron = mmolecule[atom_index][4+electron_to_remove_index]
             electron.should.be.a.String()
             
@@ -343,7 +358,12 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 return typeof current_molecule_atom !== "string" && typeof current_molecule_atom.length === "number" && current_molecule_atom.indexOf(electron) !== false
                     ?index:carry
             }, false)
+            
             if (test_mode) {
+                bonded_atom_index.should.be.equal(2)
+            }
+            
+            if (test_mode_2) {
                 bonded_atom_index.should.be.equal(2)
             }
                    
@@ -374,6 +394,10 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             if (test_mode) {
                 mmolecule.length.should.be.equal(2)
             }
+            
+            if (test_mode_2) {
+                mmolecule.length.should.be.equal(2)
+            }
 
             mmolecule[0] = pKa(mmolecule.slice(1))
 
@@ -396,8 +420,14 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         removeProton: (container, molecule_index, atom_or_atomic_symbol) => {
 
             var test_mode = false
-            if (container[1][2][0] === "Cl" && container[2][3][0] === "O") {
+            var test_mode_2 = false
+            
+            if (undefined !== container[1][2] && container[1][2][0] === "Cl" && container[2][3][0] === "O") {
                 test_mode = true
+            }
+            
+            if (container[1][1][0] === "Cl") {
+                test_mode_2 = true
             }
 
             if (test_mode) {
@@ -425,6 +455,10 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             if (test_mode) {
                 atom_index.should.be.equal(1)
             }
+            
+            if (test_mode_2) {
+                atom_index.should.be.equal(1)
+            }
 
             if (atom_index === false) {
                 return container
@@ -437,7 +471,12 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             }
 
             const bond_count = _bondCount(atom_to_remove)
+            
             if (test_mode) {
+                bond_count.should.be.equal(1)
+            }
+            
+            if (test_mode_2) {
                 bond_count.should.be.equal(1)
             }
 
@@ -455,6 +494,10 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             container.push([null, proton])
 
             if (test_mode) {
+                mmolecule.length.should.be.equal(2)
+            }
+            
+            if (test_mode_2) {
                 mmolecule.length.should.be.equal(2)
             }
 
