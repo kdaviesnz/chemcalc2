@@ -36,6 +36,13 @@ class CContainer {
                 this.container[2] = this.MoleculeController(this.container[2]).push("H")
                 
             } else if (this.MoleculeController(this.container[1]).indexOf("H") === false && this.MoleculeController(this.container[2]).indexOf("H") !== false) {
+                
+                var test_mode_2 = false
+                if (this.container[1][1][0] === "Cl" 
+                 ) {
+                        test_mode_2 = true
+                }
+                
                 // Here the substrate (base) has no proton and the reagent (acid) does.
                 // So we remove the proton from the reagent and add it to the substrate.
                 const proton_index = this.MoleculeController(this.container[2]).indexOf("H")
@@ -47,9 +54,42 @@ class CContainer {
                     2,
                     this.MoleculeController(this.container[2]).itemAt(proton_index)
                 )
+                
+                const proton = this.container[this.container.length-1][proton_index]
+                proton.should.be.Array()
+                proton.length.should.be.equal(4)
+                proton[0].should.be.String()
+                proton[0].should.be.equal("H")
 
+                // Move the proton to first molecule
+                this.container.splice(this.container.length-1,1)
+                this.MoleculeController(this.container[1]).push(proton)
 
-                this.container[1] = this.MoleculeController(this.container[1]).push("H")
+                if (test_mode) {
+                        this.container.length.should.be.equal(3)
+                        this.container[1].length.should.be.equal(2)
+                        this.container[1][1].length.should.be.equal(12)
+                        const lone_pairs = this.MoleculeController(this.container[1]).lonePairs(
+                            this.container[1][1],
+                            1)
+                        lone_pairs.length.should.equal(8)
+                        this.container[1][1][0].should.be.equal("Cl")
+                        this.container[2].length.should.be.equal(5)
+                        this.container[2][1].should.be.an.Array()
+                        this.container[2][1].length.should.be.equal(6)
+                        this.container[2][1][0].should.be.equal("H")
+                        this.container[2][1][1].should.be.equal(1)
+                        this.container[2][1][2].should.be.equal(1)
+                        this.container[2][1][3].should.be.equal(1)
+                        this.container[2][1][4].should.be.a.String()
+                        this.container[2][2].should.be.an.Array()
+                        this.container[2][2].length.should.be.equal(6)
+                        this.container[2][2][0].should.be.equal("H")
+                        this.container[2][2][1].should.be.equal(1)
+                        this.container[2][2][2].should.be.equal(1)
+                        this.container[2][2][3].should.be.equal(1)
+                }
+                // this.container[1] = this.MoleculeController(this.container[1]).push("H")
                 
             } else if (this.container[1].indexOf("H") !== false && this.MoleculeController(this.container[2]).indexOf("H") !== false) {
                  // Here both substrate and reagent has a proton.
