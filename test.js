@@ -146,7 +146,7 @@ hcl[2].indexOf(hcl[1][hcl[1].length-1]).should.not.be.False()
 hcl[1].indexOf(hcl[2][hcl[2].length-1]).should.not.be.False()
 
 
-const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController)
+const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1)
 
 // HCl + H2O <-> Cl- + H3O+
 //  CONTAINER MODEL
@@ -287,7 +287,7 @@ HthreeO[3].indexOf(HthreeO[1][HthreeO[1].length-2]).should.not.be.False()
 HthreeO[1].indexOf(HthreeO[3][HthreeO[3].length-1]).should.not.be.False()
 HthreeO[1].indexOf(HthreeO[2][HthreeO[2].length-2]).should.not.be.False()
 
-const ccontainer2 = new CContainer([false], MoleculeFactory, MoleculeController)
+const ccontainer2 = new CContainer([false], MoleculeFactory, MoleculeController, 2)
 ccontainer2.add(Clneg,1)
 ccontainer2.add(HthreeO,1)
 

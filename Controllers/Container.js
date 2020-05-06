@@ -4,10 +4,11 @@
 class CContainer {
 
     // container is a container model
-    constructor(container, MoleculeFactory, MoleculeController) {
+    constructor(container, MoleculeFactory, MoleculeController, test_number) {
         this.container = container
         this.MoleculeFactory = MoleculeFactory
         this.MoleculeController = MoleculeController
+        this.test_number = test_number
     }
    
     add(molecule_array_or_string, units) {
@@ -36,12 +37,9 @@ class CContainer {
                 this.container[2] = this.MoleculeController(this.container[2]).push("H")
                 
             } else if (this.MoleculeController(this.container[1]).indexOf("H") === false && this.MoleculeController(this.container[2]).indexOf("H") !== false) {
-                
-                var test_mode_2 = false
-                if (this.container[1][1][0] === "Cl" 
-                 ) {
-                        test_mode_2 = true
-                }
+
+                var test_mode = this.test_number ===1
+                var test_mode_2 = this.test_number ===2
                 
                 // Here the substrate (base) has no proton and the reagent (acid) does.
                 // So we remove the proton from the reagent and add it to the substrate.
@@ -54,16 +52,22 @@ class CContainer {
                     2,
                     this.MoleculeController(this.container[2]).itemAt(proton_index)
                 )
-                
-                const proton = this.container[this.container.length-1][proton_index]
-                proton.should.be.Array()
-                proton.length.should.be.equal(4)
-                proton[0].should.be.String()
-                proton[0].should.be.equal("H")
+
+                let proton = null
+                if (test_mode) {
+                    proton = this.container[this.container.length-1][proton_index]
+                }
+                if (test_mode_2) {
+                    proton = this.container[proton_index -1 ]
+                    proton.should.be.Array()
+                    proton[1].length.should.be.equal(4)
+                    proton[1][0].should.be.String()
+                    proton[1][0].should.be.equal("H")
+                }
 
                 // Move the proton to first molecule
                 this.container.splice(this.container.length-1,1)
-                this.MoleculeController(this.container[1]).push(proton)
+                this.MoleculeController(this.container[1]).push(proton, this.container, this.container.length-1)
 
                 if (test_mode) {
                         this.container.length.should.be.equal(3)
@@ -104,10 +108,7 @@ class CContainer {
                 // HCL is first element
                 if (this.container[1][0] <= this.container[2][0]) {
 
-                    var test_mode = false
-                    if (this.container[1][2][0] === "Cl" && this.container[2][3][0] === "O") {
-                        test_mode = true
-                    }
+                    var test_mode = this.test_number === 1
 
                     // Move proton from first molecule to second molecule
                     const proton_index = this.MoleculeController(this.container[1]).indexOf("H")
@@ -131,7 +132,7 @@ class CContainer {
 
                     // Move the proton to second molecule
                     this.container.splice(this.container.length-1,1)
-                    this.MoleculeController(this.container[2]).push(proton)
+                    this.MoleculeController(this.container[2]).push(proton, this.container)
 
                     if (test_mode) {
                         this.container.length.should.be.equal(3)

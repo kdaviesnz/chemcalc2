@@ -66,7 +66,7 @@ const CMolecule = (mmolecule) => {
         return atom_electron_to_remove_index
     }
 
-    const _makeCovalentBond = (atom, atom2_index) => {
+    const _makeCovalentBond = (atom, atom2_index, test_mode_2) => {
 
 
         mmolecule.push(atom)
@@ -82,7 +82,18 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         // Get index of first free electron on second atom
         const atom2_electron_to_share_index = __electronToShareIndex(mmolecule[atom2_index])
 
+
         if (mmolecule[atom1_index][0]==="H") {
+
+            if (test_mode_2) {
+                // Adding proton to Cl
+                // mmolecule[atom1_index] is the proton
+                //console.log(mmolecule[atom2_index])
+                //console.log(mmolecule[atom1_index])
+                mmolecule[1][0].should.be.equal("Cl")
+                console.log("_makeCovalentBond()")
+                process.exit()
+            }
 
             // Get index of next free electron on second atom
             const atom2_electron_to_share_next_index = __electronToShareIndex(mmolecule[atom2_index]) // O
@@ -220,31 +231,81 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 }
             }
         },
-        push : (atom_or_atomic_symbol) => {
+        push : (atom_or_atomic_symbol, container, molecule_index) => {
+
 
             // MOLECULE MODEL
 // pKa, atom, atom, atom ...
 // ATOM MODEL
 // atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
 
-            // Find index of atom to bond to.
-            // This must be atom with at least a lone pair.
-            const atom =  typeof atom_or_atomic_symbol === "string" ? AtomFactory(atom_or_atomic_symbol) : atom_or_atomic_symbol
-            const atom_to_bond_to_index = mmolecule.reduce((carry, current_molecule_atom, current_molecule_atom_index)=>{
+            var test_mode = container.test_number === 1
+            var test_mode_2 = container.test_number === 2
 
-                    if (typeof current_molecule_atom === "string" || typeof current_molecule_atom.length !== "number") {
-                        return carry
+            const atom = typeof atom_or_atomic_symbol === "string" ? AtomFactory(atom_or_atomic_symbol) : atom_or_atomic_symbol
+
+            var atom_to_bond_to_index = null;
+
+            if (test_mode_2) {
+
+                molecule_index.should.be.equal(4)
+
+                const atom_is_proton = atom[0] === "H" && atom.slice(4).length ===0
+
+                const r = container.reduce(
+                    (carry, molecule, molecule_index) => {
+//                        console.log(molecule)
+                        if (atom_is_proton) {
+                            // Look for lone pairs
+                           // console.log(molecule[1])
+                            const lone_pairs = CAtom(molecule[1], 1, mmolecule).lonePairs()
+                            if (lone_pairs.length > 0) {
+                                // Add proton to molecule
+                                // ---
+
+                                // ----
+                            }
+
+                        }
+                        process.exit("mm push")
                     }
-                    const bond_count = _bondCount(current_molecule_atom)
-                    const std_number_of_bonds = current_molecule_atom[3]
-                    return current_molecule_atom[0] !== "H"
-                    && std_number_of_bonds - bond_count < 0?
-                        carry:current_molecule_atom_index
-                }, false
-            )
+                )
+
+            } else {
+
+                // Find index of atom to bond to.
+                // This must be atom with at least a lone pair.
+
+                atom_to_bond_to_index = mmolecule.reduce((carry, current_molecule_atom, current_molecule_atom_index) => {
+
+                        if (typeof current_molecule_atom === "string" || typeof current_molecule_atom.length !== "number") {
+                            return carry
+                        }
+                        const bond_count = _bondCount(current_molecule_atom)
+                        const std_number_of_bonds = current_molecule_atom[3]
+                        return current_molecule_atom[0] !== "H"
+                        && std_number_of_bonds - bond_count < 0 ?
+                            carry : current_molecule_atom_index
+                    }, false
+                )
+            }
+
+
+            if (test_mode_2) {
+                atom_to_bond_to_index.should.be.equal(1) // Should be 1
+                console.log("mm push")
+                process.exit()
+            }
+
             if (atom_to_bond_to_index !== false) {
 
-                return _makeCovalentBond(atom, atom_to_bond_to_index) // return molecule
+                if (test_mode_2) {
+                    console.log(mmolecule)
+                    console.log(atom)
+                    process.exit()
+                }
+
+                return _makeCovalentBond(atom, atom_to_bond_to_index, test_mode_2) // return molecule
 
                 // push electron
                 // AtomController(atom).push(mmolecule[atom_to_bond_to_index])
@@ -457,7 +518,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             }
             
             if (test_mode_2) {
-                atom_index.should.be.equal(1)
+                atom_index.should.be.equal(4)
             }
 
             if (atom_index === false) {
@@ -498,7 +559,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             }
             
             if (test_mode_2) {
-                mmolecule.length.should.be.equal(2)
+                mmolecule.length.should.be.equal(4)
             }
 
             mmolecule[0] = pKa(mmolecule.slice(1))
