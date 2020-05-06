@@ -236,17 +236,19 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 }
             }
         },
-        push : (atom_or_atomic_symbol, container, molecule_index) => {
+        push : (atom_or_atomic_symbol, container, molecule_index, test_number) => {
 
+            const atom_is_proton = atom[0] === "H" && atom.slice(4).length ===0
+            if (test_number===1) {
+                
+            }
 
             // MOLECULE MODEL
 // pKa, atom, atom, atom ...
 // ATOM MODEL
 // atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
 
-            var test_mode = container.test_number === 1
-            var test_mode_2 = container.test_number === 2
-
+            
             const atom = typeof atom_or_atomic_symbol === "string" ? AtomFactory(atom_or_atomic_symbol) : atom_or_atomic_symbol
 
             var atom_to_bond_to_index = null;
@@ -255,7 +257,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
 
                 molecule_index.should.be.equal(4)
 
-                const atom_is_proton = atom[0] === "H" && atom.slice(4).length ===0
+                
 
                 const r = container.reduce(
                     (carry, molecule, molecule_index) => {
