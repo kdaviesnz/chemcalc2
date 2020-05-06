@@ -124,13 +124,12 @@ class CContainer {
                         this.MoleculeController(this.container[1]).itemAt(proton_index)
                     )
 
-                    if (this.test_number === 1111) {
-                        console.log("-------")
+                    if (this.test_number === 1) {                        
                         // Cl, H2O, proton
-                        console.log(this.container)
-                        console.log("-------")
-                        console.log("test 1 Container.js")
-                        process.exit()
+                        this.container[1][1][0].should.be.equal("Cl")
+                        this.container[2][1][0].should.be.equal("H")
+                        this.container[3][0][0].should.be.equal(null)
+                        this.container[3][1][0].should.be.equal("H")                        
                     }
 
                     // last item of container will now be the proton from the first molecule
@@ -141,10 +140,12 @@ class CContainer {
                     proton[1][0].should.be.equal("H")
 
                     // Move the proton to second molecule
-                    this.container.splice(this.container.length-1,1)
-                    this.MoleculeController(this.container[2]).push(proton, this.container, this.container.length-1)
+                    this.container.splice(this.container.length-1,1) // remove proton from container
+                    // this.container[2] is water molecule
+                    // this.container.length-1 is where the proton is in the container
+                    this.MoleculeController(this.container[2]).push(proton, this.container, this.container.length-1, this.test_number)
 
-                    if (test_mode) {
+                    if (this.test_number === 1) {
                         this.container.length.should.be.equal(3)
                         this.container[1].length.should.be.equal(2)
                         this.container[1][1].length.should.be.equal(12)
