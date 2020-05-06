@@ -16,6 +16,7 @@ class CContainer {
                            molecule_array_or_string:
                            this.MoleculeFactory(molecule_array_or_string))
         // Add item to container.
+
         this.container.push(molecule)
         /*
         range.range(1,units,1).map(i)=>{
@@ -108,12 +109,12 @@ class CContainer {
                 // HCL is first element
                 if (this.container[1][0] <= this.container[2][0]) {
 
-                    var test_mode = this.test_number === 1
+                    // First test - HCl + water
 
                     // Move proton from first molecule to second molecule
                     const proton_index = this.MoleculeController(this.container[1]).indexOf("H")
 
-                    if (test_mode) {
+                    if (this.test_number === 1) {
                         proton_index.should.be.equal(1)
                     }
 
@@ -123,16 +124,25 @@ class CContainer {
                         this.MoleculeController(this.container[1]).itemAt(proton_index)
                     )
 
+                    if (this.test_number === 1111) {
+                        console.log("-------")
+                        // Cl, H2O, proton
+                        console.log(this.container)
+                        console.log("-------")
+                        console.log("test 1 Container.js")
+                        process.exit()
+                    }
+
                     // last item of container will now be the proton from the first molecule
-                    const proton = this.container[this.container.length-1][proton_index]
+                    const proton = this.container[this.container.length-1]
                     proton.should.be.Array()
-                    proton.length.should.be.equal(4)
-                    proton[0].should.be.String()
-                    proton[0].should.be.equal("H")
+                    proton[1].length.should.be.equal(4)
+                    proton[1][0].should.be.String()
+                    proton[1][0].should.be.equal("H")
 
                     // Move the proton to second molecule
                     this.container.splice(this.container.length-1,1)
-                    this.MoleculeController(this.container[2]).push(proton, this.container)
+                    this.MoleculeController(this.container[2]).push(proton, this.container, this.container.length-1)
 
                     if (test_mode) {
                         this.container.length.should.be.equal(3)
@@ -176,6 +186,11 @@ class CContainer {
 
 
                 } else {
+
+                    console.log(this.test_number)
+                    if (this.test_number ===1) {
+                        console.log(this.container)
+                    }
 
                     // Move proton from second molecule to first molecule
                     const proton_index = this.MoleculeController(this.container[2]).indexOf("H") // 2

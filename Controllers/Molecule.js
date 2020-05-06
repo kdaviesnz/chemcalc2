@@ -82,8 +82,9 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         // Get index of first free electron on second atom
         const atom2_electron_to_share_index = __electronToShareIndex(mmolecule[atom2_index])
 
+        // atom1_index should be 4
 
-        if (mmolecule[atom1_index][0]==="H") {
+        if (mmolecule[atom1_index][1][0]==="H") {
 
             if (test_mode_2) {
                 // Adding proton to Cl
@@ -114,6 +115,10 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         }
 
         mmolecule[0] = pKa(mmolecule.slice(1))
+
+        console.log(mmolecule)
+        console.log('makeCovalentBond')
+        process.exit()
 
         return mmolecule
 
