@@ -127,9 +127,7 @@ class CContainer {
                     if (this.test_number === 1) {                        
                         // Cl, H2O, proton
                         this.container[1][1][0].should.be.equal("Cl")
-                        this.container[2][1][0].should.be.equal("H")
-                        this.container[3][0][0].should.be.equal(null)
-                        this.container[3][1][0].should.be.equal("H")                        
+                        this.container[2][3][0].should.be.equal("O")
                     }
 
                     // last item of container will now be the proton from the first molecule

@@ -236,12 +236,8 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 }
             }
         },
-        push : (atom_or_atomic_symbol, container, molecule_index, test_number) => {
+        push : (atom_or_atomic_symbol, container, molecule_to_add_to_index, test_number) => {
 
-            const atom_is_proton = atom[0] === "H" && atom.slice(4).length ===0
-            if (test_number===1) {
-                
-            }
 
             // MOLECULE MODEL
 // pKa, atom, atom, atom ...
@@ -251,13 +247,18 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             
             const atom = typeof atom_or_atomic_symbol === "string" ? AtomFactory(atom_or_atomic_symbol) : atom_or_atomic_symbol
 
+            const atom_is_proton = atom[1][0] === "H" && atom.slice(4).length ===0
+            if (test_number===1) {
+                atom_is_proton.should.be.equal(true)
+                // H2O
+                molecule_to_add_to_index.should.be.equal(2)
+            }
+
             var atom_to_bond_to_index = null;
 
-            if (test_mode_2) {
+            if (test_number === 2) {
 
                 molecule_index.should.be.equal(4)
-
-                
 
                 const r = container.reduce(
                     (carry, molecule, molecule_index) => {
@@ -283,8 +284,16 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 // Find index of atom to bond to.
                 // This must be atom with at least a lone pair.
 
-                atom_to_bond_to_index = mmolecule.reduce((carry, current_molecule_atom, current_molecule_atom_index) => {
 
+                if(test_number === 1) {
+                    // mmolecules is H2O - the molecule we are adding to
+                    mmolecule[1][0].should.be.equal("H")
+                    mmolecule[2][0].should.be.equal("H")
+                    mmolecule[3][0].should.be.equal("O")
+                }
+                process.exit()
+
+                atom_to_bond_to_index = mmolecule.reduce((carry, current_molecule_atom, current_molecule_atom_index) => {
                         if (typeof current_molecule_atom === "string" || typeof current_molecule_atom.length !== "number") {
                             return carry
                         }
@@ -295,6 +304,15 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                             carry : current_molecule_atom_index
                     }, false
                 )
+
+
+                if(test_number === 1) {
+                    console.log(container)
+                    console.log(atom_to_bond_to_index)
+                    console.log("atom_to_bond_to_index")
+                    process.exit()
+                }
+
             }
 
 
