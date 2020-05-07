@@ -10,7 +10,11 @@ const AtomsFactory = (canonicalSMILES) => {
     const smiles = require('smiles')
 
     const prevAtomIndexByBranch = (atoms_with_tokens_no_brackets,index,depth) => {
-        if (undefined === atoms_with_tokens_no_brackets[index].type) {
+        
+         // @todo depth only works for depth 1
+        if (undefined === atoms_with_tokens_no_brackets[index].type && depth === 0) {
+            
+            
             return index
         }
            /*
