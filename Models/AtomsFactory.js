@@ -9,36 +9,214 @@ const AtomsFactory = (canonicalSMILES) => {
     // https://www.npmjs.com/package/smiles
     const smiles = require('smiles')
 
+    const prevAtomIndexByAtomicSymbol = (atomic_symbol, current_atoms, index) => {
+        if (current_atoms[index][0] === atomic_symbol) {
+            return index
+        } else {
+            return prevAtomIndexByAtomicSymbol(atomic_symbol, current_atoms, index -1)
+        }
+    }
+    const prevAtomIndex = (smiles_tokens, current_atoms, index) => {
+        if (smiles_tokens[index].type === "AliphaticOrganic" || smiles_tokens[index].type === "ElementSymbol") {
+            const atomic_symbol = smiles_tokens[index].value
+            // Find the index of last atom in current atoms with atomic symbol matching atomic_symbol
+            return prevAtomIndexByAtomicSymbol(atomic_symbol, current_atoms, current_atoms.length-1)
+        } else {
+            return prevAtomIndex(smiles_tokens, current_atoms,  index -1)
+        }
+    }
+
     // parse a SMILES string, returns an array of SMILES tokens [{type: '...', value: '...'}, ...]
     const smiles_tokens = smiles.parse(canonicalSMILES.replace("H",""))
 
+    if (canonicalSMILES === "[Al](Cl)(Cl)Cl") {
+        /*
+        [Al](Cl)(Cl)Cl
+[ { type: 'BracketAtom', value: 'begin' },
+  { type: 'ElementSymbol', value: 'Al' },
+  { type: 'BracketAtom', value: 'end' },
+  { type: 'Branch', value: 'begin' },
+  { type: 'AliphaticOrganic', value: 'Cl' },
+  { type: 'Branch', value: 'end' },
+  { type: 'Branch', value: 'begin' },
+  { type: 'AliphaticOrganic', value: 'Cl' },
+  { type: 'Branch', value: 'end' },
+  { type: 'AliphaticOrganic', value: 'Cl' } ]
+         */
+       // console.log(smiles_tokens)
+    }
+
+    const atoms_with_tokens = smiles_tokens.map(
+        (row) => {
+            if (row.type === "AliphaticOrganic" || row.type === "ElementSymbol") {
+                return AtomFactory(row.value)
+            }
+            return row
+        }
+    )
+
+//    console.log(atoms_with_tokens)
     /*
-    HCl
-    [ { type: 'AliphaticOrganic', value: 'Cl' } ]
+    [ { type: 'BracketAtom', value: 'begin' },
+  [ 'Al',
+    13,
+    3,
+    5,
+    '2iwcg3vmk9waiez5',
+    '2iwcg3vmk9waiez6',
+    '2iwcg3vmk9waiez7' ],
+  { type: 'BracketAtom', value: 'end' },
+  { type: 'Branch', value: 'begin' },
+  [ 'Cl',
+    17,
+    7,
+    1,
+    '2iwcg3vmk9waiez8',
+    '2iwcg3vmk9waiez9',
+    '2iwcg3vmk9waieza',
+    '2iwcg3vmk9waiezb',
+    '2iwcg3vmk9waiezc',
+    '2iwcg3vmk9waiezd',
+    '2iwcg3vmk9waieze' ],
+  { type: 'Branch', value: 'end' },
+  { type: 'Branch', value: 'begin' },
+  [ 'Cl',
+    17,
+    7,
+    1,
+    '2iwcg3vmk9waiezf',
+    '2iwcg3vmk9waiezg',
+    '2iwcg3vmk9waiezh',
+    '2iwcg3vmk9waiezi',
+    '2iwcg3vmk9waiezj',
+    '2iwcg3vmk9waiezk',
+    '2iwcg3vmk9waiezl' ],
+  { type: 'Branch', value: 'end' },
+  [ 'Cl',
+    17,
+    7,
+    1,
+    '2iwcg3vmk9waiezm',
+    '2iwcg3vmk9waiezn',
+    '2iwcg3vmk9waiezo',
+    '2iwcg3vmk9waiezp',
+    '2iwcg3vmk9waiezq',
+    '2iwcg3vmk9waiezr',
+    '2iwcg3vmk9waiezs' ] ]
+
      */
 
+     // Filter out brackets
+    const atoms_with_tokens_no_brackets = atoms_with_tokens.filter(
+        (row) => {
+            if (undefined !== row.type && row.type === "BracketAtom") {
+                return false
+            }
+            return true
+        }
+    )
+
+   // console.log("-------")
+   // console.log(atoms_with_tokens_no_brackets)
+    //console.log("--------")
+    /*
+    [ [ 'Al',
+    13,
+    3,
+    5,
+    '2iwcg3xsk9wb0ng8',
+    '2iwcg3xsk9wb0ng9',
+    '2iwcg3xsk9wb0nga' ],
+  { type: 'Branch', value: 'begin' },
+  [ 'Cl',
+    17,
+    7,
+    1,
+    '2iwcg3xsk9wb0ngb',
+    '2iwcg3xsk9wb0ngc',
+    '2iwcg3xsk9wb0ngd',
+    '2iwcg3xsk9wb0nge',
+    '2iwcg3xsk9wb0ngf',
+    '2iwcg3xsk9wb0ngg',
+    '2iwcg3xsk9wb0ngh' ],
+  { type: 'Branch', value: 'end' },
+  { type: 'Branch', value: 'begin' },
+  [ 'Cl',
+    17,
+    7,
+    1,
+    '2iwcg3xsk9wb0ngi',
+    '2iwcg3xsk9wb0ngj',
+    '2iwcg3xsk9wb0ngk',
+    '2iwcg3xsk9wb0ngl',
+    '2iwcg3xsk9wb0ngm',
+    '2iwcg3xsk9wb0ngn',
+    '2iwcg3xsk9wb0ngo' ],
+  { type: 'Branch', value: 'end' },
+  [ 'Cl',
+    17,
+    7,
+    1,
+    '2iwcg3xsk9wb0ngp',
+    '2iwcg3xsk9wb0ngq',
+    '2iwcg3xsk9wb0ngr',
+    '2iwcg3xsk9wb0ngs',
+    '2iwcg3xsk9wb0ngt',
+    '2iwcg3xsk9wb0ngu',
+    '2iwcg3xsk9wb0ngv' ] ]
+
+     */
+    console.log("AtomsFactory.js 2")
+    process.exit();
+
     //  Convert rows to atom objects
-    const atoms_and_tokens = smiles_tokens.map(
-        (row, i, arr) => {
+    const atoms_and_tokens = smiles_tokens.reduce(
+        (carry, row, i, arr) => {
+
+          //  console.log("carry")
+            //console.log(carry)
+            //process.exit()
             // row.value is the atomic symbol
+            // If item is BracketAtom ignore
             // If item is AliphaticOrganic add an atom.
             // If item is ring bond add electron to previous atom.
             // If item is bond add electron to previous atom and share same electron to current atom, then
             // share an electron from current atom to previous atom
             // If item is branch and item value is not "end" then add bond.
-            return row.type === "AliphaticOrganic"?AtomFactory(row.value):
-                (
-                    row.type === "Ringbond"? arr[i-1].addRingBond(row.value, arr[i-1].branchId) : (
-                        row.type === "Bond"? arr[i-1].addBond(row.value): (
-                            row.type === "Branch"? (
-                                row.value === "end"?arr[i-1].isTerminal(true):
-                                    arr[i-1].startNewBranch() // add new branch id to current atom
-                            ): row
-                        )
-                    )
-                )
-        }
+
+            if (row.type === "BracketAtom") {
+                return carry
+            }
+
+            if (row.type === "AliphaticOrganic" || row.type === "ElementSymbol") {
+                carry.push(AtomFactory(row.value))
+                return carry
+            } else if (row.type === "Ringbond") {
+                //const prev_atom = arr[i-1].type === "BracketAtom"?arr[i-2]:arr[i-1]
+                //carry.push(prev_atom.addRingBond(row.value, prev_atom.branchId))
+                return carry
+            } else if(row.type === "Branch" && row.value !== "end") {
+                const prev_atom_index = prevAtomIndex(arr, carry, i)
+                const electron = uniqid()
+                carry[prev_atom_index].push(electron)
+                console.log(carry[prev_atom_index])
+                console.log("AtomsFactory.js 1")
+                process.exit()
+               // carry.push(carry[prev_atom_index])
+                return carry
+            } else {
+                return carry
+            }
+        },
+        []
     )
+
+    if (canonicalSMILES === "[Al](Cl)(Cl)Cl") {
+
+        console.log(atoms_and_tokens)
+        console.log("AtomsFactory")
+        process.exit()
+    }
 
     // Add hydrogens
     const atoms_and_tokens_with_hydrogens = atoms_and_tokens.reduce(

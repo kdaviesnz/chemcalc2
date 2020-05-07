@@ -1,6 +1,19 @@
 const PeriodicTable = {
 // https://www.wuwm.com/post/periodic-table-elements-turns-150#stream/0
 // https://www.wikihow.com/Find-Valence-Electrons
+
+    "Al": {
+        "group":13,
+        "column":"111A",
+        "atomic_number":13,
+        "name":"aluminium",
+        "atomic_weight":26.982,
+        "electrons_per_shell": "2-8-3",
+        "state_of_matter":"solid",
+        "subcategory":"post transition metal"
+    },
+
+
     "H": {
         "group":1,
         "column":"1A",

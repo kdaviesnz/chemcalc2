@@ -13,6 +13,9 @@ const CContainer = require('./Controllers/Container')
 const CMolecule = require('./Controllers/Molecule')
 const range = require("range");
 
+
+const aluminumChloride = MoleculeFactory("[Al](Cl)(Cl)Cl")
+
 // MOLECULE MODEL
 // pKa, atom, atom, atom ...
 // ATOM MODEL
@@ -292,10 +295,16 @@ const ccontainer2 = new CContainer([false], MoleculeFactory, MoleculeController,
 ccontainer2.add(Clneg,1)
 ccontainer2.add(HthreeO,1)
 
-console.log(ccontainer2.container)
+//console.log(ccontainer2.container)
 
 
-console.log(ccontainer.container)
+// console.log(ccontainer.container)
+
+
+const ccontainer3 = new CContainer([false], MoleculeFactory, MoleculeController, 3)
+
+console.log(aluminumChloride)
+
 console.log("All tests succeeded")
 
 
