@@ -9,6 +9,29 @@ const AtomsFactory = (canonicalSMILES) => {
     // https://www.npmjs.com/package/smiles
     const smiles = require('smiles')
 
+    const prevAtomIndexByBranch = (atoms_with_tokens_no_brackets,index,depth) => {
+        if (undefined === atoms_with_tokens_no_brackets[index].type) {
+            return index
+        }
+           /*
+    [ [ 'Al',13,3,5,'2iwcg3xsk9wb0ng8','2iwcg3xsk9wb0ng9','2iwcg3xsk9wb0nga' ],
+      { type: 'Branch', value: 'begin' },
+      [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngb','2iwcg3xsk9wb0ngc','2iwcg3xsk9wb0ngd','2iwcg3xsk9wb0nge','2iwcg3xsk9wb0ngf','2iwcg3xsk9wb0ngg','2iwcg3xsk9wb0ngh' ],
+     { type: 'Branch', value: 'end' },
+     { type: 'Branch', value: 'begin' },
+     [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngi','2iwcg3xsk9wb0ngj','2iwcg3xsk9wb0ngk','2iwcg3xsk9wb0ngl','2iwcg3xsk9wb0ngm','2iwcg3xsk9wb0ngn','2iwcg3xsk9wb0ngo' ],
+     { type: 'Branch', value: 'end' },
+      [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngp','2iwcg3xsk9wb0ngq','2iwcg3xsk9wb0ngr','2iwcg3xsk9wb0ngs','2iwcg3xsk9wb0ngt','2iwcg3xsk9wb0ngu','2iwcg3xsk9wb0ngv' ] ]
+     */
+        if (atoms_with_tokens_no_brackets[index].type === "Branch" 
+           && atoms_with_tokens_no_brackets[index].value === "end") {
+            // @todo depth only works for depth 1
+            return prevAtomIndexByBranch(atoms_with_tokens_no_brackets,index--,depth--)
+        }
+        
+        return prevAtomIndexByBranch(atoms_with_tokens_no_brackets,index--,depth)
+    }
+    
     const prevAtomIndexByAtomicSymbol = (atomic_symbol, current_atoms, index) => {
         if (current_atoms[index][0] === atomic_symbol) {
             return index
@@ -98,7 +121,8 @@ const AtomsFactory = (canonicalSMILES) => {
             }
             
             // Get index of previous atom om same branch
-            const prev_atom_index = prevAtomIndexByBranch(atoms_with_tokens_no_brackets,index,depth)
+            const prev_atom_index = prevAtomIndexByBranch(atoms_with_tokens_no_brackets,index -1
+                                                         ,depth)
             const e1 = getFreeElectron(atoms_with_tokens_no_brackets[prev_atom_index])
             const e2 = getFreeElectron(row)
             row.push(e1)
