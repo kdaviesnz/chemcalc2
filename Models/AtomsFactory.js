@@ -55,56 +55,6 @@ const AtomsFactory = (canonicalSMILES) => {
         }
     )
 
-//    console.log(atoms_with_tokens)
-    /*
-    [ { type: 'BracketAtom', value: 'begin' },
-  [ 'Al',
-    13,
-    3,
-    5,
-    '2iwcg3vmk9waiez5',
-    '2iwcg3vmk9waiez6',
-    '2iwcg3vmk9waiez7' ],
-  { type: 'BracketAtom', value: 'end' },
-  { type: 'Branch', value: 'begin' },
-  [ 'Cl',
-    17,
-    7,
-    1,
-    '2iwcg3vmk9waiez8',
-    '2iwcg3vmk9waiez9',
-    '2iwcg3vmk9waieza',
-    '2iwcg3vmk9waiezb',
-    '2iwcg3vmk9waiezc',
-    '2iwcg3vmk9waiezd',
-    '2iwcg3vmk9waieze' ],
-  { type: 'Branch', value: 'end' },
-  { type: 'Branch', value: 'begin' },
-  [ 'Cl',
-    17,
-    7,
-    1,
-    '2iwcg3vmk9waiezf',
-    '2iwcg3vmk9waiezg',
-    '2iwcg3vmk9waiezh',
-    '2iwcg3vmk9waiezi',
-    '2iwcg3vmk9waiezj',
-    '2iwcg3vmk9waiezk',
-    '2iwcg3vmk9waiezl' ],
-  { type: 'Branch', value: 'end' },
-  [ 'Cl',
-    17,
-    7,
-    1,
-    '2iwcg3vmk9waiezm',
-    '2iwcg3vmk9waiezn',
-    '2iwcg3vmk9waiezo',
-    '2iwcg3vmk9waiezp',
-    '2iwcg3vmk9waiezq',
-    '2iwcg3vmk9waiezr',
-    '2iwcg3vmk9waiezs' ] ]
-
-     */
 
      // Filter out brackets
     const atoms_with_tokens_no_brackets = atoms_with_tokens.filter(
