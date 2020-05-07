@@ -66,56 +66,19 @@ const AtomsFactory = (canonicalSMILES) => {
         }
     )
 
-   // console.log("-------")
    // console.log(atoms_with_tokens_no_brackets)
-    //console.log("--------")
     /*
-    [ [ 'Al',
-    13,
-    3,
-    5,
-    '2iwcg3xsk9wb0ng8',
-    '2iwcg3xsk9wb0ng9',
-    '2iwcg3xsk9wb0nga' ],
-  { type: 'Branch', value: 'begin' },
-  [ 'Cl',
-    17,
-    7,
-    1,
-    '2iwcg3xsk9wb0ngb',
-    '2iwcg3xsk9wb0ngc',
-    '2iwcg3xsk9wb0ngd',
-    '2iwcg3xsk9wb0nge',
-    '2iwcg3xsk9wb0ngf',
-    '2iwcg3xsk9wb0ngg',
-    '2iwcg3xsk9wb0ngh' ],
-  { type: 'Branch', value: 'end' },
-  { type: 'Branch', value: 'begin' },
-  [ 'Cl',
-    17,
-    7,
-    1,
-    '2iwcg3xsk9wb0ngi',
-    '2iwcg3xsk9wb0ngj',
-    '2iwcg3xsk9wb0ngk',
-    '2iwcg3xsk9wb0ngl',
-    '2iwcg3xsk9wb0ngm',
-    '2iwcg3xsk9wb0ngn',
-    '2iwcg3xsk9wb0ngo' ],
-  { type: 'Branch', value: 'end' },
-  [ 'Cl',
-    17,
-    7,
-    1,
-    '2iwcg3xsk9wb0ngp',
-    '2iwcg3xsk9wb0ngq',
-    '2iwcg3xsk9wb0ngr',
-    '2iwcg3xsk9wb0ngs',
-    '2iwcg3xsk9wb0ngt',
-    '2iwcg3xsk9wb0ngu',
-    '2iwcg3xsk9wb0ngv' ] ]
-
+    [ [ 'Al',13,3,5,'2iwcg3xsk9wb0ng8','2iwcg3xsk9wb0ng9','2iwcg3xsk9wb0nga' ],
+      { type: 'Branch', value: 'begin' },
+      [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngb','2iwcg3xsk9wb0ngc','2iwcg3xsk9wb0ngd','2iwcg3xsk9wb0nge','2iwcg3xsk9wb0ngf','2iwcg3xsk9wb0ngg','2iwcg3xsk9wb0ngh' ],
+     { type: 'Branch', value: 'end' },
+     { type: 'Branch', value: 'begin' },
+     [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngi','2iwcg3xsk9wb0ngj','2iwcg3xsk9wb0ngk','2iwcg3xsk9wb0ngl','2iwcg3xsk9wb0ngm','2iwcg3xsk9wb0ngn','2iwcg3xsk9wb0ngo' ],
+     { type: 'Branch', value: 'end' },
+      [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngp','2iwcg3xsk9wb0ngq','2iwcg3xsk9wb0ngr','2iwcg3xsk9wb0ngs','2iwcg3xsk9wb0ngt','2iwcg3xsk9wb0ngu','2iwcg3xsk9wb0ngv' ] ]
      */
+
+    // Add the bonds
     console.log("AtomsFactory.js 2")
     process.exit();
 
