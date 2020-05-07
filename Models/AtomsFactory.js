@@ -80,20 +80,32 @@ const AtomsFactory = (canonicalSMILES) => {
 
     // Add the bonds
     let depth = 0
-    atoms_with_tokens_no_brackets.map(
+    const atoms = atoms_with_tokens_no_brackets.map(
         (row, index) => {
             if (index === 0) {
                 // first atom
                 return row
             }
+            
             if (undefined !== row.type && row.type === "Branch" && row.value === "begin") {
                 depth++
                 return null
             }
+            
+            if (undefined !== row.type && row.type === "Branch" && row.value === "end") {
+                depth--
+                return null
+            }
+            
             // Get index of previous atom om same branch
-            const prev_atom_index = prevAtomIndexByBranch(atoms_with_tokens_no_brackets,depth)
+            const prev_atom_index = prevAtomIndexByBranch(atoms_with_tokens_no_brackets,index,depth)
+            const e1 = getFreeElectron(atoms_with_tokens_no_brackets[prev_atom_index])
+            const e2 = getFreeElectron(row)
+            row.push(e1)
+            atoms_with_tokens_no_brackets[prev_atom_index].push(e2)
         }
     )
+    console.log(atoms)
     console.log("AtomsFactory.js 2")
     process.exit();
 
