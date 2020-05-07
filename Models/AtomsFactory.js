@@ -8,6 +8,12 @@ const AtomsFactory = (canonicalSMILES) => {
 
     // https://www.npmjs.com/package/smiles
     const smiles = require('smiles')
+    
+    getFreeElectron(atoms_with_tokens_no_brackets, 
+                                       row
+                   ) {
+        
+    }
 
     const prevAtomIndexByBranch = (atoms_with_tokens_no_brackets,index,depth) => {
         
@@ -127,8 +133,9 @@ const AtomsFactory = (canonicalSMILES) => {
             // Get index of previous atom om same branch
             const prev_atom_index = prevAtomIndexByBranch(atoms_with_tokens_no_brackets,index -1
                                                          ,depth)
-            const e1 = getFreeElectron(atoms_with_tokens_no_brackets[prev_atom_index])
-            const e2 = getFreeElectron(row)
+            const e1 = getFreeElectron(atoms_with_tokens_no_brackets.splice(0,index-1), atoms_with_tokens_no_brackets[prev_atom_index])
+            const e2 = getFreeElectron(atoms_with_tokens_no_brackets.splice(0,index-1), 
+                                       row)
             row.push(e1)
             atoms_with_tokens_no_brackets[prev_atom_index].push(e2)
         }
