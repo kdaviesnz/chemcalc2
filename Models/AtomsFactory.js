@@ -10,9 +10,9 @@ const AtomsFactory = (canonicalSMILES) => {
     const smiles = require('smiles')
     
     getFreeElectron(atoms_with_tokens_no_brackets, 
-                                       row
+                                       atom
                    ) {
-        
+         const electrons = 
     }
 
     const prevAtomIndexByBranch = (atoms_with_tokens_no_brackets,index,depth) => {
