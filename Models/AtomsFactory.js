@@ -9,20 +9,35 @@ const AtomsFactory = (canonicalSMILES) => {
     // https://www.npmjs.com/package/smiles
     const smiles = require('smiles')
     
-    getFreeElectron(atoms_with_tokens_no_brackets, 
-                                       atom
-                   ) {
-         const electrons = 
+    const getFreeElectron = (atoms_with_tokens_no_brackets, atom ) => {
+         const electrons = atom.slice(4).filter(
+             (electron) => {
+                 return atoms_with_tokens_no_brackets.filter(
+                     (_atom) => {
+                         if (undefined !== _atom.type) {
+                             return false
+                         }
+                         return _atom.indexOf(electron) === -1
+                     }
+                 ).length > 0
+             }
+         )
+         return electrons.pop()
     }
 
     const prevAtomIndexByBranch = (atoms_with_tokens_no_brackets,index,depth) => {
         
          // @todo depth only works for depth 1
+        //console.log(atoms_with_tokens_no_brackets[index]) // { type: 'Branch', value: 'begin' }
+        //console.log(index) //1
+        if (undefined === atoms_with_tokens_no_brackets[index]) {
+            return 0
+        }
+
         if (undefined === atoms_with_tokens_no_brackets[index].type && depth === 0) {
-            
-            
             return index
         }
+
            /*
     [ [ 'Al',13,3,5,'2iwcg3xsk9wb0ng8','2iwcg3xsk9wb0ng9','2iwcg3xsk9wb0nga' ],
       { type: 'Branch', value: 'begin' },
@@ -34,12 +49,11 @@ const AtomsFactory = (canonicalSMILES) => {
       [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngp','2iwcg3xsk9wb0ngq','2iwcg3xsk9wb0ngr','2iwcg3xsk9wb0ngs','2iwcg3xsk9wb0ngt','2iwcg3xsk9wb0ngu','2iwcg3xsk9wb0ngv' ] ]
      */
         if (atoms_with_tokens_no_brackets[index].type === "Branch" 
-           && atoms_with_tokens_no_brackets[index].value === "end") {
+           && atoms_with_tokens_no_brackets[index].value === "begin") {
             // @todo depth only works for depth 1
-            return prevAtomIndexByBranch(atoms_with_tokens_no_brackets,index--,depth--)
+            return prevAtomIndexByBranch(atoms_with_tokens_no_brackets,--index,--depth)
         }
-        
-        return prevAtomIndexByBranch(atoms_with_tokens_no_brackets,index--,depth)
+        return prevAtomIndexByBranch(atoms_with_tokens_no_brackets,--index,--depth)
     }
     
     const prevAtomIndexByAtomicSymbol = (atomic_symbol, current_atoms, index) => {
@@ -49,6 +63,7 @@ const AtomsFactory = (canonicalSMILES) => {
             return prevAtomIndexByAtomicSymbol(atomic_symbol, current_atoms, index -1)
         }
     }
+
     const prevAtomIndex = (smiles_tokens, current_atoms, index) => {
         if (smiles_tokens[index].type === "AliphaticOrganic" || smiles_tokens[index].type === "ElementSymbol") {
             const atomic_symbol = smiles_tokens[index].value
@@ -131,13 +146,18 @@ const AtomsFactory = (canonicalSMILES) => {
             }
             
             // Get index of previous atom om same branch
-            const prev_atom_index = prevAtomIndexByBranch(atoms_with_tokens_no_brackets,index -1
-                                                         ,depth)
-            const e1 = getFreeElectron(atoms_with_tokens_no_brackets.splice(0,index-1), atoms_with_tokens_no_brackets[prev_atom_index])
-            const e2 = getFreeElectron(atoms_with_tokens_no_brackets.splice(0,index-1), 
-                                       row)
+            // [[Al],[branch begin]
+            const prev_atom_index = prevAtomIndexByBranch(atoms_with_tokens_no_brackets,index -1,depth)
+            const e1 = getFreeElectron(atoms_with_tokens_no_brackets.slice(0,index),atoms_with_tokens_no_brackets[prev_atom_index])
+            const e2 = getFreeElectron(atoms_with_tokens_no_brackets.slice(0,index), row)
             row.push(e1)
             atoms_with_tokens_no_brackets[prev_atom_index].push(e2)
+
+            return row
+        }
+    ).filter(
+        (atom) => {
+            return null !== atom
         }
     )
     console.log(atoms)
