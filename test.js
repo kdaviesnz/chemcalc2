@@ -287,13 +287,15 @@ HthreeO[3].indexOf(HthreeO[1][HthreeO[1].length-2]).should.not.be.False()
 HthreeO[1].indexOf(HthreeO[3][HthreeO[3].length-1]).should.not.be.False()
 HthreeO[1].indexOf(HthreeO[2][HthreeO[2].length-2]).should.not.be.False()
 
-/*
+
 const ccontainer2 = new CContainer([false], MoleculeFactory, MoleculeController, 2)
 ccontainer2.add(Clneg,1)
 ccontainer2.add(HthreeO,1)
 
 console.log(ccontainer2.container)
-*/
+
+
+console.log(ccontainer.container)
 console.log("All tests succeeded")
 
 

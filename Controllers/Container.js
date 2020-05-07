@@ -31,46 +31,76 @@ class CContainer {
             // We've just added a reagent to the container
             // Brønsted and Lowry Acid base reactions
             if (this.MoleculeController(this.container[1]).indexOf("H") !== false && this.MoleculeController(this.container[2]).indexOf("H") === false) {
-                // Here the substrate (acid) has a proton and the reagent (base) doesnt.
-                // So we remove the proton from the substrate and add it to the reagent.
+
+                console.log("got here container.js")
+                process.exit()
                 const proton_index = this.MoleculeController(this.container[1]).indexOf("H")
                 this.MoleculeController.remove(container, 1, this.MoleculeController(this.container[1]).itemAt(proton_index)) // remove proton
                 this.container[2] = this.MoleculeController(this.container[2]).push("H")
                 
             } else if (this.MoleculeController(this.container[1]).indexOf("H") === false && this.MoleculeController(this.container[2]).indexOf("H") !== false) {
 
-                var test_mode = this.test_number ===1
-                var test_mode_2 = this.test_number ===2
-                
+                // Here the substrate (acid) has a proton and the reagent (base) doesnt.
+                // So we remove the proton from the substrate and add it to the reagent.
+
                 // Here the substrate (base) has no proton and the reagent (acid) does.
                 // So we remove the proton from the reagent and add it to the substrate.
                 const proton_index = this.MoleculeController(this.container[2]).indexOf("H")
                 proton_index.should.be.greaterThan(0);
 
-               // this.container = this.MoleculeController.remove(this.container, 2, this.MoleculeController(this.container[2]).itemAt(proton_index)) // remove proton
+                if (this.test_number === 2) {
+                    this.container[1][1][0].should.be.equal("Cl")
+                    this.container[2].length.should.be.equal(5)
+                    proton_index.should.be.equal(4)
+                }
+
+               // remove proton
                 this.container = this.MoleculeController(this.container[2]).removeProton(
                     this.container,
                     2,
                     this.MoleculeController(this.container[2]).itemAt(proton_index)
                 )
 
-                let proton = null
-                if (test_mode) {
-                    proton = this.container[this.container.length-1][proton_index]
+                if (this.test_number === 2) {
+                    this.container.length.should.be.equal(4)
+                    if (null !== this.container[this.container.length-1][0]) {
+                        console.log("Value should be null")
+                        process.exit()
+                    }
+                    this.container[this.container.length-1][1][0].should.be.equal("H")
+                    this.container[this.container.length-1][1].length.should.be.equal(4)
                 }
-                if (test_mode_2) {
-                    proton = this.container[proton_index -1 ]
+
+                const proton = this.container[this.container.length-1][1]
+                if (this.test_number === 2) {
                     proton.should.be.Array()
-                    proton[1].length.should.be.equal(4)
-                    proton[1][0].should.be.String()
-                    proton[1][0].should.be.equal("H")
+                    proton.length.should.be.equal(4)
+                    proton[0].should.be.String()
+                    proton[0].should.be.equal("H")
                 }
 
                 // Move the proton to first molecule
-                this.container.splice(this.container.length-1,1)
-                this.MoleculeController(this.container[1]).push(proton, this.container, this.container.length-1)
+                this.container.splice(this.container.length-1,1) // remove proton from container
+                // this.container[1] is chlorine
+                const atom_to_push_index = 0
+                this.MoleculeController(this.container[1]).push([proton], this.container, this.container.length-1, this.test_number, atom_to_push_index)
 
-                if (test_mode) {
+                if (this.test_number === 2) {
+                    this.container.length.should.be.equal(3)
+                    this.container[1].length.should.be.equal(3)
+                    this.container[2].length.should.be.equal(4)
+                    this.container[1][1].length.should.be.equal(12)
+                    this.container[1][1][0].should.be.equal("Cl")
+                    this.container[1][2][0].should.be.equal("H")
+                    this.container[2][1].length.should.be.equal(6)
+                    this.container[2][1][0].should.be.equal("H")
+                    this.container[2][2].length.should.be.equal(6)
+                    this.container[2][2][0].should.be.equal("H")
+                    this.container[2][3].length.should.be.equal(12)
+                    this.container[2][3][0].should.be.equal("O")
+                }
+
+                if (false) {
                         this.container.length.should.be.equal(3)
                         this.container[1].length.should.be.equal(2)
                         this.container[1][1].length.should.be.equal(12)
@@ -131,17 +161,18 @@ class CContainer {
                     }
 
                     // last item of container will now be the proton from the first molecule
-                    const proton = this.container[this.container.length-1]
+                    const proton = this.container[this.container.length-1][1]
                     proton.should.be.Array()
-                    proton[1].length.should.be.equal(4)
-                    proton[1][0].should.be.String()
-                    proton[1][0].should.be.equal("H")
+                    proton.length.should.be.equal(4)
+                    proton[0].should.be.String()
+                    proton[0].should.be.equal("H")
 
                     // Move the proton to second molecule
                     this.container.splice(this.container.length-1,1) // remove proton from container
                     // this.container[2] is water molecule
                     // this.container.length-1 is where the proton is in the container
-                    this.MoleculeController(this.container[2]).push(proton, this.container, this.container.length-1, this.test_number)
+                    const atom_to_push_index = 0
+                    this.MoleculeController(this.container[2]).push([proton], this.container, this.container.length-1, this.test_number, atom_to_push_index)
 
                     if (this.test_number === 1) {
                         this.container.length.should.be.equal(3)
@@ -207,6 +238,8 @@ class CContainer {
                 }
             } else {
                 // Neither substrate or reagent has a proton.
+                console.log("Neither substrate or reagent has a proton - Container.js")
+                process.exit()
             }
         }
     }

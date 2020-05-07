@@ -66,46 +66,83 @@ const CMolecule = (mmolecule) => {
         return atom_electron_to_remove_index
     }
 
-    const _makeCovalentBond = (atom, atom2_index, test_mode_2) => {
+    const _makeCovalentBond = (atoms, atom2_index, test_number, atom_to_push_index) => {
 
 
-        mmolecule.push(atom)
+        if (test_number === 1) {
+            mmolecule.length.should.be.equal(4)
+            mmolecule[1][0].should.be.equal("H")
+            mmolecule[2][0].should.be.equal("H")
+            mmolecule[3][0].should.be.equal("O")
+        }
 
-        const atom1_index = mmolecule.length -1
+        // Add atoms to molecule.
+        // At this point main atom won't be bonded.
+        atoms.map(
+            (atom) => {
+                mmolecule.push(atom)
+                return atom
+            }
+
+        )
+
+        if (test_number === 1) {
+            mmolecule.length.should.be.equal(5)
+            mmolecule[1][0].should.be.equal("H")
+            mmolecule[2][0].should.be.equal("H")
+            mmolecule[3][0].should.be.equal("O")
+            mmolecule[4][0].should.be.equal("H")
+        }
+
+        // Now create the bond
+        const atom_to_push_molecule_index = mmolecule.length + atom_to_push_index -1
+        if (test_number === 1) {
+            atom_to_push_molecule_index.should.be.equal(4)
+        }
+
         
 /*
 In the molecule H2, the hydrogen atoms share the two electrons via covalent bonding.[7] Covalency is greatest between atoms of similar electronegativities. Thus, covalent bonding does not necessarily require that the two atoms be of the same elements, only that they be of comparable electronegativity. Covalent bonding that entails sharing of electrons over more than two atoms is said to be delocalized.
  */
-        // Get index of first free electron on first atom
-        const atom1_electron_to_share_index = __electronToShareIndex(mmolecule[atom1_index])
-        
+        // Get index of first free electron on first atom (atom being pushed
+        const atom_to_push_electron_to_share_index = __electronToShareIndex(mmolecule[atom_to_push_molecule_index])
+        if (test_number === 1) {
+            atom_to_push_electron_to_share_index.should.be.equal(false)
+        }
+
         // Get index of first free electron on second atom
         const atom2_electron_to_share_index = __electronToShareIndex(mmolecule[atom2_index])
+        if (test_number === 1) {
+            atom2_electron_to_share_index.should.be.equal(5)
+            mmolecule[atom_to_push_molecule_index][0].should.be.equal("H")
+        }
 
-        // atom1_index should be 4
 
-        if (mmolecule[atom1_index][1][0]==="H") {
+        if (mmolecule[atom_to_push_molecule_index][0]==="H") {
 
-            if (test_mode_2) {
-                // Adding proton to Cl
-                // mmolecule[atom1_index] is the proton
-                //console.log(mmolecule[atom2_index])
-                //console.log(mmolecule[atom1_index])
-                mmolecule[1][0].should.be.equal("Cl")
-                console.log("_makeCovalentBond()")
-                process.exit()
+            // proton?
+            if (mmolecule[atom_to_push_molecule_index].length===4) {
+                // add electrons from second_atom to atom we are pushing
+                mmolecule[atom_to_push_molecule_index].push(mmolecule[atom2_index][4 + atom2_electron_to_share_index -1])
+                // @todo needs checking
+                const atom2_electron_to_share_next_index = __electronToShareIndex(mmolecule[atom2_index]) + 1
+                if (test_number ===1) {
+                    atom2_electron_to_share_next_index.should.be.equal(6)
+                }
+                mmolecule[atom_to_push_molecule_index].push(mmolecule[atom2_index][4 + atom2_electron_to_share_next_index -1])
+            } else {
+                console.log("To do: Add hydrogen bond where hydrogen is not a proton")
             }
 
-            // Get index of next free electron on second atom
-            const atom2_electron_to_share_next_index = __electronToShareIndex(mmolecule[atom2_index]) // O
-
             // add shared electron from second_atom to first atom
-            mmolecule[atom1_index].push(mmolecule[atom2_index][4 + atom2_electron_to_share_next_index -1])
+           // mmolecule[atom1_index].push(mmolecule[atom2_index][4 + atom2_electron_to_share_next_index -1])
 
             // add shared electron from second atom to first atom
-            mmolecule[atom1_index].push(mmolecule[atom2_index][4 + atom2_electron_to_share_index])
+           // mmolecule[atom1_index].push(mmolecule[atom2_index][4 + atom2_electron_to_share_index])
 
         } else {
+
+            // Not hydrogen
             // add shared electron from first atom to second atom
             mmolecule[atom2_index].push(mmolecule[atom1_index][4 + atom1_electron_to_share_index])
 
@@ -116,9 +153,9 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
 
         mmolecule[0] = pKa(mmolecule.slice(1))
 
-        console.log(mmolecule)
-        console.log('makeCovalentBond')
-        process.exit()
+        if (test_number === 1) {
+            mmolecule[0].should.be.equal(-1.74)
+        }
 
         return mmolecule
 
@@ -236,7 +273,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 }
             }
         },
-        push : (atom_or_atomic_symbol, container, molecule_to_add_to_index, test_number) => {
+        push : (atoms_or_atomic_symbols, container, molecule_to_add_to_index, test_number, atom_to_push_index) => {
 
 
             // MOLECULE MODEL
@@ -244,93 +281,63 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
 // ATOM MODEL
 // atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
 
-            
-            const atom = typeof atom_or_atomic_symbol === "string" ? AtomFactory(atom_or_atomic_symbol) : atom_or_atomic_symbol
+            // atoms_or_atomic symbols is an array containing the atom we are
+            // pushing and the atoms linked to that atom
+            // atom_index is the index of the atom we are pushing
 
-            const atom_is_proton = atom[1][0] === "H" && atom.slice(4).length ===0
+            atoms_or_atomic_symbols.should.be.an.Array()
+            if (test_number === 1) {
+                atoms_or_atomic_symbols.length.should.be.equal(1)  // proton
+                atoms_or_atomic_symbols[0][0].should.be.equal("H")
+                atoms_or_atomic_symbols[0].length.should.be.equal(4)
+                atom_to_push_index.should.be.equal(0)
+            }
+
+            const atoms = atoms_or_atomic_symbols.map(
+                (atom_or_atomic_symbol) => {
+                    return typeof atom_or_atomic_symbol === "string" ? AtomFactory(atom_or_atomic_symbol) : atom_or_atomic_symbol
+                 }
+            )
+
             if (test_number===1) {
+                const atom_is_proton = atoms[0][0] === "H" && atoms[0].length ===4
                 atom_is_proton.should.be.equal(true)
                 // H2O
+                // mmolecue should be water
+                mmolecule.length.should.be.equal(4)
+                mmolecule[3][0].should.be.equal("O")
+                mmolecule[2][0].should.be.equal("H")
+                mmolecule[1][0].should.be.equal("H")
                 molecule_to_add_to_index.should.be.equal(2)
             }
 
+
             var atom_to_bond_to_index = null;
 
-            if (test_number === 2) {
 
-                molecule_index.should.be.equal(4)
-
-                const r = container.reduce(
-                    (carry, molecule, molecule_index) => {
-//                        console.log(molecule)
-                        if (atom_is_proton) {
-                            // Look for lone pairs
-                           // console.log(molecule[1])
-                            const lone_pairs = CAtom(molecule[1], 1, mmolecule).lonePairs()
-                            if (lone_pairs.length > 0) {
-                                // Add proton to molecule
-                                // ---
-
-                                // ----
-                            }
-
-                        }
-                        process.exit("mm push")
+            // Find index of atom to bond to.
+            // This must be atom with at least a lone pair.
+            atom_to_bond_to_index = mmolecule.reduce((carry, current_molecule_atom, current_molecule_atom_index) => {
+                    if (typeof current_molecule_atom === "string" || typeof current_molecule_atom.length !== "number") {
+                        return carry
                     }
-                )
-
-            } else {
-
-                // Find index of atom to bond to.
-                // This must be atom with at least a lone pair.
-
-
-                if(test_number === 1) {
-                    // mmolecules is H2O - the molecule we are adding to
-                    mmolecule[1][0].should.be.equal("H")
-                    mmolecule[2][0].should.be.equal("H")
-                    mmolecule[3][0].should.be.equal("O")
-                }
-                process.exit()
-
-                atom_to_bond_to_index = mmolecule.reduce((carry, current_molecule_atom, current_molecule_atom_index) => {
-                        if (typeof current_molecule_atom === "string" || typeof current_molecule_atom.length !== "number") {
-                            return carry
-                        }
-                        const bond_count = _bondCount(current_molecule_atom)
-                        const std_number_of_bonds = current_molecule_atom[3]
-                        return current_molecule_atom[0] !== "H"
-                        && std_number_of_bonds - bond_count < 0 ?
-                            carry : current_molecule_atom_index
-                    }, false
-                )
+                    const bond_count = _bondCount(current_molecule_atom)
+                    const std_number_of_bonds = current_molecule_atom[3]
+                    return current_molecule_atom[0] !== "H"
+                    && std_number_of_bonds - bond_count < 0 ?
+                        carry : current_molecule_atom_index
+                }, false
+            )
 
 
-                if(test_number === 1) {
-                    console.log(container)
-                    console.log(atom_to_bond_to_index)
-                    console.log("atom_to_bond_to_index")
-                    process.exit()
-                }
-
+            if(test_number === 1) {
+                atom_to_bond_to_index.should.be.equal(3)
             }
 
-
-            if (test_mode_2) {
-                atom_to_bond_to_index.should.be.equal(1) // Should be 1
-                console.log("mm push")
-                process.exit()
-            }
 
             if (atom_to_bond_to_index !== false) {
 
-                if (test_mode_2) {
-                    console.log(mmolecule)
-                    console.log(atom)
-                    process.exit()
-                }
-
-                return _makeCovalentBond(atom, atom_to_bond_to_index, test_mode_2) // return molecule
+                return _makeCovalentBond(atoms, atom_to_bond_to_index, test_number, atom_to_push_index) // return molecule
 
                 // push electron
                 // AtomController(atom).push(mmolecule[atom_to_bond_to_index])
