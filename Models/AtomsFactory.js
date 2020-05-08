@@ -236,9 +236,36 @@ const AtomsFactory = (canonicalSMILES) => {
     //  atomic symbol, proton count, valence count, number of bonds, velectron1, velectron2, velectron3
 
 
-    console.log(atoms_with_hydrogens)
-    console.log("AtomsFactory.js")
-    process.exit();
+    if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
+        atoms.length.should.be.equal(4)
+    }
+
+    if ("COC" === canonicalSMILES) {
+        atoms_with_hydrogens.length.should.be.equal(9)
+        // Get the electrons of the oxygen atom
+        const oxygen_electons = atoms.filter(
+            (atom) => {
+                return atom[0] === "O"
+            }
+        ).pop().slice(4)
+        // Get the electrons of first of the carbon atoms
+        const carbon_electons = atoms.filter(
+            (atom) => {
+                return atom[0] === "C"
+            }
+        ).pop().slice(4)
+        // Check if electrons are shared
+        Set().intersection(oxygen_electons, carbon_electons).length.should.be.equal(2)
+        // Get the electrons of second of the carbon atoms
+        const carbon_electons_2 = atoms.filter(
+            (atom) => {
+                return atom[0] === "C"
+            }
+        )[1].slice(4)
+        // Check if electrons are shared
+        Set().intersection(oxygen_electons, carbon_electons_2).length.should.be.equal(2)
+
+    }
 
     return atoms_with_hydrogens
 

@@ -161,7 +161,34 @@ const FunctionalGroups = (fg_atoms) => {
         }
 
     }
-    
+
+    const ether = () => {
+
+        /*
+        Ether, any of a class of organic compounds characterized by an oxygen atom bonded to two alkyl or aryl groups. Ethers are similar in structure to alcohols, and both ethers and alcohols are similar in structure to water.
+
+        In organic chemistry, an alkyl substituent is an alkane missing one hydrogen
+
+An aryl group is a functional group derived from a simple aromatic ring compound where one hydrogen atom is removed from the ring. Usually, the aromatic ring is a hydrocarbon. The hydrocarbon name takes the -yl suffix, such as indolyl, thienyl, phenyl, etc. An aryl group is often simply called an "aryl"
+
+         */
+
+        return  fg_atoms.map(
+            (atom, atom_index) => {
+                if (atom[0] === "O"  && __Bonds(atom, atom_index, "C", 2).length === 2) {
+                    const res = {}
+                    res[atom_index] = atom
+                    return res
+                }
+                return false
+            }
+        ).filter((item) => {
+            return item !== false
+        })
+
+    }
+
+
     const water = () => {
 
         return  fg_atoms.map(
@@ -571,6 +598,7 @@ const FunctionalGroups = (fg_atoms) => {
 
 
     const functionalGroups = {
+        "ether": ether(),
         "water": water(),
         "hydrochloric_acid": hydrochloric_acid(),
         "deprotonated_hydrochloric_acid":deprotonated_hydrochloric_acid(),

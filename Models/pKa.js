@@ -6,7 +6,8 @@ const pKa = (pka_atoms) => {
     const pKa_value = fg.functionalGroups.hydrochloric_acid.length > 0? -6.3
         :fg.functionalGroups.deprotonated_hydrochloric_acid.length > 0? 2.86
             :fg.functionalGroups.water.length > 0? 14
-                :fg.functionalGroups.protonated_water.length > 0? -1.74:12345
+                :fg.functionalGroups.protonated_water.length > 0? -1.74
+                    :fg.functionalGroups.ether.length >0?-3.5:12345
     return pKa_value
 
 }

@@ -14,7 +14,8 @@ const CMolecule = require('./Controllers/Molecule')
 const range = require("range");
 
 
-const aluminumChloride = MoleculeFactory("[Al](Cl)(Cl)Cl")
+
+
 
 // MOLECULE MODEL
 // pKa, atom, atom, atom ...
@@ -303,7 +304,18 @@ ccontainer2.add(HthreeO,1)
 
 const ccontainer3 = new CContainer([false], MoleculeFactory, MoleculeController, 3)
 
-console.log(aluminumChloride)
+const aluminumChloride = MoleculeFactory("[Al](Cl)(Cl)Cl")
+
+const dimethylEther = MoleculeFactory("COC") // 6 hydrogens
+dimethylEther.length.should.be.equal(10)
+dimethylEther.filter(
+    (atom) => {
+        return atom[0] === "H"
+    }
+).length.should.be.equal(6)
+dimethylEther[0].should.be.equal(-3.5)
+
+//console.log(aluminumChloride)
 
 console.log("All tests succeeded")
 
