@@ -276,7 +276,7 @@ class CContainer {
                     const atom_to_push_to_index = substrate_atoms_with_free_slots[0][0]
                     const atom_to_push_index = reagent_atoms_with_lone_pairs[0][0]
                     const molecule_to_add_to_index = 0
-                    CMolecule(this.container[1]).push(reagent_atoms, this.container, molecule_to_add_to_index, this.test_number, atom_to_push_index, atom_to_push_to_index )
+                    this.MoleculeController(this.container[1]).push(reagent_atoms, this.container, molecule_to_add_to_index, this.test_number, atom_to_push_index, atom_to_push_to_index )
                 } else if (substrate_atoms_with_free_slots.length > 0 && reagent_atoms_with_lone_pairs.length === 0) {
                     
                 } else if (substrate_atoms_with_free_slots.length === 0 && reagent_atoms_with_lone_pairs.length > 0) {
