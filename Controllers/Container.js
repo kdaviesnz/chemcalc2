@@ -239,6 +239,24 @@ class CContainer {
             } else {
                 // Neither substrate or reagent has a proton.
                 console.log("Neither substrate or reagent has a proton - Container.js")
+                
+                // Check substrate for free slots
+                const substrate_atoms_with_free_slots = this.container[1].slice(1).map(
+                    (atom, index) => {
+                        if (CAtom(atom, null,null).freeSlots() === 0 {
+                            return null
+                        }
+                        return [index, atom]                        
+                    }
+                ).filter(
+                    (item) => {
+                        return item !== null
+                    }
+                )
+                        
+                        
+                        
+                
                 process.exit()
             }
         }
