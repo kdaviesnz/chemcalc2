@@ -270,6 +270,7 @@ class CContainer {
                 //const _makeCovalentBond = (atoms, atom2_index, test_number, atom_to_push_index) => {
                 if (substrate_atoms_with_free_slots.length > 0 && reagent_atoms_with_lone_pairs.length === 0) {
                     // substrate atom has a free slot and reagent has atom with lone pair
+                    // Al <- COC
                     const atom2_index  = reagent_atoms_with_lone_pairs[0]
                     const atom_to_push_index = substrate_atoms_with_free_slots[0]
                     this.container[2] = CMolecule(this.container[2])._makeCovalentBond(atoms, atom2_index, 3, atom_to_push_index)
