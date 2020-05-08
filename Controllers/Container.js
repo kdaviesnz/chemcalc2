@@ -241,9 +241,11 @@ class CContainer {
                 console.log("Neither substrate or reagent has a proton - Container.js")
                 
                 // Check substrate for free slots
+                // returns [index, atom] pairs
                 const substrate_atoms_with_free_slots = CMolecule(this.container[1]).__atomsWithFreeSlots()
                     
                  // Check reagent for free slots
+                // returns [index, atom] pairs
                 const reagent_atoms_with_free_slots = CMolecule(this.container[2]).__atomsWithFreeSlots()
                           
                 if (this.test_number === 3) {
@@ -253,9 +255,11 @@ class CContainer {
                         
                //  __atomsWithLonePairs
                 // Check substrate for free slots
+                // returns [index, atom] pairs
                 const substrate_atoms_with_lone_pairs = CMolecule(this.container[1]).__atomsWithLonePairs()
                     
                  // Check reagent for free slots
+                // returns [index, atom] pairs
                 const reagent_atoms_with_lone_pairs = CMolecule(this.container[2]).__atomsWithLonePairs()
                           
                 if (this.test_number === 3) {
