@@ -210,20 +210,29 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
 
             // Not hydrogen
             
+            // Atom being pushed should always have a lone pair
+            
             if (test_number === 3) {
                 atom_to_push_electron_to_share_index.should.be.equal(9999)
                 atom_being_being_pushed_to_electron_to_share_index.should.be.equal(false)
             }
             
-            if (!atom_to_push_electron_to_share_index) {
-                // Atom being pushed to has no free electrons so check if it fas free slots.
+            if (!atom_being_being_pushed_to_electron_to_share_index) {
+                // Atom being pushed to has no free electrons so check if it has free slots.
+                if (AtomController(mmolecule[atom_to_push_molecule_index]).freeSlots.length > 0) {
+                    // add free electron from atom beng pushed to target atom
+                    mmolecule[atom_to_push_to_index].push(mmolecule[atom_to_push_molecule_index][4 + atom_to_push_electron_to_share_index])
+                    // add another free electron from atom beng pushed to target atom
+                    mmolecule[atom_to_push_to_index].push(mmolecule[atom_to_push_molecule_index][5 + atom_to_push_electron_to_share_index])
+
+                }
             } else {
             
-            // add shared electron from target atom to atom beng pushed
-            mmolecule[atom_to_push_molecule_index].push(mmolecule[atom_to_push_to_index][4 + atom_being_being_pushed_to_electron_to_share_index])
+                // add shared electron from target atom to atom beng pushed
+                mmolecule[atom_to_push_molecule_index].push(mmolecule[atom_to_push_to_index][4 + atom_being_being_pushed_to_electron_to_share_index])
 
-            // add shared electron from atom being pushed to target atom
-            mmolecule[atom_to_push_to_index].push(mmolecule[atom_to_push_molecule_index][4 + atom_to_push_electron_to_share_index])
+                // add shared electron from atom being pushed to target atom
+                mmolecule[atom_to_push_to_index].push(mmolecule[atom_to_push_molecule_index][4 + atom_to_push_electron_to_share_index])
 
             }
         }
@@ -232,6 +241,14 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
 
         if (test_number === 1) {
             mmolecule[0].should.be.equal(-1.74)
+        }
+        
+        if (test_number === 3) {
+            mmolecule.length.should.be.equal(14)
+            mmolecule[1][0].should.be.equal("H")
+            mmolecule[2][0].should.be.equal("H")
+            mmolecule[3][0].should.be.equal("O")
+            mmolecule[4][0].should.be.equal("H")
         }
 
         return mmolecule
