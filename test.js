@@ -305,6 +305,11 @@ ccontainer2.add(HthreeO,1)
 const ccontainer3 = new CContainer([false], MoleculeFactory, MoleculeController, 3)
 
 const aluminumChloride = MoleculeFactory("[Al](Cl)(Cl)Cl")
+aluminumChloride.filter(
+    (atom) => {
+        return atom[0] === "H"
+    }
+).length.should.be.equal(0)
 
 const dimethylEther = MoleculeFactory("COC") // 6 hydrogens
 dimethylEther.length.should.be.equal(10)

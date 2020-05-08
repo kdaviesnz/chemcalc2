@@ -23,7 +23,7 @@ const CMolecule = (mmolecule) => {
                 )
     }
     
-    const __atomsWithFreeSlots => () {
+    const __atomsWithFreeSlots = () => {
       // Check substrate for free slots
                 return mmolecule.slice(1).map(
                     (atom, index) => {
@@ -109,6 +109,15 @@ const CMolecule = (mmolecule) => {
             mmolecule[3][0].should.be.equal("O")
         }
 
+        // AlCl3 <- C:OC
+        if (test_number === 3) {
+            atoms.length.should.be.equal(10) // COC
+            mmolecule.length.should.be.equal(4) // AlCl3
+            molecule_to_add_to_index.should.be.equal(0)
+            atom_to_push_index.should.be.equal(4)
+            atoms_or_atomic_symbols[atom_to_push_index][0].should.be.equal("O")
+        }
+
         // Add atoms to molecule.
         // At this point main atom won't be bonded.
         atoms.map(
@@ -127,23 +136,34 @@ const CMolecule = (mmolecule) => {
             mmolecule[4][0].should.be.equal("H")
         }
 
+        if (test_number === 3) {
+            mmolecule.length.should.be.equal(14)
+            mmolecule[1][0].should.be.equal("H")
+            mmolecule[2][0].should.be.equal("H")
+            mmolecule[3][0].should.be.equal("O")
+            mmolecule[4][0].should.be.equal("H")
+        }
+
         // Now create the bond
         const atom_to_push_molecule_index = mmolecule.length + atom_to_push_index -1
         if (test_number === 1) {
             atom_to_push_molecule_index.should.be.equal(4)
         }
 
-        
+        if (test_number === 3) {
+            atom_to_push_molecule_index.should.be.equal(4)
+            mmolecule[atom_to_push_molecule_index][1][0].should.be("O")
+        }
 /*
 In the molecule H2, the hydrogen atoms share the two electrons via covalent bonding.[7] Covalency is greatest between atoms of similar electronegativities. Thus, covalent bonding does not necessarily require that the two atoms be of the same elements, only that they be of comparable electronegativity. Covalent bonding that entails sharing of electrons over more than two atoms is said to be delocalized.
  */
-        // Get index of first free electron on first atom (atom being pushed
+        // Get index of first free electron on atom being pushed
         const atom_to_push_electron_to_share_index = __electronToShareIndex(mmolecule[atom_to_push_molecule_index])
         if (test_number === 1) {
             atom_to_push_electron_to_share_index.should.be.equal(false)
         }
 
-        // Get index of first free electron on second atom
+        // Get index of first free electron on atom being pushed to
         const atom2_electron_to_share_index = __electronToShareIndex(mmolecule[atom2_index])
         if (test_number === 1) {
             atom2_electron_to_share_index.should.be.equal(5)
@@ -354,25 +374,24 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             }
 
 
-            
+
             if (undefined === atom_to_bond_to_index) {
 
-            // Find index of atom to bond to.
-            // This must be atom with at least a lone pair.
-            atom_to_bond_to_index = mmolecule.reduce((carry, current_molecule_atom, current_molecule_atom_index) => {
-                    if (typeof current_molecule_atom === "string" || typeof current_molecule_atom.length !== "number") {
-                        return carry
-                    }
-                    const bond_count = _bondCount(current_molecule_atom)
-                    const std_number_of_bonds = current_molecule_atom[3]
-                    return current_molecule_atom[0] !== "H"
-                    && std_number_of_bonds - bond_count < 0 ?
-                        carry : current_molecule_atom_index
-                }, false
-            )
-                
-            }
+                // Find index of atom to bond to.
+                // This must be atom with at least a lone pair.
+                atom_to_bond_to_index = mmolecule.reduce((carry, current_molecule_atom, current_molecule_atom_index) => {
+                        if (typeof current_molecule_atom === "string" || typeof current_molecule_atom.length !== "number") {
+                            return carry
+                        }
+                        const bond_count = _bondCount(current_molecule_atom)
+                        const std_number_of_bonds = current_molecule_atom[3]
+                        return current_molecule_atom[0] !== "H"
+                        && std_number_of_bonds - bond_count < 0 ?
+                            carry : current_molecule_atom_index
+                    }, false
+                )
 
+            }
 
             if(test_number === 1) {
                 atom_to_bond_to_index.should.be.equal(3)
