@@ -219,7 +219,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             
             if (!atom_being_being_pushed_to_electron_to_share_index) {
                 // Atom being pushed to has no free electrons so check if it has free slots.
-                if (AtomController(mmolecule[atom_to_push_molecule_index]).freeSlots.length > 0) {
+                if (CAtom(mmolecule[atom_to_push_molecule_index], null, null).freeSlots.length > 0) {
                     // add free electron from atom beng pushed to target atom
                     mmolecule[atom_to_push_to_index].push(mmolecule[atom_to_push_molecule_index][4 + atom_to_push_electron_to_share_index])
                     // add another free electron from atom beng pushed to target atom
