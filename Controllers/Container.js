@@ -246,7 +246,10 @@ class CContainer {
                  // Check reagent for free slots
                 const reagent_atoms_with_free_slots = CMolecule(this.container[2]).__atomsWithFreeSlots()
                           
-                        
+                if (this.test_number === 3) {
+                    substrate_atoms_with_free_slots.length.should.be.equal(1)
+                    reagent_atoms_with_free_slots.length.should.be.equal(0)
+                }
                         
                 
                 process.exit()
