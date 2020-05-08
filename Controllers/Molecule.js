@@ -7,6 +7,22 @@ const should = require('should')
 const CMolecule = (mmolecule) => {
 
     
+    const __atomsWithLonePairs => () {
+      // Check substrate for free slots
+                return mmolecule.slice(1).map(
+                    (atom, index) => {
+                        if (CAtom(atom, mmolecule, index).lonePairs() === 0 {
+                            return null
+                        }
+                        return [index, atom]                        
+                    }
+                ).filter(
+                    (item) => {
+                        return item !== null
+                    }
+                )
+    }
+    
     const __atomsWithFreeSlots => () {
       // Check substrate for free slots
                 return mmolecule.slice(1).map(
