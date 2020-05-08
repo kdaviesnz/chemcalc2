@@ -6,6 +6,23 @@ const should = require('should')
 
 const CMolecule = (mmolecule) => {
 
+    
+    const __atomsWithFreeSlots => () {
+      // Check substrate for free slots
+                return mmolecule.slice(1).map(
+                    (atom, index) => {
+                        if (CAtom(atom, null,null).freeSlots() === 0 {
+                            return null
+                        }
+                        return [index, atom]                        
+                    }
+                ).filter(
+                    (item) => {
+                        return item !== null
+                    }
+                )
+    }
+                        
     const __lonePairs = (atoms, atom, current_atom_index) => {
 
         const atom_electrons = atom.slice(4)
