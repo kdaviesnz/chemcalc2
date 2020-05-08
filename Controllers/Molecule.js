@@ -210,6 +210,14 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
 
             // Not hydrogen
             
+            if (test_number === 3) {
+                atom_to_push_electron_to_share_index.should.be.equal(9999)
+                atom_being_being_pushed_to_electron_to_share_index.should.be.equal(false)
+            }
+            
+            if (!atom_to_push_electron_to_share_index) {
+                // Atom being pushed to has no free electrons so check if it fas free slots.
+            } else {
             
             // add shared electron from target atom to atom beng pushed
             mmolecule[atom_to_push_molecule_index].push(mmolecule[atom_to_push_to_index][4 + atom_being_being_pushed_to_electron_to_share_index])
@@ -217,6 +225,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             // add shared electron from atom being pushed to target atom
             mmolecule[atom_to_push_to_index].push(mmolecule[atom_to_push_molecule_index][4 + atom_to_push_electron_to_share_index])
 
+            }
         }
 
         mmolecule[0] = pKa(mmolecule.slice(1))
