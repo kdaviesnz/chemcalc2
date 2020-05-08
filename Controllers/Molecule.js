@@ -99,7 +99,7 @@ const CMolecule = (mmolecule) => {
         return atom_electron_to_remove_index
     }
 
-    const _makeCovalentBond = (atoms, atom2_index, test_number, atom_to_push_index) => {
+    const _makeCovalentBond = (atoms, atom_to_push_to_index, test_number, atom_to_push_index) => {
 
 
         if (test_number === 1) {
@@ -169,17 +169,17 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         }
 
         // Get index of first free electron on atom being pushed to
-        const atom2_electron_to_share_index = __electronToShareIndex(mmolecule[atom2_index])
+        const atom_being_being_pushed_to_electron_to_share_index = __electronToShareIndex(mmolecule[atom2_index])
         
         
         if (test_number === 1) {
-            atom2_electron_to_share_index.should.be.equal(5)
+            atom_being_being_pushed_to_electron_to_share_index.should.be.equal(5)
             mmolecule[atom_to_push_molecule_index][0].should.be.equal("H")
         }
 
         // AlCl3 <- C:OC
-        if (test_number === 1) {
-            atom2_electron_to_share_index.should.be.equal(false)
+        if (test_number === 3) {
+            atom_being_being_pushed_to_electron_to_share_index.should.be.equal(false)
             mmolecule[atom_to_push_molecule_index][0].should.be.equal("Al")
         }
         
@@ -189,13 +189,13 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             // proton?
             if (mmolecule[atom_to_push_molecule_index].length===4) {
                 // add electrons from second_atom to atom we are pushing
-                mmolecule[atom_to_push_molecule_index].push(mmolecule[atom2_index][4 + atom2_electron_to_share_index -1])
+                mmolecule[atom_to_push_molecule_index].push(mmolecule[atom_to_push_to_index][4 + atom_being_being_pushed_to_electron_to_share_index -1])
                 // @todo needs checking
-                const atom2_electron_to_share_next_index = __electronToShareIndex(mmolecule[atom2_index]) + 1
+                const atom2_electron_to_share_next_index = __electronToShareIndex(mmolecule[atom_to_push_to_index]) + 1
                 if (test_number ===1) {
                     atom2_electron_to_share_next_index.should.be.equal(6)
                 }
-                mmolecule[atom_to_push_molecule_index].push(mmolecule[atom2_index][4 + atom2_electron_to_share_next_index -1])
+                mmolecule[atom_to_push_molecule_index].push(mmolecule[atom_to_push_to_index][4 + atom2_electron_to_share_next_index -1])
             } else {
                 console.log("To do: Add hydrogen bond where hydrogen is not a proton")
             }
@@ -209,11 +209,13 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         } else {
 
             // Not hydrogen
-            // add shared electron from first atom to second atom
-            mmolecule[atom2_index].push(mmolecule[atom1_index][4 + atom1_electron_to_share_index])
+            
+            
+            // add shared electron from target atom to atom beng pushed
+            mmolecule[atom_to_push_molecule_index].push(mmolecule[atom_to_push_to_index][4 + atom_being_being_pushed_to_electron_to_share_index])
 
-            // add shared electron from second atom to first atom
-            mmolecule[atom1_index].push(mmolecule[atom2_index][4 + atom2_electron_to_share_index])
+            // add shared electron from atom being pushed to target atom
+            mmolecule[atom_to_push_to_index].push(mmolecule[atom_to_push_molecule_index][4 + atom_to_push_electron_to_share_index])
 
         }
 
