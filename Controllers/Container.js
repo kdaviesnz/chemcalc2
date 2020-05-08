@@ -271,11 +271,11 @@ class CContainer {
                // push : (atoms_or_atomic_symbols, container, molecule_to_add_to_index, test_number, atom_to_push_index)
                 if (substrate_atoms_with_free_slots.length > 0 && reagent_atoms_with_lone_pairs.length === 0) {
                     // substrate atom has a free slot and reagent has atom with lone pair
-                    // Al <- C:OC
+                    // AlCl3 <- C:OC
                     const reagent_atoms = this.container[2].slice(1)
-                   
+                
                     const atom_to_push_index = reagent_atoms_with_lone_pairs[0][0]
-                    CMolecule(this.container[1]).push(reagent_atoms, this.container, 1, atom_to_push_index)
+                    CMolecule(this.container[1]).push(reagent_atoms, this.container, 0, 3, atom_to_push_index)
                 } else if (substrate_atoms_with_free_slots.length > 0 && reagent_atoms_with_lone_pairs.length === 0) {
                     
                 } else if (substrate_atoms_with_free_slots.length === 0 && reagent_atoms_with_lone_pairs.length > 0) {
