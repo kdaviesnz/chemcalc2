@@ -162,14 +162,27 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         if (test_number === 1) {
             atom_to_push_electron_to_share_index.should.be.equal(false)
         }
+        
+        // AlCl3 <- C:OC
+        if (test_number === 3) {
+            atom_to_push_electron_to_share_index.should.be.equal(2)
+        }
 
         // Get index of first free electron on atom being pushed to
         const atom2_electron_to_share_index = __electronToShareIndex(mmolecule[atom2_index])
+        
+        
         if (test_number === 1) {
             atom2_electron_to_share_index.should.be.equal(5)
             mmolecule[atom_to_push_molecule_index][0].should.be.equal("H")
         }
 
+        // AlCl3 <- C:OC
+        if (test_number === 1) {
+            atom2_electron_to_share_index.should.be.equal(false)
+            mmolecule[atom_to_push_molecule_index][0].should.be.equal("Al")
+        }
+        
 
         if (mmolecule[atom_to_push_molecule_index][0]==="H") {
 
