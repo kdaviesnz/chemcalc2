@@ -251,6 +251,25 @@ class CContainer {
                     reagent_atoms_with_free_slots.length.should.be.equal(0)
                 }
                         
+               //  __atomsWithLonePairs
+                // Check substrate for free slots
+                const substrate_atoms_with_lone_pairs = CMolecule(this.container[1]).__atomsWithLonePairs()
+                    
+                 // Check reagent for free slots
+                const reagent_atoms_with_lone_pairs = CMolecule(this.container[2]).__atomsWithLonePairs()
+                          
+                if (this.test_number === 3) {
+                    substrate_atoms_with_lone_pairs.length.should.be.equal(0)
+                    reagent_atoms_with_lone_pairs.length.should.be.equal(1)
+                }
+                
+                if (substrate_atoms_with_free_slots.length > 0 && reagent_atoms_with_lone_pairs.length === 0) {
+                    // substrate atom has a free slot and reagent has atom with lone pair
+                } else if (substrate_atoms_with_free_slots.length > 0 && reagent_atoms_with_lone_pairs.length === 0) {
+                    
+                } else if (substrate_atoms_with_free_slots.length === 0 && reagent_atoms_with_lone_pairs.length > 0) {
+                    
+                }
                 
                 process.exit()
             }
