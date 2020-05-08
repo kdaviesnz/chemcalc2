@@ -268,14 +268,15 @@ class CContainer {
                 }
                 
                 //const _makeCovalentBond = (atoms, atom2_index, test_number, atom_to_push_index) => {
-               // push : (atoms_or_atomic_symbols, container, molecule_to_add_to_index, test_number, atom_to_push_index)
+               // push : (atoms_or_atomic_symbols, container, molecule_to_add_to_index, test_number, atom_to_push_index,atom_to_push_to_index)
                 if (substrate_atoms_with_free_slots.length > 0 && reagent_atoms_with_lone_pairs.length === 0) {
                     // substrate atom has a free slot and reagent has atom with lone pair
                     // AlCl3 <- C:OC
                     const reagent_atoms = this.container[2].slice(1)
-                
+                    const atom_to_push_to_index = substrate_atoms_with_free_slots[0][0]
                     const atom_to_push_index = reagent_atoms_with_lone_pairs[0][0]
-                    CMolecule(this.container[1]).push(reagent_atoms, this.container, 0, 3, atom_to_push_index)
+                    const molecule_to_add_to_index = 0
+                    CMolecule(this.container[1]).push(reagent_atoms, this.container, molecule_to_add_to_index, this.test_number, atom_to_push_index, atom_to_push_to_index )
                 } else if (substrate_atoms_with_free_slots.length > 0 && reagent_atoms_with_lone_pairs.length === 0) {
                     
                 } else if (substrate_atoms_with_free_slots.length === 0 && reagent_atoms_with_lone_pairs.length > 0) {
