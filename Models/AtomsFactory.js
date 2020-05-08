@@ -3,25 +3,35 @@ const AtomFactory = require('./AtomFactory')
 const CMolecule = require('../Controllers/Molecule')
 const range = require("range");
 // range.range(1,10,2)
+const Set = require('./Set')
 
 const AtomsFactory = (canonicalSMILES) => {
 
     // https://www.npmjs.com/package/smiles
     const smiles = require('smiles')
     
-    const getFreeElectron = (atoms_with_tokens_no_brackets, atom ) => {
+    const getFreeElectron = (atoms_with_tokens_no_brackets, atom, prev_atom_index ) => {
          const electrons = atom.slice(4).filter(
              (electron) => {
                  return atoms_with_tokens_no_brackets.filter(
-                     (_atom) => {
-                         if (undefined !== _atom.type) {
+                     (_atom, i ) => {
+                         if ( undefined !== _atom.type) {
                              return false
                          }
-                         return _atom.indexOf(electron) === -1
+                         return i === prev_atom_index || _atom.indexOf(electron) === -1
                      }
                  ).length > 0
              }
          )
+
+        if (electrons.length === 0) {
+            console.log(atoms_with_tokens_no_brackets)
+            console.log(atom)
+            console.log(prev_atom_index) // 0
+            console.log("AtomsFactory.js Critical error: Electrons are empty")
+            process.exit()
+        }
+
          return electrons.pop()
     }
 
@@ -148,8 +158,19 @@ const AtomsFactory = (canonicalSMILES) => {
             // Get index of previous atom om same branch
             // [[Al],[branch begin]
             const prev_atom_index = prevAtomIndexByBranch(atoms_with_tokens_no_brackets,index -1,depth)
-            const e1 = getFreeElectron(atoms_with_tokens_no_brackets.slice(0,index),atoms_with_tokens_no_brackets[prev_atom_index])
+            const e1 = getFreeElectron(atoms_with_tokens_no_brackets.slice(0,index),atoms_with_tokens_no_brackets[prev_atom_index], prev_atom_index)
+
+            if (undefined === e1) {
+                console.log("Critical error: Electron is undefined (e1)")
+                process.exit()
+            }
             const e2 = getFreeElectron(atoms_with_tokens_no_brackets.slice(0,index), row)
+
+            if (undefined === e2) {
+                console.log("Critical error: Electron is undefined (e2)")
+                process.exit()
+            }
+
             row.push(e1)
             atoms_with_tokens_no_brackets[prev_atom_index].push(e2)
 
@@ -160,67 +181,40 @@ const AtomsFactory = (canonicalSMILES) => {
             return null !== atom
         }
     )
-    console.log(atoms)
-    console.log("AtomsFactory.js 2")
-    process.exit();
 
-    //  Convert rows to atom objects
-    const atoms_and_tokens = smiles_tokens.reduce(
-        (carry, row, i, arr) => {
-
-          //  console.log("carry")
-            //console.log(carry)
-            //process.exit()
-            // row.value is the atomic symbol
-            // If item is BracketAtom ignore
-            // If item is AliphaticOrganic add an atom.
-            // If item is ring bond add electron to previous atom.
-            // If item is bond add electron to previous atom and share same electron to current atom, then
-            // share an electron from current atom to previous atom
-            // If item is branch and item value is not "end" then add bond.
-
-            if (row.type === "BracketAtom") {
-                return carry
-            }
-
-            if (row.type === "AliphaticOrganic" || row.type === "ElementSymbol") {
-                carry.push(AtomFactory(row.value))
-                return carry
-            } else if (row.type === "Ringbond") {
-                //const prev_atom = arr[i-1].type === "BracketAtom"?arr[i-2]:arr[i-1]
-                //carry.push(prev_atom.addRingBond(row.value, prev_atom.branchId))
-                return carry
-            } else if(row.type === "Branch" && row.value !== "end") {
-                const prev_atom_index = prevAtomIndex(arr, carry, i)
-                const electron = uniqid()
-                carry[prev_atom_index].push(electron)
-                console.log(carry[prev_atom_index])
-                console.log("AtomsFactory.js 1")
-                process.exit()
-               // carry.push(carry[prev_atom_index])
-                return carry
-            } else {
-                return carry
-            }
-        },
-        []
-    )
-
-    if (canonicalSMILES === "[Al](Cl)(Cl)Cl") {
-
-        console.log(atoms_and_tokens)
-        console.log("AtomsFactory")
-        process.exit()
+    if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
+        atoms.length.should.be.equal(4)
+        atoms[0][0].should.be.equal("Al")
+        atoms[0].length.should.be.equal(10)
+        const al_electrons = atoms[0].slice(4)
+        al_electrons.length.should.be.equal(6)
+        atoms[1][0].should.be.equal("Cl")
+        atoms[1].length.should.be.equal(12)
+        const cl1_electrons = atoms[1].slice(4)
+        cl1_electrons.length.should.be.equal(8)
+        Set().intersection(al_electrons, cl1_electrons).length.should.be.equal(2)
+        atoms[2][0].should.be.equal("Cl")
+        atoms[2].length.should.be.equal(12)
+        const cl2_electrons = atoms[2].slice(4)
+        cl2_electrons.length.should.be.equal(8)
+        Set().intersection(al_electrons, cl2_electrons).length.should.be.equal(2)
+        atoms[3][0].should.be.equal("Cl")
+        atoms[3].length.should.be.equal(12)
+        const cl3_electrons = atoms[3].slice(4)
+        cl3_electrons.length.should.be.equal(8)
+        Set().intersection(al_electrons, cl3_electrons).length.should.be.equal(2)
     }
 
+
+
     // Add hydrogens
-    const atoms_and_tokens_with_hydrogens = atoms_and_tokens.reduce(
+    const atoms_with_hydrogens = atoms.reduce(
         (carry, current, index, arr) => {
             if (typeof current.length === "number" && current[0]!=='H') { // we have an atom
                 // Check how many bonds it currently has
                 const valence_electrons = current.slice(4)
                 // Check each valence electron to see if it is being shared
-                const actual_number_of_bonds = CMolecule(atoms_and_tokens).bondCount(current)
+                const actual_number_of_bonds = CMolecule(atoms).bondCount(current)
                 // current[3] is the number of electrons the atom has when it is neutrally charged
                 const number_of_hydrogens_required = current[3] - actual_number_of_bonds
                 if (number_of_hydrogens_required > 0) {
@@ -241,7 +235,12 @@ const AtomsFactory = (canonicalSMILES) => {
     )
     //  atomic symbol, proton count, valence count, number of bonds, velectron1, velectron2, velectron3
 
-    return atoms_and_tokens_with_hydrogens
+
+    console.log(atoms_with_hydrogens)
+    console.log("AtomsFactory.js")
+    process.exit();
+
+    return atoms_with_hydrogens
 
 }
 
