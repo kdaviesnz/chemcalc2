@@ -306,7 +306,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 }
             }
         },
-        push : (atoms_or_atomic_symbols, container, molecule_to_add_to_index, test_number, atom_to_push_index) => {
+        push : (atoms_or_atomic_symbols, container, molecule_to_add_to_index, test_number, atom_to_push_index, atom_to_bond_to_index) => {
 
 
             // MOLECULE MODEL
@@ -318,6 +318,15 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             // pushing and the atoms linked to that atom
             // atom_index is the index of the atom we are pushing
 
+            // AlCl3 <- C:OC
+            if (test_number === 3) {
+                atoms_or_atomic_symbols.length.shoukd.be.equal(10) // COC
+                mmolecule.length.should.be.equal(4) // AlCl3
+                molecule_to_add_to_index.should.be.equal(0)
+                atom_to_push_index.should.be.equal(4)
+                atoms_or_atomic_symbols[atom_to_push_index][0].should.be.equal("O")
+            }
+            
             atoms_or_atomic_symbols.should.be.an.Array()
             if (test_number === 1) {
                 atoms_or_atomic_symbols.length.should.be.equal(1)  // proton
@@ -345,8 +354,8 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             }
 
 
-            var atom_to_bond_to_index = null;
-
+            
+            if (undefined === atom_to_bond_to_index) {
 
             // Find index of atom to bond to.
             // This must be atom with at least a lone pair.
@@ -361,6 +370,8 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                         carry : current_molecule_atom_index
                 }, false
             )
+                
+            }
 
 
             if(test_number === 1) {
