@@ -167,9 +167,11 @@ const FunctionalGroups = (fg_atoms) => {
         
         return  fg_atoms.map(
             (atom, atom_index) => {
-                if (atom[0] === "O"  && __Bonds(atom, atom_index, "C", 2).length === 2) {
+                const double_carbon_bonds = __doubleCarbonBonds(atom, atom_index, "C", 2)
+                if (atom[0] === "C"  && double_carbon_bonds.length === 1) {
                     const res = {}
-                    res[atom_index] = atom
+                    res[atom_index] = atom,
+                    res[double_carbon_bonds[0][0]] = double_carbon_bonds[0][1]
                     return res
                 }
                 return false
