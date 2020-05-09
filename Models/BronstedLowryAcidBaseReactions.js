@@ -1,5 +1,45 @@
 const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_number) => {
   
+  const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index) => {
+    
+    // Check that we have a proton
+    if (!AtomController(electrophile_molecule[electrophile_atom_index]).isProton()) {
+       return false
+    }
+    
+    if (test_number === 3) {
+                    // console.log(container[2]) // COC
+                    console.log("Wrong section for test 3 - reagent doesn't have a non-carbon hydrogen (Container.js)")
+                    process.exit()
+    }
+    
+    // react(container[1], nucleophile_atom_index, container[2], electrophile_atom_index)
+    // Here the substrate (base) has no proton and the reagent (acid) does.
+                // So we remove the proton from the reagent and add it to the substrate.
+                const proton_index = MoleculeController(electrophile_molecule).indexOf("H")
+                proton_index.should.be.greaterThan(0);
+
+                if (test_number === 2) {
+                    container[1][1][0].should.be.equal("Cl")
+                    electrophile_molecule.length.should.be.equal(5)
+                    proton_index.should.be.equal(4)
+                }
+    
+                 // remove proton
+                container = MoleculeController(electrophile_molecule).removeProton(
+                    container,
+                    2,
+                    MoleculeController(electrophile_molecule).itemAt(proton_index)
+                )
+    
+  }
+  
+  
+  
+  
+  
+  
+  
   
    // We've just added a reagent to the container
             // Brønsted and Lowry Acid base reactions
@@ -13,32 +53,12 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
                 
             } else if (MoleculeController(container[1]).indexOf("H") === false && MoleculeController(container[2]).indexOf("H") !== false) {
 
-                if (test_number === 3) {
-                    // console.log(container[2]) // COC
-                    console.log("Wrong section for test 3 - reagent doesn't have a non-carbon hydrogen (Container.js)")
-                    process.exit()
-                }
+                react(container[1], nucleophile_atom_index, container[2], electrophile_atom_index)
 
-                // Here the substrate (acid) has a proton and the reagent (base) doesnt.
-                // So we remove the proton from the substrate and add it to the reagent.
+               
+                
 
-                // Here the substrate (base) has no proton and the reagent (acid) does.
-                // So we remove the proton from the reagent and add it to the substrate.
-                const proton_index = MoleculeController(container[2]).indexOf("H")
-                proton_index.should.be.greaterThan(0);
-
-                if (test_number === 2) {
-                    container[1][1][0].should.be.equal("Cl")
-                    container[2].length.should.be.equal(5)
-                    proton_index.should.be.equal(4)
-                }
-
-               // remove proton
-                container = MoleculeController(container[2]).removeProton(
-                    container,
-                    2,
-                    MoleculeController(container[2]).itemAt(proton_index)
-                )
+               
 
                 if (test_number === 2) {
                     container.length.should.be.equal(4)
