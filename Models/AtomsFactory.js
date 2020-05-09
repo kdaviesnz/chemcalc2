@@ -238,7 +238,12 @@ const AtomsFactory = (canonicalSMILES) => {
 
     if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
         atoms.length.should.be.equal(4)
-
+        Set().intersection(atoms[1].slice(1), atoms[0].slice(1)).length.should.be.equal(1)
+        Set().intersection(atoms[1].slice(1), atoms[2].slice(1)).length.should.be.equal(0)
+        Set().intersection(atoms[1].slice(1), atoms[3].slice(1)).length.should.be.equal(0)
+        Set().intersection(atoms[3].slice(1), atoms[2].slice(1)).length.should.be.equal(0)
+        Set().intersection(atoms[2].slice(1), atoms[0].slice(1)).length.should.be.equal(1)
+        Set().intersection(atoms[3].slice(1), atoms[0].slice(1)).length.should.be.equal(1)
         /*
   [ 'Al',13,3,3,'2iwcg1p9ek9z2dl8r','2iwcg1p9ek9z2dl8s','!2iwcg1p9ek9z2dl8t!','*2iwcg1p9ek9z2dl90*','2iwcg1p9ek9z2dl97','2iwcg1p9ek9z2dl9e' ],
    [ 'Cl',17,7,1,'2iwcg1p9ek9z2dl8u','2iwcg1p9ek9z2dl8v','2iwcg1p9ek9z2dl8w','2iwcg1p9ek9z2dl8x','2iwcg1p9ek9z2dl8y','2iwcg1p9ek9z2dl8z','*2iwcg1p9ek9z2dl90*','!2iwcg1p9ek9z2dl8t!'],
