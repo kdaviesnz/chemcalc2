@@ -37,6 +37,14 @@ const AtomsFactory = (canonicalSMILES) => {
 
     const prevAtomIndexByBranch = (atoms_with_tokens_no_brackets,index,depth) => {
         
+        // index
+        // 1 -> begin -> 0 -> Al
+        // 4 begin  -> 3 (d0) -> end 2 (d1) -> begin 1 (d1) -> 0 (d0)
+        
+        /*
+        
+        */
+        
          // @todo depth only works for depth 1
         //console.log(atoms_with_tokens_no_brackets[index]) // { type: 'Branch', value: 'begin' }
         //console.log(index) //1
@@ -63,7 +71,17 @@ const AtomsFactory = (canonicalSMILES) => {
             // @todo depth only works for depth 1
             return prevAtomIndexByBranch(atoms_with_tokens_no_brackets,--index,--depth)
         }
-        return prevAtomIndexByBranch(atoms_with_tokens_no_brackets,--index,--depth)
+        
+        if (atoms_with_tokens_no_brackets[index].type === "Branch" 
+           && atoms_with_tokens_no_brackets[index].value === "end") {
+            // @todo depth only works for depth 1
+            return prevAtomIndexByBranch(atoms_with_tokens_no_brackets,--index, ++depth)
+        }
+        
+        return prevAtomIndexByBranch(atoms_with_tokens_no_brackets,--index,depth)
+        
+        
+        
     }
     
     const prevAtomIndexByAtomicSymbol = (atomic_symbol, current_atoms, index) => {
