@@ -367,7 +367,7 @@ hcl[2].indexOf(hcl[1][hcl[1].length-1]).should.not.be.False()
 hcl[1].indexOf(hcl[2][hcl[2].length-1]).should.not.be.False()
 
 // CH3CH=CHCH3
-const xxx = MoleculeFactory("CC=CC")
+const butene = MoleculeFactory("CC=CC")
 
 console.log("All tests succeeded")
 
