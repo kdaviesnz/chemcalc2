@@ -238,6 +238,13 @@ const AtomsFactory = (canonicalSMILES) => {
 
     if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
         atoms.length.should.be.equal(4)
+
+        /*
+  [ 'Al',13,3,3,'2iwcg1p9ek9z2dl8r','2iwcg1p9ek9z2dl8s','!2iwcg1p9ek9z2dl8t!','*2iwcg1p9ek9z2dl90*','2iwcg1p9ek9z2dl97','2iwcg1p9ek9z2dl9e' ],
+   [ 'Cl',17,7,1,'2iwcg1p9ek9z2dl8u','2iwcg1p9ek9z2dl8v','2iwcg1p9ek9z2dl8w','2iwcg1p9ek9z2dl8x','2iwcg1p9ek9z2dl8y','2iwcg1p9ek9z2dl8z','*2iwcg1p9ek9z2dl90*','!2iwcg1p9ek9z2dl8t!'],
+  [ 'Cl',17,7,1,'2iwcg1p9ek9z2dl91','2iwcg1p9ek9z2dl92','2iwcg1p9ek9z2dl93','2iwcg1p9ek9z2dl94','2iwcg1p9ek9z2dl95','2iwcg1p9ek9z2dl96','2iwcg1p9ek9z2dl97','*2iwcg1p9ek9z2dl90*' ],
+  [ 'Cl',17,7,1,'2iwcg1p9ek9z2dl98','2iwcg1p9ek9z2dl99','2iwcg1p9ek9z2dl9a','2iwcg1p9ek9z2dl9b','2iwcg1p9ek9z2dl9c','2iwcg1p9ek9z2dl9d','2iwcg1p9ek9z2dl9e','2iwcg1p9ek9z2dl97' ]
+             */
     }
 
     if ("COC" === canonicalSMILES) {

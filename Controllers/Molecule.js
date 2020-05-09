@@ -27,7 +27,7 @@ const CMolecule = (mmolecule) => {
       // Check substrate for free slots
                 return mmolecule.slice(1).map(
                     (atom, index) => {
-                        if (CAtom(atom, null,null).freeSlots() === 0 ) {
+                        if (CAtom(atom, index,mmolecule).freeSlots() === 0 ) {
                             return null
                         }
                         return [index, atom]                        
