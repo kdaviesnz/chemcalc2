@@ -42,7 +42,12 @@ const AtomsFactory = (canonicalSMILES) => {
         // 4 begin  -> 3 (d0) -> end 2 (d1) -> begin 1 (d1) -> 0 (d0)
         
         /*
-        
+        index    depth     row  
+        4        1        { type: 'Branch', value: 'begin' },
+        3        0         { type: 'Branch', value: 'end' },
+        2        1         [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngb','2iwcg3xsk9wb0ng...],
+        1        1        { type: 'Branch', value: 'begin' },
+        0        0        [ 'Al',13,3,5,'2iwcg3xsk9wb0ng8','2iwcg3xsk9wb0ng9','2iwcg3xsk9wb0nga' ],
         */
         
          // @todo depth only works for depth 1
