@@ -1,20 +1,20 @@
-const BronstedLowryAcidBaseReactions = () => {
+const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_number) => {
   
   
    // We've just added a reagent to the container
             // Brønsted and Lowry Acid base reactions
-            if (this.MoleculeController(this.container[1]).indexOf("H") !== false && this.MoleculeController(this.container[2]).indexOf("H") === false) {
+            if (MoleculeController(container[1]).indexOf("H") !== false && MoleculeController(container[2]).indexOf("H") === false) {
 
                 console.log("got here container.js")
                 process.exit()
-                const proton_index = this.MoleculeController(this.container[1]).indexOf("H")
-                this.MoleculeController.remove(container, 1, this.MoleculeController(this.container[1]).itemAt(proton_index)) // remove proton
-                this.container[2] = this.MoleculeController(this.container[2]).push("H")
+                const proton_index = MoleculeController(container[1]).indexOf("H")
+                MoleculeController.remove(container, 1, MoleculeController(container[1]).itemAt(proton_index)) // remove proton
+                container[2] = MoleculeController(container[2]).push("H")
                 
-            } else if (this.MoleculeController(this.container[1]).indexOf("H") === false && this.MoleculeController(this.container[2]).indexOf("H") !== false) {
+            } else if (MoleculeController(container[1]).indexOf("H") === false && MoleculeController(container[2]).indexOf("H") !== false) {
 
-                if (this.test_number === 3) {
-                    // console.log(this.container[2]) // COC
+                if (test_number === 3) {
+                    // console.log(container[2]) // COC
                     console.log("Wrong section for test 3 - reagent doesn't have a non-carbon hydrogen (Container.js)")
                     process.exit()
                 }
@@ -24,34 +24,34 @@ const BronstedLowryAcidBaseReactions = () => {
 
                 // Here the substrate (base) has no proton and the reagent (acid) does.
                 // So we remove the proton from the reagent and add it to the substrate.
-                const proton_index = this.MoleculeController(this.container[2]).indexOf("H")
+                const proton_index = MoleculeController(container[2]).indexOf("H")
                 proton_index.should.be.greaterThan(0);
 
-                if (this.test_number === 2) {
-                    this.container[1][1][0].should.be.equal("Cl")
-                    this.container[2].length.should.be.equal(5)
+                if (test_number === 2) {
+                    container[1][1][0].should.be.equal("Cl")
+                    container[2].length.should.be.equal(5)
                     proton_index.should.be.equal(4)
                 }
 
                // remove proton
-                this.container = this.MoleculeController(this.container[2]).removeProton(
-                    this.container,
+                container = MoleculeController(container[2]).removeProton(
+                    container,
                     2,
-                    this.MoleculeController(this.container[2]).itemAt(proton_index)
+                    MoleculeController(container[2]).itemAt(proton_index)
                 )
 
-                if (this.test_number === 2) {
-                    this.container.length.should.be.equal(4)
-                    if (null !== this.container[this.container.length-1][0]) {
+                if (test_number === 2) {
+                    container.length.should.be.equal(4)
+                    if (null !== container[container.length-1][0]) {
                         console.log("Value should be null")
                         process.exit()
                     }
-                    this.container[this.container.length-1][1][0].should.be.equal("H")
-                    this.container[this.container.length-1][1].length.should.be.equal(4)
+                    container[container.length-1][1][0].should.be.equal("H")
+                    container[container.length-1][1].length.should.be.equal(4)
                 }
 
-                const proton = this.container[this.container.length-1][1]
-                if (this.test_number === 2) {
+                const proton = container[container.length-1][1]
+                if (test_number === 2) {
                     proton.should.be.Array()
                     proton.length.should.be.equal(4)
                     proton[0].should.be.String()
@@ -59,53 +59,53 @@ const BronstedLowryAcidBaseReactions = () => {
                 }
 
                 // Move the proton to first molecule
-                this.container.splice(this.container.length-1,1) // remove proton from container
-                // this.container[1] is chlorine
+                container.splice(container.length-1,1) // remove proton from container
+                // container[1] is chlorine
                 const atom_to_push_index = 0
-                this.MoleculeController(this.container[1]).push([proton], this.container, this.container.length-1, this.test_number, atom_to_push_index)
+                MoleculeController(container[1]).push([proton], container, container.length-1, test_number, atom_to_push_index)
 
-                if (this.test_number === 2) {
-                    this.container.length.should.be.equal(3)
-                    this.container[1].length.should.be.equal(3)
-                    this.container[2].length.should.be.equal(4)
-                    this.container[1][1].length.should.be.equal(12)
-                    this.container[1][1][0].should.be.equal("Cl")
-                    this.container[1][2][0].should.be.equal("H")
-                    this.container[2][1].length.should.be.equal(6)
-                    this.container[2][1][0].should.be.equal("H")
-                    this.container[2][2].length.should.be.equal(6)
-                    this.container[2][2][0].should.be.equal("H")
-                    this.container[2][3].length.should.be.equal(12)
-                    this.container[2][3][0].should.be.equal("O")
+                if (test_number === 2) {
+                    container.length.should.be.equal(3)
+                    container[1].length.should.be.equal(3)
+                    container[2].length.should.be.equal(4)
+                    container[1][1].length.should.be.equal(12)
+                    container[1][1][0].should.be.equal("Cl")
+                    container[1][2][0].should.be.equal("H")
+                    container[2][1].length.should.be.equal(6)
+                    container[2][1][0].should.be.equal("H")
+                    container[2][2].length.should.be.equal(6)
+                    container[2][2][0].should.be.equal("H")
+                    container[2][3].length.should.be.equal(12)
+                    container[2][3][0].should.be.equal("O")
                 }
 
                 if (false) {
-                        this.container.length.should.be.equal(3)
-                        this.container[1].length.should.be.equal(2)
-                        this.container[1][1].length.should.be.equal(12)
-                        const lone_pairs = this.MoleculeController(this.container[1]).lonePairs(
-                            this.container[1][1],
+                        container.length.should.be.equal(3)
+                        container[1].length.should.be.equal(2)
+                        container[1][1].length.should.be.equal(12)
+                        const lone_pairs = MoleculeController(container[1]).lonePairs(
+                            container[1][1],
                             1)
                         lone_pairs.length.should.equal(8)
-                        this.container[1][1][0].should.be.equal("Cl")
-                        this.container[2].length.should.be.equal(5)
-                        this.container[2][1].should.be.an.Array()
-                        this.container[2][1].length.should.be.equal(6)
-                        this.container[2][1][0].should.be.equal("H")
-                        this.container[2][1][1].should.be.equal(1)
-                        this.container[2][1][2].should.be.equal(1)
-                        this.container[2][1][3].should.be.equal(1)
-                        this.container[2][1][4].should.be.a.String()
-                        this.container[2][2].should.be.an.Array()
-                        this.container[2][2].length.should.be.equal(6)
-                        this.container[2][2][0].should.be.equal("H")
-                        this.container[2][2][1].should.be.equal(1)
-                        this.container[2][2][2].should.be.equal(1)
-                        this.container[2][2][3].should.be.equal(1)
+                        container[1][1][0].should.be.equal("Cl")
+                        container[2].length.should.be.equal(5)
+                        container[2][1].should.be.an.Array()
+                        container[2][1].length.should.be.equal(6)
+                        container[2][1][0].should.be.equal("H")
+                        container[2][1][1].should.be.equal(1)
+                        container[2][1][2].should.be.equal(1)
+                        container[2][1][3].should.be.equal(1)
+                        container[2][1][4].should.be.a.String()
+                        container[2][2].should.be.an.Array()
+                        container[2][2].length.should.be.equal(6)
+                        container[2][2][0].should.be.equal("H")
+                        container[2][2][1].should.be.equal(1)
+                        container[2][2][2].should.be.equal(1)
+                        container[2][2][3].should.be.equal(1)
                 }
-                // this.container[1] = this.MoleculeController(this.container[1]).push("H")
+                // container[1] = MoleculeController(container[1]).push("H")
                 
-            } else if (this.container[1].indexOf("H") !== false && this.MoleculeController(this.container[2]).indexOf("H") !== false) {
+            } else if (container[1].indexOf("H") !== false && MoleculeController(container[2]).indexOf("H") !== false) {
                  // Here both substrate and reagent has a proton.
                  // So we remove a proton from the molecule with the lowest pKa value (acid)
                  // and add it to the molecule with the highest pKa value (base)
@@ -116,159 +116,112 @@ const BronstedLowryAcidBaseReactions = () => {
                 // pKa of HCl is -6.3
                // pKa of water is 14
                 // HCL is first element
-                if (this.container[1][0] <= this.container[2][0]) {
+                if (container[1][0] <= container[2][0]) {
 
                     // First test - HCl + water
 
                     // Move proton from first molecule to second molecule
-                    const proton_index = this.MoleculeController(this.container[1]).indexOf("H")
+                    const proton_index = MoleculeController(container[1]).indexOf("H")
 
-                    if (this.test_number === 1) {
+                    if (test_number === 1) {
                         proton_index.should.be.equal(1)
                     }
 
-                    this.container = this.MoleculeController(this.container[1]).removeProton(
-                        this.container,
+                    container = MoleculeController(container[1]).removeProton(
+                        container,
                         1,
-                        this.MoleculeController(this.container[1]).itemAt(proton_index)
+                        MoleculeController(container[1]).itemAt(proton_index)
                     )
 
-                    if (this.test_number === 1) {                        
+                    if (test_number === 1) {                        
                         // Cl, H2O, proton
-                        this.container[1][1][0].should.be.equal("Cl")
-                        this.container[2][3][0].should.be.equal("O")
+                        container[1][1][0].should.be.equal("Cl")
+                        container[2][3][0].should.be.equal("O")
                     }
 
                     // last item of container will now be the proton from the first molecule
-                    const proton = this.container[this.container.length-1][1]
+                    const proton = container[container.length-1][1]
                     proton.should.be.Array()
                     proton.length.should.be.equal(4)
                     proton[0].should.be.String()
                     proton[0].should.be.equal("H")
 
                     // Move the proton to second molecule
-                    this.container.splice(this.container.length-1,1) // remove proton from container
-                    // this.container[2] is water molecule
-                    // this.container.length-1 is where the proton is in the container
+                    container.splice(container.length-1,1) // remove proton from container
+                    // container[2] is water molecule
+                    // container.length-1 is where the proton is in the container
                     const atom_to_push_index = 0
-                    this.MoleculeController(this.container[2]).push([proton], this.container, this.container.length-1, this.test_number, atom_to_push_index)
+                    MoleculeController(container[2]).push([proton], container, container.length-1, test_number, atom_to_push_index)
 
-                    if (this.test_number === 1) {
-                        this.container.length.should.be.equal(3)
-                        this.container[1].length.should.be.equal(2)
-                        this.container[1][1].length.should.be.equal(12)
-                        const lone_pairs = this.MoleculeController(this.container[1]).lonePairs(
-                            this.container[1][1],
+                    if (test_number === 1) {
+                        container.length.should.be.equal(3)
+                        container[1].length.should.be.equal(2)
+                        container[1][1].length.should.be.equal(12)
+                        const lone_pairs = MoleculeController(container[1]).lonePairs(
+                            container[1][1],
                             1)
                         lone_pairs.length.should.equal(8)
-                        this.container[1][1][0].should.be.equal("Cl")
-                        this.container[2].length.should.be.equal(5)
-                        this.container[2][1].should.be.an.Array()
-                        this.container[2][1].length.should.be.equal(6)
-                        this.container[2][1][0].should.be.equal("H")
-                        this.container[2][1][1].should.be.equal(1)
-                        this.container[2][1][2].should.be.equal(1)
-                        this.container[2][1][3].should.be.equal(1)
-                        this.container[2][1][4].should.be.a.String()
-                        this.container[2][2].should.be.an.Array()
-                        this.container[2][2].length.should.be.equal(6)
-                        this.container[2][2][0].should.be.equal("H")
-                        this.container[2][2][1].should.be.equal(1)
-                        this.container[2][2][2].should.be.equal(1)
-                        this.container[2][2][3].should.be.equal(1)
-                        this.container[2][2][4].should.be.a.String()
-                        this.container[2][3].should.be.an.Array()
-                        this.container[2][3].length.should.be.equal(12)
-                        this.container[2][3][0].should.be.equal("O")
-                        this.container[2][3][1].should.be.equal(8)
-                        this.container[2][3][2].should.be.equal(6)
-                        this.container[2][3][3].should.be.equal(2)
-                        this.container[2][3][4].should.be.a.String()
-                        this.container[2][4].should.be.an.Array()
-                        this.container[2][4].length.should.be.equal(6)
-                        this.container[2][4][0].should.be.equal("H")
-                        this.container[2][4][1].should.be.equal(1)
-                        this.container[2][4][2].should.be.equal(1)
-                        this.container[2][4][3].should.be.equal(1)
-                        this.container[2][4][4].should.be.a.String()
+                        container[1][1][0].should.be.equal("Cl")
+                        container[2].length.should.be.equal(5)
+                        container[2][1].should.be.an.Array()
+                        container[2][1].length.should.be.equal(6)
+                        container[2][1][0].should.be.equal("H")
+                        container[2][1][1].should.be.equal(1)
+                        container[2][1][2].should.be.equal(1)
+                        container[2][1][3].should.be.equal(1)
+                        container[2][1][4].should.be.a.String()
+                        container[2][2].should.be.an.Array()
+                        container[2][2].length.should.be.equal(6)
+                        container[2][2][0].should.be.equal("H")
+                        container[2][2][1].should.be.equal(1)
+                        container[2][2][2].should.be.equal(1)
+                        container[2][2][3].should.be.equal(1)
+                        container[2][2][4].should.be.a.String()
+                        container[2][3].should.be.an.Array()
+                        container[2][3].length.should.be.equal(12)
+                        container[2][3][0].should.be.equal("O")
+                        container[2][3][1].should.be.equal(8)
+                        container[2][3][2].should.be.equal(6)
+                        container[2][3][3].should.be.equal(2)
+                        container[2][3][4].should.be.a.String()
+                        container[2][4].should.be.an.Array()
+                        container[2][4].length.should.be.equal(6)
+                        container[2][4][0].should.be.equal("H")
+                        container[2][4][1].should.be.equal(1)
+                        container[2][4][2].should.be.equal(1)
+                        container[2][4][3].should.be.equal(1)
+                        container[2][4][4].should.be.a.String()
                     }
 
 
                 } else {
 
-                    console.log(this.test_number)
-                    if (this.test_number ===1) {
-                        console.log(this.container)
+                    console.log(test_number)
+                    if (test_number ===1) {
+                        console.log(container)
                     }
 
                     // Move proton from second molecule to first molecule
-                    const proton_index = this.MoleculeController(this.container[2]).indexOf("H") // 2
-                    this.container = this.MoleculeController(this.container[2]).remove(
-                        this.container,
+                    const proton_index = MoleculeController(container[2]).indexOf("H") // 2
+                    container = MoleculeController(container[2]).remove(
+                        container,
                         2,
-                        this.MoleculeController(this.container[2]).itemAt(proton_index)
+                        MoleculeController(container[2]).itemAt(proton_index)
                     ) // remove proton
 
                     // last item of container will now be the proton from the second molecule
-                    const proton = this.container.pop()
+                    const proton = container.pop()
                     // add the proton to first molecule
-                    this.MoleculeController(this.container[1]).push(proton)
+                    MoleculeController(container[1]).push(proton)
                     
                 }
             } else {
+                
+                return false
 
-                if (this.test_number !==3) {
-                    console.log("Wrong section")
-                    process.exit()
-                }
-
-                // Neither substrate or reagent has a proton.
-                console.log("Neither substrate or reagent has a proton - Container.js")
                 
-                // Check substrate for free slots
-                // returns [index, atom] pairs
-                const substrate_atoms_with_free_slots = this.MoleculeController(this.container[1]).atomsWithFreeSlots()
-                    
-                 // Check reagent for free slots
-                // returns [index, atom] pairs
-                const reagent_atoms_with_free_slots = this.MoleculeController(this.container[2]).atomsWithFreeSlots()
-                          
-                if (this.test_number === 3) {
-                    substrate_atoms_with_free_slots.length.should.be.equal(1)
-                    reagent_atoms_with_free_slots.length.should.be.equal(0)
-                }
-                        
-               //  __atomsWithLonePairs
-                // Check substrate for free slots
-                // returns [index, atom] pairs
-                const substrate_atoms_with_lone_pairs = CMolecule(this.container[1]).__atomsWithLonePairs()
-                    
-                 // Check reagent for free slots
-                // returns [index, atom] pairs
-                const reagent_atoms_with_lone_pairs = CMolecule(this.container[2]).__atomsWithLonePairs()
-                          
-                if (this.test_number === 3) {
-                    substrate_atoms_with_lone_pairs.length.should.be.equal(0)
-                    reagent_atoms_with_lone_pairs.length.should.be.equal(1)
-                }
-                
-                //const _makeCovalentBond = (atoms, atom2_index, test_number, atom_to_push_index) => {
-               // push : (atoms_or_atomic_symbols, container, molecule_to_add_to_index, test_number, atom_to_push_index,atom_to_push_to_index)
-                if (substrate_atoms_with_free_slots.length > 0 && reagent_atoms_with_lone_pairs.length === 0) {
-                    // substrate atom has a free slot and reagent has atom with lone pair
-                    // AlCl3 <- C:OC
-                    const reagent_atoms = this.container[2].slice(1)
-                    const atom_to_push_to_index = substrate_atoms_with_free_slots[0][0]
-                    const atom_to_push_index = reagent_atoms_with_lone_pairs[0][0]
-                    const molecule_to_add_to_index = 0
-                    this.MoleculeController(this.container[1]).push(reagent_atoms, this.container, molecule_to_add_to_index, this.test_number, atom_to_push_index, atom_to_push_to_index )
-                } else if (substrate_atoms_with_free_slots.length > 0 && reagent_atoms_with_lone_pairs.length === 0) {
-                    
-                } else if (substrate_atoms_with_free_slots.length === 0 && reagent_atoms_with_lone_pairs.length > 0) {
-                    
-                }
-                
-                process.exit()
             }
   
 }
+
+module.exports = BronstedLowryAcidBaseReactions
