@@ -40,6 +40,11 @@ class CContainer {
                 
             } else if (this.MoleculeController(this.container[1]).indexOf("H") === false && this.MoleculeController(this.container[2]).indexOf("H") !== false) {
 
+                if (this.test_number === 3) {
+                    console.log("Wrong section for test 3 - reagent doesn't have a non-carbon hydrogen (Container.js)")
+                    process.exit()
+                }
+
                 // Here the substrate (acid) has a proton and the reagent (base) doesnt.
                 // So we remove the proton from the substrate and add it to the reagent.
 
