@@ -324,6 +324,48 @@ dimethylEther[0].should.be.equal(-3.5)
 ccontainer3.add(aluminumChloride,1)
 ccontainer3.add(dimethylEther,1)
 
+const hbr = MoleculeFactory("HBr")
+const HCLController = CMolecule(hcl)
+HCLController.bondCount(hbr[1]).should.be.equal(1)
+HCLController.bondCount(hbr[2]).should.be.equal(1)
+hbr[0].should.be.a.equal(-6.3)
+hbr[1].should.be.a.Array()
+hbr[1].length.should.be.a.equal(6)
+hbr[1][0].should.be.a.String()
+hbr[1][0].should.be.equal("H")
+range.range(1,3,1).map(
+    (i)=>{
+        hbr[1][i].should.be.a.Number()
+    }
+) 
+hbr[1][1].should.be.equal(1)
+hbr[1][2].should.be.equal(1)
+hbr[1][3].should.be.equal(1)
+range.range(4,hbr[1].length-1).map(
+    (i)=>{
+        hbr[2][i].should.be.a.String()
+    }
+)
+hbr[2].should.be.a.Array()
+hcl[2].length.should.be.a.equal(12)
+hcl[2][0].should.be.a.String()
+hcl[2][0].should.be.equal("Cl")
+range.range(1,3,1).map(
+    (i)=>{
+        hcl[2][i].should.be.a.Number()
+    }
+) 
+hcl[2][1].should.be.equal(17)
+hcl[2][2].should.be.equal(7)
+hcl[2][3].should.be.equal(1)
+range.range(4,hcl[2].length-1,1).map(
+    (i)=>{
+        hcl[2][i].should.be.a.String()
+    }
+)
+hcl[2].indexOf(hcl[1][hcl[1].length-1]).should.not.be.False()
+hcl[1].indexOf(hcl[2][hcl[2].length-1]).should.not.be.False()
+
 console.log("All tests succeeded")
 
 
