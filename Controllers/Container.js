@@ -243,16 +243,22 @@ class CContainer {
                     
                 }
             } else {
+
+                if (this.test_number !==3) {
+                    console.log("Wrong section")
+                    process.exit()
+                }
+
                 // Neither substrate or reagent has a proton.
                 console.log("Neither substrate or reagent has a proton - Container.js")
                 
                 // Check substrate for free slots
                 // returns [index, atom] pairs
-                const substrate_atoms_with_free_slots = CMolecule(this.container[1]).__atomsWithFreeSlots()
+                const substrate_atoms_with_free_slots = this.MoleculeController(this.container[1]).atomsWithFreeSlots()
                     
                  // Check reagent for free slots
                 // returns [index, atom] pairs
-                const reagent_atoms_with_free_slots = CMolecule(this.container[2]).__atomsWithFreeSlots()
+                const reagent_atoms_with_free_slots = this.MoleculeController(this.container[2]).atomsWithFreeSlots()
                           
                 if (this.test_number === 3) {
                     substrate_atoms_with_free_slots.length.should.be.equal(1)

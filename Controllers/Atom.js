@@ -1,4 +1,4 @@
-
+const PeriodicTable = require('../Models/PeriodicTable')
 
 const CAtom = (atom, atom_index, mmolecule) => {
 
@@ -22,7 +22,7 @@ const CAtom = (atom, atom_index, mmolecule) => {
             return lone_pairs
         },
         freeSlots: () => {
-            const info = PeriodicTable(atom[1])
+            const info = PeriodicTable[atom[0]]
             // info[3] is the number of valence electron pairs
             return (8 - (info[3]*2)) / 2
         }

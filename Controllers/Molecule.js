@@ -292,14 +292,21 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
 // pKa, atom, atom, atom ...
 // ATOM MODEL
 // atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
-        indexOf : (atom_or_atomic_symbol) => {
+        indexOf : (atom_or_atomic_symbol, include_carbons) => {
             if (atom_or_atomic_symbol === "H" || atom_or_atomic_symbol[0] === "H") {
                 // get molecule atoms that have hydrogens, keeping track of hydrogen indexes
                 const candidate_atoms = mmolecule.reduce((carry, current_molecule_atom, index)=>{
+
+
                     if (current_molecule_atom[0] !== "H") {
                         if (typeof current_molecule_atom === "number" ) {
                             return carry
                         }
+
+                        if (current_molecule_atom[0] === "C" && (undefined === include_carbons || include_carbons === false)) {
+                            return carry // only count hydrogens not bounded to carbons
+                        }
+
                         const current_molecule_atom_valence_electrons = current_molecule_atom.slice(4)
 
                         // check current atom for hydrogens
@@ -614,6 +621,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         lonePairs: (atom, current_atom_index) => {
             return CAtom(atom, current_atom_index, mmolecule).lonePairs()
         },
+        atomsWithFreeSlots: __atomsWithFreeSlots,
         removeProton: (container, molecule_index, atom_or_atomic_symbol) => {
 
             var test_mode = false
