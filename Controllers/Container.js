@@ -25,10 +25,18 @@ class CContainer {
         */
 
         // First element is pKa value,
-        // container[1] is reagent
-        // container[2] is substrate
+        // container[2] is reagent
+        // container[1] is substrate
         if (this.container.length > 2) {
 
+            const substrate = container[1]
+            const reagent = container[2]
+            
+            if (Families(substrate.slice(1)).families.alkene.length > 0) {
+                
+            } elseif (Families(reagent.slice(1)).families.alkene.length > 0) {
+                
+            }
 
             BronstedLowryAcidBaseReactions(this.container, this.MoleculeController, this.test_number)
 
