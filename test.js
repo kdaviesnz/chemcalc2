@@ -321,6 +321,8 @@ dimethylEther.filter(
 dimethylEther[0].should.be.equal(-3.5)
 
 //console.log(aluminumChloride)
+ccontainer3.add(aluminumChloride,1)
+ccontainer3.add(dimethylEther,1)
 
 console.log("All tests succeeded")
 

@@ -381,7 +381,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
 
             // AlCl3 <- C:OC
             if (test_number === 3) {
-                atoms_or_atomic_symbols.length.shoukd.be.equal(10) // COC
+                atoms_or_atomic_symbols.length.should.be.equal(10) // COC
                 mmolecule.length.should.be.equal(4) // AlCl3
                 molecule_to_add_to_index.should.be.equal(0)
                 atom_to_push_index.should.be.equal(4)
