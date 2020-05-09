@@ -162,6 +162,24 @@ const FunctionalGroups = (fg_atoms) => {
 
     }
 
+    const doubleBonds = () => {
+        // return __doubleCarbonBonds = (atom, current_atom_index)
+        
+        return  fg_atoms.map(
+            (atom, atom_index) => {
+                if (atom[0] === "O"  && __Bonds(atom, atom_index, "C", 2).length === 2) {
+                    const res = {}
+                    res[atom_index] = atom
+                    return res
+                }
+                return false
+            }
+        ).filter((item) => {
+            return item !== false
+        })
+
+    }
+    
     const ether = () => {
 
         /*
@@ -598,6 +616,8 @@ An aryl group is a functional group derived from a simple aromatic ring compound
 
 
     const functionalGroups = {
+        "double_bonds": doubleBonds(),
+        "alkene": alkene(),
         "ether": ether(),
         "water": water(),
         "hydrochloric_acid": hydrochloric_acid(),
