@@ -35,13 +35,22 @@ class CContainer {
             const substrate_families = Families(substrate.slice(1)).families
             const reagent_families = Families(reagent.slice(1)).families
             
+            // The functional group of an alkene is the C=C double bond.
+            // The C=C double bond is nucleophilic
             if (substrate_families.alkene.length > 0) {
+                // Find the nucleophile on the C=C bond
                 const nucleophile_atom_index = substrate_families.alkene[0][0]
                 substrate[nucleophile_atom_index][0].should.be.equal("C")
                 AtomController(substrate[nucleophile_atom_index], nucleophile_atom_index, substrate.slice(1)).bondCount.should.be.equal(2)
           
 
             } elseif (Families(reagent.slice(1)).families.alkene.length > 0) {
+                
+                // Find the nucleophile on the C=C bond
+                const nucleophile_atom_index = reagent_families.alkene[0][0]
+                reagent[nucleophile_atom_index][0].should.be.equal("C")
+                AtomController(reagent[nucleophile_atom_index], reagent_atom_index, reagent.slice(1)).bondCount.should.be.equal(2)
+               
                 
             }
 
