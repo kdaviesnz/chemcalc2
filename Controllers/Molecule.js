@@ -7,11 +7,11 @@ const should = require('should')
 const CMolecule = (mmolecule) => {
 
     
-    const __atomsWithLonePairs => () {
+    const __atomsWithLonePairs =  () => {
       // Check substrate for free slots
                 return mmolecule.slice(1).map(
                     (atom, index) => {
-                        if (CAtom(atom, mmolecule, index).lonePairs() === 0 {
+                        if (CAtom(atom, mmolecule, index).lonePairs() === 0) {
                             return null
                         }
                         return [index, atom]                        
@@ -27,7 +27,7 @@ const CMolecule = (mmolecule) => {
       // Check substrate for free slots
                 return mmolecule.slice(1).map(
                     (atom, index) => {
-                        if (CAtom(atom, null,null).freeSlots() === 0 {
+                        if (CAtom(atom, null,null).freeSlots() === 0 ) {
                             return null
                         }
                         return [index, atom]                        
@@ -169,7 +169,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         }
 
         // Get index of first free electron on atom being pushed to
-        const atom_being_being_pushed_to_electron_to_share_index = __electronToShareIndex(mmolecule[atom2_index])
+        const atom_being_being_pushed_to_electron_to_share_index = __electronToShareIndex(mmolecule[atom_to_push_to_index])
         
         
         if (test_number === 1) {

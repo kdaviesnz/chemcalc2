@@ -22,7 +22,7 @@ const CAtom = (atom, atom_index, mmolecule) => {
             return lone_pairs
         },
         freeSlots: () => {
-            const info = PeriodicTable(atom[])
+            const info = PeriodicTable(atom[1])
             // info[3] is the number of valence electron pairs
             return (8 - (info[3]*2)) / 2
         }
