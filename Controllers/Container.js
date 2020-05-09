@@ -41,6 +41,7 @@ class CContainer {
             } else if (this.MoleculeController(this.container[1]).indexOf("H") === false && this.MoleculeController(this.container[2]).indexOf("H") !== false) {
 
                 if (this.test_number === 3) {
+                    // console.log(this.container[2]) // COC
                     console.log("Wrong section for test 3 - reagent doesn't have a non-carbon hydrogen (Container.js)")
                     process.exit()
                 }
