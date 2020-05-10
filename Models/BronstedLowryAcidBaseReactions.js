@@ -2,6 +2,20 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
   
   const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index) => {
     
+    if (arguments.length === 0) {
+       const substrate_proton_index = MoleculeController(container[1]).indexOf("H")
+       const reagent_proton_index = MoleculeController(container[2]).indexOf("H")
+       if (substrate_proton_index!== false && reagent_proton_index === false) {
+         electrophile_molecule = container[1]
+         electrophile_atom_index = substrate_proton_index
+         nucleophile_molecule = container[2]         
+       } else {
+         electrophile_molecule = container[2]
+         electrophile_atom_index = reagent_proton_index
+         nucleophile_molecule = container[1]  
+       }
+    }
+    
     if (electrophile_atom_index === null) {
       electrophile_atom_index = MoleculeController(electrophile_molecule).indexOf("H")
     }
