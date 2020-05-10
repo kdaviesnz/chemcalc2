@@ -6,6 +6,18 @@ const should = require('should')
 
 const CMolecule = (mmolecule) => {
 
+    const determineElectrophileIndex = () => {
+    
+       // Check atoms for free slots
+       // returns [index, atom] pairs
+       const atoms_with_free_slots = __atomsWithFreeSlots()
+       if (atoms_with_free_slots.length === 0) {
+           return false
+       } else {
+           return atoms_with_free_slots[0][0]
+       }
+
+    }
     
     const determineNucleophileIndex = () => {
         // Find index of atom to bond to.
@@ -627,6 +639,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         },
         atomsWithFreeSlots: __atomsWithFreeSlots,
         nucleophileIndex: determineNucleophileIndex,
+        electrophileIndex: determineElectrophileIndex,
         removeProton: (container, molecule_index, atom_or_atomic_symbol) => {
 
             var test_mode = false
