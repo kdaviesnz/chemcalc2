@@ -1,5 +1,7 @@
 //  CONTAINER CONTROLLER
-
+const Families = require('../Models/Families')
+const BronstedLowryAcidBaseReactions = require('../Models/BronstedLowryAcidBaseReactions')
+const LewisAcidBaseReactions = require('../Models/LewisAcidBaseReactions')
 
 class CContainer {
 
@@ -29,8 +31,8 @@ class CContainer {
         // container[1] is substrate
         if (this.container.length > 2) {
 
-            const substrate = container[1]
-            const reagent = container[2]
+            const substrate = this.container[1]
+            const reagent = this.container[2]
             
             const substrate_families = Families(substrate.slice(1)).families
             const reagent_families = Families(reagent.slice(1)).families
@@ -49,7 +51,7 @@ class CContainer {
                 const nucleophile_atom_index = substrate_families.alkene[0][0]
                 substrate[nucleophile_atom_index][0].should.be.equal("C")
                 AtomController(substrate[nucleophile_atom_index], nucleophile_atom_index, substrate.slice(1)).bondCount.should.be.equal(2)
-                reaction =bronstedLowry.react(substrate, nucleophile_atom_index, reagent, null)) {
+                reaction = bronstedLowry.react(substrate, nucleophile_atom_index, reagent, null)
                     
                 if (reaction === false) {
                     // reagent does not have a proton
@@ -59,14 +61,14 @@ class CContainer {
                 }
                 
 
-            } elseif (reagent_families.alkene.length > 0) {
+            } else if (reagent_families.alkene.length > 0) {
                 
                 // Reagent is alkene
                 // Find the nucleophile on the C=C bond
                 const nucleophile_atom_index = reagent_families.alkene[0][0]
                 reagent[nucleophile_atom_index][0].should.be.equal("C")
                 AtomController(reagent[nucleophile_atom_index], reagent_atom_index, reagent.slice(1)).bondCount.should.be.equal(2)
-                reaction = bronstedLowry.react(reagent, nucleophile_atom_index, substrate, null)) {
+                reaction = bronstedLowry.react(reagent, nucleophile_atom_index, substrate, null)
                      
                 if (reaction === false) {
                     // substrate does not have a proton

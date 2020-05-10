@@ -337,8 +337,8 @@ const Families = (fg_atoms) => {
 
 
 
-    const familes = {
-        "double_bonds": doubleBonds(),
+    const families = {
+        "double_bonds": __doubleCarbonBonds,
         "alkene": alkene(),
     }
 
@@ -346,12 +346,12 @@ const Families = (fg_atoms) => {
 
 
     return {
-        familes: families,
+        families: families,
     }
 
 }
 
-module.exports = Familes
+module.exports = Families
 
 
 
