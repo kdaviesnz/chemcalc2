@@ -8,22 +8,25 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
        if (substrate_proton_index!== false && reagent_proton_index === false) {
          electrophile_molecule = container[1]
          electrophile_atom_index = substrate_proton_index
-         nucleophile_molecule = container[2]         
+         nucleophile_molecule = container[2]      
+         nucleophile_atom_index = MoleculeController(container[2]).nucleophileIndex()
        } elseif (substrate_proton_index=== false && reagent_proton_index !== false) {
          electrophile_molecule = container[2]
          electrophile_atom_index = reagent_proton_index
          nucleophile_molecule = container[1]  
+         nucleophile_atom_index = MoleculeController(container[1]).nucleophileIndex()
        } else {
             if (container[1][0] <= container[2][0]) {
                electrophile_molecule = container[1]
                electrophile_atom_index = substrate_proton_index
-              
+               
                nucleophile_molecule = container[2]
+               nucleophile_atom_index = MoleculeController(container[2]).nucleophileIndex()
             } else {
                   electrophile_molecule = container[2]
                 electrophile_atom_index = reagent_proton_index
                 nucleophile_molecule = container[1]    
-
+                 nucleophile_atom_index = MoleculeController(container[1]).nucleophileIndex()
                        
             }
        }
