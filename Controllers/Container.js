@@ -36,7 +36,9 @@ class CContainer {
             const reagent_families = Families(reagent.slice(1)).families
             
             const bronstedLowry = BronstedLowryAcidBaseReactions(this.container, this.MoleculeController, this.test_number)
+            const lewis = LewisAcidBaseReactions(this.container, this.MoleculeController, this.test_number)
 
+            
             // The functional group of an alkene is the C=C double bond.
             // The C=C double bond is nucleophilic
             let reaction = false
@@ -49,9 +51,15 @@ class CContainer {
                 AtomController(substrate[nucleophile_atom_index], nucleophile_atom_index, substrate.slice(1)).bondCount.should.be.equal(2)
                 reaction =bronstedLowry.react(substrate, nucleophile_atom_index, reagent, null)) {
                     
+                if (reaction === false) {
+                    // reagent does not have a proton
+                    // determine electrophile atom on the reagent
+                    // do Lewis acid base teaction
+                    reaction = lewis.react()
+                }
                 
 
-            } elseif (Families(reagent.slice(1)).families.alkene.length > 0) {
+            } elseif (reagent_families.alkene.length > 0) {
                 
                 // Reagent is alkene
                 // Find the nucleophile on the C=C bond
@@ -59,7 +67,13 @@ class CContainer {
                 reagent[nucleophile_atom_index][0].should.be.equal("C")
                 AtomController(reagent[nucleophile_atom_index], reagent_atom_index, reagent.slice(1)).bondCount.should.be.equal(2)
                 reaction = bronstedLowry.react(reagent, nucleophile_atom_index, substrate, null)) {
-                                   
+                     
+                if (reaction === false) {
+                    // substrate does not have a proton
+                    // determine electrophile atom on the substrate
+                    // do Lewis acid base teaction
+                    reaction = lewis.react()
+                }     
                 
             }
                 
@@ -67,6 +81,12 @@ class CContainer {
                 // No alkene
                 reaction = bronstedLowry.react()
             }
+                
+            if (!reaction) {
+                // No alkene and not Bronstec Lowry
+                // do Lewis acid base teaction
+                reaction = lewis.react()
+            }      
 
             
         }
