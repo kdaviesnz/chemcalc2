@@ -31,6 +31,15 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
         
         
         const molecule_to_add_to_index = 0
+        
+        if (test_number === 3) {
+            nucleophile_molecule.length.should.be.equal(10)
+            electrophile_molecule.length.should.be.equal(5)
+            electrophile_molecule[electrophile_atom_index][0] === "Al"
+            nucleophile_molecule[nucleophile_atom_index][0] === "O"
+        }
+        
+        
         this.MoleculeController(nucleophile_molecule).push(electrophile_molecule.slice(1), container, molecule_to_add_to_index, test_number, electrophile_atom_index, nucleophile_atom_index )
      
         
