@@ -65,10 +65,10 @@ class CContainer {
                 
             if (!reaction) {
                 // No alkene
+                reaction = bronstedLowry.react()
             }
 
-            BronstedLowryAcidBaseReactions(this.container, this.MoleculeController, this.test_number)
-
+            
         }
     }
 
