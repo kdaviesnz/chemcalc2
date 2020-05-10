@@ -32,34 +32,6 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
                     MoleculeController(electrophile_molecule).itemAt(proton_index)
                 )
     
-  }
-  
-  
-  
-  
-  
-  
-  
-  
-   // We've just added a reagent to the container
-            // Brønsted and Lowry Acid base reactions
-            if (MoleculeController(container[1]).indexOf("H") !== false && MoleculeController(container[2]).indexOf("H") === false) {
-
-                console.log("got here container.js")
-                process.exit()
-                const proton_index = MoleculeController(container[1]).indexOf("H")
-                MoleculeController.remove(container, 1, MoleculeController(container[1]).itemAt(proton_index)) // remove proton
-                container[2] = MoleculeController(container[2]).push("H")
-                
-            } else if (MoleculeController(container[1]).indexOf("H") === false && MoleculeController(container[2]).indexOf("H") !== false) {
-
-                react(container[1], nucleophile_atom_index, container[2], electrophile_atom_index)
-
-               
-                
-
-               
-
                 if (test_number === 2) {
                     container.length.should.be.equal(4)
                     if (null !== container[container.length-1][0]) {
@@ -87,19 +59,19 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
                 if (test_number === 2) {
                     container.length.should.be.equal(3)
                     container[1].length.should.be.equal(3)
-                    container[2].length.should.be.equal(4)
+                    electrophile_molecule.length.should.be.equal(4)
                     container[1][1].length.should.be.equal(12)
                     container[1][1][0].should.be.equal("Cl")
                     container[1][2][0].should.be.equal("H")
-                    container[2][1].length.should.be.equal(6)
-                    container[2][1][0].should.be.equal("H")
-                    container[2][2].length.should.be.equal(6)
-                    container[2][2][0].should.be.equal("H")
-                    container[2][3].length.should.be.equal(12)
-                    container[2][3][0].should.be.equal("O")
-                }
-
-                if (false) {
+                    electrophile_molecule[1].length.should.be.equal(6)
+                    electrophile_molecule[1][0].should.be.equal("H")
+                    electrophile_molecule[2].length.should.be.equal(6)
+                    electrophile_molecule[2][0].should.be.equal("H")
+                    electrophile_molecule[3].length.should.be.equal(12)
+                    electrophile_molecule[3][0].should.be.equal("O")
+                }       
+    
+               if (test_number === 1) {
                         container.length.should.be.equal(3)
                         container[1].length.should.be.equal(2)
                         container[1][1].length.should.be.equal(12)
@@ -108,9 +80,9 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
                             1)
                         lone_pairs.length.should.equal(8)
                         container[1][1][0].should.be.equal("Cl")
-                        container[2].length.should.be.equal(5)
-                        container[2][1].should.be.an.Array()
-                        container[2][1].length.should.be.equal(6)
+                        electrophile_molecule.length.should.be.equal(5)
+                        electrophile_molecule[1].should.be.an.Array()
+                        electrophile_molecule[1].length.should.be.equal(6)
                         container[2][1][0].should.be.equal("H")
                         container[2][1][1].should.be.equal(1)
                         container[2][1][2].should.be.equal(1)
@@ -123,7 +95,34 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
                         container[2][2][2].should.be.equal(1)
                         container[2][2][3].should.be.equal(1)
                 }
-                // container[1] = MoleculeController(container[1]).push("H")
+    
+    
+       }
+  
+  
+  
+  
+  
+  
+  
+  
+   // We've just added a reagent to the container
+            // Brønsted and Lowry Acid base reactions
+            if (MoleculeController(container[1]).indexOf("H") !== false && MoleculeController(container[2]).indexOf("H") === false) {
+
+                console.log("got here container.js")
+                process.exit()
+                const proton_index = MoleculeController(container[1]).indexOf("H")
+                MoleculeController.remove(container, 1, MoleculeController(container[1]).itemAt(proton_index)) // remove proton
+                container[2] = MoleculeController(container[2]).push("H")
+                
+            } else if (MoleculeController(container[1]).indexOf("H") === false && MoleculeController(container[2]).indexOf("H") !== false) {
+
+                react(container[1], nucleophile_atom_index, container[2], electrophile_atom_index)
+
+       //##########
+                
+            
                 
             } else if (container[1].indexOf("H") !== false && MoleculeController(container[2]).indexOf("H") !== false) {
                  // Here both substrate and reagent has a proton.
