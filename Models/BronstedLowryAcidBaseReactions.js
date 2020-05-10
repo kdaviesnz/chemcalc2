@@ -56,7 +56,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
     }
   
      // [Cl-] (nucleophile) <- H3O (electrophile)
-    if (test_number === 1 {
+    if (test_number === 2 ) {
             nucleophile_molecule.length.should.be.equal(1)
             electrophile_molecule.length.should.be.equal(5)
             electrophile_molecule[electrophile_atom_index][0] === "H"
