@@ -47,6 +47,22 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
                     process.exit()
     }
     
+    // HCl (electrophile) <- H2O (nucleophile)
+    if (test_number === 1 {
+            nucleophile_molecule.length.should.be.equal(4)
+            electrophile_molecule.length.should.be.equal(3)
+            electrophile_molecule[electrophile_atom_index][0] === "H"
+            nucleophile_molecule[nucleophile_atom_index][0] === "O"
+    }
+  
+     // [Cl-] (nucleophile) <- H3O (electrophile)
+    if (test_number === 1 {
+            nucleophile_molecule.length.should.be.equal(1)
+            electrophile_molecule.length.should.be.equal(5)
+            electrophile_molecule[electrophile_atom_index][0] === "H"
+            nucleophile_molecule[nucleophile_atom_index][0] === "Cl"
+    }
+    
     // react(container[1], nucleophile_atom_index, container[2], electrophile_atom_index)
     // Here the substrate (base) has no proton and the reagent (acid) does.
                 // So we remove the proton from the reagent and add it to the substrate.
@@ -134,25 +150,16 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
        }
   
   
+  return {
+    react: reacr
+    
+  }
   
   
   
   
   
-  
-   // We've just added a reagent to the container
-            // Brønsted and Lowry Acid base reactions
-            if (MoleculeController(container[1]).indexOf("H") !== false && MoleculeController(container[2]).indexOf("H") === false) {
-
-                console.log("got here container.js")
-                process.exit()
-                const proton_index = MoleculeController(container[1]).indexOf("H")
-                MoleculeController.remove(container, 1, MoleculeController(container[1]).itemAt(proton_index)) // remove proton
-                container[2] = MoleculeController(container[2]).push("H")
-                
-            } else if (MoleculeController(container[1]).indexOf("H") === false && MoleculeController(container[2]).indexOf("H") !== false) {
-
-                react(container[1], nucleophile_atom_index, container[2], electrophile_atom_index)
+   
 
        //##########
                 
