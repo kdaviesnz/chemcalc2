@@ -20,7 +20,10 @@ const CMolecule = (mmolecule) => {
     }
     
     const determineNucleophileIndex = () => {
-        // Find index of atom to bond to.
+        
+        const atoms_with_lone_pairs = CMolecule(this.container[1]).__atomsWithLonePairs()
+        if (atoms_with_lone_pairs.length === 0) {
+           return // Find index of atom to bond to.
                 // This must be atom with at least a lone pair.
                 return mmolecule.reduce((carry, current_molecule_atom, current_molecule_atom_index) => {
                         if (typeof current_molecule_atom === "string" || typeof current_molecule_atom.length !== "number") {
@@ -33,6 +36,11 @@ const CMolecule = (mmolecule) => {
                             carry : current_molecule_atom_index
                     }, false
                 )
+        } else {
+           return atoms_with_lone_pairs[0][0]
+        }
+        
+        
     }
     
     const __atomsWithLonePairs =  () => {
