@@ -2,6 +2,10 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
   
   const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index) => {
     
+    if (electrophile_atom_index === null) {
+      electrophile_atom_index = MoleculeController(electrophile_molecule).indexOf("H")
+    }
+    
     // Check that we have a proton
     if (!AtomController(electrophile_molecule[electrophile_atom_index]).isProton()) {
        return false
