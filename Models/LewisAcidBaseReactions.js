@@ -1,5 +1,6 @@
 const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
 
+    const react = () => {
     if (this.test_number !==3) {
         console.log("Wrong section")
         process.exit()
@@ -52,6 +53,12 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
     }
 
     process.exit()
+        
+    }
+    
+    return {
+        react : reacr
+    }
 }
 
 
