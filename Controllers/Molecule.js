@@ -7,6 +7,22 @@ const should = require('should')
 const CMolecule = (mmolecule) => {
 
     
+    const determineNucleophileIndex = () => {
+        // Find index of atom to bond to.
+                // This must be atom with at least a lone pair.
+                return mmolecule.reduce((carry, current_molecule_atom, current_molecule_atom_index) => {
+                        if (typeof current_molecule_atom === "string" || typeof current_molecule_atom.length !== "number") {
+                            return carry
+                        }
+                        const bond_count = _bondCount(current_molecule_atom)
+                        const std_number_of_bonds = current_molecule_atom[3]
+                        return current_molecule_atom[0] !== "H"
+                        && std_number_of_bonds - bond_count < 0 ?
+                            carry : current_molecule_atom_index
+                    }, false
+                )
+    }
+    
     const __atomsWithLonePairs =  () => {
       // Check substrate for free slots
                 return mmolecule.slice(1).map(
@@ -425,19 +441,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
 
             if (undefined === atom_to_bond_to_index) {
 
-                // Find index of atom to bond to.
-                // This must be atom with at least a lone pair.
-                atom_to_bond_to_index = mmolecule.reduce((carry, current_molecule_atom, current_molecule_atom_index) => {
-                        if (typeof current_molecule_atom === "string" || typeof current_molecule_atom.length !== "number") {
-                            return carry
-                        }
-                        const bond_count = _bondCount(current_molecule_atom)
-                        const std_number_of_bonds = current_molecule_atom[3]
-                        return current_molecule_atom[0] !== "H"
-                        && std_number_of_bonds - bond_count < 0 ?
-                            carry : current_molecule_atom_index
-                    }, false
-                )
+                atom_to_bond_to_index = determineNucleophileIndex()
 
             }
 
@@ -622,6 +626,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             return CAtom(atom, current_atom_index, mmolecule).lonePairs()
         },
         atomsWithFreeSlots: __atomsWithFreeSlots,
+        nucleophileIndex: determineNucleophileIndex,
         removeProton: (container, molecule_index, atom_or_atomic_symbol) => {
 
             var test_mode = false
