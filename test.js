@@ -373,6 +373,32 @@ const ccontainer4 = new CContainer([false], MoleculeFactory, MoleculeController,
 ccontainer4.add(butene,1)
 ccontainer4.add(hbr,1)
 
+ccontainer4.container.length.should.be.equal(3)
+const carbocation = ccontainer4.container[1]
+carbocation.length = 999
+carbocation.slice(1).filter(
+  (atom) => {
+    return atom[0] === "H"
+  }
+).length = 9999
+const brNeg = ccontainer4.container[2]
+brNeg.slice(1).filter(
+  (atom) => {
+    return atom[0] === "H"
+  }
+).length === 0
+
+const ccontainer5 = new CContainer([false], MoleculeFactory, MoleculeController, 4)
+ccontainer5.add(carbocation,1)
+ccontainer5.add(brNeg,1)
+ccontainer5.container.length.should.be.equal(2)
+
+ccontainer5.container[1].length = 999
+ccontainer5.container[1].slice(1).filter(
+  (atom) => {
+    return atom[0] === "H"
+  }
+).length = 9999
 
 console.log("All tests succeeded")
 
