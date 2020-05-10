@@ -3,6 +3,10 @@ const Set = require('../Models/Set')
 
 const CAtom = (atom, current_atom_index, mmolecule) => {
 
+    const __isProton = () => {
+        return atom[0] === "H" && atom.length === 4
+    }
+    
     const __Bonds = (atomic_symbol) => {
         const atoms = mmolecule.slice(1)
         const atom_electrons = atom.slice(4)
@@ -37,6 +41,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     }
 
     return {
+        isProton: __isProton,
         bonds: __Bonds,
         lonePairs: () => {
             const atoms = mmolecule.slice(1)
