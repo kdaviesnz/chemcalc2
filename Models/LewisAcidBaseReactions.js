@@ -27,17 +27,13 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
     // Neither substrate or reagent has a proton.
     console.log("Neither substrate or reagent has a proton - Container.js")
 
-    // AlCl3 <- C:OC  
-        const reagent_atoms = electrophile_molecule.slice(1)
-        const atom_to_push_to_index = nucleophile_atom_index
-        const atom_to_push_index = electrophile_atom_index
+    // AlCl3 (electrophile) <- C:OC (nuclephile)
+       
+        
+        
         const molecule_to_add_to_index = 0
-        this.MoleculeController(nucleophile_molecule).push(reagent_atoms, this.container, molecule_to_add_to_index, this.test_number, atom_to_push_index, atom_to_push_to_index )
-    
-
-    
-
-    
+        this.MoleculeController(nucleophile_molecule).push(electrophile_molecule.slice(1), container, molecule_to_add_to_index, test_number, electrophile_atom_index, nucleophile_atom_index )
+     
         
     }
     
