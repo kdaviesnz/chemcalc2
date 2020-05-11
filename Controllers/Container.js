@@ -78,19 +78,69 @@ class CContainer {
                 }     
                 
             }
-                
+
             if (!reaction) {
                 // No alkene
                 reaction = bronstedLowry.react()
             }
-                
-            if (!reaction) {
-                // No alkene and not Bronstec Lowry
-                // do Lewis acid base teaction
-                reaction = lewis.react()
-            }      
 
-            
+            if (this.test_number === 1) {
+                reaction.should.not.be.equal(false)
+            }
+
+            if (!reaction) {
+                // No alkene and not Bronsted Lowry
+                // do Lewis acid base teaction
+                reaction = lewis.react(null, null, null, null, this.test_number)
+            }
+
+            if (this.test_number === 1) {
+                reaction.length.should.be.equal(3)
+                reaction[0].should.be.equal(false)
+                reaction[1].length.should.be.equal(2)
+                reaction[1][0].should.be.equal(2.86)
+                reaction[1][1][0].should.be.equal("Cl")
+                reaction[2].length.should.be.equal(5)
+                reaction[2][0].should.be.equal(-1.74)
+                reaction[2][1][0].should.be.equal("H")
+                reaction[2][3][0].should.be.equal("O")
+                reaction[2][4][0].should.be.equal("H")
+            }
+
+            // [Cl-] (nucleophile)  <- H3O (electrophile)
+            if (this.test_number === 2) {
+                reaction.length.should.be.equal(3)
+                reaction[0].should.be.equal(false)
+                reaction[1].length.should.be.equal(3)
+                reaction[1][0].should.be.equal(-6.3)
+                reaction[1][1][0].should.be.equal("Cl")
+                reaction[2].length.should.be.equal(4)
+                reaction[2][0].should.be.equal(14)
+                reaction[2][1][0].should.be.equal("H")
+                reaction[2][3][0].should.be.equal("O")
+            }
+
+
+            // AlCl3 <- COC
+            if (this.test_number === 3) {
+                reaction.length.should.be.equal(3)
+                reaction[0].should.be.equal(false)
+                reaction[1].length.should.be.equal(3)
+                reaction[1][0].should.be.equal(-6.3)
+                reaction[1][1][0].should.be.equal("Cl")
+                reaction[2].length.should.be.equal(4)
+                reaction[2][0].should.be.equal(14)
+                reaction[2][1][0].should.be.equal("H")
+                reaction[2][3][0].should.be.equal("O")
+                console.log("Reaction result")
+                console.log("Container.js")
+                process.exit()
+            }
+
+
+            this.container = reaction
+
+
         }
     }
 

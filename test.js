@@ -162,6 +162,8 @@ ccontainer.container[1].should.be.a.Array()
 // pKa of HCl is -6.3
 // pKa of water is 14
 
+// HCl
+ccontainer.container[1].length.should.be.equal(3)
 
 ccontainer.add("water",1)
 
@@ -296,12 +298,6 @@ const ccontainer2 = new CContainer([false], MoleculeFactory, MoleculeController,
 ccontainer2.add(Clneg,1)
 ccontainer2.add(HthreeO,1)
 
-//console.log(ccontainer2.container)
-
-
-// console.log(ccontainer.container)
-
-
 const ccontainer3 = new CContainer([false], MoleculeFactory, MoleculeController, 3)
 
 const aluminumChloride = MoleculeFactory("[Al](Cl)(Cl)Cl")
@@ -320,7 +316,6 @@ dimethylEther.filter(
 ).length.should.be.equal(6)
 dimethylEther[0].should.be.equal(-3.5)
 
-//console.log(aluminumChloride)
 ccontainer3.add(aluminumChloride,1)
 ccontainer3.add(dimethylEther,1)
 

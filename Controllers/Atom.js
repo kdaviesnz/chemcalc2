@@ -50,7 +50,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                 (atom_electron) => {
                     return atoms.filter(
                         (_atom, _atom_index) => {
-                            if (atom_index === _atom_index) {
+                            if (current_atom_index === _atom_index) {
                                 return true
                             }
                             const _atom_electrons = _atom.slice(4)
@@ -70,12 +70,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
              */
             const b = __Bonds(atom[0])
             if (atom[0]==="Cl") {
-                console.log(atom[0])
-                console.log(b.length)
-                console.log(mmolecule)
-                console.log("Atom.js")
                 b.length.should.be.equal(1)
-                process.exit()
             }
             const info = PeriodicTable[atom[0]]
             // info[3] is the number of valence electron pairs

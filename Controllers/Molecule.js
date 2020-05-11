@@ -19,9 +19,15 @@ const CMolecule = (mmolecule) => {
 
     }
     
-    const determineNucleophileIndex = () => {
-        
-        const atoms_with_lone_pairs = CMolecule(this.container[1]).__atomsWithLonePairs()
+    const determineNucleophileIndex = (test_number) => {
+
+        if (undefined !== test_number && test_number === 1) {
+            mmolecule.length.should.be.equal(4)
+            mmolecule[3][0].should.be.equal("O")
+        }
+
+        const atoms_with_lone_pairs = __atomsWithLonePairs(test_number)
+
         if (atoms_with_lone_pairs.length === 0) {
            return // Find index of atom to bond to.
                 // This must be atom with at least a lone pair.
@@ -37,17 +43,23 @@ const CMolecule = (mmolecule) => {
                     }, false
                 )
         } else {
-           return atoms_with_lone_pairs[0][0]
+           return atoms_with_lone_pairs[0][0] + 1 // take into account pka
         }
         
         
     }
     
-    const __atomsWithLonePairs =  () => {
-      // Check substrate for free slots
-                return mmolecule.slice(1).map(
+    const __atomsWithLonePairs =  (test_number) => {
+
+        if (undefined !== test_number && test_number === 1) {
+            mmolecule.length.should.be.equal(4)
+            mmolecule[3][0].should.be.equal("O")
+        }
+
+        // Check substrate for free slots
+        const atoms_with_lone_pairs = mmolecule.slice(1).map(
                     (atom, index) => {
-                        if (CAtom(atom, mmolecule, index).lonePairs() === 0) {
+                        if (atom[0] === "H" || CAtom(atom, index, mmolecule).lonePairs() === 0) {
                             return null
                         }
                         return [index, atom]                        
@@ -57,6 +69,8 @@ const CMolecule = (mmolecule) => {
                         return item !== null
                     }
                 )
+
+        return atoms_with_lone_pairs
     }
     
     const __atomsWithFreeSlots = () => {
@@ -460,13 +474,21 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
 
 
             if (undefined === atom_to_bond_to_index) {
-
-                atom_to_bond_to_index = determineNucleophileIndex()
+                atom_to_bond_to_index = determineNucleophileIndex(test_number)
+                if(test_number === 1) {
+                    atom_to_bond_to_index.should.be.equal(3) // Oxygen atom on H2O
+                }
+            } else {
 
             }
 
             if(test_number === 1) {
-                atom_to_bond_to_index.should.be.equal(3)
+                // Note at this point we have removed the proton from HCl
+                // We are pushing a proton to H2O
+                //console.log(container) // [false, [2.86, [Cl...]], [2.86, [14, [H],[H],[O]...]
+                //console.log(mmolecule) //H2O
+                // console.log(mmolecule[3]) // Oxygen atom
+                atom_to_bond_to_index.should.be.equal(3) // Should be 3
             }
 
 
@@ -648,7 +670,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         atomsWithFreeSlots: __atomsWithFreeSlots,
         nucleophileIndex: determineNucleophileIndex,
         electrophileIndex: determineElectrophileIndex,
-        removeProton: (container, molecule_index, atom_or_atomic_symbol) => {
+        removeProton: (container, molecule_index, atom_or_atomic_symbol, test_number) => {
 
             var test_mode = false
             var test_mode_2 = false
@@ -661,7 +683,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 test_mode_2 = true
             }
 
-            if (test_mode) {
+            if (test_number === 1) {
                 molecule_index.should.be.equal(1)
                 atom_or_atomic_symbol[0].should.be.equal("H")
             }

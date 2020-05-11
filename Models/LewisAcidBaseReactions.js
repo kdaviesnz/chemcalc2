@@ -1,12 +1,13 @@
 const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
 
-    const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index) => {
-        if (this.test_number !==3) {
-            console.log("Wrong section")
+    const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, test_number) => {
+
+        if (test_number !==3) {
+            console.log("Wrong section for test number " + test_number)
             process.exit()
         }
 
-        if (arguments.length === 0 ) {
+        if (null === nucleophile_molecule) {
             const substrate_electrophile_atom_index = MoleculeController(container[1]).electrophileIndex
             const reagent_electrophile_atom_index = MoleculeController(container[2]).electrophileIndex
             if (substrate_electrophile_atom_index !==false) {
