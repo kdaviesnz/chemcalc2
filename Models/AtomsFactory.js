@@ -35,8 +35,43 @@ const AtomsFactory = (canonicalSMILES) => {
          return electrons.pop()
     }
 
-    const prevAtomIndexByBranch = (atoms_with_tokens_no_brackets,index,depth) => {
-        
+    const prevAtomIndexByBranch = (atoms_with_tokens_no_brackets,index,depth, round_number) => {
+
+
+        //console.log(round_number) //1
+        //console.log(index) // 1
+        //console.log(depth) //1
+        //process.exit()
+        if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
+
+            if (round_number === 1) {
+                index.should.be.equal(1)
+                depth.should.be.equal(1)
+                atoms_with_tokens_no_brackets[index].type.should.be.equal("Branch")
+                atoms_with_tokens_no_brackets[index].value.should.be.equal("begin")
+            }
+
+            if (round_number === 2) {
+                index.should.be.equal(0)
+                depth.should.be.equal(0)
+                atoms_with_tokens_no_brackets[index][0].should.be.equal("Al")
+                atoms_with_tokens_no_brackets[index].slice(4).length.should.be.equal(3)
+            }
+
+        }
+        /*
+[ [ 'Al',13,3,5,'2iwcg3xsk9wb0ng8','2iwcg3xsk9wb0ng9','2iwcg3xsk9wb0nga' ],
+  { type: 'Branch', value: 'begin' },
+  [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngb','2iwcg3xsk9wb0ngc','2iwcg3xsk9wb0ngd','2iwcg3xsk9wb0nge','2iwcg3xsk9wb0ngf','2iwcg3xsk9wb0ngg','2iwcg3xsk9wb0ngh' ],
+ { type: 'Branch', value: 'end' },
+ { type: 'Branch', value: 'begin' },
+ [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngi','2iwcg3xsk9wb0ngj','2iwcg3xsk9wb0ngk','2iwcg3xsk9wb0ngl','2iwcg3xsk9wb0ngm','2iwcg3xsk9wb0ngn','2iwcg3xsk9wb0ngo' ],
+ { type: 'Branch', value: 'end' },
+  [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngp','2iwcg3xsk9wb0ngq','2iwcg3xsk9wb0ngr','2iwcg3xsk9wb0ngs','2iwcg3xsk9wb0ngt','2iwcg3xsk9wb0ngu','2iwcg3xsk9wb0ngv' ] ]
+ */
+
+
+
         // index
         // 1 -> begin -> 0 -> Al
         // 4 begin  -> 3 (d0) -> end 2 (d1) -> begin 1 (d1) -> 0 (d0)
@@ -74,16 +109,16 @@ const AtomsFactory = (canonicalSMILES) => {
         if (atoms_with_tokens_no_brackets[index].type === "Branch" 
            && atoms_with_tokens_no_brackets[index].value === "begin") {
             // @todo depth only works for depth 1
-            return prevAtomIndexByBranch(atoms_with_tokens_no_brackets,--index,--depth)
+            return prevAtomIndexByBranch(atoms_with_tokens_no_brackets,--index,--depth, round_number+1)
         }
         
         if (atoms_with_tokens_no_brackets[index].type === "Branch" 
            && atoms_with_tokens_no_brackets[index].value === "end") {
             // @todo depth only works for depth 1
-            return prevAtomIndexByBranch(atoms_with_tokens_no_brackets,--index, ++depth)
+            return prevAtomIndexByBranch(atoms_with_tokens_no_brackets,--index, ++depth, round_number+1)
         }
         
-        return prevAtomIndexByBranch(atoms_with_tokens_no_brackets,--index,depth)
+        return prevAtomIndexByBranch(atoms_with_tokens_no_brackets,--index,depth, round_number+1)
         
         
         
@@ -180,7 +215,7 @@ const AtomsFactory = (canonicalSMILES) => {
             
             // Get index of previous atom om same branch
             // [[Al],[branch begin]
-            const prev_atom_index = prevAtomIndexByBranch(atoms_with_tokens_no_brackets,index -1,depth)
+            const prev_atom_index = prevAtomIndexByBranch(atoms_with_tokens_no_brackets,index -1,depth, 1)
             const e1 = getFreeElectron(atoms_with_tokens_no_brackets.slice(0,index),atoms_with_tokens_no_brackets[prev_atom_index], prev_atom_index)
 
             if (undefined === e1) {
