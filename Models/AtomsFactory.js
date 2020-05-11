@@ -59,20 +59,33 @@ const AtomsFactory = (canonicalSMILES) => {
             }
 
             if (round_number === 3) {
-               // console.log(depth) //1
-               // console.log(index) //1
-               // console.log(atoms_with_tokens_no_brackets[0]) // Al, 3 electrons
-               // console.log(atoms_with_tokens_no_brackets[1]) // { type: 'Branch', value: 'begin' }
+               depth.should.be.equal(1) //1
+               index.should.be.equal(1) //1
+               atoms_with_tokens_no_brackets[0][0].should.be.equal("Al") // Al, 3 electrons
+               atoms_with_tokens_no_brackets[0].slice(4).length.should.be.equal(3) // Al, 3 electrons                                        
+               atoms_with_tokens_no_brackets[1].type === 'Branch'
+               atoms_with_tokens_no_brackets[1].value === 'begin'
+                   
             }
 
             if (round_number === 4) {
-                 console.log(depth) //0
-                 console.log(index) //0
-                 console.log(atoms_with_tokens_no_brackets[0]) // Al, 3 electrons
-                console.log(atoms_with_tokens_no_brackets[1]) // { type: 'Branch', value: 'begin' }
-                console.log(atoms_with_tokens_no_brackets[2]) //Cl, 7 electrons
+                 
+                 depth.should.be.equal(0) 
+                 index.should.be.equal(0) 
+                 
+                  atoms_with_tokens_no_brackets[0][0].should.be.equal("Al") 
+                  atoms_with_tokens_no_brackets[0].slice(4).length.should.be.equal(3)                                        
+                  atoms_with_tokens_no_brackets[1].type === 'Branch'
+                  atoms_with_tokens_no_brackets[1].value === 'begin'
+                
+                  atoms_with_tokens_no_brackets[2][0].should.be.equal("Cl") 
+                  atoms_with_tokens_no_brackets[2].slice(4).length.should.be.equal(7) 
+                
+                  console.log(atoms_with_tokens_no_brackets[2]) //Cl, 7 electrons
                   process.exit()
             }
+            
+            
         }
         /*
 [ [ 'Al',13,3,5,'2iwcg3xsk9wb0ng8','2iwcg3xsk9wb0ng9','2iwcg3xsk9wb0nga' ],
