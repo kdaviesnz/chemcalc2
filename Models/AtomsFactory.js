@@ -58,6 +58,21 @@ const AtomsFactory = (canonicalSMILES) => {
                 atoms_with_tokens_no_brackets[index].slice(4).length.should.be.equal(3)
             }
 
+            if (round_number === 3) {
+               // console.log(depth) //1
+               // console.log(index) //1
+               // console.log(atoms_with_tokens_no_brackets[0]) // Al, 3 electrons
+               // console.log(atoms_with_tokens_no_brackets[1]) // { type: 'Branch', value: 'begin' }
+            }
+
+            if (round_number === 4) {
+                 console.log(depth) //0
+                 console.log(index) //0
+                 console.log(atoms_with_tokens_no_brackets[0]) // Al, 3 electrons
+                console.log(atoms_with_tokens_no_brackets[1]) // { type: 'Branch', value: 'begin' }
+                console.log(atoms_with_tokens_no_brackets[2]) //Cl, 7 electrons
+                  process.exit()
+            }
         }
         /*
 [ [ 'Al',13,3,5,'2iwcg3xsk9wb0ng8','2iwcg3xsk9wb0ng9','2iwcg3xsk9wb0nga' ],
@@ -92,7 +107,23 @@ const AtomsFactory = (canonicalSMILES) => {
             return 0
         }
 
+        if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
+            if (round_number === 2) {
+                if (undefined !==  atoms_with_tokens_no_brackets[index].type) {
+                    console.log("atoms_with_tokens_no_brackets[index].type should be undefined")
+                    process.exit()
+                }
+            }
+        }
+
         if (undefined === atoms_with_tokens_no_brackets[index].type && depth === 0) {
+            if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
+                if (round_number===4) {
+                    // index and depth are 0
+                    process.exit()
+                }
+                round_number.should.be.oneOf([2, 4])
+            }
             return index
         }
 
@@ -196,6 +227,7 @@ const AtomsFactory = (canonicalSMILES) => {
 
     // Add the bonds
     let depth = 0
+
     const atoms = atoms_with_tokens_no_brackets.map(
         (row, index) => {
             if (index === 0) {
@@ -215,7 +247,7 @@ const AtomsFactory = (canonicalSMILES) => {
             
             // Get index of previous atom om same branch
             // [[Al],[branch begin]
-            const prev_atom_index = prevAtomIndexByBranch(atoms_with_tokens_no_brackets,index -1,depth, 1)
+            const prev_atom_index = prevAtomIndexByBranch(atoms_with_tokens_no_brackets,index -1,depth, index+1)
             const e1 = getFreeElectron(atoms_with_tokens_no_brackets.slice(0,index),atoms_with_tokens_no_brackets[prev_atom_index], prev_atom_index)
 
             if (undefined === e1) {
