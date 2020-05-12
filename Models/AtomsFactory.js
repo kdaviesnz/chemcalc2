@@ -9,7 +9,8 @@ const AtomsFactory = (canonicalSMILES) => {
 
     // https://www.npmjs.com/package/smiles
     const smiles = require('smiles')
-    
+
+
     const getFreeElectron = (atoms_with_tokens_no_brackets, atom, prev_atom_index ) => {
          const electrons = atom.slice(4).filter(
              (electron) => {
@@ -228,43 +229,136 @@ const AtomsFactory = (canonicalSMILES) => {
     // Add the bonds
     let depth = 0
 
+    // tracker
+    // last row is current parent with available valence electrons
+    const tracker = [
+      [0, ...atoms_with_tokens_no_brackets[0].slice(4)]
+    ]
     const atoms = atoms_with_tokens_no_brackets.map(
         (row, index) => {
+
+            if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
+                switch (index) {
+                    case 0:
+                        tracker.length.should.be.equal(1)
+                        tracker[0].length.should.be.equal(4)
+                        break;
+                    case 1:
+                        tracker.length.should.be.equal(1)
+                        break;
+                    case 2:
+                        tracker.length.should.be.equal(2)
+                        break;
+                    case 3:
+                        tracker.length.should.be.equal(2)
+                        atoms_with_tokens_no_brackets[0].slice(4).length.should.be.equal(4)
+                        atoms_with_tokens_no_brackets[2].slice(4).length.should.be.equal(8)
+                        break;
+                    case 4:
+                        tracker.length.should.be.equal(1)
+                        atoms_with_tokens_no_brackets[0].slice(4).length.should.be.equal(4)
+                        atoms_with_tokens_no_brackets[2].slice(4).length.should.be.equal(8)
+                        break;
+                    case 5:
+                        tracker.length.should.be.equal(2)
+                        atoms_with_tokens_no_brackets[0].slice(4).length.should.be.equal(4)
+                        atoms_with_tokens_no_brackets[2].slice(4).length.should.be.equal(8)
+                        break;
+                    case 6:
+                        tracker.length.should.be.equal(2)
+                        atoms_with_tokens_no_brackets[0].slice(4).length.should.be.equal(5)
+                        atoms_with_tokens_no_brackets[2].slice(4).length.should.be.equal(8)
+                        atoms_with_tokens_no_brackets[5].slice(4).length.should.be.equal(8)
+                        break;
+                    case 7:
+                        tracker.length.should.be.equal(1)
+                        atoms_with_tokens_no_brackets[0].slice(4).length.should.be.equal(5)
+                        atoms_with_tokens_no_brackets[2].slice(4).length.should.be.equal(8)
+                        atoms_with_tokens_no_brackets[5].slice(4).length.should.be.equal(8)
+                        break;
+
+                }
+            }
+
             if (index === 0) {
+
+                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
+                    atoms_with_tokens_no_brackets[index][0].should.be.equal("Al")
+                }
                 // first atom
                 return row
             }
+
+            // An atom
+            if (undefined === row.type ) {
+                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
+                    index.should.be.oneOf([2, 5, 7])
+                }
+                // Share electrons
+                const current_atom_electron = row[row.length-1]
+                current_atom_electron.should.be.a.String()
+                const parent_electron = tracker[tracker.length-1].pop()
+                parent_electron.should.be.a.String()
+                row.push(parent_electron)
+                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
+                    if (index === 2) {
+                        tracker[tracker.length-1][0].should.be.equal(0)
+                    }
+                }
+
+                // Add electron to parent atom
+                const tracker_index = tracker[tracker.length-1][0]
+                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES && index ===5) {
+                    tracker_index.should.be.equal(0);
+                }
+
+                atoms_with_tokens_no_brackets[tracker_index].push(current_atom_electron)
+
+
+            }
+
             
             if (undefined !== row.type && row.type === "Branch" && row.value === "begin") {
-                depth++
+
+                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
+                    index.should.be.oneOf([1, 4])
+                    if (index===1) {
+                        atoms_with_tokens_no_brackets[index -1][0].should.be.equal('Al')
+                    }
+                }
+
+                // Change tracker to show new parent atom
+                const tracker_index = 0 // to do - should be index of previous atom on same branch
+
+                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES && index === 4) {
+                    tracker_index.should.be.equal(4)
+                }
+
+                tracker.push([ tracker_index, ...atoms_with_tokens_no_brackets[tracker_index].slice(4)])
+
+                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES && index === 1) {
+                    tracker.length.should.be.equal(2)
+                    tracker[1][0].should.be.equal(0)
+                    tracker[1].length.should.be.equal(4)
+                }
+
+                // Change row to null as it's not an atom row
                 return null
             }
             
             if (undefined !== row.type && row.type === "Branch" && row.value === "end") {
-                depth--
+
+                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
+                    index.should.be.oneOf([3,6])
+                }
+
+                // Change tracker to show previous parent atom
+                tracker.pop()
+
+                // Change row to null as it's not an atom row
                 return null
             }
             
-            // Get index of previous atom om same branch
-            // [[Al],[branch begin]
-            const prev_atom_index = prevAtomIndexByBranch(atoms_with_tokens_no_brackets,index -1,depth, index+1)
-            const e1 = getFreeElectron(atoms_with_tokens_no_brackets.slice(0,index),atoms_with_tokens_no_brackets[prev_atom_index], prev_atom_index)
-
-            if (undefined === e1) {
-                console.log("Critical error: Electron is undefined (e1)")
-                process.exit()
-            }
-            const e2 = getFreeElectron(atoms_with_tokens_no_brackets.slice(0,index), row)
-
-            if (undefined === e2) {
-                console.log("Critical error: Electron is undefined (e2)")
-                process.exit()
-            }
-
-            row.push(e1)
-            atoms_with_tokens_no_brackets[prev_atom_index].push(e2)
-
-            return row
         }
     ).filter(
         (atom) => {
