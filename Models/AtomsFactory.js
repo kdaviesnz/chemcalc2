@@ -248,46 +248,64 @@ const AtomsFactory = (canonicalSMILES) => {
       [0, ...atoms_with_tokens_no_brackets[0].slice(4)]
     ]
     const atoms = atoms_with_tokens_no_brackets.map(
-        (row, index) => {
+        (row, index, processed_atoms) => {
 
             if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
                 switch (index) {
                     case 0:
                         tracker.length.should.be.equal(1)
                         tracker[0].length.should.be.equal(4)
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(0) // ok
                         break;
                     case 1:
                         tracker.length.should.be.equal(1)
+                        tracker[0].length.should.be.equal(4)
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(0) // ok
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
+
                         break;
                     case 2:
                         tracker.length.should.be.equal(2)
+                        tracker[0].length.should.be.equal(4)
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(0) // ok
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
                         break;
                     case 3:
                         tracker.length.should.be.equal(2)
-                        atoms_with_tokens_no_brackets[0].slice(4).length.should.be.equal(4)
-                        atoms_with_tokens_no_brackets[2].slice(4).length.should.be.equal(8)
+                        processed_atoms[0].slice(4).length.should.be.equal(4)
+                        processed_atoms[2].slice(4).length.should.be.equal(8)
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
                         break;
                     case 4:
                         tracker.length.should.be.equal(1)
-                        atoms_with_tokens_no_brackets[0].slice(4).length.should.be.equal(4)
-                        atoms_with_tokens_no_brackets[2].slice(4).length.should.be.equal(8)
+                        processed_atoms[0].slice(4).length.should.be.equal(4)
+                        processed_atoms[2].slice(4).length.should.be.equal(8)
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
                         break;
-                    case 5:
+                    case 5: // Second Chlorine atom
                         tracker.length.should.be.equal(2)
-                        atoms_with_tokens_no_brackets[0].slice(4).length.should.be.equal(4)
-                        atoms_with_tokens_no_brackets[2].slice(4).length.should.be.equal(8)
+                        processed_atoms[0].slice(4).length.should.be.equal(4)
+                        processed_atoms[2].slice(4).length.should.be.equal(8)
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
                         break;
-                    case 6:
+                    case 6: // { type: 'Branch', value: 'end' }
                         tracker.length.should.be.equal(2)
-                        atoms_with_tokens_no_brackets[0].slice(4).length.should.be.equal(5)
-                        atoms_with_tokens_no_brackets[2].slice(4).length.should.be.equal(8)
-                        atoms_with_tokens_no_brackets[5].slice(4).length.should.be.equal(8)
+                        processed_atoms[0].slice(4).length.should.be.equal(5)
+                        processed_atoms[2].slice(4).length.should.be.equal(8)
+                        processed_atoms[5].slice(4).length.should.be.equal(8)
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // not ok
                         break;
-                    case 7:
+                    case 7: // Last chlorine atom
                         tracker.length.should.be.equal(1)
-                        atoms_with_tokens_no_brackets[0].slice(4).length.should.be.equal(5)
-                        atoms_with_tokens_no_brackets[2].slice(4).length.should.be.equal(8)
-                        atoms_with_tokens_no_brackets[5].slice(4).length.should.be.equal(8)
+                        processed_atoms[0].slice(4).length.should.be.equal(5)
+                        processed_atoms[2].slice(4).length.should.be.equal(8)
+                        processed_atoms[5].slice(4).length.should.be.equal(8)
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // not ok
                         break;
 
                 }
@@ -327,6 +345,7 @@ const AtomsFactory = (canonicalSMILES) => {
 
                 atoms_with_tokens_no_brackets[tracker_index].push(current_atom_electron)
 
+                return row
 
             }
 
@@ -344,7 +363,7 @@ const AtomsFactory = (canonicalSMILES) => {
                 const tracker_index = 0 // to do - should be index of previous atom on same branch
 
                 if ("[Al](Cl)(Cl)Cl" === canonicalSMILES && index === 4) {
-                    tracker_index.should.be.equal(4)
+                    tracker_index.should.be.equal(0)
                 }
 
                 tracker.push([ tracker_index, ...atoms_with_tokens_no_brackets[tracker_index].slice(4)])
@@ -379,7 +398,12 @@ const AtomsFactory = (canonicalSMILES) => {
         }
     )
 
+
+
     if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
+
+        console.log(atoms)
+
         atoms.length.should.be.equal(4)
         atoms[0][0].should.be.equal("Al")
         atoms[0].length.should.be.equal(10)
@@ -434,20 +458,29 @@ const AtomsFactory = (canonicalSMILES) => {
 
 
     if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
-        atoms.length.should.be.equal(4)
-        //console.log(atoms)
+        atoms_with_hydrogens.length.should.be.equal(4)
         /*
         [ [ 'Al',13, 3,3,'2iwcgt9oka1zdp2w','2iwcgt9oka1zdp2x','2iwcgt9oka1zdp2y','2iwcgt9oka1zdp35','2iwcgt9oka1zdp3c','2iwcgt9oka1zdp3j' ],
           [ 'Cl',17,7,1,'2iwcgt9oka1zdp2z','2iwcgt9oka1zdp30', '2iwcgt9oka1zdp31','2iwcgt9oka1zdp32','2iwcgt9oka1zdp33','2iwcgt9oka1zdp34','2iwcgt9oka1zdp35','2iwcgt9oka1zdp2y' ],
           [ 'Cl',17,7,1,'2iwcgt9oka1zdp36','2iwcgt9oka1zdp37','2iwcgt9oka1zdp38','2iwcgt9oka1zdp39','2iwcgt9oka1zdp3a','2iwcgt9oka1zdp3b','2iwcgt9oka1zdp3c','2iwcgt9oka1zdp35' ],
           [ 'Cl',17,7,1,'2iwcgt9oka1zdp3d','2iwcgt9oka1zdp3e','2iwcgt9oka1zdp3f','2iwcgt9oka1zdp3g','2iwcgt9oka1zdp3h','2iwcgt9oka1zdp3i','2iwcgt9oka1zdp3j','2iwcgt9oka1zdp3c' ] ]
          */
-        Set().intersection(atoms[1].slice(1), atoms[0].slice(1)).length.should.be.equal(2)
-        Set().intersection(atoms[1].slice(1), atoms[2].slice(1)).length.should.be.equal(0) // 4 but should be 0
-        Set().intersection(atoms[1].slice(1), atoms[3].slice(1)).length.should.be.equal(0)
-        Set().intersection(atoms[3].slice(1), atoms[2].slice(1)).length.should.be.equal(0)
-        Set().intersection(atoms[2].slice(1), atoms[0].slice(1)).length.should.be.equal(1)
-        Set().intersection(atoms[3].slice(1), atoms[0].slice(1)).length.should.be.equal(1)
+        console.log("-----------------------")
+        console.log(atoms_with_hydrogens[1].slice(4))
+        console.log(atoms_with_hydrogens[0].slice(4))
+        console.log(Set().intersection(atoms_with_hydrogens[1].slice(1), atoms_with_hydrogens[0].slice(1)))
+        console.log(atoms_with_hydrogens[1].slice(4))
+        console.log(atoms_with_hydrogens[2].slice(4))
+        console.log(Set().intersection(atoms_with_hydrogens[1].slice(4), atoms_with_hydrogens[2].slice(4)))
+
+        console.log("-----------------------")
+       // process.exit()
+        Set().intersection(atoms_with_hydrogens[1].slice(4), atoms_with_hydrogens[0].slice(4)).length.should.be.equal(2)
+        Set().intersection(atoms_with_hydrogens[1].slice(4), atoms_with_hydrogens[2].slice(4)).length.should.be.equal(0) // 4 but should be 0
+        Set().intersection(atoms_with_hydrogens[1].slice(4), atoms_with_hydrogens[3].slice(4)).length.should.be.equal(0)
+        Set().intersection(atoms_with_hydrogens[3].slice(4), atoms_with_hydrogens[2].slice(4)).length.should.be.equal(0)
+        Set().intersection(atoms_with_hydrogens[2].slice(4), atoms_with_hydrogens[0].slice(4)).length.should.be.equal(1)
+        Set().intersection(atoms_with_hydrogens[3].slice(4), atoms_with_hydrogens[0].slice(4)).length.should.be.equal(1)
         /*
   [ 'Al',13,3,3,'2iwcg1p9ek9z2dl8r','2iwcg1p9ek9z2dl8s','!2iwcg1p9ek9z2dl8t!','*2iwcg1p9ek9z2dl90*','2iwcg1p9ek9z2dl97','2iwcg1p9ek9z2dl9e' ],
    [ 'Cl',17,7,1,'2iwcg1p9ek9z2dl8u','2iwcg1p9ek9z2dl8v','2iwcg1p9ek9z2dl8w','2iwcg1p9ek9z2dl8x','2iwcg1p9ek9z2dl8y','2iwcg1p9ek9z2dl8z','*2iwcg1p9ek9z2dl90*','!2iwcg1p9ek9z2dl8t!'],
