@@ -380,12 +380,12 @@ const AtomsFactory = (canonicalSMILES) => {
                         Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
                         break;
                     case 6: // { type: 'Branch', value: 'end' }
-                        tracker.length.should.be.equal(1)
+                        tracker.length.should.be.equal(0)
                         processed_atoms[0].slice(4).length.should.be.equal(5)
                         processed_atoms[2].slice(4).length.should.be.equal(8)
                         processed_atoms[5].slice(4).length.should.be.equal(8)
                         Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
-                       // Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // not ok
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // not ok
                         break;
                     case 7: // [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngp','2iwcg3xsk9wb0ngq','2iwcg3xsk9wb0ngr','2iwcg3xsk9wb0ngs','2iwcg3xsk9wb0ngt','2iwcg3xsk9wb0ngu','2iwcg3xsk9wb0ngv' ] ]
    
