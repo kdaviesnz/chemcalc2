@@ -253,9 +253,8 @@ const AtomsFactory = (canonicalSMILES) => {
             if (index === 0) {
                 if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
                     processed_atoms[index][0].should.be.equal("Al")
-                }
-                tracker.push(0, ...processed_atoms[0].slice(4)
-                // first atom
+                }               
+                // first atom, no branches
                 res = row
             }
 
@@ -299,7 +298,7 @@ const AtomsFactory = (canonicalSMILES) => {
                 if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
                     index.should.be.oneOf([1, 4])
                     if (index===1) {
-                        atoms_with_tokens_no_brackets[index -1][0].should.be.equal('Al')
+                        processed_atoms[index -1][0].should.be.equal('Al')
                     }
                 }
 
@@ -337,36 +336,43 @@ const AtomsFactory = (canonicalSMILES) => {
             
             if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
                 switch (index) {
-                    case 0:
+                    case 0: // [ 'Al',13,3,5,'2iwcg3xsk9wb0ng8','2iwcg3xsk9wb0ng9','2iwcg3xsk9wb0nga' ]
                         tracker.length.should.be.equal(0)
                         Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(0) // ok
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
+                   
                         break;
-                    case 1:
+                    case 1: // { type: 'Branch', value: 'begin' },
                         tracker.length.should.be.equal(0)
                         Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(0) // ok
                         Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
                         break;
-                    case 2:
+                    case 2: // [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngb','2iwcg3xsk9wb0ngc','2iwcg3xsk9wb0ngd','2iwcg3xsk9wb0nge','2iwcg3xsk9wb0ngf','2iwcg3xsk9wb0ngg','2iwcg3xsk9wb0ngh' ],
+   
                         tracker.length.should.be.equal(1)
                         tracker[0].length.should.be.equal(4)
+                        tracker[0][0].should.be.equal(0)
                         Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(0) // ok
                         Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
                         break;
-                   case 3:
-                        tracker.length.should.be.equal(1)
-                        processed_atoms[0].slice(4).length.should.be.equal(4)
-                        processed_atoms[2].slice(4).length.should.be.equal(8)
-                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
-                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
-                        break;
-                    case 4:
+                   case 3: // { type: 'Branch', value: 'end' },
                         tracker.length.should.be.equal(0)
                         processed_atoms[0].slice(4).length.should.be.equal(4)
                         processed_atoms[2].slice(4).length.should.be.equal(8)
                         Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
                         Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
                         break;
-                    case 5: // Second Chlorine atom
+                    case 4: // { type: 'Branch', value: 'begin' },
+                        tracker.length.should.be.equal(1)
+                        tracker[0].length.should.be.equal(4)
+                        tracker[0][0].should.be.equal(0)
+                        processed_atoms[0].slice(4).length.should.be.equal(4)
+                        processed_atoms[2].slice(4).length.should.be.equal(8)
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
+                        break;
+                    case 5: // [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngi','2iwcg3xsk9wb0ngj','2iwcg3xsk9wb0ngk','2iwcg3xsk9wb0ngl','2iwcg3xsk9wb0ngm','2iwcg3xsk9wb0ngn','2iwcg3xsk9wb0ngo' ],
+   
                         tracker.length.should.be.equal(1)
                         processed_atoms[0].slice(4).length.should.be.equal(4)
                         processed_atoms[2].slice(4).length.should.be.equal(8)
@@ -381,7 +387,8 @@ const AtomsFactory = (canonicalSMILES) => {
                         Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
                        // Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // not ok
                         break;
-                    case 7: // Last chlorine atom
+                    case 7: // [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngp','2iwcg3xsk9wb0ngq','2iwcg3xsk9wb0ngr','2iwcg3xsk9wb0ngs','2iwcg3xsk9wb0ngt','2iwcg3xsk9wb0ngu','2iwcg3xsk9wb0ngv' ] ]
+   
                         tracker.length.should.be.equal(0)
                         processed_atoms[0].slice(4).length.should.be.equal(5)
                         processed_atoms[2].slice(4).length.should.be.equal(8)
