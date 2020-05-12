@@ -407,8 +407,6 @@ const AtomsFactory = (canonicalSMILES) => {
 
     if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
 
-        console.log(atoms)
-
         atoms.length.should.be.equal(4)
         atoms[0][0].should.be.equal("Al")
         atoms[0].length.should.be.equal(10)
