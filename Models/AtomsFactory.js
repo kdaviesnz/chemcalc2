@@ -322,15 +322,25 @@ const AtomsFactory = (canonicalSMILES) => {
 
             // An atom
             if (undefined === row.type ) {
+                
                 if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
                     index.should.be.oneOf([2, 5, 7])
                 }
+                              
+                const tracker_index = tracker[tracker.length-1][0]
+                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES && index ===5) {
+                    tracker_index.should.be.equal(0);
+                }
+
                 // Share electrons
                 const current_atom_electron = row[row.length-1]
                 current_atom_electron.should.be.a.String()
-                const parent_electron = tracker[tracker.length-1].pop()
+                
+                // Add electron to current atom
+                const parent_electron = tracker[tracker_index].pop()
                 parent_electron.should.be.a.String()
                 row.push(parent_electron)
+                
                 if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
                     if (index === 2) {
                         tracker[tracker.length-1][0].should.be.equal(0)
@@ -338,11 +348,6 @@ const AtomsFactory = (canonicalSMILES) => {
                 }
 
                 // Add electron to parent atom
-                const tracker_index = tracker[tracker.length-1][0]
-                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES && index ===5) {
-                    tracker_index.should.be.equal(0);
-                }
-
                 atoms_with_tokens_no_brackets[tracker_index].push(current_atom_electron)
 
                 return row
