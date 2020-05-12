@@ -245,7 +245,7 @@ const AtomsFactory = (canonicalSMILES) => {
     // tracker
     // last row is current parent with available valence electrons
     const tracker = [
-      [0, ...atoms_with_tokens_no_brackets[0].slice(4)]
+      
     ]
     const atoms = atoms_with_tokens_no_brackets.map(
         (row, index, processed_atoms) => {
