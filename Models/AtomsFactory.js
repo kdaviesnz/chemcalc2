@@ -271,7 +271,8 @@ const AtomsFactory = (canonicalSMILES) => {
                 }
 
                 // Share electrons
-                const current_atom_electron = row[row.length-1]
+                const current_atom_electron = getFreeElectron = (processed_atoms, row[index], prev_atom_index )   
+                // row[row.length-1]
                 current_atom_electron.should.be.a.String()
                 
                 // Add electron to current atom
