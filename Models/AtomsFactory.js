@@ -431,6 +431,28 @@ const AtomsFactory = (canonicalSMILES) => {
                 res = null
             }
             
+            if ("COC" === canonicalSMILES) {
+                switch (index) {
+                    case 0: // [C]
+                        tracker.length.should.be.equal(0)
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(0) // ok
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
+                        break;
+                    case 1: // [O]
+                        tracker.length.should.be.equal(1)
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(0) // ok
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
+                        break;
+                    case 2: // [C] '
+                        tracker.length.should.be.equal(1)
+                        tracker[0].length.should.be.equal(4)
+                        tracker[0][0].should.be.equal(0)
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
+                        break;
+                }
+            }
+            
             if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
                 switch (index) {
                     case 0: // [ 'Al',13,3,5,'2iwcg3xsk9wb0ng8','2iwcg3xsk9wb0ng9','2iwcg3xsk9wb0nga' ]
@@ -563,9 +585,9 @@ const AtomsFactory = (canonicalSMILES) => {
     '2iwcg1d0jka4s36su' ] ]
 
          */
-        atoms[0].slice(4).length.should.be.equal(6)
+        atoms[0].slice(4).length.should.be.equal(5)
         atoms[1].slice(4).length.should.be.equal(8)
-        atoms[2].slice(4).length.should.be.equal(6)
+        atoms[2].slice(4).length.should.be.equal(5)
         Set().intersection(atoms[0].slice(4), atoms[1].slice(4)).length.should.be.equal(2)
        // Set().intersection(atoms[2].slice(4), atoms[1].slice(4)).length.should.be.equal(2)
         console.log("AtomsFactory.js")
