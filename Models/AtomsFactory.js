@@ -394,7 +394,7 @@ const AtomsFactory = (canonicalSMILES) => {
                            branch_number.should.be.equal(1)
                            break
                       
-                   }    
+                   }
                     
                 }
                 
@@ -412,6 +412,20 @@ const AtomsFactory = (canonicalSMILES) => {
                 tracker.pop()
                 
                 branch_number--
+                
+                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES && index === 1) {
+                    
+                    switch (index) {
+                       case 3:
+                            branch_number.should.be.equal(0)
+                            break
+                       case 6:
+                           branch_number.should.be.equal(0)
+                           break
+                      
+                   }
+                    
+                }
 
                 // Change row to null as it's not an atom row
                 res = null
