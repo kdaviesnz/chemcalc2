@@ -471,8 +471,12 @@ const AtomsFactory = (canonicalSMILES) => {
                         break;
                     case 1: // { type: 'Branch', value: 'begin' },
                         tracker.length.should.be.equal(1)
-                        // Check aluminum atom now has 4 electrons
+                        // Check aluminum atom now has 3 electrons
                         processed_atoms[0].slice(4).length.should.be.equal(3)
+                        // Check chlorine atoms have 7 electrons each
+                        processed_atoms[2].slice(4).length.should.be.equal(7)
+                        processed_atoms[5].slice(4).length.should.be.equal(7)
+                        processed_atoms[7].slice(4).length.should.be.equal(7)
                         Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(0) // ok
                         Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
                         break;
@@ -482,6 +486,10 @@ const AtomsFactory = (canonicalSMILES) => {
                         tracker[0][0].should.be.equal(0)
                         // Check aluminum atom now has 4 electrons
                         processed_atoms[0].slice(4).length.should.be.equal(4)
+                        // Check first chlorine atom has 8 electrons and other chlorine atoms still have 7 electrons each
+                        processed_atoms[2].slice(4).length.should.be.equal(8)
+                        processed_atoms[5].slice(4).length.should.be.equal(7)
+                        processed_atoms[7].slice(4).length.should.be.equal(7)
                         // Check first chlorine atom and aluminum atom share 2 electrons
                         Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
                         // Check no electrons are shared between chlorine atoms
@@ -491,42 +499,92 @@ const AtomsFactory = (canonicalSMILES) => {
                         break;
                     case 3: // { type: 'Branch', value: 'end' },
                         tracker.length.should.be.equal(0)
+                        // Check aluminum atom  has 4 electrons
                         processed_atoms[0].slice(4).length.should.be.equal(4)
+                        // Check first chlorine atom has 8 electrons and other chlorine atoms still have 7 electrons each
                         processed_atoms[2].slice(4).length.should.be.equal(8)
+                        processed_atoms[5].slice(4).length.should.be.equal(7)
+                        processed_atoms[7].slice(4).length.should.be.equal(7)
+                        // Check first chlorine atom and aluminum atom share 2 electrons
                         Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
+                        // Check no electrons are shared between chlorine atoms
                         Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[7].slice(4)).length.should.be.equal(0) // ok
+                        Set().intersection(processed_atoms[5].slice(4), processed_atoms[7].slice(4)).length.should.be.equal(0) // ok
                         break;
                     case 4: // { type: 'Branch', value: 'begin' },
                         tracker.length.should.be.equal(1)
                         tracker[0].length.should.be.equal(5)
                         tracker[0][0].should.be.equal(0)
+                        // Check aluminum atom  has 4 electrons
                         processed_atoms[0].slice(4).length.should.be.equal(4)
+                        // Check first chlorine atom has 8 electrons and other chlorine atoms still have 7 electrons each
                         processed_atoms[2].slice(4).length.should.be.equal(8)
+                        processed_atoms[5].slice(4).length.should.be.equal(7)
+                        processed_atoms[7].slice(4).length.should.be.equal(7)
+                        // Check first chlorine atom and aluminum atom share 2 electrons
                         Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
+                        // Check no electrons are shared between chlorine atoms
                         Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[7].slice(4)).length.should.be.equal(0) // ok
+                        Set().intersection(processed_atoms[5].slice(4), processed_atoms[7].slice(4)).length.should.be.equal(0) // ok
                         break;
                     case 5: // [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngi','2iwcg3xsk9wb0ngj','2iwcg3xsk9wb0ngk','2iwcg3xsk9wb0ngl','2iwcg3xsk9wb0ngm','2iwcg3xsk9wb0ngn','2iwcg3xsk9wb0ngo' ],
                         tracker.length.should.be.equal(1)
+                        // Check aluminum atom now has 5 electrons
                         processed_atoms[0].slice(4).length.should.be.equal(5)
+                        // Check first and second chlorine atoms have 8 electrons and other chlorine atom still has 7 electrons
                         processed_atoms[2].slice(4).length.should.be.equal(8)
+                        processed_atoms[5].slice(4).length.should.be.equal(8)
+                        processed_atoms[7].slice(4).length.should.be.equal(7)
+                        // Check first chlorine atom and aluminum atom share 2 electrons
                         Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
-                        // Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // not ok
+                        // Check second chlorine atom and aluminum atom share 2 electrons
+                        Set().intersection(processed_atoms[5].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
+                        // Check last chlorine atom and aluminum atom share no electrons
+                        Set().intersection(processed_atoms[7].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(0) // ok
+                        // Check no electrons are shared between chlorine atoms
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[7].slice(4)).length.should.be.equal(0) // ok
+                        Set().intersection(processed_atoms[5].slice(4), processed_atoms[7].slice(4)).length.should.be.equal(0) // ok
                         break;
                     case 6: // { type: 'Branch', value: 'end' }
                         tracker.length.should.be.equal(0)
+                        // Check aluminum atom still has 5 electrons
                         processed_atoms[0].slice(4).length.should.be.equal(5)
+                        // Check first and second chlorine atoms have 8 electrons and other chlorine atom still has 7 electrons
                         processed_atoms[2].slice(4).length.should.be.equal(8)
                         processed_atoms[5].slice(4).length.should.be.equal(8)
+                        processed_atoms[7].slice(4).length.should.be.equal(7)
+                        // Check first chlorine atom and aluminum atom share 2 electrons
                         Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
-                        // Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // not ok
+                        // Check second chlorine atom and aluminum atom share 2 electrons
+                        Set().intersection(processed_atoms[5].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
+                        // Check last chlorine atom and aluminum atom share no electrons
+                        Set().intersection(processed_atoms[7].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(0) // ok
+                        // Check no electrons are shared between chlorine atoms
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[7].slice(4)).length.should.be.equal(0) // ok
+                        Set().intersection(processed_atoms[5].slice(4), processed_atoms[7].slice(4)).length.should.be.equal(0) // ok
                         break;
                     case 7: // [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngp','2iwcg3xsk9wb0ngq','2iwcg3xsk9wb0ngr','2iwcg3xsk9wb0ngs','2iwcg3xsk9wb0ngt','2iwcg3xsk9wb0ngu','2iwcg3xsk9wb0ngv' ] ]
                         tracker.length.should.be.equal(0)
+                        // Check aluminum atom now has 6 electrons
                         processed_atoms[0].slice(4).length.should.be.equal(6)
+                        // Check all chlorine atoms have 8 electrons
                         processed_atoms[2].slice(4).length.should.be.equal(8)
                         processed_atoms[5].slice(4).length.should.be.equal(8)
+                        processed_atoms[7].slice(4).length.should.be.equal(8)
+                        // Check first chlorine atom and aluminum atom share 2 electrons
                         Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
-                        // Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // not ok
+                        // Check second chlorine atom and aluminum atom share 2 electrons
+                        Set().intersection(processed_atoms[5].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
+                        // Check last chlorine atom and aluminum atom now share 2 electrons
+                        Set().intersection(processed_atoms[7].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(0) // ok
+                        // Check no electrons are shared between chlorine atoms
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
+                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[7].slice(4)).length.should.be.equal(0) // ok
+                        Set().intersection(processed_atoms[5].slice(4), processed_atoms[7].slice(4)).length.should.be.equal(0) // ok
                         break;
                 }
 
