@@ -11,17 +11,10 @@ const AtomsFactory = (canonicalSMILES) => {
     const smiles = require('smiles')
 
 
-    const getFreeElectron = (atoms, atom, atom_index ) => {
+    const getFreeElectron = (used_electrons, atom, atom_index ) => {
          const electrons = atom.slice(4).filter(
              (electron) => {
-                 return atoms.filter(
-                     (_atom, i ) => {
-                         if ( undefined !== _atom.type) {
-                             return false
-                         }
-                         return i === atom_index || _atom.indexOf(electron) === -1
-                     }
-                 ).length > 0
+                 return used_electrons.indexOf(electron) === -1
              }
          )
 
@@ -245,6 +238,7 @@ const AtomsFactory = (canonicalSMILES) => {
     // tracker
     // last row is current parent with available valence electrons
     const tracker = []
+    const used_electrons = []
 
     if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
         Set().intersection(atoms_with_tokens_no_brackets[2].slice(4), atoms_with_tokens_no_brackets[5].slice(4)).length.should.be.equal(0) // not ok
@@ -280,22 +274,23 @@ const AtomsFactory = (canonicalSMILES) => {
                 }
 
                 // Share electrons
-                const current_atom_electron = getFreeElectron(atoms_with_tokens_no_brackets, row, index ) // row[row.length-1]
+                const current_atom_electron = getFreeElectron(used_electrons, row, index ) // row[row.length-1]
                 current_atom_electron.should.be.a.String()
                 
                 // Add electron to current atom
                 //const parent_electron = tracker.length === 0? processed_atoms[0].pop(): tracker[tracker_index].pop()
                 let parent_electron = null
                 if (tracker.length === 0) {
-                    parent_electron = getFreeElectron(atoms_with_tokens_no_brackets, processed_atoms[0], 0 )
+                    parent_electron = getFreeElectron(used_electrons, processed_atoms[0], 0 )
                     console.log("Added parent electron " + parent_electron + " from parent atom 0 " + " to current atom " + index)
                 } else {
-                    parent_electron = getFreeElectron(atoms_with_tokens_no_brackets, processed_atoms[tracker[tracker_index][0]], index )
+                    parent_electron = getFreeElectron(used_electrons, processed_atoms[tracker[tracker_index][0]], index )
                     console.log("Added parent electron " + parent_electron + " from parent atom " + tracker[tracker_index][0] + " to current atom " + index)
                 }
 
                 parent_electron.should.be.a.String()
                 row.push(parent_electron)
+                used_electrons.push(parent_electron)
                 
                 if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
                     if (index === 2) {
@@ -306,6 +301,7 @@ const AtomsFactory = (canonicalSMILES) => {
                 // Add electron to parent atom
                 processed_atoms[tracker_index].push(current_atom_electron)
                 console.log("Added current electron " + current_atom_electron + " from atom " + index + " to parent atom " + tracker_index )
+                used_electrons.push(current_atom_electron)
 
                 res = row
 
