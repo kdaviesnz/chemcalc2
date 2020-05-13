@@ -349,8 +349,13 @@ const AtomsFactory = (canonicalSMILES) => {
                 used_electrons.push(parent_electron)
                 
                 if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
-                    if (index === 2) {
-                        tracker[tracker.length-1][0].should.be.equal(0)
+                    switch (index) {
+                        case 2:
+                            tracker[tracker.length-1][0].should.be.equal(0)
+                            break
+                        case 5:
+                            tracker[tracker.length-1][0].should.be.equal(0)
+                            break
                     }
                 }
 
@@ -540,7 +545,7 @@ const AtomsFactory = (canonicalSMILES) => {
                         // Check first chlorine atom and aluminum atom share 2 electrons
                         Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
                         // Check second chlorine atom and aluminum atom share 2 electrons
-                        Set().intersection(processed_atoms[5].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
+                        Set().intersection(processed_atoms[5].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // fail
                         // Check last chlorine atom and aluminum atom share no electrons
                         Set().intersection(processed_atoms[7].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(0) // ok
                         // Check no electrons are shared between chlorine atoms
