@@ -241,7 +241,15 @@ const AtomsFactory = (canonicalSMILES) => {
     const used_electrons = []
 
     if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
-        Set().intersection(atoms_with_tokens_no_brackets[2].slice(4), atoms_with_tokens_no_brackets[5].slice(4)).length.should.be.equal(0) // not ok
+        Set().intersection(atoms_with_tokens_no_brackets[2].slice(4), atoms_with_tokens_no_brackets[5].slice(4)).length.should.be.equal(0)    }
+
+    if ("COC" === canonicalSMILES) {
+        // console.log(atoms_with_tokens_no_brackets)
+        /*
+        [ [ 'C',6,4,4,'2iwcg1c7rka4rlgv7','2iwcg1c7rka4rlgv8','2iwcg1c7rka4rlgv9','2iwcg1c7rka4rlgva' ],
+          [ 'O',8,6,2,'2iwcg1c7rka4rlgvb','2iwcg1c7rka4rlgvc','2iwcg1c7rka4rlgvd','2iwcg1c7rka4rlgve','2iwcg1c7rka4rlgvf','2iwcg1c7rka4rlgvg' ],
+         [ 'C', 6, 4, 4, '2iwcg1c7rka4rlgvh', '2iwcg1c7rka4rlgvi', '2iwcg1c7rka4rlgvj', '2iwcg1c7rka4rlgvk' ] ]
+         */
     }
 
     const atoms = atoms_with_tokens_no_brackets.map(
@@ -308,7 +316,7 @@ const AtomsFactory = (canonicalSMILES) => {
                 }
 
                 // Change tracker to show new parent atom
-                const tracker_index = 0 // to do - should be index of previous atom on same branch
+                const tracker_index = 0 // @todo - should be index of previous atom on same branch
 
                 if ("[Al](Cl)(Cl)Cl" === canonicalSMILES && index === 4) {
                     tracker_index.should.be.equal(0)
@@ -434,6 +442,50 @@ const AtomsFactory = (canonicalSMILES) => {
         Set().intersection(al_electrons, cl3_electrons).length.should.be.equal(2)
     }
 
+    if ("COC" === canonicalSMILES) {
+        console.log(atoms)
+        /*
+        [ [ 'C',
+    6,
+    4,
+    4,
+    '2iwcg1d0jka4s36ss',
+    '2iwcg1d0jka4s36st',
+    '2iwcg1d0jka4s36su',
+    '2iwcg1d0jka4s36sv',
+    '2iwcg1d0jka4s36t1',
+    '2iwcg1d0jka4s36t5' ],
+  [ 'O',
+    8,
+    6,
+    2,
+    '2iwcg1d0jka4s36sw',
+    '2iwcg1d0jka4s36sx',
+    '2iwcg1d0jka4s36sy',
+    '2iwcg1d0jka4s36sz',
+    '2iwcg1d0jka4s36t0',
+    '2iwcg1d0jka4s36t1',
+    '2iwcg1d0jka4s36sv' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '2iwcg1d0jka4s36t2',
+    '2iwcg1d0jka4s36t3',
+    '2iwcg1d0jka4s36t4',
+    '2iwcg1d0jka4s36t5',
+    '2iwcg1d0jka4s36su' ] ]
+
+         */
+        atoms[0].slice(4).length.should.be.equal(6)
+        atoms[1].slice(4).length.should.be.equal(8)
+        atoms[2].slice(4).length.should.be.equal(6)
+        Set().intersection(atoms[0].slice(4), atoms[1].slice(4)).length.should.be.equal(2)
+       // Set().intersection(atoms[2].slice(4), atoms[1].slice(4)).length.should.be.equal(2)
+        console.log("AtomsFactory.js")
+        process.exit()
+    }
+
     // Add hydrogens
     const atoms_with_hydrogens = atoms.reduce(
         (carry, current, index, arr) => {
@@ -474,23 +526,41 @@ const AtomsFactory = (canonicalSMILES) => {
     }
 
     if ("COC" === canonicalSMILES) {
+
+
+        /*
+        console.log(atoms_with_hydrogens.filter(
+            (atom) => {
+                return atom[0] !== "H"
+            }
+        ))
+        console.log("AtomsFactory.js")
+        process.exit()
+        */
+
         atoms_with_hydrogens.length.should.be.equal(9)
         // Get the electrons of the oxygen atom
-        const oxygen_electrons = atoms.filter(
+        const oxygen_electrons = atoms_with_hydrogens.filter(
             (atom) => {
                 return atom[0] === "O"
             }
         ).pop().slice(4)
         // Get the electrons of first of the carbon atoms
-        const carbon_electrons = atoms.filter(
+        const carbon_electrons = atoms_with_hydrogens.filter(
             (atom) => {
                 return atom[0] === "C"
             }
         ).pop().slice(4)
+
         // Check if electrons are shared
+        console.log(oxygen_electrons)
+        console.log(carbon_electrons)
+        console.log("AtomsFactory.js")
+        process.exit()
         Set().intersection(oxygen_electrons, carbon_electrons).length.should.be.equal(2)
         // Get the electrons of second of the carbon atoms
-        const carbon_electons_2 = atoms.filter(
+
+        const carbon_electons_2 = atoms_with_hydrogens.filter(
             (atom) => {
                 return atom[0] === "C"
             }
