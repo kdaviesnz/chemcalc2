@@ -259,7 +259,12 @@ const AtomsFactory = (canonicalSMILES) => {
             let res = null
                   
             if (index === 0) {
+                
                 if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
+                    processed_atoms[index][0].should.be.equal("Al")
+                }    
+                
+                if ("COC" === canonicalSMILES) {
                     processed_atoms[index][0].should.be.equal("Al")
                 }    
                               
@@ -321,9 +326,9 @@ const AtomsFactory = (canonicalSMILES) => {
                            break
                        case 7:
                            parent_atom_index.should.be.equal(0)
-                           break
+                           break    
                        
-                   }                
+                   }    
                }
                 
                 let parent_electron = null
@@ -372,13 +377,27 @@ const AtomsFactory = (canonicalSMILES) => {
 
                 tracker.push([ tracker_index, ...atoms_with_tokens_no_brackets[tracker_index].slice(4)])
 
-                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES && index === 1) {
-                    tracker.length.should.be.equal(1)
-                    tracker[0][0].should.be.equal(0)
-                    tracker[0].length.should.be.equal(4)
-                }
+                
 
                 branch_number++
+                
+                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES && index === 1) {
+                    
+                    switch (index) {
+                       case 1:     
+                            tracker.length.should.be.equal(1)
+                            tracker[0][0].should.be.equal(0)
+                            tracker[0].length.should.be.equal(4)
+                            branch_number.should.be.equal(1)
+                            break
+                       case 4:
+                           branch_number.should.be.equal(1)
+                           break
+                      
+                   }    
+                    
+                }
+                
                 
                 // Change row to null as it's not an atom row
                 res = null
