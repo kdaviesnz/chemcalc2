@@ -285,12 +285,53 @@ const AtomsFactory = (canonicalSMILES) => {
                 
                 // Add electron to current atom
                 //const parent_electron = tracker.length === 0? processed_atoms[0].pop(): tracker[tracker_index].pop()
+                let parent_atom_index = null
+                if (index === 0) {
+                    parent_atom_index = 0
+                } else {
+                    if (undefined === branch_tracker[branch_number]) {
+                         parent_atom_index = branch_tracker[branch_number -1][branch_tracker[branch_number - 1].length][0]
+ 
+                    } else {
+                         parent_atom_index = branch_tracker[branch_number][branch_tracker[branch_number].length][0]
+   
+                    }
+                }
+                // const parent_atom_index = branch_tracker[branch_number][branch_tracker[branch_number].length][0]
+               
+               if ("COC" === canonicalSMILES) {
+                   switch (index) {
+                       case 1:
+                           parent_atom_index.should.be.equal(0)
+                           break
+                       case 2:
+                           parent_atom_index.should.be.equal(1)
+                           break
+                       
+                   }                
+               }
+                
+                if ("Al](Cl)(Cl)Cl" === canonicalSMILES) {
+                   switch (index) {
+                       case 2:
+                           parent_atom_index.should.be.equal(0)
+                           break
+                       case 5:
+                           parent_atom_index.should.be.equal(0)
+                           break
+                       case 7:
+                           parent_atom_index.should.be.equal(0)
+                           break
+                       
+                   }                
+               }
+                
                 let parent_electron = null
                 if (tracker.length === 0) {
                     parent_electron = getFreeElectron(used_electrons, processed_atoms[0], 0 )
                    // console.log("Added parent electron " + parent_electron + " from parent atom 0 " + " to current atom " + index)
                 } else {
-                    parent_electron = getFreeElectron(used_electrons, processed_atoms[tracker[tracker_index][0]], index )
+                    parent_electron = getFreeElectron(used_electrons, processed_atoms[parent_atom_index], index )
                    // console.log("Added parent electron " + parent_electron + " from parent atom " + tracker[tracker_index][0] + " to current atom " + index)
                 }
 
