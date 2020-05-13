@@ -233,12 +233,13 @@ const AtomsFactory = (canonicalSMILES) => {
      */
 
     // Add the bonds
-    let depth = 0
+    let branch_number = 0
 
     // tracker
     // last row is current parent with available valence electrons
     const tracker = []
     const used_electrons = []
+    const branch_tracker = {}
 
     if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
         Set().intersection(atoms_with_tokens_no_brackets[2].slice(4), atoms_with_tokens_no_brackets[5].slice(4)).length.should.be.equal(0)    }
@@ -260,9 +261,13 @@ const AtomsFactory = (canonicalSMILES) => {
             if (index === 0) {
                 if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
                     processed_atoms[index][0].should.be.equal("Al")
-                }               
+                }    
+                              
+                branch_tracker[0].push(row[0])
+                
                 // first atom, no branches
                 res = row
+                
             } else if (undefined === row.type ) {
                 
                 if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
@@ -304,6 +309,8 @@ const AtomsFactory = (canonicalSMILES) => {
                // console.log("Added current electron " + current_atom_electron + " from atom " + index + " to parent atom " + tracker_index )
                 used_electrons.push(current_atom_electron)
 
+                branch_tracker[branch_number].push(row[0])
+                
                 res = row
 
             } else if (undefined !== row.type && row.type === "Branch" && row.value === "begin") {
@@ -330,8 +337,11 @@ const AtomsFactory = (canonicalSMILES) => {
                     tracker[0].length.should.be.equal(4)
                 }
 
+                branch_number++
+                
                 // Change row to null as it's not an atom row
                 res = null
+                
             } else if (undefined !== row.type && row.type === "Branch" && row.value === "end") {
 
                 if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
@@ -340,6 +350,8 @@ const AtomsFactory = (canonicalSMILES) => {
 
                 // Change tracker to show previous parent atom
                 tracker.pop()
+                
+                branch_number--
 
                 // Change row to null as it's not an atom row
                 res = null
