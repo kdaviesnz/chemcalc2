@@ -263,7 +263,7 @@ const AtomsFactory = (canonicalSMILES) => {
                     processed_atoms[index][0].should.be.equal("Al")
                 }    
                               
-                branch_tracker[0].push(row[0])
+                branch_tracker[0].push([0, row[0]])
                 
                 // first atom, no branches
                 res = row
@@ -309,7 +309,7 @@ const AtomsFactory = (canonicalSMILES) => {
                // console.log("Added current electron " + current_atom_electron + " from atom " + index + " to parent atom " + tracker_index )
                 used_electrons.push(current_atom_electron)
 
-                branch_tracker[branch_number].push(row[0])
+                branch_tracker[branch_number].push([index, row[0]])
                 
                 res = row
 
