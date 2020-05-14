@@ -334,8 +334,8 @@ const AtomsFactory = (canonicalSMILES) => {
                            parent_atom_index.should.be.equal(0)
                            break
                        case 7:
-                           is_new_branch.should.be.equal(true)
-                           branch_number.should.be.equal(1)
+                           is_new_branch.should.be.equal(false)
+                           branch_number.should.be.equal(0)
                            parent_atom_index.should.be.equal(0)
                            break    
                    }
