@@ -240,6 +240,7 @@ const AtomsFactory = (canonicalSMILES) => {
     const tracker = []
     const used_electrons = []
     const branch_tracker = {}
+    let is_new_branch = false
 
     if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
         Set().intersection(atoms_with_tokens_no_brackets[2].slice(4), atoms_with_tokens_no_brackets[5].slice(4)).length.should.be.equal(0)    }
@@ -298,7 +299,7 @@ const AtomsFactory = (canonicalSMILES) => {
                 if (index === 0) {
                     parent_atom_index = 0
                 } else {
-                    if (undefined === branch_tracker[branch_number]) {
+                    if (is_new_branch) {
                          parent_atom_index = branch_tracker[branch_number -1][branch_tracker[branch_number - 1].length -1][0]
  
                     } else {
@@ -320,19 +321,24 @@ const AtomsFactory = (canonicalSMILES) => {
                    }                
                }
                 
-                if ("Al](Cl)(Cl)Cl" === canonicalSMILES) {
+                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
                    switch (index) {
                        case 2:
+                           is_new_branch.should.be.equal(true)
+                           branch_number.should.be.equal(1)
                            parent_atom_index.should.be.equal(0)
                            break
                        case 5:
+                           is_new_branch.should.be.equal(true)
+                           branch_number.should.be.equal(1)
                            parent_atom_index.should.be.equal(0)
                            break
                        case 7:
+                           is_new_branch.should.be.equal(true)
+                           branch_number.should.be.equal(1)
                            parent_atom_index.should.be.equal(0)
                            break    
-                       
-                   }    
+                   }
                }
                 
                 let parent_electron = null
@@ -348,30 +354,58 @@ const AtomsFactory = (canonicalSMILES) => {
                 row.push(parent_electron)
                 used_electrons.push(parent_electron)
                 
+
+                // Add electron to parent atom
+                processed_atoms[parent_atom_index].push(current_atom_electron)
+               // console.log("Added current electron " + current_atom_electron + " from atom " + index + " to parent atom " + tracker_index )
+
                 if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
                     switch (index) {
-                        case 2:
+                        case 2: // first chlorine
                             tracker[tracker.length-1][0].should.be.equal(0)
+                            parent_atom_index.should.be.equal(0)
+                            processed_atoms[parent_atom_index].slice(4).length.should.be.equal(4) // Al
+                            processed_atoms[2].slice(4).length.should.be.equal(8) // first chlorine
+                            processed_atoms[5].slice(4).length.should.be.equal(7) // second chlorine
+                            processed_atoms[7].slice(4).length.should.be.equal(7) // third chlorine
                             break
-                        case 5:
+                        case 5: // second chlorine
                             tracker[tracker.length-1][0].should.be.equal(0)
+                            console.log(branch_tracker)
+                            console.log(parent_atom_index)
+                            parent_atom_index.should.be.equal(0) // fail
+                            processed_atoms[parent_atom_index].slice(4).length.should.be.equal(5) // Al
+                            processed_atoms[2].slice(4).length.should.be.equal(8) // first chlorine
+                            processed_atoms[5].slice(4).length.should.be.equal(8) // second chlorine
+                            processed_atoms[7].slice(4).length.should.be.equal(7) // third chlorine
+                            break
+                        case 7: // third chlorine
+                            tracker[tracker.length-1][0].should.be.equal(0)
+                            parent_atom_index.should.be.equal(0)
+                            processed_atoms[parent_atom_index].slice(4).length.should.be.equal(5) // Al
+                            processed_atoms[2].slice(4).length.should.be.equal(8) // first chlorine
+                            processed_atoms[5].slice(4).length.should.be.equal(8) // second chlorine
+                            processed_atoms[7].slice(4).length.should.be.equal(8) // third chlorine
                             break
                     }
                 }
 
-                // Add electron to parent atom
-                processed_atoms[tracker_index].push(current_atom_electron)
-               // console.log("Added current electron " + current_atom_electron + " from atom " + index + " to parent atom " + tracker_index )
+
                 used_electrons.push(current_atom_electron)
 
                 if (undefined === branch_tracker[branch_number]) {
                     branch_tracker[branch_number] = []
                 }
                 branch_tracker[branch_number].push([index, row[0]])
-                
+
+                is_new_branch = false
+                console.log("Is new branch changed to false (atom)")
+
                 res = row
 
             } else if (undefined !== row.type && row.type === "Branch" && row.value === "begin") {
+
+                is_new_branch.should.be.equal(false)
 
                 if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
                     index.should.be.oneOf([1, 4])
@@ -404,8 +438,11 @@ const AtomsFactory = (canonicalSMILES) => {
                            break
                    }
                 }
-                
-                
+
+                is_new_branch = true
+                console.log("Is new branch changed to true (begin)")
+
+
                 // Change row to null as it's not an atom row
                 res = null
                 
@@ -430,6 +467,9 @@ const AtomsFactory = (canonicalSMILES) => {
                            break
                    }
                 }
+
+                console.log("Is new branch changed to false (end)")
+                is_new_branch = false
 
                 // Change row to null as it's not an atom row
                 res = null
