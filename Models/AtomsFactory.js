@@ -18,166 +18,7 @@ const AtomsFactory = (canonicalSMILES) => {
              }
          )
 
-        if (electrons.length === 0) {
-            console.log(atoms_with_tokens_no_brackets)
-            console.log(atom)
-            console.log(prev_atom_index) // 0
-            console.log("AtomsFactory.js Critical error: Electrons are empty")
-            process.exit()
-        }
-
          return electrons.pop()
-    }
-
-    const prevAtomIndexByBranch = (atoms_with_tokens_no_brackets,index,depth, round_number) => {
-
-
-        //console.log(round_number) //1
-        //console.log(index) // 1
-        //console.log(depth) //1
-        //process.exit()
-        if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
-
-            if (round_number === 1) {
-                index.should.be.equal(1)
-                depth.should.be.equal(1)
-                atoms_with_tokens_no_brackets[index].type.should.be.equal("Branch")
-                atoms_with_tokens_no_brackets[index].value.should.be.equal("begin")
-            }
-
-            if (round_number === 2) {
-                index.should.be.equal(0)
-                depth.should.be.equal(0)
-                atoms_with_tokens_no_brackets[index][0].should.be.equal("Al")
-                atoms_with_tokens_no_brackets[index].slice(4).length.should.be.equal(3)
-            }
-
-            if (round_number === 3) {
-               depth.should.be.equal(1) //1
-               index.should.be.equal(1) //1
-               atoms_with_tokens_no_brackets[0][0].should.be.equal("Al") // Al, 3 electrons
-               atoms_with_tokens_no_brackets[0].slice(4).length.should.be.equal(3) // Al, 3 electrons                                        
-               atoms_with_tokens_no_brackets[1].type === 'Branch'
-               atoms_with_tokens_no_brackets[1].value === 'begin'
-                   
-            }
-
-            if (round_number === 4) {
-                 
-                 depth.should.be.equal(0) 
-                 index.should.be.equal(0) 
-                 
-                  atoms_with_tokens_no_brackets[0][0].should.be.equal("Al") 
-                  atoms_with_tokens_no_brackets[0].slice(4).length.should.be.equal(3)                                        
-                  atoms_with_tokens_no_brackets[1].type === 'Branch'
-                  atoms_with_tokens_no_brackets[1].value === 'begin'
-                
-                  atoms_with_tokens_no_brackets[2][0].should.be.equal("Cl") 
-                  atoms_with_tokens_no_brackets[2].slice(4).length.should.be.equal(7) 
-                
-                  console.log(atoms_with_tokens_no_brackets[2]) //Cl, 7 electrons
-                  process.exit()
-            }
-            
-            
-        }
-        /*
-[ [ 'Al',13,3,5,'2iwcg3xsk9wb0ng8','2iwcg3xsk9wb0ng9','2iwcg3xsk9wb0nga' ],
-  { type: 'Branch', value: 'begin' },
-  [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngb','2iwcg3xsk9wb0ngc','2iwcg3xsk9wb0ngd','2iwcg3xsk9wb0nge','2iwcg3xsk9wb0ngf','2iwcg3xsk9wb0ngg','2iwcg3xsk9wb0ngh' ],
- { type: 'Branch', value: 'end' },
- { type: 'Branch', value: 'begin' },
- [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngi','2iwcg3xsk9wb0ngj','2iwcg3xsk9wb0ngk','2iwcg3xsk9wb0ngl','2iwcg3xsk9wb0ngm','2iwcg3xsk9wb0ngn','2iwcg3xsk9wb0ngo' ],
- { type: 'Branch', value: 'end' },
-  [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngp','2iwcg3xsk9wb0ngq','2iwcg3xsk9wb0ngr','2iwcg3xsk9wb0ngs','2iwcg3xsk9wb0ngt','2iwcg3xsk9wb0ngu','2iwcg3xsk9wb0ngv' ] ]
- */
-
-
-
-        // index
-        // 1 -> begin -> 0 -> Al
-        // 4 begin  -> 3 (d0) -> end 2 (d1) -> begin 1 (d1) -> 0 (d0)
-        
-        /*
-        index    depth     row  
-        4        1        { type: 'Branch', value: 'begin' },
-        3        0         { type: 'Branch', value: 'end' },
-        2        1         [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngb','2iwcg3xsk9wb0ng...],
-        1        1        { type: 'Branch', value: 'begin' },
-        0        0        [ 'Al',13,3,5,'2iwcg3xsk9wb0ng8','2iwcg3xsk9wb0ng9','2iwcg3xsk9wb0nga' ],
-        */
-        
-         // @todo depth only works for depth 1
-        //console.log(atoms_with_tokens_no_brackets[index]) // { type: 'Branch', value: 'begin' }
-        //console.log(index) //1
-        if (undefined === atoms_with_tokens_no_brackets[index]) {
-            return 0
-        }
-
-        if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
-            if (round_number === 2) {
-                if (undefined !==  atoms_with_tokens_no_brackets[index].type) {
-                    console.log("atoms_with_tokens_no_brackets[index].type should be undefined")
-                    process.exit()
-                }
-            }
-        }
-
-        if (undefined === atoms_with_tokens_no_brackets[index].type && depth === 0) {
-            if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
-                if (round_number===4) {
-                    // index and depth are 0
-                    process.exit()
-                }
-                round_number.should.be.oneOf([2, 4])
-            }
-            return index
-        }
-
-           /*
-    [ [ 'Al',13,3,5,'2iwcg3xsk9wb0ng8','2iwcg3xsk9wb0ng9','2iwcg3xsk9wb0nga' ],
-      { type: 'Branch', value: 'begin' },
-      [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngb','2iwcg3xsk9wb0ngc','2iwcg3xsk9wb0ngd','2iwcg3xsk9wb0nge','2iwcg3xsk9wb0ngf','2iwcg3xsk9wb0ngg','2iwcg3xsk9wb0ngh' ],
-     { type: 'Branch', value: 'end' },
-     { type: 'Branch', value: 'begin' },
-     [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngi','2iwcg3xsk9wb0ngj','2iwcg3xsk9wb0ngk','2iwcg3xsk9wb0ngl','2iwcg3xsk9wb0ngm','2iwcg3xsk9wb0ngn','2iwcg3xsk9wb0ngo' ],
-     { type: 'Branch', value: 'end' },
-      [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngp','2iwcg3xsk9wb0ngq','2iwcg3xsk9wb0ngr','2iwcg3xsk9wb0ngs','2iwcg3xsk9wb0ngt','2iwcg3xsk9wb0ngu','2iwcg3xsk9wb0ngv' ] ]
-     */
-        if (atoms_with_tokens_no_brackets[index].type === "Branch" 
-           && atoms_with_tokens_no_brackets[index].value === "begin") {
-            // @todo depth only works for depth 1
-            return prevAtomIndexByBranch(atoms_with_tokens_no_brackets,--index,--depth, round_number+1)
-        }
-        
-        if (atoms_with_tokens_no_brackets[index].type === "Branch" 
-           && atoms_with_tokens_no_brackets[index].value === "end") {
-            // @todo depth only works for depth 1
-            return prevAtomIndexByBranch(atoms_with_tokens_no_brackets,--index, ++depth, round_number+1)
-        }
-        
-        return prevAtomIndexByBranch(atoms_with_tokens_no_brackets,--index,depth, round_number+1)
-        
-        
-        
-    }
-    
-    const prevAtomIndexByAtomicSymbol = (atomic_symbol, current_atoms, index) => {
-        if (current_atoms[index][0] === atomic_symbol) {
-            return index
-        } else {
-            return prevAtomIndexByAtomicSymbol(atomic_symbol, current_atoms, index -1)
-        }
-    }
-
-    const prevAtomIndex = (smiles_tokens, current_atoms, index) => {
-        if (smiles_tokens[index].type === "AliphaticOrganic" || smiles_tokens[index].type === "ElementSymbol") {
-            const atomic_symbol = smiles_tokens[index].value
-            // Find the index of last atom in current atoms with atomic symbol matching atomic_symbol
-            return prevAtomIndexByAtomicSymbol(atomic_symbol, current_atoms, current_atoms.length-1)
-        } else {
-            return prevAtomIndex(smiles_tokens, current_atoms,  index -1)
-        }
     }
 
     // parse a SMILES string, returns an array of SMILES tokens [{type: '...', value: '...'}, ...]
@@ -220,18 +61,6 @@ const AtomsFactory = (canonicalSMILES) => {
         }
     )
 
-   // console.log(atoms_with_tokens_no_brackets)
-    /*
-    [ [ 'Al',13,3,5,'2iwcg3xsk9wb0ng8','2iwcg3xsk9wb0ng9','2iwcg3xsk9wb0nga' ],
-      { type: 'Branch', value: 'begin' },
-      [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngb','2iwcg3xsk9wb0ngc','2iwcg3xsk9wb0ngd','2iwcg3xsk9wb0nge','2iwcg3xsk9wb0ngf','2iwcg3xsk9wb0ngg','2iwcg3xsk9wb0ngh' ],
-     { type: 'Branch', value: 'end' },
-     { type: 'Branch', value: 'begin' },
-     [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngi','2iwcg3xsk9wb0ngj','2iwcg3xsk9wb0ngk','2iwcg3xsk9wb0ngl','2iwcg3xsk9wb0ngm','2iwcg3xsk9wb0ngn','2iwcg3xsk9wb0ngo' ],
-     { type: 'Branch', value: 'end' },
-      [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngp','2iwcg3xsk9wb0ngq','2iwcg3xsk9wb0ngr','2iwcg3xsk9wb0ngs','2iwcg3xsk9wb0ngt','2iwcg3xsk9wb0ngu','2iwcg3xsk9wb0ngv' ] ]
-     */
-
     // Add the bonds
     let branch_number = 0
 
@@ -245,14 +74,6 @@ const AtomsFactory = (canonicalSMILES) => {
     if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
         Set().intersection(atoms_with_tokens_no_brackets[2].slice(4), atoms_with_tokens_no_brackets[5].slice(4)).length.should.be.equal(0)    }
 
-    if ("COC" === canonicalSMILES) {
-        // console.log(atoms_with_tokens_no_brackets)
-        /*
-        [ [ 'C',6,4,4,'2iwcg1c7rka4rlgv7','2iwcg1c7rka4rlgv8','2iwcg1c7rka4rlgv9','2iwcg1c7rka4rlgva' ],
-          [ 'O',8,6,2,'2iwcg1c7rka4rlgvb','2iwcg1c7rka4rlgvc','2iwcg1c7rka4rlgvd','2iwcg1c7rka4rlgve','2iwcg1c7rka4rlgvf','2iwcg1c7rka4rlgvg' ],
-         [ 'C', 6, 4, 4, '2iwcg1c7rka4rlgvh', '2iwcg1c7rka4rlgvi', '2iwcg1c7rka4rlgvj', '2iwcg1c7rka4rlgvk' ] ]
-         */
-    }
 
     const atoms = atoms_with_tokens_no_brackets.map(
         (row, index, processed_atoms) => {
@@ -266,7 +87,7 @@ const AtomsFactory = (canonicalSMILES) => {
                 }    
                 
                 if ("COC" === canonicalSMILES) {
-                    processed_atoms[index][0].should.be.equal("Al")
+                    processed_atoms[index][0].should.be.equal("C")
                 }
 
                 if (undefined === branch_tracker[0]) {
@@ -294,7 +115,6 @@ const AtomsFactory = (canonicalSMILES) => {
                 current_atom_electron.should.be.a.String()
                 
                 // Add electron to current atom
-                //const parent_electron = tracker.length === 0? processed_atoms[0].pop(): tracker[tracker_index].pop()
                 let parent_atom_index = null
                 if (index === 0) {
                     parent_atom_index = 0
@@ -342,26 +162,21 @@ const AtomsFactory = (canonicalSMILES) => {
                }
                 
                 let parent_electron = null
-                if (tracker.length === 0) {
-                    parent_electron = getFreeElectron(used_electrons, processed_atoms[0], 0 )
-                   // console.log("Added parent electron " + parent_electron + " from parent atom 0 " + " to current atom " + index)
-                } else {
-                    parent_electron = getFreeElectron(used_electrons, processed_atoms[parent_atom_index], index )
-                   // console.log("Added parent electron " + parent_electron + " from parent atom " + tracker[tracker_index][0] + " to current atom " + index)
-                }
+                parent_electron = getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index )
 
                 parent_electron.should.be.a.String()
+                processed_atoms[parent_atom_index].indexOf(parent_electron).should.not.be.equal(-1)
                 row.push(parent_electron)
                 used_electrons.push(parent_electron)
-                
 
                 // Add electron to parent atom
                 processed_atoms[parent_atom_index].push(current_atom_electron)
-               // console.log("Added current electron " + current_atom_electron + " from atom " + index + " to parent atom " + tracker_index )
+
 
                 if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
                     switch (index) {
                         case 2: // first chlorine
+                            branch_number.should.be.equal(1)
                             tracker[tracker.length-1][0].should.be.equal(0)
                             parent_atom_index.should.be.equal(0)
                             processed_atoms[parent_atom_index].slice(4).length.should.be.equal(4) // Al
@@ -370,9 +185,8 @@ const AtomsFactory = (canonicalSMILES) => {
                             processed_atoms[7].slice(4).length.should.be.equal(7) // third chlorine
                             break
                         case 5: // second chlorine
+                            branch_number.should.be.equal(1)
                             tracker[tracker.length-1][0].should.be.equal(0)
-                            console.log(branch_tracker)
-                            console.log(parent_atom_index)
                             parent_atom_index.should.be.equal(0) // fail
                             processed_atoms[parent_atom_index].slice(4).length.should.be.equal(5) // Al
                             processed_atoms[2].slice(4).length.should.be.equal(8) // first chlorine
@@ -380,9 +194,9 @@ const AtomsFactory = (canonicalSMILES) => {
                             processed_atoms[7].slice(4).length.should.be.equal(7) // third chlorine
                             break
                         case 7: // third chlorine
-                            tracker[tracker.length-1][0].should.be.equal(0)
+                            branch_number.should.be.equal(0)
                             parent_atom_index.should.be.equal(0)
-                            processed_atoms[parent_atom_index].slice(4).length.should.be.equal(5) // Al
+                            processed_atoms[parent_atom_index].slice(4).length.should.be.equal(6) // Al
                             processed_atoms[2].slice(4).length.should.be.equal(8) // first chlorine
                             processed_atoms[5].slice(4).length.should.be.equal(8) // second chlorine
                             processed_atoms[7].slice(4).length.should.be.equal(8) // third chlorine
@@ -399,9 +213,23 @@ const AtomsFactory = (canonicalSMILES) => {
                 branch_tracker[branch_number].push([index, row[0]])
 
                 is_new_branch = false
-                console.log("Is new branch changed to false (atom)")
 
-                res = row
+                if ("COC" === canonicalSMILES) {
+                    switch (index) {
+                        case 1:
+                            is_new_branch.should.be.equal(false)
+                            parent_atom_index.should.be.equal(0)
+                            Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(2)
+                            break
+                        case 2:
+                            is_new_branch.should.be.equal(false)
+                            parent_atom_index.should.be.equal(1)
+                            Set().intersection(processed_atoms[1].slice(4), processed_atoms[2].slice(4)).length.should.be.equal(2)
+                            break
+                    }
+                }
+
+                res = row // is an atom
 
             } else if (undefined !== row.type && row.type === "Branch" && row.value === "begin") {
 
@@ -440,8 +268,6 @@ const AtomsFactory = (canonicalSMILES) => {
                 }
 
                 is_new_branch = true
-                console.log("Is new branch changed to true (begin)")
-
 
                 // Change row to null as it's not an atom row
                 res = null
@@ -468,7 +294,6 @@ const AtomsFactory = (canonicalSMILES) => {
                    }
                 }
 
-                console.log("Is new branch changed to false (end)")
                 is_new_branch = false
 
                 // Change row to null as it's not an atom row
@@ -480,14 +305,14 @@ const AtomsFactory = (canonicalSMILES) => {
                     case 0: // [C]
                         processed_atoms[0].slice(4).length.should.be.equal(4)
                         processed_atoms[1].slice(4).length.should.be.equal(6)
-                        processed_atoms[2].slice(4).length.should.be.equal(6)
+                        processed_atoms[2].slice(4).length.should.be.equal(4)
                         Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(0)
                         Set().intersection(processed_atoms[1].slice(4), processed_atoms[2].slice(4)).length.should.be.equal(0)
                         break;
                     case 1: // [O]
                         processed_atoms[0].slice(4).length.should.be.equal(5)
                         processed_atoms[1].slice(4).length.should.be.equal(7)
-                        processed_atoms[2].slice(4).length.should.be.equal(6)
+                        processed_atoms[2].slice(4).length.should.be.equal(4)
                         Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(2)
                         Set().intersection(processed_atoms[1].slice(4), processed_atoms[2].slice(4)).length.should.be.equal(0)
                         break;
@@ -495,8 +320,9 @@ const AtomsFactory = (canonicalSMILES) => {
                         processed_atoms[0].slice(4).length.should.be.equal(5)
                         processed_atoms[1].slice(4).length.should.be.equal(8)
                         processed_atoms[2].slice(4).length.should.be.equal(5)
+                        Set().intersection(processed_atoms[0].slice(4), processed_atoms[2].slice(4)).length.should.be.equal(0)
                         Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(2)
-                        Set().intersection(processed_atoms[1].slice(4), processed_atoms[2].slice(4)).length.should.be.equal(2) // ok
+                        Set().intersection(processed_atoms[1].slice(4), processed_atoms[2].slice(4)).length.should.be.equal(2)
                         break;
                 }
             }
@@ -625,7 +451,7 @@ const AtomsFactory = (canonicalSMILES) => {
                         // Check second chlorine atom and aluminum atom share 2 electrons
                         Set().intersection(processed_atoms[5].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
                         // Check last chlorine atom and aluminum atom now share 2 electrons
-                        Set().intersection(processed_atoms[7].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(0) // ok
+                        Set().intersection(processed_atoms[7].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
                         // Check no electrons are shared between chlorine atoms
                         Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
                         Set().intersection(processed_atoms[2].slice(4), processed_atoms[7].slice(4)).length.should.be.equal(0) // ok
@@ -671,47 +497,12 @@ const AtomsFactory = (canonicalSMILES) => {
     }
 
     if ("COC" === canonicalSMILES) {
-        console.log(atoms)
-        /*
-        [ [ 'C',
-    6,
-    4,
-    4,
-    '2iwcg1d0jka4s36ss',
-    '2iwcg1d0jka4s36st',
-    '2iwcg1d0jka4s36su',
-    '2iwcg1d0jka4s36sv',
-    '2iwcg1d0jka4s36t1',
-    '2iwcg1d0jka4s36t5' ],
-  [ 'O',
-    8,
-    6,
-    2,
-    '2iwcg1d0jka4s36sw',
-    '2iwcg1d0jka4s36sx',
-    '2iwcg1d0jka4s36sy',
-    '2iwcg1d0jka4s36sz',
-    '2iwcg1d0jka4s36t0',
-    '2iwcg1d0jka4s36t1',
-    '2iwcg1d0jka4s36sv' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    '2iwcg1d0jka4s36t2',
-    '2iwcg1d0jka4s36t3',
-    '2iwcg1d0jka4s36t4',
-    '2iwcg1d0jka4s36t5',
-    '2iwcg1d0jka4s36su' ] ]
 
-         */
         atoms[0].slice(4).length.should.be.equal(5)
         atoms[1].slice(4).length.should.be.equal(8)
         atoms[2].slice(4).length.should.be.equal(5)
         Set().intersection(atoms[0].slice(4), atoms[1].slice(4)).length.should.be.equal(2)
        // Set().intersection(atoms[2].slice(4), atoms[1].slice(4)).length.should.be.equal(2)
-        console.log("AtomsFactory.js")
-        process.exit()
     }
 
     // Add hydrogens
@@ -755,17 +546,6 @@ const AtomsFactory = (canonicalSMILES) => {
 
     if ("COC" === canonicalSMILES) {
 
-
-        /*
-        console.log(atoms_with_hydrogens.filter(
-            (atom) => {
-                return atom[0] !== "H"
-            }
-        ))
-        console.log("AtomsFactory.js")
-        process.exit()
-        */
-
         atoms_with_hydrogens.length.should.be.equal(9)
         // Get the electrons of the oxygen atom
         const oxygen_electrons = atoms_with_hydrogens.filter(
@@ -781,10 +561,6 @@ const AtomsFactory = (canonicalSMILES) => {
         ).pop().slice(4)
 
         // Check if electrons are shared
-        console.log(oxygen_electrons)
-        console.log(carbon_electrons)
-        console.log("AtomsFactory.js")
-        process.exit()
         Set().intersection(oxygen_electrons, carbon_electrons).length.should.be.equal(2)
         // Get the electrons of second of the carbon atoms
 
@@ -793,8 +569,6 @@ const AtomsFactory = (canonicalSMILES) => {
                 return atom[0] === "C"
             }
         )[1].slice(4)
-        // Check if electrons are shared
-        Set().intersection(oxygen_electrons, carbon_electrons_2).length.should.be.equal(2)
 
     }
 
