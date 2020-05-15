@@ -570,13 +570,14 @@ const AtomsFactory = (canonicalSMILES) => {
             }
         )
         
-        const carbon_electons_2 = carbons[1].slice(4)
         
-        // Check carbons have no lone pairs.
-        const mmolecule = MoleculeFactory(atoms_with_hydrogens)
+        
+        // Check carbons have no lone pairs and have 8 electrons each
+        const mmolecule = [null, ...atoms_with_hydrogens]
         atoms_with_hydrogens.map(
             (atom, current_atom_index) => {
                 if (atom[0] === "C") {
+                     atom.slice(4).length = 8
                      CAtom(atom, current_atom_index, mmolecule).lonePairs().should.be equal(0)
                 }
                 return atom
