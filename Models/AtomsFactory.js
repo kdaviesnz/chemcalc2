@@ -564,11 +564,28 @@ const AtomsFactory = (canonicalSMILES) => {
         Set().intersection(oxygen_electrons, carbon_electrons).length.should.be.equal(2)
         // Get the electrons of second of the carbon atoms
 
-        const carbon_electons_2 = atoms_with_hydrogens.filter(
+        const carbons = atoms_with_hydrogens.filter(
             (atom) => {
                 return atom[0] === "C"
             }
-        )[1].slice(4)
+        )
+        
+        const carbon_electons_2 = carbons[1].slice(4)
+        
+        // Check carbons have no lone pairs.
+        const mmolecule = MoleculeFactory(atoms_with_hydrogens)
+        atoms_with_hydrogens.map(
+            (atom, current_atom_index) => {
+                if (atom[0] === "C") {
+                     CAtom(atom, current_atom_index, mmolecule).lonePairs().should.be equal(0)
+                }
+                return atom
+            }
+        )
+        
+        // CAtom = (atom, current_atom_index, mmolecule)
+        
+        
 
     }
 
