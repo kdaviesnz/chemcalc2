@@ -158,6 +158,8 @@ const CMolecule = (mmolecule) => {
 
         const atom_to_push_molecule_index = mmolecule.length + atom_to_push_index -1
         if (test_number === 1) {
+            console.log(mmolecule)
+            // H2O
             atom_to_push_molecule_index.should.be.equal(4)
         }
 
