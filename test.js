@@ -300,6 +300,7 @@ ccontainer2.add(HthreeO,1)
 
 const ccontainer3 = new CContainer([false], MoleculeFactory, MoleculeController, 3)
 
+
 const aluminumChloride = MoleculeFactory("[Al](Cl)(Cl)Cl")
 aluminumChloride.filter(
     (atom) => {
@@ -316,8 +317,8 @@ dimethylEther.filter(
 ).length.should.be.equal(6)
 dimethylEther[0].should.be.equal(-3.5)
 
-ccontainer3.add(aluminumChloride,1)
-ccontainer3.add(dimethylEther,1)
+ccontainer3.add(aluminumChloride,1) // Aluminium Chloride is a Lewis acid and accepts and electron pair
+ccontainer3.add(dimethylEther,1) // Dimethyl Ether is a Lewis base and donates an electron pair (oxygen atom)
 
 const hbr = MoleculeFactory("HBr")
 const HBrController = CMolecule(hcl)

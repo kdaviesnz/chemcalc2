@@ -8,6 +8,15 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         if (undefined === nucleophile_molecule) {
             const substrate_proton_index = MoleculeController(container[1]).indexOf("H")
             const reagent_proton_index = MoleculeController(container[2]).indexOf("H")
+
+            if (test_number === 3) {
+                substrate_proton_index.should.be.equal(false)
+            }
+
+            if (test_number === 3) {
+                reagent_proton_index.should.be.equal(false) // hydrogens are attached to carbons
+            }
+
             if (substrate_proton_index!== false && reagent_proton_index === false) {
                 electrophile_molecule_index = 1
                 electrophile_molecule = container[electrophile_molecule_index]
@@ -22,7 +31,9 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
                 nucleophile_molecule_index = 1
                 nucleophile_molecule = container[nucleophile_molecule_index]
                 nucleophile_atom_index = MoleculeController(nucleophile_molecule).nucleophileIndex()
-            } else {
+            } else if (substrate_proton_index=== false && reagent_proton_index === false) {
+                return false
+            }else {
                 // -6.3 HCl, 14 H2O
                 if (container[1][0] <= container[2][0]) {
                     electrophile_molecule_index = 1
@@ -57,6 +68,10 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         }
 
         // Check that we have a proton
+        if (test_number === 3) {
+            electrophile_molecule[1][0].should.be.equal("Al")
+        }
+
         if (electrophile_molecule[electrophile_atom_index][0] !== "H") {
             if (test_number === 1) {
                 console.log("BronstedLowryAcidBaseReactions::Should have a proton")

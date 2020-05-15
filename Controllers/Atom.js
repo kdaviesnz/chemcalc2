@@ -70,7 +70,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
              */
             const b = __Bonds(atom[0])
             if (atom[0]==="Cl") {
-                b.length.should.be.equal(1)
+                b.length.should.be.equal(3)
             }
             const info = PeriodicTable[atom[0]]
             // info[3] is the number of valence electron pairs

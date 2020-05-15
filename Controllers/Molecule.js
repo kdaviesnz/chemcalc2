@@ -14,7 +14,7 @@ const CMolecule = (mmolecule) => {
        if (atoms_with_free_slots.length === 0) {
            return false
        } else {
-           return atoms_with_free_slots[0][0]
+           return atoms_with_free_slots[0][0] + 1 // take into account pKa value
        }
 
     }
@@ -43,6 +43,11 @@ const CMolecule = (mmolecule) => {
                     }, false
                 )
         } else {
+            if (test_number === 3) {
+                console.log(atoms_with_lone_pairs)
+                console.log("Molecule.js")
+                process.exit()
+            }
            return atoms_with_lone_pairs[0][0] + 1 // take into account pka
         }
         
