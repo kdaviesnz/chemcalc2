@@ -541,10 +541,10 @@ Molecule.js
             // AlCl3 <- C:OC
             if (test_number === 3) {
                 atoms_or_atomic_symbols.length.should.be.equal(4) // AlCl3
-                mmolecule.length.should.be.equal(10) // COC
-                molecule_to_add_to_index.should.be.equal(0)
+                mmolecule.length.should.be.equal(10) // COC (nucleophile)
+                molecule_to_add_to_index.should.be.equal(1) 
                 atom_to_push_index.should.be.equal(1)
-                atoms_or_atomic_symbols[atom_to_push_index][0].should.be.equal("Cl")
+                atoms_or_atomic_symbols[atom_to_push_index][0].should.be.equal("Al")
             }
             
             atoms_or_atomic_symbols.should.be.an.Array()
@@ -573,16 +573,12 @@ Molecule.js
                 molecule_to_add_to_index.should.be.equal(2)
             }
 
-
-
             if (undefined === atom_to_bond_to_index) {
                 atom_to_bond_to_index = determineNucleophileIndex(test_number)
                 if(test_number === 1) {
                     atom_to_bond_to_index.should.be.equal(3) // Oxygen atom on H2O
                 }
-            } else {
-
-            }
+            } 
 
             if(test_number === 1) {
                 // Note at this point we have removed the proton from HCl
@@ -593,9 +589,14 @@ Molecule.js
                 atom_to_bond_to_index.should.be.equal(3) // Should be 3
             }
 
-
             if (atom_to_bond_to_index !== false) {
 
+                 if(test_number === 1) {
+                     atom_to_bond_to_index.should.be.equal(5) // oxygen atom on COC
+                     mmolecule[atom_to_bond_to_index][0].should.be.equal("Al")
+                     atom_to_push_index.should.be.equal(1) // // Al atom on AlCl3
+                 }
+                
                 return _makeCovalentBond(atoms, atom_to_bond_to_index, test_number, atom_to_push_index) // return molecule
 
                 // push electron
