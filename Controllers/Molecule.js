@@ -156,6 +156,15 @@ const CMolecule = (mmolecule) => {
 
     const _makeCovalentBond = (atoms, atom_to_push_to_index, test_number, atom_to_push_index) => {
 
+        const atom_to_push_molecule_index = mmolecule.length + atom_to_push_index -1
+        if (test_number === 1) {
+            atom_to_push_molecule_index.should.be.equal(4)
+        }
+
+        if (test_number === 3) {
+            atom_to_push_molecule_index.should.be.equal(11)
+            mmolecule[atom_to_push_molecule_index][0].should.be.equal("Al")
+        }
 
         if (test_number === 1) {
             mmolecule.length.should.be.equal(4)
@@ -166,9 +175,9 @@ const CMolecule = (mmolecule) => {
 
         // AlCl3 <- C:OC
         if (test_number === 3) {
-            atoms.length.should.be.equal(4) // COC
-            mmolecule.length.should.be.equal(10) // AlCl3
-            atom_to_push_index.should.be.equal(1)
+            atoms.length.should.be.equal(4) // AlCl3
+            mmolecule.length.should.be.equal(10) // COC
+            atom_to_push_index.should.be.equal(1) // Al on AlCl3
         }
 
         // Add atoms to molecule.
@@ -178,7 +187,6 @@ const CMolecule = (mmolecule) => {
                 mmolecule.push(atom)
                 return atom
             }
-
         )
 
         if (test_number === 1) {
@@ -198,14 +206,7 @@ const CMolecule = (mmolecule) => {
         }
 
         // Now create the bond
-        const atom_to_push_molecule_index = mmolecule.length + atom_to_push_index -1
-        if (test_number === 1) {
-            atom_to_push_molecule_index.should.be.equal(4)
-        }
-
-        if (test_number === 3) {
-            atom_to_push_molecule_index.should.be.equal(14)
-        }
+        
 /*
 In the molecule H2, the hydrogen atoms share the two electrons via covalent bonding.[7] Covalency is greatest between atoms of similar electronegativities. Thus, covalent bonding does not necessarily require that the two atoms be of the same elements, only that they be of comparable electronegativity. Covalent bonding that entails sharing of electrons over more than two atoms is said to be delocalized.
  */
@@ -591,7 +592,7 @@ Molecule.js
 
             if (atom_to_bond_to_index !== false) {
 
-                 if(test_number === 1) {
+                 if(test_number === 3) {
                      atom_to_bond_to_index.should.be.equal(5) // oxygen atom on COC
                      mmolecule[atom_to_bond_to_index][0].should.be.equal("Al")
                      atom_to_push_index.should.be.equal(1) // // Al atom on AlCl3
