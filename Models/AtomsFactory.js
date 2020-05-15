@@ -1,5 +1,6 @@
 const uniqid = require('uniqid')
 const AtomFactory = require('./AtomFactory')
+const CAtom = require('../Controllers/Atom')
 const CMolecule = require('../Controllers/Molecule')
 const range = require("range");
 // range.range(1,10,2)
@@ -578,7 +579,7 @@ const AtomsFactory = (canonicalSMILES) => {
             (atom, current_atom_index) => {
                 if (atom[0] === "C") {
                      atom.slice(4).length = 8
-                     CAtom(atom, current_atom_index, mmolecule).lonePairs().should.be equal(0)
+                     CAtom(atom, current_atom_index, mmolecule).lonePairs().length.should.be.equal(0)
                 }
                 return atom
             }

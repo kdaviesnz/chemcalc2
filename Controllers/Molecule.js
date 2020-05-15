@@ -43,11 +43,6 @@ const CMolecule = (mmolecule) => {
                     }, false
                 )
         } else {
-            if (test_number === 3) {
-                console.log(atoms_with_lone_pairs)
-                console.log("Molecule.js")
-                process.exit()
-            }
            return atoms_with_lone_pairs[0][0] + 1 // take into account pka
         }
         
@@ -61,19 +56,24 @@ const CMolecule = (mmolecule) => {
             mmolecule[3][0].should.be.equal("O")
         }
 
-        // Check substrate for free slots
+        // Check substrate for lone pairs
         const atoms_with_lone_pairs = mmolecule.slice(1).map(
-                    (atom, index) => {
-                        if (atom[0] === "H" || CAtom(atom, index, mmolecule).lonePairs() === 0) {
-                            return null
-                        }
-                        return [index, atom]                        
-                    }
-                ).filter(
-                    (item) => {
-                        return item !== null
-                    }
-                )
+            (atom, index) => {
+                if (atom[0] === "H" || CAtom(atom, index, mmolecule).lonePairs().length === 0) {
+                    return null
+                }
+                return [index, atom]
+            }
+        ).filter(
+            (item) => {
+                return item !== null
+            }
+        )
+
+        if (test_number === 3) {
+            atoms_with_lone_pairs[0][0].should.be.equal(4)
+            atoms_with_lone_pairs[0][1][0].should.be.equal("O")
+        }
 
         return atoms_with_lone_pairs
     }
@@ -166,11 +166,9 @@ const CMolecule = (mmolecule) => {
 
         // AlCl3 <- C:OC
         if (test_number === 3) {
-            atoms.length.should.be.equal(10) // COC
-            mmolecule.length.should.be.equal(4) // AlCl3
-            molecule_to_add_to_index.should.be.equal(0)
-            atom_to_push_index.should.be.equal(4)
-            atoms_or_atomic_symbols[atom_to_push_index][0].should.be.equal("O")
+            atoms.length.should.be.equal(4) // COC
+            mmolecule.length.should.be.equal(10) // AlCl3
+            atom_to_push_index.should.be.equal(1)
         }
 
         // Add atoms to molecule.
@@ -195,8 +193,8 @@ const CMolecule = (mmolecule) => {
             mmolecule.length.should.be.equal(14)
             mmolecule[1][0].should.be.equal("H")
             mmolecule[2][0].should.be.equal("H")
-            mmolecule[3][0].should.be.equal("O")
-            mmolecule[4][0].should.be.equal("H")
+            mmolecule[3][0].should.be.equal("H")
+            mmolecule[4][0].should.be.equal("C")
         }
 
         // Now create the bond
@@ -206,8 +204,7 @@ const CMolecule = (mmolecule) => {
         }
 
         if (test_number === 3) {
-            atom_to_push_molecule_index.should.be.equal(4)
-            mmolecule[atom_to_push_molecule_index][1][0].should.be("O")
+            atom_to_push_molecule_index.should.be.equal(14)
         }
 /*
 In the molecule H2, the hydrogen atoms share the two electrons via covalent bonding.[7] Covalency is greatest between atoms of similar electronegativities. Thus, covalent bonding does not necessarily require that the two atoms be of the same elements, only that they be of comparable electronegativity. Covalent bonding that entails sharing of electrons over more than two atoms is said to be delocalized.
@@ -407,12 +404,9 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 /*
                  */
                 if (undefined === candidate_atoms[0] ) {
-                    //console.log(atom_or_atomic_symbol) // H
-                    //console.log(candidate_atoms) // []
-                    //console.log(mmolecule)
-                    //console.log("Molecule.js")
-                    //process.exit()
+
                 }
+
                 if (candidate_atoms.length === 0) {
                     return false;
                 }
@@ -443,11 +437,11 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
 
             // AlCl3 <- C:OC
             if (test_number === 3) {
-                atoms_or_atomic_symbols.length.should.be.equal(10) // COC
-                mmolecule.length.should.be.equal(4) // AlCl3
+                atoms_or_atomic_symbols.length.should.be.equal(4) // AlCl3
+                mmolecule.length.should.be.equal(10) // COC
                 molecule_to_add_to_index.should.be.equal(0)
-                atom_to_push_index.should.be.equal(4)
-                atoms_or_atomic_symbols[atom_to_push_index][0].should.be.equal("O")
+                atom_to_push_index.should.be.equal(1)
+                atoms_or_atomic_symbols[atom_to_push_index][0].should.be.equal("Cl")
             }
             
             atoms_or_atomic_symbols.should.be.an.Array()
