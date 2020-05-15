@@ -210,6 +210,109 @@ const CMolecule = (mmolecule) => {
 In the molecule H2, the hydrogen atoms share the two electrons via covalent bonding.[7] Covalency is greatest between atoms of similar electronegativities. Thus, covalent bonding does not necessarily require that the two atoms be of the same elements, only that they be of comparable electronegativity. Covalent bonding that entails sharing of electrons over more than two atoms is said to be delocalized.
  */
         // Get index of first free electron on atom being pushed
+
+        if (undefined === mmolecule[atom_to_push_molecule_index]) {
+            console.log("mmolecule[atom_to_push_molecule_index] is undefined")
+            console.log(mmolecule)
+            console.log(atom_to_push_molecule_index)
+            console.log("Molecule.js")
+            /*
+            [ -3.5,
+  [ 'H', 1, 1, 1, '2iwcg1s83ka7siwd1', '2iwcg1s83ka7siwcn' ],
+  [ 'H', 1, 1, 1, '2iwcg1s83ka7siwd2', '2iwcg1s83ka7siwco' ],
+  [ 'H', 1, 1, 1, '2iwcg1s83ka7siwd3', '2iwcg1s83ka7siwcp' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '2iwcg1s83ka7siwcn',
+    '2iwcg1s83ka7siwco',
+    '2iwcg1s83ka7siwcp',
+    '2iwcg1s83ka7siwcq',
+    '2iwcg1s83ka7siwcw',
+    '2iwcg1s83ka7siwd1',
+    '2iwcg1s83ka7siwd2',
+    '2iwcg1s83ka7siwd3' ],
+  [ 'O',
+    8,
+    6,
+    2,
+    '2iwcg1s83ka7siwcr',
+    '2iwcg1s83ka7siwcs',
+    '2iwcg1s83ka7siwct',
+    '2iwcg1s83ka7siwcu',
+    '2iwcg1s83ka7siwcv',
+    '2iwcg1s83ka7siwcw',
+    '2iwcg1s83ka7siwcq',
+    '2iwcg1s83ka7siwd0' ],
+  [ 'H', 1, 1, 1, '2iwcg1s83ka7siwd4', '2iwcg1s83ka7siwcx' ],
+  [ 'H', 1, 1, 1, '2iwcg1s83ka7siwd5', '2iwcg1s83ka7siwcy' ],
+  [ 'H', 1, 1, 1, '2iwcg1s83ka7siwd6', '2iwcg1s83ka7siwcz' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '2iwcg1s83ka7siwcx',
+    '2iwcg1s83ka7siwcy',
+    '2iwcg1s83ka7siwcz',
+    '2iwcg1s83ka7siwd0',
+    '2iwcg1s83ka7siwcv',
+    '2iwcg1s83ka7siwd4',
+    '2iwcg1s83ka7siwd5',
+    '2iwcg1s83ka7siwd6' ],
+  [ 'Al',
+    13,
+    3,
+    3,
+    '2iwcg1s83ka7siwbz',
+    '2iwcg1s83ka7siwc0',
+    '2iwcg1s83ka7siwc1',
+    '2iwcg1s83ka7siwc8',
+    '2iwcg1s83ka7siwcf',
+    '2iwcg1s83ka7siwcm' ],
+  [ 'Cl',
+    17,
+    7,
+    1,
+    '2iwcg1s83ka7siwc2',
+    '2iwcg1s83ka7siwc3',
+    '2iwcg1s83ka7siwc4',
+    '2iwcg1s83ka7siwc5',
+    '2iwcg1s83ka7siwc6',
+    '2iwcg1s83ka7siwc7',
+    '2iwcg1s83ka7siwc8',
+    '2iwcg1s83ka7siwc1' ],
+  [ 'Cl',
+    17,
+    7,
+    1,
+    '2iwcg1s83ka7siwc9',
+    '2iwcg1s83ka7siwca',
+    '2iwcg1s83ka7siwcb',
+    '2iwcg1s83ka7siwcc',
+    '2iwcg1s83ka7siwcd',
+    '2iwcg1s83ka7siwce',
+    '2iwcg1s83ka7siwcf',
+    '2iwcg1s83ka7siwc0' ],
+  [ 'Cl',
+    17,
+    7,
+    1,
+    '2iwcg1s83ka7siwcg',
+    '2iwcg1s83ka7siwch',
+    '2iwcg1s83ka7siwci',
+    '2iwcg1s83ka7siwcj',
+    '2iwcg1s83ka7siwck',
+    '2iwcg1s83ka7siwcl',
+    '2iwcg1s83ka7siwcm',
+    '2iwcg1s83ka7siwbz' ] ]
+14
+Molecule.js
+
+             */
+            process.exit()
+        }
+
         const atom_to_push_electron_to_share_index = __electronToShareIndex(mmolecule[atom_to_push_molecule_index])
         if (test_number === 1) {
             atom_to_push_electron_to_share_index.should.be.equal(false)
