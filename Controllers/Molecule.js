@@ -475,7 +475,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 }
             }
         },
-        push : (atoms_or_atomic_symbols, container, molecule_to_add_to_index, test_number, atom_to_push_index, source_atom_index) => {
+        push : (atoms_or_atomic_symbols, container, molecule_to_add_to_index, test_number, target_atom_index, source_atom_index) => {
 
 
             // MOLECULE MODEL
@@ -492,16 +492,17 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 atoms_or_atomic_symbols.length.should.be.equal(4) // AlCl3
                 mmolecule.length.should.be.equal(10) // COC (nucleophile)
                 molecule_to_add_to_index.should.be.equal(1) 
-                atom_to_push_index.should.be.equal(1)
-                atoms_or_atomic_symbols[atom_to_push_index][0].should.be.equal("Al")
+                target_atom_index.should.be.equal(1)
+                atoms_or_atomic_symbols[target_atom_index][0].should.be.equal("Al")
             }
             
             atoms_or_atomic_symbols.should.be.an.Array()
+            // H+ (electrophile) <---------- H2O (nucleophile)
             if (test_number === 1) {
                 atoms_or_atomic_symbols.length.should.be.equal(1)  // proton
                 atoms_or_atomic_symbols[0][0].should.be.equal("H")
                 atoms_or_atomic_symbols[0].length.should.be.equal(4)
-                atom_to_push_index.should.be.equal(1)
+                target_atom_index.should.be.equal(1)
             }
 
             const atoms = atoms_or_atomic_symbols.map(
@@ -546,7 +547,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                      atom_to_push_index.should.be.equal(1) // // Al atom on AlCl3
                  }
                 
-                return _makeCovalentBond(atoms, source_atom_index, test_number, atom_to_push_index) // return molecule
+                return _makeCovalentBond(atoms, source_atom_index, test_number, target_atom_index) // return molecule
 
                 // push electron
                 // AtomController(atom).push(mmolecule[source_atom_index])
