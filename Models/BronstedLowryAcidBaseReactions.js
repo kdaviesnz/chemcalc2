@@ -15,11 +15,13 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
                 reagent_proton_index.should.be.equal(2) // water
             }
             
+            if (test_number === 2) {
+                substrate_proton_index.should.be.equal(false) // Cl-
+                reagent_proton_index.should.be.equal(1) // H3O
+            }
+          
             if (test_number === 3) {
                 substrate_proton_index.should.be.equal(false)
-            }
-
-            if (test_number === 3) {
                 reagent_proton_index.should.be.equal(false) // hydrogens are attached to carbons
             }
 
@@ -31,12 +33,20 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
                 nucleophile_molecule = container[nucleophile_molecule_index]
                 nucleophile_atom_index = MoleculeController(electrophile_molecule).nucleophileIndex()
             } else if (substrate_proton_index=== false && reagent_proton_index !== false) {
+                // Cl- (nucleophile)  <---- H3O (electrophile, what arrow points to)
                 electrophile_molecule_index = 2
                 electrophile_molecule = container[electrophile_molecule_index]
                 electrophile_atom_index = reagent_proton_index
                 nucleophile_molecule_index = 1
                 nucleophile_molecule = container[nucleophile_molecule_index]
                 nucleophile_atom_index = MoleculeController(nucleophile_molecule).nucleophileIndex()
+                if (test_number === 2) {
+                    nucleophile_atom_index.should.be.equal(1) // Cl-
+                    electrophile_atom_index.should.be.equal(1)
+                    nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("Cl")
+                    electrophile_molecule[electrophile_atom_index][0].should.be.equal("H")
+                }
+        
             } else if (substrate_proton_index=== false && reagent_proton_index === false) {
                 return false
             }else {
@@ -166,11 +176,25 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         // Move the proton to first molecule
         container.splice(container.length-1,1) // remove proton from container
         
+        // H+ (electrophile) <------- H2O (nucleophile)
         if (test_number === 1) {
             nucleophile_molecule.length.should.be.equal(4)
+            electrophile_molecule.length.should.be.equal(2)
+            nucleophile_atom_index.should.be.equal(3)
+            electrophile_atom_index.should.be.equal(false)
         }
-        // nucleophile_molecule is water
-        MoleculeController(nucleophile_molecule).push([proton], container, container.length-1, test_number, electrophile_atom_index)
+        
+        // Cl- (nucleophile) <------- H3O (electrophile)
+        if (test_number === 2) {
+            nucleophile_molecule.length.should.be.equal(2)
+            electrophile_molecule.length.should.be.equal(5)
+            nucleophile_atom_index.should.be.equal(1)
+            electrophile_atom_index.should.be.equal(1)
+        }
+        
+        // test 1 - nucleophile_molecule is water
+        // test 2 - nucleophile_molecule is Cl-
+        MoleculeController(nucleophile_molecule).push([proton], container, container.length-1, test_number, electrophile_atom_index, nucleophile_atom_index)
 
         if (test_number === 2) {
             container.length.should.be.equal(3)
