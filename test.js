@@ -195,7 +195,7 @@ range.range(4,Clneg[1].length-1,1).map(
 
 
 console.log("Test 1 complete")
-process.exit()
+
 
 const HthreeO = ccontainer.container[2]
 
@@ -301,6 +301,9 @@ HthreeO[1].indexOf(HthreeO[2][HthreeO[2].length-2]).should.not.be.False()
 const ccontainer2 = new CContainer([false], MoleculeFactory, MoleculeController, 2)
 ccontainer2.add(Clneg,1)
 ccontainer2.add(HthreeO,1)
+
+console.log("Test 2 complete")
+process.exit()
 
 const ccontainer3 = new CContainer([false], MoleculeFactory, MoleculeController, 3)
 

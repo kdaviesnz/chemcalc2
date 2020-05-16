@@ -49,10 +49,6 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                 current_atom_index.should.be.equal(3)
             }
 
-            if (test_number === 555) {
-                current_atom_index.should.be.equal(3)
-            }
-
             // Remove current atom
             const molecule_minus_current_atom = mmolecule.filter(
                 (atom , index) => {
