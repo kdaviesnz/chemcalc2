@@ -350,30 +350,35 @@ Molecule.js
         }
 
         const source_atom_electron_to_share_index = __electronToShareIndex(mmolecule[source_atom_index])
-        if (test_number === 1) {
-            mmolecule[source_atom_electron_to_share_index][0].should.be.equal("O")
-            source_atom_electron_to_share_index.should.be.equal(5)
-        }
-
+        
         // AlCl3 <- C:OC
         if (test_number === 3) {
             atom_being_being_pushed_to_electron_to_share_index.should.be.equal(false)
             mmolecule[atom_to_push_molecule_index][0].should.be.equal("Al")
         }
         
-
-        if (mmolecule[atom_to_push_molecule_index][0]==="H") {
+        if (test_number === 1) {
+            target_atom_electron_to_share_index.should.be.equal(false)
+            mmolecule[target_atom_electron_to_share_index][0].should.be.equal("H")
+            mmolecule[source_atom_electron_to_share_index][0].should.be.equal("O")
+            source_atom_electron_to_share_index.should.be.equal(5)
+        }
+        
+        // Protons are always target atoms - where the arrow would be pointing to
+        if (mmolecule[target_atom_mmolecule_index][0]==="H") {
 
             // proton?
-            if (mmolecule[atom_to_push_molecule_index].length===4) {
-                // add electrons from second_atom to atom we are pushing
-                mmolecule[atom_to_push_molecule_index].push(mmolecule[atom_to_push_to_index][4 + atom_being_being_pushed_to_electron_to_share_index -1])
-                // @todo needs checking
-                const atom2_electron_to_share_next_index = __electronToShareIndex(mmolecule[atom_to_push_to_index]) + 1
-                if (test_number ===1) {
-                    atom2_electron_to_share_next_index.should.be.equal(6)
-                }
-                mmolecule[atom_to_push_molecule_index].push(mmolecule[atom_to_push_to_index][4 + atom2_electron_to_share_next_index -1])
+            if (mmolecule[target_atom_mmolecule_index].length===4) {
+                // add electrons from source atom to target atom (proton)
+                // target atom is a proton and has no electrons
+                
+                // Get lone pair from source atom (atom arrow would be pointing from (nucleophile))
+                const lone_pair = CAtom(mmolecule[source_atom_index], source_atom_index, mmolecule).lonePairs().pop() 
+                // Push lone pair to target atom (proton - atom arrow would be poiting to (electrophile)
+                lone_pair.length.should.be.equal(999)             
+                mmolecule[target_atom_mmolecule_index].push(lone_pair[0][1])
+                mmolecule[target_atom_mmolecule_index].push(lone_pair[1][1])
+                
             } else {
                 console.log("To do: Add hydrogen bond where hydrogen is not a proton")
             }
