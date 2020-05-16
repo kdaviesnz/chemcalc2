@@ -432,6 +432,10 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             mmolecule[0].should.be.equal(-1.74)
         }
         
+        if (test_number === 2) {
+            mmolecule[0].should.be.equal(999999)
+        }
+        
         if (test_number === 3) {
             mmolecule.length.should.be.equal(14)
             mmolecule[1][0].should.be.equal("H")
