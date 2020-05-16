@@ -412,14 +412,14 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 if (free_slots.length > 0) {
                     
                     // add free electron from source atom to target atom
-                    mmolecule[target_atom_mmolecule_index].push(free_slots[0])
+                    // mmolecule[target_atom_mmolecule_index].push(free_slots[0])
                     // add another free electron from source atom to target atom
-                    mmolecule[target_atom_mmolecule_index].push(free_slots[1])
+                    // mmolecule[target_atom_mmolecule_index].push(free_slots[1])
 
                     // add free electron from source atom to target atom
-                    // mmolecule[target_atom_mmolecule_index].push(mmolecule[source_atom_index][4 + source_atom_electron_to_share_index])
+                    mmolecule[target_atom_mmolecule_index].push(mmolecule[source_atom_index][4 + source_atom_electron_to_share_index])
                     // add another free electron from source atom to target atom
-                    // mmolecule[target_atom_mmolecule_index].push(mmolecule[source_atom_index][5 + source_atom_electron_to_share_index])
+                    mmolecule[target_atom_mmolecule_index].push(mmolecule[source_atom_index][5 + source_atom_electron_to_share_index])
 
                 }
             } else {
