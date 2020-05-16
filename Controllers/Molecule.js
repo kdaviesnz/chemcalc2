@@ -398,7 +398,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
 
             // Not hydrogen
             
-            // Atom being pushed should always have a lone pair
+            // Source atom should always have a lone pair (nucleophile)
             
             if (test_number === 3) {
                 source_atom_electron_to_share_index.should.be.equal(9999)
@@ -406,19 +406,19 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             }
             
             if (!target_atom_electron_to_share_index) {
-                // Atom being pushed to has no free electrons so check if it has free slots.
+                // Target atom has no free electrons so check if it has free slots.
                 // electrophile
                 if (CAtom(mmolecule[target_atom_mmolecule_index], null, null).freeSlots.length > 0) {
-                    // add free electron from atom beng pushed to target atom
+                    // add free electron from source atom to target atom
                     mmolecule[target_atom_mmolecule_index].push(mmolecule[source_atom_index][4 + source_atom_electron_to_share_index])
-                    // add another free electron from atom beng pushed to target atom
+                    // add another free electron from source atom to target atom
                     mmolecule[target_atom_mmolecule_index].push(mmolecule[source_atom_index][5 + source_atom_electron_to_share_index])
 
                 }
             } else {
             
                 // add shared electron from target atom to atom beng pushed
-                mmolecule[source_atom_index][5 + source_atom_electron_to_share_index])].push(mmolecule[target_atom_mmolecule_index][4 + target_atom_electron_to_share_index])
+                mmolecule[source_atom_index][4 + source_atom_electron_to_share_index])].push(mmolecule[target_atom_mmolecule_index][4 + target_atom_electron_to_share_index])
 
                 // add shared electron from atom being pushed to target atom
                 mmolecule[target_atom_mmolecule_index][5 + target_atom_electron_to_share_index])].push(mmolecule[atom_to_push_molecule_index][4 + source_atom_electron_to_share_index])
