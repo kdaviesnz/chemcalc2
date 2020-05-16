@@ -176,7 +176,7 @@ const CMolecule = (mmolecule) => {
     const _makeCovalentBond = (atoms, source_atom_index, test_number, target_atom_index) => {
 
         if (test_number === 1) {
-            source_atom_index.should.be.equal(2)
+            source_atom_index.should.be.equal(3)
             // H+ <------ H:OH
             // atoms [[proton]]
             // mmolecule H2O
