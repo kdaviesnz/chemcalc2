@@ -175,14 +175,14 @@ const CMolecule = (mmolecule) => {
      */
     const _makeCovalentBond = (atoms, source_atom_index, test_number, target_atom_index) => {
 
+        // H+ (electrophile) <------- H:OH
+        // atoms [[proton]]
+        // mmolecule H2O
+        // Proton is our electrophile, where the arrow would be pointing to
+        // H2O is our nucleophile, where the arrow would be pointing from
         if (test_number === 1) {
             source_atom_index.should.be.equal(3)
-            target_atom_index.should.be.equal(1)
-            // H+ <------ H:OH
-            // atoms [[proton]]
-            // mmolecule H2O
-            // Proton is our electrophile, where the arrow would be pointing to
-            // H2O is our nucleophile, where the arrow would be pointing from
+            target_atom_index.should.be.equal(1)           
             mmolecule.length.should.be.equal(4) // mmolecue should be the nucleophile (H2O)
             mmolecule[1][0].should.be.equal("H")
             mmolecule[2][0].should.be.equal("H")
@@ -193,6 +193,23 @@ const CMolecule = (mmolecule) => {
             source_atom_index.should.be.equal(3) // oxygen atom on H2O (nucleophile) taking into account pKa
             atoms[target_atom_index -1][0].should.be.equal("H")
         }
+        
+        // H+ (electrophile) <------- Cl- (nucleophile) (source atom)
+        // atoms [[proton]]
+        // mmolecule Cl-
+        // Proton is our electrophile, where the arrow would be pointing to
+        // Cl- is our nucleophile, where the arrow would be pointing from
+        if (test_number === 2) {
+            source_atom_index.should.be.equal(1) // nucleophile
+            target_atom_index.should.be.equal(1)           
+            mmolecule.length.should.be.equal(2) // mmolecue should be the nucleophile (Cl-)
+            mmolecule[1][0].should.be.equal("Cl")            
+            mmolecule[source_atom_index][0].should.be.equal("Cl")
+            atoms.length.should.be.equal(1)
+            target_atom_index.should.be.equal(1) // proton so must be 1
+            source_atom_index.should.be.equal(1) // Cl- atom on nucleophile taking into account pKa
+            atoms[target_atom_index -1][0].should.be.equal("H")
+        }
 
         // This is the index of the target atom after adding it to mmolecule
         const target_atom_mmolecule_index = mmolecule.length + target_atom_index -1
@@ -200,6 +217,11 @@ const CMolecule = (mmolecule) => {
         if (test_number === 1) {
             target_atom_mmolecule_index.should.be.equal(4)
         }
+        
+        if (test_number === 2) {
+            target_atom_mmolecule_index.should.be.equal(2)
+        }
+
 
 
         if (test_number === 5) {
@@ -234,7 +256,13 @@ const CMolecule = (mmolecule) => {
             mmolecule[3][0].should.be.equal("O")
             mmolecule[4][0].should.be.equal("H")
         }
-
+                   
+        if (test_number === 2) {
+            mmolecule.length.should.be.equal(3)
+            mmolecule[1][0].should.be.equal("Cl")
+            mmolecule[2][0].should.be.equal("H")       
+        }
+        
         if (test_number === 3) {
             mmolecule.length.should.be.equal(14)
             mmolecule[1][0].should.be.equal("H")
@@ -261,6 +289,12 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         const target_atom_electron_to_share_index = __electronToShareIndex(mmolecule[target_atom_mmolecule_index])
 
         if (test_number === 1) {
+            // Target atom is a proton and so shouldnt have any electrons.
+            target_atom_electron_to_share_index.should.be.equal(false)
+        }
+        
+        
+        if (test_number === 2) {
             // Target atom is a proton and so shouldnt have any electrons.
             target_atom_electron_to_share_index.should.be.equal(false)
         }
