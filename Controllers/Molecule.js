@@ -160,8 +160,17 @@ const CMolecule = (mmolecule) => {
         return atom_electron_to_remove_index
     }
 
-    const _makeCovalentBond = (atoms, atom_to_push_to_index, test_number, atom_to_push_index) => {
+    /*
+     atoms is the molecule that the arrow would be pointing to and contains the target atom
+     mmmolecue is the molecule taht the arrow would be pointing from and contains the source atom.
+     target_atom_index is the index of the atom that the arrow would be pointing to (electrophile)
+     source_atom_index is the index of the atom that the arrow would be pointing from (nucleophile)
+     */
+    const _makeCovalentBond = (atoms, source_atom_index, test_number, target_atom_index) => {
 
+        if (test_number === 1) {
+
+        }
         const atom_to_push_molecule_index = mmolecule.length + atom_to_push_index -1
         if (test_number === 1) {
             // Proton is our electrophile
