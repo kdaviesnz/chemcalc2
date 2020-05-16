@@ -367,7 +367,9 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             source_atom_electron_to_share_index.should.be.equal(false)                    
         }
         
-        
+        // Get lone pair from source atom (atom arrow would be pointing from (nucleophile))
+        const source_atom_lone_pairs = CAtom(mmolecule[source_atom_index], source_atom_index, mmolecule).lonePairs(9999)
+                       
         // Protons are always target atoms - where the arrow would be pointing to
         if (mmolecule[target_atom_mmolecule_index][0]==="H") {
 
@@ -376,13 +378,11 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 // add electrons from source atom to target atom (proton)
                 // target atom is a proton and has no electrons
                 
-                // Get lone pair from source atom (atom arrow would be pointing from (nucleophile))
-                const lone_pairs = CAtom(mmolecule[source_atom_index], source_atom_index, mmolecule).lonePairs(9999)
                 if (test_number ===1) {
-                    lone_pairs.length.should.be.equal(4)
+                    sources_atom_lone_pairs.length.should.be.equal(4)
                 }
-                mmolecule[target_atom_mmolecule_index].push(lone_pairs[0])
-                mmolecule[target_atom_mmolecule_index].push(lone_pairs[1])
+                mmolecule[target_atom_mmolecule_index].push(source_atom_lone_pairs[0])
+                mmolecule[target_atom_mmolecule_index].push(source_atom_lone_pairs[1])
                 
             } else {
                 console.log("To do: Add hydrogen bond where hydrogen is not a proton")
@@ -408,20 +408,34 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             if (!target_atom_electron_to_share_index) {
                 // Target atom has no free electrons so check if it has free slots.
                 // electrophile
-                if (CAtom(mmolecule[target_atom_mmolecule_index], null, null).freeSlots.length > 0) {
+                const free_slots = CAtom(mmolecule[target_atom_mmolecule_index], null, null).freeSlots
+                if (free_slots.length > 0) {
+                    
                     // add free electron from source atom to target atom
-                    mmolecule[target_atom_mmolecule_index].push(mmolecule[source_atom_index][4 + source_atom_electron_to_share_index])
+                    mmolecule[target_atom_mmolecule_index].push(free_slots[0])
                     // add another free electron from source atom to target atom
-                    mmolecule[target_atom_mmolecule_index].push(mmolecule[source_atom_index][5 + source_atom_electron_to_share_index])
+                    mmolecule[target_atom_mmolecule_index].push(free_slots[1])
+
+                    // add free electron from source atom to target atom
+                    // mmolecule[target_atom_mmolecule_index].push(mmolecule[source_atom_index][4 + source_atom_electron_to_share_index])
+                    // add another free electron from source atom to target atom
+                    // mmolecule[target_atom_mmolecule_index].push(mmolecule[source_atom_index][5 + source_atom_electron_to_share_index])
 
                 }
             } else {
-            
-                // add shared electron from target atom to atom beng pushed
-                mmolecule[source_atom_index][4 + source_atom_electron_to_share_index])].push(mmolecule[target_atom_mmolecule_index][4 + target_atom_electron_to_share_index])
+                
+                // add shared electron from target atom to source atom
+                mmolecule[source_atom_index].push(mmolecule[target_atom_mmolecule_index][4 + target_atom_electron_to_share_index])
 
                 // add shared electron from atom being pushed to target atom
-                mmolecule[target_atom_mmolecule_index][5 + target_atom_electron_to_share_index])].push(mmolecule[atom_to_push_molecule_index][4 + source_atom_electron_to_share_index])
+                mmolecule[target_atom_mmolecule_index].push(mmolecule[atom_to_push_molecule_index][5 + source_atom_electron_to_share_index])
+
+            
+                // add shared electron from target atom to source atom
+                //mmolecule[source_atom_index][4 + source_atom_electron_to_share_index])].push(mmolecule[target_atom_mmolecule_index][4 + target_atom_electron_to_share_index])
+
+                // add shared electron from atom being pushed to target atom
+                //mmolecule[target_atom_mmolecule_index][5 + target_atom_electron_to_share_index])].push(mmolecule[atom_to_push_molecule_index][5 + source_atom_electron_to_share_index])
 
             }
         }
