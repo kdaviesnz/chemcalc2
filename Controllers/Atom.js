@@ -93,6 +93,10 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                     return electrons_from_other_atoms.indexOf(electron) === -1
                 }
             )
+            
+            if (test_number === 9999) {
+                lone_electrons.length.should.not.be.equal(0)
+            }
 
             return lone_electrons
 
