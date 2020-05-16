@@ -68,7 +68,9 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             // Get electrons from atoms (this won't include atoms from current atom)
             const electrons_from_other_atoms = molecule_minus_current_atom.reduce(
                 (carry, __atom) => {
-                    if (
+                    if (undefined === __atom.slice) {
+                        return carry
+                    }
                     __atom.slice(4).map(
                         (electron) => {
                             carry.push(electron)
@@ -81,12 +83,8 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             )
 
             if (test_number === 9999) {
-                console.log(current_atom_index)
-                console.log(molecule_minus_current_atom)
-                console.log(electrons_from_other_atoms)
-                console.log(atom)
-                console.log("ATTTom.js")
-                process.exit()
+                electrons_from_other_atoms.length.should.be.equal(4) // (water) electrons from the 2 hydrogens
+    
             }
 
             // Check current atom electrons to see if they're being used
