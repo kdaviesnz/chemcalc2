@@ -169,32 +169,31 @@ const CMolecule = (mmolecule) => {
     const _makeCovalentBond = (atoms, source_atom_index, test_number, target_atom_index) => {
 
         if (test_number === 1) {
-
-        }
-        const atom_to_push_molecule_index = mmolecule.length + atom_to_push_index -1
-        if (test_number === 1) {
-            // Proton is our electrophile
-            // H2O is our nucleophile
-            console.log(mmolecule.length.should.be.equal(4))
-            console.log(mmolecule[1][0].should.be.equal("H"))
-            console.log(atom_to_push_molecule_index)
-            console.log(atom_to_push_index)
-            console.log(atom_to_push_index)
+            // H+ <------ H:OH
             // atoms [[proton]]
             // mmolecule H2O
-            atom_to_push_molecule_index.should.be.equal(3)
+            // Proton is our electrophile, where the arrow would be pointing to
+            // H2O is our nucleophile, where the arrow would be pointing from
+            mmolecule.length.should.be.equal(4) // mmolecue should be the nucleophile (H2O)
+            mmolecule[1][0].should.be.equal("H")
+            mmolecule[2][0].should.be.equal("H")
+            mmolecule[3][0].should.be.equal("O")
+            mmolecule[source_atom_index][0].should.be.equal("O")
+            atoms.length.should.be.equal(1)
+            target_atom_index.should.be.equal(0) // proton so must be 0
+            source_atom_index.should.be.equal(3) // oxygen atom on H2O (nucleophile)
+            atoms[target_atom_index][0].should.be.equal("H")
+        }
+
+        // This is the index of the target atom after adding it to mmolecule
+        const target_atom_mmolecule_index = mmolecule.length + target_atom_index
+        if (test_number === 5) {
+            target_atom_mmolecule_index.should.be.equal(4)
         }
 
         if (test_number === 3) {
             atom_to_push_molecule_index.should.be.equal(11)
             mmolecule[atom_to_push_molecule_index][0].should.be.equal("Al")
-        }
-
-        if (test_number === 1) {
-            mmolecule.length.should.be.equal(4)
-            mmolecule[1][0].should.be.equal("H")
-            mmolecule[2][0].should.be.equal("H")
-            mmolecule[3][0].should.be.equal("O")
         }
 
         // AlCl3 <- C:OC
@@ -236,7 +235,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
  */
         // Get index of first free electron on atom being pushed
 
-        if (undefined === mmolecule[atom_to_push_molecule_index]) {
+        if (undefined === mmolecule[target_atom_mmolecule_index]) {
             console.log("mmolecule[atom_to_push_molecule_index] is undefined")
             console.log(mmolecule)
             console.log(atom_to_push_molecule_index)
@@ -338,9 +337,11 @@ Molecule.js
             process.exit()
         }
 
-        const atom_to_push_electron_to_share_index = __electronToShareIndex(mmolecule[atom_to_push_molecule_index])
+
+        const target_atom_electron_to_share_index = __electronToShareIndex(mmolecule[target_atom_mmolecule_index])
         if (test_number === 1) {
-            atom_to_push_electron_to_share_index.should.be.equal(false)
+            // Target atom is a proton and so shouldnt have any electrons.
+            target_atom_electron_to_share_index.should.be.equal(false)
         }
         
         // AlCl3 <- C:OC
@@ -348,13 +349,10 @@ Molecule.js
             atom_to_push_electron_to_share_index.should.be.equal(2)
         }
 
-        // Get index of first free electron on atom being pushed to
-        const atom_being_being_pushed_to_electron_to_share_index = __electronToShareIndex(mmolecule[atom_to_push_to_index])
-        
-        
+        const source_atom_electron_to_share_index = __electronToShareIndex(mmolecule[source_atom_index])
         if (test_number === 1) {
-            atom_being_being_pushed_to_electron_to_share_index.should.be.equal(5)
-            mmolecule[atom_to_push_molecule_index][0].should.be.equal("H")
+            mmolecule[source_atom_electron_to_share_index][0].should.be.equal("O")
+            source_atom_electron_to_share_index.should.be.equal(5)
         }
 
         // AlCl3 <- C:OC
