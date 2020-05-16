@@ -11,8 +11,8 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 
            // HCl (electrophile) <------ H2O (nucleophile)
             if (test_number === 1) {
-                substrate_proton_index.should.be.equal(1)
-                reagent_proton_index.should.be.equal(1)
+                substrate_proton_index.should.be.equal(1) // HCl
+                reagent_proton_index.should.be.equal(2) // water
             }
             
             if (test_number === 3) {
@@ -170,7 +170,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
             nucleophile_molecule.length.should.be.equal(4)
         }
         // nucleophile_molecule is water
-        MoleculeController(nucleophile_molecule).push([proton], container, container.length-1, test_number, nucleophile_atom_index)
+        MoleculeController(nucleophile_molecule).push([proton], container, container.length-1, test_number, electrophile_atom_index)
 
         if (test_number === 2) {
             container.length.should.be.equal(3)

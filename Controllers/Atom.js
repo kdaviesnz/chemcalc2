@@ -50,7 +50,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             }
 
             if (test_number === 555) {
-                current_atom_index.should.be.equal(2)
+                current_atom_index.should.be.equal(3)
             }
 
             // Remove current atom
@@ -61,8 +61,8 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             )
             
             if (test_number === 9999) {
-                molecule_minus_current_atom.length.should.be.equal(3) // 2 hydrogens + pKa
-                molecule_minus_current_atom[2][0].should.be.equal(0)
+                molecule_minus_current_atom.length.should.be.equal(4) // 2 hydrogens + pKa + proton
+                molecule_minus_current_atom[2][0].should.be.equal("H")
             }
 
             // Get electrons from atoms (this won't include atoms from current atom)

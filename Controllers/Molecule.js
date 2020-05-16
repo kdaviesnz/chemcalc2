@@ -72,7 +72,7 @@ const CMolecule = (mmolecule) => {
         // Check substrate for lone pairs
         const atoms_with_lone_pairs = mmolecule.slice(1).map(
             (atom, index) => {
-                if (atom[0] === "H" || CAtom(atom, index, mmolecule).lonePairs(test_number).length === 0) {
+                if (atom[0] === "H" || CAtom(atom, index+1, mmolecule).lonePairs(test_number).length === 0) {
                     return null
                 }
                 return [index, atom]
@@ -177,6 +177,7 @@ const CMolecule = (mmolecule) => {
 
         if (test_number === 1) {
             source_atom_index.should.be.equal(3)
+            target_atom_index.should.be.equal(1)
             // H+ <------ H:OH
             // atoms [[proton]]
             // mmolecule H2O
@@ -188,13 +189,19 @@ const CMolecule = (mmolecule) => {
             mmolecule[3][0].should.be.equal("O")
             mmolecule[source_atom_index][0].should.be.equal("O")
             atoms.length.should.be.equal(1)
-            target_atom_index.should.be.equal(0) // proton so must be 0
-            source_atom_index.should.be.equal(3) // oxygen atom on H2O (nucleophile)
-            atoms[target_atom_index][0].should.be.equal("H")
+            target_atom_index.should.be.equal(1) // proton so must be 1
+            source_atom_index.should.be.equal(3) // oxygen atom on H2O (nucleophile) taking into account pKa
+            atoms[target_atom_index -1][0].should.be.equal("H")
         }
 
         // This is the index of the target atom after adding it to mmolecule
-        const target_atom_mmolecule_index = mmolecule.length + target_atom_index
+        const target_atom_mmolecule_index = mmolecule.length + target_atom_index -1
+
+        if (test_number === 1) {
+            target_atom_mmolecule_index.should.be.equal(4)
+        }
+
+
         if (test_number === 5) {
             target_atom_mmolecule_index.should.be.equal(4)
         }
@@ -244,109 +251,15 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         // Get index of first free electron on atom being pushed
 
         if (undefined === mmolecule[target_atom_mmolecule_index]) {
-            console.log("mmolecule[atom_to_push_molecule_index] is undefined")
+            console.log("mmolecule[target_atom_mmolecule_index] is undefined")
             console.log(mmolecule)
-            console.log(atom_to_push_molecule_index)
+            console.log(target_atom_mmolecule_index)
             console.log("Molecule.js")
-            /*
-            [ -3.5,
-  [ 'H', 1, 1, 1, '2iwcg1s83ka7siwd1', '2iwcg1s83ka7siwcn' ],
-  [ 'H', 1, 1, 1, '2iwcg1s83ka7siwd2', '2iwcg1s83ka7siwco' ],
-  [ 'H', 1, 1, 1, '2iwcg1s83ka7siwd3', '2iwcg1s83ka7siwcp' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    '2iwcg1s83ka7siwcn',
-    '2iwcg1s83ka7siwco',
-    '2iwcg1s83ka7siwcp',
-    '2iwcg1s83ka7siwcq',
-    '2iwcg1s83ka7siwcw',
-    '2iwcg1s83ka7siwd1',
-    '2iwcg1s83ka7siwd2',
-    '2iwcg1s83ka7siwd3' ],
-  [ 'O',
-    8,
-    6,
-    2,
-    '2iwcg1s83ka7siwcr',
-    '2iwcg1s83ka7siwcs',
-    '2iwcg1s83ka7siwct',
-    '2iwcg1s83ka7siwcu',
-    '2iwcg1s83ka7siwcv',
-    '2iwcg1s83ka7siwcw',
-    '2iwcg1s83ka7siwcq',
-    '2iwcg1s83ka7siwd0' ],
-  [ 'H', 1, 1, 1, '2iwcg1s83ka7siwd4', '2iwcg1s83ka7siwcx' ],
-  [ 'H', 1, 1, 1, '2iwcg1s83ka7siwd5', '2iwcg1s83ka7siwcy' ],
-  [ 'H', 1, 1, 1, '2iwcg1s83ka7siwd6', '2iwcg1s83ka7siwcz' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    '2iwcg1s83ka7siwcx',
-    '2iwcg1s83ka7siwcy',
-    '2iwcg1s83ka7siwcz',
-    '2iwcg1s83ka7siwd0',
-    '2iwcg1s83ka7siwcv',
-    '2iwcg1s83ka7siwd4',
-    '2iwcg1s83ka7siwd5',
-    '2iwcg1s83ka7siwd6' ],
-  [ 'Al',
-    13,
-    3,
-    3,
-    '2iwcg1s83ka7siwbz',
-    '2iwcg1s83ka7siwc0',
-    '2iwcg1s83ka7siwc1',
-    '2iwcg1s83ka7siwc8',
-    '2iwcg1s83ka7siwcf',
-    '2iwcg1s83ka7siwcm' ],
-  [ 'Cl',
-    17,
-    7,
-    1,
-    '2iwcg1s83ka7siwc2',
-    '2iwcg1s83ka7siwc3',
-    '2iwcg1s83ka7siwc4',
-    '2iwcg1s83ka7siwc5',
-    '2iwcg1s83ka7siwc6',
-    '2iwcg1s83ka7siwc7',
-    '2iwcg1s83ka7siwc8',
-    '2iwcg1s83ka7siwc1' ],
-  [ 'Cl',
-    17,
-    7,
-    1,
-    '2iwcg1s83ka7siwc9',
-    '2iwcg1s83ka7siwca',
-    '2iwcg1s83ka7siwcb',
-    '2iwcg1s83ka7siwcc',
-    '2iwcg1s83ka7siwcd',
-    '2iwcg1s83ka7siwce',
-    '2iwcg1s83ka7siwcf',
-    '2iwcg1s83ka7siwc0' ],
-  [ 'Cl',
-    17,
-    7,
-    1,
-    '2iwcg1s83ka7siwcg',
-    '2iwcg1s83ka7siwch',
-    '2iwcg1s83ka7siwci',
-    '2iwcg1s83ka7siwcj',
-    '2iwcg1s83ka7siwck',
-    '2iwcg1s83ka7siwcl',
-    '2iwcg1s83ka7siwcm',
-    '2iwcg1s83ka7siwbz' ] ]
-14
-Molecule.js
-
-             */
-            process.exit()
+             process.exit()
         }
 
-
         const target_atom_electron_to_share_index = __electronToShareIndex(mmolecule[target_atom_mmolecule_index])
+
         if (test_number === 1) {
             // Target atom is a proton and so shouldnt have any electrons.
             target_atom_electron_to_share_index.should.be.equal(false)
@@ -382,17 +295,10 @@ Molecule.js
                 // Get lone pair from source atom (atom arrow would be pointing from (nucleophile))
                 const lone_pairs = CAtom(mmolecule[source_atom_index], source_atom_index, mmolecule).lonePairs(9999)
                 if (test_number ===1) {
-                    lone_pairs.should.not.be.equal(0)
-                    console.log("Mmolecule.js")
-                    process.exit()
+                    lone_pairs.length.should.be.equal(4)
                 }
-
-                // Push lone pair to target atom (proton - atom arrow would be pointing to (electrophile)
-                lone_pair.length.should.not.be.equal(0)
-                console.log(lone_pair)
-                lone_pair.length.should.be.equal(999)             
-                mmolecule[target_atom_mmolecule_index].push(lone_pair[0][1])
-                mmolecule[target_atom_mmolecule_index].push(lone_pair[1][1])
+                mmolecule[target_atom_mmolecule_index].push(lone_pairs[0])
+                mmolecule[target_atom_mmolecule_index].push(lone_pairs[1])
                 
             } else {
                 console.log("To do: Add hydrogen bond where hydrogen is not a proton")
@@ -595,7 +501,7 @@ Molecule.js
                 atoms_or_atomic_symbols.length.should.be.equal(1)  // proton
                 atoms_or_atomic_symbols[0][0].should.be.equal("H")
                 atoms_or_atomic_symbols[0].length.should.be.equal(4)
-                atom_to_push_index.should.be.equal(0)
+                atom_to_push_index.should.be.equal(1)
             }
 
             const atoms = atoms_or_atomic_symbols.map(
