@@ -46,7 +46,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         lonePairs: (test_number) => {
 
             if (test_number === 9999) {
-                current_atom_index.should.be.equal(2)
+                current_atom_index.should.be.equal(3)
             }
 
             if (test_number === 555) {
@@ -54,15 +54,21 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             }
 
             // Remove current atom
-            const molecule_minus_current_atom = mmolecule.slice(1).filter(
+            const molecule_minus_current_atom = mmolecule.filter(
                 (atom , index) => {
                     return index !== current_atom_index
                 }
             )
+            
+            if (test_number === 9999) {
+                molecule_minus_current_atom.length.should.be.equal(3) // 2 hydrogens + pKa
+                molecule_minus_current_atom[2][0].should.be.equal(0)
+            }
 
             // Get electrons from atoms (this won't include atoms from current atom)
             const electrons_from_other_atoms = molecule_minus_current_atom.reduce(
                 (carry, __atom) => {
+                    if (
                     __atom.slice(4).map(
                         (electron) => {
                             carry.push(electron)
