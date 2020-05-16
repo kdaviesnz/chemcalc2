@@ -6,11 +6,17 @@ const should = require('should')
 
 const CMolecule = (mmolecule) => {
 
-    const determineElectrophileIndex = () => {
+    const determineElectrophileIndex = (test_number) => {
     
        // Check atoms for free slots
        // returns [index, atom] pairs
        const atoms_with_free_slots = __atomsWithFreeSlots()
+
+        if (test_number ===1){
+            console.log(atoms_with_free_slots)
+            process.exit()
+        }
+
        if (atoms_with_free_slots.length === 0) {
            return false
        } else {
@@ -158,9 +164,16 @@ const CMolecule = (mmolecule) => {
 
         const atom_to_push_molecule_index = mmolecule.length + atom_to_push_index -1
         if (test_number === 1) {
-            console.log(mmolecule)
-            // H2O
-            atom_to_push_molecule_index.should.be.equal(4)
+            // Proton is our electrophile
+            // H2O is our nucleophile
+            console.log(mmolecule.length.should.be.equal(4))
+            console.log(mmolecule[1][0].should.be.equal("H"))
+            console.log(atom_to_push_molecule_index)
+            console.log(atom_to_push_index)
+            console.log(atom_to_push_index)
+            // atoms [[proton]]
+            // mmolecule H2O
+            atom_to_push_molecule_index.should.be.equal(3)
         }
 
         if (test_number === 3) {
