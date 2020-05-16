@@ -43,23 +43,55 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     return {
         isProton: __isProton,
         bonds: __Bonds,
-        lonePairs: () => {
-            const atoms = mmolecule.slice(1)
-            const atom_electrons = atom.slice(4)
-            const lone_pairs = atom_electrons.filter(
-                (atom_electron) => {
-                    return atoms.filter(
-                        (_atom, _atom_index) => {
-                            if (current_atom_index === _atom_index) {
-                                return true
-                            }
-                            const _atom_electrons = _atom.slice(4)
-                            return _atom_electrons.indexOf(atom_electron) > -1
-                        }
-                    ).length === 1
+        lonePairs: (test_number) => {
+
+            if (test_number === 9999) {
+                current_atom_index.should.be.equal(2)
+            }
+
+            if (test_number === 555) {
+                current_atom_index.should.be.equal(2)
+            }
+
+            // Remove current atom
+            const molecule_minus_current_atom = mmolecule.slice(1).filter(
+                (atom , index) => {
+                    return index !== current_atom_index
                 }
             )
-            return lone_pairs
+
+            // Get electrons from atoms (this won't include atoms from current atom)
+            const electrons_from_other_atoms = molecule_minus_current_atom.reduce(
+                (carry, __atom) => {
+                    __atom.slice(4).map(
+                        (electron) => {
+                            carry.push(electron)
+                            return electron
+                        }
+                    )
+                    return carry
+                },
+                []
+            )
+
+            if (test_number === 9999) {
+                console.log(current_atom_index)
+                console.log(molecule_minus_current_atom)
+                console.log(electrons_from_other_atoms)
+                console.log(atom)
+                console.log("ATTTom.js")
+                process.exit()
+            }
+
+            // Check current atom electrons to see if they're being used
+            const lone_electrons = atom.slice(4).filter(
+                (electron, index) => {
+                    return electrons_from_other_atoms.indexOf(electron) === -1
+                }
+            )
+
+            return lone_electrons
+
         },
         freeSlots: () => {
             /*

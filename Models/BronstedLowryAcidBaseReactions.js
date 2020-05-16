@@ -45,7 +45,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
                     electrophile_atom_index = substrate_proton_index
                     nucleophile_molecule_index = 2
                     nucleophile_molecule = container[nucleophile_molecule_index]
-                    nucleophile_atom_index = MoleculeController(nucleophile_molecule).nucleophileIndex()
+                    nucleophile_atom_index = MoleculeController(nucleophile_molecule).nucleophileIndex(test_number)
                     nucleophile_atom_index.should.be.equal(3)
                     nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("O")
                 } else {
@@ -154,12 +154,12 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 
         // Move the proton to first molecule
         container.splice(container.length-1,1) // remove proton from container
-        const atom_to_push_index = 0
+        const source_atom_index = 0
         if (test_number === 1) {
             nucleophile_molecule.length.should.be.equal(4)
         }
         // nucleophile_molecule is water
-        MoleculeController(nucleophile_molecule).push([proton], container, container.length-1, test_number, atom_to_push_index)
+        MoleculeController(nucleophile_molecule).push([proton], container, container.length-1, test_number, source_atom_index)
 
         if (test_number === 2) {
             container.length.should.be.equal(3)

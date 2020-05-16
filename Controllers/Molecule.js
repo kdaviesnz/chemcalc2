@@ -7,7 +7,7 @@ const should = require('should')
 const CMolecule = (mmolecule) => {
 
     const determineElectrophileIndex = (test_number) => {
-    
+
        // Check atoms for free slots
        // returns [index, atom] pairs
        const atoms_with_free_slots = __atomsWithFreeSlots()
@@ -32,7 +32,10 @@ const CMolecule = (mmolecule) => {
             mmolecule[3][0].should.be.equal("O")
         }
 
-        const atoms_with_lone_pairs = __atomsWithLonePairs(test_number)
+        const atoms_with_lone_pairs = __atomsWithLonePairs(555)
+        if (test_number === 1){
+            atoms_with_lone_pairs.length.should.be.equal(1)
+        }
 
         if (atoms_with_lone_pairs.length === 0) {
            return // Find index of atom to bond to.
@@ -49,6 +52,10 @@ const CMolecule = (mmolecule) => {
                     }, false
                 )
         } else {
+            if (test_number === 1) {
+                atoms_with_lone_pairs[0][0].should.be.equal(2)
+                mmolecule[atoms_with_lone_pairs[0][0]+1][0].should.be.equal("O")
+            }
            return atoms_with_lone_pairs[0][0] + 1 // take into account pka
         }
         
@@ -65,7 +72,7 @@ const CMolecule = (mmolecule) => {
         // Check substrate for lone pairs
         const atoms_with_lone_pairs = mmolecule.slice(1).map(
             (atom, index) => {
-                if (atom[0] === "H" || CAtom(atom, index, mmolecule).lonePairs().length === 0) {
+                if (atom[0] === "H" || CAtom(atom, index, mmolecule).lonePairs(test_number).length === 0) {
                     return null
                 }
                 return [index, atom]
@@ -169,6 +176,7 @@ const CMolecule = (mmolecule) => {
     const _makeCovalentBond = (atoms, source_atom_index, test_number, target_atom_index) => {
 
         if (test_number === 1) {
+            source_atom_index.should.be.equal(2)
             // H+ <------ H:OH
             // atoms [[proton]]
             // mmolecule H2O
@@ -359,9 +367,8 @@ Molecule.js
         
         if (test_number === 1) {
             target_atom_electron_to_share_index.should.be.equal(false)
-            mmolecule[target_atom_electron_to_share_index][0].should.be.equal("H")
-            mmolecule[source_atom_electron_to_share_index][0].should.be.equal("O")
-            source_atom_electron_to_share_index.should.be.equal(5)
+            mmolecule[target_atom_mmolecule_index][0].should.be.equal("H")
+            mmolecule[source_atom_index][0].should.be.equal("O")
         }
         
         // Protons are always target atoms - where the arrow would be pointing to
@@ -373,8 +380,16 @@ Molecule.js
                 // target atom is a proton and has no electrons
                 
                 // Get lone pair from source atom (atom arrow would be pointing from (nucleophile))
-                const lone_pair = CAtom(mmolecule[source_atom_index], source_atom_index, mmolecule).lonePairs().pop() 
-                // Push lone pair to target atom (proton - atom arrow would be poiting to (electrophile)
+                const lone_pairs = CAtom(mmolecule[source_atom_index], source_atom_index, mmolecule).lonePairs(9999)
+                if (test_number ===1) {
+                    lone_pairs.should.not.be.equal(0)
+                    console.log("Mmolecule.js")
+                    process.exit()
+                }
+
+                // Push lone pair to target atom (proton - atom arrow would be pointing to (electrophile)
+                lone_pair.length.should.not.be.equal(0)
+                console.log(lone_pair)
                 lone_pair.length.should.be.equal(999)             
                 mmolecule[target_atom_mmolecule_index].push(lone_pair[0][1])
                 mmolecule[target_atom_mmolecule_index].push(lone_pair[1][1])
@@ -554,7 +569,7 @@ Molecule.js
                 }
             }
         },
-        push : (atoms_or_atomic_symbols, container, molecule_to_add_to_index, test_number, atom_to_push_index, atom_to_bond_to_index) => {
+        push : (atoms_or_atomic_symbols, container, molecule_to_add_to_index, test_number, atom_to_push_index, source_atom_index) => {
 
 
             // MOLECULE MODEL
@@ -601,10 +616,10 @@ Molecule.js
                 molecule_to_add_to_index.should.be.equal(2)
             }
 
-            if (undefined === atom_to_bond_to_index) {
-                atom_to_bond_to_index = determineNucleophileIndex(test_number)
+            if (undefined === source_atom_index) {
+                source_atom_index = determineNucleophileIndex(test_number)
                 if(test_number === 1) {
-                    atom_to_bond_to_index.should.be.equal(3) // Oxygen atom on H2O
+                    source_atom_index.should.be.equal(3) // Oxygen atom on H2O
                 }
             } 
 
@@ -614,25 +629,25 @@ Molecule.js
                 //console.log(container) // [false, [2.86, [Cl...]], [2.86, [14, [H],[H],[O]...]
                 //console.log(mmolecule) //H2O
                 // console.log(mmolecule[3]) // Oxygen atom
-                atom_to_bond_to_index.should.be.equal(3) // Should be 3
+                source_atom_index.should.be.equal(3) // Should be 3
             }
 
-            if (atom_to_bond_to_index !== false) {
+            if (source_atom_index !== false) {
 
                  if(test_number === 3) {
-                     atom_to_bond_to_index.should.be.equal(5) // oxygen atom on COC
-                     mmolecule[atom_to_bond_to_index][0].should.be.equal("Al")
+                     source_atom_index.should.be.equal(5) // oxygen atom on COC
+                     mmolecule[source_atom_index][0].should.be.equal("Al")
                      atom_to_push_index.should.be.equal(1) // // Al atom on AlCl3
                  }
                 
-                return _makeCovalentBond(atoms, atom_to_bond_to_index, test_number, atom_to_push_index) // return molecule
+                return _makeCovalentBond(atoms, source_atom_index, test_number, atom_to_push_index) // return molecule
 
                 // push electron
-                // AtomController(atom).push(mmolecule[atom_to_bond_to_index])
-                // atom.push(mmolecule[atom_to_bond_to_index][mmolecule[atom_to_bond_to_index].length - 1])
+                // AtomController(atom).push(mmolecule[source_atom_index])
+                // atom.push(mmolecule[source_atom_index][mmolecule[source_atom_index].length - 1])
                 
-               // mmolecule[atom_to_bond_to_index].push(atom[atom.length - 2])
-                // AtomController(mmolecule[atom_to_bond_to_index]).push(atom)
+               // mmolecule[source_atom_index].push(atom[atom.length - 2])
+                // AtomController(mmolecule[source_atom_index]).push(atom)
                 
                // mmolecule.push(atom)
 
