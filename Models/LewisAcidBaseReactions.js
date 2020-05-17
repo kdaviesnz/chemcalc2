@@ -4,7 +4,9 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
 
     const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, test_number) => {
 
-
+        let nucleophile_atom_index = null
+        let electrophile_atom_index = null
+        
         if (test_number !==3) {
             console.log("Wrong section for test number " + test_number)
             process.exit()
@@ -24,6 +26,8 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
             // Container [false, [AlCl3], [COC]]
             if (substrate_electrophile_atom_index !==false) {
                 electrophile_atom_index = substrate_electrophile_atom_index
+                nucleophile_atom_index = 2
+                electrophile_atom_index = 1
                 electrophile_molecule = container[1]
                 nucleophile_molecule = container[2]
                 nucleophile_atom_index = MoleculeController(nucleophile_molecule).nucleophileIndex(3) // should be 5
@@ -33,6 +37,8 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
                 }
             } else if (reagent_electrophile_atom_index !==false) {
                 electrophile_atom_index = reagent_electrophile_atom_index
+                nucleophile_atom_index = 1
+                electrophile_atom_index = 2
                 electrophile_molecule = container[2]
                 nucleophile_molecule = container[1]
                 nucleophile_atom_index = MoleculeController(container[1]).nucleophileIndex(3)
@@ -63,7 +69,7 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
         }
 
         // push : (atoms_or_atomic_symbols, container, molecule_to_add_to_index, test_number, target_atom_index, source_atom_index) => {
-        MoleculeController(nucleophile_molecule).push(electrophile_molecule.slice(1), container, molecule_to_add_to_index, test_number, electrophile_atom_index, nucleophile_atom_index )
+        container[nucleophile_atom_index] = MoleculeController(nucleophile_molecule).push(electrophile_molecule.slice(1), container, molecule_to_add_to_index, test_number, electrophile_atom_index, nucleophile_atom_index )
 
         // Remove electrophile from container as it has been consumed by the nucleophile
         container.splice(1,1)
