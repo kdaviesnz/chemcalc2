@@ -506,6 +506,17 @@ const AtomsFactory = (canonicalSMILES) => {
        // Set().intersection(atoms[2].slice(4), atoms[1].slice(4)).length.should.be.equal(2)
     }
 
+    if ("CC=CC" === canonicalSMILES) {
+        atoms[0].slice(4).length.should.be.equal(5)
+        atoms[1].slice(4).length.should.be.equal(7)
+        atoms[2].slice(4).length.should.be.equal(7)
+        atoms[3].slice(4).length.should.be.equal(7)
+        Set().intersection(atoms[0].slice(4), atoms[1].slice(4)).length.should.be.equal(2)
+        Set().intersection(atoms[1].slice(4), atoms[2].slice(4)).length.should.be.equal(4)
+        Set().intersection(atoms[2].slice(4), atoms[3].slice(4)).length.should.be.equal(2)
+    }
+    
+    
     // Add hydrogens
     const atoms_with_hydrogens = atoms.reduce(
         (carry, current, index, arr) => {
@@ -603,6 +614,12 @@ const AtomsFactory = (canonicalSMILES) => {
                 return atom[0] === "C"
             }
         )
+        
+        // Check electrons
+        carbon_atoms[0].slice(4).length.should.be.equal(8)
+        carbon_atoms[1].slice(4).length.should.be.equal(8)
+        carbon_atoms[2].slice(4).length.should.be.equal(8)
+        carbon_atoms[3].slice(4).length.should.be.equal(8)
         
         // Check bonds
         Set().intersection(carbon_atoms[0].slice(4), carbon_atoms[1].slice(4)).should.be.equal(2)
