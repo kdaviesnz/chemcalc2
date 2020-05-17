@@ -57,10 +57,9 @@ class CContainer {
                 // Find the nucleophile on the C=C bond
                 const nucleophile_molecule = substrate
                 const nucleophile_molecule_index = 1
-                const electrophile_molecute = reagent
+                const electrophile_molecule = reagent
                 const electrophile_molecule_index = 2
-                const nucleophile_atom_index = this.Mo
-                this.MoleculeController(substrate).determineNucleophileIndex()
+                const nucleophile_atom_index = this.MoleculeController(substrate).determineNucleophileIndex()
                 const electrophile_atom_index = this.MoleculeController(reagent).determineElectrophileIndex()
 
                 // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
@@ -72,22 +71,22 @@ class CContainer {
                 
                 // const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
                 // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-                reaction = bronstedLowry.react(nucleophile_molecule, nucleophile_atom_index, reagent, electrophile_molecule, 1, 2)
+                reaction = bronstedLowry.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index
                     
                 if (reaction === false) {
                     // reagent does not have a proton
                     // do Lewis acid base teaction
                     //                 // const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, test_number) => {
                 
-                    reaction = lewis.react()
+                    reaction = lewis.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, this.test_number)
                 }
                 
 
             } else if (reagent_families.alkene.length > 0) {
                 
                 // Reagent is alkene
-                const nucleophile_atom = reagent
-                const electrophile_atom = substrate
+                const nucleophile_molecule = reagent
+                const electrophile_molecule = substrate
                 const nucleophile_molecule_index = 2
                 const electrophile_molecule_index = 1
 
@@ -97,14 +96,14 @@ class CContainer {
                 // Find the nucleophile
                 const electrophile_atom_index = this.MoleculeController(substrate).determineElectrophileIndex()
                 
-                
-                if (test_number === 4) {
+              
+                if (this.test_number === 4) {
                    reagent[nucleophile_atom_index][0].should.be.equal("C")
-                   AtomController(reagent[nucleophile_atom_index], reagent_atom_index, reagent.slice(1)).bondCount.should.be.equal(2)
+                   AtomController(reagent[nucleophile_atom_index], nucleophile_atom_index, reagent.slice(1)).bondCount.should.be.equal(2)
                 }
                 
                 // const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
-                reaction = bronstedLowry.react(reagent, nucleophile_atom_index, substrate, electrophile_atom_index, 2, 1)
+                reaction = bronstedLowry.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
                      
                 if (reaction === false) {
                     // substrate does not have a proton
@@ -112,7 +111,7 @@ class CContainer {
                     // do Lewis acid base teaction
                     // const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, test_number) => {
                 
-                    reaction = lewis.react()
+                    reaction = lewis.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, this.test_number)
                 }     
                 
             }
