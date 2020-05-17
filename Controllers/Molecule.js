@@ -3,6 +3,7 @@ const AtomFactory = require('../Models/AtomFactory')
 const CAtom = require('./Atom')
 const pKa = require('../Models/pKa')
 const should = require('should')
+const Set = require('../Models/Set')
 
 const CMolecule = (mmolecule) => {
 
@@ -413,8 +414,9 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             if (!target_atom_electron_to_share_index) {
                 // Target atom has no free electrons so check if it has free slots.
                 // electrophile
-                const free_slots = CAtom(mmolecule[target_atom_mmolecule_index], null, null).freeSlots
-                if (free_slots.length > 0) {
+                // free slots is a number
+                const free_slots = CAtom(mmolecule[target_atom_mmolecule_index], target_atom_mmolecule_index, mmolecule).freeSlots(test_number)
+                if (free_slots > 0) {
                     
                     // add free electron from source atom to target atom
                     // mmolecule[target_atom_mmolecule_index].push(free_slots[0])
