@@ -125,71 +125,21 @@ class CContainer {
             if (this.test_number === 3) {
                 reaction.length.should.be.equal(2) // should be 2
                 reaction[0].should.be.equal(false)
-                reaction[1].length.should.be.equal(5)
-                //reaction[1][0].should.be.equal(-6.3)
-                reaction[1][1][0].should.be.equal("Al")
-                reaction[2].length.should.be.equal(14)
-                reaction[2][0].should.be.equal(-3.5)
-                reaction[2][1][0].should.be.equal("H")
-                reaction[2][3][0].should.be.equal("H")
+                reaction[1].length.should.be.equal(9999)
+                reaction[1][0].should.be.equal(-3.5)
+                reaction[1][1][0].should.be.equal("H")
+                
                 // check for bond besteen Al and O
                 console.log("Reaction result")
                 console.log(reaction)
                 /*
 // test_number_3
 
-[ false,
-  [ 12345,
-    [ 'Al',
-      13,
-      3,
-      3,
-      '2iwcg1tplkaaezjvd',
-      '2iwcg1tplkaaezjve',
-      '2iwcg1tplkaaezjvf',
-      '2iwcg1tplkaaezjvm',
-      '2iwcg1tplkaaezjvt',
-      '2iwcg1tplkaaezjw0' ],
-    [ 'Cl',
-      17,
-      7,
-      1,
-      '2iwcg1tplkaaezjvg',
-      '2iwcg1tplkaaezjvh',
-      '2iwcg1tplkaaezjvi',
-      '2iwcg1tplkaaezjvj',
-      '2iwcg1tplkaaezjvk',
-      '2iwcg1tplkaaezjvl',
-      '2iwcg1tplkaaezjvm',
-      '2iwcg1tplkaaezjvf' ],
-    [ 'Cl',
-      17,
-      7,
-      1,
-      '2iwcg1tplkaaezjvn',
-      '2iwcg1tplkaaezjvo',
-      '2iwcg1tplkaaezjvp',
-      '2iwcg1tplkaaezjvq',
-      '2iwcg1tplkaaezjvr',
-      '2iwcg1tplkaaezjvs',
-      '2iwcg1tplkaaezjvt',
-      '2iwcg1tplkaaezjve' ],
-    [ 'Cl',
-      17,
-      7,
-      1,
-      '2iwcg1tplkaaezjvu',
-      '2iwcg1tplkaaezjvv',
-      '2iwcg1tplkaaezjvw',
-      '2iwcg1tplkaaezjvx',
-      '2iwcg1tplkaaezjvy',
-      '2iwcg1tplkaaezjvz',
-      '2iwcg1tplkaaezjw0',
-      '2iwcg1tplkaaezjvd' ] ],
-  [ -3.5,
-    [ 'H', 1, 1, 1, '2iwcg1tplkaaezjwf', '2iwcg1tplkaaezjw1' ],
-    [ 'H', 1, 1, 1, '2iwcg1tplkaaezjwg', '2iwcg1tplkaaezjw2' ],
-    [ 'H', 1, 1, 1, '2iwcg1tplkaaezjwh', '2iwcg1tplkaaezjw3' ],
+[ false, 0
+  [ -3.5,  1
+    [ 'H', 1, 1, 1, '2iwcg1tplkaaezjwf', '2iwcg1tplkaaezjw1' ],2
+    [ 'H', 1, 1, 1, '2iwcg1tplkaaezjwg', '2iwcg1tplkaaezjw2' ], 3
+    [ 'H', 1, 1, 1, '2iwcg1tplkaaezjwh', '2iwcg1tplkaaezjw3' ], 4
     [ 'C',
       6,
       4,
