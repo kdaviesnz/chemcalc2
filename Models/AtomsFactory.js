@@ -571,8 +571,6 @@ const AtomsFactory = (canonicalSMILES) => {
             }
         )
         
-        
-        
         // Check carbons have no lone pairs and have 8 electrons each
         const mmolecule = [null, ...atoms_with_hydrogens]
         atoms_with_hydrogens.map(
@@ -589,6 +587,27 @@ const AtomsFactory = (canonicalSMILES) => {
         
         
 
+    }
+    
+    if ("CC=CC" === canonicalSMILES) {
+        
+        atoms_with_hydrogens.filter(
+            (atom) => {
+                return atom[0] === "H"
+            }
+        ).length.should.be.equal(10)
+        
+        atoms_with_hydrogens.length.should.be.equal(14)
+        const carbon_atoms = atoms_with_hydrogens.filter(
+            (atom) => {
+                return atom[0] === "C"
+            }
+        )
+        
+        // Check bonds
+        Set().intersection(carbon_atoms[0].slice(4), carbon_atoms[1].slice(4)).should.be.equal(2)
+        Set().intersection(carbon_atoms[1].slice(4), carbon_atoms[2].slice(4)).should.be.equal(4)
+        Set().intersection(carbon_atoms[2].slice(4), carbon_atoms[3].slice(4)).should.be.equal(2)
     }
 
     return atoms_with_hydrogens
