@@ -250,11 +250,9 @@ const CMolecule = (mmolecule) => {
                 
         // C:OC (nucleophile) ---------> AlCl3 (electrophile)  
         if (test_number === 3) {
-            target_atom_mmolecule_index.should.be.equal(9)
-            mmolecule[target_atom_mmolecule_index][0].should.be.equal("Al")
+            target_atom_mmolecule_index.should.be.equal(10) // Al
             atoms.length.should.be.equal(4) // AlCl3
             mmolecule.length.should.be.equal(10) // COC
-            target_atom_mmolecule_index.should.be.equal(1) // Al on AlCl3
         }
         
         if (test_number === 5) {
@@ -280,6 +278,11 @@ const CMolecule = (mmolecule) => {
             mmolecule[target_atom_mmolecule_index][0].should.be.equal("H")
         }
 
+        // C:OC (nucleophile) ---------> AlCl3 (electrophile)
+        if (test_number === 3) {
+            mmolecule[target_atom_mmolecule_index][0].should.be.equal("Al")
+        }
+
         // H2O (H+) (nucleophile) -------> H+ (nucleophile) note: weve just added a proton
         if (test_number === 1) {
             mmolecule.length.should.be.equal(5)
@@ -298,7 +301,7 @@ const CMolecule = (mmolecule) => {
         
         // C:OC (nucleophile) ---------> AlCl3 (electrophile) 
         if (test_number === 3) {
-            mmolecule.length.should.be.equal(88888)
+            mmolecule.length.should.be.equal(14)
             mmolecule[1][0].should.be.equal("H")
             mmolecule[2][0].should.be.equal("H")
             mmolecule[3][0].should.be.equal("H")
@@ -340,7 +343,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         
         // C:OC (nucleophile) ---------> AlCl3 (electrophile)
         if (test_number === 3) {
-            target_atom_electron_to_share_index.should.be.equal(77777)
+            target_atom_electron_to_share_index.should.be.equal(false)
         }
 
         const source_atom_electron_to_share_index = __electronToShareIndex(mmolecule[source_atom_index])
@@ -364,9 +367,9 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         // AlCl3 + C:OC
         if (test_number === 3) {
             target_atom_electron_to_share_index.should.be.equal(false)
-            mmolecule[target_atom_mmolecule_index][0].should.be.equal("H")
+            mmolecule[target_atom_mmolecule_index][0].should.be.equal("Al")
             mmolecule[source_atom_index][0].should.be.equal("O")
-            source_atom_electron_to_share_index.should.be.equal(false)                    
+            source_atom_electron_to_share_index.should.be.equal(3)       // false
         }
         
         // Get lone pair from source atom (atom arrow would be pointing from (nucleophile))
@@ -403,7 +406,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             // Source atom should always have a lone pair (nucleophile)
             
             if (test_number === 3) {
-                source_atom_electron_to_share_index.should.be.equal(9999)
+                source_atom_electron_to_share_index.should.be.equal(3)
                 target_atom_electron_to_share_index.should.be.equal(false)
             }
             
@@ -456,8 +459,8 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             mmolecule.length.should.be.equal(14)
             mmolecule[1][0].should.be.equal("H")
             mmolecule[2][0].should.be.equal("H")
-            mmolecule[3][0].should.be.equal("O")
-            mmolecule[4][0].should.be.equal("H")
+            mmolecule[3][0].should.be.equal("H")
+            mmolecule[4][0].should.be.equal("C")
         }
 
         return mmolecule
@@ -598,8 +601,8 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 atoms_or_atomic_symbols.length.should.be.equal(4) // AlCl3
                 mmolecule.length.should.be.equal(10) // COC (nucleophile)
                 molecule_to_add_to_index.should.be.equal(0)
-                target_atom_index.should.be.equal(0)
-                atoms_or_atomic_symbols[target_atom_index][0].should.be.equal("Al")
+                target_atom_index.should.be.equal(1)
+                atoms_or_atomic_symbols[target_atom_index -1][0].should.be.equal("Al")
             }
             
             atoms_or_atomic_symbols.should.be.an.Array()

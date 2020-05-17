@@ -59,7 +59,11 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
             electrophile_atom_index.should.be.equal(1)
             electrophile_molecule[electrophile_atom_index][0].should.be.equal("Al")
         }
-        MoleculeController(nucleophile_molecule).push(electrophile_molecule.slice(1), container, molecule_to_add_to_index, test_number, electrophile_atom_index -1, nucleophile_atom_index )
+
+        // push : (atoms_or_atomic_symbols, container, molecule_to_add_to_index, test_number, target_atom_index, source_atom_index) => {
+        MoleculeController(nucleophile_molecule).push(electrophile_molecule.slice(1), container, molecule_to_add_to_index, test_number, electrophile_atom_index, nucleophile_atom_index )
+
+        return container
 
     }
 
