@@ -63,7 +63,8 @@ class CContainer {
                     AtomController(substrate[nucleophile_atom_index], nucleophile_atom_index, substrate.slice(1)).bondCount.should.be.equal(2)           
                 }
                 
-                reaction = bronstedLowry.react(substrate, nucleophile_atom_index, reagent, null)
+                // const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, test_number) => {
+                reaction = bronstedLowry.react(substrate, nucleophile_atom_index, reagent, null, 4)
                     
                 if (reaction === false) {
                     // reagent does not have a proton
@@ -84,7 +85,9 @@ class CContainer {
                    AtomController(reagent[nucleophile_atom_index], reagent_atom_index, reagent.slice(1)).bondCount.should.be.equal(2)
                 }
                 
-                reaction = bronstedLowry.react(reagent, nucleophile_atom_index, substrate, null)
+                // const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, test_number) => {
+                
+                reaction = bronstedLowry.react(reagent, nucleophile_atom_index, substrate, null, 4)
                      
                 if (reaction === false) {
                     // substrate does not have a proton
