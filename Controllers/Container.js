@@ -123,7 +123,7 @@ class CContainer {
 
             // CO:C (nucleophile (O)) ---------> AlCl3 (electrophile (Al))
             if (this.test_number === 3) {
-                reaction.length.should.be.equal(3)
+                reaction.length.should.be.equal(2) // should be 2
                 reaction[0].should.be.equal(false)
                 reaction[1].length.should.be.equal(5)
                 //reaction[1][0].should.be.equal(-6.3)
@@ -132,6 +132,7 @@ class CContainer {
                 reaction[2][0].should.be.equal(-3.5)
                 reaction[2][1][0].should.be.equal("H")
                 reaction[2][3][0].should.be.equal("H")
+                // check for bond besteen Al and O
                 console.log("Reaction result")
                 console.log(reaction)
                 /*
