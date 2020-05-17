@@ -45,18 +45,28 @@ class CContainer {
             // The functional group of an alkene is the C=C double bond.
             // The C=C double bond is nucleophilic
             let reaction = false
+            
+            // CC=CC
+            if (test_number === 4) {
+                substrate_families.alkene.length.should.be.equal(1)
+            }
+            
             if (substrate_families.alkene.length > 0) {
                 
                 // Substrate is alkene
                 // Find the nucleophile on the C=C bond
-                const nucleophile_atom_index = substrate_families.alkene[0][0]
-                substrate[nucleophile_atom_index][0].should.be.equal("C")
-                AtomController(substrate[nucleophile_atom_index], nucleophile_atom_index, substrate.slice(1)).bondCount.should.be.equal(2)
+                const nucleophile_atom_index = MoleculeController(substrate).determineNucleophileIndex()
+                // CC=CC
+                if (test_number === 4) {
+                    nucleophile_atom_index.should.be.equal(1)      
+                    substrate[nucleophile_atom_index][0].should.be.equal("C")
+                    AtomController(substrate[nucleophile_atom_index], nucleophile_atom_index, substrate.slice(1)).bondCount.should.be.equal(2)           
+                }
+                
                 reaction = bronstedLowry.react(substrate, nucleophile_atom_index, reagent, null)
                     
                 if (reaction === false) {
                     // reagent does not have a proton
-                    // determine electrophile atom on the reagent
                     // do Lewis acid base teaction
                     reaction = lewis.react()
                 }
@@ -66,9 +76,14 @@ class CContainer {
                 
                 // Reagent is alkene
                 // Find the nucleophile on the C=C bond
-                const nucleophile_atom_index = reagent_families.alkene[0][0]
-                reagent[nucleophile_atom_index][0].should.be.equal("C")
-                AtomController(reagent[nucleophile_atom_index], reagent_atom_index, reagent.slice(1)).bondCount.should.be.equal(2)
+                
+                const nucleophile_atom_index = MoleculeController(reagent).determineNucleophileIndex()
+                
+                if (test_number === 4) {
+                   reagent[nucleophile_atom_index][0].should.be.equal("C")
+                   AtomController(reagent[nucleophile_atom_index], reagent_atom_index, reagent.slice(1)).bondCount.should.be.equal(2)
+                }
+                
                 reaction = bronstedLowry.react(reagent, nucleophile_atom_index, substrate, null)
                      
                 if (reaction === false) {
