@@ -304,7 +304,7 @@ ccontainer2.add(Clneg,1)
 ccontainer2.add(HthreeO,1)
 
 console.log("Test 2 complete")
-process.exit()
+//process.exit()
 
 const ccontainer3 = new CContainer([false], MoleculeFactory, MoleculeController, 3)
 
@@ -327,6 +327,11 @@ dimethylEther[0].should.be.equal(-3.5)
 
 ccontainer3.add(aluminumChloride,1) // Aluminium Chloride is a Lewis acid and accepts and electron pair
 ccontainer3.add(dimethylEther,1) // Dimethyl Ether is a Lewis base and donates an electron pair (oxygen atom)
+
+console.log("Test 3 complete")
+process.exit()
+
+
 
 const hbr = MoleculeFactory("HBr")
 const HBrController = CMolecule(hcl)

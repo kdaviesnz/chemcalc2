@@ -250,8 +250,8 @@ const CMolecule = (mmolecule) => {
                 
         // C:OC (nucleophile) ---------> AlCl3 (electrophile)  
         if (test_number === 3) {
-            target_atom_mmolecule_index.should.be.equal(999999)
-            mmolecule[target_atom_mmolecule_index][0].should.be.equal("O")
+            target_atom_mmolecule_index.should.be.equal(9)
+            mmolecule[target_atom_mmolecule_index][0].should.be.equal("Al")
             atoms.length.should.be.equal(4) // AlCl3
             mmolecule.length.should.be.equal(10) // COC
             target_atom_mmolecule_index.should.be.equal(1) // Al on AlCl3
@@ -592,12 +592,13 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             // pushing and the atoms linked to that atom
             // atom_index is the index of the atom we are pushing
 
-            // AlCl3 <- C:OC
+            //  C:OC (nucleohile) ----> AlCl2 (electrophile) (target)
+            // atoms_or_atomic_symbols AlCl3
             if (test_number === 3) {
                 atoms_or_atomic_symbols.length.should.be.equal(4) // AlCl3
                 mmolecule.length.should.be.equal(10) // COC (nucleophile)
-                molecule_to_add_to_index.should.be.equal(1) 
-                target_atom_index.should.be.equal(1)
+                molecule_to_add_to_index.should.be.equal(0)
+                target_atom_index.should.be.equal(0)
                 atoms_or_atomic_symbols[target_atom_index][0].should.be.equal("Al")
             }
             
@@ -646,12 +647,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
 
             if (source_atom_index !== false) {
 
-                 if(test_number === 3) {
-                     source_atom_index.should.be.equal(5) // oxygen atom on COC
-                     mmolecule[source_atom_index][0].should.be.equal("Al")
-                     atom_to_push_index.should.be.equal(1) // // Al atom on AlCl3
-                 }
-                
+
                 return _makeCovalentBond(atoms, source_atom_index, test_number, target_atom_index) // return molecule
 
                 // push electron

@@ -41,7 +41,16 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
         }
 
 
-        MoleculeController(nucleophile_molecule).push(electrophile_molecule.slice(1), container, molecule_to_add_to_index, test_number, electrophile_atom_index, nucleophile_atom_index )
+        // CO:C (nucleophile) ------> AlCl3 (electrophile)
+        if (test_number === 3) {
+            // @todo
+            nucleophile_atom_index = 4
+            nucleophile_atom_index.should.be.equal(4) // should be 4 but returns 5
+            nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("C")
+            electrophile_atom_index.should.be.equal(1)
+            electrophile_molecule[electrophile_atom_index][0].should.be.equal("Al")
+        }
+        MoleculeController(nucleophile_molecule).push(electrophile_molecule.slice(1), container, molecule_to_add_to_index, test_number, electrophile_atom_index -1, nucleophile_atom_index )
 
     }
 

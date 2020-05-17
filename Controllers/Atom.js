@@ -56,7 +56,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             // Get electrons from atoms (this won't include atoms from current atom)
             const electrons_from_other_atoms = molecule_minus_current_atom.reduce(
                 (carry, __atom) => {
-                    if (undefined === __atom.slice) {
+                    if (__atom === null || undefined === __atom.slice) {
                         return carry
                     }
                     __atom.slice(4).map(
