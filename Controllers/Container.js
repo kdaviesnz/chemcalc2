@@ -53,9 +53,12 @@ class CContainer {
             
             if (substrate_families.alkene.length > 0) {
                 
-                // Substrate is alkene
+                // Substrate is alkene (
                 // Find the nucleophile on the C=C bond
-                const nucleophile_atom_index = MoleculeController(substrate).determineNucleophileIndex()
+                const nucleophile_atom_index = this.MoleculeController(substrate).determineNucleophileIndex()
+                const electrophile_atom_index = this.MoleculeController(reagent).determineElectrophileIndex()
+                
+                
                 // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
                 if (test_number === 4) {
                     nucleophile_atom_index.should.be.equal(1)      
@@ -66,7 +69,7 @@ class CContainer {
                 // const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule,
                   // electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
                 // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-                reaction = bronstedLowry.react(substrate, nucleophile_atom_index, reagent, electrophile_atom_index, 1, 2, 4)
+                reaction = bronstedLowry.react(substrate, nucleophile_atom_index, reagent, electrophile_atom_index, 1, 2)
                     
                 if (reaction === false) {
                     // reagent does not have a proton
@@ -82,7 +85,9 @@ class CContainer {
                 // Reagent is alkene
                 // Find the nucleophile on the C=C bond
                 
-                const nucleophile_atom_index = MoleculeController(reagent).determineNucleophileIndex()
+                const nucleophile_atom_index = this.MoleculeController(reagent).determineNucleophileIndex()
+                const electrophile_atom_index = this.MoleculeController(substrate).determineElectrophileIndex()
+                
                 
                 if (test_number === 4) {
                    reagent[nucleophile_atom_index][0].should.be.equal("C")
@@ -92,7 +97,7 @@ class CContainer {
                 // const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule,
                   // electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
 
-                reaction = bronstedLowry.react(reagent, nucleophile_atom_index, substrate, null, 4)
+                reaction = bronstedLowry.react(reagent, nucleophile_atom_index, substrate, electrophile_atom_index, 2, 1)
                      
                 if (reaction === false) {
                     // substrate does not have a proton
