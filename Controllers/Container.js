@@ -2,6 +2,7 @@
 const Families = require('../Models/Families')
 const BronstedLowryAcidBaseReactions = require('../Models/BronstedLowryAcidBaseReactions')
 const LewisAcidBaseReactions = require('../Models/LewisAcidBaseReactions')
+const Set = require('../Models/Set')
 
 class CContainer {
 
@@ -125,113 +126,23 @@ class CContainer {
             if (this.test_number === 3) {
                 reaction.length.should.be.equal(2) // should be 2
                 reaction[0].should.be.equal(false)
-                reaction[1].length.should.be.equal(9999)
+                reaction[1].length.should.be.equal(14)
                 reaction[1][0].should.be.equal(-3.5)
                 reaction[1][1][0].should.be.equal("H")
-                
-                // check for bond besteen Al and O
-                console.log("Reaction result")
-                console.log(reaction)
-                /*
-// test_number_3
-
-[ false, 0
-  [ -3.5,  1
-    [ 'H', 1, 1, 1, '2iwcg1tplkaaezjwf', '2iwcg1tplkaaezjw1' ],2
-    [ 'H', 1, 1, 1, '2iwcg1tplkaaezjwg', '2iwcg1tplkaaezjw2' ], 3
-    [ 'H', 1, 1, 1, '2iwcg1tplkaaezjwh', '2iwcg1tplkaaezjw3' ], 4
-    [ 'C',
-      6,
-      4,
-      4,
-      '2iwcg1tplkaaezjw1',
-      '2iwcg1tplkaaezjw2',
-      '2iwcg1tplkaaezjw3',
-      '2iwcg1tplkaaezjw4',
-      '2iwcg1tplkaaezjwa',
-      '2iwcg1tplkaaezjwf',
-      '2iwcg1tplkaaezjwg',
-      '2iwcg1tplkaaezjwh' ],
-    [ 'O',
-      8,
-      6,
-      2,
-      '2iwcg1tplkaaezjw5',
-      '2iwcg1tplkaaezjw6',
-      '2iwcg1tplkaaezjw7',
-      '2iwcg1tplkaaezjw8',
-      '2iwcg1tplkaaezjw9',
-      '2iwcg1tplkaaezjwa',
-      '2iwcg1tplkaaezjw4',
-      '2iwcg1tplkaaezjwe' ],
-    [ 'H', 1, 1, 1, '2iwcg1tplkaaezjwi', '2iwcg1tplkaaezjwb' ],
-    [ 'H', 1, 1, 1, '2iwcg1tplkaaezjwj', '2iwcg1tplkaaezjwc' ],
-    [ 'H', 1, 1, 1, '2iwcg1tplkaaezjwk', '2iwcg1tplkaaezjwd' ],
-    [ 'C',
-      6,
-      4,
-      4,
-      '2iwcg1tplkaaezjwb',
-      '2iwcg1tplkaaezjwc',
-      '2iwcg1tplkaaezjwd',
-      '2iwcg1tplkaaezjwe',
-      '2iwcg1tplkaaezjw9',
-      '2iwcg1tplkaaezjwi',
-      '2iwcg1tplkaaezjwj',
-      '2iwcg1tplkaaezjwk' ],
-    [ 'Al',
-      13,
-      3,
-      3,
-      '2iwcg1tplkaaezjvd',
-      '2iwcg1tplkaaezjve',
-      '2iwcg1tplkaaezjvf',
-      '2iwcg1tplkaaezjvm',
-      '2iwcg1tplkaaezjvt',
-      '2iwcg1tplkaaezjw0' ],
-    [ 'Cl',
-      17,
-      7,
-      1,
-      '2iwcg1tplkaaezjvg',
-      '2iwcg1tplkaaezjvh',
-      '2iwcg1tplkaaezjvi',
-      '2iwcg1tplkaaezjvj',
-      '2iwcg1tplkaaezjvk',
-      '2iwcg1tplkaaezjvl',
-      '2iwcg1tplkaaezjvm',
-      '2iwcg1tplkaaezjvf' ],
-    [ 'Cl',
-      17,
-      7,
-      1,
-      '2iwcg1tplkaaezjvn',
-      '2iwcg1tplkaaezjvo',
-      '2iwcg1tplkaaezjvp',
-      '2iwcg1tplkaaezjvq',
-      '2iwcg1tplkaaezjvr',
-      '2iwcg1tplkaaezjvs',
-      '2iwcg1tplkaaezjvt',
-      '2iwcg1tplkaaezjve' ],
-    [ 'Cl',
-      17,
-      7,
-      1,
-      '2iwcg1tplkaaezjvu',
-      '2iwcg1tplkaaezjvv',
-      '2iwcg1tplkaaezjvw',
-      '2iwcg1tplkaaezjvx',
-      '2iwcg1tplkaaezjvy',
-      '2iwcg1tplkaaezjvz',
-      '2iwcg1tplkaaezjw0',
-      '2iwcg1tplkaaezjvd' ] ] ]
-
-
-
-
-                 */
-                console.log("Container.js")
-                process.exit()
+                reaction[1][2][0].should.be.equal("H")
+                reaction[1][3][0].should.be.equal("H")
+                reaction[1][4][0].should.be.equal("C")
+                reaction[1][5][0].should.be.equal("O")
+                reaction[1][6][0].should.be.equal("H")
+                reaction[1][7][0].should.be.equal("H")
+                reaction[1][8][0].should.be.equal("H")
+                reaction[1][9][0].should.be.equal("C")
+                reaction[1][10][0].should.be.equal("Al")
+                reaction[1][11][0].should.be.equal("Cl")
+                reaction[1][12][0].should.be.equal("Cl")
+                reaction[1][13][0].should.be.equal("Cl")
+                // check for bond between Al and Oxygen
+                Set().intersection(reaction[1][5].slice(4), reaction[1][10].slice(4)).length.should.not.be.equal(0)
             }
 
 

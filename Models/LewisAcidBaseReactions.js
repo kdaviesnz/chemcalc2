@@ -1,3 +1,5 @@
+const Set = require('../Models/Set')
+
 const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
 
     const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, test_number) => {
@@ -63,9 +65,8 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
         // push : (atoms_or_atomic_symbols, container, molecule_to_add_to_index, test_number, target_atom_index, source_atom_index) => {
         MoleculeController(nucleophile_molecule).push(electrophile_molecule.slice(1), container, molecule_to_add_to_index, test_number, electrophile_atom_index, nucleophile_atom_index )
 
-        // Remove electrophile from container as it has been consumed by the nucleophile 
+        // Remove electrophile from container as it has been consumed by the nucleophile
         container.splice(1,1)
-        
         return container
 
     }
