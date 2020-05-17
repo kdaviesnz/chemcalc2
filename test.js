@@ -329,7 +329,7 @@ ccontainer3.add(aluminumChloride,1) // Aluminium Chloride is a Lewis acid and ac
 ccontainer3.add(dimethylEther,1) // Dimethyl Ether is a Lewis base and donates an electron pair (oxygen atom)
 
 console.log("Test 3 complete")
-process.exit()
+//process.exit()
 
 
 
@@ -377,10 +377,26 @@ hbr[1].indexOf(hbr[2][hbr[2].length-1]).should.not.be.False()
 
 // CH3CH=CHCH3
 const butene = MoleculeFactory("CC=CC")
+const buteneController = CMolecule( utene)
+HBrController.bondCount(hbr[1]).should.be.equal(1)
+HBrController.bondCount(hbr[2]).should.be.equal(1)
+hbr[0].should.be.a.equal(-6.3)
+hbr[1].should.be.a.Array()
+hbr[1].length.should.be.a.equal(6)
+hbr[1][0].should.be.a.String()
+hbr[1][0].should.be.equal("H")
+range.range(1,3,1).map(
+    (i)=>{
+        hbr[1][i].should.be.a.Number()
+    }
+) 
 
 const ccontainer4 = new CContainer([false], MoleculeFactory, MoleculeController, 4)
 ccontainer4.add(butene,1)
 ccontainer4.add(hbr,1)
+
+console.log("Test 4 complete")
+process.exit()
 
 ccontainer4.container.length.should.be.equal(3)
 const carbocation = ccontainer4.container[1]
