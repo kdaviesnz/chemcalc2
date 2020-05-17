@@ -2,22 +2,33 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
 
     const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, test_number) => {
 
+
         if (test_number !==3) {
             console.log("Wrong section for test number " + test_number)
             process.exit()
         }
 
         if (null === nucleophile_molecule) {
+
             const substrate_electrophile_atom_index = MoleculeController(container[1]).electrophileIndex() // AlCl3
-            if (test_number === 3) {
-                substrate_electrophile_atom_index.should.be.equal(1)
-            }
             const reagent_electrophile_atom_index = MoleculeController(container[2]).electrophileIndex()
+
+            // CO:C (nucleophile) ------> AlCl3 (electropile
+            if (test_number === 3) {
+                substrate_electrophile_atom_index.should.be.equal(1) // Al
+                reagent_electrophile_atom_index.should.be.equal(1) // H
+            }
+
+            // Container [false, [AlCl3], [COC]]
             if (substrate_electrophile_atom_index !==false) {
                 electrophile_atom_index = substrate_electrophile_atom_index
                 electrophile_molecule = container[1]
                 nucleophile_molecule = container[2]
-                nucleophile_atom_index = MoleculeController(container[2]).nucleophileIndex(3)
+                nucleophile_atom_index = MoleculeController(nucleophile_molecule).nucleophileIndex(3) // should be 5
+                if (test_number ===3) {
+                    nucleophile_molecule[nucleophile_atom_index][0].should.be.equal('O')
+                    nucleophile_atom_index.should.be.equal(5)
+                }
             } else if (reagent_electrophile_atom_index !==false) {
                 electrophile_atom_index = reagent_electrophile_atom_index
                 electrophile_molecule = container[2]
@@ -43,10 +54,8 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
 
         // CO:C (nucleophile) ------> AlCl3 (electrophile)
         if (test_number === 3) {
-            // @todo
-            nucleophile_atom_index = 4
-            nucleophile_atom_index.should.be.equal(4) // should be 4 but returns 5
-            nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("C")
+            nucleophile_atom_index.should.be.equal(5)
+            nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("O")
             electrophile_atom_index.should.be.equal(1)
             electrophile_molecule[electrophile_atom_index][0].should.be.equal("Al")
         }
