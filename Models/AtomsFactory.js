@@ -91,6 +91,10 @@ const AtomsFactory = (canonicalSMILES) => {
                     processed_atoms[index][0].should.be.equal("C")
                 }
 
+                if ("CC=CC" === canonicalSMILES) {
+                    processed_atoms[index][0].should.be.equal("C")
+                }
+                
                 if (undefined === branch_tracker[0]) {
                     branch_tracker[0] = []
                 }
@@ -105,7 +109,11 @@ const AtomsFactory = (canonicalSMILES) => {
                 if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
                     index.should.be.oneOf([2, 5, 7])
                 }
-                              
+                        
+                if ("CC=CC" === canonicalSMILES) {
+                    index.should.be.oneOf([1, 3, 4])
+                }
+                
                 const tracker_index = tracker.length ===0 ? 0: tracker[tracker.length-1][0]
                 if ("[Al](Cl)(Cl)Cl" === canonicalSMILES && index ===5) {
                     tracker_index.should.be.equal(0);
@@ -140,7 +148,24 @@ const AtomsFactory = (canonicalSMILES) => {
                            break
                        
                    }                
-               }
+                }
+                
+                if ("CC=CC" === canonicalSMILES) {
+                   // index.should.be.oneOf([1, 3, 4])
+                    switch (index) {
+                       case 1:
+                           parent_atom_index.should.be.equal(0)
+                           break
+                       case 3:
+                           parent_atom_index.should.be.equal(1)
+                           break
+                       case 4:
+                           parent_atom_index.should.be.equal(3)
+                           break     
+                       
+                   }      
+                    
+                }
                 
                 if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
                    switch (index) {
