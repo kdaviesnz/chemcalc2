@@ -12,11 +12,6 @@ const CMolecule = (mmolecule) => {
        // returns [index, atom] pairs
        const atoms_with_free_slots = __atomsWithFreeSlots()
 
-        if (test_number ===1){
-            console.log(atoms_with_free_slots)
-            process.exit()
-        }
-
        if (atoms_with_free_slots.length === 0) {
            return false
        } else {
@@ -80,7 +75,7 @@ const CMolecule = (mmolecule) => {
             mmolecule[3][0].should.be.equal("O")
         }
 
-        // Cl (nucleophile) <------- HCl (electrophile)
+        // Cl (nucleophile) <------- HCl (electrophile) __atomsWithLonePairs()
         if (undefined !== test_number && test_number === 2) {
             mmolecule.length.should.be.equal(2)
             mmolecule[1][0].should.be.equal("Cl")
@@ -100,9 +95,9 @@ const CMolecule = (mmolecule) => {
             }
         )
         
-        // H2O (nucleophile) <------- HCl (electrophile)
+        // H2O (nucleophile) <------- HCl (electrophile) __atomsWithLonePairs
         if (test_number === 1) {
-            atoms_with_lone_pairs[0][0].should.be.equal(4)
+            atoms_with_lone_pairs[0][0].should.be.equal(2)
             atoms_with_lone_pairs[0][1][0].should.be.equal("O")
         }
         
@@ -230,12 +225,12 @@ const CMolecule = (mmolecule) => {
         // Cl- is our nucleophile, where the arrow would be pointing from
         if (test_number === 2) {
             source_atom_index.should.be.equal(1) // nucleophile
-            target_atom_index.should.be.equal(1)           
+            target_atom_index.should.be.equal(4)
             mmolecule.length.should.be.equal(2) // mmolecue should be the nucleophile (Cl-)
             mmolecule[1][0].should.be.equal("Cl")            
             mmolecule[source_atom_index][0].should.be.equal("Cl")
             atoms.length.should.be.equal(1)
-            target_atom_index.should.be.equal(1) // proton so must be 1
+            target_atom_index.should.be.equal(4) // proton so must be 1
             source_atom_index.should.be.equal(1) // Cl- atom on nucleophile taking into account pKa
             atoms[target_atom_index -1][0].should.be.equal("H")
         }
@@ -246,13 +241,11 @@ const CMolecule = (mmolecule) => {
         // H2O (nucleophile) -------> H+ (electrophile)
         if (test_number === 1) {
             target_atom_mmolecule_index.should.be.equal(4)
-            mmolecule[target_atom_mmolecule_index][0].should.be.equal("H")
         }
         
         // Cl- (nucleophile) -------> H+ (electrophile)
         if (test_number === 2) {
             target_atom_mmolecule_index.should.be.equal(2)
-            mmolecule[target_atom_mmolecule_index][0].should.be.equal("H")
         }
                 
         // C:OC (nucleophile) ---------> AlCl3 (electrophile)  
@@ -267,7 +260,6 @@ const CMolecule = (mmolecule) => {
         if (test_number === 5) {
             target_atom_mmolecule_index.should.be.equal(4)
         }
-           
 
         // Add atoms to molecule.
         // At this point main atom won't be bonded.
@@ -277,6 +269,16 @@ const CMolecule = (mmolecule) => {
                 return atom
             }
         )
+
+        // H2O (nucleophile) -------> H+ (electrophile)
+        if (test_number === 1) {
+            mmolecule[target_atom_mmolecule_index][0].should.be.equal("H")
+        }
+
+        // Cl- (nucleophile) -------> H+ (electrophile)
+        if (test_number === 2) {
+            mmolecule[target_atom_mmolecule_index][0].should.be.equal("H")
+        }
 
         // H2O (H+) (nucleophile) -------> H+ (nucleophile) note: weve just added a proton
         if (test_number === 1) {
@@ -348,7 +350,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             target_atom_electron_to_share_index.should.be.equal(false)
             mmolecule[target_atom_mmolecule_index][0].should.be.equal("H")
             mmolecule[source_atom_index][0].should.be.equal("O")
-            source_atom_electron_to_share_index.should.be.equal(false)
+            source_atom_electron_to_share_index.should.be.equal(5)
         }
               
         // HCl
@@ -379,7 +381,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 // target atom is a proton and has no electrons
                 
                 if (test_number ===1) {
-                    sources_atom_lone_pairs.length.should.be.equal(4)
+                    source_atom_lone_pairs.length.should.be.equal(4)
                 }
                 mmolecule[target_atom_mmolecule_index].push(source_atom_lone_pairs[0])
                 mmolecule[target_atom_mmolecule_index].push(source_atom_lone_pairs[1])

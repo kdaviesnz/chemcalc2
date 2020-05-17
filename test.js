@@ -195,6 +195,7 @@ range.range(4,Clneg[1].length-1,1).map(
 
 
 console.log("Test 1 complete")
+//process.exit()
 
 
 const HthreeO = ccontainer.container[2]
