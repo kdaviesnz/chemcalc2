@@ -255,7 +255,15 @@ const CMolecule = (mmolecule) => {
             atoms.length.should.be.equal(4) // AlCl3
             mmolecule.length.should.be.equal(10) // COC
         }
-        
+
+        // CC=CC (nucleophile) ---------> H+ (electrophile)
+        if (test_number === 3) {
+            target_atom_mmolecule_index.should.be.equal(10) // Al
+            atoms.length.should.be.equal(4) // AlCl3
+            mmolecule.length.should.be.equal(10) // COC
+        }
+
+
         if (test_number === 5) {
             target_atom_mmolecule_index.should.be.equal(4)
         }
@@ -588,7 +596,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 }
             }
         },
-        push : (atoms_or_atomic_symbols, container, molecule_to_add_to_index, test_number, target_atom_index, source_atom_index) => {
+        push : (atoms_or_atomic_symbols, container, target_molecule_index, test_number, target_atom_index, source_atom_index) => {
 
 
             // MOLECULE MODEL
@@ -605,9 +613,20 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             if (test_number === 3) {
                 atoms_or_atomic_symbols.length.should.be.equal(4) // AlCl3
                 mmolecule.length.should.be.equal(10) // COC (nucleophile)
-                molecule_to_add_to_index.should.be.equal(0)
+                target_molecule_index.should.be.equal(0)
                 target_atom_index.should.be.equal(1)
                 atoms_or_atomic_symbols[target_atom_index -1][0].should.be.equal("Al")
+            }
+
+            //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
+            // atoms_or_atomic_symbols HBr
+            if (test_number === 4) {
+                atoms_or_atomic_symbols.length.should.be.equal(2) // HBr
+                mmolecule.length.should.be.equal(14) // CC=CC (nucleophile)
+                target_molecule_index.should.be.equal(2) // HBr (electrophile)
+                target_atom_index.should.be.equal(1) // Hydrogent
+                atoms_or_atomic_symbols[target_atom_index -1][0].should.be.equal("H")
+                source_atom_index.should.be.equal(9999) // should be one of the C=C atoms (CC=CC)
             }
             
             atoms_or_atomic_symbols.should.be.an.Array()
@@ -634,7 +653,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 mmolecule[3][0].should.be.equal("O")
                 mmolecule[2][0].should.be.equal("H")
                 mmolecule[1][0].should.be.equal("H")
-                molecule_to_add_to_index.should.be.equal(2)
+                target_molecule_index.should.be.equal(2)
             }
 
             if (undefined === source_atom_index) {
@@ -647,27 +666,11 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             if(test_number === 1) {
                 // Note at this point we have removed the proton from HCl
                 // We are pushing a proton to H2O
-                //console.log(container) // [false, [2.86, [Cl...]], [2.86, [14, [H],[H],[O]...]
-                //console.log(mmolecule) //H2O
-                // console.log(mmolecule[3]) // Oxygen atom
                 source_atom_index.should.be.equal(3) // Should be 3
             }
 
             if (source_atom_index !== false) {
-
-
                 return _makeCovalentBond(atoms, source_atom_index, test_number, target_atom_index) // return molecule
-
-                // push electron
-                // AtomController(atom).push(mmolecule[source_atom_index])
-                // atom.push(mmolecule[source_atom_index][mmolecule[source_atom_index].length - 1])
-                
-               // mmolecule[source_atom_index].push(atom[atom.length - 2])
-                // AtomController(mmolecule[source_atom_index]).push(atom)
-                
-               // mmolecule.push(atom)
-
-
             }
             
             mmolecule[0] = pKa(mmolecule.slice(1))
