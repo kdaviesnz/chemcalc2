@@ -46,7 +46,7 @@ class CContainer {
             // The C=C double bond is nucleophilic
             let reaction = false
             
-            // CC=CC
+            // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
             if (test_number === 4) {
                 substrate_families.alkene.length.should.be.equal(1)
             }
@@ -56,7 +56,7 @@ class CContainer {
                 // Substrate is alkene
                 // Find the nucleophile on the C=C bond
                 const nucleophile_atom_index = MoleculeController(substrate).determineNucleophileIndex()
-                // CC=CC
+                // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
                 if (test_number === 4) {
                     nucleophile_atom_index.should.be.equal(1)      
                     substrate[nucleophile_atom_index][0].should.be.equal("C")
@@ -65,8 +65,8 @@ class CContainer {
                 
                 // const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule,
                   // electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
-                // const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, test_number) => {
-                reaction = bronstedLowry.react(substrate, nucleophile_atom_index, reagent, null, 4)
+                // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
+                reaction = bronstedLowry.react(substrate, nucleophile_atom_index, reagent, electrophile_atom_index, 1, 2, 4)
                     
                 if (reaction === false) {
                     // reagent does not have a proton
