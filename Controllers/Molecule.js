@@ -462,7 +462,10 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             mmolecule[3][0].should.be.equal("H")
             mmolecule[4][0].should.be.equal("C")
         }
-
+        
+        // Check there is a bond between nucleophile atom (source) and electrophile atom (target)
+        Set().intersection(mmolecule[source_atom_index].slice(4), mmolecule[target_atom_mmolecule_index].slice(4)).length.should.not.be.equal(0)
+        
         return mmolecule
 
     }
