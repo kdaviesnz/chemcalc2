@@ -459,8 +459,115 @@ const AtomsFactory = (canonicalSMILES) => {
                         Set().intersection(processed_atoms[5].slice(4), processed_atoms[7].slice(4)).length.should.be.equal(0) // ok
                         break;
                 }
+                
+                
 
             }
+            
+            if ("CC=CC" === canonicalSMILES) {
+                switch (index) {
+                    case 0: // first cabon
+                        tracker.length.should.be.equal(0)
+                        // Check first carbon atom has 5 electrons
+                        processed_atoms[0].slice(4).length.should.be.equal(5)
+                        // Check second carbon atom has 7 electrons
+                        processed_atoms[1].slice(4).length.should.be.equal(7)
+                        // Check third carbon atom has 7 electrons
+                        processed_atoms[2].slice(4).length.should.be.equal(7)
+                        // Check last carbon atom has 5 electrons
+                        processed_atoms[3].slice(4).length.should.be.equal(5)
+                        // Check there is no bond between first and second carbon
+                        Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(0) 
+                        // Check there is no bonds between second and third carbon
+                        Set().intersection(processed_atoms[1].slice(4), processed_atoms[2].slice(4)).length.should.be.equal(0)
+                        // Check there is no bonds between third and last carbon
+                        Set().intersection(processed_atoms[1].slice(4), processed_atoms[2].slice(4)).length.should.be.equal(0)
+                        
+                        break;
+                  
+                    case 1: // second carbon
+                        tracker.length.should.be.equal(0)
+                        // Check first carbon atom has 5 electrons
+                        processed_atoms[0].slice(4).length.should.be.equal(5)
+                        // Check second carbon atom has 7 electrons
+                        processed_atoms[1].slice(4).length.should.be.equal(7)
+                        // Check third carbon atom has 7 electrons
+                        processed_atoms[2].slice(4).length.should.be.equal(7)
+                        // Check last carbon atom has 5 electrons
+                        processed_atoms[3].slice(4).length.should.be.equal(5)
+                        // Check there is one bond between first and second carbon
+                        Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(2) 
+                        // Check there is no bonds between second and third carbon
+                        Set().intersection(processed_atoms[1].slice(4), processed_atoms[2].slice(4)).length.should.be.equal(0)
+                        // Check there is no bonds between third and last carbon
+                        Set().intersection(processed_atoms[1].slice(4), processed_atoms[2].slice(4)).length.should.be.equal(0)
+                        
+                        break;      
+                          
+                      
+                    case 2: // double bond
+                        tracker.length.should.be.equal(0)
+                        // Check first carbon atom has 5 electrons
+                        processed_atoms[0].slice(4).length.should.be.equal(5)
+                        // Check second carbon atom has 7 electrons
+                        processed_atoms[1].slice(4).length.should.be.equal(7)
+                        // Check third carbon atom has 7 electrons
+                        processed_atoms[2].slice(4).length.should.be.equal(7)
+                        // Check last carbon atom has 5 electrons
+                        processed_atoms[3].slice(4).length.should.be.equal(5)
+                        // Check there is one bond between first and second carbon
+                        Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(2) 
+                        // Check there is two bonds between second and third carbon
+                        Set().intersection(processed_atoms[1].slice(4), processed_atoms[2].slice(4)).length.should.be.equal(4)
+                        // Check there is no bonds between third and last carbon
+                        Set().intersection(processed_atoms[1].slice(4), processed_atoms[2].slice(4)).length.should.be.equal(0)
+                        
+                        break;
+   
+   
+                    case 3: // third carbon
+                        tracker.length.should.be.equal(0)
+                        // Check first carbon atom has 5 electrons
+                        processed_atoms[0].slice(4).length.should.be.equal(5)
+                        // Check second carbon atom has 7 electrons
+                        processed_atoms[1].slice(4).length.should.be.equal(7)
+                        // Check third carbon atom has 7 electrons
+                        processed_atoms[2].slice(4).length.should.be.equal(7)
+                        // Check last carbon atom has 5 electrons
+                        processed_atoms[3].slice(4).length.should.be.equal(5)
+                        // Check there is one bond between first and second carbon
+                        Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(2) 
+                        // Check there is two bonds between second and third carbon
+                        Set().intersection(processed_atoms[1].slice(4), processed_atoms[2].slice(4)).length.should.be.equal(4)
+                        // Check there is no bonds between third and last carbon
+                        Set().intersection(processed_atoms[1].slice(4), processed_atoms[2].slice(4)).length.should.be.equal(0)
+                        
+                        break;                 
+                        
+                     case 4: // last carbon
+                        tracker.length.should.be.equal(0)
+                        // Check first carbon atom has 5 electrons
+                        processed_atoms[0].slice(4).length.should.be.equal(5)
+                        // Check second carbon atom has 7 electrons
+                        processed_atoms[1].slice(4).length.should.be.equal(7)
+                        // Check third carbon atom has 7 electrons
+                        processed_atoms[2].slice(4).length.should.be.equal(7)
+                        // Check last carbon atom has 5 electrons
+                        processed_atoms[3].slice(4).length.should.be.equal(5)
+                        // Check there is one bond between first and second carbon
+                        Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(2) 
+                        // Check there is two bonds between second and third carbon
+                        Set().intersection(processed_atoms[1].slice(4), processed_atoms[2].slice(4)).length.should.be.equal(4)
+                        // Check there is one bonds between third and last carbon
+                        Set().intersection(processed_atoms[1].slice(4), processed_atoms[2].slice(4)).length.should.be.equal(4)
+                        
+                        break;        
+                        
+                        
+                }
+                
+            }
+            
                         
             return res
             
