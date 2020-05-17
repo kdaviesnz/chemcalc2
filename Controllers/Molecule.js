@@ -225,13 +225,13 @@ const CMolecule = (mmolecule) => {
         // Cl- is our nucleophile, where the arrow would be pointing from
         if (test_number === 2) {
             source_atom_index.should.be.equal(1) // nucleophile
-            target_atom_index.should.be.equal(4)
-            mmolecule.length.should.be.equal(2) // mmolecue should be the nucleophile (Cl-)
+            mmolecule.length.should.be.equal(2) // mmolecule should be the nucleophile (Cl-)
             mmolecule[1][0].should.be.equal("Cl")            
             mmolecule[source_atom_index][0].should.be.equal("Cl")
             atoms.length.should.be.equal(1)
-            target_atom_index.should.be.equal(4) // proton so must be 1
+            target_atom_index.should.be.equal(1) // proton so must be 1
             source_atom_index.should.be.equal(1) // Cl- atom on nucleophile taking into account pKa
+            // atoms [ [ 'H', 1, 1, 1 ] ]
             atoms[target_atom_index -1][0].should.be.equal("H")
         }
 
@@ -357,8 +357,8 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         if (test_number === 2) {
             target_atom_electron_to_share_index.should.be.equal(false)
             mmolecule[target_atom_mmolecule_index][0].should.be.equal("H")
-            mmolecule[source_atom_index][0].should.be.equal("O")
-            source_atom_electron_to_share_index.should.be.equal(false)
+            mmolecule[source_atom_index][0].should.be.equal("Cl")
+            source_atom_electron_to_share_index.should.be.equal(7)
         }
         
         // AlCl3 + C:OC
@@ -449,7 +449,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         }
         
         if (test_number === 2) {
-            mmolecule[0].should.be.equal(999999)
+            mmolecule[0].should.be.equal(-6.3)
         }
         
         if (test_number === 3) {

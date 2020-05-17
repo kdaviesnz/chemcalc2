@@ -194,7 +194,8 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         
         // test 1 - nucleophile_molecule is water
         // test 2 - nucleophile_molecule is Cl-
-        MoleculeController(nucleophile_molecule).push([proton], container, container.length-1, test_number, electrophile_atom_index, nucleophile_atom_index)
+        // target atom index should always be 1 as it is a proton
+        MoleculeController(nucleophile_molecule).push([proton], container, container.length-1, test_number, 1, nucleophile_atom_index)
 
         if (test_number === 2) {
             container.length.should.be.equal(3)

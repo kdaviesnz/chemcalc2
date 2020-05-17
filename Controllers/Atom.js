@@ -45,9 +45,6 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         bonds: __Bonds,
         lonePairs: (test_number) => {
 
-            if (test_number === 9999) {
-                current_atom_index.should.be.equal(3)
-            }
 
             // Remove current atom
             const molecule_minus_current_atom = mmolecule.filter(
@@ -56,11 +53,6 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                 }
             )
             
-            if (test_number === 9999) {
-                molecule_minus_current_atom.length.should.be.equal(4) // 2 hydrogens + pKa + proton
-                molecule_minus_current_atom[2][0].should.be.equal("H")
-            }
-
             // Get electrons from atoms (this won't include atoms from current atom)
             const electrons_from_other_atoms = molecule_minus_current_atom.reduce(
                 (carry, __atom) => {
@@ -77,11 +69,6 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                 },
                 []
             )
-
-            if (test_number === 9999) {
-                electrons_from_other_atoms.length.should.be.equal(4) // (water) electrons from the 2 hydrogens
-    
-            }
 
             // Check current atom electrons to see if they're being used
             const lone_electrons = atom.slice(4).filter(
