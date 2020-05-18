@@ -70,7 +70,7 @@ class CContainer {
                 }
                 
                 // const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
-                // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
+                // test 4 CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
                 reaction = bronstedLowry.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index
                     
                 if (reaction === false) {
