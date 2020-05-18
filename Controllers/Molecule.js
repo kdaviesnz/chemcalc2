@@ -235,6 +235,19 @@ const CMolecule = (mmolecule) => {
             // atoms [ [ 'H', 1, 1, 1 ] ]
             atoms[target_atom_index -1][0].should.be.equal("H")
         }
+        
+        //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
+        if (test_number === 4) {
+            source_atom_index.should.be.equal(1) // nucleophile
+            mmolecule.length.should.be.equal(2) // mmolecule should be the nucleophile (Cl-)
+            mmolecule[1][0].should.be.equal("Cl")            
+            mmolecule[source_atom_index][0].should.be.equal("Cl")
+            atoms.length.should.be.equal(1)
+            target_atom_index.should.be.equal(1) // proton so must be 1
+            source_atom_index.should.be.equal(1) // Cl- atom on nucleophile taking into account pKa
+            // atoms [ [ 'H', 1, 1, 1 ] ]
+            atoms[target_atom_index -1][0].should.be.equal("H")
+        }
 
         // This is the index of the target atom after adding it to mmolecule
         const target_atom_mmolecule_index = mmolecule.length + target_atom_index -1
@@ -637,6 +650,14 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 atoms_or_atomic_symbols[0].length.should.be.equal(4)
                 target_atom_index.should.be.equal(1)
             }
+            
+            //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
+            if (test_number === 4) {
+                atoms_or_atomic_symbols.length.should.be.equal(1)  // proton
+                atoms_or_atomic_symbols[0][0].should.be.equal("H")
+                atoms_or_atomic_symbols[0].length.should.be.equal(4)
+                target_atom_index.should.be.equal(1)
+            }
 
             const atoms = atoms_or_atomic_symbols.map(
                 (atom_or_atomic_symbol) => {
@@ -645,6 +666,19 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             )
 
             if (test_number===1) {
+                const atom_is_proton = atoms[0][0] === "H" && atoms[0].length ===4
+                atom_is_proton.should.be.equal(true)
+                // H2O
+                // mmolecue should be water
+                mmolecule.length.should.be.equal(4)
+                mmolecule[3][0].should.be.equal("O")
+                mmolecule[2][0].should.be.equal("H")
+                mmolecule[1][0].should.be.equal("H")
+                target_molecule_index.should.be.equal(2)
+            }
+            
+            //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
+            if (test_number===4) {
                 const atom_is_proton = atoms[0][0] === "H" && atoms[0].length ===4
                 atom_is_proton.should.be.equal(true)
                 // H2O
@@ -668,7 +702,14 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 // We are pushing a proton to H2O
                 source_atom_index.should.be.equal(3) // Should be 3
             }
-
+            
+            //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
+            if(test_number === 4) {
+                // Note at this point we have removed the proton from HCl
+                // We are pushing a proton to H2O
+                source_atom_index.should.be.equal(3) // Should be 3
+            }
+            
             if (source_atom_index !== false) {
                 return _makeCovalentBond(atoms, source_atom_index, test_number, target_atom_index) // return molecule
             }
