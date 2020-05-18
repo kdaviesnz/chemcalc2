@@ -269,8 +269,8 @@ const CMolecule = (mmolecule) => {
             mmolecule.length.should.be.equal(10) // COC
         }
 
-        // CC=CC (nucleophile) ---------> H+ (electrophile)
-        if (test_number === 3) {
+        //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
+        if (test_number === 4) {
             target_atom_mmolecule_index.should.be.equal(10) // Al
             atoms.length.should.be.equal(4) // AlCl3
             mmolecule.length.should.be.equal(10) // COC
@@ -279,6 +279,8 @@ const CMolecule = (mmolecule) => {
 
         if (test_number === 5) {
             target_atom_mmolecule_index.should.be.equal(4)
+            atoms.length.should.be.equal(4) // AlCl3
+            mmolecule.length.should.be.equal(10) // COC
         }
 
         // Add atoms to molecule.
@@ -329,6 +331,16 @@ const CMolecule = (mmolecule) => {
             mmolecule[3][0].should.be.equal("H")
             mmolecule[4][0].should.be.equal("C")
         }
+        
+        //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
+        if (test_number === 4) {
+            mmolecule.length.should.be.equal(14)
+            mmolecule[1][0].should.be.equal("H")
+            mmolecule[2][0].should.be.equal("H")
+            mmolecule[3][0].should.be.equal("H")
+            mmolecule[4][0].should.be.equal("C")
+        }
+        
 
         // Now create the bond
         
@@ -388,6 +400,14 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         
         // AlCl3 + C:OC
         if (test_number === 3) {
+            target_atom_electron_to_share_index.should.be.equal(false)
+            mmolecule[target_atom_mmolecule_index][0].should.be.equal("Al")
+            mmolecule[source_atom_index][0].should.be.equal("O")
+            source_atom_electron_to_share_index.should.be.equal(3)       // false
+        }
+        
+        //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
+        if (test_number === 4) {
             target_atom_electron_to_share_index.should.be.equal(false)
             mmolecule[target_atom_mmolecule_index][0].should.be.equal("Al")
             mmolecule[source_atom_index][0].should.be.equal("O")
@@ -479,6 +499,15 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         }
         
         if (test_number === 3) {
+            mmolecule.length.should.be.equal(14)
+            mmolecule[1][0].should.be.equal("H")
+            mmolecule[2][0].should.be.equal("H")
+            mmolecule[3][0].should.be.equal("H")
+            mmolecule[4][0].should.be.equal("C")
+        }
+        
+        //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
+        if (test_number === 4) {
             mmolecule.length.should.be.equal(14)
             mmolecule[1][0].should.be.equal("H")
             mmolecule[2][0].should.be.equal("H")
