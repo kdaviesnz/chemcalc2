@@ -6,6 +6,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
                    electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index) => {
 
         if (undefined === nucleophile_molecule) {
+           
             const substrate_proton_index = MoleculeController(container[1]).indexOf("H")
             const reagent_proton_index = MoleculeController(container[2]).indexOf("H")
 
@@ -24,28 +25,47 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
                 substrate_proton_index.should.be.equal(false)
                 reagent_proton_index.should.be.equal(false) // hydrogens are attached to carbons
             }
+            
+            // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
+            if (test_number === 4) {
+                substrate_proton_index.should.be.equal(false)
+                reagent_proton_index.should.be.equal(true) 
+            }
 
-            if (substrate_proton_index!== false && reagent_proton_index === false) {
+            if (substrate_proton_index !== false && reagent_proton_index === false) {
                 electrophile_molecule_index = 1
                 electrophile_molecule = container[electrophile_molecule_index]
                 electrophile_atom_index = substrate_proton_index
                 nucleophile_molecule_index = 2
                 nucleophile_molecule = container[nucleophile_molecule_index]
                 nucleophile_atom_index = MoleculeController(electrophile_molecule).nucleophileIndex()
-            } else if (substrate_proton_index=== false && reagent_proton_index !== false) {
+            } else if (substrate_proton_index === false && reagent_proton_index !== false) {
+               
                 // Cl- (nucleophile)  <---- H3O (electrophile, what arrow points to)
+                // test 4 CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
+                
                 electrophile_molecule_index = 2
                 electrophile_molecule = container[electrophile_molecule_index]
                 electrophile_atom_index = reagent_proton_index
                 nucleophile_molecule_index = 1
                 nucleophile_molecule = container[nucleophile_molecule_index]
                 nucleophile_atom_index = MoleculeController(nucleophile_molecule).nucleophileIndex()
+                
                 if (test_number === 2) {
                     nucleophile_atom_index.should.be.equal(1) // Cl-
                     electrophile_atom_index.should.be.equal(4)
                     nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("Cl")
                     electrophile_molecule[electrophile_atom_index][0].should.be.equal("H")
                 }
+                
+                // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
+                if (test_number === 4) {
+                    nucleophile_atom_index.should.be.equal(5) // C on C=C
+                    electrophile_atom_index.should.be.equal(1)   // H
+                    nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("C")
+                    electrophile_molecule[electrophile_atom_index][0].should.be.equal("H")
+                }
+                
         
             } else if (substrate_proton_index=== false && reagent_proton_index === false) {
                 return false
@@ -95,7 +115,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
             process.exit()
         }
 
-        // Check that we have a proton
+       
         if (test_number === 3) {
             electrophile_molecule[1][0].should.be.equal("Al")
         }
@@ -131,6 +151,15 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
             electrophile_molecule[electrophile_atom_index][0].should.be.equal("H")
             nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("Cl")
         }
+        
+        // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
+        if (test_number === 4 ) {
+            nucleophile_molecule.length.should.be.equal(14)
+            nucleophile_atom_index.should.be.equal(5)
+            electrophile_molecule.length.should.be.equal(1)
+            electrophile_molecule[electrophile_atom_index][0].should.be.equal("H")
+            nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("C")
+        }
 
         // react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index)
         // Here the substrate (base) has no proton and the reagent (acid) does.
@@ -143,11 +172,24 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
             electrophile_molecule.length.should.be.equal(5)
             proton_index.should.be.equal(4)
         }
+        
+        // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
+        if (test_number === 4) {
+            nucleophile_molecule[1][0].should.be.equal("C")
+            electrophile_molecule.length.should.be.equal(5)
+            proton_index.should.be.equal(1)
+        }
 
         // remove proton
         if (test_number === 1) {
             electrophile_molecule_index.should.be.equal(1)
         }
+        
+        // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
+        if (test_number === 4) {
+            electrophile_molecule_index.should.be.equal(2)           
+        }
+        
         container = MoleculeController(electrophile_molecule).removeProton(
             container,
             electrophile_molecule_index,
@@ -165,6 +207,17 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
             container[container.length-1][1].length.should.be.equal(4)
         }
 
+        // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
+        if (test_number === 4) {
+            container.length.should.be.equal(4)
+            if (null !== container[container.length-1][0]) {
+                console.log("BronstedLowryAcidBaseReactions::Value should be null")
+                process.exit()
+            }
+            container[container.length-1][1][0].should.be.equal("H")
+            container[container.length-1][1].length.should.be.equal(4)
+        }
+        
         const proton = container[container.length-1][1]
         if (test_number === 2) {
             proton.should.be.Array()
@@ -173,6 +226,14 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
             proton[0].should.be.equal("H")
         }
 
+        // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
+        if (test_number === 4) {
+            proton.should.be.Array()
+            proton.length.should.be.equal(4)
+            proton[0].should.be.String()
+            proton[0].should.be.equal("H")
+        }
+        
         // Move the proton to first molecule
         container.splice(container.length-1,1) // remove proton from container
         
@@ -192,11 +253,30 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
             electrophile_atom_index.should.be.equal(4)
         }
         
+        // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
+        if (test_number === 4) {
+            nucleophile_molecule.length.should.be.equal(2)
+            electrophile_molecule.length.should.be.equal(4)
+            nucleophile_atom_index.should.be.equal(1)
+            electrophile_atom_index.should.be.equal(4)
+        }
+        
         // test 1 - nucleophile_molecule is water
         // test 2 - nucleophile_molecule is Cl-
+        // test 4 CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
         // target atom index should always be 1 as it is a proton
         MoleculeController(nucleophile_molecule).push([proton], container, container.length-1, test_number, 1, nucleophile_atom_index)
 
+        if (test_number === 1) {
+            container.length.should.be.equal(3)
+            // H3O
+            nucleophile_molecule.length.should.be.equal(5)
+            nucleophile_molecule[3].length.should.be.equal(12)
+            // [Cl-]
+            electrophile_molecule[1][0].should.be.equal("Cl")
+            electrophile_molecule.length.should.be.equal(2)
+        }
+        
         if (test_number === 2) {
             container.length.should.be.equal(3)
             nucleophile_molecule.length.should.be.equal(3)
@@ -212,14 +292,20 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
             electrophile_molecule[3][0].should.be.equal("O")
         }
 
-        if (test_number === 1) {
+        // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
+        if (test_number === 4) {
             container.length.should.be.equal(3)
-            // H3O
-            nucleophile_molecule.length.should.be.equal(5)
-            nucleophile_molecule[3].length.should.be.equal(12)
-            // [Cl-]
-            electrophile_molecule[1][0].should.be.equal("Cl")
-            electrophile_molecule.length.should.be.equal(2)
+            nucleophile_molecule.length.should.be.equal(3)
+            electrophile_molecule.length.should.be.equal(4)
+            nucleophile_molecule[1].length.should.be.equal(12)
+            nucleophile_molecule[1][0].should.be.equal("Cl")
+            nucleophile_molecule[2][0].should.be.equal("H")
+            electrophile_molecule[1].length.should.be.equal(6)
+            electrophile_molecule[1][0].should.be.equal("H")
+            electrophile_molecule[2].length.should.be.equal(6)
+            electrophile_molecule[2][0].should.be.equal("H")
+            electrophile_molecule[3].length.should.be.equal(12)
+            electrophile_molecule[3][0].should.be.equal("O")
         }
 
         return container
