@@ -97,7 +97,7 @@ const PeriodicTable = {
         "atomic_number":35,
         "name":"bromine",
         "atomic_weight":79.904,
-        "electrons_per_shell": "2-8-18-17",
+        "electrons_per_shell": "2-8-18-7",
         "state_of_matter":"liquid",
         "subcategory":"reactive nonmetal"
     },
