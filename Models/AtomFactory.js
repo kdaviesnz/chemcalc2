@@ -55,7 +55,24 @@ PeriodicTable:
          ...range.range(0,PeriodicTable[atomicSymbol].electrons_per_shell.split("-").pop(),1).map((i)=>{
              return uniqid()
          })
-     ]
+
+         [ [ 'Br',
+    35,
+    17,
+    -9,
+ ...]
+
+     "Br": {
+        "group":17,
+        "column":"VIIA",
+        "atomic_number":35,
+        "name":"bromine",
+        "atomic_weight":79.904,
+        "electrons_per_shell": "2-8-18-17",
+        "state_of_matter":"liquid",
+        "subcategory":"reactive nonmetal"
+    },
+
      */
      return [
          atomicSymbol,
