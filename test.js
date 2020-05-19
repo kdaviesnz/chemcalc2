@@ -12,6 +12,7 @@ const PeriodicTable = require("./Models/PeriodicTable")
 const CContainer = require('./Controllers/Container')
 const CMolecule = require('./Controllers/Molecule')
 const range = require("range");
+const Set = require('./Models/Set')
 
 
 
@@ -341,11 +342,11 @@ hbr.slice(1).filter(
     }
 ).length.should.be.equal(1)
 hbr.length.should.be.equal(3)
-console.log(hbr);
-console.log("test.js")
-process.exit()
 const HBrController = CMolecule(hcl)
-
+console.log(hbr)
+console.log("test.js")
+console.log(Set().intersection(hbr[1].slice(4), hbr[2].slice(4)))
+process.exit()
 HBrController.bondCount(hbr[1]).should.be.equal(1)
 HBrController.bondCount(hbr[2]).should.be.equal(1)
 hbr[0].should.be.a.equal(-6.3)
@@ -388,7 +389,7 @@ hbr[1].indexOf(hbr[2][hbr[2].length-1]).should.not.be.False()
 
 // CH3CH=CHCH3
 const butene = MoleculeFactory("CC=CC")
-const buteneController = CMolecule( utene)
+const buteneController = CMolecule(butene)
 HBrController.bondCount(hbr[1]).should.be.equal(1)
 HBrController.bondCount(hbr[2]).should.be.equal(1)
 hbr[0].should.be.a.equal(-6.3)
