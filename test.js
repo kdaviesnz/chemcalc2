@@ -343,13 +343,9 @@ hbr.slice(1).filter(
 ).length.should.be.equal(1)
 hbr.length.should.be.equal(3)
 const HBrController = CMolecule(hbr)
-console.log(hbr)
-console.log("test.js")
-console.log(Set().intersection(hbr[1].slice(4), hbr[2].slice(4)))
 HBrController.bondCount(hbr[1]).should.be.equal(1)
-process.exit()
 HBrController.bondCount(hbr[2]).should.be.equal(1)
-hbr[0].should.be.a.equal(-6.3)
+hbr[0].should.be.a.equal(12345)
 hbr[1].should.be.a.Array()
 hbr[1].length.should.be.a.equal(6)
 hbr[1][0].should.be.a.String()
@@ -370,13 +366,13 @@ range.range(4,hbr[1].length-1).map(
 hbr[2].should.be.a.Array()
 hbr[2].length.should.be.a.equal(12)
 hbr[2][0].should.be.a.String()
-hbr[2][0].should.be.equal("Cl")
+hbr[2][0].should.be.equal("Br")
 range.range(1,3,1).map(
     (i)=>{
         hbr[2][i].should.be.a.Number()
     }
 ) 
-hbr[2][1].should.be.equal(17)
+hbr[2][1].should.be.equal(35)
 hbr[2][2].should.be.equal(7)
 hbr[2][3].should.be.equal(1)
 range.range(4,hcl[2].length-1,1).map(

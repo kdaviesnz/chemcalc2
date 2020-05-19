@@ -25,6 +25,16 @@ const AtomsFactory = (canonicalSMILES) => {
     // parse a SMILES string, returns an array of SMILES tokens [{type: '...', value: '...'}, ...]
     const smiles_tokens = smiles.parse(canonicalSMILES.replace("H",""))
 
+    if (canonicalSMILES === "CC=CC") {
+        /*
+        [ { type: 'AliphaticOrganic', value: 'C' },
+  { type: 'AliphaticOrganic', value: 'C' },
+  { type: 'Bond', value: '=' },
+  { type: 'AliphaticOrganic', value: 'C' },
+  { type: 'AliphaticOrganic', value: 'C' } ]
+         */
+    }
+
     if (canonicalSMILES === "[Al](Cl)(Cl)Cl") {
         /*
         [Al](Cl)(Cl)Cl
@@ -61,6 +71,47 @@ const AtomsFactory = (canonicalSMILES) => {
             return true
         }
     )
+
+
+    if (canonicalSMILES === "CC=CC") {
+        console.log(atoms_with_tokens_no_brackets)
+        process.exit()
+        /*
+[ [ 'C',
+    6,
+    4,
+    4,
+    '71l417okadoo9mk',
+    '71l417okadoo9ml',
+    '71l417okadoo9mm',
+    '71l417okadoo9mn' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '71l417okadoo9mo',
+    '71l417okadoo9mp',
+    '71l417okadoo9mq',
+    '71l417okadoo9mr' ],
+  { type: 'Bond', value: '=' },
+  [ 'C',
+    6,
+    4,
+    4,
+    '71l417okadoo9ms',
+    '71l417okadoo9mt',
+    '71l417okadoo9mu',
+    '71l417okadoo9mv' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '71l417okadoo9mw',
+    '71l417okadoo9mx',
+    '71l417okadoo9my',
+    '71l417okadoo9mz' ] ]
+         */
+    }
 
     // Add the bonds
     let branch_number = 0
@@ -491,7 +542,7 @@ const AtomsFactory = (canonicalSMILES) => {
             
             if ("CC=CC" === canonicalSMILES) {
                 switch (index) {
-                    case 0: // first cabon
+                    case 0: // first carbon
                         tracker.length.should.be.equal(0)
                         // Check first carbon atom has 5 electrons
                         processed_atoms[0].slice(4).length.should.be.equal(5)
