@@ -647,7 +647,12 @@ const AtomsFactory = (canonicalSMILES) => {
         Set().intersection(atoms[1].slice(4), atoms[2].slice(4)).length.should.be.equal(4)
         Set().intersection(atoms[2].slice(4), atoms[3].slice(4)).length.should.be.equal(2)
     }
-    
+
+
+    if (canonicalSMILES === "HBr") {
+        console.log(atoms)
+        process.exit("AtomsFactory.js")
+    }
     
     // Add hydrogens
     const atoms_with_hydrogens = atoms.reduce(

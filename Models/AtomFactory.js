@@ -44,6 +44,19 @@ PeriodicTable:
  */
     // atomic symbol, proton count, valence count,  number of bonds, velectron1, velectron2, velectron3
 
+    /*
+         return [
+         atomicSymbol,
+         PeriodicTable[atomicSymbol].atomic_number*1,
+         PeriodicTable[atomicSymbol].electrons_per_shell.split("-").pop()*1,
+         atomicSymbol === "H"? 1
+             :atomicSymbol === "Al"?3:
+             8 - 1*PeriodicTable[atomicSymbol].electrons_per_shell.split("-").pop(),
+         ...range.range(0,PeriodicTable[atomicSymbol].electrons_per_shell.split("-").pop(),1).map((i)=>{
+             return uniqid()
+         })
+     ]
+     */
      return [
          atomicSymbol,
          PeriodicTable[atomicSymbol].atomic_number*1,

@@ -47,7 +47,7 @@ class CContainer {
             let reaction = false
             
             // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-            if (test_number === 4) {
+            if (this.test_number === 4) {
                 substrate_families.alkene.length.should.be.equal(1)
             }
             
@@ -71,7 +71,7 @@ class CContainer {
                 
                 // const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
                 // test 4 CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-                reaction = bronstedLowry.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index
+                reaction = bronstedLowry.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
                     
                 if (reaction === false) {
                     // reagent does not have a proton

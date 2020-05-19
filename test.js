@@ -334,7 +334,18 @@ console.log("Test 3 complete")
 
 
 const hbr = MoleculeFactory("HBr")
+// Check for hydrogen
+hbr.slice(1).filter(
+    (atom) => {
+        return atom[0] === 'H'
+    }
+).length.should.be.equal(1)
+hbr.length.should.be.equal(3)
+console.log(hbr);
+console.log("test.js")
+process.exit()
 const HBrController = CMolecule(hcl)
+
 HBrController.bondCount(hbr[1]).should.be.equal(1)
 HBrController.bondCount(hbr[2]).should.be.equal(1)
 hbr[0].should.be.a.equal(-6.3)
