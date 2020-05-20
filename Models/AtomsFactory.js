@@ -268,9 +268,8 @@ const AtomsFactory = (canonicalSMILES) => {
                 }
    
    
-                // Add electron to parent atom
+                // Add electron(s) to parent atom
                 processed_atoms[parent_atom_index].push(current_atom_electrons_to_share[0])
-
                 if ( bond_type === "=" ) {                  
                      row.push(parent_electrons_to_share[1])
                 }
@@ -334,6 +333,8 @@ const AtomsFactory = (canonicalSMILES) => {
                 res = row // is an atom
                 
             } else if (row.type === 'Bond') {
+        
+                 res = row
                 //   { type: 'Bond', value: '=' },
                 /*
                 switch (row.value) {
