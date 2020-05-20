@@ -184,8 +184,8 @@ const AtomsFactory = (canonicalSMILES) => {
                 }
               
             
-                current_atom_electrons[0].should.be.a.String()
-                current_atom_electrons[1].should.be.a.String()
+                current_atom_electrons_to_share[0].should.be.a.String()
+                current_atom_electrons_to_share[1].should.be.a.String()
                 
                 // Add electron to current atom
                 let parent_atom_index = null
@@ -251,17 +251,29 @@ const AtomsFactory = (canonicalSMILES) => {
                    }
                }
                 
-                let parent_electron = null
-                parent_electron = getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index )
-
-                parent_electron.should.be.a.String()
-                processed_atoms[parent_atom_index].indexOf(parent_electron).should.not.be.equal(-1)
-                row.push(parent_electron)
-                used_electrons.push(parent_electron)
-
+                let parent_electrons_to_share = null
+                parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index ))
+                used_electrons.push(parent_electrons_to_share[0])
+                if ( bond_type === "=" ) {                  
+                     parent_electrons_to_share.push(getFreeElectron(used_electrons, row, index ))   
+                     used_electrons.push(parent_electrons_to_share[1])  
+                }
+            
+                parent_electrons_to_share[0].should.be.a.String()
+                processed_atoms[parent_atom_index].indexOf(parent_electrons_to_share[0]).should.not.be.equal(-1)
+               
+                row.push(parent_electrons_to_share[0])
+                if ( bond_type === "=" ) {                  
+                     row.push(parent_electrons_to_share[1])
+                }
+   
+   
                 // Add electron to parent atom
-                processed_atoms[parent_atom_index].push(current_atom_electron)
+                processed_atoms[parent_atom_index].push(current_atom_electrons_to_share[0])
 
+                if ( bond_type === "=" ) {                  
+                     row.push(parent_electrons_to_share[1])
+                }
 
                 if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
                     switch (index) {
