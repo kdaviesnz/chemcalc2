@@ -334,7 +334,7 @@ const AtomsFactory = (canonicalSMILES) => {
                 
             } else if (row.type === 'Bond') {
         
-                 res = row
+                 res = row // remove row in the next phase as we still need it
                 //   { type: 'Bond', value: '=' },
                 /*
                 switch (row.value) {
@@ -690,7 +690,8 @@ const AtomsFactory = (canonicalSMILES) => {
         }
     )
 
-
+    // Remove bonds using filter
+// @todo
 
     if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
 
