@@ -113,7 +113,7 @@ const AtomsFactory = (canonicalSMILES) => {
          */
     }
 
-    // Add the bonds
+    // Add the bonds and branches
     let branch_number = 0
 
     // tracker
@@ -157,6 +157,9 @@ const AtomsFactory = (canonicalSMILES) => {
                 
             } else if (undefined === row.type ) {
                 
+                const bond_type = processed_atoms[index -1].type === "Bond" 
+                    && processed_atoms[index -1].value === "="? "=":""
+                
                 if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
                     index.should.be.oneOf([2, 5, 7])
                 }
@@ -171,8 +174,18 @@ const AtomsFactory = (canonicalSMILES) => {
                 }
 
                 // Share electrons
-                const current_atom_electron = getFreeElectron(used_electrons, row, index ) // row[row.length-1]
-                current_atom_electron.should.be.a.String()
+                const current_atom_electrons_to_share = []
+                current_atom_electrons_to_share.push(getFreeElectron(used_electrons, row, index )) // row[row.length-1]
+                used_electrons.push(current_atom_electrons_to_share[0]
+                                    
+                if ( bond_type === =" ) {                  
+                     current_atom_electrons_to_share.push(getFreeElectron(used_electrons, row, index ))   
+                     used_electrons.push(current_atom_electrons_to_share[1])  
+                }
+              
+            
+                current_atom_electrons[0].should.be.a.String()
+                current_atom_electrons[1].should.be.a.String()
                 
                 // Add electron to current atom
                 let parent_atom_index = null
@@ -307,7 +320,17 @@ const AtomsFactory = (canonicalSMILES) => {
                 }
 
                 res = row // is an atom
-
+                
+            } else if (row.type === 'Bond') {
+                //   { type: 'Bond', value: '=' },
+                /*
+                switch (row.value) {
+                    case '=':
+                        
+                        break
+                }
+                */
+               //   { type: 'Bond', value: '=' },
             } else if (undefined !== row.type && row.type === "Branch" && row.value === "begin") {
 
                 is_new_branch.should.be.equal(false)
