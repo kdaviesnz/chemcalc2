@@ -697,10 +697,10 @@ const AtomsFactory = (canonicalSMILES) => {
 
     if ("CC=CC" === canonicalSMILES) {
         atoms[0].slice(4).length.should.be.equal(5)
-        atoms[2].slice(4).length.should.be.equal(8)
+        atoms[2].slice(4).length.should.be.equal(7)
         atoms[3].slice(4).length.should.be.equal(5)
         Set().intersection(atoms[0].slice(4), atoms[1].slice(4)).length.should.be.equal(2)
-        Set().intersection(atoms[1].slice(4), atoms[2].slice(4)).length.should.be.equal(2)
+        Set().intersection(atoms[1].slice(4), atoms[2].slice(4)).length.should.be.equal(4)
         Set().intersection(atoms[2].slice(4), atoms[3].slice(4)).length.should.be.equal(2)
     }
 
