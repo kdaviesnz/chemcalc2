@@ -155,6 +155,13 @@ const AtomsFactory = (canonicalSMILES) => {
 
             } else if (undefined === row.type ) {
 
+
+                if ("CC=CC" === canonicalSMILES && index === 3) {
+                    console.log(row)
+                    console.log("AtomsFactory4")
+                    process.exit()
+                }
+
                 const bond_type = processed_atoms[index -1].type === "Bond"
                 && processed_atoms[index -1].value === "="? "=":""
 
