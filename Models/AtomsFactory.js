@@ -162,6 +162,7 @@ const AtomsFactory = (canonicalSMILES) => {
                     index.should.be.oneOf([2, 5, 7])
                 }
 
+                // 0=C, 1=C, 2=bond, 3=C, 4=C
                 if ("CC=CC" === canonicalSMILES) {
                     index.should.be.oneOf([1, 3, 4])
                 }
@@ -214,6 +215,7 @@ const AtomsFactory = (canonicalSMILES) => {
                     }
                 }
 
+                // 0=C, 1=C, 2=bond, 3=C, 4=C
                 if ("CC=CC" === canonicalSMILES) {
                     // index.should.be.oneOf([1, 3, 4])
                     switch (index) {
@@ -326,6 +328,39 @@ const AtomsFactory = (canonicalSMILES) => {
                             break
                     }
                 }
+                
+                // 0=C, 1=C, 2=bond, 3=C, 4=C
+                if ("CC=CC" === canonicalSMILES) {
+                    // index.should.be.oneOf([1, 3, 4])
+                    switch (index) {
+                        case 1:
+                            parent_atom_index.should.be.equal(0)
+                            Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(2)
+                            Set().intersection(processed_atoms[1].slice(4), processed_atoms[3].slice(4)).length.should.be.equal(0)
+                            Set().intersection(processed_atoms[3].slice(4), processed_atoms[4].slice(4)).length.should.be.equal(0)
+                            
+                            break
+                        case 3:
+                            parent_atom_index.should.be.equal(1)
+                            Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(2)
+                            Set().intersection(processed_atoms[1].slice(4), processed_atoms[3].slice(4)).length.should.be.equal(4)
+                            Set().intersection(processed_atoms[3].slice(4), processed_atoms[4].slice(4)).length.should.be.equal(0)
+                            
+                            
+                            break
+                        case 4:
+                            parent_atom_index.should.be.equal(3)
+                            
+                            Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(2)
+                            Set().intersection(processed_atoms[1].slice(4), processed_atoms[3].slice(4)).length.should.be.equal(4)
+                            Set().intersection(processed_atoms[3].slice(4), processed_atoms[4].slice(4)).length.should.be.equal(2)
+                            
+                            break
+
+                    }
+
+                }
+                
 
                 res = row // is an atom
 
