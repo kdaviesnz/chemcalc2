@@ -653,10 +653,11 @@ const AtomsFactory = (canonicalSMILES) => {
 
     if ("CC=CC" === canonicalSMILES) {
         // Check there there is one bond between the first and second carbon
-        Set().intersection(atoms[0].splice(4), atoms[1].slice(4))
-        console.log(atoms)
-        console.log("AtomsFactory.js")
-        process.exit()
+        Set().intersection(atoms[0].slice(4), atoms[1].slice(4)).length.should.be.equal(2)
+        // Check there there is two bonds between the second and third carbon
+        Set().intersection(atoms[0].slice(1), atoms[2].slice(4)).length.should.be.equal(4)
+        // Check there there is one bond between the third and fourth carbon
+        Set().intersection(atoms[2].slice(4), atoms[3].slice(4)).length.should.be.equal(2)      
     }
 
 
@@ -731,9 +732,21 @@ const AtomsFactory = (canonicalSMILES) => {
     )
     //  atomic symbol, proton count, valence count, number of bonds, velectron1, velectron2, velectron3
 
+    if ("CC=CC" === canonicalSMILES) {
+        atoms_with_hydrogens.length.should.be.equal(4444)
+        console.log(atoms_with_hydrogens)
+        console.log("AtomsFactory.js")
+        process.exit()
+        // Check there there is one bond between the first and second carbon
+        Set().intersection(atoms_with_hydrogens[0].slice(4), atoms_with_hydrogens[1].slice(4)).length.should.be.equal(2)
+        // Check there there is two bonds between the second and third carbon
+        Set().intersection(atoms_with_hydrogens[0].slice(1), atoms_with_hydrogens[2].slice(4)).length.should.be.equal(4)
+        // Check there there is one bond between the third and fourth carbon
+        Set().intersection(atoms_with_hydrogens[2].slice(4), atoms_with_hydrogens[3].slice(4)).length.should.be.equal(2)      
+    }
 
     if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
-        atoms_with_hydrogens.length.should.be.equal(4) // not ok
+        atoms_with_hydrogens.length.should.be.equal(4) 
         Set().intersection(atoms_with_hydrogens[1].slice(4), atoms_with_hydrogens[0].slice(4)).length.should.be.equal(2)
         Set().intersection(atoms_with_hydrogens[1].slice(4), atoms_with_hydrogens[2].slice(4)).length.should.be.equal(0)
         Set().intersection(atoms_with_hydrogens[1].slice(4), atoms_with_hydrogens[3].slice(4)).length.should.be.equal(0)
