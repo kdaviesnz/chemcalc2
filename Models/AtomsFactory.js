@@ -272,6 +272,12 @@ const AtomsFactory = (canonicalSMILES) => {
                 parent_electrons_to_share[0].should.be.a.String()
                 processed_atoms[parent_atom_index].indexOf(parent_electrons_to_share[0]).should.not.be.equal(-1)
 
+                if ("CC=CC" === canonicalSMILES && index === 3) {
+                    bond_type.should.be.equal("=")
+                    parent_electrons_to_share.length.should.be.equal(2)
+                }
+                
+                
                 row.push(parent_electrons_to_share[0])
                 if ( bond_type === "=" ) {
                     row.push(parent_electrons_to_share[1])
@@ -284,6 +290,10 @@ const AtomsFactory = (canonicalSMILES) => {
                     row.push(parent_electrons_to_share[1])
                 }
 
+                if ("CC=CC" === canonicalSMILES && index === 3) {
+                    
+                }
+                
                 if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
                     switch (index) {
                         case 2: // first chlorine
@@ -350,6 +360,9 @@ const AtomsFactory = (canonicalSMILES) => {
                             break
                         case 3:
                             parent_atom_index.should.be.equal(1)
+                            
+                            row.slice(4).length.should.be.equal(6)
+                            
                             Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(2)
                             Set().intersection(processed_atoms[1].slice(4), processed_atoms[3].slice(4)).length.should.be.equal(4)
                             Set().intersection(processed_atoms[3].slice(4), processed_atoms[4].slice(4)).length.should.be.equal(0)
