@@ -166,6 +166,8 @@ const AtomsFactory = (canonicalSMILES) => {
                 if ("CC=CC" === canonicalSMILES) {
                     index.should.be.oneOf([1, 3, 4])
                 }
+                
+                
 
                 const tracker_index = tracker.length ===0 ? 0: tracker[tracker.length-1][0]
                 if ("[Al](Cl)(Cl)Cl" === canonicalSMILES && index ===5) {
@@ -182,13 +184,19 @@ const AtomsFactory = (canonicalSMILES) => {
                     used_electrons.push(current_atom_electrons_to_share[1])
                 }
 
-
+     
                 current_atom_electrons_to_share[0].should.be.a.String()
                 if (undefined !== current_atom_electrons_to_share[1]) {
                     current_atom_electrons_to_share[1].should.be.a.String()
                 }
 
-                // Add electron to current atom
+                if ("CC=CC" === canonicalSMILES && index === 3) {
+                    bond_type.should.be.equal("=")
+                    current_atom_electrons_to_share.length.should.be.equal(2)
+                }
+                
+                
+                // Add electron(s) to current atom
                 let parent_atom_index = null
                 if (index === 0) {
                     parent_atom_index = 0
