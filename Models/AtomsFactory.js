@@ -653,7 +653,7 @@ const AtomsFactory = (canonicalSMILES) => {
 
     if ("CC=CC" === canonicalSMILES) {
         // Check there there is one bond between the first and second carbon
-
+        Set().intersection(atoms[0].splice(4), atoms[1].slice(4))
         console.log(atoms)
         console.log("AtomsFactory.js")
         process.exit()
