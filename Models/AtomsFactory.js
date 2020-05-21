@@ -742,6 +742,16 @@ const AtomsFactory = (canonicalSMILES) => {
         atoms_with_hydrogens[9].slice(4).length.should.be.equal(10) // not ok should be 8
         atoms_with_hydrogens[13].slice(4).length.should.be.equal(8)
 
+        // Check there there is one bond between the first hydrogen and first carbon
+        Set().intersection(atoms_with_hydrogens[0].slice(4), atoms_with_hydrogens[3].slice(4)).length.should.be.equal(2)
+
+        // Check there there is one bond between the second hydrogen and first carbon
+        Set().intersection(atoms_with_hydrogens[1].slice(4), atoms_with_hydrogens[3].slice(4)).length.should.be.equal(2)
+
+        // Check there there is one bond between the third hydrogen and first carbon
+        Set().intersection(atoms_with_hydrogens[2].slice(4), atoms_with_hydrogens[3].slice(4)).length.should.be.equal(2)
+
+        
         // Check there there is one bond between the first and second carbon
         Set().intersection(atoms_with_hydrogens[3].slice(4), atoms_with_hydrogens[6].slice(4)).length.should.be.equal(2)
 
