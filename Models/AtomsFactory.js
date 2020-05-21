@@ -275,26 +275,54 @@ const AtomsFactory = (canonicalSMILES) => {
                 if ("CC=CC" === canonicalSMILES && index === 3) {
                     bond_type.should.be.equal("=")
                     parent_electrons_to_share.length.should.be.equal(2)
+                    row.slice(4).length.should.be.equal(4)
                 }
                 
                 
                 row.push(parent_electrons_to_share[0])
                 if ( bond_type === "=" ) {
                     row.push(parent_electrons_to_share[1])
+                    console.log(row.slice(4))
+                    console.log(Set().intersection(row.slice(4),parent_electrons_to_share ))
+                    console.log("AtomsFactory.js 3")
+                    process.exit()
                 }
 
+
+
+
+                if ("CC=CC" === canonicalSMILES && index === 3) {
+                    row.slice(4).length.should.be.equal(6)
+                }
 
                 // Add electron(s) to parent atom
                 processed_atoms[parent_atom_index].push(current_atom_electrons_to_share[0])
+
+
+                if ("CC=CC" === canonicalSMILES && index === 3) {
+                    processed_atoms[parent_atom_index].slice(4).length.should.be.equal(6) // correct
+                }
+
                 if ( bond_type === "=" ) {
-                    row.push(parent_electrons_to_share[1])
+                    processed_atoms[parent_atom_index].push(current_atom_electrons_to_share[0])
                 }
 
                 if ("CC=CC" === canonicalSMILES && index === 3) {
-                    
+                    processed_atoms[parent_atom_index].slice(4).length.should.be.equal(7) // correct (4 + 3 carbons)
                 }
-                
-                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
+
+                if ("CC=CC" === canonicalSMILES && index === 3) {
+                    console.log("Current atom electrons to share:")
+                    console.log(current_atom_electrons_to_share)
+                    console.log("Parent atom electrons to share:")
+                    console.log(parent_electrons_to_share)
+                    console.log(Set().intersection(row.slice(4),parent_electrons_to_share ))
+                    Set().intersection(row.slice(4),parent_electrons_to_share ).length.should.be.equal(2)
+                    console.log("AtomsFactory.js2")
+                    process.exit()
+                }
+
+                    if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
                     switch (index) {
                         case 2: // first chlorine
                             branch_number.should.be.equal(1)
@@ -356,18 +384,16 @@ const AtomsFactory = (canonicalSMILES) => {
                             Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(2)
                             Set().intersection(processed_atoms[1].slice(4), processed_atoms[3].slice(4)).length.should.be.equal(0)
                             Set().intersection(processed_atoms[3].slice(4), processed_atoms[4].slice(4)).length.should.be.equal(0)
-                            
                             break
                         case 3:
                             parent_atom_index.should.be.equal(1)
-                            
-                            row.slice(4).length.should.be.equal(6)
-                            
-                            Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(2)
-                            Set().intersection(processed_atoms[1].slice(4), processed_atoms[3].slice(4)).length.should.be.equal(4)
-                            Set().intersection(processed_atoms[3].slice(4), processed_atoms[4].slice(4)).length.should.be.equal(0)
-                            
-                            
+                            processed_atoms[parent_atom_index].slice(4).length.should.be.equal(7) // correct
+                            row.slice(4).length.should.be.equal(6) // correct (4 + 2 carbons)
+                            Set().intersection(processed_atoms[0].slice(4), processed_atoms[parent_atom_index].slice(4)).length.should.be.equal(2)
+                            Set().intersection(row.slice(4), processed_atoms[4].slice(4)).length.should.be.equal(0)
+                            Set().intersection(processed_atoms[parent_atom_index].slice(4), row.slice(4)).length.should.be.equal(4)
+                            console.log("AtomsFactory")
+                            process.exit()
                             break
                         case 4:
                             parent_atom_index.should.be.equal(3)
