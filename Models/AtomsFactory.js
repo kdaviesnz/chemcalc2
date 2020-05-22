@@ -156,14 +156,11 @@ const AtomsFactory = (canonicalSMILES) => {
             } else if (undefined === row.type ) {
 
 
-                if ("CC=CC" === canonicalSMILES && index === 3) {
-                    console.log(row)
-                    console.log("AtomsFactory4")
-                    process.exit()
+                const tracker_index = tracker.length ===0 ? 0: tracker[tracker.length-1][0]
+                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES && index ===5) {
+                    tracker_index.should.be.equal(0);
                 }
 
-                const bond_type = processed_atoms[index -1].type === "Bond"
-                && processed_atoms[index -1].value === "="? "=":""
 
                 if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
                     index.should.be.oneOf([2, 5, 7])
@@ -173,37 +170,7 @@ const AtomsFactory = (canonicalSMILES) => {
                 if ("CC=CC" === canonicalSMILES) {
                     index.should.be.oneOf([1, 3, 4])
                 }
-                
-                
 
-                const tracker_index = tracker.length ===0 ? 0: tracker[tracker.length-1][0]
-                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES && index ===5) {
-                    tracker_index.should.be.equal(0);
-                }
-
-                // Share electrons
-                const current_atom_electrons_to_share = []
-                current_atom_electrons_to_share.push(getFreeElectron(used_electrons, row, index )) // row[row.length-1]
-                used_electrons.push(current_atom_electrons_to_share[0])
-
-                if ( bond_type === "=" ) {
-                    current_atom_electrons_to_share.push(getFreeElectron(used_electrons, row, index ))
-                    used_electrons.push(current_atom_electrons_to_share[1])
-                }
-
-     
-                current_atom_electrons_to_share[0].should.be.a.String()
-                if (undefined !== current_atom_electrons_to_share[1]) {
-                    current_atom_electrons_to_share[1].should.be.a.String()
-                }
-
-                if ("CC=CC" === canonicalSMILES && index === 3) {
-                    bond_type.should.be.equal("=")
-                    current_atom_electrons_to_share.length.should.be.equal(2)
-                }
-                
-                
-                // Add electron(s) to current atom
                 let parent_atom_index = null
                 if (index === 0) {
                     parent_atom_index = 0
@@ -216,7 +183,6 @@ const AtomsFactory = (canonicalSMILES) => {
 
                     }
                 }
-                // const parent_atom_index = branch_tracker[branch_number][branch_tracker[branch_number].length][0]
 
                 if ("COC" === canonicalSMILES) {
                     switch (index) {
@@ -243,7 +209,6 @@ const AtomsFactory = (canonicalSMILES) => {
                         case 4:
                             parent_atom_index.should.be.equal(3)
                             break
-
                     }
 
                 }
@@ -268,68 +233,62 @@ const AtomsFactory = (canonicalSMILES) => {
                     }
                 }
 
-                let parent_electrons_to_share = []
+                const bond_type = processed_atoms[index -1].type === "Bond"
+                && processed_atoms[index -1].value === "="? "=":""
+
+
+                // Shared electrons
+                const current_atom_electrons_to_share = []
+                current_atom_electrons_to_share.push(getFreeElectron(used_electrons, row, index )) // row[row.length-1]
+                used_electrons.push(current_atom_electrons_to_share[0])
+                const  parent_electrons_to_share = []
                 parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index ))
                 used_electrons.push(parent_electrons_to_share[0])
                 if ( bond_type === "=" ) {
-                    parent_electrons_to_share.push(getFreeElectron(used_electrons, row, index ))
+                    current_atom_electrons_to_share.push(getFreeElectron(used_electrons, row, index ))
+                    used_electrons.push(current_atom_electrons_to_share[1])
+                    parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index ))
                     used_electrons.push(parent_electrons_to_share[1])
                 }
 
-                parent_electrons_to_share[0].should.be.a.String()
                 processed_atoms[parent_atom_index].indexOf(parent_electrons_to_share[0]).should.not.be.equal(-1)
 
                 if ("CC=CC" === canonicalSMILES && index === 3) {
                     bond_type.should.be.equal("=")
+                    current_atom_electrons_to_share.length.should.be.equal(2)
                     parent_electrons_to_share.length.should.be.equal(2)
                     row.slice(4).length.should.be.equal(4)
                 }
-                
-                
+
+                // Push electrons to current atom
                 row.push(parent_electrons_to_share[0])
+                if ("CC=CC" === canonicalSMILES && index === 3) {
+                    row.slice(4).length.should.be.equal(5)
+                }
                 if ( bond_type === "=" ) {
                     row.push(parent_electrons_to_share[1])
-                    console.log(row.slice(4))
-                    console.log(Set().intersection(row.slice(4),parent_electrons_to_share ))
-                    console.log("AtomsFactory.js 3")
-                    process.exit()
+                    row.slice(4).length.should.be.equal(6)
+
                 }
-
-
-
 
                 if ("CC=CC" === canonicalSMILES && index === 3) {
                     row.slice(4).length.should.be.equal(6)
+                    Set().intersection(row.slice(4), parent_electrons_to_share ).length.should.be.equal(2)
                 }
 
-                // Add electron(s) to parent atom
+                // Push electrons to parent atom
                 processed_atoms[parent_atom_index].push(current_atom_electrons_to_share[0])
-
-
-                if ("CC=CC" === canonicalSMILES && index === 3) {
-                    processed_atoms[parent_atom_index].slice(4).length.should.be.equal(6) // correct
-                }
-
                 if ( bond_type === "=" ) {
-                    processed_atoms[parent_atom_index].push(current_atom_electrons_to_share[0])
+                    processed_atoms[parent_atom_index].push(current_atom_electrons_to_share[1])
                 }
+
 
                 if ("CC=CC" === canonicalSMILES && index === 3) {
                     processed_atoms[parent_atom_index].slice(4).length.should.be.equal(7) // correct (4 + 3 carbons)
-                }
-
-                if ("CC=CC" === canonicalSMILES && index === 3) {
-                    console.log("Current atom electrons to share:")
-                    console.log(current_atom_electrons_to_share)
-                    console.log("Parent atom electrons to share:")
-                    console.log(parent_electrons_to_share)
-                    console.log(Set().intersection(row.slice(4),parent_electrons_to_share ))
                     Set().intersection(row.slice(4),parent_electrons_to_share ).length.should.be.equal(2)
-                    console.log("AtomsFactory.js2")
-                    process.exit()
                 }
 
-                    if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
+                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
                     switch (index) {
                         case 2: // first chlorine
                             branch_number.should.be.equal(1)
@@ -399,8 +358,7 @@ const AtomsFactory = (canonicalSMILES) => {
                             Set().intersection(processed_atoms[0].slice(4), processed_atoms[parent_atom_index].slice(4)).length.should.be.equal(2)
                             Set().intersection(row.slice(4), processed_atoms[4].slice(4)).length.should.be.equal(0)
                             Set().intersection(processed_atoms[parent_atom_index].slice(4), row.slice(4)).length.should.be.equal(4)
-                            console.log("AtomsFactory")
-                            process.exit()
+
                             break
                         case 4:
                             parent_atom_index.should.be.equal(3)
@@ -408,7 +366,7 @@ const AtomsFactory = (canonicalSMILES) => {
                             Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(2)
                             Set().intersection(processed_atoms[1].slice(4), processed_atoms[3].slice(4)).length.should.be.equal(4)
                             Set().intersection(processed_atoms[3].slice(4), processed_atoms[4].slice(4)).length.should.be.equal(2)
-                            
+
                             break
 
                     }
@@ -704,7 +662,7 @@ const AtomsFactory = (canonicalSMILES) => {
                         // Check first carbon atom has 5 electrons
                         processed_atoms[0].slice(4).length.should.be.equal(5)
                         // Check second carbon atom has 7 electrons
-                        processed_atoms[1].slice(4).length.should.be.equal(6)
+                        processed_atoms[1].slice(4).length.should.be.equal(7)
                         // Check there is one bond between first and second carbon
                         Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(2)
                         break;
@@ -714,7 +672,7 @@ const AtomsFactory = (canonicalSMILES) => {
                         // Check first carbon atom has 5 electrons
                         processed_atoms[0].slice(4).length.should.be.equal(5)
                         // Check second carbon atom has 7 electrons
-                        processed_atoms[1].slice(4).length.should.be.equal(6)
+                        processed_atoms[1].slice(4).length.should.be.equal(7)
                         break;
 
 
@@ -745,7 +703,7 @@ const AtomsFactory = (canonicalSMILES) => {
         // Check there there is one bond between the first and second carbon
         Set().intersection(atoms[0].slice(4), atoms[1].slice(4)).length.should.be.equal(2)
         // Check there there is two bonds between the second and third carbon
-        Set().intersection(atoms[1].slice(4), atoms[2].slice(4)).length.should.be.equal(2)
+        Set().intersection(atoms[1].slice(4), atoms[2].slice(4)).length.should.be.equal(4)
         // Check there there is one bond between the third and fourth carbon
         Set().intersection(atoms[2].slice(4), atoms[3].slice(4)).length.should.be.equal(2)      
     }
@@ -822,100 +780,81 @@ const AtomsFactory = (canonicalSMILES) => {
     //  atomic symbol, proton count, valence count, number of bonds, velectron1, velectron2, velectron3
 
     if ("CC=CC" === canonicalSMILES) {
-        console.log("------")
-        console.log(atoms_with_hydrogens)
-        atoms_with_hydrogens.length.should.be.equal(14)
-
-        atoms_with_hydrogens[3].slice(4).length.should.be.equal(8)
-        atoms_with_hydrogens[6].slice(4).length.should.be.equal(8)
-        atoms_with_hydrogens[9].slice(4).length.should.be.equal(10) // not ok should be 8
-        atoms_with_hydrogens[13].slice(4).length.should.be.equal(8)
-
-        // Check there there is one bond between the first hydrogen and first carbon
-        Set().intersection(atoms_with_hydrogens[0].slice(4), atoms_with_hydrogens[3].slice(4)).length.should.be.equal(2)
-
-        // Check there there is one bond between the second hydrogen and first carbon
-        Set().intersection(atoms_with_hydrogens[1].slice(4), atoms_with_hydrogens[3].slice(4)).length.should.be.equal(2)
-
-        // Check there there is one bond between the third hydrogen and first carbon
-        Set().intersection(atoms_with_hydrogens[2].slice(4), atoms_with_hydrogens[3].slice(4)).length.should.be.equal(2)
-
-        
-        // Check there there is one bond between the first and second carbon
-        Set().intersection(atoms_with_hydrogens[3].slice(4), atoms_with_hydrogens[6].slice(4)).length.should.be.equal(2)
-
-        // Check there there is two bonds between the second and third carbon
-        Set().intersection(atoms_with_hydrogens[6].slice(1), atoms_with_hydrogens[9].slice(4)).length.should.be.equal(2)
-
-        // Check there there is one bond between the third and fourth carbon
-        Set().intersection(atoms_with_hydrogens[9].slice(4), atoms_with_hydrogens[13].slice(4)).length.should.be.equal(2)
-
-
+         console.log(atoms_with_hydrogens)
         /*
-        [ [ 'H', 1, 1, 1, '1y5g41c2kaght1wr', '1y5g41c2kaght1wb' ],
-  [ 'H', 1, 1, 1, '1y5g41c2kaght1ws', '1y5g41c2kaght1wc' ],
-  [ 'H', 1, 1, 1, '1y5g41c2kaght1wt', '1y5g41c2kaght1wd' ],
-  [ 'C',
+        [ [ 'H', 1, 1, 1, '1y5g42jkkahi190y', '1y5g42jkkahi190i' ], 0
+  [ 'H', 1, 1, 1, '1y5g42jkkahi190z', '1y5g42jkkahi190j' ], 1
+  [ 'H', 1, 1, 1, '1y5g42jkkahi1910', '1y5g42jkkahi190k' ], 2
+  [ 'C', 3
     6,
     4,
     4,
-    '1y5g41c2kaght1wb',
-    '1y5g41c2kaght1wc',
-    '1y5g41c2kaght1wd',
-    '1y5g41c2kaght1we',
-    '1y5g41c2kaght1wi',
-    '1y5g41c2kaght1wr',
-    '1y5g41c2kaght1ws',
-    '1y5g41c2kaght1wt' ],
-  [ 'H', 1, 1, 1, '1y5g41c2kaght1wu', '1y5g41c2kaght1wf' ],
-  [ 'H', 1, 1, 1, '1y5g41c2kaght1wv', '1y5g41c2kaght1wg' ],
-  [ 'C',
+    '1y5g42jkkahi190i',
+    '1y5g42jkkahi190j',
+    '1y5g42jkkahi190k',
+    '1y5g42jkkahi190l',
+    '1y5g42jkkahi190p',
+    '1y5g42jkkahi190y',
+    '1y5g42jkkahi190z',
+    '1y5g42jkkahi1910' ],
+  [ 'H', 1, 1, 1, '1y5g42jkkahi1911', '1y5g42jkkahi190m' ], 4
+  [ 'C', 5
     6,
     4,
     4,
-    '1y5g41c2kaght1wf',
-    '1y5g41c2kaght1wg',
-    '1y5g41c2kaght1wh',
-    '1y5g41c2kaght1wi',
-    '1y5g41c2kaght1we',
-    '1y5g41c2kaght1wm',
-    '1y5g41c2kaght1wu',
-    '1y5g41c2kaght1wv' ],
-  [ 'H', 1, 1, 1, '1y5g41c2kaght1ww', '1y5g41c2kaght1wj' ],
-  [ 'H', 1, 1, 1, '1y5g41c2kaght1wx', '1y5g41c2kaght1wk' ],
-  [ 'C',
+    '1y5g42jkkahi190m',
+    '1y5g42jkkahi190n',
+    '1y5g42jkkahi190o',
+    '1y5g42jkkahi190p',
+    '1y5g42jkkahi190l',
+    '1y5g42jkkahi190t',
+    '1y5g42jkkahi190s',
+    '1y5g42jkkahi1911' ],
+  [ 'H', 1, 1, 1, '1y5g42jkkahi1912', '1y5g42jkkahi190q' ], 6
+  [ 'C', 7
     6,
     4,
     4,
-    '1y5g41c2kaght1wj',
-    '1y5g41c2kaght1wk',
-    '1y5g41c2kaght1wl',
-    '1y5g41c2kaght1wm',
-    '1y5g41c2kaght1wh',
-    '1y5g41c2kaght1wk',
-    '1y5g41c2kaght1wk',
-    '1y5g41c2kaght1wq',
-    '1y5g41c2kaght1ww',
-    '1y5g41c2kaght1wx' ],
-  [ 'H', 1, 1, 1, '1y5g41c2kaght1wy', '1y5g41c2kaght1wn' ],
-  [ 'H', 1, 1, 1, '1y5g41c2kaght1wz', '1y5g41c2kaght1wo' ],
-  [ 'H', 1, 1, 1, '1y5g41c2kaght1x0', '1y5g41c2kaght1wp' ],
-  [ 'C',
+    '1y5g42jkkahi190q',
+    '1y5g42jkkahi190r',
+    '1y5g42jkkahi190s',
+    '1y5g42jkkahi190t',
+    '1y5g42jkkahi190o',
+    '1y5g42jkkahi190n',
+    '1y5g42jkkahi190x',
+    '1y5g42jkkahi1912' ],
+  [ 'H', 1, 1, 1, '1y5g42jkkahi1913', '1y5g42jkkahi190u' ], 8
+  [ 'H', 1, 1, 1, '1y5g42jkkahi1914', '1y5g42jkkahi190v' ], 9
+  [ 'H', 1, 1, 1, '1y5g42jkkahi1915', '1y5g42jkkahi190w' ], 10
+  [ 'C', 11
     6,
     4,
     4,
-    '1y5g41c2kaght1wn',
-    '1y5g41c2kaght1wo',
-    '1y5g41c2kaght1wp',
-    '1y5g41c2kaght1wq',
-    '1y5g41c2kaght1wj',
-    '1y5g41c2kaght1wy',
-    '1y5g41c2kaght1wz',
-    '1y5g41c2kaght1x0' ] ]
-AtomsFactory.js
+    '1y5g42jkkahi190u',
+    '1y5g42jkkahi190v',
+    '1y5g42jkkahi190w',
+    '1y5g42jkkahi190x',
+    '1y5g42jkkahi190r',
+    '1y5g42jkkahi1913',
+    '1y5g42jkkahi1914',
+    '1y5g42jkkahi1915' ] ]
 
          */
-        console.log("AtomsFactory.js")
+        atoms_with_hydrogens.length.should.be.equal(12)
+        atoms_with_hydrogens[3].slice(4).length.should.be.equal(8)
+        atoms_with_hydrogens[6].slice(4).length.should.be.equal(2)
+        atoms_with_hydrogens[9].slice(4).length.should.be.equal(2) // not ok should be 8
+        // Check there there is one bond between the first hydrogen and first carbon
+        Set().intersection(atoms_with_hydrogens[0].slice(4), atoms_with_hydrogens[3].slice(4)).length.should.be.equal(2)
+        // Check there there is one bond between the second hydrogen and first carbon
+        Set().intersection(atoms_with_hydrogens[1].slice(4), atoms_with_hydrogens[3].slice(4)).length.should.be.equal(2)
+        // Check there there is one bond between the third hydrogen and first carbon
+        Set().intersection(atoms_with_hydrogens[2].slice(4), atoms_with_hydrogens[3].slice(4)).length.should.be.equal(2)
+        // Check there there is one bond between the first and second carbon
+        Set().intersection(atoms_with_hydrogens[3].slice(4), atoms_with_hydrogens[6].slice(4)).length.should.be.equal(0)
+        // Check there there is two bonds between the second and third carbon
+        Set().intersection(atoms_with_hydrogens[6].slice(1), atoms_with_hydrogens[9].slice(4)).length.should.be.equal(0)
+        console.log("AtomsFactory.js999")
         process.exit()
     }
 
