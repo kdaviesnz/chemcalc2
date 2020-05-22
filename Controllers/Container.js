@@ -48,11 +48,13 @@ class CContainer {
             
             // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
             if (this.test_number === 4) {
-                console.log(substrate_families)
-                substrate_families.alkene.length.should.be.equal(1) // Expected 4 to be 1
+                substrate_families.alkene()
+               // substrate_families.alkene().length.should.be.equal(1) // Expected 4 to be 1
+                console.log("Container.js")
+                process.exit()
             }
             
-            if (substrate_families.alkene.length > 0) {
+            if (substrate_families.alkene().length > 0) {
                 
                 // Substrate is alkene (nucleophile)
                 // Find the nucleophile on the C=C bond
