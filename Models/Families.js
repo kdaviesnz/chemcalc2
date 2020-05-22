@@ -129,7 +129,7 @@ const Families = (fg_atoms) => {
     }
 
     const __doubleCarbonBonds = (atom, current_atom_index) => {
-        return __Bonds(atom, current_atom_index, "C", 2)
+        return __Bonds(atom, current_atom_index, "C", 4)
     }
     
     const __carbonToAtomDoubleBondCallback = (atomic_symbol) => {
