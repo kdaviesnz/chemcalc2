@@ -48,7 +48,8 @@ class CContainer {
             
             // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
             if (this.test_number === 4) {
-                substrate_families.alkene.length.should.be.equal(1)
+                console.log(substrate_families)
+                substrate_families.alkene.length.should.be.equal(1) // Expected 4 to be 1
             }
             
             if (substrate_families.alkene.length > 0) {

@@ -780,7 +780,7 @@ const AtomsFactory = (canonicalSMILES) => {
     //  atomic symbol, proton count, valence count, number of bonds, velectron1, velectron2, velectron3
 
     if ("CC=CC" === canonicalSMILES) {
-         console.log(atoms_with_hydrogens)
+
         /*
         [ [ 'H', 1, 1, 1, '1y5g42jkkahi190y', '1y5g42jkkahi190i' ], 0
   [ 'H', 1, 1, 1, '1y5g42jkkahi190z', '1y5g42jkkahi190j' ], 1
@@ -843,7 +843,7 @@ const AtomsFactory = (canonicalSMILES) => {
         atoms_with_hydrogens.length.should.be.equal(12)
         atoms_with_hydrogens[3].slice(4).length.should.be.equal(8)
         atoms_with_hydrogens[6].slice(4).length.should.be.equal(2)
-        atoms_with_hydrogens[9].slice(4).length.should.be.equal(2) // not ok should be 8
+        atoms_with_hydrogens[9].slice(4).length.should.be.equal(2)
         // Check there there is one bond between the first hydrogen and first carbon
         Set().intersection(atoms_with_hydrogens[0].slice(4), atoms_with_hydrogens[3].slice(4)).length.should.be.equal(2)
         // Check there there is one bond between the second hydrogen and first carbon
@@ -851,11 +851,17 @@ const AtomsFactory = (canonicalSMILES) => {
         // Check there there is one bond between the third hydrogen and first carbon
         Set().intersection(atoms_with_hydrogens[2].slice(4), atoms_with_hydrogens[3].slice(4)).length.should.be.equal(2)
         // Check there there is one bond between the first and second carbon
-        Set().intersection(atoms_with_hydrogens[3].slice(4), atoms_with_hydrogens[6].slice(4)).length.should.be.equal(0)
+        Set().intersection(atoms_with_hydrogens[3].slice(4), atoms_with_hydrogens[5].slice(4)).length.should.be.equal(2)
         // Check there there is two bonds between the second and third carbon
-        Set().intersection(atoms_with_hydrogens[6].slice(1), atoms_with_hydrogens[9].slice(4)).length.should.be.equal(0)
-        console.log("AtomsFactory.js999")
-        process.exit()
+        Set().intersection(atoms_with_hydrogens[5].slice(1), atoms_with_hydrogens[7].slice(4)).length.should.be.equal(4)
+        // Check second carbon has 1 hydrogen
+        Set().intersection(atoms_with_hydrogens[5].slice(4), atoms_with_hydrogens[4].slice(4)).length.should.be.equal(2)
+        // Check third carbon has 1 hydrogen
+        Set().intersection(atoms_with_hydrogens[6].slice(4), atoms_with_hydrogens[7].slice(4)).length.should.be.equal(2)
+        // Check last carbon has 3 hydrogens
+        Set().intersection(atoms_with_hydrogens[8].slice(4), atoms_with_hydrogens[11].slice(4)).length.should.be.equal(2)
+        Set().intersection(atoms_with_hydrogens[9].slice(4), atoms_with_hydrogens[11].slice(4)).length.should.be.equal(2)
+        Set().intersection(atoms_with_hydrogens[10].slice(4), atoms_with_hydrogens[11].slice(4)).length.should.be.equal(2)
     }
 
     if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
@@ -918,9 +924,9 @@ const AtomsFactory = (canonicalSMILES) => {
             (atom) => {
                 return atom[0] === "H"
             }
-        ).length.should.be.equal(10)
+        ).length.should.be.equal(8)
 
-        atoms_with_hydrogens.length.should.be.equal(14)
+        atoms_with_hydrogens.length.should.be.equal(12)
         const carbon_atoms = atoms_with_hydrogens.filter(
             (atom) => {
                 return atom[0] === "C"
@@ -934,9 +940,9 @@ const AtomsFactory = (canonicalSMILES) => {
         carbon_atoms[3].slice(4).length.should.be.equal(8)
 
         // Check bonds
-        Set().intersection(carbon_atoms[0].slice(4), carbon_atoms[1].slice(4)).should.be.equal(2)
-        Set().intersection(carbon_atoms[1].slice(4), carbon_atoms[2].slice(4)).should.be.equal(4)
-        Set().intersection(carbon_atoms[2].slice(4), carbon_atoms[3].slice(4)).should.be.equal(2)
+        Set().intersection(carbon_atoms[0].slice(4), carbon_atoms[1].slice(4)).length.should.be.equal(2)
+        Set().intersection(carbon_atoms[1].slice(4), carbon_atoms[2].slice(4)).length.should.be.equal(4)
+        Set().intersection(carbon_atoms[2].slice(4), carbon_atoms[3].slice(4)).length.should.be.equal(2)
     }
 
     return atoms_with_hydrogens
