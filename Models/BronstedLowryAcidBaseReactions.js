@@ -28,8 +28,8 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
             
             // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
             if (test_number === 4) {
-                substrate_proton_index.should.be.equal(false)
-                reagent_proton_index.should.be.equal(true) 
+                substrate_proton_index.should.be.equal(false) // CC=CC (Second carbon is nucleophile)
+                reagent_proton_index.should.be.equal(true) // HBr (H is electrophile)
             }
 
             if (substrate_proton_index !== false && reagent_proton_index === false) {
@@ -60,7 +60,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
                 
                 // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
                 if (test_number === 4) {
-                    nucleophile_atom_index.should.be.equal(5) // C on C=C
+                    nucleophile_atom_index.should.be.equal(6) // C on C=C
                     electrophile_atom_index.should.be.equal(1)   // H
                     nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("C")
                     electrophile_molecule[electrophile_atom_index][0].should.be.equal("H")
@@ -119,9 +119,14 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         if (test_number === 3) {
             electrophile_molecule[1][0].should.be.equal("Al")
         }
+        
+        // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
+        if (test_number === 4) {
+            electrophile_molecule[1][0].should.be.equal("H")
+        }
 
         if (electrophile_molecule[electrophile_atom_index][0] !== "H") {
-            if (test_number === 1) {
+            if (test_number === 1 || test_number === 4 ) {
                 console.log("BronstedLowryAcidBaseReactions::Should have a proton")
                 process.exit()
             }
@@ -155,7 +160,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
         if (test_number === 4 ) {
             nucleophile_molecule.length.should.be.equal(14)
-            nucleophile_atom_index.should.be.equal(5)
+            nucleophile_atom_index.should.be.equal(6)
             electrophile_molecule.length.should.be.equal(1)
             electrophile_molecule[electrophile_atom_index][0].should.be.equal("H")
             nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("C")
