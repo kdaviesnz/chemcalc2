@@ -58,28 +58,62 @@ class CContainer {
                 // Find the nucleophile on the C=C bond
                 const nucleophile_molecule = substrate
                 const nucleophile_molecule_index = 1
+                
+                // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
+                // Check nucleophile is CC=CC
+                if (this.test_number === 4) {
+                    nucleophile_molecule[6][0].should.be.equal("C")
+                    nucleophile_molecule[8][0].should.be.equal("C")
+                    Set().intersection(nucleophile_molecule[6].slice(4),nucleophile_molecule[8].slice(4)).length.should.be.equal(4)
+                }
+                
+              
                 const electrophile_molecule = reagent
                 const electrophile_molecule_index = 2
+                
+                // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
+                // Check electrophile_molecule is HBr
+                if (this.test_number === 4) {
+                    electrophile_molecule[1][0].should.be.equal("H")
+                    electrophile_molecule[2][0].should.be.equal("Br")
+                    Set().intersection(electrophile_molecule[1].slice(4),electrophile_molecule[2].slice(4)).length.should.be.equal(2)
+                }
+                             
+                
                 const nucleophile_atom_index = this.MoleculeController(substrate).determineNucleophileIndex()
                 const electrophile_atom_index = this.MoleculeController(reagent).determineElectrophileIndex()
 
                 // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
                 if (this.test_number === 4) {
                     nucleophile_atom_index.should.be.equal(1)      
-                    substrate[nucleophile_atom_index][0].should.be.equal("C")
-                    AtomController(substrate[nucleophile_atom_index], nucleophile_atom_index, substrate.slice(1)).bondCount.should.be.equal(2)           
+                    nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("C")
+                    AtomController(nucleophile_molecule[nucleophile_atom_index], nucleophile_atom_index, nucleophile_molecule.slice(1)).bondCount.should.be.equal(2)           
                 }
                 
                 // const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
                 // test 4 CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
                 reaction = bronstedLowry.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
                     
+                // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
+                if (this.test_number === 4) {
+                    reaction.should.not.be.equal(false)
+                }
+                
                 if (reaction === false) {
                     // reagent does not have a proton
                     // do Lewis acid base teaction
                     //                 // const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, test_number) => {
                 
                     reaction = lewis.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, this.test_number)
+               
+                     if ( reaction !== false) {
+                         this.container = reaction
+                     }
+                
+                } else {
+                
+                     this.container = reaction
+                    
                 }
                 
 
