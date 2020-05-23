@@ -3,6 +3,46 @@ const Set = require('../Models/Set')
 
 const CAtom = (atom, current_atom_index, mmolecule) => {
 
+    const __reoveDoubleBond = (test_number) => {
+        const atoms = mmolecule.slice(1)
+        const atom_electrons = atom.slice(4)
+        const r =  atoms.map(
+            (__atom, __atom_index) => {
+
+                if (current_atom_index === __atom_index) {
+                    return false
+                }
+                
+                const shared_electrons = Set().intersection(atom_electrons, __atom.slice(4))
+
+                if (test_number === 4) {
+                    shared_electrons.length.should.be.equal(4)
+                }
+                
+                if (shared_electrons.length !== 4) {
+                    return false
+                }
+                
+                // removed shared_electrons from __atom
+                __atom.remove(shared_electrons[0])
+                __atom.remove(shared_electrons[1])
+                return __atom
+
+            }
+        ).filter(
+            (item) => {
+                return item !== false
+            }
+        )
+
+        if (test_number === 4) {
+            r.length.should.be.equal(1)
+        }
+        
+        return r.length > 0?r[0]:false
+            
+    }
+    
     const __doubleBond = (test_number) => {
         const atoms = mmolecule.slice(1)
         const atom_electrons = atom.slice(4)
