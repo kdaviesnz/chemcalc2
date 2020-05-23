@@ -438,7 +438,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         }
         
         // Get lone pair from source atom (atom arrow would be pointing from (nucleophile))
-        const source_atom_lone_pairs = CAtom(mmolecule[source_atom_index], source_atom_index, mmolecule).lonePairs(9999)
+        const source_atom_lone_pairs = CAtom(mmolecule[source_atom_index], source_atom_index, mmolecule).lonePairs(tes_number)
                        
         // Protons are always target atoms - where the arrow would be pointing to
         if (mmolecule[target_atom_mmolecule_index][0]==="H") {
@@ -451,8 +451,41 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 if (test_number ===1) {
                     source_atom_lone_pairs.length.should.be.equal(4)
                 }
-                mmolecule[target_atom_mmolecule_index].push(source_atom_lone_pairs[0])
-                mmolecule[target_atom_mmolecule_index].push(source_atom_lone_pairs[1])
+                
+                if (test_number ===4) {
+                    source_atom_lone_pairs.length.should.be.equal(555)
+                }
+                
+                if (source_atom_lone_pairs.length > 0) {
+                    // mmolecule[target_atom_mmolecule_index] is a proton
+                    mmolecule[target_atom_mmolecule_index].push(source_atom_lone_pairs[0])
+                    mmolecule[target_atom_mmolecule_index].push(source_atom_lone_pairs[1])
+                } else {
+                    // free slots is a number
+                    const free_slots = CAtom(mmolecule[target_atom_mmolecule_index], target_atom_mmolecule_index, mmolecule).freeSlots(test_number)
+                    if (free_slots > 0) {
+                        
+                    } else {
+                        // Does the source atom have a double bond?
+                        // returns a set of electrons or false
+                        const double_bond = CAtom(mmolecule[source_atom_index], source_atom_index, mmolecule).doubleBond(test_number)
+                        // remove the double bond by removing electrons from bonded atom (turn into single bond)
+                        if (test_number === 4) {
+                            double_bond.should.not.be.equal(false)
+                        }
+                        if (double_bond) {
+                           CAtom(mmolecule[source_atom_index], source_atom_index, mmolecule).removeDoubleBond(test_number)
+                           mmolecule[target_atom_mmolecule_index].push(double_bond[0])
+                           mmolecule[target_atom_mmolecule_index].push(double_bond[1])
+                        }
+                    }
+                }
+                
+                if (test_number === 4) {
+                    mmolecule[target_atom_mmolecule_index].slice(4).should.be.equal(2)
+                    mmolecule[target_atom_mmolecule_index][5].should.be.a.Number()
+                    mmolecule[target_atom_mmolecule_index][6].should.be.a.Number()
+                }
                 
             } else {
                 console.log("To do: Add hydrogen bond where hydrogen is not a proton")
