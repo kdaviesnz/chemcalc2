@@ -649,6 +649,7 @@ Molecule.js
              */
             process.exit()
         }
+        console.log(test_number)
         Set().intersection(mmolecule[source_atom_index].slice(4), mmolecule[target_atom_mmolecule_index].slice(4)).length.should.not.be.equal(0)
         
         return mmolecule
