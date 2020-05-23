@@ -257,7 +257,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             const number_of_shells = info["electrons_per_shell"].split("-").length
             const max_number_of_electrons = number_of_shells === 1?2:number_of_shells==2?8:18
             const max_number_of_bonds = max_number_of_electrons - number_of_valence_electrons;
-            const number_of_free_slots = max_number_of_electrons/2 - max_number_of_bonds
+            const number_of_free_slots = (max_number_of_electrons - (max_number_of_bonds * 2))/2
 
             number_of_free_slots.should.not.be.lessThan(0)
 
