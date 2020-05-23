@@ -253,6 +253,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             // N, 2-5  max 3 bonds, 1 free slot
             //O, 2-6 2 max 1 bond free slots
             // Al 2-8-3 ? max ?bonds free slots
+            const max_number_of_bonds = 8 - number_of_valence_electrons;
             const number_of_free_slots = 8 - (number_of_valence_electrons * 2)
 
             number_of_free_slots.should.not.be.lessThan(0)
