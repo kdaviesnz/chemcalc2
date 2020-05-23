@@ -187,7 +187,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             
             if (test_number ===4) {
                 atom[0].should.be.equal("C")
-                b.length.should.be.equal(4)
+              //  b.length.should.be.equal(4)
                 /*
                   "C": {
         "group":14,
@@ -242,17 +242,28 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             // info[3] is the number of valence electron pairs
             // 8 - (3*2) / 2
             const number_of_valence_electrons = info["electrons_per_shell"].split("-").pop() *1
-            const number_of_free_slots = 4 - (8 - number_of_valence_electrons)
-
-            if (test_number ===3) {
-                number_of_valence_electrons.should.be.equal(3)
-                number_of_free_slots.should.be.equal(3333) // -1
-            }
 
             if (test_number ===4) {
                 number_of_valence_electrons.should.be.equal(4)
-                number_of_free_slots.should.be.equal(0)
             }
+
+           //
+            //const number_of_free_slots = 4 - (8 - number_of_valence_electrons)
+            // C, 2 - 4
+            //
+            const number_of_free_slots = 8 - (number_of_valence_electrons * 2)
+
+            number_of_free_slots.should.not.be.lessThan(0)
+
+            if (test_number ===3) {
+                number_of_valence_electrons.should.be.equal(3)
+                number_of_free_slots.should.be.equal(5) // -1
+            }
+
+            if (test_number ===4) {
+                number_of_free_slots.should.be.equal(0) // 4
+            }
+
             return number_of_free_slots
            // return (8 - (info["electrons_per_shell"].split("-").pop()*2)) / 2
         }
