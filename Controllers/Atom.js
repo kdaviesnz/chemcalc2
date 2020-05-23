@@ -253,18 +253,25 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             // N, 2-5  max 3 bonds, 1 free slot
             //O, 2-6 2 max 2 bonds  2 free slots
             // Al 2-8-3 ? max ?bonds free slots
-            const max_number_of_bonds = 8 - number_of_valence_electrons;
-            const number_of_free_slots = 8 - (number_of_valence_electrons * 2)
+            // the third shell can hold up to 18
+            const number_of_shells = info["electrons_per_shell"].split("-").length
+            const max_number_of_electrons = number_of_shells === 1?2:number_of_shells==2?8:18
+            const max_number_of_bonds = max_number_of_electrons - number_of_valence_electrons;
+            const number_of_free_slots = max_number_of_electrons/2 - max_number_of_bonds
 
             number_of_free_slots.should.not.be.lessThan(0)
 
             if (test_number ===3) {
+                number_of_shells.should.be.equal(3)
+                max_number_of_electrons.should.be.equal(18)
                 number_of_valence_electrons.should.be.equal(3)
-                number_of_free_slots.should.be.equal(5) // -1
+                number_of_free_slots.should.be.equal(6) 
             }
 
             if (test_number ===4) {
-                number_of_free_slots.should.be.equal(0) // 4
+                number_of_shells.should.be.equal(2)
+                max_number_of_electrons.should.be.equal(8)
+                number_of_free_slots.should.be.equal(0)
             }
 
             return number_of_free_slots
