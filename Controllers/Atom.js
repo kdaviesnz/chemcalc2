@@ -200,6 +200,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         "subcategory":"reactive nonmetal"
     },
     
+    1 bond, 3 free slots
        "O": {
         "group":16,
         "column":"VIA",
@@ -207,6 +208,18 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         "name":"oxygen",
         "atomic_weight":15.999,
         "electrons_per_shell": "2-6",
+        "state_of_matter":"gas",
+        "subcategory":"reactive nonmetal"
+    },
+    
+    3 bonds, 1 free slot
+        "N": {
+        "group":15,
+        "column":"VA",
+        "atomic_number":7,
+        "name":"nitrogen",
+        "atomic_weight":14.007,
+        "electrons_per_shell": "2-5",
         "state_of_matter":"gas",
         "subcategory":"reactive nonmetal"
     },
