@@ -223,6 +223,19 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         "state_of_matter":"gas",
         "subcategory":"reactive nonmetal"
     },
+
+
+        "Al": {
+        "group":13,
+        "column":"111A",
+        "atomic_number":13,
+        "name":"aluminium",
+        "atomic_weight":26.982,
+        "electrons_per_shell": "2-8-3",
+        "state_of_matter":"solid",
+        "subcategory":"post transition metal"
+    },
+
     */
             }
 
@@ -230,6 +243,12 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             // 8 - (3*2) / 2
             const number_of_valence_electrons = info["electrons_per_shell"].split("-").pop() *1
             const number_of_free_slots = 4 - (8 - number_of_valence_electrons)
+
+            if (test_number ===3) {
+                number_of_valence_electrons.should.be.equal(3)
+                number_of_free_slots.should.be.equal(3333) // -1
+            }
+
             if (test_number ===4) {
                 number_of_valence_electrons.should.be.equal(4)
                 number_of_free_slots.should.be.equal(0)
