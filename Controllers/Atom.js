@@ -199,13 +199,24 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         "state_of_matter":"solid",
         "subcategory":"reactive nonmetal"
     },
+    
+       "O": {
+        "group":16,
+        "column":"VIA",
+        "atomic_number":8,
+        "name":"oxygen",
+        "atomic_weight":15.999,
+        "electrons_per_shell": "2-6",
+        "state_of_matter":"gas",
+        "subcategory":"reactive nonmetal"
+    },
     */
             }
 
             // info[3] is the number of valence electron pairs
             // 8 - (3*2) / 2
             const number_of_valence_electrons = info["electrons_per_shell"].split("-").pop() *1
-            const number_of_free_slots = 8 - (number_of_valence_electrons*2)
+            const number_of_free_slots = 8 - (b*2)
             if (test_number ===4) {
                 number_of_valence_electrons.should.be.equal(4)
                 number_of_free_slots.should.be.equal(0)
