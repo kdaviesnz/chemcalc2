@@ -48,10 +48,7 @@ class CContainer {
             
             // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
             if (this.test_number === 4) {
-                substrate_families.alkene()
-               // substrate_families.alkene().length.should.be.equal(1) // Expected 4 to be 1
-                console.log("Container.js")
-                process.exit()
+                substrate_families.alkene().length.should.be.equal(2)
             }
             
             if (substrate_families.alkene().length > 0) {
@@ -82,8 +79,8 @@ class CContainer {
                 }
                              
                 
-                const nucleophile_atom_index = this.MoleculeController(substrate).determineNucleophileIndex()
-                const electrophile_atom_index = this.MoleculeController(reagent).determineElectrophileIndex()
+                const nucleophile_atom_index = this.MoleculeController(substrate).nucleophileIndex(this.test_number)
+                const electrophile_atom_index = this.MoleculeController(reagent).electrophileIndex(this.test_number)
 
                 // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
                 if (this.test_number === 4) {

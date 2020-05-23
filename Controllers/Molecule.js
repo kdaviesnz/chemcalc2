@@ -4,6 +4,7 @@ const CAtom = require('./Atom')
 const pKa = require('../Models/pKa')
 const should = require('should')
 const Set = require('../Models/Set')
+const Families = require('../Models/Families')
 
 const CMolecule = (mmolecule) => {
 
@@ -38,6 +39,25 @@ const CMolecule = (mmolecule) => {
         const atoms_with_lone_pairs = __atomsWithLonePairs(test_number)
       
         if (atoms_with_lone_pairs.length === 0) {
+
+            // Check for double bonds
+            const double_bonds = Families(mmolecule.slice(1)).families.alkene()
+            if (test_number === 4) {
+                double_bonds.length.should.be.greaterThan(0)
+            }
+            if (double_bonds.length > 0) {
+                // Determine carbon with most hydrogens
+                const keys = Object.keys(double_bonds[0])
+                // Get number of hydrogens for first carbon
+                const carbon_1_hydrogens = CAtom(double_bonds[0][keys[0]], 0, mmolecule).hydrogens
+                const carbon_2_hydrogens = CAtom(double_bonds[0][keys[1]], 1, mmolecule).hydrogens
+                if (carbon_1_hydrogens.length >= carbon_2_hydrogens ) {
+                    return keys[0]*1
+                } else {
+                    return keys[1]*1
+                }
+            }
+
            return // Find index of atom to bond to.
                 // This must be atom with at least a lone pair.
                 return mmolecule.reduce((carry, current_molecule_atom, current_molecule_atom_index) => {

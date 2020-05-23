@@ -281,13 +281,11 @@ const Families = (fg_atoms) => {
             (atom, carbon_atom_index) => {
                 const carbon_double_bonds = __doubleCarbonBonds(atom, carbon_atom_index)
                 if (atom[0] === "C" && carbon_double_bonds.length === 1){
-                    console.log(carbon_atom_index)
-                        const bonded_carbon_index = carbon_double_bonds[0][0] 
+                        const bonded_carbon_index = carbon_double_bonds[0][0]
                         const ret = {}
                         ret[carbon_atom_index] = atom
                         ret[bonded_carbon_index] = carbon_double_bonds[0][1]
-                    console.log(ret)
-                        return ret       
+                        return ret
                 }
                 return false
             }
