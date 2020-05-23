@@ -184,6 +184,11 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             if (test_number ===3) {
                 atom[0].should.be.equal("Al")
             }
+            
+            if (test_number ===4) {
+                atom[0].should.be.equal("C")
+                b.length.should.be.equal(4)
+            }
 
             // info[3] is the number of valence electron pairs
             // 8 - (3*2) / 2
