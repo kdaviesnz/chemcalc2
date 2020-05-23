@@ -159,9 +159,9 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         
         // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
         if (test_number === 4 ) {
-            nucleophile_molecule.length.should.be.equal(14)
+            nucleophile_molecule.length.should.be.equal(13)
             nucleophile_atom_index.should.be.equal(6)
-            electrophile_molecule.length.should.be.equal(1)
+            electrophile_molecule.length.should.be.equal(3)
             electrophile_molecule[electrophile_atom_index][0].should.be.equal("H")
             nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("C")
         }
@@ -180,8 +180,8 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         
         // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
         if (test_number === 4) {
-            nucleophile_molecule[1][0].should.be.equal("C")
-            electrophile_molecule.length.should.be.equal(5)
+            nucleophile_molecule[4][0].should.be.equal("C")
+            electrophile_molecule.length.should.be.equal(3)
             proton_index.should.be.equal(1)
         }
 
@@ -260,10 +260,10 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         
         // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
         if (test_number === 4) {
-            nucleophile_molecule.length.should.be.equal(2)
-            electrophile_molecule.length.should.be.equal(4)
-            nucleophile_atom_index.should.be.equal(1)
-            electrophile_atom_index.should.be.equal(4)
+            nucleophile_molecule.length.should.be.equal(13)
+            electrophile_molecule.length.should.be.equal(2)
+            nucleophile_atom_index.should.be.equal(6)
+            electrophile_atom_index.should.be.equal(1)
         }
         
         // test 1 - nucleophile_molecule is water

@@ -3,6 +3,7 @@ const Families = require('../Models/Families')
 const BronstedLowryAcidBaseReactions = require('../Models/BronstedLowryAcidBaseReactions')
 const LewisAcidBaseReactions = require('../Models/LewisAcidBaseReactions')
 const Set = require('../Models/Set')
+const CAtom = require('./Atom')
 
 class CContainer {
 
@@ -84,9 +85,8 @@ class CContainer {
 
                 // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
                 if (this.test_number === 4) {
-                    nucleophile_atom_index.should.be.equal(1)      
+                    nucleophile_atom_index.should.be.equal(6)
                     nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("C")
-                    AtomController(nucleophile_molecule[nucleophile_atom_index], nucleophile_atom_index, nucleophile_molecule.slice(1)).bondCount.should.be.equal(2)           
                 }
                 
                 // const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)

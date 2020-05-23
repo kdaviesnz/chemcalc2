@@ -3,6 +3,18 @@ const Set = require('../Models/Set')
 
 const CAtom = (atom, current_atom_index, mmolecule) => {
 
+    const __hydrogens = () => {
+        const atoms = mmolecule.slice(1)
+        return atoms.filter(
+            (__atom) => {
+                if (__atom[0] === "H") {
+                    return Set().intersection(__atom.slice(4), atom.slice(4)).length > 0
+                }
+                return false
+            }
+        )
+    }
+
     const __isProton = () => {
         return atom[0] === "H" && atom.length === 4
     }
@@ -77,13 +89,10 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                 }
             )
             
-            if (test_number === 9999) {
-                lone_electrons.length.should.not.be.equal(0)
-            }
-
             return lone_electrons
 
         },
+        hydrogens: __hydrogens(),
         freeSlots: (test_number) => {
 
             // Basic checks
