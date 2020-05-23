@@ -26,8 +26,8 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                 // removed shared_electrons from __atom
                 // lodash
                 _.remove(__atom, (item) => {
-                    item === shared_electrons[0]) || item === shared_electrons[1])
-                }
+                    item === shared_electrons[0] || item === shared_electrons[1]
+                })
                 
                 return __atom
 
@@ -164,6 +164,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             return lone_electrons
 
         },
+        doubleBond: __doubleBond,
         hydrogens: __hydrogens(),
         freeSlots: (test_number) => {
 

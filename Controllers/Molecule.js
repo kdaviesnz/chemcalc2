@@ -438,7 +438,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         }
         
         // Get lone pair from source atom (atom arrow would be pointing from (nucleophile))
-        const source_atom_lone_pairs = CAtom(mmolecule[source_atom_index], source_atom_index, mmolecule).lonePairs(tes_number)
+        const source_atom_lone_pairs = CAtom(mmolecule[source_atom_index], source_atom_index, mmolecule).lonePairs(test_number)
                        
         // Protons are always target atoms - where the arrow would be pointing to
         if (mmolecule[target_atom_mmolecule_index][0]==="H") {
@@ -453,7 +453,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 }
                 
                 if (test_number ===4) {
-                    source_atom_lone_pairs.length.should.be.equal(555)
+                    source_atom_lone_pairs.length.should.be.equal(0)
                 }
                 
                 if (source_atom_lone_pairs.length > 0) {
@@ -462,10 +462,11 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                     mmolecule[target_atom_mmolecule_index].push(source_atom_lone_pairs[1])
                 } else {
                     // free slots is a number
-                    const free_slots = CAtom(mmolecule[target_atom_mmolecule_index], target_atom_mmolecule_index, mmolecule).freeSlots(test_number)
+                    const free_slots = CAtom(mmolecule[source_atom_index], source_atom_index, mmolecule).freeSlots(test_number)
                     if (test_number === 4) {
                         free_slots.should.be.equal(0)
                     }
+
                     if (free_slots > 0) {
                         
                     } else {
