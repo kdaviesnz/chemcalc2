@@ -463,6 +463,9 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 } else {
                     // free slots is a number
                     const free_slots = CAtom(mmolecule[target_atom_mmolecule_index], target_atom_mmolecule_index, mmolecule).freeSlots(test_number)
+                    if (test_number === 4) {
+                        free_slots.should.be.equal(0)
+                    }
                     if (free_slots > 0) {
                         
                     } else {
