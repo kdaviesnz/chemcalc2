@@ -3,10 +3,10 @@ const Set = require('../Models/Set')
 
 const CAtom = (atom, current_atom_index, mmolecule) => {
 
-    const __reoveDoubleBond = (test_number) => {
+    const __removeDoubleBond = (test_number) => {
         const atoms = mmolecule.slice(1)
         const atom_electrons = atom.slice(4)
-        const r =  atoms.map(
+        const atoms_double_bond_removed =  atoms.map(
             (__atom, __atom_index) => {
 
                 if (current_atom_index === __atom_index) {
@@ -20,26 +20,21 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                 }
                 
                 if (shared_electrons.length !== 4) {
-                    return false
+                    return __atom
                 }
                 
                 // removed shared_electrons from __atom
-                __atom.remove(shared_electrons[0])
-                __atom.remove(shared_electrons[1])
+                // lodash
+                _.remove(__atom, (item) => {
+                    item === shared_electrons[0]) || item === shared_electrons[1])
+                }
+                
                 return __atom
 
             }
-        ).filter(
-            (item) => {
-                return item !== false
-            }
         )
 
-        if (test_number === 4) {
-            r.length.should.be.equal(1)
-        }
-        
-        return r.length > 0?r[0]:false
+        return [mmolecule[0], ...atoms_double_bond_removed]
             
     }
     
