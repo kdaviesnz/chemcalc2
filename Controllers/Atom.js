@@ -1,5 +1,6 @@
 const PeriodicTable = require('../Models/PeriodicTable')
 const Set = require('../Models/Set')
+const _ = require('lodash');
 
 const CAtom = (atom, current_atom_index, mmolecule) => {
 
@@ -14,10 +15,6 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                 }
 
                 const shared_electrons = Set().intersection(atom_electrons, __atom.slice(4))
-
-                if (test_number === 4) {
-                    shared_electrons.length.should.be.equal(4)
-                }
 
                 if (shared_electrons.length !== 4) {
                     return __atom
@@ -49,10 +46,6 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                 }
 
                 const shared_electrons = Set().intersection(atom_electrons, __atom.slice(4))
-
-                if (test_number === 4) {
-                    shared_electrons.length.should.be.equal(4)
-                }
 
                 if (shared_electrons.length !== 4) {
                     return false
@@ -273,6 +266,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
         },
         doubleBond: __doubleBond,
+        removeDoubleBond: __removeDoubleBond,
         hydrogens: __hydrogens(),
         freeSlots: __freeSlots
     }

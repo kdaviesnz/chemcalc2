@@ -478,9 +478,9 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 }
                 
                 if (test_number === 4) {
-                    mmolecule[target_atom_mmolecule_index].slice(4).should.be.equal(2)
-                    mmolecule[target_atom_mmolecule_index][5].should.be.a.Number()
-                    mmolecule[target_atom_mmolecule_index][6].should.be.a.Number()
+                    mmolecule[target_atom_mmolecule_index].slice(4).length.should.be.equal(2)
+                    mmolecule[target_atom_mmolecule_index][4].should.be.a.String()
+                    mmolecule[target_atom_mmolecule_index][5].should.be.a.String()
                 }
                 
             } else {
@@ -493,13 +493,10 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             // Source atom should always have a lone pair (nucleophile)
             
             if (test_number === 3) {
-                console.log(target_atom_electron_to_share_index)
                 // Target molecule should be AlCl3
                 // Source molecule should be COC
-                mmolecule[source_atom_electron_to_share_index][0].should.be.equal("O")
+                mmolecule[source_atom_index][0].should.be.equal("O")
                 mmolecule[target_atom_mmolecule_index][0].should.be.equal("Al")
-                console.log("Molecule.js")
-                process.exit()
                 source_atom_electron_to_share_index.should.be.equal(3)
                 target_atom_electron_to_share_index.should.be.equal(false)
             }
