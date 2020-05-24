@@ -461,6 +461,17 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                     mmolecule[target_atom_mmolecule_index].push(source_atom_lone_pairs[0])
                     mmolecule[target_atom_mmolecule_index].push(source_atom_lone_pairs[1])
                 } else {
+                    
+                    const free_electrons = CAtom(mmolecule[source_atom_index], source_atom_index, mmolecule).freeElectrons(test_number)
+                     // CC=CC (second carbon)
+                    if (test_number === 4) {
+                        free_electrons.length.should.be.equal(0)
+                    }
+                    
+                    if (free_electrons.length > 0) {
+                        
+                    } else {
+                    
                     // free slots is a number
                     const free_slots = CAtom(mmolecule[source_atom_index], source_atom_index, mmolecule).freeSlots(test_number)
                     if (test_number === 4) {
@@ -482,6 +493,8 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                            mmolecule[target_atom_mmolecule_index].push(double_bond[0])
                            mmolecule[target_atom_mmolecule_index].push(double_bond[1])
                         }
+                    }
+                        
                     }
                 }
                 
@@ -506,29 +519,37 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             // Not hydrogen
             
             // Source atom should always have a lone pair (nucleophile)
-            
+            // AlCl3
             if (test_number === 3) {
                 source_atom_electron_to_share_index.should.be.equal(3)
                 target_atom_electron_to_share_index.should.be.equal(false)
             }
             
             if (!target_atom_electron_to_share_index) {
+                
+                const free_electrons = CAtom(mmolecule[target_atom_mmolecule_index], target_atom_mmolecule_index, mmolecule).freeElectrons(test_number)
+                
+                // AlCl3
+                if (test_number === 3) {
+                        free_electrons.length.should.be.equal(0)
+                    } els {
+                
+                if (free_electrons.length > 0) {
+                
                 // Target atom has no free electrons so check if it has free slots.
                 // electrophile
                 // free slots is a number
                 const free_slots = CAtom(mmolecule[target_atom_mmolecule_index], target_atom_mmolecule_index, mmolecule).freeSlots(test_number)
                 if (free_slots > 0) {
                     
-                    // add free electron from source atom to target atom
-                    // mmolecule[target_atom_mmolecule_index].push(free_slots[0])
-                    // add another free electron from source atom to target atom
-                    // mmolecule[target_atom_mmolecule_index].push(free_slots[1])
-
+                  
                     // add free electron from source atom to target atom
                     mmolecule[target_atom_mmolecule_index].push(mmolecule[source_atom_index][4 + source_atom_electron_to_share_index])
                     // add another free electron from source atom to target atom
                     mmolecule[target_atom_mmolecule_index].push(mmolecule[source_atom_index][5 + source_atom_electron_to_share_index])
 
+                }
+                    
                 }
             } else {
                 
