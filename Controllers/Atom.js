@@ -131,7 +131,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             (carry, __atom, __atom_index) => {
 
                 if (current_atom_index === __atom_index) {
-                    return false
+                    return carry
                 }
                 return [...carry, ...__atom.slice(4)]
             },
