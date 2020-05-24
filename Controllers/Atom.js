@@ -243,10 +243,12 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             // 8 - (3*2) / 2
             const number_of_valence_electrons = info["electrons_per_shell"].split("-").pop() *1
 
+            // Al
             if (test_number ===3) {
                 number_of_valence_electrons.should.be.equal(3)
             }
 
+            // C
             if (test_number ===4) {
                 number_of_valence_electrons.should.be.equal(4)
             }
@@ -265,15 +267,23 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                 number_of_shells.should.be.equal(3)
                 max_number_of_electrons.should.be.equal(18)
             }
+            
+            if (test_number ===4) {
+                number_of_shells.should.be.equal(2)
+                max_number_of_electrons.should.be.equal(8)
+            }
 
-            const max_number_of_bonds = max_number_of_electrons - number_of_valence_electrons;
+            // C: 8 - 4 = 4
+            // O: 8 - 6 = 2
+            // N: 8 - 5
+            const max_number_of_bonds = number_of_valence_electrons -(max_number_of_electrons/2);
 
             if (test_number ===3) {
                 max_number_of_bonds.should.be.equal(1233)
             }
 
             if (test_number ===4) {
-                max_number_of_bonds.should.be.equal(1233)
+                max_number_of_bonds.should.be.equal(4)
             }
 
             const number_of_free_slots = (max_number_of_electrons - (max_number_of_bonds * 2))/2
