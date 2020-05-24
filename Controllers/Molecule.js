@@ -12,7 +12,7 @@ const CMolecule = (mmolecule) => {
 
        // Check atoms for free slots
        // returns [index, atom] pairs
-       const atoms_with_free_slots = __atomsWithFreeSlots()
+       const atoms_with_free_slots = __atomsWithFreeSlots(test_number)
 
        if (atoms_with_free_slots.length === 0) {
            return false
@@ -140,11 +140,11 @@ const CMolecule = (mmolecule) => {
         return atoms_with_lone_pairs
     }
     
-    const __atomsWithFreeSlots = () => {
+    const __atomsWithFreeSlots = (test_number) => {
       // Check substrate for free slots
                 return mmolecule.slice(1).map(
                     (atom, index) => {
-                        if (CAtom(atom, index,mmolecule).freeSlots() === 0 ) {
+                        if (CAtom(atom, index,mmolecule).freeSlots(test_number) === 0 ) {
                             return null
                         }
                         return [index, atom]                        
