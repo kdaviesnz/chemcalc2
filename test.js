@@ -433,6 +433,21 @@ ccontainer5.container[1].slice(1).filter(
   }
 ).length = 9999
 
+const propylene = MoleculeFactory("CC=C")
+// watermolecule
+
+const ccontainer6 = new CContainer([false], MoleculeFactory, MoleculeController, 6)
+ccontainer6.add(propylene, 1)
+ccontainer6.add(watermolecule, 1)
+// We shouldnt have a reaction
+ccontainer6.length.should.equal(3)
+ccontainer6[1].should.equal(propylene)
+ccontainer6[2].should.equal(watermolecule)
+
+const sulfuric_acid = MoleculeFactory("OS(=O)(=O)O")
+ccontainer6.add(sulfuric_acid, 1)
+ccontainer6.length.should.equal(3)
+
 console.log("All tests succeeded")
 
 
