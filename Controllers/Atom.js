@@ -123,10 +123,62 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
         return r
     }
+    
+    const __electron_haystack = (test_number) => {
+        const atoms = mmolecule.slice(1)
+        const atom_electrons = atom.slice(4)
+        return atoms.reduce(
+            (__atom, __atom_index) => {
+
+                if (current_atom_index === __atom_index) {
+                    return false
+                }
+                
+                return [...carry, ...__atom.slice(4)
+                
+                
+                
+            },
+            []             
+        )
+    }
+          
+          
+    const __freeElectrons = (test_number) => {
+        
+        const atom_electrons = atom.slice(4)
+        const electron_haystack = __electron_haystack(test_number)
+        
+        return atom_electrons.filter(
+            (electron) => {
+                return electron_haystack.indexOf(electron) === -1
+            }
+        )
+    }
+            
+    const __usedElectrons = (test_number) => {
+        
+        const atom_electrons = atom.slice(4)
+        const electron_haystack = __electron_haystack(test_number)
+        
+        return atom_electrons.filter(
+            (electron) => {
+                return electron_haystack.indexOf(electron) !== -1
+            }
+        )
+    }   
+    
+    const __freeSlots = (test_number) => {    
+        const number_of_shells = info["electrons_per_shell"].split("-").length
+        const max_number_of_electrons = number_of_shells === 1?2:number_of_shells==2?8:18
+        const used_electrons = __usedElectrons(test_number)
+        return max_number_of_electrons - used_electrons.length
+    }
 
     return {
         isProton: __isProton,
         bonds: __Bonds,
+        freeElectrons:  __freeElectrons   
         lonePairs: (test_number) => {
 
 
