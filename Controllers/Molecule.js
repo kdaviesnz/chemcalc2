@@ -494,6 +494,10 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             
             if (test_number === 3) {
                 console.log(target_atom_electron_to_share_index)
+                // Target molecule should be AlCl3
+                // Source molecule should be COC
+                mmolecule[source_atom_electron_to_share_index][0].should.be.equal("O")
+                mmolecule[target_atom_mmolecule_index][0].should.be.equal("Al")
                 console.log("Molecule.js")
                 process.exit()
                 source_atom_electron_to_share_index.should.be.equal(3)
@@ -501,7 +505,8 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             }
             
             if (!target_atom_electron_to_share_index) {
-                // Target atom has no free electrons so check if it has free slots.
+                // Target atom has no free electrons so check if it has free slots ie that 
+                // the target atom has un unfillec valence shell
                 // electrophile
                 // free slots is a number
                 const free_slots = CAtom(mmolecule[target_atom_mmolecule_index], target_atom_mmolecule_index, mmolecule).freeSlots(test_number)
@@ -528,12 +533,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 mmolecule[target_atom_mmolecule_index].push(mmolecule[atom_to_push_molecule_index][5 + source_atom_electron_to_share_index])
 
             
-                // add shared electron from target atom to source atom
-                //mmolecule[source_atom_index][4 + source_atom_electron_to_share_index])].push(mmolecule[target_atom_mmolecule_index][4 + target_atom_electron_to_share_index])
-
-                // add shared electron from atom being pushed to target atom
-                //mmolecule[target_atom_mmolecule_index][5 + target_atom_electron_to_share_index])].push(mmolecule[atom_to_push_molecule_index][5 + source_atom_electron_to_share_index])
-
+             
             }
         }
 
