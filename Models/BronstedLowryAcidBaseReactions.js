@@ -300,17 +300,13 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
         if (test_number === 4) {
             container.length.should.be.equal(3)
-            nucleophile_molecule.length.should.be.equal(3)
-            electrophile_molecule.length.should.be.equal(4)
-            nucleophile_molecule[1].length.should.be.equal(12)
-            nucleophile_molecule[1][0].should.be.equal("Cl")
+            nucleophile_molecule.length.should.be.equal(14)
+            electrophile_molecule.length.should.be.equal(2)
+            nucleophile_molecule[1].length.should.be.equal(6)
+            nucleophile_molecule[1][0].should.be.equal("H")
             nucleophile_molecule[2][0].should.be.equal("H")
-            electrophile_molecule[1].length.should.be.equal(6)
-            electrophile_molecule[1][0].should.be.equal("H")
-            electrophile_molecule[2].length.should.be.equal(6)
-            electrophile_molecule[2][0].should.be.equal("H")
-            electrophile_molecule[3].length.should.be.equal(12)
-            electrophile_molecule[3][0].should.be.equal("O")
+            electrophile_molecule[1].length.should.be.equal(12)
+            electrophile_molecule[1][0].should.be.equal("Br")
         }
 
         return container

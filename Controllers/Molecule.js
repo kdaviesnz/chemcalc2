@@ -563,11 +563,6 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         
         // Check there is a bond between nucleophile atom (source) and electrophile atom (target)
         if (test_number ===4 ) {
-            console.log("Source atom index:" + source_atom_index)
-            console.log("target_atom_mmolecule_index:" + target_atom_mmolecule_index)
-            console.log("mmolecule")
-            console.log(mmolecule)
-            console.log("Molecule.js")
             /*
             Source atom index:6
 target_atom_mmolecule_index:13
@@ -633,7 +628,7 @@ mmolecule
 Molecule.js
 
              */
-            process.exit()
+//            process.exit()
         }
         Set().intersection(mmolecule[source_atom_index].slice(4), mmolecule[target_atom_mmolecule_index].slice(4)).length.should.not.be.equal(0)
         
