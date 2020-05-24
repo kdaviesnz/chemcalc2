@@ -169,79 +169,8 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     }   
     
     const __freeSlots = (test_number) => {    
-        const number_of_shells = info["electrons_per_shell"].split("-").length
-        const max_number_of_electrons = number_of_shells === 1?2:number_of_shells==2?8:18
-        const used_electrons = __usedElectrons(test_number)
-        return max_number_of_electrons - used_electrons.length
-    }
-
-    return {
-        isProton: __isProton,
-        bonds: __Bonds,
-        freeElectrons:  __freeElectrons   
-        lonePairs: (test_number) => {
-
-
-            // Remove current atom
-            const molecule_minus_current_atom = mmolecule.filter(
-                (atom , index) => {
-                    return index !== current_atom_index
-                }
-            )
-            
-            // Get electrons from atoms (this won't include atoms from current atom)
-            const electrons_from_other_atoms = molecule_minus_current_atom.reduce(
-                (carry, __atom) => {
-                    if (__atom === null || undefined === __atom.slice) {
-                        return carry
-                    }
-                    __atom.slice(4).map(
-                        (electron) => {
-                            carry.push(electron)
-                            return electron
-                        }
-                    )
-                    return carry
-                },
-                []
-            )
-
-            // Check current atom electrons to see if they're being used
-            const lone_electrons = atom.slice(4).filter(
-                (electron, index) => {
-                    return electrons_from_other_atoms.indexOf(electron) === -1
-                }
-            )
-            
-            return lone_electrons
-
-        },
-        doubleBond: __doubleBond,
-        hydrogens: __hydrogens(),
-        freeSlots: (test_number) => {
-
-            // Basic checks
-            atom.should.not.be.null()
-            atom.length.should.not.be.equal(0)
-            current_atom_index.should.not.be.null()
-            mmolecule.should.not.be.null
-
-
-            const b = __Bonds(atom[0])
-            if (atom[0]==="Cl") {
-                b.length.should.be.equal(3)
-            }
-            const info = PeriodicTable[atom[0]]
-
-            if (test_number ===3) {
-                atom[0].should.be.equal("Al")
-            }
-            
-            if (test_number ===4) {
-                atom[0].should.be.equal("C")
-              //  b.length.should.be.equal(4)
-                /*
-                  "C": {
+        /*
+                          "C": {
         "group":14,
         "column":"IVA",
         "atomic_number":6,
@@ -289,76 +218,66 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     },
 
     */
-            }
-
-            // info[3] is the number of valence electron pairs
-            // 8 - (3*2) / 2
-            const number_of_valence_electrons = info["electrons_per_shell"].split("-").pop() *1
-
-            // Al
-            if (test_number ===3) {
-                number_of_valence_electrons.should.be.equal(3)
-            }
-
-            // C
-            if (test_number ===4) {
-                number_of_valence_electrons.should.be.equal(4)
-            }
-
-           //
-            //const number_of_free_slots = 4 - (8 - number_of_valence_electrons)
-            // C, 2 - 4 , max 4 bonds 0 free slots
+        // Basic checks
+            atom.should.not.be.null()
+            atom.length.should.not.be.equal(0)
+            current_atom_index.should.not.be.null()
+            mmolecule.should.not.be.null
+        // C, 2 - 4 , max 4 bonds 0 free slots
             // N, 2-5  max 3 bonds, 1 free slot
             //O, 2-6 2 max 2 bonds  2 free slots
             // Al 2-8-3 ? max ?bonds free slots
             // the third shell can hold up to 18
-            const number_of_shells = info["electrons_per_shell"].split("-").length
-            const max_number_of_electrons = number_of_shells === 1?2:number_of_shells==2?8:18
+        const number_of_shells = info["electrons_per_shell"].split("-").length
+        const max_number_of_electrons = number_of_shells === 1?2:number_of_shells==2?8:18
+        const used_electrons = __usedElectrons(test_number)
+        return max_number_of_electrons - used_electrons.length / 2
+    }
 
-            if (test_number ===3) {
-                number_of_shells.should.be.equal(3)
-                max_number_of_electrons.should.be.equal(18)
-            }
+    return {
+        isProton: __isProton,
+        bonds: __Bonds,
+        freeElectrons:  __freeElectrons   
+        lonePairs: (test_number) => {
+
+
+            // Remove current atom
+            const molecule_minus_current_atom = mmolecule.filter(
+                (atom , index) => {
+                    return index !== current_atom_index
+                }
+            )
             
-            if (test_number ===4) {
-                number_of_shells.should.be.equal(2)
-                max_number_of_electrons.should.be.equal(8)
-            }
+            // Get electrons from atoms (this won't include atoms from current atom)
+            const electrons_from_other_atoms = molecule_minus_current_atom.reduce(
+                (carry, __atom) => {
+                    if (__atom === null || undefined === __atom.slice) {
+                        return carry
+                    }
+                    __atom.slice(4).map(
+                        (electron) => {
+                            carry.push(electron)
+                            return electron
+                        }
+                    )
+                    return carry
+                },
+                []
+            )
 
-            // C: 8 - 4 = 4
-            // O: 8 - 6 = 2
-            // N: 8 - 5
-            const max_number_of_bonds = number_of_valence_electrons -(max_number_of_electrons/2);
+            // Check current atom electrons to see if they're being used
+            const lone_electrons = atom.slice(4).filter(
+                (electron, index) => {
+                    return electrons_from_other_atoms.indexOf(electron) === -1
+                }
+            )
+            
+            return lone_electrons
 
-            if (test_number ===3) {
-                max_number_of_bonds.should.be.equal(1233)
-            }
-
-            if (test_number ===4) {
-                max_number_of_bonds.should.be.equal(4)
-            }
-
-            const number_of_free_slots = (max_number_of_electrons - (max_number_of_bonds * 2))/2
-
-            console.log(test_number)
-            number_of_free_slots.should.not.be.lessThan(0) // -6
-
-            if (test_number ===3) {
-                number_of_shells.should.be.equal(3)
-                max_number_of_electrons.should.be.equal(18)
-                number_of_valence_electrons.should.be.equal(3)
-                number_of_free_slots.should.be.equal(6) 
-            }
-
-            if (test_number ===4) {
-                number_of_shells.should.be.equal(2)
-                max_number_of_electrons.should.be.equal(8)
-                number_of_free_slots.should.be.equal(0)
-            }
-
-            return number_of_free_slots
-           // return (8 - (info["electrons_per_shell"].split("-").pop()*2)) / 2
-        }
+        },
+        doubleBond: __doubleBond,
+        hydrogens: __hydrogens(),
+        freeSlots: __freeSlots
     }
 }
 
