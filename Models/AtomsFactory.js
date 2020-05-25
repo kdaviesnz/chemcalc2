@@ -944,6 +944,28 @@ const AtomsFactory = (canonicalSMILES) => {
         Set().intersection(carbon_atoms[1].slice(4), carbon_atoms[2].slice(4)).length.should.be.equal(4)
         Set().intersection(carbon_atoms[2].slice(4), carbon_atoms[3].slice(4)).length.should.be.equal(2)
     }
+    
+    if ("OS(=O)(=O)O"=== canonicalSMILES) {
+        atoms_with_hydrogens.filter(
+            (atom) => {
+                return atom[0] === "H"
+            }
+        ).length.should.be.equal(2)
+
+        atoms_with_hydrogens.length.should.be.equal(12)
+        atoms_with_hydrogens.filter(
+            (atom) => {
+                return atom[0] === "O"
+            }
+        ).length.should.be.equal(4)
+        
+        atoms_with_hydrogens[0][0].should.be.equal("H")
+        atoms_with_hydrogens[1][0].should.be.equal("O")
+        atoms_with_hydrogens[2][0].should.be.equal("S")
+        atoms_with_hydrogens[3][0].should.be.equal("O")
+        atoms_with_hydrogens[4][0].should.be.equal("O")
+        atoms_with_hydrogens[5][0].should.be.equal("O")
+    }
 
     return atoms_with_hydrogens
 
