@@ -404,7 +404,6 @@ ccontainer4.add(butene,1)
 ccontainer4.add(hbr,1)
 
 console.log("Test 4 complete")
-process.exit()
 
 ccontainer4.container.length.should.be.equal(3)
 const carbocation = ccontainer4.container[1]
@@ -432,6 +431,10 @@ ccontainer5.container[1].slice(1).filter(
     return atom[0] === "H"
   }
 ).length = 9999
+
+console.log("Test 5 complete")
+process.exit()
+
 
 const propylene = MoleculeFactory("CC=C")
 // watermolecule
