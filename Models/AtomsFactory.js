@@ -751,6 +751,35 @@ const AtomsFactory = (canonicalSMILES) => {
         Set().intersection(atoms[2].slice(4), atoms[3].slice(4)).length.should.be.equal(2)
     }
 
+    if ("OS(=O)(=O)O"=== canonicalSMILES) {
+        
+
+        atoms.length.should.be.equal(12)
+        atoms.filter(
+            (atom) => {
+                return atom[0] === "O"
+            }
+        ).length.should.be.equal(4)
+        
+        atoms[0][0].should.be.equal("O")
+        atoms[1][0].should.be.equal("S")
+        atoms[2][0].should.be.equal("O")
+        atoms[3][0].should.be.equal("O")
+        atoms[4][0].should.be.equal("O")
+        
+        
+         // Check bonds
+        Set().intersection(atoms[0].slice(4), atoms[1].slice(4)).length.should.be.equal(2)
+        Set().intersection(atoms[1].slice(4), atoms[2].slice(4)).length.should.be.equal(4)
+        Set().intersection(atoms[2].slice(4), atoms[3].slice(4)).length.should.be.equal(0)
+        Set().intersection(atoms[3].slice(4), atoms[4].slice(4)).length.should.be.equal(0)
+        Set().intersection(atoms[1].slice(4), atoms[3].slice(4)).length.should.be.equal(4)
+        Set().intersection(atoms[1].slice(4), atoms[4].slice(4)).length.should.be.equal(2)
+        
+    
+    }
+
+    
     // Add hydrogens
     const atoms_with_hydrogens = atoms.reduce(
         (carry, current, index, arr) => {
@@ -971,9 +1000,9 @@ const AtomsFactory = (canonicalSMILES) => {
         Set().intersection(atoms_with_hydrogens[1].slice(4), atoms_with_hydrogens[2].slice(4)).length.should.be.equal(2)
         Set().intersection(atoms_with_hydrogens[2].slice(4), atoms_with_hydrogens[3].slice(4)).length.should.be.equal(4)
         Set().intersection(atoms_with_hydrogens[3].slice(4), atoms_with_hydrogens[4].slice(4)).length.should.be.equal(0)
-        Set().intersection(atoms_with_hydrogens[4].slice(5), atoms_with_hydrogens[4].slice(4)).length.should.be.equal(0)
-        Set().intersection(atoms_with_hydrogens[4].slice(2), atoms_with_hydrogens[4].slice(4)).length.should.be.equal(4)
-        Set().intersection(atoms_with_hydrogens[5].slice(2), atoms_with_hydrogens[4].slice(4)).length.should.be.equal(4)
+        Set().intersection(atoms_with_hydrogens[4].slice(4), atoms_with_hydrogens[4].slice(4)).length.should.be.equal(0)
+        Set().intersection(atoms_with_hydrogens[4].slice(4), atoms_with_hydrogens[4].slice(4)).length.should.be.equal(4)
+        Set().intersection(atoms_with_hydrogens[5].slice(4), atoms_with_hydrogens[4].slice(4)).length.should.be.equal(4)
    
     
     }
