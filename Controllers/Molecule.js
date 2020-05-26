@@ -301,9 +301,9 @@ const CMolecule = (mmolecule) => {
 
 
         if (test_number === 5) {
-            target_atom_mmolecule_index.should.be.equal(4)
-            atoms.length.should.be.equal(4) // AlCl3
-            mmolecule.length.should.be.equal(10) // COC
+            target_atom_mmolecule_index.should.be.equal(14)
+            atoms.length.should.be.equal(1) // AlCl3
+            mmolecule.length.should.be.equal(14) // COC
         }
 
         // Add atoms to molecule.
@@ -527,6 +527,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 mmolecule[source_atom_index].push(mmolecule[target_atom_mmolecule_index][4 + target_atom_electron_to_share_index])
 
                 // add shared electron from atom being pushed to target atom
+                // test 5 - atom_to_push_molecule_index is undefined
                 mmolecule[target_atom_mmolecule_index].push(mmolecule[atom_to_push_molecule_index][5 + source_atom_electron_to_share_index])
 
             

@@ -407,7 +407,6 @@ console.log("Test 4 complete")
 
 ccontainer4.container.length.should.be.equal(3)
 const carbocation = ccontainer4.container[1]
-carbocation.length = 999
 carbocation.slice(1).filter(
   (atom) => {
     return atom[0] === "H"
@@ -420,7 +419,88 @@ brNeg.slice(1).filter(
   }
 ).length === 0
 
-const ccontainer5 = new CContainer([false], MoleculeFactory, MoleculeController, 4)
+//console.log(carbocation)
+/*
+[ 12345,
+  [ 'H', 1, 1, 1, '26f11121kanjwzpw', '26f11121kanjwzpg' ],
+  [ 'H', 1, 1, 1, '26f11121kanjwzpx', '26f11121kanjwzph' ],
+  [ 'H', 1, 1, 1, '26f11121kanjwzpy', '26f11121kanjwzpi' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '26f11121kanjwzpg',
+    '26f11121kanjwzph',
+    '26f11121kanjwzpi',
+    '26f11121kanjwzpj',
+    '26f11121kanjwzpn',
+    '26f11121kanjwzpw',
+    '26f11121kanjwzpx',
+    '26f11121kanjwzpy' ],
+  [ 'H', 1, 1, 1, '26f11121kanjwzpz', '26f11121kanjwzpk' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '26f11121kanjwzpk',
+    '26f11121kanjwzpl',
+    '26f11121kanjwzpm',
+    '26f11121kanjwzpn',
+    '26f11121kanjwzpj',
+    '26f11121kanjwzpr',
+    '26f11121kanjwzpq',
+    '26f11121kanjwzpz' ],
+  [ 'H', 1, 1, 1, '26f11121kanjwzq0', '26f11121kanjwzpo' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '26f11121kanjwzpo',
+    '26f11121kanjwzpp',
+    '26f11121kanjwzpq',
+    '26f11121kanjwzpr',
+    '26f11121kanjwzpm',
+    '26f11121kanjwzpl',
+    '26f11121kanjwzpv',
+    '26f11121kanjwzq0' ],
+  [ 'H', 1, 1, 1, '26f11121kanjwzq1', '26f11121kanjwzps' ],
+  [ 'H', 1, 1, 1, '26f11121kanjwzq2', '26f11121kanjwzpt' ],
+  [ 'H', 1, 1, 1, '26f11121kanjwzq3', '26f11121kanjwzpu' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '26f11121kanjwzps',
+    '26f11121kanjwzpt',
+    '26f11121kanjwzpu',
+    '26f11121kanjwzpv',
+    '26f11121kanjwzpp',
+    '26f11121kanjwzq1',
+    '26f11121kanjwzq2',
+    '26f11121kanjwzq3' ],
+  [ 'H', 1, 1, 1, '26f11121kanjwzpl', '26f11121kanjwzpm' ] ]
+
+ */
+//console.log(brNeg)
+/*
+[ 12345,
+  [ 'Br',
+    35,
+    7,
+    1,
+    '26f1111ukanjv6nh',
+    '26f1111ukanjv6ni',
+    '26f1111ukanjv6nj',
+    '26f1111ukanjv6nk',
+    '26f1111ukanjv6nl',
+    '26f1111ukanjv6nm',
+    '26f1111ukanjv6nn',
+    '26f1111ukanjv6no' ] ]
+
+ */
+console.log("test.js")
+//process.exit()
+const ccontainer5 = new CContainer([false], MoleculeFactory, MoleculeController, 5)
 ccontainer5.add(carbocation,1)
 ccontainer5.add(brNeg,1)
 ccontainer5.container.length.should.be.equal(2)

@@ -7,7 +7,7 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
         let nucleophile_molecule_index = null
         let electrophile_molecule_index = null
         
-        if (test_number !==3) {
+        if (test_number !==3 && test_number !==5) {
             console.log("Wrong section for test number " + test_number)
             process.exit()
         }

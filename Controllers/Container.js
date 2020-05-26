@@ -74,6 +74,7 @@ class CContainer {
                 // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
                 // Check electrophile_molecule is HBr
                 if (this.test_number === 4) {
+                    console.log(electrophile_molecule)
                     electrophile_molecule[1][0].should.be.equal("H")
                     electrophile_molecule[2][0].should.be.equal("Br")
                     Set().intersection(electrophile_molecule[1].slice(4),electrophile_molecule[2].slice(4)).length.should.be.equal(2)
