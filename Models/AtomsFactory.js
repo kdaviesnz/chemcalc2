@@ -965,6 +965,17 @@ const AtomsFactory = (canonicalSMILES) => {
         atoms_with_hydrogens[3][0].should.be.equal("O")
         atoms_with_hydrogens[4][0].should.be.equal("O")
         atoms_with_hydrogens[5][0].should.be.equal("O")
+        
+         // Check bonds
+        Set().intersection(atoms_with_hydrogens[0].slice(4), atoms_with_hydrogens[1].slice(4)).length.should.be.equal(2)
+        Set().intersection(atoms_with_hydrogens[1].slice(4), atoms_with_hydrogens[2].slice(4)).length.should.be.equal(2)
+        Set().intersection(atoms_with_hydrogens[2].slice(4), atoms_with_hydrogens[3].slice(4)).length.should.be.equal(4)
+        Set().intersection(atoms_with_hydrogens[3].slice(4), atoms_with_hydrogens[4].slice(4)).length.should.be.equal(0)
+        Set().intersection(atoms_with_hydrogens[4].slice(5), atoms_with_hydrogens[4].slice(4)).length.should.be.equal(0)
+        Set().intersection(atoms_with_hydrogens[4].slice(2), atoms_with_hydrogens[4].slice(4)).length.should.be.equal(4)
+        Set().intersection(atoms_with_hydrogens[5].slice(2), atoms_with_hydrogens[4].slice(4)).length.should.be.equal(4)
+   
+    
     }
 
     return atoms_with_hydrogens
