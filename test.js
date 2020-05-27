@@ -409,13 +409,20 @@ ccontainer4.container.length.should.be.equal(3)
 
 // CH3[C+]H-CH(H)CH3
 const carbocation = ccontainer4.container[1]
-console.log(carbocation)
-process.exit()
+//console.log(carbocation)
+//process.exit()
 carbocation.slice(1).filter(
   (atom) => {
     return atom[0] === "H"
   }
 ).length.should.be.equal(9)
+carbocation.slice(1).filter(
+    (atom) => {
+        return atom[0] === "C"
+    }
+).length.should.be.equal(888)
+
+
 carbocation[1][0].should.be.equal("H")
 carbocation[2][0].should.be.equal("H")
 carbocation[3][0].should.be.equal("H")
