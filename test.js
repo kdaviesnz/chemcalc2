@@ -407,12 +407,26 @@ console.log("Test 4 complete")
 
 ccontainer4.container.length.should.be.equal(3)
 
+// CH3[C+]H-CH(H)CH3
 const carbocation = ccontainer4.container[1]
 carbocation.slice(1).filter(
   (atom) => {
     return atom[0] === "H"
   }
 ).length.should.be.equal(567)
+carbocation[1][0].should.be.equal("H")
+carbocation[2][0].should.be.equal("H")
+carbocation[3][0].should.be.equal("H")
+carbocation[4][0].should.be.equal("C")
+Set().intersection(carbocation[4].slice(4), carbocation[1].slice(4)).length.should.be.equal(1)
+Set().intersection(carbocation[4].slice(4), carbocation[2].slice(4)).length.should.be.equal(1)
+Set().intersection(carbocation[4].slice(4), carbocation[3].slice(4)).length.should.be.equal(1)
+carbocation[5][0].should.be.equal("H")
+carbocation[6][0].should.be.equal("C")
+Set().intersection(carbocation[6].slice(4), carbocation[5].slice(4)).length.should.be.equal(1)
+Set().intersection(carbocation[6].slice(4), carbocation[4].slice(4)).length.should.be.equal(1)
+
+
 
 const brNeg = ccontainer4.container[2]
 brNeg.slice(1).filter(
