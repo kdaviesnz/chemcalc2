@@ -409,36 +409,37 @@ ccontainer4.container.length.should.be.equal(3)
 
 // CH3[C+]H-CH(H)CH3
 const carbocation = ccontainer4.container[1]
+console.log(carbocation)
+process.exit()
 carbocation.slice(1).filter(
   (atom) => {
     return atom[0] === "H"
   }
-).length.should.be.equal(567)
+).length.should.be.equal(9)
 carbocation[1][0].should.be.equal("H")
 carbocation[2][0].should.be.equal("H")
 carbocation[3][0].should.be.equal("H")
 carbocation[4][0].should.be.equal("C")
-Set().intersection(carbocation[4].slice(4), carbocation[1].slice(4)).length.should.be.equal(1)
-Set().intersection(carbocation[4].slice(4), carbocation[2].slice(4)).length.should.be.equal(1)
-Set().intersection(carbocation[4].slice(4), carbocation[3].slice(4)).length.should.be.equal(1)
+Set().intersection(carbocation[4].slice(4), carbocation[1].slice(4)).length.should.be.equal(2)
+Set().intersection(carbocation[4].slice(4), carbocation[2].slice(4)).length.should.be.equal(2)
+Set().intersection(carbocation[4].slice(4), carbocation[3].slice(4)).length.should.be.equal(2)
 carbocation[5][0].should.be.equal("H")
 carbocation[6][0].should.be.equal("C")
-Set().intersection(carbocation[6].slice(4), carbocation[5].slice(4)).length.should.be.equal(1)
-Set().intersection(carbocation[6].slice(4), carbocation[4].slice(4)).length.should.be.equal(1)
+Set().intersection(carbocation[6].slice(4), carbocation[5].slice(4)).length.should.be.equal(2)
+Set().intersection(carbocation[6].slice(4), carbocation[4].slice(4)).length.should.be.equal(2)
 carbocation[7][0].should.be.equal("H")
-carbocation[8][0].should.be.equal("H")
-carbocation[9][0].should.be.equal("C")
-Set().intersection(carbocation[7].slice(4), carbocation[9].slice(4)).length.should.be.equal(1)
-Set().intersection(carbocation[8].slice(4), carbocation[9].slice(4)).length.should.be.equal(1)
-Set().intersection(carbocation[9].slice(4), carbocation[6].slice(4)).length.should.be.equal(1)
+carbocation[8][0].should.be.equal("C")
+carbocation[9][0].should.be.equal("H")
+Set().intersection(carbocation[7].slice(4), carbocation[8].slice(4)).length.should.be.equal(2)
+Set().intersection(carbocation[8].slice(4), carbocation[6].slice(4)).length.should.be.equal(2) // not ok 4
 carbocation[10][0].should.be.equal("H")
 carbocation[12][0].should.be.equal("H")
 carbocation[13][0].should.be.equal("H")
 carbocation[14][0].should.be.equal("C")
-Set().intersection(carbocation[10].slice(4), carbocation[14].slice(4)).length.should.be.equal(1)
-Set().intersection(carbocation[12].slice(4), carbocation[14].slice(4)).length.should.be.equal(1)
-Set().intersection(carbocation[13].slice(4), carbocation[14].slice(4)).length.should.be.equal(1)
-Set().intersection(carbocation[14].slice(4), carbocation[14].slice(4)).length.should.be.equal(1)
+Set().intersection(carbocation[10].slice(4), carbocation[14].slice(4)).length.should.be.equal(2)
+Set().intersection(carbocation[12].slice(4), carbocation[14].slice(4)).length.should.be.equal(2)
+Set().intersection(carbocation[13].slice(4), carbocation[14].slice(4)).length.should.be.equal(2)
+Set().intersection(carbocation[14].slice(4), carbocation[14].slice(4)).length.should.be.equal(2)
 
 const brNeg = ccontainer4.container[2]
 brNeg.slice(1).filter(
@@ -450,80 +451,63 @@ brNeg.slice(1).filter(
 //console.log(carbocation)
 /*
 [ 12345,
-  [ 'H', 1, 1, 1, '26f11121kanjwzpw', '26f11121kanjwzpg' ],
-  [ 'H', 1, 1, 1, '26f11121kanjwzpx', '26f11121kanjwzph' ],
-  [ 'H', 1, 1, 1, '26f11121kanjwzpy', '26f11121kanjwzpi' ],
+  [ 'H', 1, 1, 1, '26f111h6kap1pink', '26f111h6kap1pin4' ],
+  [ 'H', 1, 1, 1, '26f111h6kap1pinl', '26f111h6kap1pin5' ],
+  [ 'H', 1, 1, 1, '26f111h6kap1pinm', '26f111h6kap1pin6' ],
   [ 'C',
     6,
     4,
     4,
-    '26f11121kanjwzpg',
-    '26f11121kanjwzph',
-    '26f11121kanjwzpi',
-    '26f11121kanjwzpj',
-    '26f11121kanjwzpn',
-    '26f11121kanjwzpw',
-    '26f11121kanjwzpx',
-    '26f11121kanjwzpy' ],
-  [ 'H', 1, 1, 1, '26f11121kanjwzpz', '26f11121kanjwzpk' ],
+    '26f111h6kap1pin4',
+    '26f111h6kap1pin5',
+    '26f111h6kap1pin6',
+    '26f111h6kap1pin7',
+    '26f111h6kap1pinb',
+    '26f111h6kap1pink',
+    '26f111h6kap1pinl',
+    '26f111h6kap1pinm' ],
+  [ 'H', 1, 1, 1, '26f111h6kap1pinn', '26f111h6kap1pin8' ],
   [ 'C',
     6,
     4,
     4,
-    '26f11121kanjwzpk',
-    '26f11121kanjwzpl',
-    '26f11121kanjwzpm',
-    '26f11121kanjwzpn',
-    '26f11121kanjwzpj',
-    '26f11121kanjwzpr',
-    '26f11121kanjwzpq',
-    '26f11121kanjwzpz' ],
-  [ 'H', 1, 1, 1, '26f11121kanjwzq0', '26f11121kanjwzpo' ],
+    '26f111h6kap1pin8',
+    '26f111h6kap1pin9',
+    '26f111h6kap1pina',
+    '26f111h6kap1pinb',
+    '26f111h6kap1pin7',
+    '26f111h6kap1pinf',
+    '26f111h6kap1pine',
+    '26f111h6kap1pinn' ],
+  [ 'H', 1, 1, 1, '26f111h6kap1pino', '26f111h6kap1pinc' ],
   [ 'C',
     6,
     4,
     4,
-    '26f11121kanjwzpo',
-    '26f11121kanjwzpp',
-    '26f11121kanjwzpq',
-    '26f11121kanjwzpr',
-    '26f11121kanjwzpm',
-    '26f11121kanjwzpl',
-    '26f11121kanjwzpv',
-    '26f11121kanjwzq0' ],
-  [ 'H', 1, 1, 1, '26f11121kanjwzq1', '26f11121kanjwzps' ],
-  [ 'H', 1, 1, 1, '26f11121kanjwzq2', '26f11121kanjwzpt' ],
-  [ 'H', 1, 1, 1, '26f11121kanjwzq3', '26f11121kanjwzpu' ],
+    '26f111h6kap1pinc',
+    '26f111h6kap1pind',
+    '26f111h6kap1pine',
+    '26f111h6kap1pinf',
+    '26f111h6kap1pina',
+    '26f111h6kap1pin9',
+    '26f111h6kap1pinj',
+    '26f111h6kap1pino' ],
+  [ 'H', 1, 1, 1, '26f111h6kap1pinp', '26f111h6kap1ping' ],
+  [ 'H', 1, 1, 1, '26f111h6kap1pinq', '26f111h6kap1pinh' ],
+  [ 'H', 1, 1, 1, '26f111h6kap1pinr', '26f111h6kap1pini' ],
   [ 'C',
     6,
     4,
     4,
-    '26f11121kanjwzps',
-    '26f11121kanjwzpt',
-    '26f11121kanjwzpu',
-    '26f11121kanjwzpv',
-    '26f11121kanjwzpp',
-    '26f11121kanjwzq1',
-    '26f11121kanjwzq2',
-    '26f11121kanjwzq3' ],
-  [ 'H', 1, 1, 1, '26f11121kanjwzpl', '26f11121kanjwzpm' ] ]
-
- */
-//console.log(brNeg)
-/*
-[ 12345,
-  [ 'Br',
-    35,
-    7,
-    1,
-    '26f1111ukanjv6nh',
-    '26f1111ukanjv6ni',
-    '26f1111ukanjv6nj',
-    '26f1111ukanjv6nk',
-    '26f1111ukanjv6nl',
-    '26f1111ukanjv6nm',
-    '26f1111ukanjv6nn',
-    '26f1111ukanjv6no' ] ]
+    '26f111h6kap1ping',
+    '26f111h6kap1pinh',
+    '26f111h6kap1pini',
+    '26f111h6kap1pinj',
+    '26f111h6kap1pind',
+    '26f111h6kap1pinp',
+    '26f111h6kap1pinq',
+    '26f111h6kap1pinr' ],
+  [ 'H', 1, 1, 1, '26f111h6kap1pin9', '26f111h6kap1pina' ] ]
 
  */
 console.log("test.js")
