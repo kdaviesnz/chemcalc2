@@ -406,18 +406,20 @@ ccontainer4.add(hbr,1)
 console.log("Test 4 complete")
 
 ccontainer4.container.length.should.be.equal(3)
+
 const carbocation = ccontainer4.container[1]
 carbocation.slice(1).filter(
   (atom) => {
     return atom[0] === "H"
   }
-).length = 9999
+).length.should.be.equal(567)
+
 const brNeg = ccontainer4.container[2]
 brNeg.slice(1).filter(
   (atom) => {
     return atom[0] === "H"
   }
-).length === 0
+).length.should.be.equal(765)
 
 //console.log(carbocation)
 /*
