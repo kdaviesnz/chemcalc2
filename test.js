@@ -425,8 +425,20 @@ carbocation[5][0].should.be.equal("H")
 carbocation[6][0].should.be.equal("C")
 Set().intersection(carbocation[6].slice(4), carbocation[5].slice(4)).length.should.be.equal(1)
 Set().intersection(carbocation[6].slice(4), carbocation[4].slice(4)).length.should.be.equal(1)
-
-
+carbocation[7][0].should.be.equal("H")
+carbocation[8][0].should.be.equal("H")
+carbocation[9][0].should.be.equal("C")
+Set().intersection(carbocation[7].slice(4), carbocation[9].slice(4)).length.should.be.equal(1)
+Set().intersection(carbocation[8].slice(4), carbocation[9].slice(4)).length.should.be.equal(1)
+Set().intersection(carbocation[9].slice(4), carbocation[6].slice(4)).length.should.be.equal(1)
+carbocation[10][0].should.be.equal("H")
+carbocation[12][0].should.be.equal("H")
+carbocation[13][0].should.be.equal("H")
+carbocation[14][0].should.be.equal("C")
+Set().intersection(carbocation[10].slice(4), carbocation[14].slice(4)).length.should.be.equal(1)
+Set().intersection(carbocation[12].slice(4), carbocation[14].slice(4)).length.should.be.equal(1)
+Set().intersection(carbocation[13].slice(4), carbocation[14].slice(4)).length.should.be.equal(1)
+Set().intersection(carbocation[14].slice(4), carbocation[14].slice(4)).length.should.be.equal(1)
 
 const brNeg = ccontainer4.container[2]
 brNeg.slice(1).filter(
