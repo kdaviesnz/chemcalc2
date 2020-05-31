@@ -142,9 +142,60 @@ class CContainer {
                 const electrophile_atom_index = this.MoleculeController(reagent).electrophileIndex(this.test_number)
 
                 // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
+                                        /*
+        [ [ 'H', 1, 1, 1, '1y5g42jkkahi190y', '1y5g42jkkahi190i' ], 1
+  [ 'H', 1, 1, 1, '1y5g42jkkahi190z', '1y5g42jkkahi190j' ], 2
+  [ 'H', 1, 1, 1, '1y5g42jkkahi1910', '1y5g42jkkahi190k' ], 3
+  [ 'C', 4, 6, 4, 4, '1y5g42jkkahi190i', '1y5g42jkkahi190j', '1y5g42jkkahi190k','1y5g42jkkahi190l'
+  ,'1y5g42jkkahi190p','1y5g42jkkahi190y','1y5g42jkkahi190z', '1y5g42jkkahi1910' ],
+  [ 'H', 1, 1, 1, '1y5g42jkkahi1911', '1y5g42jkkahi190m' ], 5
+  [ 'C', 6
+    6,
+    4,
+    4,
+    '1y5g42jkkahi190m',
+    '1y5g42jkkahi190n',
+    '1y5g42jkkahi190o',
+    '1y5g42jkkahi190p',
+    '1y5g42jkkahi190l',
+    '1y5g42jkkahi190t',
+    '1y5g42jkkahi190s',
+    '1y5g42jkkahi1911' ],
+  [ 'H', 1, 1, 1, '1y5g42jkkahi1912', '1y5g42jkkahi190q' ], 7
+  [ 'C', 8
+    6,
+    4,
+    4,
+    '1y5g42jkkahi190q',
+    '1y5g42jkkahi190r',
+    '1y5g42jkkahi190s',
+    '1y5g42jkkahi190t',
+    '1y5g42jkkahi190o',
+    '1y5g42jkkahi190n',
+    '1y5g42jkkahi190x',
+    '1y5g42jkkahi1912' ],
+  [ 'H', 1, 1, 1, '1y5g42jkkahi1913', '1y5g42jkkahi190u' ], 9
+  [ 'H', 1, 1, 1, '1y5g42jkkahi1914', '1y5g42jkkahi190v' ], 10
+  [ 'H', 1, 1, 1, '1y5g42jkkahi1915', '1y5g42jkkahi190w' ], 11
+  [ 'C', 12
+    6,
+    4,
+    4,
+    '1y5g42jkkahi190u',
+    '1y5g42jkkahi190v',
+    '1y5g42jkkahi190w',
+    '1y5g42jkkahi190x',
+    '1y5g42jkkahi190r',
+    '1y5g42jkkahi1913',
+    '1y5g42jkkahi1914',
+    '1y5g42jkkahi1915' ] ]
+         */
+                
                 if (this.test_number === 4) {
-                    nucleophile_atom_index.should.be.equal(6)
+                    nucleophile_atom_index.should.be.equal(6)  // correct
                     nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("C")
+                    // Check double bond
+                    Set().intersection(nucleophile_molecule[nucleophile_atom_index].slice(4), nucleophile_molecule[8].slice(4)).length.should.be.equal(4)
                 }
                 
                 // const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
