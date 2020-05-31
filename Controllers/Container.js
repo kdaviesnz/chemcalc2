@@ -64,23 +64,23 @@ class CContainer {
                 if (this.test_number === 4) {
                     nucleophile_molecule[6][0].should.be.equal("C")
                     nucleophile_molecule[8][0].should.be.equal("C")
+                    // Confirm double bond
                     Set().intersection(nucleophile_molecule[6].slice(4),nucleophile_molecule[8].slice(4)).length.should.be.equal(4)
                 }
-                
-              
+                              
                 const electrophile_molecule = reagent
                 const electrophile_molecule_index = 2
                 
                 // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
                 // Check electrophile_molecule is HBr
                 if (this.test_number === 4) {
-                    console.log(electrophile_molecule)
+                    
                     electrophile_molecule[1][0].should.be.equal("H")
                     electrophile_molecule[2][0].should.be.equal("Br")
                     Set().intersection(electrophile_molecule[1].slice(4),electrophile_molecule[2].slice(4)).length.should.be.equal(2)
                 }
                              
-                
+               
                 const nucleophile_atom_index = this.MoleculeController(substrate).nucleophileIndex(this.test_number)
                 const electrophile_atom_index = this.MoleculeController(reagent).electrophileIndex(this.test_number)
 
