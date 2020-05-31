@@ -79,10 +79,7 @@ class CContainer {
         [ [ 'H', 1, 1, 1, '1y5g42jkkahi190y', '1y5g42jkkahi190i' ], 1
   [ 'H', 1, 1, 1, '1y5g42jkkahi190z', '1y5g42jkkahi190j' ], 2
   [ 'H', 1, 1, 1, '1y5g42jkkahi1910', '1y5g42jkkahi190k' ], 3
-  [ 'C', 4
-    6,
-    4,
-    4,
+  [ 'C', 4, 6, 4, 4,
     '1y5g42jkkahi190i',
     '1y5g42jkkahi190j',
     '1y5g42jkkahi190k',
