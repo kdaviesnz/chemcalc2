@@ -777,15 +777,29 @@ Molecule.js
 
             //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
             // atoms_or_atomic_symbols HBr
-            if (test_number === 4) {
-                atoms_or_atomic_symbols.length.should.be.equal(1) // H
-                mmolecule.length.should.be.equal(13) // CC=CC (nucleophile)
-                target_molecule_index.should.be.equal(2) // HBr (electrophile)
-                target_atom_index.should.be.equal(1) // Hydrogent
-                atoms_or_atomic_symbols[target_atom_index -1][0].should.be.equal("H")
-                source_atom_index.should.be.equal(6) // should be one of the C=C atoms (CC=CC)
-            }
-            
+                    /*
+        [ [ 'H', 1, 1, 1, '1y5g42jkkahi190y', '1y5g42jkkahi190i' ], 1
+  [ 'H', 1, 1, 1, '1y5g42jkkahi190z', '1y5g42jkkahi190j' ], 2
+  [ 'H', 1, 1, 1, '1y5g42jkkahi1910', '1y5g42jkkahi190k' ], 3
+  [ 'C', 4, 6, 4, 4, '1y5g42jkkahi190i', '1y5g42jkkahi190j', '1y5g42jkkahi190k','1y5g42jkkahi190l'
+  ,'1y5g42jkkahi190p','1y5g42jkkahi190y','1y5g42jkkahi190z', '1y5g42jkkahi1910' ],
+  [ 'H', 1, 1, 1, '1y5g42jkkahi1911', '1y5g42jkkahi190m' ], 5
+  [ 'C', 6,  4, 4,'1y5g42jkkahi190m','1y5g42jkkahi190n','1y5g42jkkahi190o', 6
+    '1y5g42jkkahi190p', '1y5g42jkkahi190l', '1y5g42jkkahi190t','1y5g42jkkahi190s', '1y5g42jkkahi1911' ],
+  [ 'H', 1, 1, 1, '1y5g42jkkahi1912', '1y5g42jkkahi190q' ], 7
+  [ 'C', 6, 4, 4, '1y5g42jkkahi190q','1y5g42jkkahi190r', '1y5g42jkkahi190s',
+    '1y5g42jkkahi190t', '1y5g42jkkahi190o','1y5g42jkkahi190n','1y5g42jkkahi190x',
+    '1y5g42jkkahi1912' ], 8
+  [ 'H', 1, 1, 1, '1y5g42jkkahi1913', '1y5g42jkkahi190u' ], 9
+  [ 'H', 1, 1, 1, '1y5g42jkkahi1914', '1y5g42jkkahi190v' ], 10
+  [ 'H', 1, 1, 1, '1y5g42jkkahi1915', '1y5g42jkkahi190w' ], 11
+  [ 'C', 6,4,4, '1y5g42jkkahi190u','1y5g42jkkahi190v','1y5g42jkkahi190w',
+    '1y5g42jkkahi190x','1y5g42jkkahi190r', '1y5g42jkkahi1913','1y5g42jkkahi1914',
+    '1y5g42jkkahi1915' ] 12 
+      [ 'H', 1, 1, 1, '864335', '785456' ], 13
+    ]
+         */
+                      
             atoms_or_atomic_symbols.should.be.an.Array()
             // H+ (electrophile) <---------- H2O (nucleophile)
             if (test_number === 1) {
@@ -797,10 +811,10 @@ Molecule.js
             
             //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
             if (test_number === 4) {
-                atoms_or_atomic_symbols.length.should.be.equal(1)  // proton
+                atoms_or_atomic_symbols.length.should.be.equal(1)  // proton, electrophile
                 atoms_or_atomic_symbols[0][0].should.be.equal("H")
                 atoms_or_atomic_symbols[0].length.should.be.equal(4)
-                target_atom_index.should.be.equal(1)
+                target_atom_index.should.be.equal(1) // index of atom on electrophile (H)
             }
 
             const atoms = atoms_or_atomic_symbols.map(
@@ -826,7 +840,7 @@ Molecule.js
                 const atom_is_proton = atoms[0][0] === "H" && atoms[0].length ===4
                 atom_is_proton.should.be.equal(true)
                 mmolecule.length.should.be.equal(13)
-                target_molecule_index.should.be.equal(2)
+                target_molecule_index.should.be.equal(2) // index of electrophile in container
             }
 
             if (undefined === source_atom_index) {
@@ -843,8 +857,34 @@ Molecule.js
             }
             
             //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
+            /*
+        [ [ 'H', 1, 1, 1, '1y5g42jkkahi190y', '1y5g42jkkahi190i' ], 1
+  [ 'H', 1, 1, 1, '1y5g42jkkahi190z', '1y5g42jkkahi190j' ], 2
+  [ 'H', 1, 1, 1, '1y5g42jkkahi1910', '1y5g42jkkahi190k' ], 3
+  [ 'C', 4, 6, 4, 4, '1y5g42jkkahi190i', '1y5g42jkkahi190j', '1y5g42jkkahi190k','1y5g42jkkahi190l'
+  ,'1y5g42jkkahi190p','1y5g42jkkahi190y','1y5g42jkkahi190z', '1y5g42jkkahi1910' ],
+  [ 'H', 1, 1, 1, '1y5g42jkkahi1911', '1y5g42jkkahi190m' ], 5
+  [ 'C', 6,  4, 4,'1y5g42jkkahi190m','1y5g42jkkahi190n','1y5g42jkkahi190o', 6
+    '1y5g42jkkahi190p', '1y5g42jkkahi190l', '1y5g42jkkahi190t','1y5g42jkkahi190s', '1y5g42jkkahi1911' ],
+  [ 'H', 1, 1, 1, '1y5g42jkkahi1912', '1y5g42jkkahi190q' ], 7
+  [ 'C', 6, 4, 4, '1y5g42jkkahi190q','1y5g42jkkahi190r', '1y5g42jkkahi190s',
+    '1y5g42jkkahi190t', '1y5g42jkkahi190o','1y5g42jkkahi190n','1y5g42jkkahi190x',
+    '1y5g42jkkahi1912' ], 8
+  [ 'H', 1, 1, 1, '1y5g42jkkahi1913', '1y5g42jkkahi190u' ], 9
+  [ 'H', 1, 1, 1, '1y5g42jkkahi1914', '1y5g42jkkahi190v' ], 10
+  [ 'H', 1, 1, 1, '1y5g42jkkahi1915', '1y5g42jkkahi190w' ], 11
+  [ 'C', 6,4,4, '1y5g42jkkahi190u','1y5g42jkkahi190v','1y5g42jkkahi190w',
+    '1y5g42jkkahi190x','1y5g42jkkahi190r', '1y5g42jkkahi1913','1y5g42jkkahi1914',
+    '1y5g42jkkahi1915' ] 12 
+      [ 'H', 1, 1, 1, '864335', '785456' ], 13
+    ]
+         */
             if(test_number === 4) {
-                source_atom_index.should.be.equal(6) // Should be 3
+                // double check 5???
+                console.log("moecule.js")
+                process.exit()
+                source_atom_index.should.be.equal(6) // carbon on double bond
+                
             }
             
             if (source_atom_index !== false) {
