@@ -11,7 +11,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             (__atom, __atom_index) => {
 
                 if (current_atom_index === __atom_index) {
-                    return false
+                    return __atom
                 }
 
                 const shared_electrons = Set().intersection(atom_electrons, __atom.slice(4))
@@ -23,17 +23,12 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                 // removed shared_electrons from __atom
                 // lodash
                 _.remove(__atom, (item) => {
-                    item === shared_electrons[0] || item === shared_electrons[1]
+                    return item === shared_electrons[0] || item === shared_electrons[1]
                 })
 
                 return __atom
 
             }
-        ).filter(
-            (atom) => {
-                return atom !== false
-            }
-
         )
 
         return [mmolecule[0], ...atoms_double_bond_removed]

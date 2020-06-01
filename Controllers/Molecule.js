@@ -328,9 +328,86 @@ const CMolecule = (mmolecule) => {
 
 
         if (test_number === 5) {
-            target_atom_mmolecule_index.should.be.equal(14)
-            atoms.length.should.be.equal(1) // AlCl3
-            mmolecule.length.should.be.equal(14) // COC
+            //console.log(mmolecule)
+            /*
+            [Br-] nucleophile
+            [ 12345,
+  [ 'Br',
+    35,
+    7,
+    1,
+    '26f1152ukavyw78g',
+    '26f1152ukavyw78h',
+    '26f1152ukavyw78i',
+    '26f1152ukavyw78j',
+    '26f1152ukavyw78k',
+    '26f1152ukavyw78l',
+    '26f1152ukavyw78m',
+    '26f1152ukavyw78n' ] ]
+             */
+           // console.log(atoms)
+            /*
+            [ [ 'H', 1, 1, 1, '26f1152xkavyx3lh', '26f1152xkavyx3l1' ],
+  [ 'H', 1, 1, 1, '26f1152xkavyx3li', '26f1152xkavyx3l2' ],
+  [ 'H', 1, 1, 1, '26f1152xkavyx3lj', '26f1152xkavyx3l3' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '26f1152xkavyx3l1',
+    '26f1152xkavyx3l2',
+    '26f1152xkavyx3l3',
+    '26f1152xkavyx3l4',
+    '26f1152xkavyx3l8',
+    '26f1152xkavyx3lh',
+    '26f1152xkavyx3li',
+    '26f1152xkavyx3lj' ],
+  [ 'H', 1, 1, 1, '26f1152xkavyx3lk', '26f1152xkavyx3l5' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '26f1152xkavyx3l5',
+    '26f1152xkavyx3l6',
+    '26f1152xkavyx3l7',
+    '26f1152xkavyx3l8',
+    '26f1152xkavyx3l4',
+    '26f1152xkavyx3lc',
+    '26f1152xkavyx3lb',
+    '26f1152xkavyx3lk' ],
+  [ 'H', 1, 1, 1, '26f1152xkavyx3ll', '26f1152xkavyx3l9' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '26f1152xkavyx3l9',
+    '26f1152xkavyx3la',
+    '26f1152xkavyx3lb',
+    '26f1152xkavyx3lc',
+    '26f1152xkavyx3lg',
+    '26f1152xkavyx3ll' ],
+  [ 'H', 1, 1, 1, '26f1152xkavyx3lm', '26f1152xkavyx3ld' ],
+  [ 'H', 1, 1, 1, '26f1152xkavyx3ln', '26f1152xkavyx3le' ],
+  [ 'H', 1, 1, 1, '26f1152xkavyx3lo', '26f1152xkavyx3lf' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '26f1152xkavyx3ld',
+    '26f1152xkavyx3le',
+    '26f1152xkavyx3lf',
+    '26f1152xkavyx3lg',
+    '26f1152xkavyx3la',
+    '26f1152xkavyx3lm',
+    '26f1152xkavyx3ln',
+    '26f1152xkavyx3lo' ],
+  [ 'H', 1, 1, 1, '26f1152xkavyx3l6', '26f1152xkavyx3l7' ] ]
+
+
+             */
+            target_atom_mmolecule_index.should.be.equal(2)
+            atoms.length.should.be.equal(13)
+            mmolecule.length.should.be.equal(2)
         }
 
         // Add atoms to molecule.
@@ -508,12 +585,35 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 }
                 
                 if (test_number === 4) {
-                    console.log(mmolecule)
-                    console.log("Meolecule.js")
-                    process.exit()
-                    mmolecule[target_atom_mmolecule_index].slice(4).length.should.be.equal(2)
-                    mmolecule[target_atom_mmolecule_index][4].should.be.a.String()
-                    mmolecule[target_atom_mmolecule_index][5].should.be.a.String()
+                    //console.log(mmolecule)
+                    /*
+                    [ 12345, 0
+  [ 'H', 1, 1, 1, '26f114zhkavy3hau', '26f114zhkavy3hae' ], 1
+  [ 'H', 1, 1, 1, '26f114zhkavy3hav', '26f114zhkavy3haf' ], 2
+  [ 'H', 1, 1, 1, '26f114zhkavy3haw', '26f114zhkavy3hag' ], 3
+  [ 'C', 6,4,4,'26f114zhkavy3hae','26f114zhkavy3haf','26f114zhkavy3hag','26f114zhkavy3hah',
+   '26f114zhkavy3hal','26f114zhkavy3hau','26f114zhkavy3hav','26f114zhkavy3haw' ], 4
+  [ 'H', 1, 1, 1, '26f114zhkavy3hax', '26f114zhkavy3hai' ], 5
+  [ 'C',6,4,4,'26f114zhkavy3hai','26f114zhkavy3haj','26f114zhkavy3hak','26f114zhkavy3hal',
+    '26f114zhkavy3hah','26f114zhkavy3hap','26f114zhkavy3hao','26f114zhkavy3hax' ], 6
+  [ 'H', 1, 1, 1, '26f114zhkavy3hay', '26f114zhkavy3ham' ], 7
+  [ 'C',6,4,4,'26f114zhkavy3ham','26f114zhkavy3han','26f114zhkavy3hao','26f114zhkavy3hap','26f114zhkavy3hak','26f114zhkavy3haj',
+    '26f114zhkavy3hat','26f114zhkavy3hay' ], 8
+  [ 'H', 1, 1, 1, '26f114zhkavy3haz', '26f114zhkavy3haq' ], 9
+  [ 'H', 1, 1, 1, '26f114zhkavy3hb0', '26f114zhkavy3har' ], 10
+  [ 'H', 1, 1, 1, '26f114zhkavy3hb1', '26f114zhkavy3has' ], 11
+  [ 'C',6,4,4,'26f114zhkavy3haq','26f114zhkavy3har','26f114zhkavy3has','26f114zhkavy3hat','26f114zhkavy3han',
+    '26f114zhkavy3haz','26f114zhkavy3hb0','26f114zhkavy3hb1' ], 12
+  [ 'H', 1, 1, 1, '26f114zhkavy3haj', '26f114zhkavy3hak' ] ] 13
+                     */
+                    // verify we no longer have double bond
+                    if (test_number === 4) {
+                        Set().intersection(mmolecule[6].slice(4), mmolecule[8].slice(4)).length.should.be.equal(2)
+                        mmolecule[target_atom_mmolecule_index].slice(4).length.should.be.equal(2)
+                        mmolecule[target_atom_mmolecule_index][4].should.be.a.String()
+                        mmolecule[target_atom_mmolecule_index][5].should.be.a.String()
+                        Set().intersection(mmolecule[6].slice(4), mmolecule[target_atom_mmolecule_index].slice(4)).length.should.be.equal(2)
+                    }
                 }
                 
             } else {
@@ -663,7 +763,82 @@ Molecule.js
 
              */
         }
-        Set().intersection(mmolecule[source_atom_index].slice(4), mmolecule[target_atom_mmolecule_index].slice(4)).length.should.not.be.equal(0)
+        if (test_number !==5) {
+            Set().intersection(mmolecule[source_atom_index].slice(4), mmolecule[target_atom_mmolecule_index].slice(4)).length.should.not.be.equal(0)
+        } else {
+           // console.log(mmolecule)
+            /*
+            [ 12345,
+  [ 'Br',
+    35,
+    7,
+    1,
+    '26f1153lkavz4feb',
+    '26f1153lkavz4fec',
+    '26f1153lkavz4fed',
+    '26f1153lkavz4fee',
+    '26f1153lkavz4fef',
+    '26f1153lkavz4feg',
+    '26f1153lkavz4feh',
+    '26f1153lkavz4fei' ],
+  [ 'H', 1, 1, 1, '26f1153lkavz4fez', '26f1153lkavz4fej' ],
+  [ 'H', 1, 1, 1, '26f1153lkavz4ff0', '26f1153lkavz4fek' ],
+  [ 'H', 1, 1, 1, '26f1153lkavz4ff1', '26f1153lkavz4fel' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '26f1153lkavz4fej',
+    '26f1153lkavz4fek',
+    '26f1153lkavz4fel',
+    '26f1153lkavz4fem',
+    '26f1153lkavz4feq',
+    '26f1153lkavz4fez',
+    '26f1153lkavz4ff0',
+    '26f1153lkavz4ff1' ],
+  [ 'H', 1, 1, 1, '26f1153lkavz4ff2', '26f1153lkavz4fen' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '26f1153lkavz4fen',
+    '26f1153lkavz4feo',
+    '26f1153lkavz4fep',
+    '26f1153lkavz4feq',
+    '26f1153lkavz4fem',
+    '26f1153lkavz4feu',
+    '26f1153lkavz4fet',
+    '26f1153lkavz4ff2' ],
+  [ 'H', 1, 1, 1, '26f1153lkavz4ff3', '26f1153lkavz4fer' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '26f1153lkavz4fer',
+    '26f1153lkavz4fes',
+    '26f1153lkavz4fet',
+    '26f1153lkavz4feu',
+    '26f1153lkavz4fey',
+    '26f1153lkavz4ff3' ],
+  [ 'H', 1, 1, 1, '26f1153lkavz4ff4', '26f1153lkavz4fev' ],
+  [ 'H', 1, 1, 1, '26f1153lkavz4ff5', '26f1153lkavz4few' ],
+  [ 'H', 1, 1, 1, '26f1153lkavz4ff6', '26f1153lkavz4fex' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '26f1153lkavz4fev',
+    '26f1153lkavz4few',
+    '26f1153lkavz4fex',
+    '26f1153lkavz4fey',
+    '26f1153lkavz4fes',
+    '26f1153lkavz4ff4',
+    '26f1153lkavz4ff5',
+    '26f1153lkavz4ff6' ],
+  [ 'H', 1, 1, 1, '26f1153lkavz4feo', '26f1153lkavz4fep' ] ]
+
+             */
+        }
         
         return mmolecule
 

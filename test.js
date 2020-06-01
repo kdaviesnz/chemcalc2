@@ -420,8 +420,68 @@ carbocation.slice(1).filter(
     (atom) => {
         return atom[0] === "C"
     }
-).length.should.be.equal(888)
+).length.should.be.equal(4)
 
+//console.log(carbocation)
+/*
+[ 12345,
+  [ 'H', 1, 1, 1, '26f1151ckavyl85g', '26f1151ckavyl850' ],
+  [ 'H', 1, 1, 1, '26f1151ckavyl85h', '26f1151ckavyl851' ],
+  [ 'H', 1, 1, 1, '26f1151ckavyl85i', '26f1151ckavyl852' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '26f1151ckavyl850',
+    '26f1151ckavyl851',
+    '26f1151ckavyl852',
+    '26f1151ckavyl853',
+    '26f1151ckavyl857',
+    '26f1151ckavyl85g',
+    '26f1151ckavyl85h',
+    '26f1151ckavyl85i' ],
+  [ 'H', 1, 1, 1, '26f1151ckavyl85j', '26f1151ckavyl854' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '26f1151ckavyl854',
+    '26f1151ckavyl855',
+    '26f1151ckavyl856',
+    '26f1151ckavyl857',
+    '26f1151ckavyl853',
+    '26f1151ckavyl85b',
+    '26f1151ckavyl85a',
+    '26f1151ckavyl85j' ],
+  [ 'H', 1, 1, 1, '26f1151ckavyl85k', '26f1151ckavyl858' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '26f1151ckavyl858',
+    '26f1151ckavyl859',
+    '26f1151ckavyl85a',
+    '26f1151ckavyl85b',
+    '26f1151ckavyl85f',
+    '26f1151ckavyl85k' ],
+  [ 'H', 1, 1, 1, '26f1151ckavyl85l', '26f1151ckavyl85c' ],
+  [ 'H', 1, 1, 1, '26f1151ckavyl85m', '26f1151ckavyl85d' ],
+  [ 'H', 1, 1, 1, '26f1151ckavyl85n', '26f1151ckavyl85e' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '26f1151ckavyl85c',
+    '26f1151ckavyl85d',
+    '26f1151ckavyl85e',
+    '26f1151ckavyl85f',
+    '26f1151ckavyl859',
+    '26f1151ckavyl85l',
+    '26f1151ckavyl85m',
+    '26f1151ckavyl85n' ],
+  [ 'H', 1, 1, 1, '26f1151ckavyl855', '26f1151ckavyl856' ] ]
+
+ */
 
 carbocation[1][0].should.be.equal("H")
 carbocation[2][0].should.be.equal("H")
@@ -440,96 +500,53 @@ carbocation[9][0].should.be.equal("H")
 Set().intersection(carbocation[7].slice(4), carbocation[8].slice(4)).length.should.be.equal(2)
 Set().intersection(carbocation[8].slice(4), carbocation[6].slice(4)).length.should.be.equal(2) // not ok 4
 carbocation[10][0].should.be.equal("H")
-carbocation[12][0].should.be.equal("H")
+carbocation[12][0].should.be.equal("C")
 carbocation[13][0].should.be.equal("H")
-carbocation[14][0].should.be.equal("C")
-Set().intersection(carbocation[10].slice(4), carbocation[14].slice(4)).length.should.be.equal(2)
-Set().intersection(carbocation[12].slice(4), carbocation[14].slice(4)).length.should.be.equal(2)
-Set().intersection(carbocation[13].slice(4), carbocation[14].slice(4)).length.should.be.equal(2)
-Set().intersection(carbocation[14].slice(4), carbocation[14].slice(4)).length.should.be.equal(2)
 
 const brNeg = ccontainer4.container[2]
 brNeg.slice(1).filter(
   (atom) => {
     return atom[0] === "H"
   }
-).length.should.be.equal(765)
+).length.should.be.equal(0)
 
-//console.log(carbocation)
-/*
-[ 12345,
-  [ 'H', 1, 1, 1, '26f111h6kap1pink', '26f111h6kap1pin4' ],
-  [ 'H', 1, 1, 1, '26f111h6kap1pinl', '26f111h6kap1pin5' ],
-  [ 'H', 1, 1, 1, '26f111h6kap1pinm', '26f111h6kap1pin6' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    '26f111h6kap1pin4',
-    '26f111h6kap1pin5',
-    '26f111h6kap1pin6',
-    '26f111h6kap1pin7',
-    '26f111h6kap1pinb',
-    '26f111h6kap1pink',
-    '26f111h6kap1pinl',
-    '26f111h6kap1pinm' ],
-  [ 'H', 1, 1, 1, '26f111h6kap1pinn', '26f111h6kap1pin8' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    '26f111h6kap1pin8',
-    '26f111h6kap1pin9',
-    '26f111h6kap1pina',
-    '26f111h6kap1pinb',
-    '26f111h6kap1pin7',
-    '26f111h6kap1pinf',
-    '26f111h6kap1pine',
-    '26f111h6kap1pinn' ],
-  [ 'H', 1, 1, 1, '26f111h6kap1pino', '26f111h6kap1pinc' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    '26f111h6kap1pinc',
-    '26f111h6kap1pind',
-    '26f111h6kap1pine',
-    '26f111h6kap1pinf',
-    '26f111h6kap1pina',
-    '26f111h6kap1pin9',
-    '26f111h6kap1pinj',
-    '26f111h6kap1pino' ],
-  [ 'H', 1, 1, 1, '26f111h6kap1pinp', '26f111h6kap1ping' ],
-  [ 'H', 1, 1, 1, '26f111h6kap1pinq', '26f111h6kap1pinh' ],
-  [ 'H', 1, 1, 1, '26f111h6kap1pinr', '26f111h6kap1pini' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    '26f111h6kap1ping',
-    '26f111h6kap1pinh',
-    '26f111h6kap1pini',
-    '26f111h6kap1pinj',
-    '26f111h6kap1pind',
-    '26f111h6kap1pinp',
-    '26f111h6kap1pinq',
-    '26f111h6kap1pinr' ],
-  [ 'H', 1, 1, 1, '26f111h6kap1pin9', '26f111h6kap1pina' ] ]
-
- */
-console.log("test.js")
-//process.exit()
 const ccontainer5 = new CContainer([false], MoleculeFactory, MoleculeController, 5)
 ccontainer5.add(carbocation,1)
 ccontainer5.add(brNeg,1)
 ccontainer5.container.length.should.be.equal(2)
 
-ccontainer5.container[1].length = 999
 ccontainer5.container[1].slice(1).filter(
   (atom) => {
     return atom[0] === "H"
   }
-).length = 9999
+).length.should.be.equal(9)
+
+
+// console.log(ccontainer5['container'])
+/*
+[ false,
+  [ 12345, 0
+    [ 'Br',35,7,1,'26f1153zkavz8oli','26f1153zkavz8olj','26f1153zkavz8olk','26f1153zkavz8oll',
+      '26f1153zkavz8olm','26f1153zkavz8oln','26f1153zkavz8olo','26f1153zkavz8olp' ], 1
+    [ 'H', 1, 1, 1, '26f1153zkavz8om6', '26f1153zkavz8olq' ], 2
+    [ 'H', 1, 1, 1, '26f1153zkavz8om7', '26f1153zkavz8olr' ], 3
+    [ 'H', 1, 1, 1, '26f1153zkavz8om8', '26f1153zkavz8ols' ], 4
+    [ 'C',6,4,4,'26f1153zkavz8olq','26f1153zkavz8olr','26f1153zkavz8ols','26f1153zkavz8olt',
+      '26f1153zkavz8olx','26f1153zkavz8om6','26f1153zkavz8om7','26f1153zkavz8om8' ], 5
+    [ 'H', 1, 1, 1, '26f1153zkavz8om9', '26f1153zkavz8olu' ], 6
+    [ 'C',6,4,4, '26f1153zkavz8olu','26f1153zkavz8olv','26f1153zkavz8olw','26f1153zkavz8olx',
+      '26f1153zkavz8olt','26f1153zkavz8om1','26f1153zkavz8om0','26f1153zkavz8om9' ], 7
+    [ 'H', 1, 1, 1, '26f1153zkavz8oma', '26f1153zkavz8oly' ], 8
+    [ 'C',6,4,4,'26f1153zkavz8oly','26f1153zkavz8olz','26f1153zkavz8om0','26f1153zkavz8om1',
+     '26f1153zkavz8om5','26f1153zkavz8oma' ], 9
+    [ 'H', 1, 1, 1, '26f1153zkavz8omb', '26f1153zkavz8om2' ], 10
+    [ 'H', 1, 1, 1, '26f1153zkavz8omc', '26f1153zkavz8om3' ], 11
+    [ 'H', 1, 1, 1, '26f1153zkavz8omd', '26f1153zkavz8om4' ], 12
+    [ 'C',6,4,4,'26f1153zkavz8om2','26f1153zkavz8om3','26f1153zkavz8om4','26f1153zkavz8om5',
+      '26f1153zkavz8olz','26f1153zkavz8omb','26f1153zkavz8omc','26f1153zkavz8omd' ], 13
+    [ 'H', 1, 1, 1, '26f1153zkavz8olv', '26f1153zkavz8olw' ] ]  14 ]
+
+ */
 
 console.log("Test 5 complete")
 process.exit()

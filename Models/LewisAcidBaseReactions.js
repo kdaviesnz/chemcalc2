@@ -30,7 +30,7 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
                 electrophile_molecule_index = 1
                 electrophile_molecule = container[1]
                 nucleophile_molecule = container[2]
-                nucleophile_atom_index = MoleculeController(nucleophile_molecule).nucleophileIndex(3) // should be 5
+                nucleophile_atom_index = MoleculeController(nucleophile_molecule).nucleophileIndex(test_number)
                 if (test_number ===3) {
                     nucleophile_molecule[nucleophile_atom_index][0].should.be.equal('O')
                     nucleophile_atom_index.should.be.equal(5)
