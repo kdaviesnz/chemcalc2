@@ -301,7 +301,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
                 process.exit()
             }
             container[2][1][0].should.be.equal("Br"),
-            container[2][1][0].should.be.equal("Br").slice(4).length.should.be.equal(4)    
+            container[2][1][0].should.be.equal("Br").slice(4).length.should.be.equal(8)    // correct
             container[container.length-1][1][0].should.be.equal("H")
             container[container.length-1][1].length.should.be.equal(4) // no electrons
         }
@@ -381,6 +381,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         }
 
         // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
+        // After pushing proton to nucleophile
         if (test_number === 4) {
             container.length.should.be.equal(3)
             nucleophile_molecule.length.should.be.equal(14)
