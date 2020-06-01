@@ -300,8 +300,8 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
                 console.log("BronstedLowryAcidBaseReactions::Value should be null")
                 process.exit()
             }
-            container[2][1][0].should.be.equal("Br"),
-            container[2][1][0].should.be.equal("Br").slice(4).length.should.be.equal(8)    // correct
+            container[2][1][0].should.be.equal("Br")
+            container[2][1].slice(4).length.should.be.equal(8)    // correct
             container[container.length-1][1][0].should.be.equal("H")
             container[container.length-1][1].length.should.be.equal(4) // no electrons
         }

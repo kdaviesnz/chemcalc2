@@ -29,6 +29,11 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                 return __atom
 
             }
+        ).filter(
+            (atom) => {
+                return atom !== false
+            }
+
         )
 
         return [mmolecule[0], ...atoms_double_bond_removed]

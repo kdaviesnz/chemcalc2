@@ -262,12 +262,38 @@ const CMolecule = (mmolecule) => {
         
         //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
         if (test_number === 4) {
+            if(test_number === 4) {
+                // atoms
+                // [ [ 'H', 1, 1, 1 ] ]
+                // mmolecule
+                /*
+                [ 12345,
+[ 'H', 1, 1, 1, '26f114qhkavwca5i', '26f114qhkavwca52' ],
+[ 'H', 1, 1, 1, '26f114qhkavwca5j', '26f114qhkavwca53' ],
+[ 'H', 1, 1, 1, '26f114qhkavwca5k', '26f114qhkavwca54' ],
+[ 'C',6,4,4,'26f114qhkavwca52','26f114qhkavwca53','26f114qhkavwca54','26f114qhkavwca55',
+'26f114qhkavwca59','26f114qhkavwca5i','26f114qhkavwca5j','26f114qhkavwca5k' ],
+[ 'H', 1, 1, 1, '26f114qhkavwca5l', '26f114qhkavwca56' ],
+[ 'C',6,4,4,'26f114qhkavwca56','26f114qhkavwca57','26f114qhkavwca58','26f114qhkavwca59',
+'26f114qhkavwca55','26f114qhkavwca5d','26f114qhkavwca5c','26f114qhkavwca5l' ],
+[ 'H', 1, 1, 1, '26f114qhkavwca5m', '26f114qhkavwca5a' ],
+[ 'C',6,4,4,'26f114qhkavwca5a','26f114qhkavwca5b','26f114qhkavwca5c','26f114qhkavwca5d',
+'26f114qhkavwca58','26f114qhkavwca57','26f114qhkavwca5h','26f114qhkavwca5m' ],
+[ 'H', 1, 1, 1, '26f114qhkavwca5n', '26f114qhkavwca5e' ],
+[ 'H', 1, 1, 1, '26f114qhkavwca5o', '26f114qhkavwca5f' ],
+[ 'H', 1, 1, 1, '26f114qhkavwca5p', '26f114qhkavwca5g' ],
+[ 'C',6,4,4,'26f114qhkavwca5e','26f114qhkavwca5f','26f114qhkavwca5g','26f114qhkavwca5h',
+'26f114qhkavwca5b','26f114qhkavwca5n','26f114qhkavwca5o','26f114qhkavwca5p' ] ]
+                 */
+                // source_atom_index 6 = Carbon on double bond
+                // target_atom_index 1 = H
+            }
             source_atom_index.should.be.equal(6) // nucleophile
-            mmolecule.length.should.be.equal(13) // mmolecule should be the nucleophile (Br-)
+            mmolecule.length.should.be.equal(13) // mmolecule should be the nucleophile
             mmolecule[source_atom_index][0].should.be.equal("C")
             atoms.length.should.be.equal(1)
             target_atom_index.should.be.equal(1) // proton so must be 1
-            source_atom_index.should.be.equal(6) // Br- atom on nucleophile taking into account pKa
+            source_atom_index.should.be.equal(6) // C atom on double bond on mmolecule (nucleophile)
             // atoms [ [ 'H', 1, 1, 1 ] ]
             atoms[target_atom_index -1][0].should.be.equal("H")
         }
@@ -294,6 +320,7 @@ const CMolecule = (mmolecule) => {
 
         //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
         if (test_number === 4) {
+            // This is the proton
             target_atom_mmolecule_index.should.be.equal(13)
             atoms.length.should.be.equal(1)
             mmolecule.length.should.be.equal(13)
@@ -318,52 +345,41 @@ const CMolecule = (mmolecule) => {
         // H2O (nucleophile) -------> H+ (electrophile)
         if (test_number === 1) {
             mmolecule[target_atom_mmolecule_index][0].should.be.equal("H")
-        }
-
-        // Cl- (nucleophile) -------> H+ (electrophile)
-        if (test_number === 2) {
-            mmolecule[target_atom_mmolecule_index][0].should.be.equal("H")
-        }
-
-        // C:OC (nucleophile) ---------> AlCl3 (electrophile)
-        if (test_number === 3) {
-            mmolecule[target_atom_mmolecule_index][0].should.be.equal("Al")
-        }
-
-        // H2O (H+) (nucleophile) -------> H+ (nucleophile) note: weve just added a proton
-        if (test_number === 1) {
             mmolecule.length.should.be.equal(5)
             mmolecule[1][0].should.be.equal("H")
             mmolecule[2][0].should.be.equal("H")
             mmolecule[3][0].should.be.equal("O")
             mmolecule[4][0].should.be.equal("H")
         }
-          
-        // Cl (H+) (nucleophile) -------> H+ (nucleophile) note: weve just added a proton
+
+        // Cl- (nucleophile) -------> H+ (electrophile)
         if (test_number === 2) {
+            mmolecule[target_atom_mmolecule_index][0].should.be.equal("H")
             mmolecule.length.should.be.equal(3)
             mmolecule[1][0].should.be.equal("Cl")
-            mmolecule[2][0].should.be.equal("H")       
+            mmolecule[2][0].should.be.equal("H")
         }
-        
-        // C:OC (nucleophile) ---------> AlCl3 (electrophile) 
+
+        // C:OC (nucleophile) ---------> AlCl3 (electrophile)
         if (test_number === 3) {
+            mmolecule[target_atom_mmolecule_index][0].should.be.equal("Al")
             mmolecule.length.should.be.equal(14)
             mmolecule[1][0].should.be.equal("H")
             mmolecule[2][0].should.be.equal("H")
             mmolecule[3][0].should.be.equal("H")
             mmolecule[4][0].should.be.equal("C")
         }
-        
+
         //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
         if (test_number === 4) {
+            // This is the proton
+            mmolecule[target_atom_mmolecule_index][0].should.be.equal("H")
             mmolecule.length.should.be.equal(14)
             mmolecule[1][0].should.be.equal("H")
             mmolecule[2][0].should.be.equal("H")
             mmolecule[3][0].should.be.equal("H")
             mmolecule[4][0].should.be.equal("C")
         }
-        
 
         // Now create the bond
         
@@ -403,6 +419,11 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             target_atom_electron_to_share_index.should.be.equal(false)
         }
 
+        //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
+        if (test_number === 4) {
+            target_atom_electron_to_share_index.should.be.equal(false) // proton so no electrons
+        }
+
         const source_atom_electron_to_share_index = __electronToShareIndex(mmolecule[source_atom_index])
         
         // H3O
@@ -434,12 +455,18 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             target_atom_electron_to_share_index.should.be.equal(false)
             mmolecule[target_atom_mmolecule_index][0].should.be.equal("H")
             mmolecule[source_atom_index][0].should.be.equal("C")
-            source_atom_electron_to_share_index.should.be.equal(false)
+            source_atom_electron_to_share_index.should.be.equal(false) // false as double one
         }
         
         // Get lone pair from source atom (atom arrow would be pointing from (nucleophile))
         const source_atom_lone_pairs = CAtom(mmolecule[source_atom_index], source_atom_index, mmolecule).lonePairs(test_number)
-                       
+
+        if (test_number === 4) {
+            source_atom_lone_pairs.length.should.be.equal(0) // C=C double bond so no lone pairs
+        }
+
+
+
         // Protons are always target atoms - where the arrow would be pointing to
         if (mmolecule[target_atom_mmolecule_index][0]==="H") {
 
@@ -465,12 +492,15 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                     // Does the source atom have a double bond?
                     // returns a set of electrons or false
                     const double_bond = CAtom(mmolecule[source_atom_index], source_atom_index, mmolecule).doubleBond(test_number)
+
                     // remove the double bond by removing electrons from bonded atom (turn into single bond)
                     if (test_number === 4) {
                         double_bond.should.not.be.equal(false)
+                        double_bond.length.should.be.equal(4)
                     }
+
                     if (double_bond) {
-                        CAtom(mmolecule[source_atom_index], source_atom_index, mmolecule).removeDoubleBond(test_number)
+                        mmolecule = CAtom(mmolecule[source_atom_index], source_atom_index, mmolecule).removeDoubleBond(test_number)
                         mmolecule[target_atom_mmolecule_index].push(double_bond[0])
                         mmolecule[target_atom_mmolecule_index].push(double_bond[1])
                     }
@@ -478,6 +508,9 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 }
                 
                 if (test_number === 4) {
+                    console.log(mmolecule)
+                    console.log("Meolecule.js")
+                    process.exit()
                     mmolecule[target_atom_mmolecule_index].slice(4).length.should.be.equal(2)
                     mmolecule[target_atom_mmolecule_index][4].should.be.a.String()
                     mmolecule[target_atom_mmolecule_index][5].should.be.a.String()
@@ -629,7 +662,6 @@ mmolecule
 Molecule.js
 
              */
-//            process.exit()
         }
         Set().intersection(mmolecule[source_atom_index].slice(4), mmolecule[target_atom_mmolecule_index].slice(4)).length.should.not.be.equal(0)
         
@@ -881,13 +913,78 @@ Molecule.js
          */
             if(test_number === 4) {
                 // double check 5???
-                console.log("moecule.js")
-                process.exit()
                 source_atom_index.should.be.equal(6) // carbon on double bond
                 
             }
             
             if (source_atom_index !== false) {
+                if(test_number === 4) {
+                    // atoms
+                    // [ [ 'H', 1, 1, 1 ] ]
+                    // mmolecule
+                    /*
+                    [ 12345,
+  [ 'H', 1, 1, 1, '26f114qhkavwca5i', '26f114qhkavwca52' ],
+  [ 'H', 1, 1, 1, '26f114qhkavwca5j', '26f114qhkavwca53' ],
+  [ 'H', 1, 1, 1, '26f114qhkavwca5k', '26f114qhkavwca54' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '26f114qhkavwca52',
+    '26f114qhkavwca53',
+    '26f114qhkavwca54',
+    '26f114qhkavwca55',
+    '26f114qhkavwca59',
+    '26f114qhkavwca5i',
+    '26f114qhkavwca5j',
+    '26f114qhkavwca5k' ],
+  [ 'H', 1, 1, 1, '26f114qhkavwca5l', '26f114qhkavwca56' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '26f114qhkavwca56',
+    '26f114qhkavwca57',
+    '26f114qhkavwca58',
+    '26f114qhkavwca59',
+    '26f114qhkavwca55',
+    '26f114qhkavwca5d',
+    '26f114qhkavwca5c',
+    '26f114qhkavwca5l' ],
+  [ 'H', 1, 1, 1, '26f114qhkavwca5m', '26f114qhkavwca5a' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '26f114qhkavwca5a',
+    '26f114qhkavwca5b',
+    '26f114qhkavwca5c',
+    '26f114qhkavwca5d',
+    '26f114qhkavwca58',
+    '26f114qhkavwca57',
+    '26f114qhkavwca5h',
+    '26f114qhkavwca5m' ],
+  [ 'H', 1, 1, 1, '26f114qhkavwca5n', '26f114qhkavwca5e' ],
+  [ 'H', 1, 1, 1, '26f114qhkavwca5o', '26f114qhkavwca5f' ],
+  [ 'H', 1, 1, 1, '26f114qhkavwca5p', '26f114qhkavwca5g' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '26f114qhkavwca5e',
+    '26f114qhkavwca5f',
+    '26f114qhkavwca5g',
+    '26f114qhkavwca5h',
+    '26f114qhkavwca5b',
+    '26f114qhkavwca5n',
+    '26f114qhkavwca5o',
+    '26f114qhkavwca5p' ] ]
+
+                     */
+                    // source_atom_index 6 = Carbon on double bond
+                    // target_atom_index 1 = H
+                }
                 return __makeCovalentBond(atoms, source_atom_index, test_number, target_atom_index) // return molecule
             }
             
