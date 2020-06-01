@@ -425,9 +425,9 @@ carbocation.slice(1).filter(
 //console.log(carbocation)
 /*
 [ 12345,
-  [ 'H', 1, 1, 1, '26f1151ckavyl85g', '26f1151ckavyl850' ],
-  [ 'H', 1, 1, 1, '26f1151ckavyl85h', '26f1151ckavyl851' ],
-  [ 'H', 1, 1, 1, '26f1151ckavyl85i', '26f1151ckavyl852' ],
+  [ 'H', 1, 1, 1, '26f1151ckavyl85g', '26f1151ckavyl850' ], 1
+  [ 'H', 1, 1, 1, '26f1151ckavyl85h', '26f1151ckavyl851' ], 2
+  [ 'H', 1, 1, 1, '26f1151ckavyl85i', '26f1151ckavyl852' ], 3
   [ 'C',
     6,
     4,
@@ -439,8 +439,8 @@ carbocation.slice(1).filter(
     '26f1151ckavyl857',
     '26f1151ckavyl85g',
     '26f1151ckavyl85h',
-    '26f1151ckavyl85i' ],
-  [ 'H', 1, 1, 1, '26f1151ckavyl85j', '26f1151ckavyl854' ],
+    '26f1151ckavyl85i' ],4
+  [ 'H', 1, 1, 1, '26f1151ckavyl85j', '26f1151ckavyl854' ], 5
   [ 'C',
     6,
     4,
@@ -452,8 +452,8 @@ carbocation.slice(1).filter(
     '26f1151ckavyl853',
     '26f1151ckavyl85b',
     '26f1151ckavyl85a',
-    '26f1151ckavyl85j' ],
-  [ 'H', 1, 1, 1, '26f1151ckavyl85k', '26f1151ckavyl858' ],
+    '26f1151ckavyl85j' ], 6
+  [ 'H', 1, 1, 1, '26f1151ckavyl85k', '26f1151ckavyl858' ], 7
   [ 'C',
     6,
     4,
@@ -463,10 +463,10 @@ carbocation.slice(1).filter(
     '26f1151ckavyl85a',
     '26f1151ckavyl85b',
     '26f1151ckavyl85f',
-    '26f1151ckavyl85k' ],
-  [ 'H', 1, 1, 1, '26f1151ckavyl85l', '26f1151ckavyl85c' ],
-  [ 'H', 1, 1, 1, '26f1151ckavyl85m', '26f1151ckavyl85d' ],
-  [ 'H', 1, 1, 1, '26f1151ckavyl85n', '26f1151ckavyl85e' ],
+    '26f1151ckavyl85k' ], 8
+  [ 'H', 1, 1, 1, '26f1151ckavyl85l', '26f1151ckavyl85c' ], 9
+  [ 'H', 1, 1, 1, '26f1151ckavyl85m', '26f1151ckavyl85d' ], 10
+  [ 'H', 1, 1, 1, '26f1151ckavyl85n', '26f1151ckavyl85e' ], 11
   [ 'C',
     6,
     4,
@@ -478,8 +478,8 @@ carbocation.slice(1).filter(
     '26f1151ckavyl859',
     '26f1151ckavyl85l',
     '26f1151ckavyl85m',
-    '26f1151ckavyl85n' ],
-  [ 'H', 1, 1, 1, '26f1151ckavyl855', '26f1151ckavyl856' ] ]
+    '26f1151ckavyl85n' ], 12
+  [ 'H', 1, 1, 1, '26f1151ckavyl855', '26f1151ckavyl856' ] 13 ]
 
  */
 
@@ -510,9 +510,14 @@ brNeg.slice(1).filter(
   }
 ).length.should.be.equal(0)
 
+
+// [Br-] (nucleophile) -----> carbocation
+// Br atom should bond to carbon that has three bonds
+// Target atom index should be 8
+// Source atom index should be 1
 const ccontainer5 = new CContainer([false], MoleculeFactory, MoleculeController, 5)
-ccontainer5.add(carbocation,1)
 ccontainer5.add(brNeg,1)
+ccontainer5.add(carbocation,1)
 ccontainer5.container.length.should.be.equal(2)
 
 ccontainer5.container[1].slice(1).filter(
