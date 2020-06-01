@@ -414,9 +414,9 @@ const CMolecule = (mmolecule) => {
         // Br atom should bond to carbon that has three bonds
         // Target atom index should be 8 (electrophile)
         // Source atom index should be 1         
-            target_atom_mmolecule_index.should.be.equal(9999)
+            target_atom_mmolecule_index.should.be.equal(9) // 1 + 8
             atoms.length.should.be.equal(8888)
-            mmolecule.length.should.be.equal(2) // [Br-]
+            mmolecule.length.should.be.equal(2) // [Br-] we havent added the electrophile yet
         }
 
         // Add atoms to molecule.
@@ -472,19 +472,13 @@ const CMolecule = (mmolecule) => {
         // Target atom index should be 8 (electrophile)
         // Source atom index should be 1   
         if (test_number === 5) {
-            target_atom_mmolecule_index.should.be.equal(2)
+            target_atom_mmolecule_index.should.be.equal(9) // source atom index plus target atom index
             mmolecule[target_atom_mmolecule_index][0].should.be.equal("C")
             mmolecule.length.should.be.equal(44444)
             
         }
-
-        // Now create the bond
         
-/*
-In the molecule H2, the hydrogen atoms share the two electrons via covalent bonding.[7] Covalency is greatest between atoms of similar electronegativities. Thus, covalent bonding does not necessarily require that the two atoms be of the same elements, only that they be of comparable electronegativity. Covalent bonding that entails sharing of electrons over more than two atoms is said to be delocalized.
- */
-        // Get index of first free electron on atom being pushed
-
+        
         if (undefined === mmolecule[target_atom_mmolecule_index]) {
             console.log("mmolecule[target_atom_mmolecule_index] is undefined")
             console.log(mmolecule)
@@ -492,6 +486,16 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             console.log("Molecule.js")
             process.exit()
         }
+        
+        
+        // Now create the bond
+        
+/*
+In the molecule H2, the hydrogen atoms share the two electrons via covalent bonding.[7] Covalency is greatest between atoms of similar electronegativities. Thus, covalent bonding does not necessarily require that the two atoms be of the same elements, only that they be of comparable electronegativity. Covalent bonding that entails sharing of electrons over more than two atoms is said to be delocalized.
+ */
+        // Get index of first free electron on target atom
+
+      
 
         const target_atom_electron_to_share_index = __electronToShareIndex(mmolecule[target_atom_mmolecule_index])
 
@@ -530,7 +534,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
       
         }
 
-        
+        // Get index of first free electron on source atom
         const source_atom_electron_to_share_index = __electronToShareIndex(mmolecule[source_atom_index])
         
         // H3O
@@ -570,10 +574,10 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         // Target atom index should be 8 (electrophile)
         // Source atom index should be 1   
         if (test_number === 5) {
-            target_atom_electron_to_share_index.should.be.equal(false)
+            target_atom_electron_to_share_index.should.be.equal(false) // carbocation
             mmolecule[target_atom_mmolecule_index][0].should.be.equal("C")
             mmolecule[source_atom_index][0].should.be.equal("Br")
-            source_atom_electron_to_share_index.should.be.equal(8888) 
+            source_atom_electron_to_share_index.should.be.equal(8888) // should not be false
    
         }
         
@@ -589,21 +593,19 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
         // Target atom index should be 8 (electrophile)
         // Source atom index should be 1   
         if (test_number === 5) {
-            source_atom_lone_pairs.length.should.be.equal(7777) // [Br-]
-       
+            source_atom_lone_pairs.length.should.be.equal(7777) // [Br-] // we should have a lone pair
+            mmolecule[target_atom_mmolecule_index][0].should.be.equal("C") //[C+]
         }
 
-        // Protons are always target atoms - where the arrow would be pointing to
-        // [Br-] (nucleophile) -----> carbocation CC[C+]C
-        // Br atom should bond to carbon that has three bonds
-        // Target atom index should be 8 (electrophile)
-        // Source atom index should be 1   
-        if (test_number === 5) {
-            mmolecule[target_atom_mmolecule_index][0].should.be.equal("C") //[C+]
-       
-        }
+        // Protons are always target atoms (eklectrophiles) - where the arrow would be pointing to
+        
         
         if (mmolecule[target_atom_mmolecule_index][0]==="H") {
+            
+            if (test_number === 5) {
+                console.log("SHOULDNT BE HERE - molecule.js")
+                process.exit()
+            }
 
             // proton?
             if (mmolecule[target_atom_mmolecule_index].length===4) {
@@ -692,12 +694,35 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                 target_atom_electron_to_share_index.should.be.equal(false)
             }
             
+            // [Br-] (nucleophile) -----> carbocation CC[C+]C
+             // Br atom should bond to carbon that has three bonds
+            // Target atom index should be 8 (electrophile)
+            // Source atom index should be 1   
+            if (test_number === 5) {
+                mmolecule[source_atom_index][0].should.be.equal("Br")
+                mmolecule[target_atom_mmolecule_index][0].should.be.equal("C")
+                source_atom_electron_to_share_index.should.be.equal(88888)
+                target_atom_electron_to_share_index.should.be.equal(false)
+            }
+            
             if (!target_atom_electron_to_share_index) {
+                
                 // Target atom has no free electrons so check if it has free slots ie that 
                 // the target atom has un unfillec valence shell
                 // electrophile
                 // free slots is a number
                 const free_slots = CAtom(mmolecule[target_atom_mmolecule_index], target_atom_mmolecule_index, mmolecule).freeSlots(test_number)
+              
+                // [Br-] (nucleophile) -----> carbocation CC[C+]C
+             // Br atom should bond to carbon that has three bonds
+            // Target atom index should be 8 (electrophile)
+            // Source atom index should be 1   
+                if (test_number === 5) {
+                     free_slots.should.be.greaterThan("Br")
+                
+                }
+                
+                
                 if (free_slots > 0) {
                     
                     // add free electron from source atom to target atom
@@ -710,9 +735,27 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
                     // add another free electron from source atom to target atom
                     mmolecule[target_atom_mmolecule_index].push(mmolecule[source_atom_index][5 + source_atom_electron_to_share_index])
 
+                    
+                    // test for bond
+                    // [Br-] (nucleophile) -----> carbocation CC[C+]C
+             // Br atom should bond to carbon that has three bonds
+            // Target atom index should be 8 (electrophile)
+            // Source atom index should be 1   
+                if (test_number === 5) {
+                     Set().intersection(mmolecule[target_atom_mmolecule_index].slice(4), mmolecule[source_atom_index]
+                
+                }
+                    
+                    
+                    
                 }
 
             } else {
+                
+                if (test_number === 5) {
+                console.log("SHOULDNT BE HERE 2 - molecule.js")
+                process.exit()
+            }
                 
                 // add shared electron from target atom to source atom
                 mmolecule[source_atom_index].push(mmolecule[target_atom_mmolecule_index][4 + target_atom_electron_to_share_index])
