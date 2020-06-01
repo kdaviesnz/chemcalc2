@@ -11,6 +11,14 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
             console.log("Wrong section for test number " + test_number)
             process.exit()
         }
+        
+        // [Br-] (nucleophile) -----> carbocation
+            // Br atom should bond to carbon that has three bonds
+            // Target atom index should be 8
+            // Source atom index should be 1
+            if (this.test_number === 5) {
+                reaction.should.be.equal(false)
+            }
 
         if (null === nucleophile_molecule) {
 
@@ -57,16 +65,25 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
             nucleophile_atom_index.should.be.equal(5)
             electrophile_molecule[electrophile_atom_index][0].should.be.equal("Al")
             nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("O")
+            
         }
 
-
-        // CO:C (nucleophile) ------> AlCl3 (electrophile)
-        if (test_number === 3) {
-            nucleophile_atom_index.should.be.equal(5)
-            nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("O")
-            electrophile_atom_index.should.be.equal(1)
-            electrophile_molecule[electrophile_atom_index][0].should.be.equal("Al")
+        // [Br-] (nucleophile) -----> carbocation
+        // Br atom should bond to carbon that has three bonds
+        // Target atom index should be 8 (electrophile)
+        // Source atom index should be 1
+        if (this.test_number === 5) {
+           
+            nucleophile_molecule.length.should.be.equal(1) // Br
+            electrophile_molecule.length.should.be.equal(88888) // CC[C+]C
+            electrophile_atom_index.should.be.equal(8)
+            nucleophile_atom_index.should.be.equal(1)
+            electrophile_molecule[electrophile_atom_index][0].should.be.equal("C")
+            nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("Br")
+            
         }
+
+        
 
         // push : (atoms_or_atomic_symbols, container, molecule_to_add_to_index, test_number, target_atom_index, source_atom_index) => {
         //[nucleophile_atom_index] = MoleculeController(nucleophile_molecule).push(electrophile_molecule.slice(1), container, molecule_to_add_to_index, test_number, electrophile_atom_index, nucleophile_atom_index )
