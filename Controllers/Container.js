@@ -149,46 +149,18 @@ class CContainer {
   [ 'C', 4, 6, 4, 4, '1y5g42jkkahi190i', '1y5g42jkkahi190j', '1y5g42jkkahi190k','1y5g42jkkahi190l'
   ,'1y5g42jkkahi190p','1y5g42jkkahi190y','1y5g42jkkahi190z', '1y5g42jkkahi1910' ],
   [ 'H', 1, 1, 1, '1y5g42jkkahi1911', '1y5g42jkkahi190m' ], 5
-  [ 'C', 6
-    6,
-    4,
-    4,
-    '1y5g42jkkahi190m',
-    '1y5g42jkkahi190n',
-    '1y5g42jkkahi190o',
-    '1y5g42jkkahi190p',
-    '1y5g42jkkahi190l',
-    '1y5g42jkkahi190t',
-    '1y5g42jkkahi190s',
-    '1y5g42jkkahi1911' ],
+  [ 'C', 6,  4, 4,'1y5g42jkkahi190m','1y5g42jkkahi190n','1y5g42jkkahi190o', 6
+    '1y5g42jkkahi190p', '1y5g42jkkahi190l', '1y5g42jkkahi190t','1y5g42jkkahi190s', '1y5g42jkkahi1911' ],
   [ 'H', 1, 1, 1, '1y5g42jkkahi1912', '1y5g42jkkahi190q' ], 7
-  [ 'C', 8
-    6,
-    4,
-    4,
-    '1y5g42jkkahi190q',
-    '1y5g42jkkahi190r',
-    '1y5g42jkkahi190s',
-    '1y5g42jkkahi190t',
-    '1y5g42jkkahi190o',
-    '1y5g42jkkahi190n',
-    '1y5g42jkkahi190x',
-    '1y5g42jkkahi1912' ],
+  [ 'C', 6, 4, 4, '1y5g42jkkahi190q','1y5g42jkkahi190r', '1y5g42jkkahi190s',
+    '1y5g42jkkahi190t', '1y5g42jkkahi190o','1y5g42jkkahi190n','1y5g42jkkahi190x',
+    '1y5g42jkkahi1912' ], 8
   [ 'H', 1, 1, 1, '1y5g42jkkahi1913', '1y5g42jkkahi190u' ], 9
   [ 'H', 1, 1, 1, '1y5g42jkkahi1914', '1y5g42jkkahi190v' ], 10
   [ 'H', 1, 1, 1, '1y5g42jkkahi1915', '1y5g42jkkahi190w' ], 11
-  [ 'C', 12
-    6,
-    4,
-    4,
-    '1y5g42jkkahi190u',
-    '1y5g42jkkahi190v',
-    '1y5g42jkkahi190w',
-    '1y5g42jkkahi190x',
-    '1y5g42jkkahi190r',
-    '1y5g42jkkahi1913',
-    '1y5g42jkkahi1914',
-    '1y5g42jkkahi1915' ] ]
+  [ 'C', 6,4,4, '1y5g42jkkahi190u','1y5g42jkkahi190v','1y5g42jkkahi190w',
+    '1y5g42jkkahi190x','1y5g42jkkahi190r', '1y5g42jkkahi1913','1y5g42jkkahi1914',
+    '1y5g42jkkahi1915' ] 12 ]
          */
                 
                 if (this.test_number === 4) {
