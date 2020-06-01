@@ -962,6 +962,9 @@ Molecule.js
         },
         push : (atoms_or_atomic_symbols, container, target_molecule_index, test_number, target_atom_index, source_atom_index) => {
 
+            // atoms_or_atomic_symbols are atoms from electrophile
+            // mmolecule is the nucleophile
+            
 
             // MOLECULE MODEL
 // pKa, atom, atom, atom ...
@@ -1016,12 +1019,16 @@ Molecule.js
                 target_atom_index.should.be.equal(1)
             }
             
-            //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
-            if (test_number === 4) {
-                atoms_or_atomic_symbols.length.should.be.equal(1)  // proton, electrophile
+            
+            // [Br-] (nucleophile) -----> carbocation CC[C+]C
+        // Br atom should bond to carbon that has three bonds
+        // Target atom index should be 8 (electrophile)
+        // Source atom index should be 1         
+            if (test_number === 5) {
+                atoms_or_atomic_symbols.length.should.be.equal(55555)  // CC[C+]C
                 atoms_or_atomic_symbols[0][0].should.be.equal("H")
-                atoms_or_atomic_symbols[0].length.should.be.equal(4)
-                target_atom_index.should.be.equal(1) // index of atom on electrophile (H)
+                atoms_or_atomic_symbols[0].length.should.be.equal(7777)
+                target_atom_index.should.be.equal(8)
             }
 
             const atoms = atoms_or_atomic_symbols.map(
@@ -1050,6 +1057,17 @@ Molecule.js
                 target_molecule_index.should.be.equal(2) // index of electrophile in container
             }
 
+            // [Br-] (nucleophile) -----> carbocation CC[C+]C
+        // Br atom should bond to carbon that has three bonds
+        // Target atom index should be 8 (electrophile)
+        // Source atom index should be 1         
+            if (test_number === 5) {
+                const atom_is_proton = atoms[0][0] === "H" && atoms[0].length ===4 // H
+                atom_is_proton.should.be.equal(false)
+                mmolecule.length.should.be.equal(2) // Br
+                target_molecule_index.should.be.equal(2) // index of electrophile in container
+            }
+            
             if (undefined === source_atom_index) {
                 source_atom_index = determineNucleophileIndex(test_number)
                 if(test_number === 1) {
@@ -1090,6 +1108,14 @@ Molecule.js
                 // double check 5???
                 source_atom_index.should.be.equal(6) // carbon on double bond
                 
+            }
+            
+            // [Br-] (nucleophile) -----> carbocation CC[C+]C
+        // Br atom should bond to carbon that has three bonds
+        // Target atom index should be 8 (electrophile)
+        // Source atom index should be 1         
+            if (test_number === 5) {
+                source_atom_index.should.be.equal(1) // Br
             }
             
             if (source_atom_index !== false) {
@@ -1159,6 +1185,14 @@ Molecule.js
                      */
                     // source_atom_index 6 = Carbon on double bond
                     // target_atom_index 1 = H
+                }
+                
+                // [Br-] (nucleophile) -----> carbocation CC[C+]C
+        // Br atom should bond to carbon that has three bonds
+        // Target atom index should be 8 (electrophile)
+                // Source atom index should be 1         
+                if (test_number === 5) {
+                    target_atom_index.should.be.equal(8) // [C+]
                 }
                 return __makeCovalentBond(atoms, source_atom_index, test_number, target_atom_index) // return molecule
             }
