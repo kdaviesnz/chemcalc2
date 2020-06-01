@@ -52,6 +52,8 @@ class CContainer {
                 substrate_families.alkene().length.should.be.equal(2)
             }
             
+            
+            
             if (substrate_families.alkene().length > 0) {
                 
                 // Substrate is alkene (nucleophile)
@@ -238,6 +240,14 @@ class CContainer {
 
             if (this.test_number === 1) {
                 reaction.should.not.be.equal(false)
+            }
+            
+            // [Br-] (nucleophile) -----> carbocation
+            // Br atom should bond to carbon that has three bonds
+            // Target atom index should be 8
+            // Source atom index should be 1
+            if (this.test_number === 5) {
+                reaction.should.be.equal(false)
             }
 
             if (!reaction) {
