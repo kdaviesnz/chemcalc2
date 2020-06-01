@@ -327,6 +327,11 @@ const CMolecule = (mmolecule) => {
         }
 
 
+        // [Br-] (nucleophile) -----> carbocation CC[C+]C
+        // Br atom should bond to carbon that has three bonds
+        // Target atom index should be 8 (electrophile)
+        // Source atom index should be 1         
+
         if (test_number === 5) {
             //console.log(mmolecule)
             /*
@@ -405,9 +410,13 @@ const CMolecule = (mmolecule) => {
 
 
              */
-            target_atom_mmolecule_index.should.be.equal(2)
-            atoms.length.should.be.equal(13)
-            mmolecule.length.should.be.equal(2)
+            // [Br-] (nucleophile) -----> carbocation CC[C+]C
+        // Br atom should bond to carbon that has three bonds
+        // Target atom index should be 8 (electrophile)
+        // Source atom index should be 1         
+            target_atom_mmolecule_index.should.be.equal(9999)
+            atoms.length.should.be.equal(8888)
+            mmolecule.length.should.be.equal(2) // [Br-]
         }
 
         // Add atoms to molecule.
@@ -457,6 +466,17 @@ const CMolecule = (mmolecule) => {
             mmolecule[3][0].should.be.equal("H")
             mmolecule[4][0].should.be.equal("C")
         }
+        
+        // [Br-] (nucleophile) -----> carbocation CC[C+]C
+        // Br atom should bond to carbon that has three bonds
+        // Target atom index should be 8 (electrophile)
+        // Source atom index should be 1   
+        if (test_number === 5) {
+            target_atom_mmolecule_index.should.be.equal(2)
+            mmolecule[target_atom_mmolecule_index][0].should.be.equal("C")
+            mmolecule.length.should.be.equal(44444)
+            
+        }
 
         // Now create the bond
         
@@ -501,6 +521,16 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             target_atom_electron_to_share_index.should.be.equal(false) // proton so no electrons
         }
 
+        // [Br-] (nucleophile) -----> carbocation CC[C+]C
+        // Br atom should bond to carbon that has three bonds
+        // Target atom index should be 8 (electrophile)
+        // Source atom index should be 1   
+        if (test_number === 5) {
+            target_atom_electron_to_share_index.should.be.equal(false) // carbocation so no electrons to share
+      
+        }
+
+        
         const source_atom_electron_to_share_index = __electronToShareIndex(mmolecule[source_atom_index])
         
         // H3O
@@ -535,6 +565,18 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             source_atom_electron_to_share_index.should.be.equal(false) // false as double one
         }
         
+        // [Br-] (nucleophile) -----> carbocation CC[C+]C
+        // Br atom should bond to carbon that has three bonds
+        // Target atom index should be 8 (electrophile)
+        // Source atom index should be 1   
+        if (test_number === 5) {
+            target_atom_electron_to_share_index.should.be.equal(false)
+            mmolecule[target_atom_mmolecule_index][0].should.be.equal("C")
+            mmolecule[source_atom_index][0].should.be.equal("Br")
+            source_atom_electron_to_share_index.should.be.equal(8888) 
+   
+        }
+        
         // Get lone pair from source atom (atom arrow would be pointing from (nucleophile))
         const source_atom_lone_pairs = CAtom(mmolecule[source_atom_index], source_atom_index, mmolecule).lonePairs(test_number)
 
@@ -542,9 +584,25 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             source_atom_lone_pairs.length.should.be.equal(0) // C=C double bond so no lone pairs
         }
 
-
+         // [Br-] (nucleophile) -----> carbocation CC[C+]C
+        // Br atom should bond to carbon that has three bonds
+        // Target atom index should be 8 (electrophile)
+        // Source atom index should be 1   
+        if (test_number === 5) {
+            source_atom_lone_pairs.length.should.be.equal(7777) // [Br-]
+       
+        }
 
         // Protons are always target atoms - where the arrow would be pointing to
+        // [Br-] (nucleophile) -----> carbocation CC[C+]C
+        // Br atom should bond to carbon that has three bonds
+        // Target atom index should be 8 (electrophile)
+        // Source atom index should be 1   
+        if (test_number === 5) {
+            mmolecule[target_atom_mmolecule_index][0].should.be.equal("C") //[C+]
+       
+        }
+        
         if (mmolecule[target_atom_mmolecule_index][0]==="H") {
 
             // proton?
