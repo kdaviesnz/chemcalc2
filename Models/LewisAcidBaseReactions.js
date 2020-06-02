@@ -11,14 +11,14 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
             console.log("Wrong section for test number " + test_number)
             process.exit()
         }
-        
+
         // [Br-] (nucleophile) -----> carbocation
-            // Br atom should bond to carbon that has three bonds
-            // Target atom index should be 8
-            // Source atom index should be 1
-            if (this.test_number === 5) {
-                reaction.should.be.equal(false)
-            }
+        // Br atom should bond to carbon that has three bonds
+        // Target atom index should be 8
+        // Source atom index should be 1
+        if (this.test_number === 5) {
+            reaction.should.be.equal(false)
+        }
 
         if (null === nucleophile_molecule) {
 
@@ -29,6 +29,11 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
             if (test_number === 3) {
                 substrate_electrophile_atom_index.should.be.equal(1) // Al
                 reagent_electrophile_atom_index.should.be.equal(1) // H
+            }
+
+            if (test_number ===5) {
+                substrate_electrophile_atom_index.should.be.equal(1) // Nucleophile Br
+                reagent_electrophile_atom_index.should.not.be.equal(1) // electrophile C[C+]CC
             }
 
             // Container [false, [AlCl3], [COC]]
@@ -72,15 +77,16 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
         // Br atom should bond to carbon that has three bonds
         // Target atom index should be 8 (electrophile)
         // Source atom index should be 1
-        if (this.test_number === 5) {
-           
+        if (test_number === 5) {
+
+            electrophile_molecule[electrophile_atom_index][0].should.be.equal("C")
+            nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("Br")
+
             nucleophile_molecule.length.should.be.equal(1) // Br
             electrophile_molecule.length.should.be.equal(88888) // CC[C+]C
             electrophile_atom_index.should.be.equal(8)
             nucleophile_atom_index.should.be.equal(1)
-            electrophile_molecule[electrophile_atom_index][0].should.be.equal("C")
-            nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("Br")
-            
+
         }
 
         

@@ -10,6 +10,7 @@ const CMolecule = (mmolecule) => {
 
     const determineElectrophileIndex = (test_number) => {
 
+        // @todo do not count hydgroens
        // Check atoms for free slots
        // returns [index, atom] pairs
        const atoms_with_free_slots = __atomsWithFreeSlots()
@@ -742,7 +743,7 @@ In the molecule H2, the hydrogen atoms share the two electrons via covalent bond
             // Target atom index should be 8 (electrophile)
             // Source atom index should be 1   
                 if (test_number === 5) {
-                     Set().intersection(mmolecule[target_atom_mmolecule_index].slice(4), mmolecule[source_atom_index]
+                     Set().intersection(mmolecule[target_atom_mmolecule_index].slice(4), mmolecule[source_atom_index].slice(4)).length.should.be.equal(4444)
                 
                 }
                     
@@ -1126,6 +1127,7 @@ Molecule.js
         // Target atom index should be 8 (electrophile)
         // Source atom index should be 1         
             if (test_number === 5) {
+                console.log(atoms_or_atomic_symbols)
                 atoms_or_atomic_symbols.length.should.be.equal(55555)  // CC[C+]C
                 atoms_or_atomic_symbols[0][0].should.be.equal("H")
                 atoms_or_atomic_symbols[0].length.should.be.equal(7777)
