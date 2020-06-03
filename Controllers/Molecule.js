@@ -10,7 +10,7 @@ const CMolecule = (mmolecule) => {
 
     const determineElectrophileIndex = (test_number) => {
 
-        // @todo do not count hydgroens
+        // @todo do not count hydrogens attached to carbons
        // Check atoms for free slots
        // returns [index, atom] pairs
        const atoms_with_free_slots = __atomsWithFreeSlots()
@@ -145,7 +145,7 @@ const CMolecule = (mmolecule) => {
       // Check substrate for free slots
                 return mmolecule.slice(1).map(
                     (atom, index) => {
-                        if (CAtom(atom, index,mmolecule).freeSlots() === 0 ) {
+                        if (atom[0]==="H" || CAtom(atom, index,mmolecule).freeSlots() === 0 ) {
                             return null
                         }
                         return [index, atom]                        
