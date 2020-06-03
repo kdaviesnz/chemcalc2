@@ -4,6 +4,18 @@ const _ = require('lodash');
 
 const CAtom = (atom, current_atom_index, mmolecule) => {
 
+    const __carbons = (test_number) => {
+        const atoms = mmolecule.slice(1)
+        return atoms.filter(
+            (__atom) => {
+                if (__atom[0] === "C") {
+                    return Set().intersection(__atom.slice(4), atom.slice(4)).length > 0
+                }
+                return false
+            }
+        )
+    }
+    
     const __removeDoubleBond = (test_number) => {
         const atoms = mmolecule.slice(1)
         const atom_electrons = atom.slice(4)
@@ -268,6 +280,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         doubleBond: __doubleBond,
         removeDoubleBond: __removeDoubleBond,
         hydrogens: __hydrogens(),
+        carbons: __carbons(),
         freeSlots: __freeSlots
     }
 }
