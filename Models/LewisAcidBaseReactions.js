@@ -31,13 +31,16 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
                 reagent_electrophile_atom_index.should.be.equal(4) // C  as all hydrogens are bonded to carbons
             }
 
-            // [Br-] (nucleophile) -----> carbocation
+            // [Br-] (nucleophile, electron donor) -----> carbocation
             // Br atom should bond to carbon that has three bonds
             // Target atom index should be 8 (electrophile)
             // Source atom index should be 1
+            // substrate is [Br-]
+            // reagent is carbocation
+            // see orgsnic chenistry 8th edition ch 6 p235
             if (test_number ===5) {
                 substrate_electrophile_atom_index.should.be.equal(1) // Nucleophile Br
-                reagent_electrophile_atom_index.should.not.be.equal(1) // electrophile C[C+]CC
+                reagent_electrophile_atom_index.should.not.be.equal(8888) // electrophile C[C+]CC
             }
 
             // Container [false, [AlCl3], [COC]]
