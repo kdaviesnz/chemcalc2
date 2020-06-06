@@ -25,12 +25,16 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
             const substrate_electrophile_atom_index = MoleculeController(container[1]).electrophileIndex(test_number) // AlCl3
             const reagent_electrophile_atom_index = MoleculeController(container[2]).electrophileIndex(test_number)
 
-            // CO:C (nucleophile) ------> AlCl3 (electropile
+            // CO:C (nucleophile) ------> AlCl3 (electrophile) O: is the nucleophile (bas, donates an electron pair), Al is the electrophile (acid, accepts an electron pair) See 2.12 Organic Chemistry 8th Edition P76
             if (test_number === 3) {
                 substrate_electrophile_atom_index.should.be.equal(1) // Al
-                reagent_electrophile_atom_index.should.be.equal(1) // H
+                reagent_electrophile_atom_index.should.be.equal(4) // C  as all hydrogens are bonded to carbons
             }
 
+            // [Br-] (nucleophile) -----> carbocation
+            // Br atom should bond to carbon that has three bonds
+            // Target atom index should be 8 (electrophile)
+            // Source atom index should be 1
             if (test_number ===5) {
                 substrate_electrophile_atom_index.should.be.equal(1) // Nucleophile Br
                 reagent_electrophile_atom_index.should.not.be.equal(1) // electrophile C[C+]CC

@@ -280,7 +280,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         doubleBond: __doubleBond,
         removeDoubleBond: __removeDoubleBond,
         hydrogens: __hydrogens(),
-        carbons: __carbons(),
+        carbons: __carbons,
         freeSlots: __freeSlots
     }
 }
