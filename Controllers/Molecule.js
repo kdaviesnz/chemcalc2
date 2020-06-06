@@ -10,10 +10,21 @@ const CMolecule = (mmolecule) => {
 
     const determineElectrophileIndex = (test_number) => {
 
+        // 5.1 test 5, [Br-] nucleophile so should return false
+        // 5.1 test 5, carbocation electrophile so should not return false
+
+
         // @todo do not count hydrogens attached to carbons
-       // Check atoms for free slots
-       // returns [index, atom] pairs
-       const atoms_with_free_slots = __atomsWithFreeSlots()
+        // Check atoms for free slots
+        // returns [index, atom] pairs
+        console.log(test_number)
+        const atoms_with_free_slots = __atomsWithFreeSlots(test_number)
+
+        if (test_number == 5.1) {
+            console.log(test_number)
+            console.log(atoms_with_free_slots)
+            atoms_with_free_slots.length.should.be.equal(0) // should be 0
+        }
 
        if (atoms_with_free_slots.length === 0) {
            return false
@@ -141,11 +152,41 @@ const CMolecule = (mmolecule) => {
         return atoms_with_lone_pairs
     }
     
-    const __atomsWithFreeSlots = () => {
+    const __atomsWithFreeSlots = (test_number) => {
       // Check substrate for free slots
+
                 return mmolecule.slice(1).map(
+
                     (atom, index) => {
-                        if ((atom[0]==="H" && CAtom(atom, index,mmolecule).carbons().length > 0) || CAtom(atom, index,mmolecule).freeSlots() === 0 ) {
+
+
+                        if (test_number == 3.1) {
+                            CAtom(atom, index ,mmolecule).freeSlots(test_number).should.be.equal(99999)
+                        }
+
+                        if (test_number == 5.1) {
+                            // freeSlots() returns a number
+                            //console.log(atom)
+                            /*
+                            [ 'Br',
+  35,
+  7,
+  1,
+  '2edg3og4hskb46emmt',
+  '2edg3og4hskb46emmu',
+  '2edg3og4hskb46emmv',
+  '2edg3og4hskb46emmw',
+  '2edg3og4hskb46emmx',
+  '2edg3og4hskb46emmy',
+  '2edg3og4hskb46emmz',
+  '2edg3og4hskb46emn0' ]
+
+                             */
+                            CAtom(atom, index ,mmolecule).freeSlots(test_number).should.be.equal(99999)
+                        }
+
+
+                        if ((atom[0]==="H" && CAtom(atom, index,mmolecule).carbons().length > 0) || CAtom(atom, index,mmolecule).freeSlots(test_number) === 0 ) {
                             return null
                         }
                         return [index, atom]                        

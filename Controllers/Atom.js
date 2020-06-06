@@ -170,6 +170,8 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     }
 
     const __freeSlots = (test_number) => {
+
+        console.log(test_number + " (freeSlots)")
         /*
                           "C": {
         "group":14,
@@ -230,8 +232,43 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         // Al 2-8-3 ? max ?bonds free slots
         // the third shell can hold up to 18
         const info = PeriodicTable[atom[0]]
+
+        if (test_number == 3.1) {
+            /*
+{ group: 13,
+  column: '111A',
+  atomic_number: 13,
+  name: 'aluminium',
+  atomic_weight: 26.982,
+  electrons_per_shell: '2-8-3',
+  state_of_matter: 'solid',
+  subcategory: 'post transition metal' }
+
+
+             */
+        }
+
+        if (test_number == 5.1) {
+            /*
+            { group: 17,
+  column: 'VIIA',
+  atomic_number: 35,
+  name: 'bromine',
+  atomic_weight: 79.904,
+  electrons_per_shell: '2-8-18-7',
+  state_of_matter: 'liquid',
+  subcategory: 'reactive nonmetal' }
+
+             */
+        }
         const number_of_shells = info["electrons_per_shell"].split("-").length
-        const max_number_of_electrons = number_of_shells === 1?2:number_of_shells==2?8:18
+        const max_number_of_electrons = info["electrons_per_shell"].split("-").pop() *1
+        if (test_number == 3.1) {
+            max_number_of_electrons.should.be.equal(3)
+        }
+        if (test_number == 5.1) {
+            max_number_of_electrons.should.be.equal(9999)
+        }
         const used_electrons = __usedElectrons(test_number)
         return max_number_of_electrons - used_electrons.length / 2
     }
