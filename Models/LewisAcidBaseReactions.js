@@ -12,18 +12,11 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
             process.exit()
         }
 
-        // [Br-] (nucleophile) -----> carbocation
-        // Br atom should bond to carbon that has three bonds
-        // Target atom index should be 8
-        // Source atom index should be 1
-        if (this.test_number === 5) {
-            reaction.should.be.equal(false)
-        }
 
         if (null === nucleophile_molecule) {
 
-            const substrate_electrophile_atom_index = MoleculeController(container[1]).electrophileIndex(test_number) // AlCl3
-            const reagent_electrophile_atom_index = MoleculeController(container[2]).electrophileIndex(test_number)
+            const substrate_electrophile_atom_index = MoleculeController(container[1]).electrophileIndex(test_number + ".1", ) // AlCl3
+            const reagent_electrophile_atom_index = MoleculeController(container[2]).electrophileIndex(test_number + ".2")
 
             // CO:C (nucleophile) ------> AlCl3 (electrophile) O: is the nucleophile (bas, donates an electron pair), Al is the electrophile (acid, accepts an electron pair) See 2.12 Organic Chemistry 8th Edition P76
             if (test_number === 3) {
@@ -39,8 +32,68 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
             // reagent is carbocation
             // see orgsnic chenistry 8th edition ch 6 p235
             if (test_number ===5) {
-                substrate_electrophile_atom_index.should.be.equal(1) // Nucleophile Br
-                reagent_electrophile_atom_index.should.not.be.equal(8888) // electrophile C[C+]CC
+                substrate_electrophile_atom_index.should.be.equal(null) // Nucleophile [Br-]
+                // container[2] (reagent) is the carbocation
+                /*
+                [ 12345,
+  [ 'H', 1, 1, 1, '2edg3og4g2kb45tfdm', '2edg3og4g2kb45tfd6' ],
+  [ 'H', 1, 1, 1, '2edg3og4g2kb45tfdn', '2edg3og4g2kb45tfd7' ],
+  [ 'H', 1, 1, 1, '2edg3og4g2kb45tfdo', '2edg3og4g2kb45tfd8' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '2edg3og4g2kb45tfd6',
+    '2edg3og4g2kb45tfd7',
+    '2edg3og4g2kb45tfd8',
+    '2edg3og4g2kb45tfd9',
+    '2edg3og4g2kb45tfdd',
+    '2edg3og4g2kb45tfdm',
+    '2edg3og4g2kb45tfdn',
+    '2edg3og4g2kb45tfdo' ],
+  [ 'H', 1, 1, 1, '2edg3og4g2kb45tfdp', '2edg3og4g2kb45tfda' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '2edg3og4g2kb45tfda',
+    '2edg3og4g2kb45tfdb',
+    '2edg3og4g2kb45tfdc',
+    '2edg3og4g2kb45tfdd',
+    '2edg3og4g2kb45tfd9',
+    '2edg3og4g2kb45tfdh',
+    '2edg3og4g2kb45tfdg',
+    '2edg3og4g2kb45tfdp' ],
+  [ 'H', 1, 1, 1, '2edg3og4g2kb45tfdq', '2edg3og4g2kb45tfde' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '2edg3og4g2kb45tfde',
+    '2edg3og4g2kb45tfdf',
+    '2edg3og4g2kb45tfdg',
+    '2edg3og4g2kb45tfdh',
+    '2edg3og4g2kb45tfdl',
+    '2edg3og4g2kb45tfdq' ],
+  [ 'H', 1, 1, 1, '2edg3og4g2kb45tfdr', '2edg3og4g2kb45tfdi' ],
+  [ 'H', 1, 1, 1, '2edg3og4g2kb45tfds', '2edg3og4g2kb45tfdj' ],
+  [ 'H', 1, 1, 1, '2edg3og4g2kb45tfdt', '2edg3og4g2kb45tfdk' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    '2edg3og4g2kb45tfdi',
+    '2edg3og4g2kb45tfdj',
+    '2edg3og4g2kb45tfdk',
+    '2edg3og4g2kb45tfdl',
+    '2edg3og4g2kb45tfdf',
+    '2edg3og4g2kb45tfdr',
+    '2edg3og4g2kb45tfds',
+    '2edg3og4g2kb45tfdt' ],
+  [ 'H', 1, 1, 1, '2edg3og4g2kb45tfdb', '2edg3og4g2kb45tfdc' ] ]
+
+                 */
+                reagent_electrophile_atom_index.should.be.equal(7) // electrophile C[C+]CC should be 7
             }
 
             // Container [false, [AlCl3], [COC]]
