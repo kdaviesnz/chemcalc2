@@ -168,10 +168,18 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             }
         )
     }
-
+    
+    
+/*
+First we determine the number of electrons the atom has in its outer shell.
+Then we determine the maximum number of electrons the atom can have in its valence shell (2,8,18)
+We then get the total number of free slots by subtracting number of electrons the atom has 
+in its outer shell * 2 from the maximum number of electrons the atom can have in its valence shell.
+We then return the total number of free slots minus the number of slots already taken
+*/
     const __freeSlots = (test_number) => {
 
-        console.log(test_number + " (freeSlots)")
+        // console.log(test_number + " (freeSlots)")
         /*
                           "C": {
         "group":14,
@@ -235,6 +243,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
         if (test_number == 3.1) {
             /*
+            electrophile should have free slots
 { group: 13,
   column: '111A',
   atomic_number: 13,
@@ -262,12 +271,14 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
              */
         }
         const number_of_shells = info["electrons_per_shell"].split("-").length
-        const max_number_of_electrons = info["electrons_per_shell"].split("-").pop() *1
+       
+        // This is the maximum number of electrons the atom can have in its outer shell
+        const max_possible_number_of_electrons = 2,8,18,32
         if (test_number == 3.1) {
-            max_number_of_electrons.should.be.equal(3)
+            max_number_of_electrons.should.be.equal(18)
         }
         if (test_number == 5.1) {
-            max_number_of_electrons.should.be.equal(9999)
+            max_number_of_electrons.should.be.equal(32)
         }
         const used_electrons = __usedElectrons(test_number)
         return max_number_of_electrons - used_electrons.length / 2
