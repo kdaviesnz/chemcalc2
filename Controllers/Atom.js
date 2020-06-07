@@ -275,13 +275,31 @@ We then return the total number of free slots minus the number of slots already 
         // This is the maximum number of electrons the atom can have in its outer shell
         const max_possible_number_of_electrons = 2,8,18,32
         if (test_number == 3.1) {
-            max_number_of_electrons.should.be.equal(18)
+            
+            max_possible_number_of_electrons.should.be.equal(18)
         }
         if (test_number == 5.1) {
-            max_number_of_electrons.should.be.equal(32)
+            max_possible_number_of_electrons.should.be.equal(32)
         }
-        const used_electrons = __usedElectrons(test_number)
-        return max_number_of_electrons - used_electrons.length / 2
+        
+        // This is the number of bonds where the atom shares one of its outershell electrons
+        const max_possible_number_of_shared_electron_bonds = info["electrons_per_shell"].split("-").pop()
+              
+        const used_electrons = __usedElectrons(test_number)     
+        
+        // Al has 3 outer shell electrons and can have 18 electrons in its outer shell
+        // if no bonds:
+        // (18 - 3 * 2)/2 = 6
+        // 4 bonds: (1 used free slot)
+        // 
+        
+        if (used_electrons.length <= max_possible_number_of_shared_electron_bonds *2) {
+            return (max_possible_number_of_electrons - (max_possible_number_of_shared_electron_bonds*2)) / 2
+        } else {
+            return (max_possible_number_of_electrons - used_electrons.length) / 2
+        }
+        return max_possible_number_of_electrons - (used_electrons.length
+                                                   - max_possible_number_of_shared_electron_bonds*2)
     }
 
     return {
