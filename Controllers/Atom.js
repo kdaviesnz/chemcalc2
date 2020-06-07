@@ -325,7 +325,7 @@ We then return the total number of free slots minus the number of slots already 
         }
 
         if (test_number == 5.1) { //[Br-]
-            used_electrons.should.be.equal(9897)
+            used_electrons.length.should.be.equal(0)
         }
 
         return free_slots
