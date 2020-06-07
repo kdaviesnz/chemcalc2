@@ -161,7 +161,10 @@ const CMolecule = (mmolecule) => {
 
 
                         if (test_number == 3.1) {
-                            CAtom(atom, index ,mmolecule).freeSlots(test_number).should.be.equal(99999)
+                            // AlCl3 , Al is an electrophile
+                            if (atom[0] === 'Al') {
+                                CAtom(atom, index, mmolecule).freeSlots(test_number).should.be.equal(6)
+                            }
                         }
 
                         if (test_number == 5.1) {

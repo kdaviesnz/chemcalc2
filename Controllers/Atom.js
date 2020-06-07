@@ -271,11 +271,12 @@ We then return the total number of free slots minus the number of slots already 
              */
         }
         const number_of_shells = info["electrons_per_shell"].split("-").length
+        const m = [2,8,18,32]
        
         // This is the maximum number of electrons the atom can have in its outer shell
-        const max_possible_number_of_electrons = 2,8,18,32
+        const max_possible_number_of_electrons = m[number_of_shells-1]
+
         if (test_number == 3.1) {
-            
             max_possible_number_of_electrons.should.be.equal(18)
         }
         if (test_number == 5.1) {
@@ -283,23 +284,51 @@ We then return the total number of free slots minus the number of slots already 
         }
         
         // This is the number of bonds where the atom shares one of its outershell electrons
-        const max_possible_number_of_shared_electron_bonds = info["electrons_per_shell"].split("-").pop()
-              
-        const used_electrons = __usedElectrons(test_number)     
-        
-        // Al has 3 outer shell electrons and can have 18 electrons in its outer shell
-        // if no bonds:
-        // (18 - 3 * 2)/2 = 6
-        // 4 bonds: (1 used free slot)
-        // 
+        const max_possible_number_of_shared_electron_bonds = info["electrons_per_shell"].split("-").pop() * 1
+
+        console.log(test_number)
+        if (test_number == 3.1 ) {
+            if (atom[0] === 'Al') {
+                max_possible_number_of_shared_electron_bonds.should.be.equal(3)
+            }
+        }
+
+        if (test_number == 5.1) {
+            max_possible_number_of_shared_electron_bonds.should.be.equal(7)
+        }
+
+        const used_electrons = __usedElectrons(test_number)
+
+        if (test_number == 3.1) {
+            if (atom[0] === 'Al') {
+                used_electrons.length.should.be.equal(6)
+            }
+        }
+
+        if (test_number == 5.1) {
+            used_electrons.length.should.be.equal(0)
+        }
+
+        let free_slots = null
         
         if (used_electrons.length <= max_possible_number_of_shared_electron_bonds *2) {
-            return (max_possible_number_of_electrons - (max_possible_number_of_shared_electron_bonds*2)) / 2
+            // 18 - 6 / 2
+            free_slots = (max_possible_number_of_electrons - (max_possible_number_of_shared_electron_bonds*2)) / 2
         } else {
-            return (max_possible_number_of_electrons - used_electrons.length) / 2
+            free_slots = (max_possible_number_of_electrons - used_electrons.length) / 2
         }
-        return max_possible_number_of_electrons - (used_electrons.length
-                                                   - max_possible_number_of_shared_electron_bonds*2)
+
+        if (test_number == 3.1) { // AlCl3
+            if (atom[0] === 'Al') {
+                free_slots.should.be.equal(6)
+            }
+        }
+
+        if (test_number == 5.1) { //[Br-]
+            used_electrons.should.be.equal(9897)
+        }
+
+        return free_slots
     }
 
     return {
