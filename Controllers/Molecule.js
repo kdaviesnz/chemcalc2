@@ -35,14 +35,14 @@ const CMolecule = (mmolecule) => {
         console.log(test_number)
 
         const hydrogens = __hydrogensNotAttachedToCarbons(test_number)
-        const atoms_with_free_slots = __atomsWithFreeSlots(test_number)
+
 
         if (test_number == 4.1) {
             hydrogens.length.should.be.equal(1)
         }
 
-        if (test_number == 5.1) {  //AlCl3
-            hydrogens.length.should.be.equal(0)
+        if (test_number == 5.1) {  // mmolecle = [Br-]
+             hydrogens.length.should.be.equal(0)
         }
 
 
@@ -53,20 +53,7 @@ const CMolecule = (mmolecule) => {
         // returns [index, atom] pairs
 
 
-        // See organic chemistry 8th edition ch 6 p 235
-        // C=C (butene, nucleophile) -> HBr (H is electrophile)
-        if (test_number == 4.1) {
-            // mmolecule
-            /*
-                    [ 12345, 0
-                      [ 'H', 1, 1, 1, '2edg3og5gokb4ofslh', '2edg3og5gokb4ofsla' ], 1
-                      [ 'Br', 35,7,1,'2edg3og5gokb4ofsla','2edg3og5gokb4ofslb', 2
-                        '2edg3og5gokb4ofslc','2edg3og5gokb4ofsld','2edg3og5gokb4ofsle',
-                        '2edg3og5gokb4ofslf','2edg3og5gokb4ofslg','2edg3og5gokb4ofslh' ]
-                        ]
-                     */
-            atoms_with_free_slots.length.should.be.equal(1)
-        }
+
 
         if (hydrogens.length > 0) {
             // See organic chemistry 8th edition ch 6 p 235
@@ -78,9 +65,25 @@ const CMolecule = (mmolecule) => {
 
         } else {
 
+            const atoms_with_free_slots = __atomsWithFreeSlots(test_number)
+
+            // See organic chemistry 8th edition ch 6 p 235
+            // C=C (butene, nucleophile) -> HBr (H is electrophile)
+            if (test_number == 4.1) {
+                // mmolecule
+                /*
+                        [ 12345, 0
+                          [ 'H', 1, 1, 1, '2edg3og5gokb4ofslh', '2edg3og5gokb4ofsla' ], 1
+                          [ 'Br', 35,7,1,'2edg3og5gokb4ofsla','2edg3og5gokb4ofslb', 2
+                            '2edg3og5gokb4ofslc','2edg3og5gokb4ofsld','2edg3og5gokb4ofsle',
+                            '2edg3og5gokb4ofslf','2edg3og5gokb4ofslg','2edg3og5gokb4ofslh' ]
+                            ]
+                         */
+                atoms_with_free_slots.length.should.be.equal(1)
+            }
 
             if (test_number == 5.1) {
-               // atoms_with_free_slots.length.should.be.equal(0) // should be 0
+                atoms_with_free_slots.length.should.be.equal(3333) // should be 0
             }
 
             if (atoms_with_free_slots.length === 0) {
@@ -218,6 +221,7 @@ const CMolecule = (mmolecule) => {
 
                     (atom, index) => {
 
+                        console.log('m' + test_number)
 
                         if (test_number == 3.1) {
                             // AlCl3 , Al is an electrophile
@@ -244,7 +248,7 @@ const CMolecule = (mmolecule) => {
   '2edg3og4hskb46emn0' ]
 
                              */
-                            CAtom(atom, index ,mmolecule).freeSlots(test_number).should.be.equal(9) // Check
+                            CAtom(atom, index ,mmolecule).freeSlots(test_number).should.be.equal(0) // Check
                         }
 
 

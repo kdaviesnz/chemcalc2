@@ -16,6 +16,18 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
         if (null === nucleophile_molecule) {
 
             const substrate_electrophile_atom_index = MoleculeController(container[1]).electrophileIndex(test_number + ".1", ) // AlCl3
+
+            // [Br-] (nucleophile, electron donor) -----> carbocation
+            // Br atom should bond to carbon that has three bonds
+            // Target atom index should be 8 (electrophile)
+            // Source atom index should be 1
+            // substrate is [Br-]
+            // reagent is carbocation
+            // see organic chenistry 8th edition ch 6 p235
+            if (test_number ===5) {
+                substrate_electrophile_atom_index.should.be.equal(null) // Nucleophile [Br-]
+            }
+
             const reagent_electrophile_atom_index = MoleculeController(container[2]).electrophileIndex(test_number + ".2")
 
             // CO:C (nucleophile) ------> AlCl3 (electrophile) O: is the nucleophile (bas, donates an electron pair), Al is the electrophile (acid, accepts an electron pair) See 2.12 Organic Chemistry 8th Edition P76
