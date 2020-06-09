@@ -4,6 +4,14 @@ const _ = require('lodash');
 
 const CAtom = (atom, current_atom_index, mmolecule) => {
 
+    const __isPositivelyCharged = (test_number) => {
+        // Electrophile
+    }
+    
+    const __isNegativelyCharged = (test_number) => {
+        // Nucleophile
+    }
+    
     const __carbons = (test_number) => {
         const atoms = mmolecule.slice(1)
         return atoms.filter(
@@ -332,6 +340,8 @@ We then return the total number of free slots minus the number of slots already 
     }
 
     return {
+        isNegativelyCharged: __isNegativelyCharged,
+        isPositivelyCharged: __isPositivelyCharged,
         isProton: __isProton,
         bonds: __Bonds,
         freeElectrons:  __freeElectrons,
