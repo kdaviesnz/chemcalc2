@@ -7,6 +7,44 @@ const Set = require('../Models/Set')
 const Families = require('../Models/Families')
 
 const CMolecule = (mmolecule) => {
+    
+    const __negativelyChargedAtoms = (test_number) => {
+        const negatively_charged_atoms = mmolecule.slice(1).reduce(
+            (carry, atom, index) => {
+                if (atom[0] !== "H" && CAtom(atom, index,mmolecule).isNegativelyCharged(test_number)) {
+                    carry.push([
+                        index,
+                        atom
+                    ])
+                }
+                return carry
+            },
+            []
+        )
+        if (test_number == 4.1) {
+            negatively_charged_atoms.length.should.be.equal(7777)
+        }
+        return negatively_charged_atoms
+    }
+    
+    const __positivelyChargedAtoms = (test_number) => {
+        const positively_charged_atoms = mmolecule.slice(1).reduce(
+            (carry, atom, index) => {
+                if (atom[0] !== "H" && CAtom(atom, index,mmolecule).isPositivelyCharged(test_number)) {
+                    carry.push([
+                        index,
+                        atom
+                    ])
+                }
+                return carry
+            },
+            []
+        )
+        if (test_number == 4.1) {
+            positively_charged_atoms.length.should.be.equal(7777)
+        }
+        return positively_charged_atoms
+    }
 
     const __hydrogensNotAttachedToCarbons = (test_number) => {
         const hydrogens = mmolecule.slice(1).reduce(
