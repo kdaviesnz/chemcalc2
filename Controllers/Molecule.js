@@ -67,6 +67,9 @@ const CMolecule = (mmolecule) => {
 
     const determineElectrophileIndex = (test_number) => {
 
+        
+        let electrophile_index = false
+        
         // 5.1 test 5, [Br-] nucleophile so should return false
         // 5.1 test 5, carbocation electrophile so should not return false
 
@@ -89,20 +92,21 @@ const CMolecule = (mmolecule) => {
         // @todo do not count hydrogens attached to carbons
         // Check atoms for free slots
         // returns [index, atom] pairs
-
-
-
-
         if (hydrogens.length > 0) {
             // See organic chemistry 8th edition ch 6 p 235
             // C=C (butene, nucleophile) -> HBr (H is electrophile)
             if (test_number == 4.1) {
                 hydrogens[0][0].should.be.equal(0)
             }
-            return hydrogens[0][0] + 1
+            electrophile_index = hydrogens[0][0] + 1
 
         } else {
 
+            const positively_charged_atoms = __positivelyChargedAtoms(test_number)
+            
+            if (positively_charged_atoms.length > 0) {
+                electrophile_index = positively_charged_atoms[0][0] + 1
+            } else {
             const atoms_with_free_slots = __atomsWithFreeSlots(test_number)
 
             // See organic chemistry 8th edition ch 6 p 235
@@ -127,11 +131,16 @@ const CMolecule = (mmolecule) => {
             if (atoms_with_free_slots.length === 0) {
                 return false
             } else {
-                return atoms_with_free_slots[0][0] + 1 // take into account pKa value
+                electrophile_index =  atoms_with_free_slots[0][0] + 1 // take into account pKa value
+            }
             }
 
         }
-
+        // Check atom isnt negatively charged (nucleophile)
+        if (CAtom(mmolecule[electrophile_index], index,mmolecule).isNegativelyCharged(test_number)) {
+            return false
+        }
+        return electrophile_index
     }
     
     const determineNucleophileIndex = (test_number) => {
