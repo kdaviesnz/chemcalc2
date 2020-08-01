@@ -11,18 +11,16 @@ const MoleculeFactory = require('./Models/MoleculeFactory')
 const PeriodicTable = require("./Models/PeriodicTable")
 const CContainer = require('./Controllers/Container')
 const CMolecule = require('./Controllers/Molecule')
-const range = require("range");
+const range = require("range")
 const Set = require('./Models/Set')
 
-
-
-
+const verbose = true
 
 // MOLECULE MODEL
 // pKa, atom, atom, atom ...
 // ATOM MODEL
 // atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
-const watermolecule = MoleculeFactory("water")
+const watermolecule = MoleculeFactory("water", verbose)
 /*
 [ 9999,
   [ 'H', 1, 1, 1, 'cfo6drik94nz8an', 'cfo6drik94nz8ah' ],

@@ -6,11 +6,14 @@ const range = require("range");
 // range.range(1,10,2)
 const Set = require('./Set')
 
-const AtomsFactory = (canonicalSMILES) => {
+const AtomsFactory = (canonicalSMILES, verbose) => {
+
+    if (verbose) {
+        console.log("AtomsFactory:: canonicalSMILES -> " + canonicalSMILES)
+    }
 
     // https://www.npmjs.com/package/smiles
     const smiles = require('smiles')
-
 
     const getFreeElectron = (used_electrons, atom, atom_index ) => {
         const electrons = atom.slice(4).filter(
@@ -25,31 +28,9 @@ const AtomsFactory = (canonicalSMILES) => {
     // parse a SMILES string, returns an array of SMILES tokens [{type: '...', value: '...'}, ...]
     const smiles_tokens = smiles.parse(canonicalSMILES.replace("H",""))
 
-    if (canonicalSMILES === "CC=CC") {
-        /*
-        [ { type: 'AliphaticOrganic', value: 'C' },
-  { type: 'AliphaticOrganic', value: 'C' },
-  { type: 'Bond', value: '=' },
-  { type: 'AliphaticOrganic', value: 'C' },
-  { type: 'AliphaticOrganic', value: 'C' } ]
-         */
-    }
-
-    if (canonicalSMILES === "[Al](Cl)(Cl)Cl") {
-        /*
-        [Al](Cl)(Cl)Cl
-[ { type: 'BracketAtom', value: 'begin' },
-  { type: 'ElementSymbol', value: 'Al' },
-  { type: 'BracketAtom', value: 'end' },
-  { type: 'Branch', value: 'begin' },
-  { type: 'AliphaticOrganic', value: 'Cl' },
-  { type: 'Branch', value: 'end' },
-  { type: 'Branch', value: 'begin' },
-  { type: 'AliphaticOrganic', value: 'Cl' },
-  { type: 'Branch', value: 'end' },
-  { type: 'AliphaticOrganic', value: 'Cl' } ]
-         */
-        // console.log(smiles_tokens)
+    if (verbose) {
+        console.log("AtomsFactory:: smiles_tokens -> ")
+        console.log(smiles_tokens)
     }
 
     const atoms_with_tokens = smiles_tokens.map(
@@ -61,6 +42,10 @@ const AtomsFactory = (canonicalSMILES) => {
         }
     )
 
+    if (verbose) {
+        console.log("AtomsFactory:: atoms_with_tokens -> ")
+        console.log(atoms_with_tokens)
+    }
 
     // Filter out brackets
     const atoms_with_tokens_no_brackets = atoms_with_tokens.filter(
@@ -72,43 +57,9 @@ const AtomsFactory = (canonicalSMILES) => {
         }
     )
 
-
-    if (canonicalSMILES === "CC=CC") {
-        /*
-[ [ 'C',
-    6,
-    4,
-    4,
-    '71l417okadoo9mk',
-    '71l417okadoo9ml',
-    '71l417okadoo9mm',
-    '71l417okadoo9mn' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    '71l417okadoo9mo',
-    '71l417okadoo9mp',
-    '71l417okadoo9mq',
-    '71l417okadoo9mr' ],
-  { type: 'Bond', value: '=' },
-  [ 'C',
-    6,
-    4,
-    4,
-    '71l417okadoo9ms',
-    '71l417okadoo9mt',
-    '71l417okadoo9mu',
-    '71l417okadoo9mv' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    '71l417okadoo9mw',
-    '71l417okadoo9mx',
-    '71l417okadoo9my',
-    '71l417okadoo9mz' ] ]
-         */
+    if (verbose) {
+        console.log("AtomsFactory:: atoms_with_tokens_no_brackets -> ")
+        console.log(atoms_with_tokens_no_brackets)
     }
 
     // Add the bonds and branches
@@ -122,8 +73,8 @@ const AtomsFactory = (canonicalSMILES) => {
     let is_new_branch = false
 
     if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
-        Set().intersection(atoms_with_tokens_no_brackets[2].slice(4), atoms_with_tokens_no_brackets[5].slice(4)).length.should.be.equal(0)    }
-
+        Set().intersection(atoms_with_tokens_no_brackets[2].slice(4), atoms_with_tokens_no_brackets[5].slice(4)).length.should.be.equal(0)
+    }
 
     const atoms_with_bonds = atoms_with_tokens_no_brackets.map(
         (row, index, processed_atoms) => {
@@ -690,6 +641,12 @@ const AtomsFactory = (canonicalSMILES) => {
         }
     )
 
+
+    if (verbose) {
+        console.log("AtomsFactory:: atoms_with_bonds -> ")
+        console.log(atoms_with_bonds)
+    }
+
     // Remove bonds using filter
 // @todo
     const atoms = atoms_with_bonds.filter(
@@ -697,6 +654,11 @@ const AtomsFactory = (canonicalSMILES) => {
             return row.type !== 'Bond'
         }
     )
+
+    if (verbose) {
+        console.log("AtomsFactory:: atoms -> ")
+        console.log(atoms)
+    }
 
     if ("CC=CC" === canonicalSMILES) {
        // console.log(atoms)
@@ -808,67 +770,13 @@ const AtomsFactory = (canonicalSMILES) => {
     )
     //  atomic symbol, proton count, valence count, number of bonds, velectron1, velectron2, velectron3
 
+    if (verbose) {
+        console.log("AtomsFactory:: atoms_with_hydrogens -> ")
+        console.log(atoms_with_hydrogens)
+    }
+
     if ("CC=CC" === canonicalSMILES) {
 
-        /*
-        [ [ 'H', 1, 1, 1, '1y5g42jkkahi190y', '1y5g42jkkahi190i' ], 0
-  [ 'H', 1, 1, 1, '1y5g42jkkahi190z', '1y5g42jkkahi190j' ], 1
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1910', '1y5g42jkkahi190k' ], 2
-  [ 'C', 3
-    6,
-    4,
-    4,
-    '1y5g42jkkahi190i',
-    '1y5g42jkkahi190j',
-    '1y5g42jkkahi190k',
-    '1y5g42jkkahi190l',
-    '1y5g42jkkahi190p',
-    '1y5g42jkkahi190y',
-    '1y5g42jkkahi190z',
-    '1y5g42jkkahi1910' ],
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1911', '1y5g42jkkahi190m' ], 4
-  [ 'C', 5
-    6,
-    4,
-    4,
-    '1y5g42jkkahi190m',
-    '1y5g42jkkahi190n',
-    '1y5g42jkkahi190o',
-    '1y5g42jkkahi190p',
-    '1y5g42jkkahi190l',
-    '1y5g42jkkahi190t',
-    '1y5g42jkkahi190s',
-    '1y5g42jkkahi1911' ],
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1912', '1y5g42jkkahi190q' ], 6
-  [ 'C', 7
-    6,
-    4,
-    4,
-    '1y5g42jkkahi190q',
-    '1y5g42jkkahi190r',
-    '1y5g42jkkahi190s',
-    '1y5g42jkkahi190t',
-    '1y5g42jkkahi190o',
-    '1y5g42jkkahi190n',
-    '1y5g42jkkahi190x',
-    '1y5g42jkkahi1912' ],
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1913', '1y5g42jkkahi190u' ], 8
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1914', '1y5g42jkkahi190v' ], 9
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1915', '1y5g42jkkahi190w' ], 10
-  [ 'C', 11
-    6,
-    4,
-    4,
-    '1y5g42jkkahi190u',
-    '1y5g42jkkahi190v',
-    '1y5g42jkkahi190w',
-    '1y5g42jkkahi190x',
-    '1y5g42jkkahi190r',
-    '1y5g42jkkahi1913',
-    '1y5g42jkkahi1914',
-    '1y5g42jkkahi1915' ] ]
-
-         */
         atoms_with_hydrogens.length.should.be.equal(12)
         atoms_with_hydrogens[3].slice(4).length.should.be.equal(8)
         atoms_with_hydrogens[6].slice(4).length.should.be.equal(2)
@@ -942,9 +850,6 @@ const AtomsFactory = (canonicalSMILES) => {
         )
 
         // CAtom = (atom, current_atom_index, mmolecule)
-
-
-
     }
 
     if ("CC=CC" === canonicalSMILES) {
@@ -1006,6 +911,8 @@ const AtomsFactory = (canonicalSMILES) => {
    
     
     }
+
+
 
     return atoms_with_hydrogens
 
