@@ -37,6 +37,7 @@ class CContainer {
         if (verbose) {
             console.log("Controllers/Container.js:: Container before processing reaction ->")
             console.log(this.container)
+            console.log("Length:" + this.container.length)
         }
 
         // First element is pKa value,
@@ -45,7 +46,18 @@ class CContainer {
         if (this.container.length > 2) {
 
             const substrate = this.container[1]
+
+            if (verbose) {
+                console.log("Controllers/Container.js:: Got substrate ->")
+                console.log(this.container[1])
+            }
+
             const reagent = this.container[2]
+
+            if (verbose) {
+                console.log("Controllers/Container.js:: Got reagent ->")
+                console.log(this.container[2])
+            }
 
             const substrate_families = Families(substrate.slice(1)).families
             const reagent_families = Families(reagent.slice(1)).families
@@ -236,6 +248,8 @@ class CContainer {
 
             this.container = reaction
 
+        } else {
+            console.log("Controller/Container.js:: Container only has substrate so no processing a reaction ")
         }
 
         if (verbose) {
