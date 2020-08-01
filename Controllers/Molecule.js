@@ -1100,13 +1100,22 @@ Molecule.js
 
     }
 
-    const _bondCount = (atom) => {
+    const _bondCount = (atom, verbose) => {
+
+        if (verbose) {
+            console.log('Controllers/Molecule.js:: Getting bond count for atom ->')
+            console.log('Controllers/Molecule.js:: Molecule')
+            console.log(mmolecule)
+            console.log('Controllers/Molecule.js:: atom')
+            console.log(atom)
+        }
 
         const valence_electrons = atom.slice(4).filter(
             (electron) => {
                 return null !== electron
             }
         )
+
         // Check each valence electron to see if it is being shared
         const shared_electrons_count = valence_electrons.reduce(
             (total, current_electron) => {
@@ -1129,6 +1138,9 @@ Molecule.js
             0
         )
 
+        if (verbose) {
+            console.log('Controllers/Molecule.js:: Number of bonds ->' + shared_electrons_count / 2 );
+        }
         return shared_electrons_count / 2;
     }
 

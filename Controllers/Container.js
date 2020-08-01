@@ -8,25 +8,36 @@ const CAtom = require('./Atom')
 class CContainer {
 
     // container is a container model
-    constructor(container, MoleculeFactory, MoleculeController, test_number) {
+    constructor(container, MoleculeFactory, MoleculeController, test_number, verbose) {
         this.container = container
         this.MoleculeFactory = MoleculeFactory
         this.MoleculeController = MoleculeController
         this.test_number = test_number
+        this.verbose = verbose
+        if (this.verbose) {
+            console.log("Controllers/Container.js::Created container controller object ->")
+            console.log(this)
+        }
     }
 
-    add(molecule_array_or_string, units) {
-        const molecule =  (typeof molecule_array_or_string !== "string"?
-            molecule_array_or_string:
+    add(molecule_array_or_string, units, verbose) {
+
+        if (verbose) {
+            console.log("Controllers/Container.js::Adding ->")
+            console.log(molecule_array_or_string)
+            console.log("to container")
+        }
+        const molecule = (typeof molecule_array_or_string !== "string" ?
+            molecule_array_or_string :
             this.MoleculeFactory(molecule_array_or_string))
         // Add item to container.
 
         this.container.push(molecule)
-        /*
-        range.range(1,units,1).map(i)=>{
-            this.container.push(molecule)
+
+        if (verbose) {
+            console.log("Controllers/Container.js:: Container before processing reaction ->")
+            console.log(this.container)
         }
-        */
 
         // First element is pKa value,
         // container[2] is reagent
@@ -35,250 +46,92 @@ class CContainer {
 
             const substrate = this.container[1]
             const reagent = this.container[2]
-            
+
             const substrate_families = Families(substrate.slice(1)).families
             const reagent_families = Families(reagent.slice(1)).families
-            
+
             const bronstedLowry = BronstedLowryAcidBaseReactions(this.container, this.MoleculeController, this.test_number)
             const lewis = LewisAcidBaseReactions(this.container, this.MoleculeController, this.test_number)
 
-            
+
             // The functional group of an alkene is the C=C double bond.
             // The C=C double bond is nucleophilic
             let reaction = false
-            
+
             // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
             if (this.test_number === 4) {
                 substrate_families.alkene().length.should.be.equal(2)
             }
-            
-            
-            
+
+
             if (substrate_families.alkene().length > 0) {
-                
+
                 // Substrate is alkene (nucleophile)
                 // Find the nucleophile on the C=C bond
                 const nucleophile_molecule = substrate
                 const nucleophile_molecule_index = 1
-                
+
                 // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
                 // Check nucleophile is CC=CC
                 if (this.test_number === 4) {
                     nucleophile_molecule[6][0].should.be.equal("C")
                     nucleophile_molecule[8][0].should.be.equal("C")
                     // Confirm double bond
-                    Set().intersection(nucleophile_molecule[6].slice(4),nucleophile_molecule[8].slice(4)).length.should.be.equal(4)
+                    Set().intersection(nucleophile_molecule[6].slice(4), nucleophile_molecule[8].slice(4)).length.should.be.equal(4)
                 }
-                              
+
                 const electrophile_molecule = reagent
                 const electrophile_molecule_index = 2
-                
-                // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-                // Check electrophile_molecule is HBr
-                
-                
-                        /*
-        [ [ 'H', 1, 1, 1, '1y5g42jkkahi190y', '1y5g42jkkahi190i' ], 1
-  [ 'H', 1, 1, 1, '1y5g42jkkahi190z', '1y5g42jkkahi190j' ], 2
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1910', '1y5g42jkkahi190k' ], 3
-  [ 'C', 4, 6, 4, 4,
-    '1y5g42jkkahi190i',
-    '1y5g42jkkahi190j',
-    '1y5g42jkkahi190k',
-    '1y5g42jkkahi190l',
-    '1y5g42jkkahi190p',
-    '1y5g42jkkahi190y',
-    '1y5g42jkkahi190z',
-    '1y5g42jkkahi1910' ],
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1911', '1y5g42jkkahi190m' ], 5
-  [ 'C', 6
-    6,
-    4,
-    4,
-    '1y5g42jkkahi190m',
-    '1y5g42jkkahi190n',
-    '1y5g42jkkahi190o',
-    '1y5g42jkkahi190p',
-    '1y5g42jkkahi190l',
-    '1y5g42jkkahi190t',
-    '1y5g42jkkahi190s',
-    '1y5g42jkkahi1911' ],
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1912', '1y5g42jkkahi190q' ], 7
-  [ 'C', 8
-    6,
-    4,
-    4,
-    '1y5g42jkkahi190q',
-    '1y5g42jkkahi190r',
-    '1y5g42jkkahi190s',
-    '1y5g42jkkahi190t',
-    '1y5g42jkkahi190o',
-    '1y5g42jkkahi190n',
-    '1y5g42jkkahi190x',
-    '1y5g42jkkahi1912' ],
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1913', '1y5g42jkkahi190u' ], 9
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1914', '1y5g42jkkahi190v' ], 10
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1915', '1y5g42jkkahi190w' ], 11
-  [ 'C', 12
-    6,
-    4,
-    4,
-    '1y5g42jkkahi190u',
-    '1y5g42jkkahi190v',
-    '1y5g42jkkahi190w',
-    '1y5g42jkkahi190x',
-    '1y5g42jkkahi190r',
-    '1y5g42jkkahi1913',
-    '1y5g42jkkahi1914',
-    '1y5g42jkkahi1915' ] ]
-         */
+
                 if (this.test_number === 4) {
-                    
+
                     electrophile_molecule[1][0].should.be.equal("H")
                     electrophile_molecule[2][0].should.be.equal("Br")
-                    Set().intersection(electrophile_molecule[1].slice(4),electrophile_molecule[2].slice(4)).length.should.be.equal(2)
+                    Set().intersection(electrophile_molecule[1].slice(4), electrophile_molecule[2].slice(4)).length.should.be.equal(2)
                 }
-                             
-               
+
+
                 const nucleophile_atom_index = this.MoleculeController(substrate).nucleophileIndex(this.test_number)
                 const electrophile_atom_index = this.MoleculeController(reagent).electrophileIndex(this.test_number + ".1")
 
 
                 // See organic chemistry 8th edition ch 6 p 235
                 // C=C (butene, nucleophile) -> HBr (H is electrophile)
-                if (this.test_number === 4 ) {
-// Butene:
-                    /*
-                    [ 12345, 0
-                      [ 'H', 1, 1, 1, '2edg3og5glkb4obdla', '2edg3og5glkb4obdku' ], 1
-                      [ 'H', 1, 1, 1, '2edg3og5glkb4obdlb', '2edg3og5glkb4obdkv' ], 2
-                      [ 'H', 1, 1, 1, '2edg3og5glkb4obdlc', '2edg3og5glkb4obdkw' ], 3
-                      [ 'C', 6, 4, 4,'2edg3og5glkb4obdku','2edg3og5glkb4obdkv','2edg3og5glkb4obdkw', 4
-                        '2edg3og5glkb4obdkx','2edg3og5glkb4obdl1','2edg3og5glkb4obdla',
-                        '2edg3og5glkb4obdlb','2edg3og5glkb4obdlc' ],
-                      [ 'H', 1, 1, 1, '2edg3og5glkb4obdld', '2edg3og5glkb4obdky' ], 5
-                      [ 'C', 6,4,4,'2edg3og5glkb4obdky','2edg3og5glkb4obdkz', 6
-                        '2edg3og5glkb4obdl0','2edg3og5glkb4obdl1','2edg3og5glkb4obdkx',
-                        '2edg3og5glkb4obdl5','2edg3og5glkb4obdl4','2edg3og5glkb4obdld' ],
-                      [ 'H', 1, 1, 1, '2edg3og5glkb4obdle', '2edg3og5glkb4obdl2' ], 7
-                      [ 'C',6,4,4,'2edg3og5glkb4obdl2','2edg3og5glkb4obdl3','2edg3og5glkb4obdl4', 8
-                        '2edg3og5glkb4obdl5','2edg3og5glkb4obdl0','2edg3og5glkb4obdkz',
-                        '2edg3og5glkb4obdl9','2edg3og5glkb4obdle' ],
-                      [ 'H', 1, 1, 1, '2edg3og5glkb4obdlf', '2edg3og5glkb4obdl6' ], 9
-                      [ 'H', 1, 1, 1, '2edg3og5glkb4obdlg', '2edg3og5glkb4obdl7' ], 10
-                      [ 'H', 1, 1, 1, '2edg3og5glkb4obdlh', '2edg3og5glkb4obdl8' ], 11
-                      [ 'C',6,4,4,'2edg3og5glkb4obdl6','2edg3og5glkb4obdl7', 12
-                        '2edg3og5glkb4obdl8','2edg3og5glkb4obdl9','2edg3og5glkb4obdl3',
-                        '2edg3og5glkb4obdlf','2edg3og5glkb4obdlg','2edg3og5glkb4obdlh' ]
-                        ]
-                     */
-//console.log(hbr)
-                    /*
-                    [ 12345, 0
-                      [ 'H', 1, 1, 1, '2edg3og5gokb4ofslh', '2edg3og5gokb4ofsla' ], 1
-                      [ 'Br', 35,7,1,'2edg3og5gokb4ofsla','2edg3og5gokb4ofslb', 2
-                        '2edg3og5gokb4ofslc','2edg3og5gokb4ofsld','2edg3og5gokb4ofsle',
-                        '2edg3og5gokb4ofslf','2edg3og5gokb4ofslg','2edg3og5gokb4ofslh' ]
-                        ]
-                     */
+                if (this.test_number === 4) {
                     electrophile_atom_index.should.be.equal(1)
-
                 }
 
-                // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-                                        /*
-        [ [ 'H', 1, 1, 1, '1y5g42jkkahi190y', '1y5g42jkkahi190i' ], 1
-  [ 'H', 1, 1, 1, '1y5g42jkkahi190z', '1y5g42jkkahi190j' ], 2
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1910', '1y5g42jkkahi190k' ], 3
-  [ 'C', 4, 6, 4, 4, '1y5g42jkkahi190i', '1y5g42jkkahi190j', '1y5g42jkkahi190k','1y5g42jkkahi190l'
-  ,'1y5g42jkkahi190p','1y5g42jkkahi190y','1y5g42jkkahi190z', '1y5g42jkkahi1910' ],
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1911', '1y5g42jkkahi190m' ], 5
-  [ 'C', 6,  4, 4,'1y5g42jkkahi190m','1y5g42jkkahi190n','1y5g42jkkahi190o', 6
-    '1y5g42jkkahi190p', '1y5g42jkkahi190l', '1y5g42jkkahi190t','1y5g42jkkahi190s', '1y5g42jkkahi1911' ],
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1912', '1y5g42jkkahi190q' ], 7
-  [ 'C', 6, 4, 4, '1y5g42jkkahi190q','1y5g42jkkahi190r', '1y5g42jkkahi190s',
-    '1y5g42jkkahi190t', '1y5g42jkkahi190o','1y5g42jkkahi190n','1y5g42jkkahi190x',
-    '1y5g42jkkahi1912' ], 8
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1913', '1y5g42jkkahi190u' ], 9
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1914', '1y5g42jkkahi190v' ], 10
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1915', '1y5g42jkkahi190w' ], 11
-  [ 'C', 6,4,4, '1y5g42jkkahi190u','1y5g42jkkahi190v','1y5g42jkkahi190w',
-    '1y5g42jkkahi190x','1y5g42jkkahi190r', '1y5g42jkkahi1913','1y5g42jkkahi1914',
-    '1y5g42jkkahi1915' ] 12 ]
-         */
 
                 // See organic chemistry 8th edition ch 6 p 235
                 // C=C (butene, nucleophile) -> HBr (H is electrophile)
                 if (this.test_number === 4) {
-                    // Butene:
-                    /*
-                    [ 12345, 0
-                      [ 'H', 1, 1, 1, '2edg3og5glkb4obdla', '2edg3og5glkb4obdku' ], 1
-                      [ 'H', 1, 1, 1, '2edg3og5glkb4obdlb', '2edg3og5glkb4obdkv' ], 2
-                      [ 'H', 1, 1, 1, '2edg3og5glkb4obdlc', '2edg3og5glkb4obdkw' ], 3
-                      [ 'C', 6, 4, 4,'2edg3og5glkb4obdku','2edg3og5glkb4obdkv','2edg3og5glkb4obdkw', 4
-                        '2edg3og5glkb4obdkx','2edg3og5glkb4obdl1','2edg3og5glkb4obdla',
-                        '2edg3og5glkb4obdlb','2edg3og5glkb4obdlc' ],
-                      [ 'H', 1, 1, 1, '2edg3og5glkb4obdld', '2edg3og5glkb4obdky' ], 5
-                      [ 'C', 6,4,4,'2edg3og5glkb4obdky','2edg3og5glkb4obdkz', 6
-                        '2edg3og5glkb4obdl0','2edg3og5glkb4obdl1','2edg3og5glkb4obdkx',
-                        '2edg3og5glkb4obdl5','2edg3og5glkb4obdl4','2edg3og5glkb4obdld' ],
-                      [ 'H', 1, 1, 1, '2edg3og5glkb4obdle', '2edg3og5glkb4obdl2' ], 7
-                      [ 'C',6,4,4,'2edg3og5glkb4obdl2','2edg3og5glkb4obdl3','2edg3og5glkb4obdl4', 8
-                        '2edg3og5glkb4obdl5','2edg3og5glkb4obdl0','2edg3og5glkb4obdkz',
-                        '2edg3og5glkb4obdl9','2edg3og5glkb4obdle' ],
-                      [ 'H', 1, 1, 1, '2edg3og5glkb4obdlf', '2edg3og5glkb4obdl6' ], 9
-                      [ 'H', 1, 1, 1, '2edg3og5glkb4obdlg', '2edg3og5glkb4obdl7' ], 10
-                      [ 'H', 1, 1, 1, '2edg3og5glkb4obdlh', '2edg3og5glkb4obdl8' ], 11
-                      [ 'C',6,4,4,'2edg3og5glkb4obdl6','2edg3og5glkb4obdl7', 12
-                        '2edg3og5glkb4obdl8','2edg3og5glkb4obdl9','2edg3og5glkb4obdl3',
-                        '2edg3og5glkb4obdlf','2edg3og5glkb4obdlg','2edg3og5glkb4obdlh' ]
-                        ]
-                     */
-//console.log(hbr)
-                    /*
-                    [ 12345, 0
-                      [ 'H', 1, 1, 1, '2edg3og5gokb4ofslh', '2edg3og5gokb4ofsla' ], 1
-                      [ 'Br', 35,7,1,'2edg3og5gokb4ofsla','2edg3og5gokb4ofslb', 2
-                        '2edg3og5gokb4ofslc','2edg3og5gokb4ofsld','2edg3og5gokb4ofsle',
-                        '2edg3og5gokb4ofslf','2edg3og5gokb4ofslg','2edg3og5gokb4ofslh' ]
-                        ]
-                     */
                     nucleophile_atom_index.should.be.equal(6)  // correct
                     nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("C")
                     // Check double bond
                     Set().intersection(nucleophile_molecule[nucleophile_atom_index].slice(4), nucleophile_molecule[8].slice(4)).length.should.be.equal(4)
                 }
-                
+
                 // const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
                 // test 4 CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
                 reaction = bronstedLowry.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
-                    
+
                 // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
                 if (this.test_number === 4) {
                     reaction.should.not.be.equal(false)
                 }
-                
+
                 if (reaction === false) {
-                    // reagent does not have a proton
-                    // do Lewis acid base teaction
-                    //                 // const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, test_number) => {
-                
                     reaction = lewis.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, this.test_number)
-               
-                     if ( reaction !== false) {
-                         this.container = reaction
-                     }
-                
+                    if (reaction !== false) {
+                        this.container = reaction
+                    }
+
                 } else {
-                
-                     this.container = reaction
-                    
+                    this.container = reaction
                 }
-                
 
             } else if (reagent_families.alkene.length > 0) {
-                
+
                 // Reagent is alkene
                 const nucleophile_molecule = reagent
                 const electrophile_molecule = substrate
@@ -290,25 +143,23 @@ class CContainer {
 
                 // Find the nucleophile
                 const electrophile_atom_index = this.MoleculeController(substrate).determineElectrophileIndex()
-                
-              
+
+
                 if (this.test_number === 4) {
-                   reagent[nucleophile_atom_index][0].should.be.equal("C")
-                   AtomController(reagent[nucleophile_atom_index], nucleophile_atom_index, reagent.slice(1)).bondCount.should.be.equal(2)
+                    reagent[nucleophile_atom_index][0].should.be.equal("C")
+                    AtomController(reagent[nucleophile_atom_index], nucleophile_atom_index, reagent.slice(1)).bondCount.should.be.equal(2)
                 }
-                
+
                 // const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
                 reaction = bronstedLowry.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
-                     
+
                 if (reaction === false) {
                     // substrate does not have a proton
                     // determine electrophile atom on the substrate
                     // do Lewis acid base teaction
-                    // const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, test_number) => {
-                
                     reaction = lewis.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, this.test_number)
-                }     
-                
+                }
+
             }
 
             if (!reaction) {
@@ -319,7 +170,7 @@ class CContainer {
             if (this.test_number === 1) {
                 reaction.should.not.be.equal(false)
             }
-            
+
             // [Br-] (nucleophile) -----> carbocation
             // Br atom should bond to carbon that has three bonds
             // Target atom index should be 8
@@ -360,8 +211,6 @@ class CContainer {
                 reaction[2][3][0].should.be.equal("O")
             }
 
-
-            // CO:C (nucleophile (O)) ---------> AlCl3 (electrophile (Al))
             if (this.test_number === 3) {
                 reaction.length.should.be.equal(2) // should be 2
                 reaction[0].should.be.equal(false)
@@ -387,9 +236,16 @@ class CContainer {
 
             this.container = reaction
 
-
         }
-    }
+
+        if (verbose) {
+            console.log("Controller/Container.js:: Container after adding -> ")
+            console.log(molecule_array_or_string)
+            console.log(this.container)
+        }
+
+
+    } // add()
 
     remove() {
 

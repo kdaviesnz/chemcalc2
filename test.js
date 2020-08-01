@@ -88,14 +88,17 @@ watermolecule[2].indexOf(watermolecule[1][watermolecule[1].length-1]).should.not
 watermolecule[1].indexOf(watermolecule[2][watermolecule[2].length-1]).should.not.be.False()
 
 const WaterController = CMolecule(watermolecule)
-WaterController.bondCount(watermolecule[1]).should.be.equal(1)
-WaterController.bondCount(watermolecule[2]).should.be.equal(1)
-WaterController.bondCount(watermolecule[3]).should.be.equal(2) // Oxygen
+if (verbose) {
+    console.log('Created water molecule controller')
+}
+WaterController.bondCount(watermolecule[1], verbose).should.be.equal(1)
+WaterController.bondCount(watermolecule[2], verbose).should.be.equal(1)
+WaterController.bondCount(watermolecule[3], verbose).should.be.equal(2) // Oxygen
 
-const hcl = MoleculeFactory("HCl")
-const HCLController = CMolecule(hcl)
-HCLController.bondCount(hcl[1]).should.be.equal(1)
-HCLController.bondCount(hcl[2]).should.be.equal(1)
+const hcl = MoleculeFactory("HCl", verbose)
+const HCLController = CMolecule(hcl, verbose)
+HCLController.bondCount(hcl[1], verbose).should.be.equal(1)
+HCLController.bondCount(hcl[2], verbose).should.be.equal(1)
 hcl.should.be.a.Array()
 hcl.length.should.be.equal(3)
 hcl[0].should.be.a.Number()
@@ -138,12 +141,12 @@ hcl[2].indexOf(hcl[1][hcl[1].length-1]).should.not.be.False()
 hcl[1].indexOf(hcl[2][hcl[2].length-1]).should.not.be.False()
 
 
-const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1)
+const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
 
 // HCl + H2O <-> Cl- + H3O+
 //  CONTAINER MODEL
 // is vacuum, molecule, molecule ...
-ccontainer.add("HCl",1)
+ccontainer.add("HCl",1, verbose)
 ccontainer.container.length.should.be.equal(2)
 ccontainer.container[0].should.be.equal(false)
 ccontainer.container[1].should.be.a.Array()
