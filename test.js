@@ -21,23 +21,12 @@ const verbose = true
 // ATOM MODEL
 // atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
 const watermolecule = MoleculeFactory("water", verbose)
-/*
-[ 9999,
-  [ 'H', 1, 1, 1, 'cfo6drik94nz8an', 'cfo6drik94nz8ah' ],
-  [ 'H', 1, 1, 1, 'cfo6drik94nz8ao', 'cfo6drik94nz8ai' ],
-  [ 'O',
-    8,
-    6,
-    2,
-    'cfo6drik94nz8ah',
-    'cfo6drik94nz8ai',
-    'cfo6drik94nz8aj',
-    'cfo6drik94nz8ak',
-    'cfo6drik94nz8al',
-    'cfo6drik94nz8am',
-    'cfo6drik94nz8an',
-    'cfo6drik94nz8ao' ] ]
- */
+
+if (verbose) {
+    console.log('test:: watermolecule ->')
+    console.log(watermolecule)
+}
+
 watermolecule.should.be.a.Array()
 watermolecule.length.should.be.equal(4)
 watermolecule[0].should.be.a.Number()
