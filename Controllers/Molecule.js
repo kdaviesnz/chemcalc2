@@ -1149,11 +1149,23 @@ Molecule.js
 // pKa, atom, atom, atom ...
 // ATOM MODEL
 // atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
-        indexOf : (atom_or_atomic_symbol, include_carbons) => {
+        indexOf : (atom_or_atomic_symbol, include_carbons, verbose) => {
+
+            if (verbose) {
+                console.log("Models/BrowstedLowryAcidBaseReations.js Finding index of ->")
+                console.log(atom_or_atomic_symbol)
+                console.log("molecule ->")
+                console.log(mmolecule)
+            }
+
             if (atom_or_atomic_symbol === "H" || atom_or_atomic_symbol[0] === "H") {
+
+                if (verbose) {
+                    console.log("Models/BrowstedLowryAcidBaseReations.js Atom to get index of is hydrogen so getting atoms that have hydrogens")
+                }
+
                 // get molecule atoms that have hydrogens, keeping track of hydrogen indexes
                 const candidate_atoms = mmolecule.reduce((carry, current_molecule_atom, index)=>{
-
 
                     if (current_molecule_atom[0] !== "H") {
                         if (typeof current_molecule_atom === "number" ) {
@@ -1195,27 +1207,38 @@ Molecule.js
                     }
                     return carry
                 }, [])
-                /*
 
+                if (verbose) {
+                    console.log("Models/BrowstedLowryAcidBaseReations.js Candidate atoms ->")
+                    console.log(candidate_atoms)
+                }
 
-                 */
                 // check for oxygen atom and if found return the index of hydrogen atom bonded to the oxygen atom
                 const o = candidate_atoms.filter((candidate_atom)=>{
                     return candidate_atom[0]==="O"
                 })
-                if (o.length>0) {
-                    return o[0][1]
-                }
-                /*
-                 */
-                if (undefined === candidate_atoms[0] ) {
 
+                if (o.length>0) {
+                    if (verbose) {
+                        console.log("Models/BrowstedLowryAcidBaseReations.js Returning index of oxygen atom ->")
+                        console.log(o[0][1])
+                    }
+                    return o[0][1]
                 }
 
                 if (candidate_atoms.length === 0) {
+                    if (verbose) {
+                        console.log("Models/BrowstedLowryAcidBaseReations.js Atom index not found so returning false")
+                    }
                     return false;
                 }
+
+                if (verbose) {
+                    console.log("Models/BrowstedLowryAcidBaseReations.js Returning atom index ->")
+                    console.log(candidate_atoms[0][1])
+                }
                 return candidate_atoms[0][1]
+
             }
             else { // we are not looking for hydrogen atom
                 if (typeof atom_or_atomic_symbol === "string") {

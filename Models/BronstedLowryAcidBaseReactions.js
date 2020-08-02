@@ -23,8 +23,8 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 
         if (undefined === nucleophile_molecule) {
            
-            const substrate_proton_index = MoleculeController(container[1]).indexOf("H")
-            const reagent_proton_index = MoleculeController(container[2]).indexOf("H")
+            const substrate_proton_index = MoleculeController(container[1]).indexOf("H", false, verbose)
+            const reagent_proton_index = MoleculeController(container[2]).indexOf("H", false, verbose)
 
            // HCl (electrophile) <------ H2O (nucleophile)
             if (test_number === 1) {
