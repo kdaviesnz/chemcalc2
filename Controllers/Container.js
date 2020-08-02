@@ -59,12 +59,22 @@ class CContainer {
                 console.log(this.container[2])
             }
 
-            const substrate_families = Families(substrate.slice(1)).families
-            const reagent_families = Families(reagent.slice(1)).families
+            const substrate_families = Families(substrate.slice(1), verbose).families
+            const reagent_families = Families(reagent.slice(1), verbose).families
 
-            const bronstedLowry = BronstedLowryAcidBaseReactions(this.container, this.MoleculeController, this.test_number)
-            const lewis = LewisAcidBaseReactions(this.container, this.MoleculeController, this.test_number)
+            if (verbose) {
+                console.log("Controllers/Container.js substrate families ->")
+                console.log(substrate_families)
+                console.log("Controllers/Container.js substrate alkene ->")
+                console.log(substrate_families.alkene(verbose))
+                console.log("Controllers/Container.js reagent families ->")
+                console.log(reagent_families)
+                console.log("Controllers/Container.js reagent alkene ->")
+                console.log(reagent_families.alkene(verbose))
+            }
 
+            const bronstedLowry = BronstedLowryAcidBaseReactions(this.container, this.MoleculeController, this.test_number, verbose)
+            const lewis = LewisAcidBaseReactions(this.container, this.MoleculeController, this.test_number, verbose)
 
             // The functional group of an alkene is the C=C double bond.
             // The C=C double bond is nucleophilic
@@ -76,7 +86,7 @@ class CContainer {
             }
 
 
-            if (substrate_families.alkene().length > 0) {
+            if (substrate_families.alkene(verbose).length > 0) {
 
                 // Substrate is alkene (nucleophile)
                 // Find the nucleophile on the C=C bond
@@ -142,7 +152,7 @@ class CContainer {
                     this.container = reaction
                 }
 
-            } else if (reagent_families.alkene.length > 0) {
+            } else if (reagent_families.alkene(verbose).length > 0) {
 
                 // Reagent is alkene
                 const nucleophile_molecule = reagent
@@ -175,7 +185,7 @@ class CContainer {
             }
 
             if (!reaction) {
-                // No alkene
+                // Not alkene
                 reaction = bronstedLowry.react()
             }
 

@@ -156,17 +156,19 @@ ccontainer.container[1].should.be.a.Array()
 // HCl
 ccontainer.container[1].length.should.be.equal(3)
 
-ccontainer.add("water",1)
+ccontainer.add("water",1, verbose)
 
 ccontainer.container.length.should.be.equal(3)
 
 const Clneg = ccontainer.container[1]
+
+if (verbose) {
+    console.log("Test: Got Cl- ->")
+    console.log(Clneg)
+}
 Clneg.should.be.a.Array()
 Clneg.length.should.be.a.equal(2)
 Clneg[0].should.be.equal(2.86) // pKa of Cl- is 2.86
-
-
-
 Clneg[1].length.should.be.a.equal(12) // [Cl-] has 8 valence electrons
 Clneg[1][0].should.be.a.String()
 Clneg[1][0].should.be.equal("Cl")

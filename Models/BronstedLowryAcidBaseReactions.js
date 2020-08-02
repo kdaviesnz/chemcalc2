@@ -1,9 +1,25 @@
 const CAtom = require('../Controllers/Atom')
 
-const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_number) => {
+const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_number, verbose) => {
 
     const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule,
                    electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index) => {
+
+        if (verbose) {
+            console.log("Models/BronstedLowryAcidBaseReactions.js Doing Bronsted Lowry reactions ->")
+            console.log(
+                {
+                    "nucleophile molecule" : nucleophile_molecule,
+                    "nucleopile atom index" : nucleophile_atom_index,
+                    "electrophile molecle" : electrophile_molecule,
+                    "electrophile atom index" : electrophile_atom_index,
+                    "nucleophile molecule index" : nucleophile_molecule_index,
+                    "electrophile molecule index" : electrophile_molecule_index,
+                    "container" : container,
+                    "molecule controller" : MoleculeController
+                }
+            )
+        }
 
         if (undefined === nucleophile_molecule) {
            
@@ -26,27 +42,6 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
                 reagent_proton_index.should.be.equal(false) // hydrogens are attached to carbons
             }
             
-            // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-/*
-        [ [ 'H', 1, 1, 1, '1y5g42jkkahi190y', '1y5g42jkkahi190i' ], 1
-  [ 'H', 1, 1, 1, '1y5g42jkkahi190z', '1y5g42jkkahi190j' ], 2
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1910', '1y5g42jkkahi190k' ], 3
-  [ 'C', 4, 6, 4, 4, '1y5g42jkkahi190i', '1y5g42jkkahi190j', '1y5g42jkkahi190k','1y5g42jkkahi190l'
-  ,'1y5g42jkkahi190p','1y5g42jkkahi190y','1y5g42jkkahi190z', '1y5g42jkkahi1910' ],
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1911', '1y5g42jkkahi190m' ], 5
-  [ 'C', 6,  4, 4,'1y5g42jkkahi190m','1y5g42jkkahi190n','1y5g42jkkahi190o', 6
-    '1y5g42jkkahi190p', '1y5g42jkkahi190l', '1y5g42jkkahi190t','1y5g42jkkahi190s', '1y5g42jkkahi1911' ],
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1912', '1y5g42jkkahi190q' ], 7
-  [ 'C', 6, 4, 4, '1y5g42jkkahi190q','1y5g42jkkahi190r', '1y5g42jkkahi190s',
-    '1y5g42jkkahi190t', '1y5g42jkkahi190o','1y5g42jkkahi190n','1y5g42jkkahi190x',
-    '1y5g42jkkahi1912' ], 8
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1913', '1y5g42jkkahi190u' ], 9
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1914', '1y5g42jkkahi190v' ], 10
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1915', '1y5g42jkkahi190w' ], 11
-  [ 'C', 6,4,4, '1y5g42jkkahi190u','1y5g42jkkahi190v','1y5g42jkkahi190w',
-    '1y5g42jkkahi190x','1y5g42jkkahi190r', '1y5g42jkkahi1913','1y5g42jkkahi1914',
-    '1y5g42jkkahi1915' ] 12 ]
-         */
             if (test_number === 4) {
                 substrate_proton_index.should.be.equal(false) // CC=CC (Second carbon is nucleophile)
                 reagent_proton_index.should.be.equal(1) // HBr (H is electrophile)
@@ -78,35 +73,12 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
                     electrophile_molecule[electrophile_atom_index][0].should.be.equal("H")
                 }
                 
-                // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-                /*
-        [ [ 'H', 1, 1, 1, '1y5g42jkkahi190y', '1y5g42jkkahi190i' ], 1
-  [ 'H', 1, 1, 1, '1y5g42jkkahi190z', '1y5g42jkkahi190j' ], 2
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1910', '1y5g42jkkahi190k' ], 3
-  [ 'C', 4, 6, 4, 4, '1y5g42jkkahi190i', '1y5g42jkkahi190j', '1y5g42jkkahi190k','1y5g42jkkahi190l'
-  ,'1y5g42jkkahi190p','1y5g42jkkahi190y','1y5g42jkkahi190z', '1y5g42jkkahi1910' ],
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1911', '1y5g42jkkahi190m' ], 5
-  [ 'C', 6,  4, 4,'1y5g42jkkahi190m','1y5g42jkkahi190n','1y5g42jkkahi190o', 6
-    '1y5g42jkkahi190p', '1y5g42jkkahi190l', '1y5g42jkkahi190t','1y5g42jkkahi190s', '1y5g42jkkahi1911' ],
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1912', '1y5g42jkkahi190q' ], 7
-  [ 'C', 6, 4, 4, '1y5g42jkkahi190q','1y5g42jkkahi190r', '1y5g42jkkahi190s',
-    '1y5g42jkkahi190t', '1y5g42jkkahi190o','1y5g42jkkahi190n','1y5g42jkkahi190x',
-    '1y5g42jkkahi1912' ], 8
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1913', '1y5g42jkkahi190u' ], 9
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1914', '1y5g42jkkahi190v' ], 10
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1915', '1y5g42jkkahi190w' ], 11
-  [ 'C', 6,4,4, '1y5g42jkkahi190u','1y5g42jkkahi190v','1y5g42jkkahi190w',
-    '1y5g42jkkahi190x','1y5g42jkkahi190r', '1y5g42jkkahi1913','1y5g42jkkahi1914',
-    '1y5g42jkkahi1915' ] 12 ]
-         */
                 if (test_number === 4) {
                     nucleophile_atom_index.should.be.equal(6) // C on C=C
                     electrophile_atom_index.should.be.equal(1)   // H
                     nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("C")
                     electrophile_molecule[electrophile_atom_index][0].should.be.equal("H")
                 }
-                
-        
             } else if (substrate_proton_index=== false && reagent_proton_index === false) {
                 return false
             }else {
