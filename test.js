@@ -317,6 +317,7 @@ dimethylEther.filter(
 ).length.should.be.equal(6)
 dimethylEther[0].should.be.equal(-3.5)
 
+// @see Organic Chemistry 8th edition p76
 ccontainer3.add(aluminumChloride,1, verbose) // Aluminium Chloride is a Lewis acid and accepts and electron pair
 ccontainer3.add(dimethylEther,1, verbose) // Dimethyl Ether is a Lewis base and donates an electron pair (oxygen atom)
 
