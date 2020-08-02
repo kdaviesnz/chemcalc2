@@ -1152,7 +1152,7 @@ Molecule.js
         indexOf : (atom_or_atomic_symbol, include_carbons, verbose) => {
 
             if (verbose) {
-                console.log("Models/BrowstedLowryAcidBaseReations.js Finding index of ->")
+                console.log("Controllers/Molecule.js Finding index of ->")
                 console.log(atom_or_atomic_symbol)
                 console.log("molecule ->")
                 console.log(mmolecule)
@@ -1161,7 +1161,7 @@ Molecule.js
             if (atom_or_atomic_symbol === "H" || atom_or_atomic_symbol[0] === "H") {
 
                 if (verbose) {
-                    console.log("Models/BrowstedLowryAcidBaseReations.js Atom to get index of is hydrogen so getting atoms that have hydrogens")
+                    console.log("Controllers/Molecule.js Atom to get index of is hydrogen so getting atoms that have hydrogens")
                 }
 
                 // get molecule atoms that have hydrogens, keeping track of hydrogen indexes
@@ -1209,8 +1209,10 @@ Molecule.js
                 }, [])
 
                 if (verbose) {
-                    console.log("Models/BrowstedLowryAcidBaseReations.js Candidate atoms ->")
+                    console.log("Controllers/Molecule.js Candidate atoms ->")
                     console.log(candidate_atoms)
+                    console.log("molecule ->")
+                    console.log(mmolecule)
                 }
 
                 // check for oxygen atom and if found return the index of hydrogen atom bonded to the oxygen atom
@@ -1220,7 +1222,7 @@ Molecule.js
 
                 if (o.length>0) {
                     if (verbose) {
-                        console.log("Models/BrowstedLowryAcidBaseReations.js Returning index of oxygen atom ->")
+                        console.log("Controllers/Molecule.js Returning index of oxygen atom ->")
                         console.log(o[0][1])
                         console.log("molecule ->")
                         console.log(mmolecule)
@@ -1230,13 +1232,13 @@ Molecule.js
 
                 if (candidate_atoms.length === 0) {
                     if (verbose) {
-                        console.log("Models/BrowstedLowryAcidBaseReations.js Atom index not found so returning false")
+                        console.log("Controllers/Molecule.js Atom index not found so returning false")
                     }
                     return false;
                 }
 
                 if (verbose) {
-                    console.log("Models/BrowstedLowryAcidBaseReations.js Returning atom index ->")
+                    console.log("Controllers/Molecule.js Returning atom index ->")
                     console.log(candidate_atoms[0][1])
                     console.log("molecule ->")
                     console.log(mmolecule)
@@ -1250,9 +1252,21 @@ Molecule.js
                     const i = mmolecule.reduce((carry, current, index)=>{
                         return typeof current.length === "number" && current[0] === atom_or_atomic_symbol?index:carry
                     }, false)
+                    if (verbose) {
+                        console.log("Controllers/Molecule.js Returning atom index not hydrogen ->")
+                        console.log(i)
+                        console.log("molecule ->")
+                        console.log(mmolecule)
+                    }
                     return i
                 } else {
                     const i = mmolecule.search(atom_or_atomic_symbol)
+                    if (verbose) {
+                        console.log("Controllers/Molecule.jss Returning atom index not hydrogen ->")
+                        console.log(i)
+                        console.log("molecule ->")
+                        console.log(mmolecule)
+                    }
                     return i
                 }
             }

@@ -299,17 +299,16 @@ ccontainer2.add(HthreeO,1)
 console.log("Test 2 complete")
 //process.exit()
 
-const ccontainer3 = new CContainer([false], MoleculeFactory, MoleculeController, 3)
+const ccontainer3 = new CContainer([false], MoleculeFactory, MoleculeController, 3, verbose)
 
-
-const aluminumChloride = MoleculeFactory("[Al](Cl)(Cl)Cl")
+const aluminumChloride = MoleculeFactory("[Al](Cl)(Cl)Cl", verbose)
 aluminumChloride.filter(
     (atom) => {
         return atom[0] === "H"
     }
 ).length.should.be.equal(0)
 
-const dimethylEther = MoleculeFactory("COC") // 6 hydrogens
+const dimethylEther = MoleculeFactory("COC", verbose) // 6 hydrogens
 dimethylEther.length.should.be.equal(10)
 dimethylEther.filter(
     (atom) => {
@@ -318,8 +317,8 @@ dimethylEther.filter(
 ).length.should.be.equal(6)
 dimethylEther[0].should.be.equal(-3.5)
 
-ccontainer3.add(aluminumChloride,1) // Aluminium Chloride is a Lewis acid and accepts and electron pair
-ccontainer3.add(dimethylEther,1) // Dimethyl Ether is a Lewis base and donates an electron pair (oxygen atom)
+ccontainer3.add(aluminumChloride,1, verbose) // Aluminium Chloride is a Lewis acid and accepts and electron pair
+ccontainer3.add(dimethylEther,1, verbose) // Dimethyl Ether is a Lewis base and donates an electron pair (oxygen atom)
 
 console.log("Test 3 complete")
 //process.exit()
