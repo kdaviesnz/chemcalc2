@@ -6,10 +6,12 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
     const __isPositivelyCharged = (test_number) => {
         // Electrophile
+        return false
     }
     
     const __isNegativelyCharged = (test_number) => {
         // Nucleophile
+        return false
     }
     
     const __carbons = (test_number) => {

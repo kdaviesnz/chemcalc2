@@ -1,21 +1,43 @@
 const Set = require('../Models/Set')
 
-const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
+const LewisAcidBaseReactions = (container, MoleculeController, test_number, verbose) => {
 
     const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, test_number) => {
 
         let nucleophile_molecule_index = null
         let electrophile_molecule_index = null
+
+        if (verbose) {
+            console.log("Models/LewisAcidBaseReactions.js Doing Lewis reactions ->")
+            console.log(
+                {
+                    "nucleophile molecule" : nucleophile_molecule,
+                    "nucleopile atom index" : nucleophile_atom_index,
+                    "electrophile molecle" : electrophile_molecule,
+                    "electrophile atom index" : electrophile_atom_index,
+                    "nucleophile molecule index" : nucleophile_molecule_index,
+                    "electrophile molecule index" : electrophile_molecule_index,
+                    "container" : container,
+                    "molecule controller" : MoleculeController
+                }
+            )
+        }
         
         if (test_number !==3 && test_number !==5) {
             console.log("Wrong section for test number " + test_number)
             process.exit()
         }
 
-
         if (null === nucleophile_molecule) {
 
-            const substrate_electrophile_atom_index = MoleculeController(container[1]).electrophileIndex(test_number + ".1", ) // AlCl3
+            if (verbose) {
+                console.log("Model/LewsiAcidBaseReactions.js react() Getting electrophile index")
+            }
+            const substrate_electrophile_atom_index = MoleculeController(container[1], verbose).electrophileIndex(test_number + ".1") // AlCl3
+
+            if (verbose) {
+                console.log("Model/LewsiAcidBaseReactions.js react() Got electrophile index " + substrate_electrophile_atom_index)
+            }
 
             // [Br-] (nucleophile, electron donor) -----> carbocation
             // Br atom should bond to carbon that has three bonds
@@ -25,7 +47,7 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
             // reagent is carbocation
             // see organic chenistry 8th edition ch 6 p235
             if (test_number ===5) {
-                substrate_electrophile_atom_index.should.be.equal(null) // Nucleophile [Br-]
+                substrate_electrophile_atom_index.should.be.equal(1) // Nucleophile [Br-]
             }
 
             const reagent_electrophile_atom_index = MoleculeController(container[2]).electrophileIndex(test_number + ".2")
@@ -44,67 +66,8 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
             // reagent is carbocation
             // see orgsnic chenistry 8th edition ch 6 p235
             if (test_number ===5) {
-                substrate_electrophile_atom_index.should.be.equal(null) // Nucleophile [Br-]
+                substrate_electrophile_atom_index.should.be.equal(1) // Nucleophile [Br-]
                 // container[2] (reagent) is the carbocation
-                /*
-                [ 12345,
-  [ 'H', 1, 1, 1, '2edg3og4g2kb45tfdm', '2edg3og4g2kb45tfd6' ],
-  [ 'H', 1, 1, 1, '2edg3og4g2kb45tfdn', '2edg3og4g2kb45tfd7' ],
-  [ 'H', 1, 1, 1, '2edg3og4g2kb45tfdo', '2edg3og4g2kb45tfd8' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    '2edg3og4g2kb45tfd6',
-    '2edg3og4g2kb45tfd7',
-    '2edg3og4g2kb45tfd8',
-    '2edg3og4g2kb45tfd9',
-    '2edg3og4g2kb45tfdd',
-    '2edg3og4g2kb45tfdm',
-    '2edg3og4g2kb45tfdn',
-    '2edg3og4g2kb45tfdo' ],
-  [ 'H', 1, 1, 1, '2edg3og4g2kb45tfdp', '2edg3og4g2kb45tfda' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    '2edg3og4g2kb45tfda',
-    '2edg3og4g2kb45tfdb',
-    '2edg3og4g2kb45tfdc',
-    '2edg3og4g2kb45tfdd',
-    '2edg3og4g2kb45tfd9',
-    '2edg3og4g2kb45tfdh',
-    '2edg3og4g2kb45tfdg',
-    '2edg3og4g2kb45tfdp' ],
-  [ 'H', 1, 1, 1, '2edg3og4g2kb45tfdq', '2edg3og4g2kb45tfde' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    '2edg3og4g2kb45tfde',
-    '2edg3og4g2kb45tfdf',
-    '2edg3og4g2kb45tfdg',
-    '2edg3og4g2kb45tfdh',
-    '2edg3og4g2kb45tfdl',
-    '2edg3og4g2kb45tfdq' ],
-  [ 'H', 1, 1, 1, '2edg3og4g2kb45tfdr', '2edg3og4g2kb45tfdi' ],
-  [ 'H', 1, 1, 1, '2edg3og4g2kb45tfds', '2edg3og4g2kb45tfdj' ],
-  [ 'H', 1, 1, 1, '2edg3og4g2kb45tfdt', '2edg3og4g2kb45tfdk' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    '2edg3og4g2kb45tfdi',
-    '2edg3og4g2kb45tfdj',
-    '2edg3og4g2kb45tfdk',
-    '2edg3og4g2kb45tfdl',
-    '2edg3og4g2kb45tfdf',
-    '2edg3og4g2kb45tfdr',
-    '2edg3og4g2kb45tfds',
-    '2edg3og4g2kb45tfdt' ],
-  [ 'H', 1, 1, 1, '2edg3og4g2kb45tfdb', '2edg3og4g2kb45tfdc' ] ]
-
-                 */
                 reagent_electrophile_atom_index.should.be.equal(7) // electrophile C[C+]CC should be 7
             }
 
@@ -142,7 +105,6 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
             nucleophile_atom_index.should.be.equal(5)
             electrophile_molecule[electrophile_atom_index][0].should.be.equal("Al")
             nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("O")
-            
         }
 
         // [Br-] (nucleophile) -----> carbocation
@@ -150,15 +112,12 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number) => {
         // Target atom index should be 8 (electrophile)
         // Source atom index should be 1
         if (test_number === 5) {
-
             electrophile_molecule[electrophile_atom_index][0].should.be.equal("C")
             nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("Br")
-
             nucleophile_molecule.length.should.be.equal(1) // Br
             electrophile_molecule.length.should.be.equal(88888) // CC[C+]C
             electrophile_atom_index.should.be.equal(8)
             nucleophile_atom_index.should.be.equal(1)
-
         }
 
         

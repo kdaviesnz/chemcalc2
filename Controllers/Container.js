@@ -204,7 +204,7 @@ class CContainer {
             if (!reaction) {
                 // No alkene and not Bronsted Lowry
                 // do Lewis acid base teaction
-                reaction = lewis.react(null, null, null, null, this.test_number)
+                reaction = lewis.react(null, null, null, null, this.test_number, verbose)
             }
 
             if (this.test_number === 1) {

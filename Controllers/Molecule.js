@@ -6,7 +6,7 @@ const should = require('should')
 const Set = require('../Models/Set')
 const Families = require('../Models/Families')
 
-const CMolecule = (mmolecule) => {
+const CMolecule = (mmolecule, verbose) => {
     
     const __negativelyChargedAtoms = (test_number) => {
         const negatively_charged_atoms = mmolecule.slice(1).reduce(
@@ -73,8 +73,6 @@ const CMolecule = (mmolecule) => {
         // 5.1 test 5, [Br-] nucleophile so should return false
         // 5.1 test 5, carbocation electrophile so should not return false
 
-        console.log(test_number)
-
         const hydrogens = __hydrogensNotAttachedToCarbons(test_number)
 
 
@@ -125,7 +123,7 @@ const CMolecule = (mmolecule) => {
             }
 
             if (test_number == 5.1) {
-                atoms_with_free_slots.length.should.be.equal(3333) // should be 0
+                atoms_with_free_slots.length.should.be.equal(1)
             }
 
             if (atoms_with_free_slots.length === 0) {
@@ -137,8 +135,18 @@ const CMolecule = (mmolecule) => {
 
         }
         // Check atom isnt negatively charged (nucleophile)
-        if (CAtom(mmolecule[electrophile_index], index,mmolecule).isNegativelyCharged(test_number)) {
+        // const CAtom = (atom, current_atom_index, mmolecule)
+        const is_negatively_charged = CAtom(mmolecule[electrophile_index], 0, mmolecule).isNegativelyCharged(test_number)
+        if (is_negatively_charged) {
+            if (verbose) {
+                console.log("Controllers/Molecule.js::determineElectrophileIndex Atom is negatively charged so return false")
+            }
             return false
+        }
+        if (verbose) {
+            console.log("Controllers/Molecule.js::determineElectrophileIndex() Returning electrophile index " + electrophile_index)
+            console.log("Molecule ->")
+            console.log(mmolecule)
         }
         return electrophile_index
     }
@@ -295,7 +303,7 @@ const CMolecule = (mmolecule) => {
   '2edg3og4hskb46emn0' ]
 
                              */
-                            CAtom(atom, index ,mmolecule).freeSlots(test_number).should.be.equal(0) // Check
+                            CAtom(atom, index ,mmolecule).freeSlots(test_number).should.be.equal(9) // Check
                         }
 
 
