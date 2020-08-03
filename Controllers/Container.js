@@ -29,7 +29,7 @@ class CContainer {
         }
         
         // Organic Chemistry 8th edition, P199
-        // test_number 5
+        // test_number 5.1, 5.2
         // [Br-] + carbocation
         // electrophile is [C+] cation on carbocation
         // nucleophile is [Br-]
