@@ -435,6 +435,7 @@ console.log("Test 4 complete")
 
 ccontainer4.container.length.should.be.equal(3)
 
+// Organic Chemistry 8th edition, P199
 // CH3[C+]H-CH(H)CH3
 const carbocation = ccontainer4.container[1]
 //console.log(carbocation)
@@ -451,65 +452,6 @@ carbocation.slice(1).filter(
 ).length.should.be.equal(4)
 
 //console.log(carbocation)
-/*
-[ 12345,
-  [ 'H', 1, 1, 1, '26f1151ckavyl85g', '26f1151ckavyl850' ], 1
-  [ 'H', 1, 1, 1, '26f1151ckavyl85h', '26f1151ckavyl851' ], 2
-  [ 'H', 1, 1, 1, '26f1151ckavyl85i', '26f1151ckavyl852' ], 3
-  [ 'C',
-    6,
-    4,
-    4,
-    '26f1151ckavyl850',
-    '26f1151ckavyl851',
-    '26f1151ckavyl852',
-    '26f1151ckavyl853',
-    '26f1151ckavyl857',
-    '26f1151ckavyl85g',
-    '26f1151ckavyl85h',
-    '26f1151ckavyl85i' ],4
-  [ 'H', 1, 1, 1, '26f1151ckavyl85j', '26f1151ckavyl854' ], 5
-  [ 'C',
-    6,
-    4,
-    4,
-    '26f1151ckavyl854',
-    '26f1151ckavyl855',
-    '26f1151ckavyl856',
-    '26f1151ckavyl857',
-    '26f1151ckavyl853',
-    '26f1151ckavyl85b',
-    '26f1151ckavyl85a',
-    '26f1151ckavyl85j' ], 6
-  [ 'H', 1, 1, 1, '26f1151ckavyl85k', '26f1151ckavyl858' ], 7
-  [ 'C',
-    6,
-    4,
-    4,
-    '26f1151ckavyl858',
-    '26f1151ckavyl859',
-    '26f1151ckavyl85a',
-    '26f1151ckavyl85b',
-    '26f1151ckavyl85f',
-    '26f1151ckavyl85k' ], 8
-  [ 'H', 1, 1, 1, '26f1151ckavyl85l', '26f1151ckavyl85c' ], 9
-  [ 'H', 1, 1, 1, '26f1151ckavyl85m', '26f1151ckavyl85d' ], 10
-  [ 'H', 1, 1, 1, '26f1151ckavyl85n', '26f1151ckavyl85e' ], 11
-  [ 'C',
-    6,
-    4,
-    4,
-    '26f1151ckavyl85c',
-    '26f1151ckavyl85d',
-    '26f1151ckavyl85e',
-    '26f1151ckavyl85f',
-    '26f1151ckavyl859',
-    '26f1151ckavyl85l',
-    '26f1151ckavyl85m',
-    '26f1151ckavyl85n' ], 12
-  [ 'H', 1, 1, 1, '26f1151ckavyl855', '26f1151ckavyl856' ] 13 ]
-
- */
 
 carbocation[1][0].should.be.equal("H")
 carbocation[2][0].should.be.equal("H")
@@ -543,9 +485,9 @@ brNeg.slice(1).filter(
 // Br atom should bond to carbon that has three bonds
 // Target atom index should be 8
 // Source atom index should be 1
-const ccontainer5 = new CContainer([false], MoleculeFactory, MoleculeController, 5)
-ccontainer5.add(brNeg,1)
-ccontainer5.add(carbocation,1)
+const ccontainer5 = new CContainer([false], MoleculeFactory, MoleculeController, 5, verbose)
+ccontainer5.add(brNeg,1, verbose)
+ccontainer5.add(carbocation,1, verbose)
 ccontainer5.container.length.should.be.equal(2)
 
 ccontainer5.container[1].slice(1).filter(
@@ -556,30 +498,6 @@ ccontainer5.container[1].slice(1).filter(
 
 
 // console.log(ccontainer5['container'])
-/*
-[ false,
-  [ 12345, 0
-    [ 'Br',35,7,1,'26f1153zkavz8oli','26f1153zkavz8olj','26f1153zkavz8olk','26f1153zkavz8oll',
-      '26f1153zkavz8olm','26f1153zkavz8oln','26f1153zkavz8olo','26f1153zkavz8olp' ], 1
-    [ 'H', 1, 1, 1, '26f1153zkavz8om6', '26f1153zkavz8olq' ], 2
-    [ 'H', 1, 1, 1, '26f1153zkavz8om7', '26f1153zkavz8olr' ], 3
-    [ 'H', 1, 1, 1, '26f1153zkavz8om8', '26f1153zkavz8ols' ], 4
-    [ 'C',6,4,4,'26f1153zkavz8olq','26f1153zkavz8olr','26f1153zkavz8ols','26f1153zkavz8olt',
-      '26f1153zkavz8olx','26f1153zkavz8om6','26f1153zkavz8om7','26f1153zkavz8om8' ], 5
-    [ 'H', 1, 1, 1, '26f1153zkavz8om9', '26f1153zkavz8olu' ], 6
-    [ 'C',6,4,4, '26f1153zkavz8olu','26f1153zkavz8olv','26f1153zkavz8olw','26f1153zkavz8olx',
-      '26f1153zkavz8olt','26f1153zkavz8om1','26f1153zkavz8om0','26f1153zkavz8om9' ], 7
-    [ 'H', 1, 1, 1, '26f1153zkavz8oma', '26f1153zkavz8oly' ], 8
-    [ 'C',6,4,4,'26f1153zkavz8oly','26f1153zkavz8olz','26f1153zkavz8om0','26f1153zkavz8om1',
-     '26f1153zkavz8om5','26f1153zkavz8oma' ], 9
-    [ 'H', 1, 1, 1, '26f1153zkavz8omb', '26f1153zkavz8om2' ], 10
-    [ 'H', 1, 1, 1, '26f1153zkavz8omc', '26f1153zkavz8om3' ], 11
-    [ 'H', 1, 1, 1, '26f1153zkavz8omd', '26f1153zkavz8om4' ], 12
-    [ 'C',6,4,4,'26f1153zkavz8om2','26f1153zkavz8om3','26f1153zkavz8om4','26f1153zkavz8om5',
-      '26f1153zkavz8olz','26f1153zkavz8omb','26f1153zkavz8omc','26f1153zkavz8omd' ], 13
-    [ 'H', 1, 1, 1, '26f1153zkavz8olv', '26f1153zkavz8olw' ] ]  14 ]
-
- */
 
 console.log("Test 5 complete")
 process.exit()
