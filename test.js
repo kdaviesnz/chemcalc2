@@ -486,8 +486,8 @@ brNeg.slice(1).filter(
 // Target atom index should be 8
 // Source atom index should be 1
 const ccontainer5 = new CContainer([false], MoleculeFactory, MoleculeController, 5, verbose)
-ccontainer5.add(brNeg,1, verbose)
-ccontainer5.add(carbocation,1, verbose)
+ccontainer5.add(brNeg,1, verbose, 5.1)
+ccontainer5.add(carbocation,1, verbose, 5.2)
 ccontainer5.container.length.should.be.equal(2)
 
 ccontainer5.container[1].slice(1).filter(
