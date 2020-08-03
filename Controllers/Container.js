@@ -27,6 +27,11 @@ class CContainer {
             console.log(molecule_array_or_string)
             console.log("to container")
         }
+        
+        // Organic Chemistry 8th edition, P199
+        // test_number 5
+        // [Br-] + carbocation
+        
         const molecule = (typeof molecule_array_or_string !== "string" ?
             molecule_array_or_string :
             this.MoleculeFactory(molecule_array_or_string))
