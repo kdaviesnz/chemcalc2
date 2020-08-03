@@ -33,6 +33,8 @@ class CContainer {
         // [Br-] + carbocation
         // electrophile is [C+] cation on carbocation
         // nucleophile is [Br-]
+        // Br and C form bond
+        
         
         const molecule = (typeof molecule_array_or_string !== "string" ?
             molecule_array_or_string :
