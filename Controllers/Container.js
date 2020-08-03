@@ -30,7 +30,7 @@ class CContainer {
         
         // Organic Chemistry 8th edition, P199
         // test_number 5
-        // [Br-] + carbocation
+        // [Br-] + carbocation (alkane)
         // electrophile is [C+] cation on carbocation
         // nucleophile is [Br-]
         // Br and C form bond
