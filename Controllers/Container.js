@@ -31,6 +31,8 @@ class CContainer {
         // Organic Chemistry 8th edition, P199
         // test_number 5
         // [Br-] + carbocation
+        // electrophile is [C+] cation on carbocation
+        // nucleophile is [Br-]
         
         const molecule = (typeof molecule_array_or_string !== "string" ?
             molecule_array_or_string :
