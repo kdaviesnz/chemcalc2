@@ -33,6 +33,7 @@ class CContainer {
         // [Br-] + carbocation (alkane)
         // electrophile is [C+] cation on carbocation
         // nucleophile is [Br-]
+        // carbocation is added to [Br-]
         // Br and C form bond
         
         
