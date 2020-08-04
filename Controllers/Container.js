@@ -196,6 +196,7 @@ class CContainer {
 
             if (!reaction) {
                 // Not alkene
+                
                 reaction = bronstedLowry.react()
             }
 
@@ -207,6 +208,13 @@ class CContainer {
             // Br atom should bond to carbon that has three bonds
             // Target atom index should be 8
             // Source atom index should be 1
+              // Organic Chemistry 8th edition, P199
+        // test_number 5
+        // [Br-] + carbocation (alkane)
+        // electrophile is [C+] cation on carbocation
+        // nucleophile is [Br-]
+        // carbocation is added to [Br-]
+        // Br and C form bond
             if (this.test_number === 5) {
                 reaction.should.be.equal(false)
             }
