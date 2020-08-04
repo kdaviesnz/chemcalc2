@@ -7,6 +7,18 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number, verb
         let nucleophile_molecule_index = null
         let electrophile_molecule_index = null
 
+            // [Br-] (nucleophile) -----> carbocation
+            // Br atom should bond to carbon that has three bonds
+            // Target atom index should be 8
+            // Source atom index should be 1
+              // Organic Chemistry 8th edition, P199
+        // test_number 5
+        // [Br-] + carbocation (alkane)
+        // electrophile is [C+] cation on carbocation
+        // nucleophile is [Br-]
+        // carbocation is added to [Br-]
+        // Br and C form bond
+        
         if (verbose) {
             console.log("Models/LewisAcidBaseReactions.js Doing Lewis reactions ->")
             console.log(
@@ -46,8 +58,21 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number, verb
             // substrate is [Br-]
             // reagent is carbocation
             // see organic chenistry 8th edition ch 6 p235
+                // [Br-] (nucleophile) -----> carbocation
+            // Br atom should bond to carbon that has three bonds
+            // Target atom index should be 8
+            // Source atom index should be 1
+              // Organic Chemistry 8th edition, P199
+        // test_number 5
+        // [Br-] + carbocation (alkane)
+        // electrophile is [C+] cation on carbocation
+        // nucleophile is [Br-]
+        // carbocation is added to [Br-]
+        // Br and C form bond
             if (test_number ===5) {
-                substrate_electrophile_atom_index.should.be.equal(1) // Nucleophile [Br-]
+                // substrate is [Br-]
+                // Should be false as [Br-] is the nucleophile,  not electrophilr
+                substrate_electrophile_atom_index.should.be.equal(false) // Nucleophile [Br-]
             }
 
             const reagent_electrophile_atom_index = MoleculeController(container[2]).electrophileIndex(test_number + ".2")
@@ -65,6 +90,17 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number, verb
             // substrate is [Br-]
             // reagent is carbocation
             // see orgsnic chenistry 8th edition ch 6 p235
+                // [Br-] (nucleophile) -----> carbocation
+            // Br atom should bond to carbon that has three bonds
+            // Target atom index should be 8
+            // Source atom index should be 1
+              // Organic Chemistry 8th edition, P199
+        // test_number 5
+        // [Br-] + carbocation (alkane)
+        // electrophile is [C+] cation on carbocation
+        // nucleophile is [Br-]
+        // carbocation is added to [Br-]
+        // Br and C form bond
             if (test_number ===5) {
                 substrate_electrophile_atom_index.should.be.equal(1) // Nucleophile [Br-]
                 // container[2] (reagent) is the carbocation
