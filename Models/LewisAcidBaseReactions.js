@@ -45,7 +45,7 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number, verb
             if (verbose) {
                 console.log("Model/LewsiAcidBaseReactions.js react() Getting electrophile index")
             }
-            const substrate_electrophile_atom_index = MoleculeController(container[1], verbose).electrophileIndex(test_number + ".1") // AlCl3
+            const substrate_electrophile_atom_index = MoleculeController(container[1], verbose).electrophileIndex(test_number + 0.1) // AlCl3
 
             if (verbose) {
                 console.log("Model/LewsiAcidBaseReactions.js react() Got electrophile index " + substrate_electrophile_atom_index)
@@ -75,7 +75,7 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number, verb
                 substrate_electrophile_atom_index.should.be.equal(false) // Nucleophile [Br-]
             }
 
-            const reagent_electrophile_atom_index = MoleculeController(container[2]).electrophileIndex(test_number + ".2")
+            const reagent_electrophile_atom_index = MoleculeController(container[2]).electrophileIndex(test_number + 0.2)
 
             // CO:C (nucleophile) ------> AlCl3 (electrophile) O: is the nucleophile (bas, donates an electron pair), Al is the electrophile (acid, accepts an electron pair) See 2.12 Organic Chemistry 8th Edition P76
             if (test_number === 3) {
