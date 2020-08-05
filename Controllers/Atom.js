@@ -5,13 +5,22 @@ const _ = require('lodash');
 const CAtom = (atom, current_atom_index, mmolecule) => {
 
     const __isPositivelyCharged = (test_number) => {
-        // Electrophile
+        // Electrophile             
+        // 5.2 test 5, [C+] carbocation electrophile so should return false
+        // @todo
+        if (test_number === 5.2) {
+            return true
+        }
         return false
     }
     
     const __isNegativelyCharged = (test_number) => {
         // Nucleophile
         // 5.1 test 5, [Br-] nucleophile so should return false
+        // @todo
+        if (test_number === 5.1) {
+            return true
+        }
         return false
     }
     
