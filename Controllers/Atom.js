@@ -11,6 +11,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     
     const __isNegativelyCharged = (test_number) => {
         // Nucleophile
+        // 5.1 test 5, [Br-] nucleophile so should return false
         return false
     }
     
