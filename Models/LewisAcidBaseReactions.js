@@ -71,7 +71,7 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number, verb
         // Br and C form bond
             if (test_number ===5) {
                 // substrate is [Br-]
-                // Should be false as [Br-] is the nucleophile,  not electrophilr
+                // Should be false as [Br-] is the nucleophile,  not electrophile
                 substrate_electrophile_atom_index.should.be.equal(false) // Nucleophile [Br-]
             }
 
@@ -102,7 +102,7 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number, verb
         // carbocation is added to [Br-]
         // Br and C form bond
             if (test_number ===5) {
-                substrate_electrophile_atom_index.should.be.equal(1) // Nucleophile [Br-]
+                substrate_electrophile_atom_index.should.be.equal(false) // Nucleophile [Br-]
                 // container[2] (reagent) is the carbocation
                 reagent_electrophile_atom_index.should.be.equal(7) // electrophile C[C+]CC should be 7
             }
