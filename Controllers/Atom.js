@@ -17,7 +17,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             console.log(atom)
             console.log(atom[2])
             console.log(atom.slice(4).length)
-            electrons_used_in_bonds_count.length.should.be.equal(0)
+            electrons_used_in_bonds_count.length.should.be.equal(2)
             is_positively_charged.should.be.equal(true)
         }
         return is_positively_charged
