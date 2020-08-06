@@ -12,7 +12,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
          // We need to also take into account electrons used in bonds
         // __Bonds = (atomic_symbol)
         const electrons_used_in_bonds_count = __Bonds(atom[0])
-        const is_positively_charged = atom[2] > (atom.slice(4).length - electrons_used_in_bonds_count)
+        const is_positively_charged = (atom[3]*2) > (atom.slice(4).length)
         if (test_number === 5.2 && atom.slice(4).length === 6) {
             console.log(atom)
             /*
@@ -29,7 +29,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     */
             console.log(atom[2]) // 4
             console.log(atom.slice(4).length) // 6
-            // 4 > (6 - 2)
+            // 4*2 > (6)
             electrons_used_in_bonds_count.length.should.be.equal(2)
             is_positively_charged.should.be.equal(true)
         }
@@ -44,7 +44,8 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         // We need to also take into account electrons used in bonds
         // __Bonds = (atomic_symbol)
         const electrons_used_in_bonds_count = __Bonds(atom[0])
-        const is_negatively_charged = atom[2]  < (atom.slice(4).length - electrons_used_in_bonds_count)
+        // const is_negatively_charged = (atom[3] *2) < (atom.slice(4).length)
+        const is_negatively_charged = atom.slice(4).length > 8
         if (test_number == 3.2) {
             // CO:C (nucleophile) ------> AlCl3 (electrophile) O: is the nucleophile (base, donates an electron pair), Al is the electrophile (acid, accepts an electron pair) See 2.12 Organic Chemistry 8th Edition P76
 /*
@@ -66,6 +67,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             console.log(atom[2])
             console.log(atom.slice(4).length)
             electrons_used_in_bonds_count.length.should.be.equal(2)
+            // (2*2) < 8
             is_negatively_charged.should.be.equal(false)
         }
         if (test_number === 5.1) {
