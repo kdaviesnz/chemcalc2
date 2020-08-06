@@ -9,8 +9,15 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         // Electrophile
         // 5.2 test 5, [C+] carbocation electrophile so should return true
         // @todo
-        const is_positively_charged = atom[2] > atom.slice(4)
+         // We need to also take into account electrons used in bonds
+        // __Bonds = (atomic_symbol)
+        const electrons_used_in_bonds_count = __Bonds(atom[0])
+        const is_positively_charged = atom[2] > (atom.slice(4).length - electrons_used_in_bonds_count)
         if (test_number === 5.2 && atom.slice(4).length === 6) {
+            console.log(atom)
+            console.log(atom[2])
+            console.log(atom.slice(4).length)
+            electrons_used_in_bonds_count.length.should.be.equal(0)
             is_positively_charged.should.be.equal(true)
         }
         return is_positively_charged
@@ -21,7 +28,10 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         // 5.1 test 5, [Br-] nucleophile so should return true
         // atomic symbol, proton count, valence count,  number of bonds, velectron1, velectron2, velectron3
         // @todo
-        const is_negatively_charged = atom[2]  < atom.slice(4).length
+        // We need to also take into account electrons used in bonds
+        // __Bonds = (atomic_symbol)
+        const electrons_used_in_bonds_count = __Bonds(atom[0])
+        const is_negatively_charged = atom[2]  < (atom.slice(4).length - electrons_used_in_bonds_count)
         if (test_number == 3.2) {
             // CO:C (nucleophile) ------> AlCl3 (electrophile) O: is the nucleophile (base, donates an electron pair), Al is the electrophile (acid, accepts an electron pair) See 2.12 Organic Chemistry 8th Edition P76
 /*
@@ -42,12 +52,14 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             console.log(atom)
             console.log(atom[2])
             console.log(atom.slice(4).length)
+            electrons_used_in_bonds_count.length.should.be.equal(2)
             is_negatively_charged.should.be.equal(false)
         }
         if (test_number === 5.1) {
             console.log(atom)
             console.log(atom[2])
             console.log(atom.slice(4).length)
+            electrons_used_in_bonds_count.length.should.be.equal(0)
             is_negatively_charged.should.be.equal(true)
         }
         return is_negatively_charged
