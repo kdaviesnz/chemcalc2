@@ -15,8 +15,21 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         const is_positively_charged = atom[2] > (atom.slice(4).length - electrons_used_in_bonds_count)
         if (test_number === 5.2 && atom.slice(4).length === 6) {
             console.log(atom)
-            console.log(atom[2])
-            console.log(atom.slice(4).length)
+            /*
+              [ 'C',
+    6,
+    4,
+    4,
+    'bqdtz07lqkdh3ei5n',
+    'bqdtz07lqkdh3ei5o',
+    'bqdtz07lqkdh3ei5p',
+    'bqdtz07lqkdh3ei5q',
+    'bqdtz07lqkdh3ei5u',
+    'bqdtz07lqkdh3ei5z' ]
+    */
+            console.log(atom[2]) // 4
+            console.log(atom.slice(4).length) // 6
+            // 4 > (6 - 2)
             electrons_used_in_bonds_count.length.should.be.equal(2)
             is_positively_charged.should.be.equal(true)
         }
