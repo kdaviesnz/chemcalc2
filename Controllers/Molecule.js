@@ -315,6 +315,28 @@ Positively charged atoms -->
     }
 
     const determineNucleophileIndex = (test_number) => {
+        
+       // [Br-] (nucleophile, electron donor) -----> carbocation
+        // Br atom should bond to carbon that has three bonds
+        // Target atom index should be 8 (electrophile)
+        // Source atom index should be 1
+        // substrate is [Br-]
+        // reagent is carbocation
+        // see organic chenistry 8th edition ch 6 p235
+        // [Br-] (nucleophile) -----> carbocation
+        // Br atom should bond to carbon that has three bonds
+        // Target atom index should be 8
+        // Source atom index should be 1
+        // Organic Chemistry 8th edition, P199
+        // test_number 5
+        // [Br-] + carbocation (alkane)
+        // electrophile is [C+] cation on carbocation
+        // nucleophile is [Br-]
+        // carbocation is added to [Br-]
+        // Br and C form bond
+        // 5.1 test 5, [Br-] nucleophile so should return true
+        // 5.2 test 5, carbocation electrophile so should return true
+
 
         // H2O (nucleophile) <------- HCl (electrophile)
         if (undefined !== test_number && test_number === 1) {
@@ -327,8 +349,19 @@ Positively charged atoms -->
             mmolecule.length.should.be.equal(2)
             mmolecule[1][0].should.be.equal("Cl")
         }
-
-        const atoms_with_lone_pairs = __atomsWithLonePairs(test_number)
+        
+        // Check for negatively charged atoms
+         const negatively_charged_atoms = __negativelyChargedAtoms(test_number)
+         if (undefined !== test_number && test_number === 5.1) {
+             // 5.1 test 5, [Br-] nucleophile so should return 1
+             negatively_charged_atoms.length.should.be.equal(1)
+         }
+        
+        if (negatively_charged_atoms.length > 0) {
+            return negatively_charged_atoms[0][0] + 1
+        } 
+        
+         const atoms_with_lone_pairs = __atomsWithLonePairs(test_number)
 
         if (atoms_with_lone_pairs.length === 0) {
 
