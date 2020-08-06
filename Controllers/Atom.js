@@ -6,11 +6,10 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
     const __isPositivelyCharged = (test_number) => {
         // atomic symbol, proton count, valence count,  number of bonds, velectron1, velectron2, velectron3
-
-        // Electrophile             
+        // Electrophile
         // 5.2 test 5, [C+] carbocation electrophile so should return true
         // @todo
-        const is_positively_charged = atom[2] * 2 < atom.slice(4)
+        const is_positively_charged = atom[2] > atom.slice(4)
         if (test_number === 5.2 && atom.slice(4).length === 6) {
             is_positively_charged.should.be.equal(true)
         }
@@ -20,9 +19,35 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     const __isNegativelyCharged = (test_number) => {
         // Nucleophile
         // 5.1 test 5, [Br-] nucleophile so should return true
+        // atomic symbol, proton count, valence count,  number of bonds, velectron1, velectron2, velectron3
         // @todo
-        const is_negatively_charged = atom[2] * 2 > atom.slice(4)
+        const is_negatively_charged = atom[2]  < atom.slice(4).length
+        if (test_number == 3.2) {
+            // CO:C (nucleophile) ------> AlCl3 (electrophile) O: is the nucleophile (base, donates an electron pair), Al is the electrophile (acid, accepts an electron pair) See 2.12 Organic Chemistry 8th Edition P76
+/*
+[ 'O',
+  8,
+  6,
+  2,
+  'bqdtz06g6kdjb9unn',
+  'bqdtz06g6kdjb9uno',
+  'bqdtz06g6kdjb9unp',
+  'bqdtz06g6kdjb9unq',
+  'bqdtz06g6kdjb9unr',
+  'bqdtz06g6kdjb9uns',
+  'bqdtz06g6kdjb9unm',
+  'bqdtz06g6kdjb9unw' ]
+
+ */
+            console.log(atom)
+            console.log(atom[2])
+            console.log(atom.slice(4).length)
+            is_negatively_charged.should.be.equal(false)
+        }
         if (test_number === 5.1) {
+            console.log(atom)
+            console.log(atom[2])
+            console.log(atom.slice(4).length)
             is_negatively_charged.should.be.equal(true)
         }
         return is_negatively_charged
