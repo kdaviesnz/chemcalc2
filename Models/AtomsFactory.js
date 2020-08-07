@@ -906,6 +906,10 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         // sufuric acid - atoms with hydrogens
         /*
 checking bonds
+// sulfur atom should only have oxygen bonds
+// sulfur atom should have 6 bonds (2 double, 2 single)
+// 2 of the oxygens should have 2 bonds - 1 hydrogen and 1 sulfur
+// 2 of the oxygens should have only bonds to sulfur -  2 sulfur (double bond, no hydrogen bond)
 [ [ 'H', 1, 1, 1, 'bqdtz0bi8kdjntjsq', 'bqdtz0bi8kdjntjrw' ],
   [ 'O',
     8,
