@@ -5,6 +5,33 @@ const _ = require('lodash');
 const CAtom = (atom, current_atom_index, mmolecule) => {
 
     const __isPositivelyCharged = (test_number) => {
+        
+       /*
+How to determine if an atom is positively charged (cation)
+Eg Carbon
+A neutral carbon atom has 4 free slots.
+If we remove one of the slots we now have a carbocation.
+Neutral carbon free slots count (4) > carbon with a free slot removed free slots count (3).
+const neutral_carbon = AtomFactory(“C”)
+const neutral_carbon_free_slot_count = neutral_carbon.__freeSlots().length
+const is_positively_charged = neutral_carbon_free_slot_count  > atom.__freeSlots().length
+But what if the free slot was removed by a bond? In that case we have lost an electron but gained another:
+Neutral carbon free slots count (4) > carbon with a free slot removed free slots count (3) + number of bonds atom has (1)
+And if two bonds:
+Neutral carbon free slots count (4) > carbon with two free slots removed free slots count (2) + number of bonds atom has (2)
+And if three bonds:
+Neutral carbon free slots count (4) > carbon with three free slots removed free slots count (1) + number of bonds atom has (3)
+Taking the last example if we remove the last free slot without adding a bond:
+Neutral carbon free slots count (4) > carbon with four free slots removed free slots count (0) + number of bonds atom has (3)
+Hence:
+const neutral_atom= AtomFactory(atom[0])
+const neutral_atom_free_slot_count = neutral_atom.__freeSlots().length
+const is_positively_charged = neutral_atom_free_slot_count  > (atom.__freeSlots().length + atom.__bonds.length)
+
+Example oxygen with 2 bonds
+2 > (0 + 2)
+*/ 
+        
         // atomic symbol, proton count, valence count,  number of bonds, velectron1, velectron2, velectron3
         // Electrophile
         // 5.2 test 5, [C+] carbocation electrophile so should return true
@@ -37,6 +64,19 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     }
     
     const __isNegativelyCharged = (test_number) => {
+        
+        /*
+How to determine if an atom is negatively charged (ion)
+Eg [Br-]
+A neutral Br atom has 7 valence electrons.
+Hence a Br atom that has more than 7 valence electrons is negatively charged.
+But what if the Bromine atom has more than 7 valence electrons because of a bond?
+In that case we need to take into account that bond.
+Hence:
+const neutral_atom= AtomFactory(atom[0])
+const neutral_atom_valence_electron_count = neutral_atom.slice(4).length
+const is_negatively_charged = (atom.slice(4).length - atom.__bonds.length) > neutral_atom_valence_electron_count 
+*/
         // Nucleophile
         // 5.1 test 5, [Br-] nucleophile so should return true
         // atomic symbol, proton count, valence count,  number of bonds, velectron1, velectron2, velectron3
