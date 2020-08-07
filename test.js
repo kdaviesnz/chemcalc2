@@ -576,12 +576,22 @@ if (verbose) {
 }
 console.log("Test 5 complete")
 
+
+// SEE organic chemistry 8th edition p245
+// propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
+// 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the 
+// alkene (a nucleophile) that is bonded to the most hydrogens.
+// 2. H2O (a nucleophile) adds to the carbocation (an electrophile), forming a protonated alcohol.
+// 3. The protonated alcohol loses a proton because the pH of the solution is greater 
+// than the pKa of the protonated alcohol (Section 2.10). 
+// (We saw that protonated alcohols are very strong acids; Section 2.6.)
+
 const propylene = MoleculeFactory("CC=C")
 // watermolecule
 
 const ccontainer6 = new CContainer([false], MoleculeFactory, MoleculeController, 6, verbose)
-ccontainer6.add(propylene, 1, verbose)
-ccontainer6.add(watermolecule, 1, verbose)
+ccontainer6.add(propylene, 1, verbose, 6.1)
+ccontainer6.add(watermolecule, 1, verbose, 6.2)
 // We shouldnt have a reaction
 ccontainer6.container.length.should.equal(3)
 ccontainer6.container[1].should.equal(propylene)
@@ -664,13 +674,7 @@ if (verbose) {
      */
 }
 ccontainer6.add(sulfuric_acid, 1, verbose)
-// SEE organic chemistry 8th edition p245
-// 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the 
-// alkene (a nucleophile) that is bonded to the most hydrogens.
-// 2. H2O (a nucleophile) adds to the carbocation (an electrophile), forming a protonated alcohol.
-// 3. The protonated alcohol loses a proton because the pH of the solution is greater 
-// than the pKa of the protonated alcohol (Section 2.10). 
-// (We saw that protonated alcohols are very strong acids; Section 2.6.)
+
 
 ccontainer6.length.should.equal(3)
 
