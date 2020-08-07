@@ -20,8 +20,20 @@ class CContainer {
         }
     }
 
-    add(molecule_array_or_string, units, verbose) {
+    add(molecule_array_or_string, units, verbose, test_number) {
 
+        if (undefined !== test_number) {
+            this.test_number = test_number
+        }
+        // SEE organic chemistry 8th edition p245
+// propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
+// 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the 
+// alkene (a nucleophile) that is bonded to the most hydrogens.
+// 2. H2O (a nucleophile) adds to the carbocation (an electrophile), forming a protonated alcohol.
+// 3. The protonated alcohol loses a proton because the pH of the solution is greater 
+// than the pKa of the protonated alcohol (Section 2.10). 
+// (We saw that protonated alcohols are very strong acids; Section 2.6.)
+        
         if (verbose) {
             console.log("Controllers/Container.js::Adding ->")
             console.log(molecule_array_or_string)
