@@ -1,9 +1,48 @@
 const PeriodicTable = require('../Models/PeriodicTable')
 const Set = require('../Models/Set')
 const _ = require('lodash');
+const AtomFactory = require('../Models/AtomFactory')
 
 const CAtom = (atom, current_atom_index, mmolecule) => {
 
+    const __Bonds = (atomic_symbol) => {
+        const atoms = mmolecule.slice(1)
+        const atom_electrons = atom.slice(4)
+        const r =  atoms.map(
+            (_atom, _atom_index) => {
+
+                if (current_atom_index === _atom_index) {
+                    return false
+                }
+                const shared_electrons = Set().intersection(atom_electrons, _atom.slice(4))
+
+                return shared_electrons.reduce(
+                    (c, electron) => {
+                        c.push(
+                            [
+                                electron
+                            ]
+                        )
+                        return c;
+                    },
+                    []
+                )
+
+            }
+        ).filter(
+            (item) => {
+                return item !== false
+            }
+        )
+
+        return r
+    }
+
+    const __bondCount = (atomic_symbol, test_number) => {
+        return __Bonds(atomic_symbol).filter((item)=>{
+            return item.length > 0
+        }).length
+    }
     const __isPositivelyCharged = (test_number) => {
         
        /*
@@ -35,13 +74,18 @@ Example oxygen with 2 bonds
         // atomic symbol, proton count, valence count,  number of bonds, velectron1, velectron2, velectron3
         // Electrophile
         // 5.2 test 5, [C+] carbocation electrophile so should return true
-        // @todo
          // We need to also take into account electrons used in bonds
         // __Bonds = (atomic_symbol)
-        const electrons_used_in_bonds_count = __Bonds(atom[0])
-        const is_positively_charged = (atom[3]*2) > (atom.slice(4).length)
+        //const electrons_used_in_bonds_count = __Bonds(atom[0])
+        //const is_positively_charged = (atom[3]*2) > (atom.slice(4).length)
+
+        const neutral_atom= AtomFactory(atom[0])
+        const neutral_atom_free_slot_count = neutral_atom[3]
+        const is_positively_charged = neutral_atom_free_slot_count  > (__freeSlots(test_number) + __bondCount(atom[0], test_number))
+
         if (test_number === 5.2 && atom.slice(4).length === 6) {
             console.log(atom)
+            // Carbon, two bonds
             /*
               [ 'C',
     6,
@@ -54,10 +98,11 @@ Example oxygen with 2 bonds
     'bqdtz07lqkdh3ei5u',
     'bqdtz07lqkdh3ei5z' ]
     */
-            console.log(atom[2]) // 4
-            console.log(atom.slice(4).length) // 6
-            // 4*2 > (6)
-            electrons_used_in_bonds_count.length.should.be.equal(2)
+            console.log("Neutral atom free slot count: " + neutral_atom_free_slot_count) // 4
+            console.log("Atom free slot count: " + __freeSlots(test_number))
+            console.log(__freeSlots(test_number))
+            console.log("Atom number of bonds:")
+            console.log(__bondCount(atom[0], test_number));
             is_positively_charged.should.be.equal(true)
         }
         return is_positively_charged
@@ -84,9 +129,10 @@ Example oxygen with 2 bonds
         // @todo
         // We need to also take into account electrons used in bonds
         // __Bonds = (atomic_symbol)
-        const electrons_used_in_bonds_count = __Bonds(atom[0])
+        //const electrons_used_in_bonds_count = __Bonds(atom[0])
         // const is_negatively_charged = (atom[3] *2) < (atom.slice(4).length)
-        const is_negatively_charged = atom.slice(4).length > 8
+        // const is_negatively_charged = atom.slice(4).length > 8
+        const is_negatively_charged = (atom.slice(4).length - __Bonds(atom[0]).length) > atom[2]
         if (test_number == 3.2) {
             // CO:C (nucleophile) ------> AlCl3 (electrophile) O: is the nucleophile (base, donates an electron pair), Al is the electrophile (acid, accepts an electron pair) See 2.12 Organic Chemistry 8th Edition P76
 /*
@@ -105,17 +151,10 @@ Example oxygen with 2 bonds
 
  */
             console.log(atom)
-            console.log(atom[2])
-            console.log(atom.slice(4).length)
-            electrons_used_in_bonds_count.length.should.be.equal(2)
-            // (2*2) < 8
             is_negatively_charged.should.be.equal(false)
         }
         if (test_number === 5.1) {
             console.log(atom)
-            console.log(atom[2])
-            console.log(atom.slice(4).length)
-            electrons_used_in_bonds_count.length.should.be.equal(0)
             is_negatively_charged.should.be.equal(true)
         }
         return is_negatively_charged
@@ -214,38 +253,7 @@ Example oxygen with 2 bonds
         return atom[0] === "H" && atom.length === 4
     }
 
-    const __Bonds = (atomic_symbol) => {
-        const atoms = mmolecule.slice(1)
-        const atom_electrons = atom.slice(4)
-        const r =  atoms.map(
-            (_atom, _atom_index) => {
 
-                if (current_atom_index === _atom_index) {
-                    return false
-                }
-                const shared_electrons = Set().intersection(atom_electrons, _atom.slice(4))
-
-                return shared_electrons.reduce(
-                    (c, electron) => {
-                        c.push(
-                            [
-                                electron
-                            ]
-                        )
-                        return c;
-                    },
-                    []
-                )
-
-            }
-        ).filter(
-            (item) => {
-                return item !== false
-            }
-        )
-
-        return r
-    }
 
     const __electron_haystack = (test_number) => {
         const atoms = mmolecule.slice(1)
@@ -291,7 +299,7 @@ Example oxygen with 2 bonds
 /*
 First we determine the number of electrons the atom has in its outer shell.
 Then we determine the maximum number of electrons the atom can have in its valence shell (2,8,18)
-We then get the total number of free slots by subtracting number of electrons the atom has 
+We then get the total number of free slots by subtracting number of electrons the atom has
 in its outer shell * 2 from the maximum number of electrons the atom can have in its valence shell.
 We then return the total number of free slots minus the number of slots already taken
 */
@@ -390,7 +398,7 @@ We then return the total number of free slots minus the number of slots already 
         }
         const number_of_shells = info["electrons_per_shell"].split("-").length
         const m = [2,8,18,32]
-       
+
         // This is the maximum number of electrons the atom can have in its outer shell
         const max_possible_number_of_electrons = m[number_of_shells-1]
 
@@ -400,7 +408,7 @@ We then return the total number of free slots minus the number of slots already 
         if (test_number == 5.1) {
             max_possible_number_of_electrons.should.be.equal(32)
         }
-        
+
         // This is the number of bonds where the atom shares one of its outershell electrons
         const max_possible_number_of_shared_electron_bonds = info["electrons_per_shell"].split("-").pop() * 1
 
@@ -428,7 +436,7 @@ We then return the total number of free slots minus the number of slots already 
         }
 
         let free_slots = null
-        
+
         if (used_electrons.length <= max_possible_number_of_shared_electron_bonds *2) {
             // 18 - 6 / 2
             free_slots = (max_possible_number_of_electrons - (max_possible_number_of_shared_electron_bonds*2)) / 2
