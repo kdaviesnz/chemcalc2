@@ -579,17 +579,91 @@ console.log("Test 5 complete")
 const propylene = MoleculeFactory("CC=C")
 // watermolecule
 
-const ccontainer6 = new CContainer([false], MoleculeFactory, MoleculeController, 6)
-ccontainer6.add(propylene, 1)
-ccontainer6.add(watermolecule, 1)
+const ccontainer6 = new CContainer([false], MoleculeFactory, MoleculeController, 6, verbose)
+ccontainer6.add(propylene, 1, verbose)
+ccontainer6.add(watermolecule, 1, verbose)
 // We shouldnt have a reaction
-console.log(ccontainer6)
-ccontainer6.length.should.equal(3)
-ccontainer6[1].should.equal(propylene)
-ccontainer6[2].should.equal(watermolecule)
+ccontainer6.container.length.should.equal(3)
+ccontainer6.container[1].should.equal(propylene)
+ccontainer6.container[2].should.equal(watermolecule)
 
-const sulfuric_acid = MoleculeFactory("OS(=O)(=O)O")
-ccontainer6.add(sulfuric_acid, 1)
+const sulfuric_acid = MoleculeFactory("OS(=O)(=O)O", verbose)
+if (verbose) {
+    console.log('Sulfuric acid:')
+    console.log(sulfuric_acid)
+    /*
+    Sulfuric acid:
+[ 12345,
+  [ 'H', 1, 1, 1, 'bqdtz0b3rkdjnb7ro', 'bqdtz0b3rkdjnb7qu' ],
+  [ 'O',
+    8,
+    6,
+    2,
+    'bqdtz0b3rkdjnb7qu',
+    'bqdtz0b3rkdjnb7qv',
+    'bqdtz0b3rkdjnb7qw',
+    'bqdtz0b3rkdjnb7qx',
+    'bqdtz0b3rkdjnb7qy',
+    'bqdtz0b3rkdjnb7qz',
+    'bqdtz0b3rkdjnb7r5',
+    'bqdtz0b3rkdjnb7ro' ],
+  [ 'S',
+    16,
+    6,
+    2,
+    'bqdtz0b3rkdjnb7r0',
+    'bqdtz0b3rkdjnb7r1',
+    'bqdtz0b3rkdjnb7r2',
+    'bqdtz0b3rkdjnb7r3',
+    'bqdtz0b3rkdjnb7r4',
+    'bqdtz0b3rkdjnb7r5',
+    'bqdtz0b3rkdjnb7qz',
+    'bqdtz0b3rkdjnb7rb',
+    'bqdtz0b3rkdjnb7ra',
+    'bqdtz0b3rkdjnb7rh',
+    'bqdtz0b3rkdjnb7rg',
+    'bqdtz0b3rkdjnb7rn' ],
+  [ 'O',
+    8,
+    6,
+    2,
+    'bqdtz0b3rkdjnb7r6',
+    'bqdtz0b3rkdjnb7r7',
+    'bqdtz0b3rkdjnb7r8',
+    'bqdtz0b3rkdjnb7r9',
+    'bqdtz0b3rkdjnb7ra',
+    'bqdtz0b3rkdjnb7rb',
+    'bqdtz0b3rkdjnb7r4',
+    'bqdtz0b3rkdjnb7r3' ],
+  [ 'O',
+    8,
+    6,
+    2,
+    'bqdtz0b3rkdjnb7rc',
+    'bqdtz0b3rkdjnb7rd',
+    'bqdtz0b3rkdjnb7re',
+    'bqdtz0b3rkdjnb7rf',
+    'bqdtz0b3rkdjnb7rg',
+    'bqdtz0b3rkdjnb7rh',
+    'bqdtz0b3rkdjnb7r2',
+    'bqdtz0b3rkdjnb7r1' ],
+  [ 'H', 1, 1, 1, 'bqdtz0b3rkdjnb7rp', 'bqdtz0b3rkdjnb7ri' ],
+  [ 'O',
+    8,
+    6,
+    2,
+    'bqdtz0b3rkdjnb7ri',
+    'bqdtz0b3rkdjnb7rj',
+    'bqdtz0b3rkdjnb7rk',
+    'bqdtz0b3rkdjnb7rl',
+    'bqdtz0b3rkdjnb7rm',
+    'bqdtz0b3rkdjnb7rn',
+    'bqdtz0b3rkdjnb7r0',
+    'bqdtz0b3rkdjnb7rp' ] ]
+
+     */
+}
+ccontainer6.add(sulfuric_acid, 1, verbose)
 ccontainer6.length.should.equal(3)
 
 console.log("All tests succeeded")

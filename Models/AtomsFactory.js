@@ -218,8 +218,6 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                 }
                 if ( bond_type === "=" ) {
                     row.push(parent_electrons_to_share[1])
-                    row.slice(4).length.should.be.equal(6)
-
                 }
 
                 if ("CC=CC" === canonicalSMILES && index === 3) {
@@ -716,7 +714,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     if ("OS(=O)(=O)O"=== canonicalSMILES) {
         
 
-        atoms.length.should.be.equal(12)
+        atoms.length.should.be.equal(5)
         atoms.filter(
             (atom) => {
                 return atom[0] === "O"
@@ -886,7 +884,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
             }
         ).length.should.be.equal(2)
 
-        atoms_with_hydrogens.length.should.be.equal(12)
+        atoms_with_hydrogens.length.should.be.equal(7)
         atoms_with_hydrogens.filter(
             (atom) => {
                 return atom[0] === "O"
@@ -898,9 +896,85 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         atoms_with_hydrogens[2][0].should.be.equal("S")
         atoms_with_hydrogens[3][0].should.be.equal("O")
         atoms_with_hydrogens[4][0].should.be.equal("O")
-        atoms_with_hydrogens[5][0].should.be.equal("O")
+        atoms_with_hydrogens[5][0].should.be.equal("H")
+        atoms_with_hydrogens[6][0].should.be.equal("O")
         
          // Check bonds
+        console.log('checking bonds')
+        console.log(atoms_with_hydrogens)
+        "OS(=O)(=O)O"
+        // sufuric acid - atoms with hydrogens
+        /*
+checking bonds
+[ [ 'H', 1, 1, 1, 'bqdtz0bi8kdjntjsq', 'bqdtz0bi8kdjntjrw' ],
+  [ 'O',
+    8,
+    6,
+    2,
+    'bqdtz0bi8kdjntjrw',
+    'bqdtz0bi8kdjntjrx',
+    'bqdtz0bi8kdjntjry',
+    'bqdtz0bi8kdjntjrz',
+    'bqdtz0bi8kdjntjs0',
+    'bqdtz0bi8kdjntjs1',
+    'bqdtz0bi8kdjntjs7',
+    'bqdtz0bi8kdjntjsq' ],
+  [ 'S',
+    16,
+    6,
+    2,
+    'bqdtz0bi8kdjntjs2',
+    'bqdtz0bi8kdjntjs3',
+    'bqdtz0bi8kdjntjs4',
+    'bqdtz0bi8kdjntjs5',
+    'bqdtz0bi8kdjntjs6',
+    'bqdtz0bi8kdjntjs7',
+    'bqdtz0bi8kdjntjs1',
+    'bqdtz0bi8kdjntjsd',
+    'bqdtz0bi8kdjntjsc',
+    'bqdtz0bi8kdjntjsj',
+    'bqdtz0bi8kdjntjsi',
+    'bqdtz0bi8kdjntjsp' ],
+  [ 'O',
+    8,
+    6,
+    2,
+    'bqdtz0bi8kdjntjs8',
+    'bqdtz0bi8kdjntjs9',
+    'bqdtz0bi8kdjntjsa',
+    'bqdtz0bi8kdjntjsb',
+    'bqdtz0bi8kdjntjsc',
+    'bqdtz0bi8kdjntjsd',
+    'bqdtz0bi8kdjntjs6',
+    'bqdtz0bi8kdjntjs5' ],
+  [ 'O',
+    8,
+    6,
+    2,
+    'bqdtz0bi8kdjntjse',
+    'bqdtz0bi8kdjntjsf',
+    'bqdtz0bi8kdjntjsg',
+    'bqdtz0bi8kdjntjsh',
+    'bqdtz0bi8kdjntjsi',
+    'bqdtz0bi8kdjntjsj',
+    'bqdtz0bi8kdjntjs4',
+    'bqdtz0bi8kdjntjs3' ],
+  [ 'H', 1, 1, 1, 'bqdtz0bi8kdjntjsr', 'bqdtz0bi8kdjntjsk' ],
+  [ 'O',
+    8,
+    6,
+    2,
+    'bqdtz0bi8kdjntjsk',
+    'bqdtz0bi8kdjntjsl',
+    'bqdtz0bi8kdjntjsm',
+    'bqdtz0bi8kdjntjsn',
+    'bqdtz0bi8kdjntjso',
+    'bqdtz0bi8kdjntjsp',
+    'bqdtz0bi8kdjntjs2',
+    'bqdtz0bi8kdjntjsr' ] ]
+
+
+         */
         Set().intersection(atoms_with_hydrogens[0].slice(4), atoms_with_hydrogens[1].slice(4)).length.should.be.equal(2)
         Set().intersection(atoms_with_hydrogens[1].slice(4), atoms_with_hydrogens[2].slice(4)).length.should.be.equal(2)
         Set().intersection(atoms_with_hydrogens[2].slice(4), atoms_with_hydrogens[3].slice(4)).length.should.be.equal(4)
