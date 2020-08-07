@@ -23,7 +23,7 @@ class CContainer {
     add(molecule_array_or_string, units, verbose, test_number) {
 
         if (undefined !== test_number) {
-            this.test_number = test_number
+           // this.test_number = test_number
         }
         // SEE organic chemistry 8th edition p245
 // propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
@@ -74,11 +74,23 @@ class CContainer {
                 console.log(this.container[1])
             }
 
-            const reagent = this.container[2]
+            // SEE organic chemistry 8th edition p245
+// propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
+// 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
+// alkene (a nucleophile) that is bonded to the most hydrogens.
+// 2. H2O (a nucleophile) adds to the carbocation (an electrophile), forming a protonated alcohol.
+// 3. The protonated alcohol loses a proton because the pH of the solution is greater
+// than the pKa of the protonated alcohol (Section 2.10).
+// (We saw that protonated alcohols are very strong acids; Section 2.6.)
+            const reagent = this.container.pop()
+
+            if (this.test_number == 6 && this.container.length === 2) {
+
+            }
 
             if (verbose) {
                 console.log("Controllers/Container.js:: Got reagent ->")
-                console.log(this.container[2])
+                console.log(reagent)
             }
 
             const substrate_families = Families(substrate.slice(1), verbose).families
@@ -107,8 +119,20 @@ class CContainer {
                 substrate_families.alkene().length.should.be.equal(2)
             }
 
+            if (this.test_number == 6) {
+                substrate_families.alkene(verbose).length.should.be.equal(2)
+            }
 
             if (substrate_families.alkene(verbose).length > 0) {
+
+                // SEE organic chemistry 8th edition p245
+// propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
+// 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
+// alkene (a nucleophile) that is bonded to the most hydrogens.
+// 2. H2O (a nucleophile) adds to the carbocation (an electrophile), forming a protonated alcohol.
+// 3. The protonated alcohol loses a proton because the pH of the solution is greater
+// than the pKa of the protonated alcohol (Section 2.10).
+// (We saw that protonated alcohols are very strong acids; Section 2.6.)
 
                 // Substrate is alkene (nucleophile)
                 // Find the nucleophile on the C=C bond
@@ -128,7 +152,6 @@ class CContainer {
                 const electrophile_molecule_index = 2
 
                 if (this.test_number === 4) {
-
                     electrophile_molecule[1][0].should.be.equal("H")
                     electrophile_molecule[2][0].should.be.equal("Br")
                     Set().intersection(electrophile_molecule[1].slice(4), electrophile_molecule[2].slice(4)).length.should.be.equal(2)
@@ -136,15 +159,87 @@ class CContainer {
 
 
                 const nucleophile_atom_index = this.MoleculeController(substrate).nucleophileIndex(this.test_number)
-                const electrophile_atom_index = this.MoleculeController(reagent).electrophileIndex(this.test_number + ".1")
 
+                // SEE organic chemistry 8th edition p245
+// propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
+// 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
+// alkene (a nucleophile) that is bonded to the most hydrogens.
+// 2. H2O (a nucleophile) adds to the carbocation (an electrophile), forming a protonated alcohol.
+// 3. The protonated alcohol loses a proton because the pH of the solution is greater
+// than the pKa of the protonated alcohol (Section 2.10).
+// (We saw that protonated alcohols are very strong acids; Section 2.6.)
+                if (this.test_number === 6) {
+                    console.log(substrate)
+                    /*
+                    [ 12345,
+  [ 'H', 1, 1, 1, 'bqdtz0ga0kdktnhg6', 'bqdtz0ga0kdktnhfu' ],
+  [ 'H', 1, 1, 1, 'bqdtz0ga0kdktnhg7', 'bqdtz0ga0kdktnhfv' ],
+  [ 'H', 1, 1, 1, 'bqdtz0ga0kdktnhg8', 'bqdtz0ga0kdktnhfw' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    'bqdtz0ga0kdktnhfu',
+    'bqdtz0ga0kdktnhfv',
+    'bqdtz0ga0kdktnhfw',
+    'bqdtz0ga0kdktnhfx',
+    'bqdtz0ga0kdktnhg1',
+    'bqdtz0ga0kdktnhg6',
+    'bqdtz0ga0kdktnhg7',
+    'bqdtz0ga0kdktnhg8' ],
+  [ 'H', 1, 1, 1, 'bqdtz0ga0kdktnhg9', 'bqdtz0ga0kdktnhfy' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    'bqdtz0ga0kdktnhfy',
+    'bqdtz0ga0kdktnhfz',
+    'bqdtz0ga0kdktnhg0',
+    'bqdtz0ga0kdktnhg1',
+    'bqdtz0ga0kdktnhfx',
+    'bqdtz0ga0kdktnhg5',
+    'bqdtz0ga0kdktnhg4',
+    'bqdtz0ga0kdktnhg9' ],
+  [ 'H', 1, 1, 1, 'bqdtz0ga0kdktnhga', 'bqdtz0ga0kdktnhg2' ],
+  [ 'H', 1, 1, 1, 'bqdtz0ga0kdktnhgb', 'bqdtz0ga0kdktnhg3' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    'bqdtz0ga0kdktnhg2',
+    'bqdtz0ga0kdktnhg3',
+    'bqdtz0ga0kdktnhg4',
+    'bqdtz0ga0kdktnhg5',
+    'bqdtz0ga0kdktnhg0',
+    'bqdtz0ga0kdktnhfz',
+    'bqdtz0ga0kdktnhga',
+    'bqdtz0ga0kdktnhgb' ] ]
+
+                     */
+                    // Should be 8 not 9
+                    // const nucleophile_atom_index = this.MoleculeController(substrate).nucleophileIndex(this.test_number)
+                    nucleophile_atom_index.should.be.equal(8)
+                }
+
+                // SEE organic chemistry 8th edition p245
+// propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
+// 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
+// alkene (a nucleophile) that is bonded to the most hydrogens.
+// 2. H2O (a nucleophile) adds to the carbocation (an electrophile), forming a protonated alcohol.
+// 3. The protonated alcohol loses a proton because the pH of the solution is greater
+// than the pKa of the protonated alcohol (Section 2.10).
+// (We saw that protonated alcohols are very strong acids; Section 2.6.)
+                const electrophile_atom_index = this.MoleculeController(reagent).electrophileIndex(this.test_number + ".1")
+                if (this.test_number === 6 && this.container.length === 2) {
+                    console.log(reagent)
+                    electrophile_atom_index.should.be.equal(1)
+                }
 
                 // See organic chemistry 8th edition ch 6 p 235
                 // C=C (butene, nucleophile) -> HBr (H is electrophile)
                 if (this.test_number === 4) {
                     electrophile_atom_index.should.be.equal(1)
                 }
-
 
                 // See organic chemistry 8th edition ch 6 p 235
                 // C=C (butene, nucleophile) -> HBr (H is electrophile)

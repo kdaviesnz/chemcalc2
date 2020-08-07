@@ -367,9 +367,24 @@ Positively charged atoms -->
 
             // Check for double bonds
             const double_bonds = Families(mmolecule.slice(1)).families.alkene()
+
+            // test_number 6
+            // SEE organic chemistry 8th edition p245
+// propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
+// 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
+// alkene (a nucleophile) that is bonded to the most hydrogens.
+// 2. H2O (a nucleophile) adds to the carbocation (an electrophile), forming a protonated alcohol.
+// 3. The protonated alcohol loses a proton because the pH of the solution is greater
+// than the pKa of the protonated alcohol (Section 2.10).
+// (We saw that protonated alcohols are very strong acids; Section 2.6.)
+            if (test_number === 6) {
+                double_bonds.length.should.be.greaterThan(0)
+            }
+
             if (test_number === 4) {
                 double_bonds.length.should.be.greaterThan(0)
             }
+
             if (double_bonds.length > 0) {
                 // Determine carbon with most hydrogens
                 const keys = Object.keys(double_bonds[0])
@@ -380,10 +395,16 @@ Positively charged atoms -->
                     carbon_1_hydrogens.length.should.be.equal(1)
                     carbon_2_hydrogens.length.should.be.equal(1)
                 }
+
+                if (test_number === 6) {
+                    keys[0].should.be.equal('5')
+                    keys[1].should.be.equal('8')
+                }
+
                 if (carbon_1_hydrogens.length >= carbon_2_hydrogens.length ) {
-                    return keys[0]*1 +1
+                    return keys[0]*1
                 } else {
-                    return keys[1]*1 +1
+                    return keys[1]*1
                 }
             }
 
@@ -400,6 +421,7 @@ Positively charged atoms -->
                         carry : current_molecule_atom_index
                 }, false
             )
+
         } else {
             // H2O (nucleophile) <------- HCl (electrophile)
             if (test_number === 1) {

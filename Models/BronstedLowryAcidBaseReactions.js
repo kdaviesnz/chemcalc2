@@ -21,6 +21,101 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
             )
         }
 
+        if (test_number === 6) {
+            /*
+            Models/BronstedLowryAcidBaseReactions.js Doing Bronsted Lowry reactions ->
+{ 'nucleophile molecule':
+   [ 12345,
+     [ 'H', 1, 1, 1, 'bqdtz0glbkdkuaop8', 'bqdtz0glbkdkuaoow' ],
+     [ 'H', 1, 1, 1, 'bqdtz0glbkdkuaop9', 'bqdtz0glbkdkuaoox' ],
+     [ 'H', 1, 1, 1, 'bqdtz0glbkdkuaopa', 'bqdtz0glbkdkuaooy' ],
+     [ 'C',
+       6,
+       4,
+       4,
+       'bqdtz0glbkdkuaoow',
+       'bqdtz0glbkdkuaoox',
+       'bqdtz0glbkdkuaooy',
+       'bqdtz0glbkdkuaooz',
+       'bqdtz0glbkdkuaop3',
+       'bqdtz0glbkdkuaop8',
+       'bqdtz0glbkdkuaop9',
+       'bqdtz0glbkdkuaopa' ],
+     [ 'H', 1, 1, 1, 'bqdtz0glbkdkuaopb', 'bqdtz0glbkdkuaop0' ],
+     [ 'C',
+       6,
+       4,
+       4,
+       'bqdtz0glbkdkuaop0',
+       'bqdtz0glbkdkuaop1',
+       'bqdtz0glbkdkuaop2',
+       'bqdtz0glbkdkuaop3',
+       'bqdtz0glbkdkuaooz',
+       'bqdtz0glbkdkuaop7',
+       'bqdtz0glbkdkuaop6',
+       'bqdtz0glbkdkuaopb' ],
+     [ 'H', 1, 1, 1, 'bqdtz0glbkdkuaopc', 'bqdtz0glbkdkuaop4' ],
+     [ 'H', 1, 1, 1, 'bqdtz0glbkdkuaopd', 'bqdtz0glbkdkuaop5' ],
+     [ 'C',
+       6,
+       4,
+       4,
+       'bqdtz0glbkdkuaop4',
+       'bqdtz0glbkdkuaop5',
+       'bqdtz0glbkdkuaop6',
+       'bqdtz0glbkdkuaop7',
+       'bqdtz0glbkdkuaop2',
+       'bqdtz0glbkdkuaop1',
+       'bqdtz0glbkdkuaopc',
+       'bqdtz0glbkdkuaopd' ] ],
+  'nucleopile atom index': 8,
+  'electrophile molecle':
+   [ 14,
+     [ 'H', 1, 1, 1, 'bqdtz0glbkdkuaoos', 'bqdtz0glbkdkuaool' ],
+     [ 'H', 1, 1, 1, 'bqdtz0glbkdkuaoot', 'bqdtz0glbkdkuaoom' ],
+     [ 'O',
+       8,
+       6,
+       2,
+       'bqdtz0glbkdkuaool',
+       'bqdtz0glbkdkuaoom',
+       'bqdtz0glbkdkuaoon',
+       'bqdtz0glbkdkuaooo',
+       'bqdtz0glbkdkuaoop',
+       'bqdtz0glbkdkuaooq',
+       'bqdtz0glbkdkuaoos',
+       'bqdtz0glbkdkuaoot' ] ],
+  'electrophile atom index': 1,
+  'nucleophile molecule index': 1,
+  'electrophile molecule index': 2,
+  container:
+   [ false,
+     [ 12345,
+       [Array],
+       [Array],
+       [Array],
+       [Array],
+       [Array],
+       [Array],
+       [Array],
+       [Array],
+       [Array] ] ],
+  'molecule controller': [Function: CMolecule] }
+
+             */
+            nucleophile_atom_index.should.be.equal(999)
+            process.exit()
+        }
+
+        // SEE organic chemistry 8th edition p245
+// propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
+// 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
+// alkene (a nucleophile) that is bonded to the most hydrogens.
+// 2. H2O (a nucleophile) adds to the carbocation (an electrophile), forming a protonated alcohol.
+// 3. The protonated alcohol loses a proton because the pH of the solution is greater
+// than the pKa of the protonated alcohol (Section 2.10).
+// (We saw that protonated alcohols are very strong acids; Section 2.6.)
+
         if (undefined === nucleophile_molecule) {
            
             const substrate_proton_index = MoleculeController(container[1]).indexOf("H", false, verbose)
