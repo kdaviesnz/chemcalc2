@@ -496,12 +496,85 @@ ccontainer5.container[1].slice(1).filter(
   }
 ).length.should.be.equal(9)
 
+console.log("Test 5 result")
+/*
+Test 5 result
+[ false,
+  [ 12345,
+    [ 'Br',
+      35,
+      7,
+      1,
+      'bqdtz09ztkdjmdnd6',
+      'bqdtz09ztkdjmdnd7',
+      'bqdtz09ztkdjmdnd8',
+      'bqdtz09ztkdjmdnd9',
+      'bqdtz09ztkdjmdnda',
+      'bqdtz09ztkdjmdndb',
+      'bqdtz09ztkdjmdndc',
+      'bqdtz09ztkdjmdndd' ],
+    [ 'H', 1, 1, 1, 'bqdtz09ztkdjmdndu', 'bqdtz09ztkdjmdnde' ],
+    [ 'H', 1, 1, 1, 'bqdtz09ztkdjmdndv', 'bqdtz09ztkdjmdndf' ],
+    [ 'H', 1, 1, 1, 'bqdtz09ztkdjmdndw', 'bqdtz09ztkdjmdndg' ],
+    [ 'C',
+      6,
+      4,
+      4,
+      'bqdtz09ztkdjmdnde',
+      'bqdtz09ztkdjmdndf',
+      'bqdtz09ztkdjmdndg',
+      'bqdtz09ztkdjmdndh',
+      'bqdtz09ztkdjmdndl',
+      'bqdtz09ztkdjmdndu',
+      'bqdtz09ztkdjmdndv',
+      'bqdtz09ztkdjmdndw' ],
+    [ 'H', 1, 1, 1, 'bqdtz09ztkdjmdndx', 'bqdtz09ztkdjmdndi' ],
+    [ 'C',
+      6,
+      4,
+      4,
+      'bqdtz09ztkdjmdndi',
+      'bqdtz09ztkdjmdndj',
+      'bqdtz09ztkdjmdndk',
+      'bqdtz09ztkdjmdndl',
+      'bqdtz09ztkdjmdndh',
+      'bqdtz09ztkdjmdndp',
+      'bqdtz09ztkdjmdndo',
+      'bqdtz09ztkdjmdndx' ],
+    [ 'H', 1, 1, 1, 'bqdtz09ztkdjmdndy', 'bqdtz09ztkdjmdndm' ],
+    [ 'C',
+      6,
+      4,
+      4,
+      'bqdtz09ztkdjmdndm',
+      'bqdtz09ztkdjmdndn',
+      'bqdtz09ztkdjmdndo',
+      'bqdtz09ztkdjmdndp',
+      'bqdtz09ztkdjmdndt',
+      'bqdtz09ztkdjmdndy' ],
+    [ 'H', 1, 1, 1, 'bqdtz09ztkdjmdndz', 'bqdtz09ztkdjmdndq' ],
+    [ 'H', 1, 1, 1, 'bqdtz09ztkdjmdne0', 'bqdtz09ztkdjmdndr' ],
+    [ 'H', 1, 1, 1, 'bqdtz09ztkdjmdne1', 'bqdtz09ztkdjmdnds' ],
+    [ 'C',
+      6,
+      4,
+      4,
+      'bqdtz09ztkdjmdndq',
+      'bqdtz09ztkdjmdndr',
+      'bqdtz09ztkdjmdnds',
+      'bqdtz09ztkdjmdndt',
+      'bqdtz09ztkdjmdndn',
+      'bqdtz09ztkdjmdndz',
+      'bqdtz09ztkdjmdne0',
+      'bqdtz09ztkdjmdne1' ],
+    [ 'H', 1, 1, 1, 'bqdtz09ztkdjmdndj', 'bqdtz09ztkdjmdndk' ] ] ]
+Test 5 complete
 
-// console.log(ccontainer5['container'])
-
+ */
+if (verbose) {
+    console.log(ccontainer5['container'])
+}
 console.log("Test 5 complete")
-process.exit()
-
 
 const propylene = MoleculeFactory("CC=C")
 // watermolecule
@@ -510,6 +583,7 @@ const ccontainer6 = new CContainer([false], MoleculeFactory, MoleculeController,
 ccontainer6.add(propylene, 1)
 ccontainer6.add(watermolecule, 1)
 // We shouldnt have a reaction
+console.log(ccontainer6)
 ccontainer6.length.should.equal(3)
 ccontainer6[1].should.equal(propylene)
 ccontainer6[2].should.equal(watermolecule)

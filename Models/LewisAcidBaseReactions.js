@@ -104,7 +104,11 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number, verb
             if (test_number ===5) {
                 substrate_electrophile_atom_index.should.be.equal(false) // Nucleophile [Br-]
                 // container[2] (reagent) is the carbocation
-                reagent_electrophile_atom_index.should.be.equal(7) // electrophile C[C+]CC should be 7
+                if (verbose) {
+                    console.log("Reagent")
+                    console.log(container[2])
+                }
+                reagent_electrophile_atom_index.should.be.equal(8)
             }
 
             // Container [false, [AlCl3], [COC]]
@@ -150,8 +154,8 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number, verb
         if (test_number === 5) {
             electrophile_molecule[electrophile_atom_index][0].should.be.equal("C")
             nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("Br")
-            nucleophile_molecule.length.should.be.equal(1) // Br
-            electrophile_molecule.length.should.be.equal(88888) // CC[C+]C
+            nucleophile_molecule.length.should.be.equal(2) // Br
+            electrophile_molecule.length.should.be.equal(14) // CC[C+]C
             electrophile_atom_index.should.be.equal(8)
             nucleophile_atom_index.should.be.equal(1)
         }

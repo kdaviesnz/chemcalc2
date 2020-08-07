@@ -84,7 +84,6 @@ Example oxygen with 2 bonds
         const is_positively_charged = neutral_atom_free_slot_count  > (__freeSlots(test_number) + __bondCount(atom[0], test_number))
 
         if (test_number === 5.2 && atom.slice(4).length === 6) {
-            console.log(atom)
             // Carbon, two bonds
             /*
               [ 'C',
@@ -98,11 +97,6 @@ Example oxygen with 2 bonds
     'bqdtz07lqkdh3ei5u',
     'bqdtz07lqkdh3ei5z' ]
     */
-            console.log("Neutral atom free slot count: " + neutral_atom_free_slot_count) // 4
-            console.log("Atom free slot count: " + __freeSlots(test_number))
-            console.log(__freeSlots(test_number))
-            console.log("Atom number of bonds:")
-            console.log(__bondCount(atom[0], test_number));
             is_positively_charged.should.be.equal(true)
         }
         return is_positively_charged
@@ -150,11 +144,9 @@ Example oxygen with 2 bonds
   'bqdtz06g6kdjb9unw' ]
 
  */
-            console.log(atom)
             is_negatively_charged.should.be.equal(false)
         }
         if (test_number === 5.1) {
-            console.log(atom)
             is_negatively_charged.should.be.equal(true)
         }
         return is_negatively_charged
@@ -305,7 +297,6 @@ We then return the total number of free slots minus the number of slots already 
 */
     const __freeSlots = (test_number) => {
 
-        // console.log(test_number + " (freeSlots)")
         /*
                           "C": {
         "group":14,
@@ -412,7 +403,6 @@ We then return the total number of free slots minus the number of slots already 
         // This is the number of bonds where the atom shares one of its outershell electrons
         const max_possible_number_of_shared_electron_bonds = info["electrons_per_shell"].split("-").pop() * 1
 
-        console.log(test_number)
         if (test_number == 3.1 ) {
             if (atom[0] === 'Al') {
                 max_possible_number_of_shared_electron_bonds.should.be.equal(3)

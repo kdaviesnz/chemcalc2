@@ -483,7 +483,6 @@ Positively charged atoms -->
 
                 if (test_number == 5.1) {
                     // freeSlots() returns a number
-                    //console.log(atom)
                     /*
                     [ 'Br',
 35,
@@ -692,7 +691,6 @@ Positively charged atoms -->
         // Source atom index should be 1
 
         if (test_number === 5) {
-            //console.log(mmolecule)
             /*
             [Br-] nucleophile
             [ 12345,
@@ -709,7 +707,6 @@ Positively charged atoms -->
     '26f1152ukavyw78m',
     '26f1152ukavyw78n' ] ]
              */
-            // console.log(atoms)
             /*
             [ [ 'H', 1, 1, 1, '26f1152xkavyx3lh', '26f1152xkavyx3l1' ],
   [ 'H', 1, 1, 1, '26f1152xkavyx3li', '26f1152xkavyx3l2' ],
@@ -774,7 +771,7 @@ Positively charged atoms -->
             // Target atom index should be 8 (electrophile)
             // Source atom index should be 1
             target_atom_mmolecule_index.should.be.equal(9) // 1 + 8
-            atoms.length.should.be.equal(8888)
+            atoms.length.should.be.equal(13)
             mmolecule.length.should.be.equal(2) // [Br-] we havent added the electrophile yet
         }
 
@@ -833,7 +830,7 @@ Positively charged atoms -->
         if (test_number === 5) {
             target_atom_mmolecule_index.should.be.equal(9) // source atom index plus target atom index
             mmolecule[target_atom_mmolecule_index][0].should.be.equal("C")
-            mmolecule.length.should.be.equal(44444)
+            mmolecule.length.should.be.equal(15)
 
         }
 
@@ -936,7 +933,7 @@ Positively charged atoms -->
             target_atom_electron_to_share_index.should.be.equal(false) // carbocation
             mmolecule[target_atom_mmolecule_index][0].should.be.equal("C")
             mmolecule[source_atom_index][0].should.be.equal("Br")
-            source_atom_electron_to_share_index.should.be.equal(8888) // should not be false
+            source_atom_electron_to_share_index.should.be.equal(7) // should not be false
 
         }
 
@@ -952,7 +949,7 @@ Positively charged atoms -->
         // Target atom index should be 8 (electrophile)
         // Source atom index should be 1
         if (test_number === 5) {
-            source_atom_lone_pairs.length.should.be.equal(7777) // [Br-] // we should have a lone pair
+            source_atom_lone_pairs.length.should.be.equal(8)
             mmolecule[target_atom_mmolecule_index][0].should.be.equal("C") //[C+]
         }
 
@@ -1060,7 +1057,7 @@ Positively charged atoms -->
             if (test_number === 5) {
                 mmolecule[source_atom_index][0].should.be.equal("Br")
                 mmolecule[target_atom_mmolecule_index][0].should.be.equal("C")
-                source_atom_electron_to_share_index.should.be.equal(88888)
+                source_atom_electron_to_share_index.should.be.equal(7)
                 target_atom_electron_to_share_index.should.be.equal(false)
             }
 
@@ -1077,8 +1074,7 @@ Positively charged atoms -->
                 // Target atom index should be 8 (electrophile)
                 // Source atom index should be 1
                 if (test_number === 5) {
-                    free_slots.should.be.greaterThan("Br")
-
+                    free_slots.should.be.equal(0)
                 }
 
 
@@ -1226,7 +1222,6 @@ Molecule.js
         if (test_number !==5) {
             Set().intersection(mmolecule[source_atom_index].slice(4), mmolecule[target_atom_mmolecule_index].slice(4)).length.should.not.be.equal(0)
         } else {
-            // console.log(mmolecule)
             /*
             [ 12345,
   [ 'Br',
@@ -1540,10 +1535,9 @@ Molecule.js
             // Target atom index should be 8 (electrophile)
             // Source atom index should be 1
             if (test_number === 5) {
-                console.log(atoms_or_atomic_symbols)
-                atoms_or_atomic_symbols.length.should.be.equal(55555)  // CC[C+]C
+                atoms_or_atomic_symbols.length.should.be.equal(13)  // CC[C+]C
                 atoms_or_atomic_symbols[0][0].should.be.equal("H")
-                atoms_or_atomic_symbols[0].length.should.be.equal(7777)
+                atoms_or_atomic_symbols[0].length.should.be.equal(6)
                 target_atom_index.should.be.equal(8)
             }
 
@@ -1581,7 +1575,6 @@ Molecule.js
                 const atom_is_proton = atoms[0][0] === "H" && atoms[0].length ===4 // H
                 atom_is_proton.should.be.equal(false)
                 mmolecule.length.should.be.equal(2) // Br
-                target_molecule_index.should.be.equal(2) // index of electrophile in container
             }
 
             if (undefined === source_atom_index) {
