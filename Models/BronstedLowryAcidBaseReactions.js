@@ -103,8 +103,9 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
   'molecule controller': [Function: CMolecule] }
 
              */
-            nucleophile_atom_index.should.be.equal(999)
-            process.exit()
+            
+           // nucleophile_atom_index.should.be.equal(999)
+           // process.exit()
         }
 
         // SEE organic chemistry 8th edition p245
@@ -232,6 +233,20 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
             electrophile_molecule[1][0].should.be.equal("H")
         }
 
+        
+            // SEE organic chemistry 8th edition p245
+// propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
+// 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
+// alkene (a nucleophile) that is bonded to the most hydrogens.
+// 2. H2O (a nucleophile) adds to the carbocation (an electrophile), forming a protonated alcohol.
+// 3. The protonated alcohol loses a proton because the pH of the solution is greater
+// than the pKa of the protonated alcohol (Section 2.10).
+// (We saw that protonated alcohols are very strong acids; Section 2.6.)
+        if (test_number === 6) {
+            // hydrogen water atom
+            electrophile_molecule[electrophile_atom_index][0].should.be.equal("H")
+        }
+        
         if (electrophile_molecule[electrophile_atom_index][0] !== "H") {
 
             if (test_number === 1) {
@@ -365,6 +380,20 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
         if (test_number === 4) {
             electrophile_molecule_index.should.be.equal(2)           
+        }
+        
+        // SEE organic chemistry 8th edition p245
+// propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
+// 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
+// alkene (a nucleophile) that is bonded to the most hydrogens.
+// 2. H2O (a nucleophile) adds to the carbocation (an electrophile), forming a protonated alcohol.
+// 3. The protonated alcohol loses a proton because the pH of the solution is greater
+// than the pKa of the protonated alcohol (Section 2.10).
+// (We saw that protonated alcohols are very strong acids; Section 2.6.)
+        if (test_number === 6) {
+            // hydrogen water atom
+            electrophile_molecule_index.should.be.equal(2)   
+            proton_index.should.be.equal(1)
         }
         
         container = MoleculeController(electrophile_molecule).removeProton(
