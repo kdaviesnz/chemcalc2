@@ -36,14 +36,17 @@ const propylene = MoleculeFactory("CC=C")
 // watermolecule
 
 const ccontainer6 = new CContainer([false], MoleculeFactory, MoleculeController, 6, verbose)
-ccontainer6.add(propylene, 1, verbose, 6.1)
-ccontainer6.add(watermolecule, 1, verbose, 6.2)
+ccontainer6.add(propylene, 1, verbose)
+
+ccontainer6.add(watermolecule, 1, verbose)
 // We shouldnt have a reaction
 ccontainer6.container.length.should.equal(3)
 ccontainer6.container[1].should.equal(propylene)
 ccontainer6.container[2].should.equal(watermolecule)
+process.exit('
 
 const sulfuric_acid = MoleculeFactory("OS(=O)(=O)O", verbose)
+ccontainer6.test_number = 7
 if (verbose) {
     console.log('Sulfuric acid:')
     console.log(sulfuric_acid)
