@@ -673,7 +673,7 @@ if (verbose) {
 
      */
 }
-ccontainer6.add(sulfuric_acid, 1, verbose)
+ccontainer6.add(sulfuric_acid, 1, verbose, 6.3)
 
 
 ccontainer6.length.should.equal(3)
