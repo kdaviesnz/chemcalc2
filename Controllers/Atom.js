@@ -65,7 +65,7 @@ Example oxygen with 2 bonds
     
     const __isNegativelyCharged = (test_number) => {
         
-        /*
+      /*
 How to determine if an atom is negatively charged (ion)
 Eg [Br-]
 A neutral Br atom has 7 valence electrons.
@@ -73,9 +73,10 @@ Hence a Br atom that has more than 7 valence electrons is negatively charged.
 But what if the Bromine atom has more than 7 valence electrons because of a bond?
 In that case we need to take into account that bond.
 Hence:
-const neutral_atom= AtomFactory(atom[0])
-const neutral_atom_valence_electron_count = neutral_atom.slice(4).length
-const is_negatively_charged = (atom.slice(4).length - atom.__bonds.length) > neutral_atom_valence_electron_count 
+const is_negatively_charged = (atom.slice(4).length - atom.__bonds.length) > atom[2]
+
+Example oxygen with 2 bonds
+(8 - 2) > 6
 */
         // Nucleophile
         // 5.1 test 5, [Br-] nucleophile so should return true
