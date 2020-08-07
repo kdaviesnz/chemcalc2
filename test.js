@@ -664,6 +664,14 @@ if (verbose) {
      */
 }
 ccontainer6.add(sulfuric_acid, 1, verbose)
+// SEE organic chemistry 8th edition p245
+// 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the 
+// alkene (a nucleophile) that is bonded to the most hydrogens.
+// 2. H2O (a nucleophile) adds to the carbocation (an electrophile), forming a protonated alcohol.
+// 3. The protonated alcohol loses a proton because the pH of the solution is greater 
+// than the pKa of the protonated alcohol (Section 2.10). 
+// (We saw that protonated alcohols are very strong acids; Section 2.6.)
+
 ccontainer6.length.should.equal(3)
 
 console.log("All tests succeeded")
