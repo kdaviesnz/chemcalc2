@@ -230,6 +230,10 @@ Example oxygen with 2 bonds
     }
 
     const __hydrogens = () => {
+        if (typeof atom !== 'object') {
+            console.log('Atom.js Atom must be an object')
+            process.exit()
+        }
         const atoms = mmolecule.slice(1)
         return atoms.filter(
             (__atom) => {

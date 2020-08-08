@@ -21,7 +21,7 @@ const CMolecule = (mmolecule, verbose) => {
             },
             []
         )
-        if (test_number == 4.1) {
+        if (test_number === 4.1) {
             negatively_charged_atoms.length.should.be.equal(7777)
         }
         return negatively_charged_atoms
@@ -94,14 +94,17 @@ const CMolecule = (mmolecule, verbose) => {
         const hydrogens = __hydrogensNotAttachedToCarbons(test_number)
 
 
-        if (test_number == 4.1) {
+        if (test_number === 4.1) {
             hydrogens.length.should.be.equal(1)
         }
 
-        if (test_number == 5.1) {  // mmolecle = [Br-]
+        if (test_number === 5.1) {  // mmolecle = [Br-]
             hydrogens.length.should.be.equal(0)
         }
 
+        if (test_number * 1=== 7.1) {
+            hydrogens.length.should.be.equal(2)
+        }
 
         // Get hydrogens not attached to carbons
 
@@ -113,10 +116,10 @@ const CMolecule = (mmolecule, verbose) => {
         if (hydrogens.length > 0) {
             // See organic chemistry 8th edition ch 6 p 235
             // C=C (butene, nucleophile) -> HBr (H is electrophile)
-            if (test_number == 4.1) {
+            if (test_number === 4.1) {
                 hydrogens[0][0].should.be.equal(0)
             }
-            electrophile_index = hydrogens[0][0] + 1
+            electrophile_index = hydrogens[0][0]
 
         } else {
 
@@ -294,7 +297,12 @@ Positively charged atoms -->
         }
         // Check atom isnt negatively charged (nucleophile)
         // const CAtom = (atom, current_atom_index, mmolecule)
-        const is_negatively_charged = CAtom(mmolecule[electrophile_index], 0, mmolecule).isNegativelyCharged(test_number)
+        const is_negatively_charged = CAtom(mmolecule[electrophile_index + 1], 0, mmolecule).isNegativelyCharged(test_number)
+
+        if (test_number *1 === 7.1) {
+            is_negatively_charged.should.be.equal(false)
+        }
+
         if (test_number === 5.1) {
             is_negatively_charged.should.be.equal(true)
         }
@@ -305,12 +313,16 @@ Positively charged atoms -->
             }
             return false
         }
+
         if (verbose) {
             console.log("Controllers/Molecule.js::determineElectrophileIndex() Returning electrophile index " + electrophile_index)
             console.log("Molecule ->")
             console.log(mmolecule)
         }
 
+        if (test_number *1 === 7.1) {
+            electrophile_index.should.be.equal(0)
+        }
         return electrophile_index
     }
 

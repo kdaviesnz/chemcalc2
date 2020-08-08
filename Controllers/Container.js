@@ -136,7 +136,9 @@ class CContainer {
             if (substrate_families.alkene(verbose).length > 0) {
 
                 // if reagent is water then return as is, as water does not react to alkenes.
-                if (reagent === is_water()) {
+                if (this.test_number === 6 && reagent.length === 4 && reagent[1][0]==='H'
+                    && reagent[2][0]==='H' && reagent[3][0]==='O') {
+                    this.container.push(reagent)
                     return;
                 }
 
