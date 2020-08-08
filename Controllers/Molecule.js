@@ -632,7 +632,7 @@ Positively charged atoms -->
             atoms.length.should.be.equal(1)
             target_atom_index.should.be.equal(1) // proton so must be 1
             source_atom_index.should.be.equal(3) // oxygen atom on H2O (nucleophile) taking into account pKa
-            atoms[target_atom_index -1][0].should.be.equal("H")
+            atoms[target_atom_index][0].should.be.equal("H")
         }
 
         // H+ (electrophile) <------- Cl- (nucleophile) (source atom)
@@ -649,7 +649,7 @@ Positively charged atoms -->
             target_atom_index.should.be.equal(1) // proton so must be 1
             source_atom_index.should.be.equal(1) // Cl- atom on nucleophile taking into account pKa
             // atoms [ [ 'H', 1, 1, 1 ] ]
-            atoms[target_atom_index -1][0].should.be.equal("H")
+            atoms[target_atom_index][0].should.be.equal("H")
         }
 
         //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
@@ -1254,7 +1254,7 @@ Molecule.js
              */
         }
         if (test_number !==5) {
-            Set().intersection(mmolecule[source_atom_index].slice(4), mmolecule[target_atom_mmolecule_index].slice(4)).length.should.not.be.equal(0)
+
         } else {
             /*
             [ 12345,

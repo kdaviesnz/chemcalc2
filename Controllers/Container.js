@@ -285,6 +285,20 @@ class CContainer {
 
                 reaction = bronstedLowry.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
 
+                if (this.test_number === 7) {
+                    reaction.should.not.be.equal(false)
+                    // SEE organic chemistry 8th edition p245
+// propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
+// 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
+// alkene (a nucleophile) that is bonded to the most hydrogens.
+// 2. H2O (a nucleophile) adds to the carbocation (an electrophile), forming a protonated alcohol.
+// 3. The protonated alcohol loses a proton because the pH of the solution is greater
+// than the pKa of the protonated alcohol (Section 2.10).
+// (We saw that protonated alcohols are very strong acids; Section 2.6.)
+                    // false, protonated propylene, water, deprotonated sulfuric acid
+                    reaction.length.should.be.equal(4)
+                }
+
                 // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
                 if (this.test_number === 4) {
                     reaction.should.not.be.equal(false)
@@ -297,7 +311,21 @@ class CContainer {
                     }
 
                 } else {
+
                     this.container = reaction
+
+                    // SEE organic chemistry 8th edition p245
+// propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
+// 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
+// alkene (a nucleophile) that is bonded to the most hydrogens.
+// 2. H2O (a nucleophile) adds to the carbocation (an electrophile), forming a protonated alcohol.
+// 3. The protonated alcohol loses a proton because the pH of the solution is greater
+// than the pKa of the protonated alcohol (Section 2.10).
+// (We saw that protonated alcohols are very strong acids; Section 2.6.)
+                    if (this.test_number === 7) {
+                        // false, protonated propylene, water, deprotonated sulfuric acid
+                        this.container.length.should.be.equal(4)
+                    }
                 }
 
             } else if (reagent_families.alkene(verbose).length > 0) {

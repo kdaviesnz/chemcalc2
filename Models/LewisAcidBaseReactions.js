@@ -37,6 +37,7 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number, verb
         
         if (test_number !==3 && test_number !==5) {
             console.log("Wrong section for test number " + test_number)
+            (10).should.be.equal(9999)
             process.exit()
         }
 

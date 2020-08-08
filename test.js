@@ -119,11 +119,22 @@ if (verbose) {
 
      */
 }
-ccontainer6.add(sulfuric_acid, 1, verbose, 6.3)
+ccontainer6.add(sulfuric_acid, 1, verbose)
 
 
-ccontainer6.length.should.equal(3)
+ccontainer6.container.length.should.equal(4)
 
+if (verbose) {
+    console.log('Test 7 test.js')
+    console.log('Substrate (protonated propylene) -->')
+    console.log(ccontainer6.container[1])
+    console.log('Water -->')
+    console.log(ccontainer6.container[2])
+    console.log('Reagent (deprotonated sulfuric acid) -->')
+    console.log(ccontainer6.container[3])
+
+}
+console.log('test.js')
 process.exit()
 
 if (verbose) {
