@@ -75,22 +75,24 @@ class CContainer {
             }
 
             // SEE organic chemistry 8th edition p245
-// propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
+            // test 6/7
+// propylene CC=C (test 6) / water H2O (test 6) / sulfuric acid H2SO4 (test 7)
 // 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
 // alkene (a nucleophile) that is bonded to the most hydrogens.
 // 2. H2O (a nucleophile) adds to the carbocation (an electrophile), forming a protonated alcohol.
 // 3. The protonated alcohol loses a proton because the pH of the solution is greater
 // than the pKa of the protonated alcohol (Section 2.10).
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
-            const reagent = this.container.pop()
-
+            const reagent = this.container[this.container -1]
 
             if (this.test_number === 6) {
-
+                // false, propylene, water
+                this.container.length.should.be.equal(3)
             }
 
             if (this.test_number === 7) {
-
+                // false, propylene, water
+                this.container.length.should.be.equal(4)
             }
 
             if (verbose) {
@@ -132,7 +134,6 @@ class CContainer {
                 substrate_families.alkene(verbose).length.should.be.equal(2)
             }
 
-
             if (substrate_families.alkene(verbose).length > 0) {
 
                 // if reagent is water then return as is, as water does not react to alkenes.
@@ -152,8 +153,9 @@ class CContainer {
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
 
                 if (this.test_number === 7) {
-                    // for first round substrate is propyline (CC=C
+                    // for first round substrate is propyline (CC=C)
                     // reagent should be sulfuric acid H2SO4 (electrophile, donates H+)
+                    reagent.length.should.be.equal(5433)
                 }
 
                 // Substrate is alkene (nucleophile)
