@@ -1892,10 +1892,30 @@ Molecule.js
         electrophileIndex: determineElectrophileIndex,
         removeProton: (container, molecule_index, atom_or_atomic_symbol, test_number, verbose) => {
 
+             // SEE organic chemistry 8th edition p245
+// propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
+// 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
+// alkene (a nucleophile) that is bonded to the most hydrogens.
+// 2. H2O (a nucleophile) adds to the carbocation (an electrophile), forming a protonated alcohol.
+// 3. The protonated alcohol loses a proton because the pH of the solution is greater
+// than the pKa of the protonated alcohol (Section 2.10).
+// (We saw that protonated alcohols are very strong acids; Section 2.6.)
+         /*   
+        container = MoleculeController(electrophile_molecule).removeProton(
+            container,
+            electrophile_molecule_index,
+            MoleculeController(electrophile_molecule).itemAt(proton_index),
+            test_number,
+            verbose
+        )
+        */
+            
             if (verbose) {
                 console.log('Controllers/Molecle.js removeProton()')
                 console.log("Container: ->")
                 console.log(container)
+                console.log("mmolecule-->")
+                console.log(mmolecule) // H2O
                 console.log("Molecule index ->")
                 console.log(molecule_index)
                 console.log("Atom or atomic symbol")
