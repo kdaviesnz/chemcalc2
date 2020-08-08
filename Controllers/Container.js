@@ -67,13 +67,20 @@ class CContainer {
         // container[1] is substrate
         if (this.container.length > 2) {
 
-            const substrate = this.container[1]
-
-            if (verbose) {
-                console.log("Controllers/Container.js:: Got substrate ->")
-                console.log(this.container[1])
+            const substrates = this.container.slice(0,this.container.length -1)
+            const reagents = this.container.slice(1,this.container.length)
+            
+            if (this.test_number === 7) {
+                // false, propylene, water, sulfuric acid
+                substrates.length.should.be.equal(2)
+                reagents.length.should.be.equal(2)
             }
-
+            
+            if (verbose) {
+                console.log("Controllers/Container.js:: Got substrates ->")
+                console.log(substrates)
+            }
+            
             // SEE organic chemistry 8th edition p245
             // test 6/7
 // propylene CC=C (test 6) / water H2O (test 6) / sulfuric acid H2SO4 (test 7)
@@ -89,16 +96,42 @@ class CContainer {
                 // false, propylene, water
                 this.container.length.should.be.equal(3)
             }
-
+            
             if (this.test_number === 7) {
                 // false, propylene, water
                 this.container.length.should.be.equal(4)
             }
+            
+            reagents.map(
+                (reagent) => {
+                    
+                    
+                    if (verbose) {
+                        console.log("Controllers/Container.js:: Got reagent ->")
+                        console.log(reagent)
+                    }
+                    
+                    substrates.map(
+                        (substrate) => {
+                    
+                            if (verbose) {
+                                 console.log("Controllers/Container.js:: Got substrate ->")
+                                 console.log(substrate)
+                             }
+                            
+                        }
+                    )
+                    
+                    
+                }
+            )
+           
 
-            if (verbose) {
-                console.log("Controllers/Container.js:: Got reagent ->")
-                console.log(reagent)
-            }
+            
+
+            
+
+            
 
             const substrate_families = Families(substrate.slice(1), verbose).families
             const reagent_families = Families(reagent.slice(1), verbose).families
