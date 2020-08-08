@@ -85,7 +85,11 @@ class CContainer {
             const reagent = this.container.pop()
 
 
-            if (this.test_number == 6 && this.container.length === 2) {
+            if (this.test_number === 6) {
+
+            }
+
+            if (this.test_number === 7) {
 
             }
 
@@ -120,9 +124,14 @@ class CContainer {
                 substrate_families.alkene().length.should.be.equal(2)
             }
 
-            if (this.test_number == 6) {
+            if (this.test_number === 6) {
                 substrate_families.alkene(verbose).length.should.be.equal(2)
             }
+
+            if (this.test_number === 7) {
+                substrate_families.alkene(verbose).length.should.be.equal(2)
+            }
+
 
             if (substrate_families.alkene(verbose).length > 0) {
 
@@ -132,13 +141,18 @@ class CContainer {
                 }
 
                 // SEE organic chemistry 8th edition p245
-// propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
+// propylene CC=C (test 6) / water H2O (test 6) / sulfuric acid H2SO4 (test 7)
 // 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
 // alkene (a nucleophile) that is bonded to the most hydrogens.
 // 2. H2O (a nucleophile) adds to the carbocation (an electrophile), forming a protonated alcohol.
 // 3. The protonated alcohol loses a proton because the pH of the solution is greater
 // than the pKa of the protonated alcohol (Section 2.10).
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
+
+                if (this.test_number === 7) {
+                    // for first round substrate is propyline (CC=C
+                    // reagent should be sulfuric acid H2SO4 (electrophile, donates H+)
+                }
 
                 // Substrate is alkene (nucleophile)
                 // Find the nucleophile on the C=C bond
@@ -175,6 +189,11 @@ class CContainer {
 // than the pKa of the protonated alcohol (Section 2.10).
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
                 if (this.test_number === 6) {
+                     // const nucleophile_atom_index = this.MoleculeController(substrate).nucleophileIndex(this.test_number)
+                    nucleophile_atom_index.should.be.equal(8)
+                }
+
+                if (this.test_number === 7) {
                     /*
                     [ 12345,
   [ 'H', 1, 1, 1, 'bqdtz0ga0kdktnhg6', 'bqdtz0ga0kdktnhfu' ],
@@ -235,9 +254,16 @@ class CContainer {
 // than the pKa of the protonated alcohol (Section 2.10).
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
                 const electrophile_atom_index = this.MoleculeController(reagent).electrophileIndex(this.test_number + ".1")
-                if (this.test_number === 6 && this.container.length === 2) {
-                    console.log(reagent)
-                    electrophile_atom_index.should.be.equal(1)
+                if (this.test_number === 6) {
+                    // Shouldnt be here as reagent is water and substrate is alkene
+                    console.log("Error - trying to react water with an alkene")
+                    process.exit()
+                }
+
+                if (this.test_number === 7) {
+                    // electrophile is sulfuric acid H2SO4
+                    // Index of first hydrogen atom
+                    electrophile_atom_index.should.be.equal(0)
                 }
 
                 // See organic chemistry 8th edition ch 6 p 235
@@ -255,8 +281,6 @@ class CContainer {
                     Set().intersection(nucleophile_molecule[nucleophile_atom_index].slice(4), nucleophile_molecule[8].slice(4)).length.should.be.equal(4)
                 }
 
-                // const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
-                // test 4 CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
                 reaction = bronstedLowry.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
 
                 // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
