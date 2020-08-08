@@ -68,7 +68,7 @@ class CContainer {
         if (this.container.length > 2) {
 
             const substrates = this.container.slice(0,this.container.length -1)
-            const reagents = this.container.slice(1,this.container.length)
+            const reagents = this.container.slice(1,this.container.length).reverse()
             
             if (this.test_number === 7) {
                 // false, propylene, water, sulfuric acid
@@ -119,6 +119,89 @@ class CContainer {
                                  console.log(substrate)
                              }
                             
+                             if (reagent !== substrate) {
+                            
+                                 const substrate_families = Families(substrate.slice(1), verbose).families
+                                 const reagent_families = Families(reagent.slice(1), verbose).families
+                            
+                                 if (verbose) {
+                console.log("Controllers/Container.js substrate families ->")
+                console.log(substrate_families)
+                console.log("Controllers/Container.js substrate alkene ->")
+                console.log(substrate_families.alkene(verbose))
+                console.log("Controllers/Container.js reagent families ->")
+                console.log(reagent_families)
+                console.log("Controllers/Container.js reagent alkene ->")
+                console.log(reagent_families.alkene(verbose))
+                                 }
+                                 
+                                 const bronstedLowry = BronstedLowryAcidBaseReactions(this.container, this.MoleculeController, this.test_number, verbose)
+                                 const lewis = LewisAcidBaseReactions(this.container, this.MoleculeController, this.test_number, verbose)
+
+                                 // The functional group of an alkene is the C=C double bond.
+                                 // The C=C double bond is nucleophilic
+                                 let reaction = false
+                                 
+                                 
+                                 // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
+                                 if (this.test_number === 4) {
+                substrate_families.alkene().length.should.be.equal(2)
+                                  }
+
+                                  if (this.test_number === 6) {
+                substrate_families.alkene(verbose).length.should.be.equal(2)
+                                  }
+
+                                  if (this.test_number === 7) {
+                substrate_families.alkene(verbose).length.should.be.equal(2)
+                                  }
+                                 
+                                 
+                                  if (substrate_families.alkene(verbose).length > 0) {
+                                      
+                                      // if reagent is water then return as is, as water does not react to alkenes.
+                                      if (reagent.length === 4 && reagent[1][0]==='H'
+                    && reagent[2][0]==='H' && reagent[3][0]==='O') {
+                    
+                    return;
+                                       }
+                                      
+                                       // SEE organic chemistry 8th edition p245
+// propylene CC=C (test 6) / water H2O (test 6) / sulfuric acid H2SO4 (test 7)
+// 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
+// alkene (a nucleophile) that is bonded to the most hydrogens.
+// 2. H2O (a nucleophile) adds to the carbocation (an electrophile), forming a protonated alcohol.
+// 3. The protonated alcohol loses a proton because the pH of the solution is greater
+// than the pKa of the protonated alcohol (Section 2.10).
+// (We saw that protonated alcohols are very strong acids; Section 2.6.)
+
+                                       if (this.test_number === 7) {
+                    // for first round substrate is propyline (CC=C)
+                    // reagent should be sulfuric acid H2SO4 (electrophile, donates H+)
+                                            reagent.length.should.be.equal(5433)
+                                       }
+                                        
+                                      // Substrate is alkene (nucleophile)
+                // Find the nucleophile on the C=C bond
+                const nucleophile_molecule = substrate
+                const nucleophile_molecule_index = 1
+
+                // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
+                // Check nucleophile is CC=CC
+                if (this.test_number === 4) {
+                    nucleophile_molecule[6][0].should.be.equal("C")
+                    nucleophile_molecule[8][0].should.be.equal("C")
+                    // Confirm double bond
+                    Set().intersection(nucleophile_molecule[6].slice(4), nucleophile_molecule[8].slice(4)).length.should.be.equal(4)
+                                        }
+                                      
+                                      
+                                  }
+                                 
+                                 
+                             }
+                             
+                             
                         }
                     )
                     
@@ -133,77 +216,20 @@ class CContainer {
 
             
 
-            const substrate_families = Families(substrate.slice(1), verbose).families
-            const reagent_families = Families(reagent.slice(1), verbose).families
+            
 
-            if (verbose) {
-                console.log("Controllers/Container.js substrate families ->")
-                console.log(substrate_families)
-                console.log("Controllers/Container.js substrate alkene ->")
-                console.log(substrate_families.alkene(verbose))
-                console.log("Controllers/Container.js reagent families ->")
-                console.log(reagent_families)
-                console.log("Controllers/Container.js reagent alkene ->")
-                console.log(reagent_families.alkene(verbose))
-            }
+            
 
-            const bronstedLowry = BronstedLowryAcidBaseReactions(this.container, this.MoleculeController, this.test_number, verbose)
-            const lewis = LewisAcidBaseReactions(this.container, this.MoleculeController, this.test_number, verbose)
+            
 
-            // The functional group of an alkene is the C=C double bond.
-            // The C=C double bond is nucleophilic
-            let reaction = false
-
-            // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-            if (this.test_number === 4) {
-                substrate_families.alkene().length.should.be.equal(2)
-            }
-
-            if (this.test_number === 6) {
-                substrate_families.alkene(verbose).length.should.be.equal(2)
-            }
-
-            if (this.test_number === 7) {
-                substrate_families.alkene(verbose).length.should.be.equal(2)
-            }
+            
 
             if (substrate_families.alkene(verbose).length > 0) {
 
-                // if reagent is water then return as is, as water does not react to alkenes.
-                if (this.test_number === 6 && reagent.length === 4 && reagent[1][0]==='H'
-                    && reagent[2][0]==='H' && reagent[3][0]==='O') {
-                    this.container.push(reagent)
-                    return;
-                }
+           
+                
 
-                // SEE organic chemistry 8th edition p245
-// propylene CC=C (test 6) / water H2O (test 6) / sulfuric acid H2SO4 (test 7)
-// 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
-// alkene (a nucleophile) that is bonded to the most hydrogens.
-// 2. H2O (a nucleophile) adds to the carbocation (an electrophile), forming a protonated alcohol.
-// 3. The protonated alcohol loses a proton because the pH of the solution is greater
-// than the pKa of the protonated alcohol (Section 2.10).
-// (We saw that protonated alcohols are very strong acids; Section 2.6.)
-
-                if (this.test_number === 7) {
-                    // for first round substrate is propyline (CC=C)
-                    // reagent should be sulfuric acid H2SO4 (electrophile, donates H+)
-                    reagent.length.should.be.equal(5433)
-                }
-
-                // Substrate is alkene (nucleophile)
-                // Find the nucleophile on the C=C bond
-                const nucleophile_molecule = substrate
-                const nucleophile_molecule_index = 1
-
-                // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-                // Check nucleophile is CC=CC
-                if (this.test_number === 4) {
-                    nucleophile_molecule[6][0].should.be.equal("C")
-                    nucleophile_molecule[8][0].should.be.equal("C")
-                    // Confirm double bond
-                    Set().intersection(nucleophile_molecule[6].slice(4), nucleophile_molecule[8].slice(4)).length.should.be.equal(4)
-                }
+                
 
                 const electrophile_molecule = reagent
                 const electrophile_molecule_index = container.length -1
