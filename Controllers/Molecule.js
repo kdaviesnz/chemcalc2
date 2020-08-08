@@ -1890,7 +1890,74 @@ Molecule.js
         atomsWithFreeSlots: __atomsWithFreeSlots,
         nucleophileIndex: determineNucleophileIndex,
         electrophileIndex: determineElectrophileIndex,
-        removeProton: (container, molecule_index, atom_or_atomic_symbol, test_number) => {
+        removeProton: (container, molecule_index, atom_or_atomic_symbol, test_number, verbose) => {
+
+            if (verbose) {
+                console.log('Controllers/Molecle.js removeProton()')
+                console.log("Container: ->")
+                console.log(container)
+                console.log("Molecule index ->")
+                console.log(molecule_index)
+                console.log("Atom or atomic symbol")
+                console.log(atom_or_atomic_symbol)
+                console.log("Test number")
+                console.log(test_number)
+                /*
+                Controllers/Molecle.js removeProton()
+Container: ->
+[ false,
+  [ 12345,
+    [ 'H', 1, 1, 1, 'bqdtz0hsckdkzprx7', 'bqdtz0hsckdkzprwv' ],
+    [ 'H', 1, 1, 1, 'bqdtz0hsckdkzprx8', 'bqdtz0hsckdkzprww' ],
+    [ 'H', 1, 1, 1, 'bqdtz0hsckdkzprx9', 'bqdtz0hsckdkzprwx' ],
+    [ 'C',
+      6,
+      4,
+      4,
+      'bqdtz0hsckdkzprwv',
+      'bqdtz0hsckdkzprww',
+      'bqdtz0hsckdkzprwx',
+      'bqdtz0hsckdkzprwy',
+      'bqdtz0hsckdkzprx2',
+      'bqdtz0hsckdkzprx7',
+      'bqdtz0hsckdkzprx8',
+      'bqdtz0hsckdkzprx9' ],
+    [ 'H', 1, 1, 1, 'bqdtz0hsckdkzprxa', 'bqdtz0hsckdkzprwz' ],
+    [ 'C',
+      6,
+      4,
+      4,
+      'bqdtz0hsckdkzprwz',
+      'bqdtz0hsckdkzprx0',
+      'bqdtz0hsckdkzprx1',
+      'bqdtz0hsckdkzprx2',
+      'bqdtz0hsckdkzprwy',
+      'bqdtz0hsckdkzprx6',
+      'bqdtz0hsckdkzprx5',
+      'bqdtz0hsckdkzprxa' ],
+    [ 'H', 1, 1, 1, 'bqdtz0hsckdkzprxb', 'bqdtz0hsckdkzprx3' ],
+    [ 'H', 1, 1, 1, 'bqdtz0hsckdkzprxc', 'bqdtz0hsckdkzprx4' ],
+    [ 'C',
+      6,
+      4,
+      4,
+      'bqdtz0hsckdkzprx3',
+      'bqdtz0hsckdkzprx4',
+      'bqdtz0hsckdkzprx5',
+      'bqdtz0hsckdkzprx6',
+      'bqdtz0hsckdkzprx1',
+      'bqdtz0hsckdkzprx0',
+      'bqdtz0hsckdkzprxb',
+      'bqdtz0hsckdkzprxc' ] ] ]
+Molecule index ->
+2
+Atom or atomic symbol
+[ 'H', 1, 1, 1, 'bqdtz0hsckdkzprwr', 'bqdtz0hsckdkzprwj' ]
+Test number
+6
+
+                 */
+            }
 
             var test_mode = false
             var test_mode_2 = false

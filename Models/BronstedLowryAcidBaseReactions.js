@@ -393,14 +393,15 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         if (test_number === 6) {
             // hydrogen water atom
             electrophile_molecule_index.should.be.equal(2)   
-            proton_index.should.be.equal(1)
+            proton_index.should.be.equal(2)
         }
         
         container = MoleculeController(electrophile_molecule).removeProton(
             container,
             electrophile_molecule_index,
             MoleculeController(electrophile_molecule).itemAt(proton_index),
-            test_number
+            test_number,
+            verbose
         )
 
         if (test_number === 2) {
