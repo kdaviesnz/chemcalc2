@@ -84,6 +84,7 @@ class CContainer {
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
             const reagent = this.container.pop()
 
+
             if (this.test_number == 6 && this.container.length === 2) {
 
             }
@@ -124,6 +125,11 @@ class CContainer {
             }
 
             if (substrate_families.alkene(verbose).length > 0) {
+
+                // if reagent is water then return as is, as water does not react to alkenes.
+                if (reagent === is_water()) {
+                    return;
+                }
 
                 // SEE organic chemistry 8th edition p245
 // propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
@@ -169,7 +175,6 @@ class CContainer {
 // than the pKa of the protonated alcohol (Section 2.10).
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
                 if (this.test_number === 6) {
-                    console.log(substrate)
                     /*
                     [ 12345,
   [ 'H', 1, 1, 1, 'bqdtz0ga0kdktnhg6', 'bqdtz0ga0kdktnhfu' ],
