@@ -26,6 +26,70 @@ class CContainer {
         if (undefined === substrates[substrate_index]) {
             return
         }
+        const substrate = substrate[substrate_index]
+        
+        if (verbose) {
+            console.log("Controllers/Container.js:: Got substrate ->")
+            console.log(substrate)
+        }
+        
+        if (reagent !== substrate) {
+            
+            const substrate_families = Families(substrate.slice(1), verbose).families
+            const reagent_families = Families(reagent.slice(1), verbose).families
+                            
+            if (verbose) {
+                console.log("Controllers/Container.js substrate families ->")
+                console.log(substrate_families)
+                console.log("Controllers/Container.js substrate alkene ->")
+                console.log(substrate_families.alkene(verbose))
+                console.log("Controllers/Container.js reagent families ->")
+                console.log(reagent_families)
+                console.log("Controllers/Container.js reagent alkene ->")
+                console.log(reagent_families.alkene(verbose))
+             }
+            
+             const bronstedLowry = BronstedLowryAcidBaseReactions(this.container, this.MoleculeController, this.test_number, verbose)
+             const lewis = LewisAcidBaseReactions(this.container, this.MoleculeController, this.test_number, verbose)
+
+             // The functional group of an alkene is the C=C double bond.
+             // The C=C double bond is nucleophilic
+             let reaction = false
+                                 
+                                 
+             // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
+             if (this.test_number === 4) {
+                  substrate_families.alkene().length.should.be.equal(2)
+             }
+
+             if (this.test_number === 6) {
+                  substrate_families.alkene(verbose).length.should.be.equal(2)
+             }
+
+             if (this.test_number === 7) {
+                  substrate_families.alkene(verbose).length.should.be.equal(2)
+             }
+                   
+             if (substrate_families.alkene(verbose).length > 0) {
+                 
+                 
+                 
+                 
+             } else if (reagent_families.alkene(verbose).length > 0) {
+                 
+                 
+                 
+                 
+             } 
+            
+             if (!reaction) {
+                // Not alkene              
+                reaction = bronstedLowry.react()
+            }
+            
+            
+        }
+        
         
     }
 
@@ -66,47 +130,12 @@ class CContainer {
                     substrates.map(
                         (substrate) => {
                     
-                            if (verbose) {
-                                 console.log("Controllers/Container.js:: Got substrate ->")
-                                 console.log(substrate)
-                             }
+                            
                             
                              if (reagent !== substrate) {
                             
-                                 const substrate_families = Families(substrate.slice(1), verbose).families
-                                 const reagent_families = Families(reagent.slice(1), verbose).families
-                            
-                                 if (verbose) {
-                console.log("Controllers/Container.js substrate families ->")
-                console.log(substrate_families)
-                console.log("Controllers/Container.js substrate alkene ->")
-                console.log(substrate_families.alkene(verbose))
-                console.log("Controllers/Container.js reagent families ->")
-                console.log(reagent_families)
-                console.log("Controllers/Container.js reagent alkene ->")
-                console.log(reagent_families.alkene(verbose))
-                                 }
-                                 
-                                 const bronstedLowry = BronstedLowryAcidBaseReactions(this.container, this.MoleculeController, this.test_number, verbose)
-                                 const lewis = LewisAcidBaseReactions(this.container, this.MoleculeController, this.test_number, verbose)
-
-                                 // The functional group of an alkene is the C=C double bond.
-                                 // The C=C double bond is nucleophilic
-                                 let reaction = false
                                  
                                  
-                                 // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-                                 if (this.test_number === 4) {
-                substrate_families.alkene().length.should.be.equal(2)
-                                  }
-
-                                  if (this.test_number === 6) {
-                substrate_families.alkene(verbose).length.should.be.equal(2)
-                                  }
-
-                                  if (this.test_number === 7) {
-                substrate_families.alkene(verbose).length.should.be.equal(2)
-                                  }
                                  
                                  
                                   if (substrate_families.alkene(verbose).length > 0) {
