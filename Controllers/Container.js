@@ -262,84 +262,38 @@ class CContainer {
                     electrophile_atom_index.should.be.equal(1)
                                          }
                                       
-                                      
-                                  }
-                                 
-                                 
-                             }
-                             
-                             
-                        }
-                    )
-                    
-                    
-                }
-            )
-           
-
-            
-
-            
-
-            
-
-            
-
-            
-
-            
-
-            
-
-            if (substrate_families.alkene(verbose).length > 0) {
-
-           
-                
-
-                
-
-                
-
-                 
-
-                
-
-                
-
-                
-
-                // See organic chemistry 8th edition ch 6 p 235
-                // C=C (butene, nucleophile) -> HBr (H is electrophile)
-                if (this.test_number === 4) {
-                    nucleophile_atom_index.should.be.equal(6)  // correct
+                                         // See organic chemistry 8th edition ch 6 p 235
+                                         // C=C (butene, nucleophile) -> HBr (H is electrophile)
+                                         if (this.test_number === 4) {
+                                              nucleophile_atom_index.should.be.equal(6)  // correct
                     nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("C")
                     // Check double bond
-                    Set().intersection(nucleophile_molecule[nucleophile_atom_index].slice(4), nucleophile_molecule[8].slice(4)).length.should.be.equal(4)
-                }
+                                              Set().intersection(nucleophile_molecule[nucleophile_atom_index].slice(4), nucleophile_molecule[8].slice(4)).length.should.be.equal(4)
+                                          }
 
-                reaction = bronstedLowry.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
+                                          reaction = bronstedLowry.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
 
-                if (this.test_number === 7) {
+                                          if (this.test_number === 7) {
+                                              reaction.should.not.be.equal(false)
+                                          }
+
+                                          // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
+                                          if (this.test_number === 4) {
                     reaction.should.not.be.equal(false)
-                }
+                                          }
+                                      
+                                          if (reaction === false) {
+                                               reaction = lewis.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, this.test_number)
+                                               if (reaction !== false) {
+                                                    this.container = reaction
+                                                }
 
-                // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-                if (this.test_number === 4) {
-                    reaction.should.not.be.equal(false)
-                }
-
-                if (reaction === false) {
-                    reaction = lewis.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, this.test_number)
-                    if (reaction !== false) {
-                        this.container = reaction
-                    }
-
-                } else {
-
-                    this.container = reaction
+                                          } else {
+                                      
+                                              this.container = reaction
 
                 
-                    if (this.test_number === 7) {
+                                               if (this.test_number === 7) {
                         // false, protonated propylene, water, deprotonated sulfuric acid
                         this.container.length.should.be.equal(4)
                         
@@ -356,13 +310,15 @@ class CContainer {
                     reaction[1].length.should.be.equal(777) // protonated propylene 
                     reaction[2].length.should.be.equal(555) // water 
                     reaction[3].length.should.be.equal(2223) // deprotonated sulfuric acid 
-                    reaction.length.should.be.equal(4)
-                    }
-                }
-
-            } else if (reagent_families.alkene(verbose).length > 0) {
-
-                // Reagent is alkene
+                                                     reaction.length.should.be.equal(4)
+                                                }
+                                              
+                                                    
+                                          }
+                                      
+                                  } else if (reagent_families.alkene(verbose).length > 0) {
+                                      
+                                      // Reagent is alkene
                 const nucleophile_molecule = reagent
                 const electrophile_molecule = substrate
                 const nucleophile_molecule_index = 2
@@ -383,16 +339,17 @@ class CContainer {
                 // const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
                 reaction = bronstedLowry.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
 
-                if (reaction === false) {
+                                      if (reaction === false) {
                     // substrate does not have a proton
                     // determine electrophile atom on the substrate
                     // do Lewis acid base teaction
                     reaction = lewis.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, this.test_number)
-                }
-
-            }
-
-            if (!reaction) {
+                                      }
+                                      
+                                      
+                                  }
+                                 
+                                  if (!reaction) {
                 // Not alkene
                 
                 reaction = bronstedLowry.react()
@@ -417,13 +374,13 @@ class CContainer {
                 reaction.should.be.equal(false)
             }
 
-            if (!reaction) {
+                                  if (!reaction) {
                 // No alkene and not Bronsted Lowry
                 // do Lewis acid base teaction
                 reaction = lewis.react(null, null, null, null, this.test_number, verbose)
-            }
-
-            if (this.test_number === 1) {
+                                  }
+                                 
+                                  if (this.test_number === 1) {
                 reaction.length.should.be.equal(3)
                 reaction[0].should.be.equal(false)
                 reaction[1].length.should.be.equal(2)
@@ -446,10 +403,10 @@ class CContainer {
                 reaction[2].length.should.be.equal(4)
                 reaction[2][0].should.be.equal(14)
                 reaction[2][1][0].should.be.equal("H")
-                reaction[2][3][0].should.be.equal("O")
-            }
-
-            if (this.test_number === 3) {
+                                        reaction[2][3][0].should.be.equal("O")
+                                  }
+                                 
+                                  if (this.test_number === 3) {
                 reaction.length.should.be.equal(2) // should be 2
                 reaction[0].should.be.equal(false)
                 reaction[1].length.should.be.equal(14)
@@ -469,10 +426,23 @@ class CContainer {
                 reaction[1][13][0].should.be.equal("Cl")
                 // check for bond between Al and Oxygen
                 Set().intersection(reaction[1][5].slice(4), reaction[1][10].slice(4)).length.should.not.be.equal(0)
-            }
+                                  }
 
 
-            this.container = reaction
+                                  this.container = reaction
+                                 
+                                 
+                             }
+                             
+                             
+                        }
+                    )
+                    
+                    
+                }
+            )
+           
+
 
         } else {
             console.log("Controller/Container.js:: Container only has substrate so no processing a reaction ")
