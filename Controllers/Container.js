@@ -20,8 +20,351 @@ class CContainer {
         }
     }
 
-    __doReactionsRecursive() {
+    __doReactionsRecursive(reagent_index) {
+       
+        const reagents = this.container.slice(1,this.container.length)
         
+        if (undefined === reagents[reagent_index]) {
+            return
+        }
+            
+                    
+                    const substrates = this.container.slice(0,this.container.length)
+                    
+                    if (verbose) {
+                        console.log("Controllers/Container.js:: Got reagent ->")
+                        console.log(reagent)
+                    }
+                    
+                    substrates.map(
+                        (substrate) => {
+                    
+                            if (verbose) {
+                                 console.log("Controllers/Container.js:: Got substrate ->")
+                                 console.log(substrate)
+                             }
+                            
+                             if (reagent !== substrate) {
+                            
+                                 const substrate_families = Families(substrate.slice(1), verbose).families
+                                 const reagent_families = Families(reagent.slice(1), verbose).families
+                            
+                                 if (verbose) {
+                console.log("Controllers/Container.js substrate families ->")
+                console.log(substrate_families)
+                console.log("Controllers/Container.js substrate alkene ->")
+                console.log(substrate_families.alkene(verbose))
+                console.log("Controllers/Container.js reagent families ->")
+                console.log(reagent_families)
+                console.log("Controllers/Container.js reagent alkene ->")
+                console.log(reagent_families.alkene(verbose))
+                                 }
+                                 
+                                 const bronstedLowry = BronstedLowryAcidBaseReactions(this.container, this.MoleculeController, this.test_number, verbose)
+                                 const lewis = LewisAcidBaseReactions(this.container, this.MoleculeController, this.test_number, verbose)
+
+                                 // The functional group of an alkene is the C=C double bond.
+                                 // The C=C double bond is nucleophilic
+                                 let reaction = false
+                                 
+                                 
+                                 // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
+                                 if (this.test_number === 4) {
+                substrate_families.alkene().length.should.be.equal(2)
+                                  }
+
+                                  if (this.test_number === 6) {
+                substrate_families.alkene(verbose).length.should.be.equal(2)
+                                  }
+
+                                  if (this.test_number === 7) {
+                substrate_families.alkene(verbose).length.should.be.equal(2)
+                                  }
+                                 
+                                 
+                                  if (substrate_families.alkene(verbose).length > 0) {
+                                      
+                                      // if reagent is water then return as is, as water does not react to alkenes.
+                                      if (reagent.length === 4 && reagent[1][0]==='H'
+                    && reagent[2][0]==='H' && reagent[3][0]==='O') {
+                    
+                    return;
+                                       }
+                                      
+                                       // SEE organic chemistry 8th edition p245
+// propylene CC=C (test 6) / water H2O (test 6) / sulfuric acid H2SO4 (test 7)
+// 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
+// alkene (a nucleophile) that is bonded to the most hydrogens.
+// 2. H2O (a nucleophile) adds to the carbocation (an electrophile), forming a protonated alcohol.
+// 3. The protonated alcohol loses a proton because the pH of the solution is greater
+// than the pKa of the protonated alcohol (Section 2.10).
+// (We saw that protonated alcohols are very strong acids; Section 2.6.)
+
+                                       if (this.test_number === 7) {
+                    // for first round substrate is propyline (CC=C)
+                    // reagent should be sulfuric acid H2SO4 (electrophile, donates H+)
+                                            reagent.length.should.be.equal(5433)
+                                       }
+                                        
+                                      // Substrate is alkene (nucleophile)
+                                      // Find the nucleophile on the C=C bond
+                                      const nucleophile_molecule = substrate
+                                      const nucleophile_molecule_index = 1
+
+                                      // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
+                                      // Check nucleophile is CC=CC
+                                      if (this.test_number === 4) {
+                    nucleophile_molecule[6][0].should.be.equal("C")
+                    nucleophile_molecule[8][0].should.be.equal("C")
+                                             // Confirm double bond
+                                             Set().intersection(nucleophile_molecule[6].slice(4), nucleophile_molecule[8].slice(4)).length.should.be.equal(4)
+                                        }
+                                      
+                                        const electrophile_molecule = reagent
+                                        const electrophile_molecule_index = container.length -1
+                
+               
+
+                                        if (this.test_number === 4) {
+                    electrophile_molecule[1][0].should.be.equal("H")
+                    electrophile_molecule[2][0].should.be.equal("Br")
+                                             Set().intersection(electrophile_molecule[1].slice(4), electrophile_molecule[2].slice(4)).length.should.be.equal(2)
+                                         }
+                                         
+                                         if (this.test_number === 7) {
+                                            // sulfuric acid
+                                            electrophile_molecule_index.should.be.equal(3)
+                                         }
+
+                                         const nucleophile_atom_index = this.MoleculeController(substrate).nucleophileIndex(this.test_number)
+
+                // SEE organic chemistry 8th edition p245
+// propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
+// 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
+// alkene (a nucleophile) that is bonded to the most hydrogens.
+// 2. H2O (a nucleophile) adds to the carbocation (an electrophile), forming a protonated alcohol.
+// 3. The protonated alcohol loses a proton because the pH of the solution is greater
+// than the pKa of the protonated alcohol (Section 2.10).
+// (We saw that protonated alcohols are very strong acids; Section 2.6.)
+                                         if (this.test_number === 6) {
+                     // const nucleophile_atom_index = this.MoleculeController(substrate).nucleophileIndex(this.test_number)
+                    nucleophile_atom_index.should.be.equal(8)
+                                         }
+                                      
+                                         if (this.test_number === 7) {
+                    /*
+                    
+                     */
+                    // Should be 8 not 9
+                    // const nucleophile_atom_index = this.MoleculeController(substrate).nucleophileIndex(this.test_number)
+                    nucleophile_atom_index.should.be.equal(8)
+                                         }
+                                      
+                                         // SEE organic chemistry 8th edition p245
+// propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
+// 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
+// alkene (a nucleophile) that is bonded to the most hydrogens.
+// 2. H2O (a nucleophile) adds to the carbocation (an electrophile), forming a protonated alcohol.
+// 3. The protonated alcohol loses a proton because the pH of the solution is greater
+// than the pKa of the protonated alcohol (Section 2.10).
+// (We saw that protonated alcohols are very strong acids; Section 2.6.)
+                                        const electrophile_atom_index = this.MoleculeController(reagent).electrophileIndex(this.test_number + ".1")
+                                        if (this.test_number === 6) {
+                    // Shouldnt be here as reagent is water and substrate is alkene
+                    console.log("Error - trying to react water with an alkene")
+                                             process.exit()
+                                        }
+                                      
+                                        if (this.test_number === 7) {
+                    // electrophile is sulfuric acid H2SO4
+                    // Index of first hydrogen atom
+                    electrophile_atom_index.should.be.equal(0)
+                                         }
+
+                // See organic chemistry 8th edition ch 6 p 235
+                // C=C (butene, nucleophile) -> HBr (H is electrophile)
+                                         if (this.test_number === 4) {
+                    electrophile_atom_index.should.be.equal(1)
+                                         }
+                                      
+                                         // See organic chemistry 8th edition ch 6 p 235
+                                         // C=C (butene, nucleophile) -> HBr (H is electrophile)
+                                         if (this.test_number === 4) {
+                                              nucleophile_atom_index.should.be.equal(6)  // correct
+                    nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("C")
+                    // Check double bond
+                                              Set().intersection(nucleophile_molecule[nucleophile_atom_index].slice(4), nucleophile_molecule[8].slice(4)).length.should.be.equal(4)
+                                          }
+
+                                          reaction = bronstedLowry.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
+
+                                          if (this.test_number === 7) {
+                                              reaction.should.not.be.equal(false)
+                                          }
+
+                                          // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
+                                          if (this.test_number === 4) {
+                    reaction.should.not.be.equal(false)
+                                          }
+                                      
+                                          if (reaction === false) {
+                                               reaction = lewis.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, this.test_number)
+                                               if (reaction !== false) {
+                                                    this.container = reaction
+                                                }
+
+                                          } else {
+                                      
+                                              this.container = reaction
+
+                
+                                               if (this.test_number === 7) {
+                        // false, protonated propylene, water, deprotonated sulfuric acid
+                        this.container.length.should.be.equal(4)
+                        
+                    // SEE organic chemistry 8th edition p245
+// propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (test 7)
+// 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
+// alkene (a nucleophile) that is bonded to the most hydrogens.
+// 2. H2O (a nucleophile) adds to the carbocation (an electrophile), forming a protonated alcohol.
+// 3. The protonated alcohol loses a proton because the pH of the solution is greater
+// than the pKa of the protonated alcohol (Section 2.10).
+// (We saw that protonated alcohols are very strong acids; Section 2.6.)
+                    // false, protonated propylene, water, deprotonated sulfuric acid
+                    reaction[0].should.be.equal(false)
+                    reaction[1].length.should.be.equal(777) // protonated propylene 
+                    reaction[2].length.should.be.equal(555) // water 
+                    reaction[3].length.should.be.equal(2223) // deprotonated sulfuric acid 
+                                                     reaction.length.should.be.equal(4)
+                                                }
+                                              
+                                                    
+                                          }
+                                      
+                                  } else if (reagent_families.alkene(verbose).length > 0) {
+                                      
+                                      // Reagent is alkene
+                const nucleophile_molecule = reagent
+                const electrophile_molecule = substrate
+                const nucleophile_molecule_index = 2
+                const electrophile_molecule_index = 1
+
+                // Find the nucleophile on the C=C bond
+                const nucleophile_atom_index = this.MoleculeController(reagent).determineNucleophileIndex()
+
+                // Find the nucleophile
+                const electrophile_atom_index = this.MoleculeController(substrate).determineElectrophileIndex()
+
+
+                if (this.test_number === 4) {
+                    reagent[nucleophile_atom_index][0].should.be.equal("C")
+                    AtomController(reagent[nucleophile_atom_index], nucleophile_atom_index, reagent.slice(1)).bondCount.should.be.equal(2)
+                }
+
+                // const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
+                reaction = bronstedLowry.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
+
+                                      if (reaction === false) {
+                    // substrate does not have a proton
+                    // determine electrophile atom on the substrate
+                    // do Lewis acid base teaction
+                    reaction = lewis.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, this.test_number)
+                                      }
+                                      
+                                      
+                                  }
+                                 
+                                  if (!reaction) {
+                // Not alkene
+                
+                reaction = bronstedLowry.react()
+            }
+
+            if (this.test_number === 1) {
+                reaction.should.not.be.equal(false)
+            }
+
+            // [Br-] (nucleophile) -----> carbocation
+            // Br atom should bond to carbon that has three bonds
+            // Target atom index should be 8
+            // Source atom index should be 1
+              // Organic Chemistry 8th edition, P199
+        // test_number 5
+        // [Br-] + carbocation (alkane)
+        // electrophile is [C+] cation on carbocation
+        // nucleophile is [Br-]
+        // carbocation is added to [Br-]
+        // Br and C form bond
+            if (this.test_number === 5) {
+                reaction.should.be.equal(false)
+            }
+
+                                  if (!reaction) {
+                // No alkene and not Bronsted Lowry
+                // do Lewis acid base teaction
+                reaction = lewis.react(null, null, null, null, this.test_number, verbose)
+                                  }
+                                 
+                                  if (this.test_number === 1) {
+                reaction.length.should.be.equal(3)
+                reaction[0].should.be.equal(false)
+                reaction[1].length.should.be.equal(2)
+                reaction[1][0].should.be.equal(2.86)
+                reaction[1][1][0].should.be.equal("Cl")
+                reaction[2].length.should.be.equal(5)
+                reaction[2][0].should.be.equal(-1.74)
+                reaction[2][1][0].should.be.equal("H")
+                reaction[2][3][0].should.be.equal("O")
+                reaction[2][4][0].should.be.equal("H")
+            }
+
+            // [Cl-] (nucleophile)  <- H3O (electrophile)
+            if (this.test_number === 2) {
+                reaction.length.should.be.equal(3)
+                reaction[0].should.be.equal(false)
+                reaction[1].length.should.be.equal(3)
+                reaction[1][0].should.be.equal(-6.3)
+                reaction[1][1][0].should.be.equal("Cl")
+                reaction[2].length.should.be.equal(4)
+                reaction[2][0].should.be.equal(14)
+                reaction[2][1][0].should.be.equal("H")
+                                        reaction[2][3][0].should.be.equal("O")
+                                  }
+                                 
+                                  if (this.test_number === 3) {
+                reaction.length.should.be.equal(2) // should be 2
+                reaction[0].should.be.equal(false)
+                reaction[1].length.should.be.equal(14)
+                reaction[1][0].should.be.equal(-3.5)
+                reaction[1][1][0].should.be.equal("H")
+                reaction[1][2][0].should.be.equal("H")
+                reaction[1][3][0].should.be.equal("H")
+                reaction[1][4][0].should.be.equal("C")
+                reaction[1][5][0].should.be.equal("O")
+                reaction[1][6][0].should.be.equal("H")
+                reaction[1][7][0].should.be.equal("H")
+                reaction[1][8][0].should.be.equal("H")
+                reaction[1][9][0].should.be.equal("C")
+                reaction[1][10][0].should.be.equal("Al")
+                reaction[1][11][0].should.be.equal("Cl")
+                reaction[1][12][0].should.be.equal("Cl")
+                reaction[1][13][0].should.be.equal("Cl")
+                // check for bond between Al and Oxygen
+                Set().intersection(reaction[1][5].slice(4), reaction[1][10].slice(4)).length.should.not.be.equal(0)
+                                  }
+
+
+                                  this.container = reaction
+                                 
+                                 
+                             }
+                             
+                             
+                        }
+                    )
+                    
+                    
+                
     }
     
     add(molecule_array_or_string, units, verbose, test_number) {
@@ -118,6 +461,7 @@ class CContainer {
             // 5. water --> water
             // 6. water --> deprontonated sulfuric acid
             // this needs to be changed to a recursive function as reagents can change
+            if (false) {
             reagents.map(
                 (reagent) => {
                     
@@ -458,6 +802,7 @@ class CContainer {
                     
                 }
             )
+            } // false
            
 
 
