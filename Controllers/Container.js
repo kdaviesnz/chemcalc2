@@ -19,23 +19,50 @@ class CContainer {
             console.log(this)
         }
     }
+    
+    __doReactionRecursive(reagent_index, reagent, substrate_index) {
+        
+        const substrates = this.container.slice(0,this.container.length)
+        if (undefined === substrates[substrate_index]) {
+            return
+        }
+        
+    }
 
     __doReactionsRecursive(reagent_index) {
        
+        // test 7
+            // propylene CC=C (test 6) / water H2O (test 6) / sulfuric acid H2SO4 (test 7)
+            // reagents: sulfuric acid H2SO4, water
+            // substrates: propylene, water, sulfuric acid 
+            // reagent --> substrate
+            // 1. sulfuric acid --> propylene
+            // 2. sulfuric acid --> water
+            // 2. sulfuric acid --> sulfuric acid
+            // 4. water --> protonated propylene
+            // 5. water --> water
+            // 6. water --> deprontonated sulfuric acid
+            // this needs to be changed to a recursive function as reagents can change
         const reagents = this.container.slice(1,this.container.length)
+        if (null === reagent_index) {
+            reagent_index = reagents.length -1
+        }
         
         if (undefined === reagents[reagent_index]) {
             return
         }
             
-                    
-                    const substrates = this.container.slice(0,this.container.length)
-                    
-                    if (verbose) {
+        const reagent = reagents[reagent_index]
+        if (verbose) {
                         console.log("Controllers/Container.js:: Got reagent ->")
                         console.log(reagent)
-                    }
+        }
                     
+                    
+                    
+                    
+                    __doReactionRecursive(reagent_index, reagent, 0)
+        // remove
                     substrates.map(
                         (substrate) => {
                     
@@ -461,6 +488,7 @@ class CContainer {
             // 5. water --> water
             // 6. water --> deprontonated sulfuric acid
             // this needs to be changed to a recursive function as reagents can change
+            __doReactionsRecursive(null)
             if (false) {
             reagents.map(
                 (reagent) => {
