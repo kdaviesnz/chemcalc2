@@ -20,6 +20,10 @@ class CContainer {
         }
     }
 
+    __doReactionsRecursive() {
+        
+    }
+    
     add(molecule_array_or_string, units, verbose, test_number) {
 
         if (undefined !== test_number) {
