@@ -67,7 +67,7 @@ class CContainer {
         // container[1] is substrate
         if (this.container.length > 2) {
 
-            const substrates = this.container.slice(0,this.container.length -1)
+            
             const reagents = this.container.slice(1,this.container.length).reverse()
             
             if (this.test_number === 7) {
@@ -102,9 +102,22 @@ class CContainer {
                 this.container.length.should.be.equal(4)
             }
             
+            // test 7
+            // propylene CC=C (test 6) / water H2O (test 6) / sulfuric acid H2SO4 (test 7)
+            // reagents: sulfuric acid H2SO4, water
+            // substrates: propylene, water, sulfuric acid 
+            // reagent --> substrate
+            // 1. sulfuric acid --> propylene
+            // 2. sulfuric acid --> water
+            // 2. sulfuric acid --> sulfuric acid
+            // 4. water --> protonated propylene
+            // 5. water --> water
+            // 6. water --> deprontonated sulfuric acid
+            // this needs to be changed to a recursive function as reagents can change
             reagents.map(
                 (reagent) => {
                     
+                    const substrates = this.container.slice(0,this.container.length)
                     
                     if (verbose) {
                         console.log("Controllers/Container.js:: Got reagent ->")
