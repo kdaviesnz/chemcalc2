@@ -21,14 +21,15 @@ class CContainer {
     }
     
     __doReactionRecursive(reagent_index, reagent, substrate_index) {
-        
-        const substrates = this.container.slice(0,this.container.length)
+
+        const substrates = this.container.slice(1,this.container.length)
+        console.log(substrates)
         if (undefined === substrates[substrate_index]) {
             return
         }
-        const substrate = substrate[substrate_index]
+        const substrate = substrates[substrate_index]
         
-        if (verbose) {
+        if (this.verbose) {
             console.log("Controllers/Container.js:: Got substrate ->")
             console.log(substrate)
         }
@@ -36,23 +37,23 @@ class CContainer {
         if (reagent === substrate) {
             this.__doReactionRecursive(reagent_index, reagent, substrate_index+1)
         } else {
-            
-            const substrate_families = Families(substrate.slice(1), verbose).families
-            const reagent_families = Families(reagent.slice(1), verbose).families
+
+            const substrate_families = Families(substrate.slice(1), this.verbose).families
+            const reagent_families = Families(reagent.slice(1), this.verbose).families
                             
-            if (verbose) {
+            if (this.verbose) {
                 console.log("Controllers/Container.js substrate families ->")
                 console.log(substrate_families)
                 console.log("Controllers/Container.js substrate alkene ->")
-                console.log(substrate_families.alkene(verbose))
+                console.log(substrate_families.alkene(this.verbose))
                 console.log("Controllers/Container.js reagent families ->")
                 console.log(reagent_families)
                 console.log("Controllers/Container.js reagent alkene ->")
-                console.log(reagent_families.alkene(verbose))
+                console.log(reagent_families.alkene(this.verbose))
              }
             
-             const bronstedLowry = BronstedLowryAcidBaseReactions(this.container, this.MoleculeController, this.test_number, verbose)
-             const lewis = LewisAcidBaseReactions(this.container, this.MoleculeController, this.test_number, verbose)
+             const bronstedLowry = BronstedLowryAcidBaseReactions(this.container, this.MoleculeController, this.test_number, this.verbose)
+             const lewis = LewisAcidBaseReactions(this.container, this.MoleculeController, this.test_number, this.verbose)
 
              // The functional group of an alkene is the C=C double bond.
              // The C=C double bond is nucleophilic
@@ -65,14 +66,14 @@ class CContainer {
              }
 
              if (this.test_number === 6) {
-                  substrate_families.alkene(verbose).length.should.be.equal(2)
+                  substrate_families.alkene(this.verbose).length.should.be.equal(2)
              }
 
              if (this.test_number === 7) {
-                  substrate_families.alkene(verbose).length.should.be.equal(2)
+                  substrate_families.alkene(this.verbose).length.should.be.equal(2)
              }
                    
-             if (substrate_families.alkene(verbose).length > 0) {
+             if (substrate_families.alkene(this.verbose).length > 0) {
                  
                  // if reagent is water then return as is, as water does not react to alkenes.
                  if (reagent.length === 4 && reagent[1][0]==='H'
@@ -113,7 +114,7 @@ class CContainer {
                                         }
                                       
                  const electrophile_molecule = reagent
-                 const electrophile_molecule_index = container.length -1
+                 const electrophile_molecule_index = this.container.length -1
                 
                  if (this.test_number === 4) {
                     electrophile_molecule[1][0].should.be.equal("H")
@@ -161,6 +162,7 @@ class CContainer {
                 const electrophile_atom_index = this.MoleculeController(reagent).electrophileIndex(this.test_number + ".1")
                                         if (this.test_number === 6) {
                     // Shouldnt be here as reagent is water and substrate is alkene
+
                     console.log("Error - trying to react water with an alkene")
                                              process.exit()
                                         }
@@ -376,18 +378,13 @@ class CContainer {
         }
             
         const reagent = reagents[reagent_index]
-        if (verbose) {
+        if (this.verbose) {
                         console.log("Controllers/Container.js:: Got reagent ->")
                         console.log(reagent)
         }
-                    
-                    
-                    
-                    
+
         this.__doReactionRecursive(reagent_index, reagent, 0)
-                    
-                    
-                
+
     }
     
     add(molecule_array_or_string, units, verbose, test_number) {
@@ -446,11 +443,6 @@ class CContainer {
                 reagents.length.should.be.equal(2)
             }
             
-            if (verbose) {
-                console.log("Controllers/Container.js:: Got substrates ->")
-                console.log(substrates)
-            }
-            
             // SEE organic chemistry 8th edition p245
             // test 6/7
 // propylene CC=C (test 6) / water H2O (test 6) / sulfuric acid H2SO4 (test 7)
@@ -484,7 +476,7 @@ class CContainer {
             // 5. water --> water
             // 6. water --> deprontonated sulfuric acid
             // this needs to be changed to a recursive function as reagents can change
-            this__doReactionsRecursive(null)
+            this.__doReactionsRecursive(null)
 
 
         } else {

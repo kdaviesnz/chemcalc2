@@ -44,6 +44,9 @@ ccontainer6.container.length.should.equal(3)
 ccontainer6.container[1].should.equal(propylene)
 ccontainer6.container[2].should.equal(watermolecule)
 
+console.log("Test 6 ok")
+process.exit()
+
 const sulfuric_acid = MoleculeFactory("OS(=O)(=O)O", verbose)
 ccontainer6.test_number = 7
 if (verbose) {
