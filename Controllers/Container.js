@@ -433,10 +433,16 @@ class CContainer {
         // container[2] is reagent
         // container[1] is substrate
         if (this.container.length > 2) {
-
-            
             const reagents = this.container.slice(1,this.container.length).reverse()
-            
+            console.log('Container.js')
+            console.log(this.test_number);
+            console.log(reagents)
+            if (this.test_number === 6) {
+                // water, propylene
+                reagents.length.should.be.equal(2)
+            }
+            process.exit()
+
             if (this.test_number === 7) {
                 // false, propylene, water, sulfuric acid
                 substrates.length.should.be.equal(2)
