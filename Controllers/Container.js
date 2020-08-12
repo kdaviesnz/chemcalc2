@@ -22,19 +22,34 @@ class CContainer {
     
     __doReactionRecursive(reagent_index, reagent, substrate_index) {
 
+        console.log('SUBSTRATE INDEX')
+        console.log(substrate_index)
+
         const substrates = this.container.slice(1,this.container.length)
-        console.log(substrates)
+
         if (undefined === substrates[substrate_index]) {
             return
         }
+
+        if (this.test_number ===6) {
+            // reagent should be water
+            // substrates should be propylene, water
+        }
+
         const substrate = substrates[substrate_index]
-        
+
+        if (this.test_number ===6) {
+            // substrate_index should be 0
+            // substrate should be propylene
+        }
+
         if (this.verbose) {
             console.log("Controllers/Container.js:: Got substrate ->")
             console.log(substrate)
         }
-        
+
         if (reagent === substrate) {
+            console.log('reagent and substrate are the same')
             this.__doReactionRecursive(reagent_index, reagent, substrate_index+1)
         } else {
 
@@ -51,6 +66,7 @@ class CContainer {
                 console.log("Controllers/Container.js reagent alkene ->")
                 console.log(reagent_families.alkene(this.verbose))
              }
+
             
              const bronstedLowry = BronstedLowryAcidBaseReactions(this.container, this.MoleculeController, this.test_number, this.verbose)
              const lewis = LewisAcidBaseReactions(this.container, this.MoleculeController, this.test_number, this.verbose)
@@ -74,11 +90,17 @@ class CContainer {
              }
                    
              if (substrate_families.alkene(this.verbose).length > 0) {
-                 
+
+                 const is_water = reagent.length === 4 && reagent[1][0]==='H'
+                     && reagent[2][0]==='H' && reagent[3][0]==='O'
+
+                 if (this.test_number === 6) {
+                     // reagent is water, substrate is propylene
+                     is_water.should.be.equal(true)
+                 }
+
                  // if reagent is water then return as is, as water does not react to alkenes.
-                 if (reagent.length === 4 && reagent[1][0]==='H'
-                    && reagent[2][0]==='H' && reagent[3][0]==='O') {
-                    
+                 if (is_water) {
                     this.__doReactionRecursive(reagent_index, reagent, substrate_index+1)
                   
                 }
@@ -93,26 +115,26 @@ class CContainer {
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
 
                  if (this.test_number === 7) {
-                    // for first round substrate is propyline (CC=C)
-                    // reagent should be sulfuric acid H2SO4 (electrophile, donates H+)
-                                            reagent.length.should.be.equal(5433)
-                 
+                     // for first round substrate is propyline (CC=C)
+                     // reagent should be sulfuric acid H2SO4 (electrophile, donates H+)
+                     reagent.length.should.be.equal(5433)
+
                  }
-                 
+
                  // Substrate is alkene (nucleophile)
                  // Find the nucleophile on the C=C bond
-                                      const nucleophile_molecule = substrate
-                                      const nucleophile_molecule_index = 1
+                 const nucleophile_molecule = substrate
+                 const nucleophile_molecule_index = 1
 
-                                      // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-                                      // Check nucleophile is CC=CC
-                                      if (this.test_number === 4) {
-                    nucleophile_molecule[6][0].should.be.equal("C")
-                    nucleophile_molecule[8][0].should.be.equal("C")
-                                             // Confirm double bond
-                                             Set().intersection(nucleophile_molecule[6].slice(4), nucleophile_molecule[8].slice(4)).length.should.be.equal(4)
-                                        }
-                                      
+                 // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
+                 // Check nucleophile is CC=CC
+                 if (this.test_number === 4) {
+                     nucleophile_molecule[6][0].should.be.equal("C")
+                     nucleophile_molecule[8][0].should.be.equal("C")
+                     // Confirm double bond
+                     Set().intersection(nucleophile_molecule[6].slice(4), nucleophile_molecule[8].slice(4)).length.should.be.equal(4)
+                 }
+
                  const electrophile_molecule = reagent
                  const electrophile_molecule_index = this.container.length -1
                 
@@ -369,6 +391,14 @@ class CContainer {
             // 6. water --> deprontonated sulfuric acid
             // this needs to be changed to a recursive function as reagents can change
         const reagents = this.container.slice(1,this.container.length)
+
+        console.log(this.test_number)
+        console.log(reagents)
+
+        if (this.test_number === 6) {
+            // propylene, water
+        }
+
         if (null === reagent_index) {
             reagent_index = reagents.length -1
         }
@@ -379,8 +409,13 @@ class CContainer {
             
         const reagent = reagents[reagent_index]
         if (this.verbose) {
-                        console.log("Controllers/Container.js:: Got reagent ->")
-                        console.log(reagent)
+              console.log("Controllers/Container.js:: Got reagent ->")
+            console.log(reagent)
+        }
+
+        if (this.test_number === 6) {
+            // reagent_index should be 1
+            // reagent should be 1
         }
 
         this.__doReactionRecursive(reagent_index, reagent, 0)
@@ -434,18 +469,13 @@ class CContainer {
         // container[1] is substrate
         if (this.container.length > 2) {
             const reagents = this.container.slice(1,this.container.length).reverse()
-            console.log('Container.js')
-            console.log(this.test_number);
-            console.log(reagents)
             if (this.test_number === 6) {
                 // water, propylene
                 reagents.length.should.be.equal(2)
             }
-            process.exit()
 
             if (this.test_number === 7) {
                 // false, propylene, water, sulfuric acid
-                substrates.length.should.be.equal(2)
                 reagents.length.should.be.equal(2)
             }
             
@@ -458,8 +488,6 @@ class CContainer {
 // 3. The protonated alcohol loses a proton because the pH of the solution is greater
 // than the pKa of the protonated alcohol (Section 2.10).
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
-            const reagent = this.container[this.container -1]
-
             if (this.test_number === 6) {
                 // false, propylene, water
                 this.container.length.should.be.equal(3)
