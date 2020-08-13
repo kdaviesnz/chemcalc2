@@ -1,5 +1,5 @@
 const CAtom = require('../Controllers/Atom')
-
+const Families = require('../Models/Families')
 const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_number, verbose) => {
 
     const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule,
@@ -452,7 +452,14 @@ Models/BronstedLowryAcidBaseReactions.js Doing Bronsted Lowry reactions ->
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
         if (test_number === 6) {
             // hydrogen water atom
-            electrophile_molecule_index.should.be.equal(2)   
+            console.log('BronstedLowryAcidBaseReactions.js')
+            console.log('Electrophile molecule')
+            console.log(electrophile_molecule) // water
+            console.log('Nucleophile molecule')
+            console.log(nucleophile_molecule) // propylene
+            const reagent_families = Families(nucleophile_molecule.slice(1), this.verbose).families
+            console.log(reagent_families.alkene().length)
+            electrophile_molecule_index.should.be.equal(2)
             proton_index.should.be.equal(2)
         }
 
