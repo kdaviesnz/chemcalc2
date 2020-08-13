@@ -22,9 +22,6 @@ class CContainer {
     
     __doReactionRecursive(reagent_index, reagent, substrate_index) {
 
-        console.log('SUBSTRATE INDEX')
-        console.log(substrate_index)
-
         const substrates = this.container.slice(1,this.container.length)
 
         if (undefined === substrates[substrate_index]) {
@@ -50,7 +47,7 @@ class CContainer {
 
         if (reagent === substrate) {
             console.log('reagent and substrate are the same')
-            this.__doReactionRecursive(reagent_index, reagent, substrate_index+1)
+            return this.__doReactionRecursive(reagent_index, reagent, substrate_index+1)
         } else {
 
             const substrate_families = Families(substrate.slice(1), this.verbose).families
@@ -101,10 +98,10 @@ class CContainer {
 
                  // if reagent is water then return as is, as water does not react to alkenes.
                  if (is_water) {
-                    this.__doReactionRecursive(reagent_index, reagent, substrate_index+1)
-                  
+                     return this.__doReactionRecursive(reagent_index, reagent, substrate_index+1)
                 }
-                                      
+
+
                 // SEE organic chemistry 8th edition p245
 // propylene CC=C (test 6) / water H2O (test 6) / sulfuric acid H2SO4 (test 7)
 // 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
@@ -183,9 +180,19 @@ class CContainer {
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
                 const electrophile_atom_index = this.MoleculeController(reagent).electrophileIndex(this.test_number + ".1")
                                         if (this.test_number === 6) {
-                    // Shouldnt be here as reagent is water and substrate is alkene
+                    // Shouldn't be here as reagent is water and substrate is alkene
+
 
                     console.log("Error - trying to react water with an alkene")
+                                            /*
+                                            console.log('Reagent')
+                                            console.log(reagent) // water
+                                            console.log('Substrate')
+                                            console.log(substrate) // propylene
+                                            console.log(substrate_families.alkene(this.verbose).length)
+                                            console.log(is_water)
+
+                                             */
                                              process.exit()
                                         }
                                       
@@ -368,7 +375,7 @@ class CContainer {
             }
             
             this.container = reaction
-            this.__doReactionRecursive(reagent_index, reagent, substrate_index+1)
+            return this.__doReactionRecursive(reagent_index, reagent, substrate_index+1)
             
             
         }
@@ -419,6 +426,8 @@ class CContainer {
         }
 
         this.__doReactionRecursive(reagent_index, reagent, 0)
+
+        return this.__doReactionsRecursive(reagent_index -1)
 
     }
     
