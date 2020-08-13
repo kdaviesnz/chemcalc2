@@ -23,8 +23,10 @@ class CContainer {
     __doReactionRecursive(reagent_index, reagent, substrate_index) {
 
         if (reagent_index === undefined) {
-            console.log("Container.js::reagent index is null")
-            process.exit()
+            if (this.verbose) {
+                 console.log("Container.js::reagent index is null")
+            }
+            return this.__doReactionRecursive(reagent_index, reagent, substrate_index+1)
         }
         const substrates = this.container.slice(1,this.container.length)
 
@@ -50,7 +52,9 @@ class CContainer {
         }
 
         if (reagent === substrate) {
-            console.log('reagent and substrate are the same')
+            if (this.verbose) {
+                console.log('reagent and substrate are the same')
+            }
             return this.__doReactionRecursive(reagent_index, reagent, substrate_index+1)
         } else {
 
@@ -431,8 +435,12 @@ class CContainer {
             // this needs to be changed to a recursive function as reagents can change
         const reagents = this.container.slice(1,this.container.length)
 
-        console.log(this.test_number)
-        console.log(reagents)
+        if (this.verbose) {
+           console.log("Test number: ")
+           console.log(this.test_number)
+           console.log("Reagents: ")
+           console.log(reagents)
+        }
 
         if (this.test_number === 6) {
             // propylene, water
@@ -555,10 +563,13 @@ class CContainer {
 
 
         } else {
+            if (this.verbose) {
             console.log("Controller/Container.js:: Container only has substrate so not processing a reaction ")
+        
+            }
         }
 
-        if (verbose) {
+        if (this.verbose) {
             console.log("Controller/Container.js:: Container after adding -> ")
             console.log(molecule_array_or_string)
             console.log(this.container)
