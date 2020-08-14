@@ -449,7 +449,10 @@ class CContainer {
         // ccontainer6.add(sulfuric_acid, 1, verbose)
         // r -> s
         // 1.1 sulfuric acid (e) -> propylene (n) = deprotonated sulfuric acid, protonated propylene
-        // 1.2 *deprotonated sulfuric acid -> water
+        // 1.2 deprotonated sulfuric acid -> water
+        // 1.3 deprotonated sulfuric acid -> deprotonated sulfuric acid
+        // 2.1 water (n) -> protonated propylene (e) oxygen atom on water attacks carbocation on propylene
+        
         
         
         // test 7
