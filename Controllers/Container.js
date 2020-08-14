@@ -432,6 +432,11 @@ class CContainer {
         // test 6
         // ccontainer6.add(propylene, 1, verbose)
         // ccontainer6.add(watermolecule, 1, verbose)
+        // r -> s
+        // 1. water -> propylene (no reaction)
+        // 2. water -> water (no reaction)
+        // 3. propylene -> propylene (no reaction)
+        // 4. propylene -> water (no reaction)
         
         // test 7
             // propylene CC=C (test 6) / water H2O (test 6) / sulfuric acid H2SO4 (test 7)
