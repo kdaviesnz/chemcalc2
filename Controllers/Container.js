@@ -433,10 +433,19 @@ class CContainer {
         // ccontainer6.add(propylene, 1, verbose)
         // ccontainer6.add(watermolecule, 1, verbose)
         // r -> s
-        // 1. water -> propylene (no reaction)
-        // 2. water -> water (no reaction)
-        // 3. propylene -> propylene (no reaction)
-        // 4. propylene -> water (no reaction)
+        // 1.1. water -> propylene (no reaction)
+        // 1.2. water -> water (no reaction)
+        // 2.1 propylene -> propylene (no reaction)
+        // 2.2 propylene -> water (no reaction)
+        
+        // test 7
+        // ccontainer6.add(propylene, 1, verbose)
+        // ccontainer6.add(watermolecule, 1, verbose)
+        // ccontainer6.add(sulfuric_acid, 1, verbose)
+        // r -> s
+        // 1.1 sulfuric acid (e) -> propylene (n) = deprotonated sulfuric acid, protonated propylene
+        // 1.2 *deprotonated sulfuric acid -> water
+        
         
         // test 7
             // propylene CC=C (test 6) / water H2O (test 6) / sulfuric acid H2SO4 (test 7)
