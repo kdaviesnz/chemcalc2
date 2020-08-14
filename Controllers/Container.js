@@ -428,7 +428,11 @@ class CContainer {
     }
 
     __doReactionsRecursive(reagent_index) {
-       
+   
+        // test 6
+        // ccontainer6.add(propylene, 1, verbose)
+        // ccontainer6.add(watermolecule, 1, verbose)
+        
         // test 7
             // propylene CC=C (test 6) / water H2O (test 6) / sulfuric acid H2SO4 (test 7)
             // reagents: sulfuric acid H2SO4, water
@@ -481,6 +485,12 @@ class CContainer {
     
     add(molecule_array_or_string, units, verbose, test_number) {
 
+        
+        // test 6
+        // ccontainer6.add(propylene, 1, verbose)
+        // ccontainer6.add(watermolecule, 1, verbose)
+        
+        
         if (undefined !== test_number) {
            // this.test_number = test_number
         }
@@ -525,6 +535,11 @@ class CContainer {
         // container[2] is reagent
         // container[1] is substrate
         if (this.container.length > 2) {
+            
+            // test 6
+            // ccontainer6.add(propylene, 1, verbose)
+            // ccontainer6.add(watermolecule, 1, verbose)
+            
             const reagents = this.container.slice(1,this.container.length).reverse()
             if (this.test_number === 6) {
                 // water, propylene
