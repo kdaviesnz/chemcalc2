@@ -452,7 +452,10 @@ class CContainer {
         // 1.2 deprotonated sulfuric acid -> water
         // 1.3 deprotonated sulfuric acid -> deprotonated sulfuric acid
         // 2.1 water (n) -> protonated propylene (e) oxygen atom on water attacks carbocation on propylene
-        
+        // nb: container will now have hydrated protonated propylene, deprontonated sulfuric acid
+        // as water molecule is now bonded to protonated propylene
+        // thus we need to take into account tha5 the number of reagents/substrates has change (todo)
+ 
         
         
         // test 7
@@ -467,10 +470,7 @@ class CContainer {
             // 5. water --> water
             // 6. water --> deprontonated sulfuric acid
             // this needs to be changed to a recursive function as reagents can change
-        // nb: container will now have hydrated protonated propylene, deprontonated sulfuric acid
-        // as water molecule is now bonded to protonated propylene
-        // thus we need to take into account tha5 the number of reagents/substrates has change (todo)
-        const reagents = this.container.slice(1,this.container.length)
+            const reagents = this.container.slice(1,this.container.length)
 
         if (this.verbose) {
            console.log("Test number: ")
