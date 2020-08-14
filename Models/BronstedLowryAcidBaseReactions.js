@@ -189,10 +189,21 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
             // electrophile index is 0 (sulfuric acid) or 2 (water (oxygen atom))
             // nucleophile is propylene (when electrophile is sulfuric acid)
             // nucleophile is protonated propylene (when electrophile is water)
+            // UPDATE this is actually correct and NOT an error
+            // test 7
+        // ccontainer6.add(propylene, 1, verbose)
+        // ccontainer6.add(watermolecule, 1, verbose)
+        // ccontainer6.add(sulfuric_acid, 1, verbose)
+        // r -> s
+        // 1.1 sulfuric acid (e) -> propylene (n) = deprotonated sulfuric acid, protonated propylene
+        // 1.2 deprotonated sulfuric acid -> water
+        // 1.3 deprotonated sulfuric acid -> deprotonated sulfuric acid
+        // 2.1 water (n) -> protonated propylene (e) = oxygen atom on water attacks carbocation on propylene
+ 
             console.log(electrophile_molecule)
             console.log(electrophile_atom_index)
             console.log(nucleophile_molecule)
-            electrophile_molecule[electrophile_atom_index+1][0].should.be.equal("H")
+            electrophile_molecule[electrophile_atom_index+1][0].should.be.oneOf("H","O")
         }
 
         if (electrophile_molecule[electrophile_atom_index+1][0] !== "H") {
