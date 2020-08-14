@@ -20,14 +20,19 @@ class CContainer {
         }
     }
     
-    __doReactionRecursive(reagent_index, reagent, substrate_index) {
+    __doReactionRecursive(reagent_index, substrate_index) {
 
+        
         if (reagent_index === undefined) {
             if (this.verbose) {
                  console.log("Container.js::reagent index is null")
             }
-            return this.__doReactionRecursive(reagent_index, reagent, substrate_index+1)
+            return this.__doReactionRecursive(reagent_index, substrate_index+1)
         }
+        
+        const reagents = this.container.slice(1,this.container.length)
+        const reagent = reagents[reagent_index]
+              
         const substrates = this.container.slice(1,this.container.length)
 
         if (undefined === substrates[substrate_index]) {
@@ -55,7 +60,7 @@ class CContainer {
             if (this.verbose) {
                 console.log('reagent and substrate are the same')
             }
-            return this.__doReactionRecursive(reagent_index, reagent, substrate_index+1)
+            return this.__doReactionRecursive(reagent_index, substrate_index+1)
         } else {
 
             const substrate_families = Families(substrate.slice(1), this.verbose).families
@@ -304,7 +309,7 @@ class CContainer {
                      if (this.verbose) {
                          console.log('Container::Not processing as substrate is water and reagent is an alkene')
                      }
-                     return this.__doReactionRecursive(reagent_index, reagent, substrate_index+1)
+                     return this.__doReactionRecursive(reagent_index, substrate_index+1)
                  }
 
                  // Reagent is alkene
@@ -419,7 +424,7 @@ class CContainer {
             }
             
             this.container = reaction
-            return this.__doReactionRecursive(reagent_index, reagent, substrate_index+1)
+            return this.__doReactionRecursive(reagent_index, substrate_index+1)
             
             
         }
