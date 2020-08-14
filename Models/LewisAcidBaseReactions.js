@@ -4,6 +4,25 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number, verb
 
     const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, test_number) => {
 
+        
+        // test 7
+                    // SEE organic chemistry 8th edition p245
+// propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
+// 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
+// alkene (a nucleophile) that is bonded to the most hydrogens.
+// 2. H2O (a nucleophile) adds to the carbocation (an electrophile), forming a protonated alcohol.
+// 3. The protonated alcohol loses a proton because the pH of the solution is greater
+// than the pKa of the protonated alcohol (Section 2.10).
+// (We saw that protonated alcohols are very strong acids; Section 2.6.)
+        // ccontainer6.add(propylene, 1, verbose)
+        // ccontainer6.add(watermolecule, 1, verbose)
+        // ccontainer6.add(sulfuric_acid, 1, verbose)
+        // r -> s
+        // 1.1 sulfuric acid (e) -> propylene (n) = deprotonated sulfuric acid, protonated propylene
+        // 1.2 deprotonated sulfuric acid -> water
+        // 1.3 deprotonated sulfuric acid -> deprotonated sulfuric acid
+        // 2.1 water (n) -> protonated propylene (e) = oxygen atom on water attacks carbocation on propylene
+ 
         let nucleophile_molecule_index = null
         let electrophile_molecule_index = null
 
