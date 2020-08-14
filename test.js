@@ -37,15 +37,14 @@ const propylene = MoleculeFactory("CC=C")
 
 const ccontainer6 = new CContainer([false], MoleculeFactory, MoleculeController, 6, verbose)
 ccontainer6.add(propylene, 1, verbose)
-
 ccontainer6.add(watermolecule, 1, verbose)
-// We shouldnt have a reaction
+// We shouldn't have a reaction
 ccontainer6.container.length.should.equal(3)
 ccontainer6.container[1].should.equal(propylene)
 ccontainer6.container[2].should.equal(watermolecule)
 
 console.log("Test 6 ok")
-process.exit()
+
 
 const sulfuric_acid = MoleculeFactory("OS(=O)(=O)O", verbose)
 ccontainer6.test_number = 7
@@ -123,8 +122,6 @@ if (verbose) {
      */
 }
 ccontainer6.add(sulfuric_acid, 1, verbose)
-
-
 ccontainer6.container.length.should.equal(4)
 
 if (verbose) {
@@ -135,9 +132,8 @@ if (verbose) {
     console.log(ccontainer6.container[2])
     console.log('Reagent (deprotonated sulfuric acid) -->')
     console.log(ccontainer6.container[3])
-
 }
-console.log('test.js')
+console.log('Test 7 ok')
 process.exit()
 
 if (verbose) {

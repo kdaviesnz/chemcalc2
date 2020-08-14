@@ -102,7 +102,16 @@ class CContainer {
              }
 
              if (this.test_number === 7) {
-                  substrate_families.alkene(this.verbose).length.should.be.equal(2)
+                 //console.log(substrate_index)
+                 //console.log('Substrate')
+                 //console.log(substrate)
+                 if (substrate_index === 1) {
+                     // substrate is water
+                     substrate_families.alkene(this.verbose).length.should.be.equal(0)
+                 } else {
+                     substrate_families.alkene(this.verbose).length.should.be.equal(2)
+                 }
+
              }
                    
              if (substrate_families.alkene(this.verbose).length > 0) {
@@ -132,9 +141,8 @@ class CContainer {
 
                  if (this.test_number === 7) {
                      // for first round substrate is propyline (CC=C)
-                     // reagent should be sulfuric acid H2SO4 (electrophile, donates H+)
-                     reagent.length.should.be.equal(5433)
-
+                     // reagent is sulfuric acid H2SO4 (electrophile, donates H+)
+                     reagent.length.should.be.equal(8)
                  }
 
                  // Substrate is alkene (nucleophile)
@@ -271,9 +279,9 @@ class CContainer {
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
                     // false, protonated propylene, water, deprotonated sulfuric acid
                          reaction[0].should.be.equal(false)
-                         reaction[1].length.should.be.equal(777) // protonated propylene 
-                         reaction[2].length.should.be.equal(555) // water 
-                         reaction[3].length.should.be.equal(2223) // deprotonated sulfuric acid 
+                         reaction[1].length.should.be.equal(11) // protonated propylene
+                         reaction[2].length.should.be.equal(4) // water
+                         reaction[3].length.should.be.equal(7) // deprotonated sulfuric acid
                          reaction.length.should.be.equal(4)
                       }
                      
@@ -524,8 +532,12 @@ class CContainer {
             }
 
             if (this.test_number === 7) {
-                // false, propylene, water, sulfuric acid
-                reagents.length.should.be.equal(2)
+                // sulfuric acid, water, propylene
+                if (this.verbose && reagents.length !== 3) {
+                    console.log('Reagents:')
+                    console.log(reagents)
+                }
+                reagents.length.should.be.equal(3)
             }
             
             // SEE organic chemistry 8th edition p245
