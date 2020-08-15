@@ -450,8 +450,14 @@ We then return the total number of free slots minus the number of slots already 
 
         return free_slots
     }
+    
+    const __isCarbocation = (test_number) => {
+        // atom, current_atom_index, mmolecule
+        return atom[0] === "C" && __isPositivelyCharged(test_number)
+    }
 
     return {
+        isCarbocation: __isCarbocation
         isNegativelyCharged: __isNegativelyCharged,
         isPositivelyCharged: __isPositivelyCharged,
         isProton: __isProton,
