@@ -180,6 +180,37 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number, verb
             nucleophile_atom_index.should.be.equal(1)
         }
 
+        // test 7
+                    // SEE organic chemistry 8th edition p245
+// propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
+// 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
+// alkene (a nucleophile) that is bonded to the most hydrogens.
+// 2. H2O (a nucleophile) adds to the carbocation (an electrophile), forming a protonated alcohol.
+// 3. The protonated alcohol loses a proton because the pH of the solution is greater
+// than the pKa of the protonated alcohol (Section 2.10).
+// (We saw that protonated alcohols are very strong acids; Section 2.6.)
+        // ccontainer6.add(propylene, 1, verbose)
+        // ccontainer6.add(watermolecule, 1, verbose)
+        // ccontainer6.add(sulfuric_acid, 1, verbose)
+        // r -> s
+        // 1.1 sulfuric acid (e) -> propylene (n) = deprotonated sulfuric acid, protonated propylene
+        // 1.2 deprotonated sulfuric acid -> water
+        // 1.3 deprotonated sulfuric acid -> deprotonated sulfuric acid
+        // 2.1 water (n) -> protonated propylene (e) = oxygen atom on water attacks carbocation on propylene
+        if (test_number === 7) {
+            // electrophile should be protonated propylene
+            // nucleophile should be water
+            // electrophile atom should be carbocation on protonated propylene
+            // nucleohile atom should be oxygen atom on water
+            electrophile_molecule.length.should.be.equal(8888) // protonated propylene
+            electrophile_atom_index.should.be.equal(9999)
+            electrophile_molecule[electrophile_atom_index][0].should.be.equal("C")
+            CAtom(nucleophile_molecule[nucleophile_atom_index]).isCarbocation).should.be.equal(true)
+            nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("O")
+            nucleophile_molecule.length.should.be.equal(4) // water
+       
+            nucleophile_atom_index.should.be.equal(2)
+        }
         
 
         // push : (atoms_or_atomic_symbols, container, molecule_to_add_to_index, test_number, target_atom_index, source_atom_index) => {
