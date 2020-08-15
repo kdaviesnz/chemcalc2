@@ -423,7 +423,18 @@ class CContainer {
                 Set().intersection(reaction[1][5].slice(4), reaction[1][10].slice(4)).length.should.not.be.equal(0)
             }
             
+            // At this point it is possible that the number of different molecules
+            // to have changed. eg when the reagent bonds to the substrate
+            // hence we need to check the container again
+           
             this.container = reaction
+            
+            const container_items = this.container.slice(1,this.container.length)
+            if (container_items.length < reagents.length) {
+                // reagent and substrate have bonded
+                return this.__doReactionRecursive(reagent_index-1, substrate_index)
+            }
+            
             return this.__doReactionRecursive(reagent_index, substrate_index+1)
             
             
