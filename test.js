@@ -14,7 +14,7 @@ const CMolecule = require('./Controllers/Molecule')
 const range = require("range")
 const Set = require('./Models/Set')
 
-const verbose = true
+const verbose = false
 
 // MOLECULE MODEL
 // pKa, atom, atom, atom ...

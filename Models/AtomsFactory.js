@@ -900,9 +900,11 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         atoms_with_hydrogens[6][0].should.be.equal("O")
         
          // Check bonds
-        console.log('checking bonds')
-        console.log(atoms_with_hydrogens)
-        "OS(=O)(=O)O"
+        if (verbose) {
+            console.log('checking bonds')
+            console.log(atoms_with_hydrogens)
+        }
+        //"OS(=O)(=O)O"
         // sufuric acid - atoms with hydrogens
         /*
 checking bonds

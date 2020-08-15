@@ -200,9 +200,9 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         // 1.3 deprotonated sulfuric acid -> deprotonated sulfuric acid
         // 2.1 water (n) -> protonated propylene (e) = oxygen atom on water attacks carbocation on propylene
  
-            console.log(electrophile_molecule)
-            console.log(electrophile_atom_index)
-            console.log(nucleophile_molecule)
+           // console.log(electrophile_molecule)
+           // console.log(electrophile_atom_index)
+            // console.log(nucleophile_molecule)
             electrophile_molecule[electrophile_atom_index+1][0].should.be.oneOf("H","O")
         }
 

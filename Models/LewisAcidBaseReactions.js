@@ -205,7 +205,7 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number, verb
             electrophile_molecule.length.should.be.equal(8888) // protonated propylene
             electrophile_atom_index.should.be.equal(9999)
             electrophile_molecule[electrophile_atom_index][0].should.be.equal("C")
-            CAtom(nucleophile_molecule[nucleophile_atom_index]).isCarbocation, 0, nucleophile_molecule).should.be.equal(true)
+            CAtom(nucleophile_molecule[nucleophile_atom_index], 0, nucleophile_molecule).isCarbocation(this.test_number).should.be.equal(true)
             nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("O")
             nucleophile_molecule.length.should.be.equal(4) // water
        

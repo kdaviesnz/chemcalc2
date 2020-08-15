@@ -457,7 +457,7 @@ We then return the total number of free slots minus the number of slots already 
     }
 
     return {
-        isCarbocation: __isCarbocation
+        isCarbocation: __isCarbocation,
         isNegativelyCharged: __isNegativelyCharged,
         isPositivelyCharged: __isPositivelyCharged,
         isProton: __isProton,
