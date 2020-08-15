@@ -465,9 +465,11 @@ class CContainer {
         // 2.1 water (n) -> protonated propylene (e) oxygen atom on water attacks carbocation on propylene
         // nb: container will now have hydrated protonated propylene, deprontonated sulfuric acid
         // as water molecule is now bonded to protonated propylene
-        // thus we need to take into account tha5 the number of reagents/substrates has change (todo)
- 
-        
+        // thus we need to take into account that the number of reagents/substrates has change (todo)
+        // 2.1 deprontonated sulfuric acid -> hydrated protonated propylene
+        // 2.2 deprontonated sulfuric acid -> deprontonated sulfuric acid
+        // 3.1 hydrated protonated propylene -> hydrated protonated propylene
+        // 3.2 hydrated protonated propylene -> deprontonated sulfuric acid
         
         // test 7
             // propylene CC=C (test 6) / water H2O (test 6) / sulfuric acid H2SO4 (test 7)
