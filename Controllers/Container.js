@@ -500,7 +500,8 @@ class CContainer {
             reagent_index = reagents.length -1
         }
         
-        if (undefined === reagents[reagent_index]) {
+        // reagent is not defined or no more reagent left
+        if (undefined === reagents[reagent_index] || reagents[reagent_index][1] === 0) {
             return
         }
             
@@ -561,7 +562,7 @@ class CContainer {
             this.MoleculeFactory(molecule_array_or_string))
         // Add item to container.
 
-        this.container.push(molecule)
+        this.container.push([molecule, units])
 
         if (verbose) {
             console.log("Controllers/Container.js:: Container before processing reaction ->")
