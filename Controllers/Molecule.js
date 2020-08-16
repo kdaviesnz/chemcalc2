@@ -9,9 +9,10 @@ const Families = require('../Models/Families')
 const CMolecule = (mmolecule, verbose) => {
 
     const __negativelyChargedAtoms = (test_number) => {
-        const negatively_charged_atoms = mmolecule.slice(1).reduce(
+        const molecule = mmolecule[0] // mmolecule[1] is the number of units
+        const negatively_charged_atoms = molecule.slice(1).reduce(
             (carry, atom, index) => {
-                if (atom[0] !== "H" && CAtom(atom, index,mmolecule).isNegativelyCharged(test_number)) {
+                if (atom[0] !== "H" && CAtom(atom, index,molecule).isNegativelyCharged(test_number)) {
                     carry.push([
                         index,
                         atom
@@ -28,9 +29,10 @@ const CMolecule = (mmolecule, verbose) => {
     }
 
     const __positivelyChargedAtoms = (test_number) => {
-        const positively_charged_atoms = mmolecule.slice(1).reduce(
+        const molecule = mmolecule[0] // mmolecule[1] is the number of units
+        const positively_charged_atoms = molecule.slice(1).reduce(
             (carry, atom, index) => {
-                if (atom[0] !== "H" && CAtom(atom, index,mmolecule).isPositivelyCharged(test_number)) {
+                if (atom[0] !== "H" && CAtom(atom, index,molecule).isPositivelyCharged(test_number)) {
                     carry.push([
                         index,
                         atom
@@ -47,9 +49,10 @@ const CMolecule = (mmolecule, verbose) => {
     }
 
     const __hydrogensNotAttachedToCarbons = (test_number) => {
-        const hydrogens = mmolecule.slice(1).reduce(
+        const molecule = mmolecule[0] // mmolecule[1] is the number of units
+        const hydrogens = molecule.slice(1).reduce(
             (carry, atom, index) => {
-                if (atom[0] === "H" && CAtom(atom, index,mmolecule).carbons().length === 0) {
+                if (atom[0] === "H" && CAtom(atom, index,molecule).carbons().length === 0) {
                     carry.push([
                         index,
                         atom
@@ -67,7 +70,7 @@ const CMolecule = (mmolecule, verbose) => {
 
     const determineElectrophileIndex = (test_number) => {
 
-
+        const molecule = mmolecule[0] // mmolecule[1] is the number of units
         let electrophile_index = false
 
         // [Br-] (nucleophile, electron donor) -----> carbocation
@@ -297,7 +300,7 @@ Positively charged atoms -->
         }
         // Check atom isnt negatively charged (nucleophile)
         // const CAtom = (atom, current_atom_index, mmolecule)
-        const is_negatively_charged = CAtom(mmolecule[electrophile_index + 1], 0, mmolecule).isNegativelyCharged(test_number)
+        const is_negatively_charged = CAtom(molecule[electrophile_index + 1], 0, molecule).isNegativelyCharged(test_number)
 
         if (test_number *1 === 7.1) {
             is_negatively_charged.should.be.equal(false)
@@ -317,7 +320,7 @@ Positively charged atoms -->
         if (verbose) {
             console.log("Controllers/Molecule.js::determineElectrophileIndex() Returning electrophile index " + electrophile_index)
             console.log("Molecule ->")
-            console.log(mmolecule)
+            console.log(molecule)
         }
 
         if (test_number *1 === 7.1) {
@@ -327,6 +330,8 @@ Positively charged atoms -->
     }
 
     const determineNucleophileIndex = (test_number) => {
+        
+        const molecule = mmolecule[0] // mmolecule[1] is the number of units
         
        // [Br-] (nucleophile, electron donor) -----> carbocation
         // Br atom should bond to carbon that has three bonds
@@ -352,14 +357,14 @@ Positively charged atoms -->
 
         // H2O (nucleophile) <------- HCl (electrophile)
         if (undefined !== test_number && test_number === 1) {
-            mmolecule.length.should.be.equal(4)
-            mmolecule[3][0].should.be.equal("O")
+            molecule.length.should.be.equal(4)
+            molecule[3][0].should.be.equal("O")
         }
 
         // Cl- (nucleophile) <------- H3O (electrophile)
         if (undefined !== test_number && test_number === 2) {
-            mmolecule.length.should.be.equal(2)
-            mmolecule[1][0].should.be.equal("Cl")
+            molecule.length.should.be.equal(2)
+            molecule[1][0].should.be.equal("Cl")
         }
         
         // Check for negatively charged atoms
@@ -378,7 +383,7 @@ Positively charged atoms -->
         if (atoms_with_lone_pairs.length === 0) {
 
             // Check for double bonds
-            const double_bonds = Families(mmolecule.slice(1)).families.alkene()
+            const double_bonds = Families(molecule.slice(1)).families.alkene()
 
             // test_number 6
             // SEE organic chemistry 8th edition p245
@@ -401,8 +406,8 @@ Positively charged atoms -->
                 // Determine carbon with most hydrogens
                 const keys = Object.keys(double_bonds[0])
                 // Get number of hydrogens for first carbon
-                const carbon_1_hydrogens = CAtom(double_bonds[0][keys[0]], 0, mmolecule).hydrogens
-                const carbon_2_hydrogens = CAtom(double_bonds[0][keys[1]], 1, mmolecule).hydrogens
+                const carbon_1_hydrogens = CAtom(double_bonds[0][keys[0]], 0, molecule).hydrogens
+                const carbon_2_hydrogens = CAtom(double_bonds[0][keys[1]], 1, molecule).hydrogens
                 if (test_number === 4) {
                     carbon_1_hydrogens.length.should.be.equal(1)
                     carbon_2_hydrogens.length.should.be.equal(1)
@@ -422,7 +427,7 @@ Positively charged atoms -->
 
             return // Find index of atom to bond to.
             // This must be atom with at least a lone pair.
-            return mmolecule.reduce((carry, current_molecule_atom, current_molecule_atom_index) => {
+            return molecule.reduce((carry, current_molecule_atom, current_molecule_atom_index) => {
                     if (typeof current_molecule_atom === "string" || typeof current_molecule_atom.length !== "number") {
                         return carry
                     }
@@ -438,12 +443,12 @@ Positively charged atoms -->
             // H2O (nucleophile) <------- HCl (electrophile)
             if (test_number === 1) {
                 atoms_with_lone_pairs[0][0].should.be.equal(2)
-                mmolecule[atoms_with_lone_pairs[0][0]+1][0].should.be.equal("O")
+                molecule[atoms_with_lone_pairs[0][0]+1][0].should.be.equal("O")
             }
             // Cl- (nucleophile) <------- H3O (electrophile)
             if (test_number === 2) {
                 atoms_with_lone_pairs[0][0].should.be.equal(777)
-                mmolecule[atoms_with_lone_pairs[0][0]+1][0].should.be.equal("Cl")
+                molecule[atoms_with_lone_pairs[0][0]+1][0].should.be.equal("Cl")
             }
             return atoms_with_lone_pairs[0][0] + 1 // take into account pka
         }
@@ -453,22 +458,24 @@ Positively charged atoms -->
 
     const __atomsWithLonePairs =  (test_number) => {
 
+        const molecule = mmolecule[0] // mmolecule[1] is the number of units
+        
         // H2O (nucleophile) <------- HCl (electrophile)
         if (undefined !== test_number && test_number === 1) {
-            mmolecule.length.should.be.equal(4)
-            mmolecule[3][0].should.be.equal("O")
+            molecule.length.should.be.equal(4)
+            molecule[3][0].should.be.equal("O")
         }
 
         // Cl (nucleophile) <------- HCl (electrophile) __atomsWithLonePairs()
         if (undefined !== test_number && test_number === 2) {
-            mmolecule.length.should.be.equal(2)
-            mmolecule[1][0].should.be.equal("Cl")
+            molecule.length.should.be.equal(2)
+            molecule[1][0].should.be.equal("Cl")
         }
 
         // Check nucleophile for lone pairs
-        const atoms_with_lone_pairs = mmolecule.slice(1).map(
+        const atoms_with_lone_pairs = molecule.slice(1).map(
             (atom, index) => {
-                if (atom[0] === "H" || CAtom(atom, index+1, mmolecule).lonePairs(test_number).length === 0) {
+                if (atom[0] === "H" || CAtom(atom, index+1, molecule).lonePairs(test_number).length === 0) {
                     return null
                 }
                 return [index, atom]
@@ -500,9 +507,12 @@ Positively charged atoms -->
     }
 
     const __atomsWithFreeSlots = (test_number) => {
+        
+        const molecule = mmolecule[0] // mmolecule[1] is the number of units
+        
         // Check substrate for free slots
 
-        return mmolecule.slice(1).map(
+        return molecule.slice(1).map(
 
             (atom, index) => {
 
@@ -511,7 +521,7 @@ Positively charged atoms -->
                 if (test_number == 3.1) {
                     // AlCl3 , Al is an electrophile
                     if (atom[0] === 'Al') {
-                        CAtom(atom, index, mmolecule).freeSlots(test_number).should.be.equal(6)
+                        CAtom(atom, index, molecule).freeSlots(test_number).should.be.equal(6)
                     }
                 }
 
@@ -532,11 +542,11 @@ Positively charged atoms -->
 '2edg3og4hskb46emn0' ]
 
                      */
-                    CAtom(atom, index ,mmolecule).freeSlots(test_number).should.be.equal(9) // Check
+                    CAtom(atom, index ,molecule).freeSlots(test_number).should.be.equal(9) // Check
                 }
 
 
-                if ((atom[0]==="H" && CAtom(atom, index,mmolecule).carbons().length > 0) || CAtom(atom, index,mmolecule).freeSlots(test_number) === 0 ) {
+                if ((atom[0]==="H" && CAtom(atom, index,molecule).carbons().length > 0) || CAtom(atom, index,mmolecule).freeSlots(test_number) === 0 ) {
                     return null
                 }
                 return [index, atom]
@@ -550,6 +560,8 @@ Positively charged atoms -->
 
     const __lonePairs = (atoms, atom, current_atom_index) => {
 
+        const molecule = mmolecule[0] // mmolecule[1] is the number of units
+        
         const atom_electrons = atom.slice(4)
         const lone_pairs = atom_electrons.filter(
             (atom_electron) => {
@@ -568,7 +580,8 @@ Positively charged atoms -->
     }
 
     const __isShared = (electron) => {
-        const shared_electrons =  mmolecule.filter(
+        const molecule = mmolecule[0] // mmolecule[1] is the number of units
+        const shared_electrons =  molecule.filter(
             (molecule_atom) => {
                 if ( typeof molecule_atom.length !== "number") {
                     return false
@@ -583,6 +596,7 @@ Positively charged atoms -->
     }
 
     const __electronToShareIndex = (atom) => {
+        const molecule = mmolecule[0] // mmolecule[1] is the number of units
         const atom_valence_electrons = atom.slice(4)
         const atom_electron_to_share_index = atom_valence_electrons.reduce(
             (carry, atom_electron, index) => {
@@ -596,6 +610,7 @@ Positively charged atoms -->
     }
 
     const __electronToRemoveIndex = (atom) => {
+        const molecule = mmolecule[0] // mmolecule[1] is the number of units
         const atom_valence_electrons = atom.slice(4)
         const atom_electron_to_remove_index = atom_valence_electrons.reduce(
             (carry, atom_electron, index) => {
@@ -616,6 +631,7 @@ Positively charged atoms -->
      */
     const __makeCovalentBond = (atoms, source_atom_index, test_number, target_atom_index) => {
 
+        const molecule = mmolecule[0] // mmolecule[1] is the number of units
         // H+ (electrophile) <------- H:OH
         // atoms [[proton]]
         // mmolecule H2O
@@ -624,11 +640,11 @@ Positively charged atoms -->
         if (test_number === 1) {
             source_atom_index.should.be.equal(3)
             target_atom_index.should.be.equal(1)
-            mmolecule.length.should.be.equal(4) // mmolecue should be the nucleophile (H2O)
-            mmolecule[1][0].should.be.equal("H")
-            mmolecule[2][0].should.be.equal("H")
-            mmolecule[3][0].should.be.equal("O")
-            mmolecule[source_atom_index][0].should.be.equal("O")
+            molecule.length.should.be.equal(4) // mmolecue should be the nucleophile (H2O)
+            molecule[1][0].should.be.equal("H")
+            molecule[2][0].should.be.equal("H")
+            molecule[3][0].should.be.equal("O")
+            molecule[source_atom_index][0].should.be.equal("O")
             atoms.length.should.be.equal(1)
             target_atom_index.should.be.equal(1) // proton so must be 1
             source_atom_index.should.be.equal(3) // oxygen atom on H2O (nucleophile) taking into account pKa
@@ -642,9 +658,9 @@ Positively charged atoms -->
         // Cl- is our nucleophile, where the arrow would be pointing from
         if (test_number === 2) {
             source_atom_index.should.be.equal(1) // nucleophile
-            mmolecule.length.should.be.equal(2) // mmolecule should be the nucleophile (Cl-)
-            mmolecule[1][0].should.be.equal("Cl")
-            mmolecule[source_atom_index][0].should.be.equal("Cl")
+            molecule.length.should.be.equal(2) // mmolecule should be the nucleophile (Cl-)
+            molecule[1][0].should.be.equal("Cl")
+            molecule[source_atom_index][0].should.be.equal("Cl")
             atoms.length.should.be.equal(1)
             target_atom_index.should.be.equal(1) // proton so must be 1
             source_atom_index.should.be.equal(1) // Cl- atom on nucleophile taking into account pKa
@@ -681,8 +697,8 @@ Positively charged atoms -->
                 // target_atom_index 1 = H
             }
             source_atom_index.should.be.equal(6) // nucleophile
-            mmolecule.length.should.be.equal(13) // mmolecule should be the nucleophile
-            mmolecule[source_atom_index][0].should.be.equal("C")
+            molecule.length.should.be.equal(13) // mmolecule should be the nucleophile
+            molecule[source_atom_index][0].should.be.equal("C")
             atoms.length.should.be.equal(1)
             target_atom_index.should.be.equal(1) // proton so must be 1
             source_atom_index.should.be.equal(6) // C atom on double bond on mmolecule (nucleophile)
@@ -691,7 +707,7 @@ Positively charged atoms -->
         }
 
         // This is the index of the target atom after adding it to mmolecule
-        const target_atom_mmolecule_index = mmolecule.length + target_atom_index -1
+        const target_atom_mmolecule_index = molecule.length + target_atom_index -1
 
         // H2O (nucleophile) -------> H+ (electrophile)
         if (test_number === 1) {
@@ -707,7 +723,7 @@ Positively charged atoms -->
         if (test_number === 3) {
             target_atom_mmolecule_index.should.be.equal(10) // Al
             atoms.length.should.be.equal(4) // AlCl3
-            mmolecule.length.should.be.equal(10) // COC
+            molecule.length.should.be.equal(10) // COC
         }
 
         //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
@@ -715,7 +731,7 @@ Positively charged atoms -->
             // This is the proton
             target_atom_mmolecule_index.should.be.equal(13)
             atoms.length.should.be.equal(1)
-            mmolecule.length.should.be.equal(13)
+            molecule.length.should.be.equal(13)
         }
 
 
@@ -806,55 +822,55 @@ Positively charged atoms -->
             // Source atom index should be 1
             target_atom_mmolecule_index.should.be.equal(9) // 1 + 8
             atoms.length.should.be.equal(13)
-            mmolecule.length.should.be.equal(2) // [Br-] we havent added the electrophile yet
+            molecule.length.should.be.equal(2) // [Br-] we havent added the electrophile yet
         }
 
         // Add atoms to molecule.
         // At this point main atom won't be bonded.
         atoms.map(
             (atom) => {
-                mmolecule.push(atom)
+                molecule.push(atom)
                 return atom
             }
         )
 
         // H2O (nucleophile) -------> H+ (electrophile)
         if (test_number === 1) {
-            mmolecule[target_atom_mmolecule_index][0].should.be.equal("H")
-            mmolecule.length.should.be.equal(5)
-            mmolecule[1][0].should.be.equal("H")
-            mmolecule[2][0].should.be.equal("H")
-            mmolecule[3][0].should.be.equal("O")
-            mmolecule[4][0].should.be.equal("H")
+            molecule[target_atom_mmolecule_index][0].should.be.equal("H")
+            molecule.length.should.be.equal(5)
+            molecule[1][0].should.be.equal("H")
+            molecule[2][0].should.be.equal("H")
+            molecule[3][0].should.be.equal("O")
+            molecule[4][0].should.be.equal("H")
         }
 
         // Cl- (nucleophile) -------> H+ (electrophile)
         if (test_number === 2) {
-            mmolecule[target_atom_mmolecule_index][0].should.be.equal("H")
-            mmolecule.length.should.be.equal(3)
-            mmolecule[1][0].should.be.equal("Cl")
-            mmolecule[2][0].should.be.equal("H")
+            molecule[target_atom_mmolecule_index][0].should.be.equal("H")
+            molecule.length.should.be.equal(3)
+            molecule[1][0].should.be.equal("Cl")
+            molecule[2][0].should.be.equal("H")
         }
 
         // C:OC (nucleophile) ---------> AlCl3 (electrophile)
         if (test_number === 3) {
-            mmolecule[target_atom_mmolecule_index][0].should.be.equal("Al")
-            mmolecule.length.should.be.equal(14)
-            mmolecule[1][0].should.be.equal("H")
-            mmolecule[2][0].should.be.equal("H")
-            mmolecule[3][0].should.be.equal("H")
-            mmolecule[4][0].should.be.equal("C")
+            molecule[target_atom_mmolecule_index][0].should.be.equal("Al")
+            molecule.length.should.be.equal(14)
+            molecule[1][0].should.be.equal("H")
+            molecule[2][0].should.be.equal("H")
+            molecule[3][0].should.be.equal("H")
+            molecule[4][0].should.be.equal("C")
         }
 
         //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
         if (test_number === 4) {
             // This is the proton
-            mmolecule[target_atom_mmolecule_index][0].should.be.equal("H")
-            mmolecule.length.should.be.equal(14)
-            mmolecule[1][0].should.be.equal("H")
-            mmolecule[2][0].should.be.equal("H")
-            mmolecule[3][0].should.be.equal("H")
-            mmolecule[4][0].should.be.equal("C")
+            molecule[target_atom_mmolecule_index][0].should.be.equal("H")
+            molecule.length.should.be.equal(14)
+            molecule[1][0].should.be.equal("H")
+            molecule[2][0].should.be.equal("H")
+            molecule[3][0].should.be.equal("H")
+            molecule[4][0].should.be.equal("C")
         }
 
         // [Br-] (nucleophile) -----> carbocation CC[C+]C
@@ -863,8 +879,8 @@ Positively charged atoms -->
         // Source atom index should be 1
         if (test_number === 5) {
             target_atom_mmolecule_index.should.be.equal(9) // source atom index plus target atom index
-            mmolecule[target_atom_mmolecule_index][0].should.be.equal("C")
-            mmolecule.length.should.be.equal(15)
+            molecule[target_atom_mmolecule_index][0].should.be.equal("C")
+            molecule.length.should.be.equal(15)
 
         }
 
@@ -891,16 +907,16 @@ Positively charged atoms -->
 
         // H3O
         if (test_number === 1) {
-            mmolecule[target_atom_mmolecule_index][0].should.be.equal("H")
-            mmolecule[target_atom_mmolecule_index][0].slice(4).length.should.be.equal(0)
+            molecule[target_atom_mmolecule_index][0].should.be.equal("H")
+            molecule[target_atom_mmolecule_index][0].slice(4).length.should.be.equal(0)
             // Target atom is a proton and so shouldnt have any electrons.
             target_atom_electron_to_share_index.should.be.equal(false)
         }
 
         // ClH
         if (test_number === 2) {
-            mmolecule[target_atom_mmolecule_index][0].should.be.equal("H")
-            mmolecule[target_atom_mmolecule_index][0].slice(4).length.should.be.equal(0)
+            molecule[target_atom_mmolecule_index][0].should.be.equal("H")
+            molecule[target_atom_mmolecule_index][0].slice(4).length.should.be.equal(0)
             // Target atom is a proton and so shouldnt have any electrons.
             target_atom_electron_to_share_index.should.be.equal(false)
         }
@@ -930,32 +946,32 @@ Positively charged atoms -->
         // H3O
         if (test_number === 1) {
             target_atom_electron_to_share_index.should.be.equal(false)
-            mmolecule[target_atom_mmolecule_index][0].should.be.equal("H")
-            mmolecule[source_atom_index][0].should.be.equal("O")
+            molecule[target_atom_mmolecule_index][0].should.be.equal("H")
+            molecule[source_atom_index][0].should.be.equal("O")
             source_atom_electron_to_share_index.should.be.equal(5)
         }
 
         // HCl
         if (test_number === 2) {
             target_atom_electron_to_share_index.should.be.equal(false)
-            mmolecule[target_atom_mmolecule_index][0].should.be.equal("H")
-            mmolecule[source_atom_index][0].should.be.equal("Cl")
+            molecule[target_atom_mmolecule_index][0].should.be.equal("H")
+            molecule[source_atom_index][0].should.be.equal("Cl")
             source_atom_electron_to_share_index.should.be.equal(7)
         }
 
         // AlCl3 + C:OC
         if (test_number === 3) {
             target_atom_electron_to_share_index.should.be.equal(false)
-            mmolecule[target_atom_mmolecule_index][0].should.be.equal("Al")
-            mmolecule[source_atom_index][0].should.be.equal("O")
+            molecule[target_atom_mmolecule_index][0].should.be.equal("Al")
+            molecule[source_atom_index][0].should.be.equal("O")
             source_atom_electron_to_share_index.should.be.equal(3)       // false
         }
 
         //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
         if (test_number === 4) {
             target_atom_electron_to_share_index.should.be.equal(false)
-            mmolecule[target_atom_mmolecule_index][0].should.be.equal("H")
-            mmolecule[source_atom_index][0].should.be.equal("C")
+            molecule[target_atom_mmolecule_index][0].should.be.equal("H")
+            molecule[source_atom_index][0].should.be.equal("C")
             source_atom_electron_to_share_index.should.be.equal(false) // false as double one
         }
 
@@ -965,14 +981,14 @@ Positively charged atoms -->
         // Source atom index should be 1
         if (test_number === 5) {
             target_atom_electron_to_share_index.should.be.equal(false) // carbocation
-            mmolecule[target_atom_mmolecule_index][0].should.be.equal("C")
-            mmolecule[source_atom_index][0].should.be.equal("Br")
+            molecule[target_atom_mmolecule_index][0].should.be.equal("C")
+            molecule[source_atom_index][0].should.be.equal("Br")
             source_atom_electron_to_share_index.should.be.equal(7) // should not be false
 
         }
 
         // Get lone pair from source atom (atom arrow would be pointing from (nucleophile))
-        const source_atom_lone_pairs = CAtom(mmolecule[source_atom_index], source_atom_index, mmolecule).lonePairs(test_number)
+        const source_atom_lone_pairs = CAtom(molecule[source_atom_index], source_atom_index, molecule).lonePairs(test_number)
 
         if (test_number === 4) {
             source_atom_lone_pairs.length.should.be.equal(0) // C=C double bond so no lone pairs
@@ -984,13 +1000,13 @@ Positively charged atoms -->
         // Source atom index should be 1
         if (test_number === 5) {
             source_atom_lone_pairs.length.should.be.equal(8)
-            mmolecule[target_atom_mmolecule_index][0].should.be.equal("C") //[C+]
+            molecule[target_atom_mmolecule_index][0].should.be.equal("C") //[C+]
         }
 
         // Protons are always target atoms (eklectrophiles) - where the arrow would be pointing to
 
 
-        if (mmolecule[target_atom_mmolecule_index][0]==="H") {
+        if (molecule[target_atom_mmolecule_index][0]==="H") {
 
             if (test_number === 5) {
                 console.log("SHOULDNT BE HERE - molecule.js")
@@ -998,7 +1014,7 @@ Positively charged atoms -->
             }
 
             // proton?
-            if (mmolecule[target_atom_mmolecule_index].length===4) {
+            if (molecule[target_atom_mmolecule_index].length===4) {
                 // add electrons from source atom to target atom (proton)
                 // target atom is a proton and has no electrons
 
@@ -1012,13 +1028,13 @@ Positively charged atoms -->
 
                 if (source_atom_lone_pairs.length > 0) {
                     // mmolecule[target_atom_mmolecule_index] is a proton
-                    mmolecule[target_atom_mmolecule_index].push(source_atom_lone_pairs[0])
-                    mmolecule[target_atom_mmolecule_index].push(source_atom_lone_pairs[1])
+                    molecule[target_atom_mmolecule_index].push(source_atom_lone_pairs[0])
+                    molecule[target_atom_mmolecule_index].push(source_atom_lone_pairs[1])
                 } else {
 
                     // Does the source atom have a double bond?
                     // returns a set of electrons or false
-                    const double_bond = CAtom(mmolecule[source_atom_index], source_atom_index, mmolecule).doubleBond(test_number)
+                    const double_bond = CAtom(molecule[source_atom_index], source_atom_index, molecule).doubleBond(test_number)
 
                     // remove the double bond by removing electrons from bonded atom (turn into single bond)
                     if (test_number === 4) {
@@ -1027,9 +1043,9 @@ Positively charged atoms -->
                     }
 
                     if (double_bond) {
-                        mmolecule = CAtom(mmolecule[source_atom_index], source_atom_index, mmolecule).removeDoubleBond(test_number)
-                        mmolecule[target_atom_mmolecule_index].push(double_bond[0])
-                        mmolecule[target_atom_mmolecule_index].push(double_bond[1])
+                        molecule = CAtom(mmolecule[source_atom_index], source_atom_index, molecule).removeDoubleBond(test_number)
+                        molecule[target_atom_mmolecule_index].push(double_bond[0])
+                        molecule[target_atom_mmolecule_index].push(double_bond[1])
                     }
 
                 }
@@ -1058,11 +1074,11 @@ Positively charged atoms -->
                      */
                     // verify we no longer have double bond
                     if (test_number === 4) {
-                        Set().intersection(mmolecule[6].slice(4), mmolecule[8].slice(4)).length.should.be.equal(2)
-                        mmolecule[target_atom_mmolecule_index].slice(4).length.should.be.equal(2)
-                        mmolecule[target_atom_mmolecule_index][4].should.be.a.String()
-                        mmolecule[target_atom_mmolecule_index][5].should.be.a.String()
-                        Set().intersection(mmolecule[6].slice(4), mmolecule[target_atom_mmolecule_index].slice(4)).length.should.be.equal(2)
+                        Set().intersection(molecule[6].slice(4), molecule[8].slice(4)).length.should.be.equal(2)
+                        molecule[target_atom_mmolecule_index].slice(4).length.should.be.equal(2)
+                        molecule[target_atom_mmolecule_index][4].should.be.a.String()
+                        molecule[target_atom_mmolecule_index][5].should.be.a.String()
+                        Set().intersection(mmolecule[6].slice(4), molecule[target_atom_mmolecule_index].slice(4)).length.should.be.equal(2)
                     }
                 }
 
@@ -1078,8 +1094,8 @@ Positively charged atoms -->
             if (test_number === 3) {
                 // Target molecule should be AlCl3
                 // Source molecule should be COC
-                mmolecule[source_atom_index][0].should.be.equal("O")
-                mmolecule[target_atom_mmolecule_index][0].should.be.equal("Al")
+                molecule[source_atom_index][0].should.be.equal("O")
+                molecule[target_atom_mmolecule_index][0].should.be.equal("Al")
                 source_atom_electron_to_share_index.should.be.equal(3)
                 target_atom_electron_to_share_index.should.be.equal(false)
             }
@@ -1089,8 +1105,8 @@ Positively charged atoms -->
             // Target atom index should be 8 (electrophile)
             // Source atom index should be 1
             if (test_number === 5) {
-                mmolecule[source_atom_index][0].should.be.equal("Br")
-                mmolecule[target_atom_mmolecule_index][0].should.be.equal("C")
+                molecule[source_atom_index][0].should.be.equal("Br")
+                molecule[target_atom_mmolecule_index][0].should.be.equal("C")
                 source_atom_electron_to_share_index.should.be.equal(7)
                 target_atom_electron_to_share_index.should.be.equal(false)
             }
@@ -1101,7 +1117,7 @@ Positively charged atoms -->
                 // the target atom has un unfillec valence shell
                 // electrophile
                 // free slots is a number
-                const free_slots = CAtom(mmolecule[target_atom_mmolecule_index], target_atom_mmolecule_index, mmolecule).freeSlots(test_number)
+                const free_slots = CAtom(molecule[target_atom_mmolecule_index], target_atom_mmolecule_index,  molecule).freeSlots(test_number)
 
                 // [Br-] (nucleophile) -----> carbocation CC[C+]C
                 // Br atom should bond to carbon that has three bonds
@@ -1120,9 +1136,9 @@ Positively charged atoms -->
                     // mmolecule[target_atom_mmolecule_index].push(free_slots[1])
 
                     // add free electron from source atom to target atom
-                    mmolecule[target_atom_mmolecule_index].push(mmolecule[source_atom_index][4 + source_atom_electron_to_share_index])
+                    molecule[target_atom_mmolecule_index].push(molecule[source_atom_index][4 + source_atom_electron_to_share_index])
                     // add another free electron from source atom to target atom
-                    mmolecule[target_atom_mmolecule_index].push(mmolecule[source_atom_index][5 + source_atom_electron_to_share_index])
+                    molecule[target_atom_mmolecule_index].push(molecule[source_atom_index][5 + source_atom_electron_to_share_index])
 
 
                     // test for bond
@@ -1131,7 +1147,7 @@ Positively charged atoms -->
                     // Target atom index should be 8 (electrophile)
                     // Source atom index should be 1
                     if (test_number === 5) {
-                        Set().intersection(mmolecule[target_atom_mmolecule_index].slice(4), mmolecule[source_atom_index].slice(4)).length.should.be.equal(4444)
+                        Set().intersection(molecule[target_atom_mmolecule_index].slice(4), molecule[source_atom_index].slice(4)).length.should.be.equal(4444)
 
                     }
 
@@ -1147,33 +1163,33 @@ Positively charged atoms -->
                 }
 
                 // add shared electron from target atom to source atom
-                mmolecule[source_atom_index].push(mmolecule[target_atom_mmolecule_index][4 + target_atom_electron_to_share_index])
+                molecule[source_atom_index].push(molecule[target_atom_mmolecule_index][4 + target_atom_electron_to_share_index])
 
                 // add shared electron from atom being pushed to target atom
                 // test 5 - atom_to_push_molecule_index is undefined
-                mmolecule[target_atom_mmolecule_index].push(mmolecule[atom_to_push_molecule_index][5 + source_atom_electron_to_share_index])
+                molecule[target_atom_mmolecule_index].push(molecule[atom_to_push_molecule_index][5 + source_atom_electron_to_share_index])
 
 
 
             }
         }
 
-        mmolecule[0] = pKa(mmolecule.slice(1))
+        molecule[0] = pKa(molecule.slice(1))
 
         if (test_number === 1) {
-            mmolecule[0].should.be.equal(-1.74)
+            molecule[0].should.be.equal(-1.74)
         }
 
         if (test_number === 2) {
-            mmolecule[0].should.be.equal(-6.3)
+            molecule[0].should.be.equal(-6.3)
         }
 
         if (test_number === 3) {
-            mmolecule.length.should.be.equal(14)
-            mmolecule[1][0].should.be.equal("H")
-            mmolecule[2][0].should.be.equal("H")
-            mmolecule[3][0].should.be.equal("H")
-            mmolecule[4][0].should.be.equal("C")
+            molecule.length.should.be.equal(14)
+            molecule[1][0].should.be.equal("H")
+            molecule[2][0].should.be.equal("H")
+            molecule[3][0].should.be.equal("H")
+            molecule[4][0].should.be.equal("C")
         }
 
         //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
