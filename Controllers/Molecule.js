@@ -1351,6 +1351,8 @@ Molecule.js
 
     const _bondCount = (atom, verbose) => {
 
+        const molecule = mmolecule[0] // mmolecule[1] is the number of units
+        
         if (verbose) {
             console.log('Controllers/Molecule.js:: Getting bond count for atom ->')
             console.log('Controllers/Molecule.js:: Molecule')
@@ -1370,7 +1372,9 @@ Molecule.js
             (total, current_electron) => {
                 // Look for current electron
                 // Electron can only be shared once
-                const shared =  mmolecule.reduce(
+                const shared =  m
+                
+                olecule.reduce(
                     (atoms, molecule_atom) => {
                         if (typeof molecule_atom.length !== "number") {
                             return atoms
@@ -1400,11 +1404,13 @@ Molecule.js
 // atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
         indexOf : (atom_or_atomic_symbol, include_carbons, verbose) => {
 
+            const molecule = mmolecule[0] // mmolecule[1] is the number of units
+            
             if (verbose) {
                 console.log("Controllers/Molecule.js Finding index of ->")
                 console.log(atom_or_atomic_symbol)
                 console.log("molecule ->")
-                console.log(mmolecule)
+                console.log(molecule)
             }
 
             if (atom_or_atomic_symbol === "H" || atom_or_atomic_symbol[0] === "H") {
@@ -1414,7 +1420,7 @@ Molecule.js
                 }
 
                 // get molecule atoms that have hydrogens, keeping track of hydrogen indexes
-                const candidate_atoms = mmolecule.reduce((carry, current_molecule_atom, index)=>{
+                const candidate_atoms = molecule.reduce((carry, current_molecule_atom, index)=>{
 
                     if (current_molecule_atom[0] !== "H") {
                         if (typeof current_molecule_atom === "number" ) {
@@ -1429,7 +1435,7 @@ Molecule.js
 
                         // check current atom for hydrogens
                         // find the index of hydrogen atom bonded to the current molecule atom
-                        const H_index = mmolecule.reduce((_carry, _current, _index)=>{
+                        const H_index = molecule.reduce((_carry, _current, _index)=>{
                             if (_current[0] === "H") {
                                 const hydrogen_atom = _current
                                 const hydrogen_atom_valence_electrons = hydrogen_atom.slice(4)
@@ -1461,7 +1467,7 @@ Molecule.js
                     console.log("Controllers/Molecule.js Candidate atoms ->")
                     console.log(candidate_atoms)
                     console.log("molecule ->")
-                    console.log(mmolecule)
+                    console.log(molecule)
                 }
 
                 // check for oxygen atom and if found return the index of hydrogen atom bonded to the oxygen atom
@@ -1474,7 +1480,7 @@ Molecule.js
                         console.log("Controllers/Molecule.js Returning index of oxygen atom ->")
                         console.log(o[0][1])
                         console.log("molecule ->")
-                        console.log(mmolecule)
+                        console.log(molecule)
                     }
                     return o[0][1]
                 }
@@ -1490,7 +1496,7 @@ Molecule.js
                     console.log("Controllers/Molecule.js Returning atom index ->")
                     console.log(candidate_atoms[0][1])
                     console.log("molecule ->")
-                    console.log(mmolecule)
+                    console.log(molecule)
                 }
                 return candidate_atoms[0][1]
 
@@ -1498,23 +1504,23 @@ Molecule.js
             else { // we are not looking for hydrogen atom
                 if (typeof atom_or_atomic_symbol === "string") {
                     // find index of atom in molecule with matching atomic symbol
-                    const i = mmolecule.reduce((carry, current, index)=>{
+                    const i = molecule.reduce((carry, current, index)=>{
                         return typeof current.length === "number" && current[0] === atom_or_atomic_symbol?index:carry
                     }, false)
                     if (verbose) {
                         console.log("Controllers/Molecule.js Returning atom index not hydrogen ->")
                         console.log(i)
                         console.log("molecule ->")
-                        console.log(mmolecule)
+                        console.log(molecule)
                     }
                     return i
                 } else {
-                    const i = mmolecule.search(atom_or_atomic_symbol)
+                    const i = molecule.search(atom_or_atomic_symbol)
                     if (verbose) {
                         console.log("Controllers/Molecule.jss Returning atom index not hydrogen ->")
                         console.log(i)
                         console.log("molecule ->")
-                        console.log(mmolecule)
+                        console.log(molecule)
                     }
                     return i
                 }
@@ -1522,6 +1528,7 @@ Molecule.js
         },
         push : (atoms_or_atomic_symbols, container, target_molecule_index, test_number, target_atom_index, source_atom_index) => {
 
+            const molecule = mmolecule[0] // mmolecule[1] is the number of units
             // atoms_or_atomic_symbols are atoms from electrophile
             // mmolecule is the nucleophile
 
@@ -1756,12 +1763,14 @@ Molecule.js
                 return __makeCovalentBond(atoms, source_atom_index, test_number, target_atom_index) // return molecule
             }
 
-            mmolecule[0] = pKa(mmolecule.slice(1))
+            molecule[0] = pKa(molecule.slice(1))
 
-            return mmolecule
+            return molecule
         },
         remove : (container, molecule_index, atom_or_atomic_symbol) => {
 
+            const molecule = mmolecule[0] // mmolecule[1] is the number of units
+            
             var test_mode = false
             var test_mode_2 = false
 
