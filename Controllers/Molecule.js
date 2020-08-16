@@ -152,117 +152,7 @@ const CMolecule = (mmolecule, verbose) => {
                 
                 
                 
-                /*
-                Molecule -->
-[ 12345,
-  [ 'H', 1, 1, 1, 'bqdtz07lqkdh3ei5v', 'bqdtz07lqkdh3ei5f' ],
-  [ 'H', 1, 1, 1, 'bqdtz07lqkdh3ei5w', 'bqdtz07lqkdh3ei5g' ],
-  [ 'H', 1, 1, 1, 'bqdtz07lqkdh3ei5x', 'bqdtz07lqkdh3ei5h' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    'bqdtz07lqkdh3ei5f',
-    'bqdtz07lqkdh3ei5g',
-    'bqdtz07lqkdh3ei5h',
-    'bqdtz07lqkdh3ei5i',
-    'bqdtz07lqkdh3ei5m',
-    'bqdtz07lqkdh3ei5v',
-    'bqdtz07lqkdh3ei5w',
-    'bqdtz07lqkdh3ei5x' ],
-  [ 'H', 1, 1, 1, 'bqdtz07lqkdh3ei5y', 'bqdtz07lqkdh3ei5j' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    'bqdtz07lqkdh3ei5j',
-    'bqdtz07lqkdh3ei5k',
-    'bqdtz07lqkdh3ei5l',
-    'bqdtz07lqkdh3ei5m',
-    'bqdtz07lqkdh3ei5i',
-    'bqdtz07lqkdh3ei5q',
-    'bqdtz07lqkdh3ei5p',
-    'bqdtz07lqkdh3ei5y' ],
-  [ 'H', 1, 1, 1, 'bqdtz07lqkdh3ei5z', 'bqdtz07lqkdh3ei5n' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    'bqdtz07lqkdh3ei5n',
-    'bqdtz07lqkdh3ei5o',
-    'bqdtz07lqkdh3ei5p',
-    'bqdtz07lqkdh3ei5q',
-    'bqdtz07lqkdh3ei5u',
-    'bqdtz07lqkdh3ei5z' ],
-  [ 'H', 1, 1, 1, 'bqdtz07lqkdh3ei60', 'bqdtz07lqkdh3ei5r' ],
-  [ 'H', 1, 1, 1, 'bqdtz07lqkdh3ei61', 'bqdtz07lqkdh3ei5s' ],
-  [ 'H', 1, 1, 1, 'bqdtz07lqkdh3ei62', 'bqdtz07lqkdh3ei5t' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    'bqdtz07lqkdh3ei5r',
-    'bqdtz07lqkdh3ei5s',
-    'bqdtz07lqkdh3ei5t',
-    'bqdtz07lqkdh3ei5u',
-    'bqdtz07lqkdh3ei5o',
-    'bqdtz07lqkdh3ei60',
-    'bqdtz07lqkdh3ei61',
-    'bqdtz07lqkdh3ei62' ],
-  [ 'H', 1, 1, 1, 'bqdtz07lqkdh3ei5k', 'bqdtz07lqkdh3ei5l' ] ]
-Positively charged atoms -->
-[ [ 3,
-    [ 'C',
-      6,
-      4,
-      4,
-      'bqdtz07lqkdh3ei5f',
-      'bqdtz07lqkdh3ei5g',
-      'bqdtz07lqkdh3ei5h',
-      'bqdtz07lqkdh3ei5i',
-      'bqdtz07lqkdh3ei5m',
-      'bqdtz07lqkdh3ei5v',
-      'bqdtz07lqkdh3ei5w',
-      'bqdtz07lqkdh3ei5x' ] ],
-  [ 5,
-    [ 'C',
-      6,
-      4,
-      4,
-      'bqdtz07lqkdh3ei5j',
-      'bqdtz07lqkdh3ei5k',
-      'bqdtz07lqkdh3ei5l',
-      'bqdtz07lqkdh3ei5m',
-      'bqdtz07lqkdh3ei5i',
-      'bqdtz07lqkdh3ei5q',
-      'bqdtz07lqkdh3ei5p',
-      'bqdtz07lqkdh3ei5y' ] ],
-  [ 7,
-    [ 'C',
-      6,
-      4,
-      4,
-      'bqdtz07lqkdh3ei5n',
-      'bqdtz07lqkdh3ei5o',
-      'bqdtz07lqkdh3ei5p',
-      'bqdtz07lqkdh3ei5q',
-      'bqdtz07lqkdh3ei5u',
-      'bqdtz07lqkdh3ei5z' ] ],
-  [ 11,
-    [ 'C',
-      6,
-      4,
-      4,
-      'bqdtz07lqkdh3ei5r',
-      'bqdtz07lqkdh3ei5s',
-      'bqdtz07lqkdh3ei5t',
-      'bqdtz07lqkdh3ei5u',
-      'bqdtz07lqkdh3ei5o',
-      'bqdtz07lqkdh3ei60',
-      'bqdtz07lqkdh3ei61',
-      'bqdtz07lqkdh3ei62' ] ] ]
-
-                 */
+               
                 positively_charged_atoms.length.should.be.equal(1) // the carbocation
             }
 
@@ -274,15 +164,8 @@ Positively charged atoms -->
                 // See organic chemistry 8th edition ch 6 p 235
                 // C=C (butene, nucleophile) -> HBr (H is electrophile)
                 if (test_number == 4.1) {
-                    // mmolecule
-                    /*
-                            [ 12345, 0
-                              [ 'H', 1, 1, 1, '2edg3og5gokb4ofslh', '2edg3og5gokb4ofsla' ], 1
-                              [ 'Br', 35,7,1,'2edg3og5gokb4ofsla','2edg3og5gokb4ofslb', 2
-                                '2edg3og5gokb4ofslc','2edg3og5gokb4ofsld','2edg3og5gokb4ofsle',
-                                '2edg3og5gokb4ofslf','2edg3og5gokb4ofslg','2edg3og5gokb4ofslh' ]
-                                ]
-                             */
+                    
+                    
                     atoms_with_free_slots.length.should.be.equal(1)
                 }
 
@@ -527,21 +410,7 @@ Positively charged atoms -->
 
                 if (test_number == 5.1) {
                     // freeSlots() returns a number
-                    /*
-                    [ 'Br',
-35,
-7,
-1,
-'2edg3og4hskb46emmt',
-'2edg3og4hskb46emmu',
-'2edg3og4hskb46emmv',
-'2edg3og4hskb46emmw',
-'2edg3og4hskb46emmx',
-'2edg3og4hskb46emmy',
-'2edg3og4hskb46emmz',
-'2edg3og4hskb46emn0' ]
-
-                     */
+                    
                     CAtom(atom, index ,molecule).freeSlots(test_number).should.be.equal(9) // Check
                 }
 
@@ -672,27 +541,6 @@ Positively charged atoms -->
         if (test_number === 4) {
             if(test_number === 4) {
                 // atoms
-                // [ [ 'H', 1, 1, 1 ] ]
-                // mmolecule
-                /*
-                [ 12345,
-[ 'H', 1, 1, 1, '26f114qhkavwca5i', '26f114qhkavwca52' ],
-[ 'H', 1, 1, 1, '26f114qhkavwca5j', '26f114qhkavwca53' ],
-[ 'H', 1, 1, 1, '26f114qhkavwca5k', '26f114qhkavwca54' ],
-[ 'C',6,4,4,'26f114qhkavwca52','26f114qhkavwca53','26f114qhkavwca54','26f114qhkavwca55',
-'26f114qhkavwca59','26f114qhkavwca5i','26f114qhkavwca5j','26f114qhkavwca5k' ],
-[ 'H', 1, 1, 1, '26f114qhkavwca5l', '26f114qhkavwca56' ],
-[ 'C',6,4,4,'26f114qhkavwca56','26f114qhkavwca57','26f114qhkavwca58','26f114qhkavwca59',
-'26f114qhkavwca55','26f114qhkavwca5d','26f114qhkavwca5c','26f114qhkavwca5l' ],
-[ 'H', 1, 1, 1, '26f114qhkavwca5m', '26f114qhkavwca5a' ],
-[ 'C',6,4,4,'26f114qhkavwca5a','26f114qhkavwca5b','26f114qhkavwca5c','26f114qhkavwca5d',
-'26f114qhkavwca58','26f114qhkavwca57','26f114qhkavwca5h','26f114qhkavwca5m' ],
-[ 'H', 1, 1, 1, '26f114qhkavwca5n', '26f114qhkavwca5e' ],
-[ 'H', 1, 1, 1, '26f114qhkavwca5o', '26f114qhkavwca5f' ],
-[ 'H', 1, 1, 1, '26f114qhkavwca5p', '26f114qhkavwca5g' ],
-[ 'C',6,4,4,'26f114qhkavwca5e','26f114qhkavwca5f','26f114qhkavwca5g','26f114qhkavwca5h',
-'26f114qhkavwca5b','26f114qhkavwca5n','26f114qhkavwca5o','26f114qhkavwca5p' ] ]
-                 */
                 // source_atom_index 6 = Carbon on double bond
                 // target_atom_index 1 = H
             }
@@ -741,81 +589,8 @@ Positively charged atoms -->
         // Source atom index should be 1
 
         if (test_number === 5) {
-            /*
-            [Br-] nucleophile
-            [ 12345,
-  [ 'Br',
-    35,
-    7,
-    1,
-    '26f1152ukavyw78g',
-    '26f1152ukavyw78h',
-    '26f1152ukavyw78i',
-    '26f1152ukavyw78j',
-    '26f1152ukavyw78k',
-    '26f1152ukavyw78l',
-    '26f1152ukavyw78m',
-    '26f1152ukavyw78n' ] ]
-             */
-            /*
-            [ [ 'H', 1, 1, 1, '26f1152xkavyx3lh', '26f1152xkavyx3l1' ],
-  [ 'H', 1, 1, 1, '26f1152xkavyx3li', '26f1152xkavyx3l2' ],
-  [ 'H', 1, 1, 1, '26f1152xkavyx3lj', '26f1152xkavyx3l3' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    '26f1152xkavyx3l1',
-    '26f1152xkavyx3l2',
-    '26f1152xkavyx3l3',
-    '26f1152xkavyx3l4',
-    '26f1152xkavyx3l8',
-    '26f1152xkavyx3lh',
-    '26f1152xkavyx3li',
-    '26f1152xkavyx3lj' ],
-  [ 'H', 1, 1, 1, '26f1152xkavyx3lk', '26f1152xkavyx3l5' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    '26f1152xkavyx3l5',
-    '26f1152xkavyx3l6',
-    '26f1152xkavyx3l7',
-    '26f1152xkavyx3l8',
-    '26f1152xkavyx3l4',
-    '26f1152xkavyx3lc',
-    '26f1152xkavyx3lb',
-    '26f1152xkavyx3lk' ],
-  [ 'H', 1, 1, 1, '26f1152xkavyx3ll', '26f1152xkavyx3l9' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    '26f1152xkavyx3l9',
-    '26f1152xkavyx3la',
-    '26f1152xkavyx3lb',
-    '26f1152xkavyx3lc',
-    '26f1152xkavyx3lg',
-    '26f1152xkavyx3ll' ],
-  [ 'H', 1, 1, 1, '26f1152xkavyx3lm', '26f1152xkavyx3ld' ],
-  [ 'H', 1, 1, 1, '26f1152xkavyx3ln', '26f1152xkavyx3le' ],
-  [ 'H', 1, 1, 1, '26f1152xkavyx3lo', '26f1152xkavyx3lf' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    '26f1152xkavyx3ld',
-    '26f1152xkavyx3le',
-    '26f1152xkavyx3lf',
-    '26f1152xkavyx3lg',
-    '26f1152xkavyx3la',
-    '26f1152xkavyx3lm',
-    '26f1152xkavyx3ln',
-    '26f1152xkavyx3lo' ],
-  [ 'H', 1, 1, 1, '26f1152xkavyx3l6', '26f1152xkavyx3l7' ] ]
+            
 
-
-             */
             // [Br-] (nucleophile) -----> carbocation CC[C+]C
             // Br atom should bond to carbon that has three bonds
             // Target atom index should be 8 (electrophile)
@@ -1051,27 +826,8 @@ Positively charged atoms -->
                 }
 
                 if (test_number === 4) {
-                    //console.log(mmolecule)
-                    /*
-                    [ 12345, 0
-  [ 'H', 1, 1, 1, '26f114zhkavy3hau', '26f114zhkavy3hae' ], 1
-  [ 'H', 1, 1, 1, '26f114zhkavy3hav', '26f114zhkavy3haf' ], 2
-  [ 'H', 1, 1, 1, '26f114zhkavy3haw', '26f114zhkavy3hag' ], 3
-  [ 'C', 6,4,4,'26f114zhkavy3hae','26f114zhkavy3haf','26f114zhkavy3hag','26f114zhkavy3hah',
-   '26f114zhkavy3hal','26f114zhkavy3hau','26f114zhkavy3hav','26f114zhkavy3haw' ], 4
-  [ 'H', 1, 1, 1, '26f114zhkavy3hax', '26f114zhkavy3hai' ], 5
-  [ 'C',6,4,4,'26f114zhkavy3hai','26f114zhkavy3haj','26f114zhkavy3hak','26f114zhkavy3hal',
-    '26f114zhkavy3hah','26f114zhkavy3hap','26f114zhkavy3hao','26f114zhkavy3hax' ], 6
-  [ 'H', 1, 1, 1, '26f114zhkavy3hay', '26f114zhkavy3ham' ], 7
-  [ 'C',6,4,4,'26f114zhkavy3ham','26f114zhkavy3han','26f114zhkavy3hao','26f114zhkavy3hap','26f114zhkavy3hak','26f114zhkavy3haj',
-    '26f114zhkavy3hat','26f114zhkavy3hay' ], 8
-  [ 'H', 1, 1, 1, '26f114zhkavy3haz', '26f114zhkavy3haq' ], 9
-  [ 'H', 1, 1, 1, '26f114zhkavy3hb0', '26f114zhkavy3har' ], 10
-  [ 'H', 1, 1, 1, '26f114zhkavy3hb1', '26f114zhkavy3has' ], 11
-  [ 'C',6,4,4,'26f114zhkavy3haq','26f114zhkavy3har','26f114zhkavy3has','26f114zhkavy3hat','26f114zhkavy3han',
-    '26f114zhkavy3haz','26f114zhkavy3hb0','26f114zhkavy3hb1' ], 12
-  [ 'H', 1, 1, 1, '26f114zhkavy3haj', '26f114zhkavy3hak' ] ] 13
-                     */
+                    
+                    
                     // verify we no longer have double bond
                     if (test_number === 4) {
                         Set().intersection(molecule[6].slice(4), molecule[8].slice(4)).length.should.be.equal(2)
@@ -1203,146 +959,12 @@ Positively charged atoms -->
 
         // Check there is a bond between nucleophile atom (source) and electrophile atom (target)
         if (test_number ===4 ) {
-            /*
-            Source atom index:6
-target_atom_mmolecule_index:13
-mmolecule
-[ 12345,
-  [ 'H', 1, 1, 1, '1y5g43iwkaixyrog', '1y5g43iwkaixyro0' ],
-  [ 'H', 1, 1, 1, '1y5g43iwkaixyroh', '1y5g43iwkaixyro1' ],
-  [ 'H', 1, 1, 1, '1y5g43iwkaixyroi', '1y5g43iwkaixyro2' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    '1y5g43iwkaixyro0',
-    '1y5g43iwkaixyro1',
-    '1y5g43iwkaixyro2',
-    '1y5g43iwkaixyro3',
-    '1y5g43iwkaixyro7',
-    '1y5g43iwkaixyrog',
-    '1y5g43iwkaixyroh',
-    '1y5g43iwkaixyroi' ],
-  [ 'H', 1, 1, 1, '1y5g43iwkaixyroj', '1y5g43iwkaixyro4' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    '1y5g43iwkaixyro4',
-    '1y5g43iwkaixyro5',
-    '1y5g43iwkaixyro6',
-    '1y5g43iwkaixyro7',
-    '1y5g43iwkaixyro3',
-    '1y5g43iwkaixyrob',
-    '1y5g43iwkaixyroa',
-    '1y5g43iwkaixyroj' ],
-  [ 'H', 1, 1, 1, '1y5g43iwkaixyrok', '1y5g43iwkaixyro8' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    '1y5g43iwkaixyro8',
-    '1y5g43iwkaixyro9',
-    '1y5g43iwkaixyroa',
-    '1y5g43iwkaixyrob',
-    '1y5g43iwkaixyro6',
-    '1y5g43iwkaixyro5',
-    '1y5g43iwkaixyrof',
-    '1y5g43iwkaixyrok' ],
-  [ 'H', 1, 1, 1, '1y5g43iwkaixyrol', '1y5g43iwkaixyroc' ],
-  [ 'H', 1, 1, 1, '1y5g43iwkaixyrom', '1y5g43iwkaixyrod' ],
-  [ 'H', 1, 1, 1, '1y5g43iwkaixyron', '1y5g43iwkaixyroe' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    '1y5g43iwkaixyroc',
-    '1y5g43iwkaixyrod',
-    '1y5g43iwkaixyroe',
-    '1y5g43iwkaixyrof',
-    '1y5g43iwkaixyro9',
-    '1y5g43iwkaixyrol',
-    '1y5g43iwkaixyrom',
-    '1y5g43iwkaixyron' ],
-  [ 'H', 1, 1, 1, undefined, undefined ] ]
-Molecule.js
-
-             */
+            
         }
         if (test_number !==5) {
 
         } else {
-            /*
-            [ 12345,
-  [ 'Br',
-    35,
-    7,
-    1,
-    '26f1153lkavz4feb',
-    '26f1153lkavz4fec',
-    '26f1153lkavz4fed',
-    '26f1153lkavz4fee',
-    '26f1153lkavz4fef',
-    '26f1153lkavz4feg',
-    '26f1153lkavz4feh',
-    '26f1153lkavz4fei' ],
-  [ 'H', 1, 1, 1, '26f1153lkavz4fez', '26f1153lkavz4fej' ],
-  [ 'H', 1, 1, 1, '26f1153lkavz4ff0', '26f1153lkavz4fek' ],
-  [ 'H', 1, 1, 1, '26f1153lkavz4ff1', '26f1153lkavz4fel' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    '26f1153lkavz4fej',
-    '26f1153lkavz4fek',
-    '26f1153lkavz4fel',
-    '26f1153lkavz4fem',
-    '26f1153lkavz4feq',
-    '26f1153lkavz4fez',
-    '26f1153lkavz4ff0',
-    '26f1153lkavz4ff1' ],
-  [ 'H', 1, 1, 1, '26f1153lkavz4ff2', '26f1153lkavz4fen' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    '26f1153lkavz4fen',
-    '26f1153lkavz4feo',
-    '26f1153lkavz4fep',
-    '26f1153lkavz4feq',
-    '26f1153lkavz4fem',
-    '26f1153lkavz4feu',
-    '26f1153lkavz4fet',
-    '26f1153lkavz4ff2' ],
-  [ 'H', 1, 1, 1, '26f1153lkavz4ff3', '26f1153lkavz4fer' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    '26f1153lkavz4fer',
-    '26f1153lkavz4fes',
-    '26f1153lkavz4fet',
-    '26f1153lkavz4feu',
-    '26f1153lkavz4fey',
-    '26f1153lkavz4ff3' ],
-  [ 'H', 1, 1, 1, '26f1153lkavz4ff4', '26f1153lkavz4fev' ],
-  [ 'H', 1, 1, 1, '26f1153lkavz4ff5', '26f1153lkavz4few' ],
-  [ 'H', 1, 1, 1, '26f1153lkavz4ff6', '26f1153lkavz4fex' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    '26f1153lkavz4fev',
-    '26f1153lkavz4few',
-    '26f1153lkavz4fex',
-    '26f1153lkavz4fey',
-    '26f1153lkavz4fes',
-    '26f1153lkavz4ff4',
-    '26f1153lkavz4ff5',
-    '26f1153lkavz4ff6' ],
-  [ 'H', 1, 1, 1, '26f1153lkavz4feo', '26f1153lkavz4fep' ] ]
-
-             */
+            
         }
 
         return mmolecule
