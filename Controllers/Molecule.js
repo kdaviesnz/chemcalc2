@@ -498,13 +498,15 @@ const CMolecule = (mmolecule, verbose) => {
      target_atom_index is the index of the atom that the arrow would be pointing to (electrophile)
      source_atom_index is the index of the atom that the arrow would be pointing from (nucleophile)
      */
-    const __makeCovalentBond = (atoms, source_atom_index, test_number, target_atom_index) => {
+    const __makeCovalentBond = (
+        container, source_molecule_index, target_molecule_index, source_atom_index, target_atom_index, test_number
+    ) => {
 
         /*
         @todo
-        When bonding molecules we need to take into account the number of units.
-        If the source molecule (mmolecule) has less units (mmolecule[1]) than the
-        target molecule target_molecule[1]
+        We subtract the number of units of the source molecule (mmolecule[1]) from
+        the number of units of the target molecule (target_molecule[1]), rounding
+        to 0 units if necessary.
         */
         
         const molecule = mmolecule[0] // mmolecule[1] is the number of units
@@ -1389,7 +1391,8 @@ const CMolecule = (mmolecule, verbose) => {
                 if (test_number === 5) {
                     target_atom_index.should.be.equal(8) // [C+]
                 }
-                return __makeCovalentBond(atoms, source_atom_index, test_number, target_atom_index) // return molecule
+                // returns container
+                return __makeCovalentBond(container, source_molecule_index, target_molecule_index, source_atom_index, target_atom_index, test_number) // return molecule
             }
 
             molecule[0] = pKa(molecule.slice(1))
