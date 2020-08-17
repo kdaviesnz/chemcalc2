@@ -500,6 +500,12 @@ const CMolecule = (mmolecule, verbose) => {
      */
     const __makeCovalentBond = (atoms, source_atom_index, test_number, target_atom_index) => {
 
+        /*
+        @todo
+        When bonding molecules we need to take into account the number of units.
+        If the source molecule (mmolecule) has less units (mmolecule[1])
+        */
+        
         const molecule = mmolecule[0] // mmolecule[1] is the number of units
         // H+ (electrophile) <------- H:OH
         // atoms [[proton]]
@@ -778,7 +784,7 @@ const CMolecule = (mmolecule, verbose) => {
             molecule[target_atom_mmolecule_index][0].should.be.equal("C") //[C+]
         }
 
-        // Protons are always target atoms (eklectrophiles) - where the arrow would be pointing to
+        // Protons are always target atoms (electrophiles) - where the arrow would be pointing to
 
 
         if (molecule[target_atom_mmolecule_index][0]==="H") {
