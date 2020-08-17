@@ -503,7 +503,8 @@ const CMolecule = (mmolecule, verbose) => {
         /*
         @todo
         When bonding molecules we need to take into account the number of units.
-        If the source molecule (mmolecule) has less units (mmolecule[1])
+        If the source molecule (mmolecule) has less units (mmolecule[1]) than the
+        target molecule target_molecule[1]
         */
         
         const molecule = mmolecule[0] // mmolecule[1] is the number of units
