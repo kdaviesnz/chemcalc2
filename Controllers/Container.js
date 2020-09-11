@@ -32,19 +32,38 @@ class CContainer {
         
         const reagents = this.container.slice(1,this.container.length)
         const reagent = reagents[reagent_index]
+        
+        if (reagent[reagent_index][1] === 0) {
+            if (this.verbose) {
+                 console.log("Container.js::no reagent left")
+                console.log(reagent)
+            }
+            return this.__doReactionRecursive(reagent_index, substrate_index+1)
+        }
               
         const substrates = this.container.slice(1,this.container.length)
-
+       
         if (undefined === substrates[substrate_index]) {
             return
         }
 
+
+        
         if (this.test_number ===6) {
             // reagent should be water
             // substrates should be propylene, water
         }
 
         const substrate = substrates[substrate_index]
+        
+                if (substrate[substrate_index][1] === 0) {
+            if (this.verbose) {
+                 console.log("Container.js::no substrate left")
+                console.log(substrate)
+            }
+            return
+        }
+        
 
         if (this.test_number ===6) {
             // substrate_index should be 0
@@ -57,14 +76,16 @@ class CContainer {
         }
 
         if (reagent === substrate) {
+            
             if (this.verbose) {
                 console.log('reagent and substrate are the same')
             }
             return this.__doReactionRecursive(reagent_index, substrate_index+1)
+            
         } else {
 
-            const substrate_families = Families(substrate.slice(1), this.verbose).families
-            const reagent_families = Families(reagent.slice(1), this.verbose).families
+            const substrate_families = Families(substrate[0].slice(1), this.verbose).families
+            const reagent_families = Families(reagent[0].slice(1), this.verbose).families
                             
             if (this.verbose) {
                 console.log("Controllers/Container.js substrate families ->")
@@ -121,8 +142,8 @@ class CContainer {
                    
              if (substrate_families.alkene(this.verbose).length > 0) {
 
-                 const is_water = reagent.length === 4 && reagent[1][0]==='H'
-                     && reagent[2][0]==='H' && reagent[3][0]==='O'
+                 const is_water = reagent[0].length === 4 && reagent[0][1][0]==='H'
+                     && reagent[0][2][0]==='H' && reagent[0][3][0]==='O'
 
                  if (this.test_number === 6) {
                      // reagent is water, substrate is propylene
@@ -131,7 +152,7 @@ class CContainer {
 
                  // if reagent is water then return as is, as water does not react to alkenes.
                  if (is_water) {
-                     return this.__doReactionRecursive(reagent_index, reagent, substrate_index+1)
+                     return this.__doReactionRecursive(reagent_index, substrate_index+1)
                 }
 
 
@@ -147,7 +168,7 @@ class CContainer {
                  if (this.test_number === 7) {
                      // for first round substrate is propyline (CC=C)
                      // reagent is sulfuric acid H2SO4 (electrophile, donates H+)
-                     reagent.length.should.be.equal(8)
+                     reagent[0].length.should.be.equal(8)
                  }
 
                  // Substrate is alkene (nucleophile)
@@ -170,15 +191,15 @@ class CContainer {
                  if (this.test_number === 4) {
                     electrophile_molecule[1][0].should.be.equal("H")
                     electrophile_molecule[2][0].should.be.equal("Br")
-                                             Set().intersection(electrophile_molecule[1].slice(4), electrophile_molecule[2].slice(4)).length.should.be.equal(2)
+                    Set().intersection(electrophile_molecule[1].slice(4), electrophile_molecule[2].slice(4)).length.should.be.equal(2)
                  }
                                          
                  if (this.test_number === 7) {
-                                            // sulfuric acid
-                                            electrophile_molecule_index.should.be.equal(3)
+                        // sulfuric acid
+                        electrophile_molecule_index.should.be.equal(3)
                  }
 
-                 const nucleophile_atom_index = this.MoleculeController(substrate).nucleophileIndex(this.test_number)
+                 const nucleophile_atom_index = this.MoleculeController(substrate[0]).nucleophileIndex(this.test_number)
 
                  // SEE organic chemistry 8th edition p245
 // propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
@@ -210,7 +231,7 @@ class CContainer {
 // 3. The protonated alcohol loses a proton because the pH of the solution is greater
 // than the pKa of the protonated alcohol (Section 2.10).
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
-                const electrophile_atom_index = this.MoleculeController(reagent).electrophileIndex(this.test_number + ".1")
+                const electrophile_atom_index = this.MoleculeController(reagent[0]).electrophileIndex(this.test_number + ".1")
                                         if (this.test_number === 6) {
                     // Shouldn't be here as reagent is water and substrate is alkene
 
@@ -252,7 +273,7 @@ class CContainer {
                 reaction = bronstedLowry.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
 
                 if (this.test_number === 7) {
-                                              reaction.should.not.be.equal(false)
+                     reaction.should.not.be.equal(false)
                 }
 
                 // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
@@ -284,9 +305,9 @@ class CContainer {
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
                     // false, protonated propylene, water, deprotonated sulfuric acid
                          reaction[0].should.be.equal(false)
-                         reaction[1].length.should.be.equal(11) // protonated propylene
-                         reaction[2].length.should.be.equal(4) // water
-                         reaction[3].length.should.be.equal(7) // deprotonated sulfuric acid
+                         reaction[1][0].length.should.be.equal(11) // protonated propylene
+                         reaction[2][0].length.should.be.equal(4) // water
+                         reaction[3][0].length.should.be.equal(7) // deprotonated sulfuric acid
                          reaction.length.should.be.equal(4)
                       }
                      
@@ -296,8 +317,8 @@ class CContainer {
              } else if (reagent_families.alkene(this.verbose).length > 0) {
 
 
-                 const is_water = substrate.length === 4 && substrate[1][0]==='H'
-                     && substrate[2][0]==='H' && substrate[3][0]==='O'
+                 const is_water = substrate[].length === 4 && substrate[0][1][0]==='H'
+                     && substrate[0][2][0]==='H' && substrate[0][3][0]==='O'
 
                  if (this.test_number === 6) {
                      // substrate is water, reagent is propylene
@@ -319,10 +340,10 @@ class CContainer {
                 const electrophile_molecule_index = 1
 
                 // Find the nucleophile on the C=C bond
-                const nucleophile_atom_index = this.MoleculeController(reagent).nucleophileIndex(this.test_number)
+                const nucleophile_atom_index = this.MoleculeController(reagent[0]).nucleophileIndex(this.test_number)
 
                 // Find the nucleophile
-                const electrophile_atom_index = this.MoleculeController(substrate).electrophileIndex(this.test_number)
+                const electrophile_atom_index = this.MoleculeController(substrate[0]).electrophileIndex(this.test_number)
 
 
                 if (this.test_number === 4) {
@@ -377,50 +398,50 @@ class CContainer {
             if (this.test_number === 1) {
                 reaction.length.should.be.equal(3)
                 reaction[0].should.be.equal(false)
-                reaction[1].length.should.be.equal(2)
-                reaction[1][0].should.be.equal(2.86)
-                reaction[1][1][0].should.be.equal("Cl")
-                reaction[2].length.should.be.equal(5)
+                reaction[1][0].length.should.be.equal(2)
+                reaction[1][0][0].should.be.equal(2.86)
+                reaction[1][0][1][0].should.be.equal("Cl")
+                reaction[2][0].length.should.be.equal(5)
 
-                reaction[2][0].should.be.equal(-1.74)
-                reaction[2][1][0].should.be.equal("H")
-                reaction[2][3][0].should.be.equal("O")
-                reaction[2][4][0].should.be.equal("H")
+                reaction[2][0][0].should.be.equal(-1.74)
+                reaction[2][0][1][0].should.be.equal("H")
+                reaction[2][0][3][0].should.be.equal("O")
+                reaction[2][0][4][0].should.be.equal("H")
             }
 
             // [Cl-] (nucleophile)  <- H3O (electrophile)
             if (this.test_number === 2) {
                 reaction.length.should.be.equal(3)
                 reaction[0].should.be.equal(false)
-                reaction[1].length.should.be.equal(3)
-                reaction[1][0].should.be.equal(-6.3)
-                reaction[1][1][0].should.be.equal("Cl")
-                reaction[2].length.should.be.equal(4)
-                reaction[2][0].should.be.equal(14)
-                reaction[2][1][0].should.be.equal("H")
-                                        reaction[2][3][0].should.be.equal("O")
+                reaction[1][0].length.should.be.equal(3)
+                reaction[1][0][0].should.be.equal(-6.3)
+                reaction[1][0][1][0].should.be.equal("Cl")
+                reaction[2][0].length.should.be.equal(4)
+                reaction[2][0][0].should.be.equal(14)
+                reaction[2][0][1][0].should.be.equal("H")
+                                        reaction[2][0][3][0].should.be.equal("O")
              }
                                  
              if (this.test_number === 3) {
                 reaction.length.should.be.equal(2) // should be 2
                 reaction[0].should.be.equal(false)
-                reaction[1].length.should.be.equal(14)
-                reaction[1][0].should.be.equal(-3.5)
-                reaction[1][1][0].should.be.equal("H")
-                reaction[1][2][0].should.be.equal("H")
-                reaction[1][3][0].should.be.equal("H")
-                reaction[1][4][0].should.be.equal("C")
-                reaction[1][5][0].should.be.equal("O")
-                reaction[1][6][0].should.be.equal("H")
-                reaction[1][7][0].should.be.equal("H")
-                reaction[1][8][0].should.be.equal("H")
-                reaction[1][9][0].should.be.equal("C")
-                reaction[1][10][0].should.be.equal("Al")
-                reaction[1][11][0].should.be.equal("Cl")
-                reaction[1][12][0].should.be.equal("Cl")
-                reaction[1][13][0].should.be.equal("Cl")
+                reaction[1][0].length.should.be.equal(14)
+                reaction[1][0][0].should.be.equal(-3.5)
+                reaction[1][0][1][0].should.be.equal("H")
+                reaction[1][0][2][0].should.be.equal("H")
+                reaction[1][0][3][0].should.be.equal("H")
+                reaction[1][0][4][0].should.be.equal("C")
+                reaction[1][0][5][0].should.be.equal("O")
+                reaction[1][0][6][0].should.be.equal("H")
+                reaction[1][0][7][0].should.be.equal("H")
+                reaction[1][0][8][0].should.be.equal("H")
+                reaction[1][0][9][0].should.be.equal("C")
+                reaction[1][0][10][0].should.be.equal("Al")
+                reaction[1][0][11][0].should.be.equal("Cl")
+                reaction[1][0][12][0].should.be.equal("Cl")
+                reaction[1][0][13][0].should.be.equal("Cl")
                 // check for bond between Al and Oxygen
-                Set().intersection(reaction[1][5].slice(4), reaction[1][10].slice(4)).length.should.not.be.equal(0)
+                Set().intersection(reaction[1][0][5].slice(4), reaction[1][0][10].slice(4)).length.should.not.be.equal(0)
             }
             
             // At this point it is possible that the number of different molecules
@@ -500,7 +521,8 @@ class CContainer {
             reagent_index = reagents.length -1
         }
         
-        if (undefined === reagents[reagent_index]) {
+        // reagent is not defined or no more reagent left
+        if (undefined === reagents[reagent_index] || reagents[reagent_index][1] === 0) {
             return
         }
             
@@ -561,7 +583,7 @@ class CContainer {
             this.MoleculeFactory(molecule_array_or_string))
         // Add item to container.
 
-        this.container.push(molecule)
+        this.container.push([molecule, units])
 
         if (verbose) {
             console.log("Controllers/Container.js:: Container before processing reaction ->")

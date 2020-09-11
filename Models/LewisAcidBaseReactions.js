@@ -216,10 +216,12 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number, verb
         // push : (atoms_or_atomic_symbols, container, molecule_to_add_to_index, test_number, target_atom_index, source_atom_index) => {
         //[nucleophile_atom_index] = MoleculeController(nucleophile_molecule).push(electrophile_molecule.slice(1), container, molecule_to_add_to_index, test_number, electrophile_atom_index, nucleophile_atom_index )
 
-        MoleculeController(nucleophile_molecule).push(electrophile_molecule.slice(1), container, molecule_to_add_to_index, test_number, electrophile_atom_index, nucleophile_atom_index )
+        MoleculeController(nucleophile_molecule).push(electrophile_molecule[0].slice(1), container, molecule_to_add_to_index, test_number, electrophile_atom_index, nucleophile_atom_index )
 
         // Remove electrophile from container as it has been consumed by the nucleophile
-        container.splice(electrophile_molecule_index,1)
+        // container.splice(electrophile_molecule_index,1)
+        // container[electrophile_molecule_index][1] is the number of units
+        container[electrophile_molecule_index][1] = container[electrophile_molecule_index][1] -1
        
         return container
 
