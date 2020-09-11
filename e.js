@@ -252,7 +252,7 @@
                         "keywords": ["definition","empathy","entactogen"],
                         "referenced_links": [
                             {
-                                "authors": [""Nichols DE."."],
+                                "authors": ["Nichols DE."],
                                 "title": "Differences between the mechanism of action of MDMA, MBDB, and the classic hallucinogens. Identification of a new therapeu- tic class: entactogens. J Psychoactive Drugs. 1986;18(4):305–313.",
                                 "year": 1986,
                                 "uri": "https://pubmed.ncbi.nlm.nih.gov/2880944/"
@@ -540,7 +540,7 @@
         },
         "page": 1,
         "excerpt": "...Trait-empathic accuracy (trait-empathic implicit emotional accuracy) is superior to the Trait-empathic accuracy (trait-empathic implicit emotional accuracy) in neurotypical individuals.",
-        "keywords": [empathy, autism, Trait-empathic accuracy (trait-empathic implicit emotional accuracy)],
+        "keywords": ["empathy", "autism", "trait-empathic accuracy (trait-empathic implicit emotional accuracy)"],
 "referenced_links": [
 
 ]
@@ -556,12 +556,12 @@
 },
     "page": 20,
     "excerpt": "Conversely, the T-EA is significantly better in ASC individuals than in typically developing individuals (Senland and Higgins- D’Alessandro, 2013, 2016; Adler et al., 2015; Althaus et al., 2015; De Coster et al., 2017; Murray et al., 2017; Vyas et al., 2017),",
-    "keywords": [empathy, autism, Trait-empathic accuracy (trait-empathic implicit emotional accuracy)],
+    "keywords": ["empathy", "autism", "trait-empathic accuracy (trait-empathic implicit emotional accuracy)"],
     "referenced_links": [
     {
-        "authors": [Senland, A. K., and Higgins-D’Alessandro, A. (2013).],
+        "authors": [Senland, A. K.,  Higgins-D’Alessandro, A. (2013).],
     "title": "Moral reasoning and empathy in adolescents with autism spectrum disorder: implications for moral education. J. Moral Educ. 42, 209–223. doi: 10.1080/03057240.2012.752721",
-    "year": 2020,
+    "year": 2013,
     "uri": "https://www.tandfonline.com/doi/abs/10.1080/03057240.2012.752721"
 }  ,
     {
@@ -618,7 +618,7 @@
 
 {
     "fact":"Trait-cognitive empathy is impaired in individuals with ASCs (autism spectrum conditions)",
-    "keywords":[empathy, autism, trait-cognitive empathy],
+    "keywords":["empathy", "autism", "trait-cognitive empathy"],
     "references": [
     {
         "link": {
@@ -669,7 +669,7 @@
     },
     {
         "authors": [Murray, K., Johnston, K., Cunnane, H., Kerr, C., Spain, D., Gillan, N., et al.],
-        "title": "A new test of advanced theory of mind: the "Strange Stories Film Task” captures social processing differences in adults with autism spectrum disorders. Autism Res. 10, 1120–1132. doi: 10.1002/aur.1744",
+        "title": "A new test of advanced theory of mind: the “Strange Stories Film Task” captures social processing differences in adults with autism spectrum disorders. Autism Res. 10, 1120–1132. doi: 10.1002/aur.1744",
         "year": 2017,
         "uri": "https://pubmed.ncbi.nlm.nih.gov/28296216/"
     }  ,
@@ -732,7 +732,7 @@
 
 {
     "fact":"Empathy impairment evident in individuals with ASCs (autism spectrum conditions) is component specific",
-    "keywords":[empathy, autism],
+    "keywords":["empathy", "autism"],
     "references": [
     {
         "link": {
