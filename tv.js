@@ -1,4 +1,4 @@
-[{    
+const y = [{
 	"fact":"Acute effects of MDMA on empathy and openness are thought to help the extinction of traumatic memories",   
 	"keywords":["empathy","therapeutic value"],    
 	"references": [       
@@ -27,7 +27,7 @@
 
 
 {    
-	“fact”:"MDMA increases perception of empathy from others, providing additional evidence for the drug’s benefits in strengthening therapist–patient alliances in psychotherapy settings”,   
+	"fact":"MDMA increases perception of empathy from others, providing additional evidence for the drug’s benefits in strengthening therapist–patient alliances in psychotherapy settings",
 	"keywords":["therapeutic value","empathy","changes in perception"],    
 	"references": [       
 		 {            
@@ -37,12 +37,12 @@
 				"year": 2016,               
 				 "uri": "https://pubmed.ncbi.nlm.nih.gov/27562198/"           
 			 },           
-			 "page": 7         
+			 "page": 7,
 			 "excerpt": "MDMA can alter perceptions of others during an actual social interaction (Baggott et al., 2016; Bedi et al., 2014; Wardle and De Wit, 2014). Typically in these studies, participants perform a brief speech task with a research assistant and subsequently rate their interaction with the research assistant. In one study (Wardle and De Wit, 2014), MDMA (1.5 mg/kg) modestly increased the degree to which participants felt the research assistant understood and was interested in them. Interestingly, this effect is distinguishable from reports that the drug increased empathy for others. Here, MDMA increased perceptions of empathy from others. This appears consistent with the report by Baggott et al. (2016) that MDMA increased the comfort participants felt when describing autobiographical memories to a researcher. Increased feelings of being understood and accepted by real others provides additional evidence for the drug’s benefits in strengthening therapist–patient alliances in psychotherapy settings (Bouso et al., 2008; Johansen and Krebs, 2009; Mithoefer et al., 2011).",          
 		           "keywords": ["therapeutic value","empathy","changes in perception"],            
 			"referenced_links": [               
 				{                    
-					"authors": ["Wardle MC.”, "de Wit H."],                    
+					"authors": ["Wardle MC.", "de Wit H."],
 					"title": "MDMA alters emotional processing and facilitates positive social interaction. Psychopharmacology 231: 4219–4229.",                    
 					"year": 2014,                   
 					 "uri": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4194242/"                
@@ -60,7 +60,7 @@
 					 "uri": "https://pubmed.ncbi.nlm.nih.gov/19004414/"                
 				 } ,
 {                    
-					"authors":["Johansen P.”, "Krebs T."],                    
+					"authors":["Johansen P.", "Krebs T."],
 					"title": "How could MDMA (ecstasy) help anxiety disorders? A neurobiological rationale. J Psychopharmacol 23: 389–391.",                    
 					"year": 2009,                   
 					 "uri": "https://pubmed.ncbi.nlm.nih.gov/19273493/"                
@@ -106,7 +106,7 @@
 
     {    
 	"fact":"MDMA reduces negative emotional response to self-selected “worst” memories",   
-	"keywords":[therapeutic value],    
+	"keywords":["therapeutic value"],
 	"references": [       
 
 	 {            
@@ -155,7 +155,7 @@
 
    {    
 	"fact":"MDMA possesses unique psychological effects, distinct from psychostimulants that can be beneficial when combined with psychotherapy",   
-	"keywords":[therapeutic value],    
+	"keywords":["therapeutic value"],
 	"references": [       
 		 {            
 			"link": {                
