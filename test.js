@@ -14,6 +14,8 @@ const CMolecule = require('./Controllers/Molecule')
 const range = require("range")
 const Set = require('./Models/Set')
 
+const VMolecule = require('./Views/Molecule')
+
 const verbose = false
 
 // MOLECULE MODEL
@@ -21,6 +23,255 @@ const verbose = false
 // ATOM MODEL
 // atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
 const watermolecule = MoleculeFactory("water", verbose)
+VMolecule(watermolecule).render(1)
+const hcl = MoleculeFactory("HCl", verbose)
+VMolecule(hcl).render(1)
+const propylene = MoleculeFactory("CC=C")
+console.log(propylene)
+VMolecule(propylene).render(1)
+/*
+[ 12345,
+  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msh', 'bqdtz0bcdkf6c4ms5' ],
+  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msi', 'bqdtz0bcdkf6c4ms6' ],
+  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msj', 'bqdtz0bcdkf6c4ms7' ],
+  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msk', 'bqdtz0bcdkf6c4ms8' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    'bqdtz0bcdkf6c4ms5',
+    'bqdtz0bcdkf6c4ms6',
+    'bqdtz0bcdkf6c4ms7',
+    'bqdtz0bcdkf6c4ms8',
+    'bqdtz0bcdkf6c4msc',
+    'bqdtz0bcdkf6c4msh',
+    'bqdtz0bcdkf6c4msi',
+    'bqdtz0bcdkf6c4msj',
+    'bqdtz0bcdkf6c4msk' ],
+  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msl', 'bqdtz0bcdkf6c4ms9' ],
+  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msm', 'bqdtz0bcdkf6c4msa' ],
+  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msn', 'bqdtz0bcdkf6c4msb' ],
+  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4mso', 'bqdtz0bcdkf6c4msc' ],
+  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msp', 'bqdtz0bcdkf6c4ms8' ],
+  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msq', 'bqdtz0bcdkf6c4msg' ],
+  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msr', 'bqdtz0bcdkf6c4msf' ],
+  [ 'C',
+    6,
+    4,
+    4,
+    'bqdtz0bcdkf6c4ms9',
+    'bqdtz0bcdkf6c4msa',
+    'bqdtz0bcdkf6c4msb',
+    'bqdtz0bcdkf6c4msc',
+    'bqdtz0bcdkf6c4ms8',
+    'bqdtz0bcdkf6c4msg',
+    'bqdtz0bcdkf6c4msf',
+    'bqdtz0bcdkf6c4msl',
+    'bqdtz0bcdkf6c4msm',
+    'bqdtz0bcdkf6c4msn',
+    'bqdtz0bcdkf6c4mso',
+    'bqdtz0bcdkf6c4msp',
+    'bqdtz0bcdkf6c4msq',
+    'bqdtz0bcdkf6c4msr' ],
+  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4mss', 'bqdtz0bcdkf6c4msd' ],
+  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4mst', 'bqdtz0bcdkf6c4mse' ],
+  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msu', 'bqdtz0bcdkf6c4msf' ],
+  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msv', 'bqdtz0bcdkf6c4msg' ],
+  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msw', 'bqdtz0bcdkf6c4msb' ],
+  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msx', 'bqdtz0bcdkf6c4msa' ],
+  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msy', undefined ],
+  [ 'C',
+    6,
+    4,
+    4,
+    'bqdtz0bcdkf6c4msd',
+    'bqdtz0bcdkf6c4mse',
+    'bqdtz0bcdkf6c4msf',
+    'bqdtz0bcdkf6c4msg',
+    'bqdtz0bcdkf6c4msb',
+    'bqdtz0bcdkf6c4msa',
+    'bqdtz0bcdkf6c4mss',
+    'bqdtz0bcdkf6c4mst',
+    'bqdtz0bcdkf6c4msu',
+    'bqdtz0bcdkf6c4msv',
+    'bqdtz0bcdkf6c4msw',
+    'bqdtz0bcdkf6c4msx',
+    'bqdtz0bcdkf6c4msy' ] ]
+
+ */
+
+process.exit()
+
+if (verbose) {
+    console.log('test:: watermolecule ->')
+    console.log(watermolecule)
+}
+
+watermolecule.should.be.a.Array()
+watermolecule.length.should.be.equal(4)
+watermolecule[0].should.be.a.Number()
+watermolecule[0].should.be.a.equal(14)
+watermolecule[1].should.be.a.Array()
+//watermolecule[1].length.should.be.a.equal(6)
+watermolecule[1][0].should.be.a.String()
+watermolecule[1][0].should.be.equal("H")
+range.range(1,3,1).map(
+    (i)=>{
+        watermolecule[1][i].should.be.a.Number()
+    }
+)
+watermolecule[1][1].should.be.equal(1)
+watermolecule[1][2].should.be.equal(1)
+watermolecule[1][3].should.be.equal(1)
+range.range(4,watermolecule[1].length-1).map(
+    (i)=>{
+        watermolecule[2][i].should.be.a.String()
+    }
+)
+watermolecule[2].should.be.a.Array()
+//watermolecule[2].length.should.be.a.equal(6)
+watermolecule[2][0].should.be.a.String()
+watermolecule[2][0].should.be.equal("H")
+range.range(1,3,1).map(
+    (i)=>{
+        watermolecule[2][i].should.be.a.Number()
+    }
+)
+watermolecule[2][1].should.be.equal(1)
+watermolecule[2][2].should.be.equal(1)
+watermolecule[2][3].should.be.equal(1)
+range.range(4,watermolecule[2].length-1,1).map(
+    (i)=>{
+        watermolecule[2][i].should.be.a.String()
+    }
+)
+watermolecule[3].should.be.a.Array()
+watermolecule[3].length.should.be.a.equal(12)
+watermolecule[3][0].should.be.a.String()
+watermolecule[3][0].should.be.equal("O")
+range.range(1,3,1).map(
+    (i)=>{
+        watermolecule[3][i].should.be.a.Number()
+    }
+)
+watermolecule[3][1].should.be.equal(8)
+watermolecule[3][2].should.be.equal(6)
+watermolecule[3][3].should.be.equal(2)
+range.range(4,watermolecule[3].length-1,1).map(
+    (i)=>{
+        watermolecule[3][i].should.be.a.String()
+    }
+)
+watermolecule[3].indexOf(watermolecule[2][watermolecule[2].length-1]).should.not.be.False()
+watermolecule[2].indexOf(watermolecule[3][watermolecule[3].length-1]).should.not.be.False()
+watermolecule[2].indexOf(watermolecule[1][watermolecule[1].length-1]).should.not.be.False()
+watermolecule[1].indexOf(watermolecule[2][watermolecule[2].length-1]).should.not.be.False()
+
+const WaterController = CMolecule(watermolecule)
+if (verbose) {
+    console.log('Created water molecule controller')
+}
+WaterController.bondCount(watermolecule[1], verbose).should.be.equal(1)
+WaterController.bondCount(watermolecule[2], verbose).should.be.equal(1)
+WaterController.bondCount(watermolecule[3], verbose).should.be.equal(2) // Oxygen
+
+const HCLController = CMolecule(hcl, verbose)
+HCLController.bondCount(hcl[1], verbose).should.be.equal(1)
+HCLController.bondCount(hcl[2], verbose).should.be.equal(1)
+hcl.should.be.a.Array()
+hcl.length.should.be.equal(3)
+hcl[0].should.be.a.Number()
+hcl[0].should.be.a.equal(-6.3)
+hcl[1].should.be.a.Array()
+hcl[1].length.should.be.a.equal(6)
+hcl[1][0].should.be.a.String()
+hcl[1][0].should.be.equal("H")
+range.range(1,3,1).map(
+    (i)=>{
+        hcl[1][i].should.be.a.Number()
+    }
+)
+hcl[1][1].should.be.equal(1)
+hcl[1][2].should.be.equal(1)
+hcl[1][3].should.be.equal(1)
+range.range(4,hcl[1].length-1).map(
+    (i)=>{
+        hcl[2][i].should.be.a.String()
+    }
+)
+hcl[2].should.be.a.Array()
+hcl[2].length.should.be.a.equal(12)
+hcl[2][0].should.be.a.String()
+hcl[2][0].should.be.equal("Cl")
+range.range(1,3,1).map(
+    (i)=>{
+        hcl[2][i].should.be.a.Number()
+    }
+)
+hcl[2][1].should.be.equal(17)
+hcl[2][2].should.be.equal(7)
+hcl[2][3].should.be.equal(1)
+range.range(4,hcl[2].length-1,1).map(
+    (i)=>{
+        hcl[2][i].should.be.a.String()
+    }
+)
+hcl[2].indexOf(hcl[1][hcl[1].length-1]).should.not.be.False()
+hcl[1].indexOf(hcl[2][hcl[2].length-1]).should.not.be.False()
+
+
+const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
+
+// HCl + H2O <-> Cl- + H3O+
+//  CONTAINER MODEL
+// is vacuum, molecule, molecule ...
+ccontainer.add("HCl",1, verbose)
+ccontainer.container.length.should.be.equal(2)
+ccontainer.container[0].should.be.equal(false)
+ccontainer.container[1].should.be.a.Array()
+// pKa of HCl is -6.3
+// pKa of water is 14
+
+// HCl
+ccontainer.container[1].length.should.be.equal(3)
+
+ccontainer.add("water",1, verbose)
+
+ccontainer.container.length.should.be.equal(3)
+
+const Clneg = ccontainer.container[1]
+
+if (verbose) {
+    console.log("Test: Got Cl- ->")
+    console.log(Clneg)
+}
+Clneg.should.be.a.Array()
+Clneg.length.should.be.a.equal(2)
+Clneg[0].should.be.equal(2.86) // pKa of Cl- is 2.86
+Clneg[1].length.should.be.a.equal(12) // [Cl-] has 8 valence electrons
+Clneg[1][0].should.be.a.String()
+Clneg[1][0].should.be.equal("Cl")
+range.range(1,3,1).map(
+    (i)=>{
+        Clneg[1][i].should.be.a.Number()
+    }
+)
+Clneg[1][1].should.be.equal(17)
+Clneg[1][2].should.be.equal(7)
+Clneg[1][3].should.be.equal(1)
+range.range(4,Clneg[1].length-1,1).map(
+    (i)=>{
+        Clneg[1][i].should.be.a.String()
+    }
+)
+
+
+console.log("Test 1 complete")
+process.exit()
+
+
+
+
 
 
 // SEE organic chemistry 8th edition p245
@@ -32,7 +283,7 @@ const watermolecule = MoleculeFactory("water", verbose)
 // than the pKa of the protonated alcohol (Section 2.10).
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
 
-const propylene = MoleculeFactory("CC=C")
+
 // watermolecule
 
 const ccontainer6 = new CContainer([false], MoleculeFactory, MoleculeController, 6, verbose)
@@ -136,173 +387,6 @@ if (verbose) {
 console.log('Test 7 ok')
 process.exit()
 
-if (verbose) {
-    console.log('test:: watermolecule ->')
-    console.log(watermolecule)
-}
-
-watermolecule.should.be.a.Array()
-watermolecule.length.should.be.equal(4)
-watermolecule[0].should.be.a.Number()
-watermolecule[0].should.be.a.equal(14)
-watermolecule[1].should.be.a.Array()
-//watermolecule[1].length.should.be.a.equal(6)
-watermolecule[1][0].should.be.a.String()
-watermolecule[1][0].should.be.equal("H")
-range.range(1,3,1).map(
-    (i)=>{
-        watermolecule[1][i].should.be.a.Number()
-    }
-) 
-watermolecule[1][1].should.be.equal(1)
-watermolecule[1][2].should.be.equal(1)
-watermolecule[1][3].should.be.equal(1)
-range.range(4,watermolecule[1].length-1).map(
-    (i)=>{
-        watermolecule[2][i].should.be.a.String()
-    }
-)
-watermolecule[2].should.be.a.Array()
-//watermolecule[2].length.should.be.a.equal(6)
-watermolecule[2][0].should.be.a.String()
-watermolecule[2][0].should.be.equal("H")
-range.range(1,3,1).map(
-    (i)=>{
-        watermolecule[2][i].should.be.a.Number()
-    }
-) 
-watermolecule[2][1].should.be.equal(1)
-watermolecule[2][2].should.be.equal(1)
-watermolecule[2][3].should.be.equal(1)
-range.range(4,watermolecule[2].length-1,1).map(
-    (i)=>{
-        watermolecule[2][i].should.be.a.String()
-    }
-)
-watermolecule[3].should.be.a.Array()
-watermolecule[3].length.should.be.a.equal(12)
-watermolecule[3][0].should.be.a.String()
-watermolecule[3][0].should.be.equal("O")
-range.range(1,3,1).map(
-    (i)=>{
-        watermolecule[3][i].should.be.a.Number()
-    }
-) 
-watermolecule[3][1].should.be.equal(8)
-watermolecule[3][2].should.be.equal(6)
-watermolecule[3][3].should.be.equal(2)
-range.range(4,watermolecule[3].length-1,1).map(
-    (i)=>{
-        watermolecule[3][i].should.be.a.String()
-    }
-) 
-watermolecule[3].indexOf(watermolecule[2][watermolecule[2].length-1]).should.not.be.False()
-watermolecule[2].indexOf(watermolecule[3][watermolecule[3].length-1]).should.not.be.False()
-watermolecule[2].indexOf(watermolecule[1][watermolecule[1].length-1]).should.not.be.False()
-watermolecule[1].indexOf(watermolecule[2][watermolecule[2].length-1]).should.not.be.False()
-
-const WaterController = CMolecule(watermolecule)
-if (verbose) {
-    console.log('Created water molecule controller')
-}
-WaterController.bondCount(watermolecule[1], verbose).should.be.equal(1)
-WaterController.bondCount(watermolecule[2], verbose).should.be.equal(1)
-WaterController.bondCount(watermolecule[3], verbose).should.be.equal(2) // Oxygen
-
-const hcl = MoleculeFactory("HCl", verbose)
-const HCLController = CMolecule(hcl, verbose)
-HCLController.bondCount(hcl[1], verbose).should.be.equal(1)
-HCLController.bondCount(hcl[2], verbose).should.be.equal(1)
-hcl.should.be.a.Array()
-hcl.length.should.be.equal(3)
-hcl[0].should.be.a.Number()
-hcl[0].should.be.a.equal(-6.3)
-hcl[1].should.be.a.Array()
-hcl[1].length.should.be.a.equal(6)
-hcl[1][0].should.be.a.String()
-hcl[1][0].should.be.equal("H")
-range.range(1,3,1).map(
-    (i)=>{
-        hcl[1][i].should.be.a.Number()
-    }
-) 
-hcl[1][1].should.be.equal(1)
-hcl[1][2].should.be.equal(1)
-hcl[1][3].should.be.equal(1)
-range.range(4,hcl[1].length-1).map(
-    (i)=>{
-        hcl[2][i].should.be.a.String()
-    }
-)
-hcl[2].should.be.a.Array()
-hcl[2].length.should.be.a.equal(12)
-hcl[2][0].should.be.a.String()
-hcl[2][0].should.be.equal("Cl")
-range.range(1,3,1).map(
-    (i)=>{
-        hcl[2][i].should.be.a.Number()
-    }
-) 
-hcl[2][1].should.be.equal(17)
-hcl[2][2].should.be.equal(7)
-hcl[2][3].should.be.equal(1)
-range.range(4,hcl[2].length-1,1).map(
-    (i)=>{
-        hcl[2][i].should.be.a.String()
-    }
-)
-hcl[2].indexOf(hcl[1][hcl[1].length-1]).should.not.be.False()
-hcl[1].indexOf(hcl[2][hcl[2].length-1]).should.not.be.False()
-
-
-const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
-
-// HCl + H2O <-> Cl- + H3O+
-//  CONTAINER MODEL
-// is vacuum, molecule, molecule ...
-ccontainer.add("HCl",1, verbose)
-ccontainer.container.length.should.be.equal(2)
-ccontainer.container[0].should.be.equal(false)
-ccontainer.container[1].should.be.a.Array()
-// pKa of HCl is -6.3
-// pKa of water is 14
-
-// HCl
-ccontainer.container[1].length.should.be.equal(3)
-
-ccontainer.add("water",1, verbose)
-
-ccontainer.container.length.should.be.equal(3)
-
-const Clneg = ccontainer.container[1]
-
-if (verbose) {
-    console.log("Test: Got Cl- ->")
-    console.log(Clneg)
-}
-Clneg.should.be.a.Array()
-Clneg.length.should.be.a.equal(2)
-Clneg[0].should.be.equal(2.86) // pKa of Cl- is 2.86
-Clneg[1].length.should.be.a.equal(12) // [Cl-] has 8 valence electrons
-Clneg[1][0].should.be.a.String()
-Clneg[1][0].should.be.equal("Cl")
-range.range(1,3,1).map(
-    (i)=>{
-        Clneg[1][i].should.be.a.Number()
-    }
-) 
-Clneg[1][1].should.be.equal(17)
-Clneg[1][2].should.be.equal(7)
-Clneg[1][3].should.be.equal(1)
-range.range(4,Clneg[1].length-1,1).map(
-    (i)=>{
-        Clneg[1][i].should.be.a.String()
-    }
-)
-
-
-console.log("Test 1 complete")
-//process.exit()
 
 
 const HthreeO = ccontainer.container[2]

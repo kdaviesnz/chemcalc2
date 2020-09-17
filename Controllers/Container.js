@@ -317,7 +317,7 @@ class CContainer {
              } else if (reagent_families.alkene(this.verbose).length > 0) {
 
 
-                 const is_water = substrate[].length === 4 && substrate[0][1][0]==='H'
+                 const is_water = substrate[0].length === 4 && substrate[0][1][0]==='H'
                      && substrate[0][2][0]==='H' && substrate[0][3][0]==='O'
 
                  if (this.test_number === 6) {

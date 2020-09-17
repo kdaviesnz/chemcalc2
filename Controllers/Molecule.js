@@ -1003,9 +1003,7 @@ const CMolecule = (mmolecule, verbose) => {
             (total, current_electron) => {
                 // Look for current electron
                 // Electron can only be shared once
-                const shared =  m
-                
-                olecule.reduce(
+                const shared =  molecule.reduce(
                     (atoms, molecule_atom) => {
                         if (typeof molecule_atom.length !== "number") {
                             return atoms
