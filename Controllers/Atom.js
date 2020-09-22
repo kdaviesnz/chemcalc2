@@ -439,7 +439,7 @@ We then return the total number of free slots minus the number of slots already 
             used_electrons.length.should.be.equal(0)
         }
 
-        return free_slots
+        return free_slots < 0? 0 : free_slots
     }
     
     const __isCarbocation = (test_number) => {

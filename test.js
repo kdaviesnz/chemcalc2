@@ -24,82 +24,13 @@ const verbose = false
 // atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
 const propylene = MoleculeFactory("CC=C")
 const watermolecule = MoleculeFactory("water", verbose)
-//VMolecule(watermolecule).render(1)
+console.log(VMolecule(watermolecule).canonicalSMILES(1))
 const hcl = MoleculeFactory("HCl", verbose)
 //VMolecule(hcl).render(1)
-
+console.log(VMolecule(hcl).canonicalSMILES(1))
 console.log(VMolecule(propylene).canonicalSMILES(1))
 //VMolecule(propylene).render(1)
-/*
-[ 12345,
-  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msh', 'bqdtz0bcdkf6c4ms5' ],
-  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msi', 'bqdtz0bcdkf6c4ms6' ],
-  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msj', 'bqdtz0bcdkf6c4ms7' ],
-  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msk', 'bqdtz0bcdkf6c4ms8' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    'bqdtz0bcdkf6c4ms5',
-    'bqdtz0bcdkf6c4ms6',
-    'bqdtz0bcdkf6c4ms7',
-    'bqdtz0bcdkf6c4ms8',
-    'bqdtz0bcdkf6c4msc',
-    'bqdtz0bcdkf6c4msh',
-    'bqdtz0bcdkf6c4msi',
-    'bqdtz0bcdkf6c4msj',
-    'bqdtz0bcdkf6c4msk' ],
-  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msl', 'bqdtz0bcdkf6c4ms9' ],
-  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msm', 'bqdtz0bcdkf6c4msa' ],
-  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msn', 'bqdtz0bcdkf6c4msb' ],
-  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4mso', 'bqdtz0bcdkf6c4msc' ],
-  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msp', 'bqdtz0bcdkf6c4ms8' ],
-  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msq', 'bqdtz0bcdkf6c4msg' ],
-  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msr', 'bqdtz0bcdkf6c4msf' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    'bqdtz0bcdkf6c4ms9',
-    'bqdtz0bcdkf6c4msa',
-    'bqdtz0bcdkf6c4msb',
-    'bqdtz0bcdkf6c4msc',
-    'bqdtz0bcdkf6c4ms8',
-    'bqdtz0bcdkf6c4msg',
-    'bqdtz0bcdkf6c4msf',
-    'bqdtz0bcdkf6c4msl',
-    'bqdtz0bcdkf6c4msm',
-    'bqdtz0bcdkf6c4msn',
-    'bqdtz0bcdkf6c4mso',
-    'bqdtz0bcdkf6c4msp',
-    'bqdtz0bcdkf6c4msq',
-    'bqdtz0bcdkf6c4msr' ],
-  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4mss', 'bqdtz0bcdkf6c4msd' ],
-  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4mst', 'bqdtz0bcdkf6c4mse' ],
-  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msu', 'bqdtz0bcdkf6c4msf' ],
-  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msv', 'bqdtz0bcdkf6c4msg' ],
-  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msw', 'bqdtz0bcdkf6c4msb' ],
-  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msx', 'bqdtz0bcdkf6c4msa' ],
-  [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msy', undefined ],
-  [ 'C',
-    6,
-    4,
-    4,
-    'bqdtz0bcdkf6c4msd',
-    'bqdtz0bcdkf6c4mse',
-    'bqdtz0bcdkf6c4msf',
-    'bqdtz0bcdkf6c4msg',
-    'bqdtz0bcdkf6c4msb',
-    'bqdtz0bcdkf6c4msa',
-    'bqdtz0bcdkf6c4mss',
-    'bqdtz0bcdkf6c4mst',
-    'bqdtz0bcdkf6c4msu',
-    'bqdtz0bcdkf6c4msv',
-    'bqdtz0bcdkf6c4msw',
-    'bqdtz0bcdkf6c4msx',
-    'bqdtz0bcdkf6c4msy' ] ]
 
- */
 
 process.exit()
 
