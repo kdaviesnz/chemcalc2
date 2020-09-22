@@ -168,7 +168,7 @@ watermolecule[2].indexOf(watermolecule[3][watermolecule[3].length-1]).should.not
 watermolecule[2].indexOf(watermolecule[1][watermolecule[1].length-1]).should.not.be.False()
 watermolecule[1].indexOf(watermolecule[2][watermolecule[2].length-1]).should.not.be.False()
 
-const WaterController = CMolecule(watermolecule)
+const WaterController = CMolecule([watermolecule,1])
 if (verbose) {
     console.log('Created water molecule controller')
 }
@@ -176,7 +176,7 @@ WaterController.bondCount(watermolecule[1], verbose).should.be.equal(1)
 WaterController.bondCount(watermolecule[2], verbose).should.be.equal(1)
 WaterController.bondCount(watermolecule[3], verbose).should.be.equal(2) // Oxygen
 
-const HCLController = CMolecule(hcl, verbose)
+const HCLController = CMolecule([hcl,1], verbose)
 HCLController.bondCount(hcl[1], verbose).should.be.equal(1)
 HCLController.bondCount(hcl[2], verbose).should.be.equal(1)
 hcl.should.be.a.Array()
@@ -533,7 +533,7 @@ hbr.slice(1).filter(
     }
 ).length.should.be.equal(1)
 hbr.length.should.be.equal(3)
-const HBrController = CMolecule(hbr)
+const HBrController = CMolecule([hbr,1])
 HBrController.bondCount(hbr[1]).should.be.equal(1)
 HBrController.bondCount(hbr[2]).should.be.equal(1)
 hbr[0].should.be.a.equal(12345)
@@ -576,7 +576,7 @@ hbr[1].indexOf(hbr[2][hbr[2].length-1]).should.not.be.False()
 
 // CH3CH=CHCH3
 const butene = MoleculeFactory("CC=CC")
-const buteneController = CMolecule(butene)
+const buteneController = CMolecule([butene,1])
 HBrController.bondCount(hbr[1]).should.be.equal(1)
 HBrController.bondCount(hbr[2]).should.be.equal(1)
 hbr[0].should.be.a.equal(12345)

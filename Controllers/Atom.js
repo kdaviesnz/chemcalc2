@@ -43,6 +43,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             return item.length > 0
         }).length
     }
+
     const __isPositivelyCharged = (test_number) => {
         
        /*
@@ -227,6 +228,12 @@ Example oxygen with 2 bonds
 
         return r.length > 0?r[0]:false
 
+    }
+
+    const __doubleBondCount = (test_number) => {
+        const double_bonds = __doubleBond(test_number)
+
+        return double_bonds === false ? 0 : double_bonds.length / 4
     }
 
     const __hydrogens = () => {
@@ -504,7 +511,9 @@ We then return the total number of free slots minus the number of slots already 
         removeDoubleBond: __removeDoubleBond,
         hydrogens: __hydrogens(),
         carbons: __carbons,
-        freeSlots: __freeSlots
+        freeSlots: __freeSlots,
+        bondCount:__bondCount,
+        doubleBondCount:__doubleBondCount,
     }
 }
 

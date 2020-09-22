@@ -834,19 +834,6 @@ const CMolecule = (mmolecule, verbose) => {
 
                 }
 
-                if (test_number === 4) {
-                    
-                    
-                    // verify we no longer have double bond
-                    if (test_number === 4) {
-                        Set().intersection(molecule[6].slice(4), molecule[8].slice(4)).length.should.be.equal(2)
-                        molecule[target_atom_mmolecule_index].slice(4).length.should.be.equal(2)
-                        molecule[target_atom_mmolecule_index][4].should.be.a.String()
-                        molecule[target_atom_mmolecule_index][5].should.be.a.String()
-                        Set().intersection(mmolecule[6].slice(4), molecule[target_atom_mmolecule_index].slice(4)).length.should.be.equal(2)
-                    }
-                }
-
             } else {
                 console.log("To do: Add hydrogen bond where hydrogen is not a proton")
             }
