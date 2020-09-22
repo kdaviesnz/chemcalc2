@@ -82,24 +82,8 @@ Example oxygen with 2 bonds
 
         const neutral_atom= AtomFactory(atom[0])
         const neutral_atom_free_slot_count = neutral_atom[3]
-        const is_positively_charged = neutral_atom_free_slot_count  > (__freeSlots(test_number) + __bondCount(atom[0], test_number))
+        const is_positively_charged = neutral_atom_free_slot_count  > (__freeSlots(test_number) + __bondCount(atom[0], test_number) + __doubleBondCount(test_number))
 
-        if (test_number === 5.2 && atom.slice(4).length === 6) {
-            // Carbon, two bonds
-            /*
-              [ 'C',
-    6,
-    4,
-    4,
-    'bqdtz07lqkdh3ei5n',
-    'bqdtz07lqkdh3ei5o',
-    'bqdtz07lqkdh3ei5p',
-    'bqdtz07lqkdh3ei5q',
-    'bqdtz07lqkdh3ei5u',
-    'bqdtz07lqkdh3ei5z' ]
-    */
-            is_positively_charged.should.be.equal(true)
-        }
         return is_positively_charged
     }
     
