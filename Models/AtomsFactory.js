@@ -5,6 +5,7 @@ const CMolecule = require('../Controllers/Molecule')
 const range = require("range");
 // range.range(1,10,2)
 const Set = require('./Set')
+const _ = require('lodash');
 
 const AtomsFactory = (canonicalSMILES, verbose) => {
 
@@ -33,7 +34,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         console.log(smiles_tokens)
     }
 
-    const atoms_with_tokens = smiles_tokens.map(
+    const atoms_with_tokens = _.cloneDeep(smiles_tokens).map(
         (row) => {
             if (row.type === "AliphaticOrganic" || row.type === "ElementSymbol") {
                 return AtomFactory(row.value)
@@ -42,13 +43,14 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }
     )
 
+
     if (verbose) {
         console.log("AtomsFactory:: atoms_with_tokens -> ")
         console.log(atoms_with_tokens)
     }
 
     // Filter out brackets
-    const atoms_with_tokens_no_brackets = atoms_with_tokens.filter(
+    const atoms_with_tokens_no_brackets = _.cloneDeep(atoms_with_tokens).filter(
         (row) => {
             if (undefined !== row.type && row.type === "BracketAtom") {
                 return false
@@ -72,122 +74,31 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     const branch_tracker = {}
     let is_new_branch = false
 
-    if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
-        Set().intersection(atoms_with_tokens_no_brackets[2].slice(4), atoms_with_tokens_no_brackets[5].slice(4)).length.should.be.equal(0)
-    }
-
-    const atoms_with_bonds = atoms_with_tokens_no_brackets.map(
+    const atoms_with_bonds = _.cloneDeep(atoms_with_tokens_no_brackets).map(
         (row, index, processed_atoms) => {
-
             let res = null
-
             if (index === 0) {
-
-                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
-                    processed_atoms[index][0].should.be.equal("Al")
-                }
-
-                if ("COC" === canonicalSMILES) {
-                    processed_atoms[index][0].should.be.equal("C")
-                }
-
-                if ("CC=CC" === canonicalSMILES) {
-                    processed_atoms[index][0].should.be.equal("C")
-                }
-
                 if (undefined === branch_tracker[0]) {
                     branch_tracker[0] = []
                 }
-
                 branch_tracker[0].push([0, row[0]])
-
                 // first atom, no branches
                 res = row
-
             } else if (undefined === row.type ) {
-
-
                 const tracker_index = tracker.length ===0 ? 0: tracker[tracker.length-1][0]
-                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES && index ===5) {
-                    tracker_index.should.be.equal(0);
-                }
-
-
-                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
-                    index.should.be.oneOf([2, 5, 7])
-                }
-
-                // 0=C, 1=C, 2=bond, 3=C, 4=C
-                if ("CC=CC" === canonicalSMILES) {
-                    index.should.be.oneOf([1, 3, 4])
-                }
-
                 let parent_atom_index = null
                 if (index === 0) {
                     parent_atom_index = 0
                 } else {
                     if (is_new_branch) {
                         parent_atom_index = branch_tracker[branch_number -1][branch_tracker[branch_number - 1].length -1][0]
-
                     } else {
                         parent_atom_index = branch_tracker[branch_number][branch_tracker[branch_number].length -1][0]
-
-                    }
-                }
-
-                if ("COC" === canonicalSMILES) {
-                    switch (index) {
-                        case 1:
-                            parent_atom_index.should.be.equal(0)
-                            break
-                        case 2:
-                            parent_atom_index.should.be.equal(1)
-                            break
-
-                    }
-                }
-
-                // 0=C, 1=C, 2=bond, 3=C, 4=C
-                if ("CC=CC" === canonicalSMILES) {
-                    // index.should.be.oneOf([1, 3, 4])
-                    switch (index) {
-                        case 1:
-                            parent_atom_index.should.be.equal(0)
-                            break
-                        case 3:
-                            parent_atom_index.should.be.equal(1)
-                            break
-                        case 4:
-                            parent_atom_index.should.be.equal(3)
-                            break
-                    }
-
-                }
-
-                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
-                    switch (index) {
-                        case 2:
-                            is_new_branch.should.be.equal(true)
-                            branch_number.should.be.equal(1)
-                            parent_atom_index.should.be.equal(0)
-                            break
-                        case 5:
-                            is_new_branch.should.be.equal(true)
-                            branch_number.should.be.equal(1)
-                            parent_atom_index.should.be.equal(0)
-                            break
-                        case 7:
-                            is_new_branch.should.be.equal(false)
-                            branch_number.should.be.equal(0)
-                            parent_atom_index.should.be.equal(0)
-                            break
                     }
                 }
 
                 const bond_type = processed_atoms[index -1].type === "Bond"
                 && processed_atoms[index -1].value === "="? "=":""
-
-
                 // Shared electrons
                 const current_atom_electrons_to_share = []
                 current_atom_electrons_to_share.push(getFreeElectron(used_electrons, row, index )) // row[row.length-1]
@@ -201,435 +112,44 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                     parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index ))
                     used_electrons.push(parent_electrons_to_share[1])
                 }
-
                 processed_atoms[parent_atom_index].indexOf(parent_electrons_to_share[0]).should.not.be.equal(-1)
-
-                if ("CC=CC" === canonicalSMILES && index === 3) {
-                    bond_type.should.be.equal("=")
-                    current_atom_electrons_to_share.length.should.be.equal(2)
-                    parent_electrons_to_share.length.should.be.equal(2)
-                    row.slice(4).length.should.be.equal(4)
-                }
-
                 // Push electrons to current atom
+
                 row.push(parent_electrons_to_share[0])
-                if ("CC=CC" === canonicalSMILES && index === 3) {
-                    row.slice(4).length.should.be.equal(5)
-                }
+
                 if ( bond_type === "=" ) {
                     row.push(parent_electrons_to_share[1])
                 }
-
-                if ("CC=CC" === canonicalSMILES && index === 3) {
-                    row.slice(4).length.should.be.equal(6)
-                    Set().intersection(row.slice(4), parent_electrons_to_share ).length.should.be.equal(2)
-                }
-
                 // Push electrons to parent atom
                 processed_atoms[parent_atom_index].push(current_atom_electrons_to_share[0])
                 if ( bond_type === "=" ) {
                     processed_atoms[parent_atom_index].push(current_atom_electrons_to_share[1])
                 }
-
-
-                if ("CC=CC" === canonicalSMILES && index === 3) {
-                    processed_atoms[parent_atom_index].slice(4).length.should.be.equal(7) // correct (4 + 3 carbons)
-                    Set().intersection(row.slice(4),parent_electrons_to_share ).length.should.be.equal(2)
-                }
-
-                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
-                    switch (index) {
-                        case 2: // first chlorine
-                            branch_number.should.be.equal(1)
-                            tracker[tracker.length-1][0].should.be.equal(0)
-                            parent_atom_index.should.be.equal(0)
-                            processed_atoms[parent_atom_index].slice(4).length.should.be.equal(4) // Al
-                            processed_atoms[2].slice(4).length.should.be.equal(8) // first chlorine
-                            processed_atoms[5].slice(4).length.should.be.equal(7) // second chlorine
-                            processed_atoms[7].slice(4).length.should.be.equal(7) // third chlorine
-                            break
-                        case 5: // second chlorine
-                            branch_number.should.be.equal(1)
-                            tracker[tracker.length-1][0].should.be.equal(0)
-                            parent_atom_index.should.be.equal(0) // fail
-                            processed_atoms[parent_atom_index].slice(4).length.should.be.equal(5) // Al
-                            processed_atoms[2].slice(4).length.should.be.equal(8) // first chlorine
-                            processed_atoms[5].slice(4).length.should.be.equal(8) // second chlorine
-                            processed_atoms[7].slice(4).length.should.be.equal(7) // third chlorine
-                            break
-                        case 7: // third chlorine
-                            branch_number.should.be.equal(0)
-                            parent_atom_index.should.be.equal(0)
-                            processed_atoms[parent_atom_index].slice(4).length.should.be.equal(6) // Al
-                            processed_atoms[2].slice(4).length.should.be.equal(8) // first chlorine
-                            processed_atoms[5].slice(4).length.should.be.equal(8) // second chlorine
-                            processed_atoms[7].slice(4).length.should.be.equal(8) // third chlorine
-                            break
-                    }
-                }
-
                 if (undefined === branch_tracker[branch_number]) {
                     branch_tracker[branch_number] = []
                 }
                 branch_tracker[branch_number].push([index, row[0]])
-
                 is_new_branch = false
-
-                if ("COC" === canonicalSMILES) {
-                    switch (index) {
-                        case 1:
-                            is_new_branch.should.be.equal(false)
-                            parent_atom_index.should.be.equal(0)
-                            Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(2)
-                            break
-                        case 2:
-                            is_new_branch.should.be.equal(false)
-                            parent_atom_index.should.be.equal(1)
-                            Set().intersection(processed_atoms[1].slice(4), processed_atoms[2].slice(4)).length.should.be.equal(2)
-                            break
-                    }
-                }
-                
-                // 0=C, 1=C, 2=bond, 3=C, 4=C
-                if ("CC=CC" === canonicalSMILES) {
-                    // index.should.be.oneOf([1, 3, 4])
-                    switch (index) {
-                        case 1:
-                            parent_atom_index.should.be.equal(0)
-                            Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(2)
-                            Set().intersection(processed_atoms[1].slice(4), processed_atoms[3].slice(4)).length.should.be.equal(0)
-                            Set().intersection(processed_atoms[3].slice(4), processed_atoms[4].slice(4)).length.should.be.equal(0)
-                            break
-                        case 3:
-                            parent_atom_index.should.be.equal(1)
-                            processed_atoms[parent_atom_index].slice(4).length.should.be.equal(7) // correct
-                            row.slice(4).length.should.be.equal(6) // correct (4 + 2 carbons)
-                            Set().intersection(processed_atoms[0].slice(4), processed_atoms[parent_atom_index].slice(4)).length.should.be.equal(2)
-                            Set().intersection(row.slice(4), processed_atoms[4].slice(4)).length.should.be.equal(0)
-                            Set().intersection(processed_atoms[parent_atom_index].slice(4), row.slice(4)).length.should.be.equal(4)
-
-                            break
-                        case 4:
-                            parent_atom_index.should.be.equal(3)
-                            
-                            Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(2)
-                            Set().intersection(processed_atoms[1].slice(4), processed_atoms[3].slice(4)).length.should.be.equal(4)
-                            Set().intersection(processed_atoms[3].slice(4), processed_atoms[4].slice(4)).length.should.be.equal(2)
-
-                            break
-
-                    }
-
-                }
-                
-
                 res = row // is an atom
-
             } else if (row.type === 'Bond') {
-
                 res = row // remove row in the next phase as we still need it
-                //   { type: 'Bond', value: '=' },
-                /*
-                switch (row.value) {
-                    case '=':
-
-                        break
-                }
-                */
-                //   { type: 'Bond', value: '=' },
             } else if (undefined !== row.type && row.type === "Branch" && row.value === "begin") {
-
                 is_new_branch.should.be.equal(false)
-
-                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
-                    index.should.be.oneOf([1, 4])
-                    if (index===1) {
-                        processed_atoms[index -1][0].should.be.equal('Al')
-                    }
-                }
-
                 // Change tracker to show new parent atom
                 const tracker_index = 0 // @todo - should be index of previous atom on same branch
-
-                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES && index === 4) {
-                    tracker_index.should.be.equal(0)
-                }
-
                 tracker.push([ tracker_index, ...atoms_with_tokens_no_brackets[tracker_index].slice(4)])
-
                 branch_number++
-
-                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
-                    switch (index) {
-                        case 1:
-                            tracker.length.should.be.equal(1)
-                            tracker[0][0].should.be.equal(0)
-                            tracker[0].length.should.be.equal(4)
-                            branch_number.should.be.equal(1)
-                            break
-                        case 4:
-                            branch_number.should.be.equal(1)
-                            break
-                    }
-                }
-
                 is_new_branch = true
-
                 // Change row to null as it's not an atom row
                 res = null
-
             } else if (undefined !== row.type && row.type === "Branch" && row.value === "end") {
-
-                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
-                    index.should.be.oneOf([3,6])
-                }
-
                 // Change tracker to show previous parent atom
                 tracker.pop()
-
                 branch_number--
-
-                if ("[Al](Cl)(Cl)Cl" === canonicalSMILES && index === 1) {
-                    switch (index) {
-                        case 3:
-                            branch_number.should.be.equal(0)
-                            break
-                        case 6:
-                            branch_number.should.be.equal(0)
-                            break
-                    }
-                }
-
                 is_new_branch = false
-
                 // Change row to null as it's not an atom row
                 res = null
             }
-
-            if ("COC" === canonicalSMILES) {
-                switch (index) {
-                    case 0: // [C]
-                        processed_atoms[0].slice(4).length.should.be.equal(4)
-                        processed_atoms[1].slice(4).length.should.be.equal(6)
-                        processed_atoms[2].slice(4).length.should.be.equal(4)
-                        Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(0)
-                        Set().intersection(processed_atoms[1].slice(4), processed_atoms[2].slice(4)).length.should.be.equal(0)
-                        break;
-                    case 1: // [O]
-                        processed_atoms[0].slice(4).length.should.be.equal(5)
-                        processed_atoms[1].slice(4).length.should.be.equal(7)
-                        processed_atoms[2].slice(4).length.should.be.equal(4)
-                        Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(2)
-                        Set().intersection(processed_atoms[1].slice(4), processed_atoms[2].slice(4)).length.should.be.equal(0)
-                        break;
-                    case 2: // [C]
-                        processed_atoms[0].slice(4).length.should.be.equal(5)
-                        processed_atoms[1].slice(4).length.should.be.equal(8)
-                        processed_atoms[2].slice(4).length.should.be.equal(5)
-                        Set().intersection(processed_atoms[0].slice(4), processed_atoms[2].slice(4)).length.should.be.equal(0)
-                        Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(2)
-                        Set().intersection(processed_atoms[1].slice(4), processed_atoms[2].slice(4)).length.should.be.equal(2)
-                        break;
-                }
-            }
-
-            if ("[Al](Cl)(Cl)Cl" === canonicalSMILES) {
-                switch (index) {
-                    case 0: // [ 'Al',13,3,5,'2iwcg3xsk9wb0ng8','2iwcg3xsk9wb0ng9','2iwcg3xsk9wb0nga' ]
-                        tracker.length.should.be.equal(0)
-                        // Check aluminum atom has 3 electrons
-                        processed_atoms[0].slice(4).length.should.be.equal(3)
-                        // Check chlorine atoms have 7 electrons each
-                        processed_atoms[2].slice(4).length.should.be.equal(7)
-                        processed_atoms[5].slice(4).length.should.be.equal(7)
-                        processed_atoms[7].slice(4).length.should.be.equal(7)
-                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(0) // ok
-                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
-                        break;
-                    case 1: // { type: 'Branch', value: 'begin' },
-                        tracker.length.should.be.equal(1)
-                        // Check aluminum atom now has 3 electrons
-                        processed_atoms[0].slice(4).length.should.be.equal(3)
-                        // Check chlorine atoms have 7 electrons each
-                        processed_atoms[2].slice(4).length.should.be.equal(7)
-                        processed_atoms[5].slice(4).length.should.be.equal(7)
-                        processed_atoms[7].slice(4).length.should.be.equal(7)
-                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(0) // ok
-                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
-                        break;
-                    case 2: // [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngb','2iwcg3xsk9wb0ngc','2iwcg3xsk9wb0ngd','2iwcg3xsk9wb0nge','2iwcg3xsk9wb0ngf','2iwcg3xsk9wb0ngg','2iwcg3xsk9wb0ngh' ],
-                        tracker.length.should.be.equal(1)
-                        tracker[0].length.should.be.equal(4)
-                        tracker[0][0].should.be.equal(0)
-                        // Check aluminum atom now has 4 electrons
-                        processed_atoms[0].slice(4).length.should.be.equal(4)
-                        // Check first chlorine atom has 8 electrons and other chlorine atoms still have 7 electrons each
-                        processed_atoms[2].slice(4).length.should.be.equal(8)
-                        processed_atoms[5].slice(4).length.should.be.equal(7)
-                        processed_atoms[7].slice(4).length.should.be.equal(7)
-                        // Check first chlorine atom and aluminum atom share 2 electrons
-                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
-                        // Check no electrons are shared between chlorine atoms
-                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
-                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[7].slice(4)).length.should.be.equal(0) // ok
-                        Set().intersection(processed_atoms[5].slice(4), processed_atoms[7].slice(4)).length.should.be.equal(0) // ok
-                        break;
-                    case 3: // { type: 'Branch', value: 'end' },
-                        tracker.length.should.be.equal(0)
-                        // Check aluminum atom  has 4 electrons
-                        processed_atoms[0].slice(4).length.should.be.equal(4)
-                        // Check first chlorine atom has 8 electrons and other chlorine atoms still have 7 electrons each
-                        processed_atoms[2].slice(4).length.should.be.equal(8)
-                        processed_atoms[5].slice(4).length.should.be.equal(7)
-                        processed_atoms[7].slice(4).length.should.be.equal(7)
-                        // Check first chlorine atom and aluminum atom share 2 electrons
-                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
-                        // Check no electrons are shared between chlorine atoms
-                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
-                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[7].slice(4)).length.should.be.equal(0) // ok
-                        Set().intersection(processed_atoms[5].slice(4), processed_atoms[7].slice(4)).length.should.be.equal(0) // ok
-                        break;
-                    case 4: // { type: 'Branch', value: 'begin' },
-                        tracker.length.should.be.equal(1)
-                        tracker[0].length.should.be.equal(5)
-                        tracker[0][0].should.be.equal(0)
-                        // Check aluminum atom  has 4 electrons
-                        processed_atoms[0].slice(4).length.should.be.equal(4)
-                        // Check first chlorine atom has 8 electrons and other chlorine atoms still have 7 electrons each
-                        processed_atoms[2].slice(4).length.should.be.equal(8)
-                        processed_atoms[5].slice(4).length.should.be.equal(7)
-                        processed_atoms[7].slice(4).length.should.be.equal(7)
-                        // Check first chlorine atom and aluminum atom share 2 electrons
-                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
-                        // Check no electrons are shared between chlorine atoms
-                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
-                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[7].slice(4)).length.should.be.equal(0) // ok
-                        Set().intersection(processed_atoms[5].slice(4), processed_atoms[7].slice(4)).length.should.be.equal(0) // ok
-                        break;
-                    case 5: // [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngi','2iwcg3xsk9wb0ngj','2iwcg3xsk9wb0ngk','2iwcg3xsk9wb0ngl','2iwcg3xsk9wb0ngm','2iwcg3xsk9wb0ngn','2iwcg3xsk9wb0ngo' ],
-                        tracker.length.should.be.equal(1)
-                        // Check aluminum atom now has 5 electrons
-                        processed_atoms[0].slice(4).length.should.be.equal(5)
-                        // Check first and second chlorine atoms have 8 electrons and other chlorine atom still has 7 electrons
-                        processed_atoms[2].slice(4).length.should.be.equal(8)
-                        processed_atoms[5].slice(4).length.should.be.equal(8)
-                        processed_atoms[7].slice(4).length.should.be.equal(7)
-                        // Check first chlorine atom and aluminum atom share 2 electrons
-                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
-                        // Check second chlorine atom and aluminum atom share 2 electrons
-                        Set().intersection(processed_atoms[5].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // fail
-                        // Check last chlorine atom and aluminum atom share no electrons
-                        Set().intersection(processed_atoms[7].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(0) // ok
-                        // Check no electrons are shared between chlorine atoms
-                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
-                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[7].slice(4)).length.should.be.equal(0) // ok
-                        Set().intersection(processed_atoms[5].slice(4), processed_atoms[7].slice(4)).length.should.be.equal(0) // ok
-                        break;
-                    case 6: // { type: 'Branch', value: 'end' }
-                        tracker.length.should.be.equal(0)
-                        // Check aluminum atom still has 5 electrons
-                        processed_atoms[0].slice(4).length.should.be.equal(5)
-                        // Check first and second chlorine atoms have 8 electrons and other chlorine atom still has 7 electrons
-                        processed_atoms[2].slice(4).length.should.be.equal(8)
-                        processed_atoms[5].slice(4).length.should.be.equal(8)
-                        processed_atoms[7].slice(4).length.should.be.equal(7)
-                        // Check first chlorine atom and aluminum atom share 2 electrons
-                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
-                        // Check second chlorine atom and aluminum atom share 2 electrons
-                        Set().intersection(processed_atoms[5].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
-                        // Check last chlorine atom and aluminum atom share no electrons
-                        Set().intersection(processed_atoms[7].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(0) // ok
-                        // Check no electrons are shared between chlorine atoms
-                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
-                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[7].slice(4)).length.should.be.equal(0) // ok
-                        Set().intersection(processed_atoms[5].slice(4), processed_atoms[7].slice(4)).length.should.be.equal(0) // ok
-                        break;
-                    case 7: // [ 'Cl',17,7,1,'2iwcg3xsk9wb0ngp','2iwcg3xsk9wb0ngq','2iwcg3xsk9wb0ngr','2iwcg3xsk9wb0ngs','2iwcg3xsk9wb0ngt','2iwcg3xsk9wb0ngu','2iwcg3xsk9wb0ngv' ] ]
-                        tracker.length.should.be.equal(0)
-                        // Check aluminum atom now has 6 electrons
-                        processed_atoms[0].slice(4).length.should.be.equal(6)
-                        // Check all chlorine atoms have 8 electrons
-                        processed_atoms[2].slice(4).length.should.be.equal(8)
-                        processed_atoms[5].slice(4).length.should.be.equal(8)
-                        processed_atoms[7].slice(4).length.should.be.equal(8)
-                        // Check first chlorine atom and aluminum atom share 2 electrons
-                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
-                        // Check second chlorine atom and aluminum atom share 2 electrons
-                        Set().intersection(processed_atoms[5].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
-                        // Check last chlorine atom and aluminum atom now share 2 electrons
-                        Set().intersection(processed_atoms[7].slice(4), processed_atoms[0].slice(4)).length.should.be.equal(2) // ok
-                        // Check no electrons are shared between chlorine atoms
-                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[5].slice(4)).length.should.be.equal(0) // ok
-                        Set().intersection(processed_atoms[2].slice(4), processed_atoms[7].slice(4)).length.should.be.equal(0) // ok
-                        Set().intersection(processed_atoms[5].slice(4), processed_atoms[7].slice(4)).length.should.be.equal(0) // ok
-                        break;
-                }
-
-
-
-            }
-
-            if ("CC=CC" === canonicalSMILES) {
-                switch (index) {
-                    case 0: // first carbon
-                        tracker.length.should.be.equal(0)
-                        // Check first carbon atom has 5 electrons
-                        processed_atoms[0].slice(4).length.should.be.equal(4)
-                        // Check second carbon atom has 7 electrons
-                        processed_atoms[1].slice(4).length.should.be.equal(4)
-                        // Check there is no bond between first and second carbon
-                        Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(0)
-                        break;
-
-                    case 1: // second carbon
-                        tracker.length.should.be.equal(0)
-                        // Check first carbon atom has 5 electrons
-                        processed_atoms[0].slice(4).length.should.be.equal(5)
-                        // Check second carbon atom has 7 electrons
-                        processed_atoms[1].slice(4).length.should.be.equal(5)
-                        // Check last carbon atom has 5 electrons
-                        processed_atoms[3].slice(4).length.should.be.equal(4)
-                        // Check there is one bond between first and second carbon
-                        Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(2)
-                        break;
-
-
-                    case 2: // double bond
-                        tracker.length.should.be.equal(0)
-                        // Check first carbon atom has 5 electrons
-                        processed_atoms[0].slice(4).length.should.be.equal(5)
-                        // Check second carbon atom has 7 electrons
-                        processed_atoms[1].slice(4).length.should.be.equal(5)
-                        // Check there is one bond between first and second carbon
-                        Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(2)
-
-                        break;
-
-
-                    case 3: // third carbon
-                        tracker.length.should.be.equal(0)
-                        // Check first carbon atom has 5 electrons
-                        processed_atoms[0].slice(4).length.should.be.equal(5)
-                        // Check second carbon atom has 7 electrons
-                        processed_atoms[1].slice(4).length.should.be.equal(7)
-                        // Check there is one bond between first and second carbon
-                        Set().intersection(processed_atoms[0].slice(4), processed_atoms[1].slice(4)).length.should.be.equal(2)
-                        break;
-
-                    case 4: // last carbon
-                        tracker.length.should.be.equal(0)
-                        // Check first carbon atom has 5 electrons
-                        processed_atoms[0].slice(4).length.should.be.equal(5)
-                        // Check second carbon atom has 7 electrons
-                        processed_atoms[1].slice(4).length.should.be.equal(7)
-                        break;
-
-
-                }
-
-            }
-
-
             return res
 
         }
@@ -644,6 +164,13 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         console.log("AtomsFactory:: atoms_with_bonds -> ")
         console.log(atoms_with_bonds)
     }
+
+
+    console.log('AtomsFactory.js CC=C')
+    //console.log(atoms_with_tokens_no_brackets)
+    console.log(atoms_with_bonds)
+    process.exit()
+
 
     // Remove bonds using filter
 // @todo

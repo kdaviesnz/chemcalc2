@@ -22,13 +22,14 @@ const verbose = false
 // pKa, atom, atom, atom ...
 // ATOM MODEL
 // atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
-const watermolecule = MoleculeFactory("water", verbose)
-VMolecule(watermolecule).render(1)
-const hcl = MoleculeFactory("HCl", verbose)
-VMolecule(hcl).render(1)
 const propylene = MoleculeFactory("CC=C")
-console.log(propylene)
-VMolecule(propylene).render(1)
+const watermolecule = MoleculeFactory("water", verbose)
+//VMolecule(watermolecule).render(1)
+const hcl = MoleculeFactory("HCl", verbose)
+//VMolecule(hcl).render(1)
+
+console.log(VMolecule(propylene).canonicalSMILES(1))
+//VMolecule(propylene).render(1)
 /*
 [ 12345,
   [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msh', 'bqdtz0bcdkf6c4ms5' ],

@@ -1,7 +1,10 @@
+const MoleculeController = require('../Controllers/Molecule')
+
 const VMolecule = (mmolecule) => {
    return {
       // mmolecule: [pKa, atom, atom, atom ...]
       // atom: [atomic symbol, proton count, max valence count, std bond count, velectron1, velectron2,...]
+      // propyline CC=C
       /*
 [ 12345,
   [ 'H', 1, 1, 1, 'bqdtz0bcdkf6c4msh', 'bqdtz0bcdkf6c4ms5' ],
@@ -12,9 +15,9 @@ const VMolecule = (mmolecule) => {
     6,
     4,
     4,
-    'bqdtz0bcdkf6c4ms5',
-    'bqdtz0bcdkf6c4ms6',
-    'bqdtz0bcdkf6c4ms7',
+    'bqdtz0bcdkf6c4ms5', H
+    'bqdtz0bcdkf6c4ms6', H
+    'bqdtz0bcdkf6c4ms7', H
     'bqdtz0bcdkf6c4ms8',
     'bqdtz0bcdkf6c4msc',
     'bqdtz0bcdkf6c4msh',
@@ -72,7 +75,35 @@ const VMolecule = (mmolecule) => {
     'bqdtz0bcdkf6c4msy' ] ]
 
        */
-      canonicalSMILES: () => {
+      canonicalSMILES: (units) => {
+
+         // Convert molecule to CanonicalSmiles
+         // @todo branches, rings
+         const SMILES = mmolecule.slice(1).reduce((carry, current, index, arr)=> {
+            // If hydrogen ignore
+            if (current[0]!=='H') {
+               // Check if the atom is positively, negatively, or has a neutral charge
+               // step 1: Get bond count
+               const bond_count = MoleculeController([mmolecule, units]).bondCount(current)
+               // step 2: Get the standard number of bonds for the element
+               const std_number_of_bonds = current[3]
+               // If atom has more bonds then normal then it is positive charged,
+               // If atom has less bonds then normal then it is negatively charged.
+               // Otherwise it is positively charged
+               console.log(current)
+               console.log(bond_count)
+               console.log(std_number_of_bonds)
+               if (bond_count > std_number_of_bonds) {
+                  carry = carry + "[" + current[0] + "+]"
+               } else if(bond_count < std_number_of_bonds) {
+                  carry = carry + "[" + current[0] + "-]"
+               } else {
+                  carry += current[0] // eg "" + "C"
+               }
+            }
+            return carry
+         }, "")
+         /*
          if (mmolecule.length === 2) {
             // Get number of actual bonds atom has
             const bond_count = CMolecule(mmolecule).bondCount(mmolecule[1])
@@ -83,6 +114,8 @@ const VMolecule = (mmolecule) => {
             } else
                return mmolecule[1][0]
          }
+          */
+         return SMILES
       },
       'render' : (units) => {
          console.log('{' + mmolecule.reduce((working, current, i, arr)=>{
