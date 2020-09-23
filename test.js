@@ -26,7 +26,10 @@ const assert = require('assert');
 
 const verbose = false
 
-MongoClient.connect('mongodb+srv://kevin:7777!@cluster0-awqh6.mongodb.net', {useNewUrlParser: true, useUnifiedTopology: true}, function (err, client) {
+// Install using npm install dotenv
+require("dotenv").config()
+
+MongoClient.connect('mongodb+srv://' + process.env.MONGODBUSER + ':' + process.env.MONGODBPASSWORD + '@clustercluster0-awqh6.mongodb.net', {useNewUrlParser: true, useUnifiedTopology: true}, function (err, client) {
 
     assert.equal(err, null);
     const db = client.db('chemistry');
