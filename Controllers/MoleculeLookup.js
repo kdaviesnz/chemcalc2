@@ -1,6 +1,5 @@
 // MoleculeLookup
-const FunctionalGroups = require('../lib/FunctionalGroups')
-const PubChemLookup    = require('../lib/PubChemLookup')
+//const PubChemLookup    = require('../lib/PubChemLookup')
 
 
 const MoleculeLookup = (db, search, search_type, add_hydrogens, debug_statement, Err) =>
