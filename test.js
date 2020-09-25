@@ -56,20 +56,27 @@ client.connect(err => {
     console.log(VMolecule(propylene).canonicalSMILES(1))
 //VMolecule(propylene).render(1)
 
+
+    const pkl = PubChemLookup((err)=>{
+        console.log(err)
+        process.exit()
+    })
+
+    const onMoleculeFoundOInDB = (molecule) => {
+        console.log("Molecule found")
+        pkl.fetchSubstructuresBySMILES("CC=C", db, (molecule, db, SMILES)=> {
+            console.log("Molecule: " + molecule)
+        })
+    }
+
+
+
     MoleculeLookup(db, "CC=C", "SMILES", true).then(
         // "resolves" callback
-        (molecule) => {
-            console.log(molecule)
-            client.close();
-            process.exit()
-        },
+        onMoleculeFoundOInDB,
         // Nothing found callback
         (search) => {
             console.log("Molecule not found " + search)
-            const pkl = PubChemLookup((err)=>{
-                console.log(err)
-                process.exit()
-            })
             pkl.searchBySMILES(search.replace(/\(\)/g, ""), db, (molecule_from_pubchem) => {
                 if (molecule_from_pubchem !== null) {
                     console.log("Molecule found in pubchem")

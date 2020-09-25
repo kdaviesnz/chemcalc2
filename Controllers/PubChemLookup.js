@@ -202,18 +202,13 @@ const PubChemLookup = (Err) => {
 
     const FetchSubstructuresBySMILES = (SMILES, db, callback, debug_statement) => {
 
-        _log("PubChemLookup FetchSub " + SMILES)
-
-
-
         // get substructures
         //searchBySMILES(SMILES, db, (molecule)=> {
 
         // https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/substructure/smiles/C1CCCCCC1/JSON
         // https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/fastsubstructure/cid/2244/cids/XML?StripHydrogen=true
         // https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/fastsimilarity_2d/cid/2244/property/MolecularWeight,MolecularFormula,RotatableBondCount/XML?Threshold=99
-
-        _log('Calling https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/fastsubstructure/SMILES/' + encodeURIComponent(SMILES) + '/cids/JSON?StripHydrogen=true')
+        console.log("Fetching substructures")
 
         request('https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/fastsubstructure/SMILES/' + encodeURIComponent(SMILES) + '/property/CanonicalSmiles,IUPACName/JSON?StripHydrogen=true', { json: true }, (err, res, body) => {
             if (err) {
@@ -222,7 +217,7 @@ const PubChemLookup = (Err) => {
                 process.exit()
             } else {
                 if (undefined !== body.Fault) {
-                    console.log('Error FetchSubstructuresBySMILES() ' + SMILES +debug_statement)
+                    console.log('Error FetchSubstructuresBySMILES() ' + SMILES)
                     console.log(body)
                     console.log('PubchemLookup FetchSubstructuresBySMILES()')
                     process.exit()
@@ -248,7 +243,7 @@ const PubChemLookup = (Err) => {
 
     return {
 
-        FetchSubstructuresBySMILES: FetchSubstructuresBySMILES,
+        fetchSubstructuresBySMILES: FetchSubstructuresBySMILES,
         searchBySMILES: searchBySMILES,
         searchByName: searchByName
     }
