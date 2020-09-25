@@ -17,6 +17,7 @@ const Set = require('./Models/Set')
 const VMolecule = require('./Views/Molecule')
 
 const MoleculeLookup = require('./Controllers/MoleculeLookup')
+const PubChemLookup = require('./Controllers/PubChemLookup')
 
 // Install using npm install pubchem-access
 const pubchem = require("pubchem-access").domain("compound");
@@ -57,23 +58,44 @@ client.connect(err => {
 
     MoleculeLookup(db, "CC=C", "SMILES", true).then(
         // "resolves" callback
-        (molecule_JSON_object) => {
+        (molecule) => {
+            console.log(molecule)
+            client.close();
+            process.exit()
+        },
+        // Nothing found callback
+        (search) => {
+            console.log("Molecule not found " + search)
+            const pkl = PubChemLookup((err)=>{
+                console.log(err)
+                process.exit()
+            })
+            pkl.searchBySMILES(search.replace(/\(\)/g, ""), db, (molecule_from_pubchem) => {
+                if (molecule_from_pubchem !== null) {
+                    console.log("Molecule found in pubchem")
+                    molecule_from_pubchem['json'] = MoleculeFactory(search)
+                    db.collection("molecules").insertOne(molecule_from_pubchem, (err, result) => {
+                        if (err) {
+                            console.log(err)
+                            client.close()
+                            process.exit()
+                        } else {
+                            console.log("Molecule " + search + " added to database")
+                            client.close()
+                            process.exit()
+                        }
+                    })
+                }
 
-            console.log(molecule_JSON_object)
-
-
+            })
         },
         // "rejects" callback
         (Err) => {
-            console.error(new Error("Cannot find molecule"))
+            console.log(Err)
+            client.close();
+            process.exit()
         }
     )
-
-
-
-
-    client.close();
-
 
 
 });
