@@ -92,14 +92,25 @@ client.connect(err => {
     //console.log(VMolecule(propylene).canonicalSMILES(1))
     //VMolecule(propylene).render(1)
 
+    const reactPropyleneWithWater = (propylene_molecue, water_molecule) => {
+        console.log("Getting new container")
+        const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
+        console.log("Adding water to container")
+        ccontainer.add(water_molecule.json, 1, verbose)
+        console.log("Adding propylene to container")
+        ccontainer.add(propylene_molecue.json, 1, verbose)
+        console.log("Container:")
+        VContainerWithDB(ccontainer).show(()=>{
+            console.log("Test 2 complete: Container should show prop-1-ene and oxidane.")
+            process.exit()
+        })
+    }
 
-    const lookupPropylene = (callback) => {
+    const lookupPropylene = (water_molecule) => {
         MoleculeLookup(db, "CC=C", "SMILES", true).then(
             // "resolves" callback
-            (molecule) => {
-                console.log("Molecule found")
-                console.log(molecule)
-                callback(molecule)
+            (propylene_molecue) => {
+                reactPropyleneWithWater(propylene_molecue, water_molecule)
                 /*
                 pkl.fetchSubstructuresBySMILES(molecule.CanonicalSMILES, db, (molecule, db, SMILES)=> {
                     console.log("Molecule: " + molecule)
@@ -126,7 +137,7 @@ client.connect(err => {
         console.log("Container:")
         VContainerWithDB(ccontainer).show(()=>{
             console.log("Test 1 complete: Container should show chlorane and oxidane.")
-            process.exit()
+            lookupPropylene(water_molecule)
         })
     }
 

@@ -11,7 +11,7 @@ const VContainer = (client) => {
     const db = client.db("chemistry")
 
     const __containerString = (container_string, molecule) => {
-        return container_string + "{" + molecule.IUPACName + "}"
+        return container_string + "{" + molecule.IUPACName + " (" + molecule.CanonicalSMILES + ")}"
     }
 
     const __containerStringRecursive = (container_string, container, current_index, callback) => {
@@ -23,6 +23,8 @@ const VContainer = (client) => {
             const item = container[current_index]
             const mmolecule = item[0]
             const units = item[1]
+
+            console.log(VMolecule(mmolecule).canonicalSMILES(units))
 
             MoleculeLookup(db, VMolecule(mmolecule).canonicalSMILES(units), "SMILES", true).then(
                 // "resolves" callback - molecule found in db
