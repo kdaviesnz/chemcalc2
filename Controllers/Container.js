@@ -83,8 +83,8 @@ class CContainer {
             return this.__doReactionRecursive(reagent_index, substrate_index+1)
         } else {
 
-            const substrate_families = Families(substrate[0].json.slice(1), this.verbose).families
-            const reagent_families = Families(reagent[0].json.slice(1), this.verbose).families
+            const substrate_families = Families(substrate[0].slice(1), this.verbose).families
+            const reagent_families = Families(reagent[0].slice(1), this.verbose).families
 
             if (this.verbose) {
                 console.log("Controllers/Container.js substrate families ->")
@@ -478,7 +478,7 @@ class CContainer {
 
     }
     
-    add(db_molecule, units, verbose, test_number) {
+    add(molecule, units, verbose, test_number) {
 
         
         // test 6
@@ -512,10 +512,10 @@ class CContainer {
         // carbocation is added to [Br-]
         // Br and C form bond
 
-        const molecule = this.MoleculeFactory(db_molecule.CanonicalSMILES)
+        //const molecule = this.MoleculeFactory(molecule_json.CanonicalSMILES)
 
         // Add item to container.
-        this.container.push([db_molecule, units])
+        this.container.push([molecule, units])
 
         if (verbose) {
             console.log("Controllers/Container.js:: Container before processing reaction ->")
