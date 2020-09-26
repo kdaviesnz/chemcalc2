@@ -189,7 +189,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
 
         
-        
+        // proton is the last element in the container
         const proton = container[container.length-1][1]
 
         
@@ -210,11 +210,9 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
         
         
-        // test 1 - nucleophile_molecule is water
-        // test 2 - nucleophile_molecule is Cl-
-        // test 4 CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-        // target atom index should always be 1 as it is a proton
-        MoleculeController(nucleophile_molecule).push([proton], container, container.length-1, test_number, 1, nucleophile_atom_index +1)
+        
+
+        container = MoleculeController(nucleophile_molecule).push([proton], container, container.length-1, test_number, 1, nucleophile_atom_index +1)
 
         
         
