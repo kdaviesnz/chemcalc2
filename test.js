@@ -15,6 +15,7 @@ const range = require("range")
 const Set = require('./Models/Set')
 
 const VMolecule = require('./Views/Molecule')
+const VContainer = require('./Views/Container');
 
 const MoleculeLookup = require('./Controllers/MoleculeLookup')
 const PubChemLookup = require('./Controllers/PubChemLookup')
@@ -53,6 +54,8 @@ client.connect(err => {
 
     assert.equal(err, null);
     const db = client.db("chemistry")
+
+    const VContainerWithDB = VContainer(client)
 
     // @todo searchBySmiles should have callback passed in.
     const onMoleculeNotFound =  (onMoleculeAddedToDBCallback) => {
@@ -120,10 +123,11 @@ client.connect(err => {
         ccontainer.add(hcl_molecue.json, 1, verbose)
         console.log("Adding water to container")
         ccontainer.add(water_molecule.json, 1, verbose)
-        const Clneg = ccontainer.container[2]
-        console.log(VMolecule(ccontainer.container[1]).canonicalSMILES(1))
-        console.log(VMolecule(Clneg).canonicalSMILES(1))
-        process.exit()
+        console.log("Container:")
+        VContainerWithDB(ccontainer).show(()=>{
+            console.log("Test 1 complete: Container should show chlorane and oxidane.")
+            process.exit()
+        })
     }
 
     const lookupWater = (hcl_molecule) => {
