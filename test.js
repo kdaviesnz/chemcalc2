@@ -96,6 +96,7 @@ client.connect(err => {
         console.log("Getting new container")
         const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
         console.log("Adding water to container")
+        // pass in only .json
         ccontainer.add(water_molecule.json, 1, verbose)
         console.log("Adding propylene to container")
         ccontainer.add(propylene_molecue.json, 1, verbose)
@@ -131,9 +132,11 @@ client.connect(err => {
     const reactHClWithWater = (hcl_molecue, water_molecule) => {
         const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
         console.log("Adding water to container")
-        ccontainer.add(water_molecule, 1, verbose, 1)
+        // pass in only .json
+        ccontainer.add(water_molecule.json, 1, verbose, 1)
         console.log("Adding HCl to container")
-        ccontainer.add(hcl_molecue, 1, verbose, 1)
+        // pass in only .json
+        ccontainer.add(hcl_molecue.json, 1, verbose, 1)
         console.log("Container:")
         console.log(ccontainer.container[1][0])
         console.log(VMolecule(ccontainer.container[1][0]).canonicalSMILES(1))
