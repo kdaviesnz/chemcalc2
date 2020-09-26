@@ -14,31 +14,10 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 // than the pKa of the protonated alcohol (Section 2.10).
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
 
-        if (undefined === nucleophile_molecule) {
+        
            
-            const substrate_proton_index = MoleculeController(container[1]).indexOf("H", false, verbose)
-            const reagent_proton_index = MoleculeController(container[2]).indexOf("H", false, verbose)
-
-           // HCl (electrophile) <------ H2O (nucleophile)
-            if (test_number === 1) {
-                substrate_proton_index.should.be.equal(1) // HCl
-                reagent_proton_index.should.be.equal(2) // water
-            }
-            
-            if (test_number === 2) {
-                substrate_proton_index.should.be.equal(false) // Cl-
-                reagent_proton_index.should.be.equal(4) // H3O
-            }
-          
-            if (test_number === 3) {
-                substrate_proton_index.should.be.equal(false)
-                reagent_proton_index.should.be.equal(false) // hydrogens are attached to carbons
-            }
-            
-            if (test_number === 4) {
-                substrate_proton_index.should.be.equal(false) // CC=CC (Second carbon is nucleophile)
-                reagent_proton_index.should.be.equal(1) // HBr (H is electrophile)
-            }
+            const substrate_proton_index = MoleculeController(container[1].json).indexOf("H", false, verbose)
+            const reagent_proton_index = MoleculeController(container[2].json).indexOf("H", false, verbose)
 
             if (substrate_proton_index !== false && reagent_proton_index === false) {
                 electrophile_molecule_index = 1
@@ -79,9 +58,10 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
                 // Test number 1
                 // Container - [false, [HCl], [H2O]]
                 if (test_number === 1) {
-                    (container[1][0] <= container[2][0]).should.be.equal(true)
+                    (container[1].json[0] <= container[2].json[0]).should.be.equal(true)
                 }
-                if (container[1][0] <= container[2][0]) {
+                if (container[1].json[0] <= container[2].json[0]) {
+                    // @see Organic Chemistry 8th Edition P51
                     // HCl is the proton donator and is our electrophile as protons do not have electrons
                     // H2O (nucleophile) is the proton acceptor as the oxygen has lone pairs of electrons.
                     electrophile_molecule_index = 1 // HCl
@@ -104,7 +84,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 
                 }
             }
-        }
+        
 
         if (undefined === electrophile_molecule ) {
             console.log("BronstedLowryAcidBaseReactions::electrophile_molecule is undefined or null")
@@ -121,14 +101,10 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         }
 
        
-        if (test_number === 3) {
-            electrophile_molecule[1][0].should.be.equal("Al")
-        }
+        
         
         // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-        if (test_number === 4) {
-            electrophile_molecule[1][0].should.be.equal("H")
-        }
+        
 
         
             // SEE organic chemistry 8th edition p245
@@ -139,10 +115,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 // 3. The protonated alcohol loses a proton because the pH of the solution is greater
 // than the pKa of the protonated alcohol (Section 2.10).
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
-        if (test_number === 6) {
-            // hydrogen water atom
-            electrophile_molecule[electrophile_atom_index +1][0].should.be.equal("H")
-        }
+        
 
         if (test_number === 7) {
             // SEE organic chemistry 8th edition p245
@@ -229,11 +202,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
             return false
         }
 
-        if (test_number === 3) {
-            // console.log(electrophile_molecule) // COC
-            console.log("Wrong section for test 3 - reagent doesn't have a non-carbon hydrogen (Container.js)")
-            process.exit()
-        }
+        
 
         // HCl (electrophile) <- H2O (nucleophile)
         if (test_number === 1) {
@@ -244,43 +213,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
             nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("O")
         }
 
-        // [Cl-] (nucleophile) <- H3O (electrophile)
-        if (test_number === 2 ) {
-            nucleophile_molecule.length.should.be.equal(2)
-            nucleophile_atom_index.should.be.equal(1)
-            electrophile_molecule.length.should.be.equal(5)
-            electrophile_molecule[electrophile_atom_index][0].should.be.equal("H")
-            nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("Cl")
-        }
-        
-        // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-        /*
-        [ [ 'H', 1, 1, 1, '1y5g42jkkahi190y', '1y5g42jkkahi190i' ], 1
-  [ 'H', 1, 1, 1, '1y5g42jkkahi190z', '1y5g42jkkahi190j' ], 2
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1910', '1y5g42jkkahi190k' ], 3
-  [ 'C', 6, 4, 4, '1y5g42jkkahi190i', '1y5g42jkkahi190j', '1y5g42jkkahi190k','1y5g42jkkahi190l'
-  ,'1y5g42jkkahi190p','1y5g42jkkahi190y','1y5g42jkkahi190z', '1y5g42jkkahi1910' ], 4
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1911', '1y5g42jkkahi190m' ], 5
-  [ 'C', 6,  4, 4,'1y5g42jkkahi190m','1y5g42jkkahi190n','1y5g42jkkahi190o', 6
-    '1y5g42jkkahi190p', '1y5g42jkkahi190l', '1y5g42jkkahi190t','1y5g42jkkahi190s', '1y5g42jkkahi1911' ],
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1912', '1y5g42jkkahi190q' ], 7
-  [ 'C', 6, 4, 4, '1y5g42jkkahi190q','1y5g42jkkahi190r', '1y5g42jkkahi190s',
-    '1y5g42jkkahi190t', '1y5g42jkkahi190o','1y5g42jkkahi190n','1y5g42jkkahi190x',
-    '1y5g42jkkahi1912' ], 8
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1913', '1y5g42jkkahi190u' ], 9
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1914', '1y5g42jkkahi190v' ], 10
-  [ 'H', 1, 1, 1, '1y5g42jkkahi1915', '1y5g42jkkahi190w' ], 11
-  [ 'C', 6,4,4, '1y5g42jkkahi190u','1y5g42jkkahi190v','1y5g42jkkahi190w',
-    '1y5g42jkkahi190x','1y5g42jkkahi190r', '1y5g42jkkahi1913','1y5g42jkkahi1914',
-    '1y5g42jkkahi1915' ] 12 ]
-         */
-        if (test_number === 4 ) {
-            nucleophile_molecule.length.should.be.equal(13)
-            nucleophile_atom_index.should.be.equal(6)
-            electrophile_molecule.length.should.be.equal(3)
-            electrophile_molecule[electrophile_atom_index][0].should.be.equal("H")
-            nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("C")
-        }
+
 
         // react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index)
         // Here the substrate (base) has no proton and the reagent (acid) does.
@@ -288,18 +221,10 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         const proton_index = MoleculeController(electrophile_molecule).indexOf("H")
         proton_index.should.be.greaterThan(0);
 
-        if (test_number === 2) {
-            nucleophile_molecule[1][0].should.be.equal("Cl")
-            electrophile_molecule.length.should.be.equal(5)
-            proton_index.should.be.equal(4)
-        }
+
         
         // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-        if (test_number === 4) {
-            nucleophile_molecule[4][0].should.be.equal("C")
-            electrophile_molecule.length.should.be.equal(3)
-            proton_index.should.be.equal(1)
-        }
+
 
         // remove proton
         if (test_number === 1) {
@@ -307,9 +232,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         }
         
         // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-        if (test_number === 4) {
-            electrophile_molecule_index.should.be.equal(2)           
-        }
+        
         
         // SEE organic chemistry 8th edition p245
 // propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
@@ -319,18 +242,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 // 3. The protonated alcohol loses a proton because the pH of the solution is greater
 // than the pKa of the protonated alcohol (Section 2.10).
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
-        if (test_number === 6) {
-            // hydrogen water atom
-            console.log('BronstedLowryAcidBaseReactions.js')
-            console.log('Electrophile molecule')
-            console.log(electrophile_molecule) // water
-            console.log('Nucleophile molecule')
-            console.log(nucleophile_molecule) // propylene
-            const reagent_families = Families(nucleophile_molecule.slice(1), this.verbose).families
-            console.log(reagent_families.alkene().length)
-            electrophile_molecule_index.should.be.equal(2)
-            proton_index.should.be.equal(2)
-        }
+        
 
         if (test_number === 7) {
             // hydrogen sulfuric acid atom
