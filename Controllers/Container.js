@@ -543,7 +543,7 @@ class CContainer {
 
     }
     
-    add(molecule_array_or_string, units, verbose, test_number) {
+    add(db_molecule, units, verbose, test_number) {
 
         
         // test 6
@@ -565,7 +565,7 @@ class CContainer {
         
         if (verbose) {
             console.log("Controllers/Container.js::Adding ->")
-            console.log(molecule_array_or_string)
+            console.log(molecule.IUPACName)
             console.log("to container")
         }
         
@@ -576,14 +576,11 @@ class CContainer {
         // nucleophile is [Br-]
         // carbocation is added to [Br-]
         // Br and C form bond
-        
-        
-        const molecule = (typeof molecule_array_or_string !== "string" ?
-            molecule_array_or_string :
-            this.MoleculeFactory(molecule_array_or_string))
-        // Add item to container.
 
-        this.container.push([molecule, units])
+        const molecule = this.MoleculeFactory(db_molecule.CanonicalSMILES)
+
+        // Add item to container.
+        this.container.push([db_molecule, units])
 
         if (verbose) {
             console.log("Controllers/Container.js:: Container before processing reaction ->")
@@ -596,11 +593,17 @@ class CContainer {
         // container[1] is substrate
         if (this.container.length > 2) {
             
-            // test 6
-            // ccontainer6.add(propylene, 1, verbose)
-            // ccontainer6.add(watermolecule, 1, verbose)
-            
-            const reagents = this.container.slice(1,this.container.length).reverse()
+
+            const reagents = this.container.slice(2,this.container.length).reverse()
+
+            if (this.test_number === 1) {
+                reagents.length.should.be.equal(1)
+                reagents[0][0].IUPACName.should.be.equal("chlorane")
+                console.log('controolers container reagents')
+                process.exit()
+
+            }
+
             if (this.test_number === 6) {
                 // water, propylene
                 reagents.length.should.be.equal(2)
@@ -646,6 +649,7 @@ class CContainer {
             // 5. water --> water
             // 6. water --> deprontonated sulfuric acid
             // this needs to be changed to a recursive function as reagents can change
+
             this.__doReactionsRecursive(null)
 
 

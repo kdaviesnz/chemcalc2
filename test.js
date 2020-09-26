@@ -130,11 +130,16 @@ client.connect(err => {
 
     const reactHClWithWater = (hcl_molecue, water_molecule) => {
         const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
-        console.log("Adding HCl to container")
-        ccontainer.add(hcl_molecue.json, 1, verbose)
         console.log("Adding water to container")
-        ccontainer.add(water_molecule.json, 1, verbose)
+        ccontainer.add(water_molecule, 1, verbose, 1)
+        console.log("Adding HCl to container")
+        ccontainer.add(hcl_molecue, 1, verbose, 1)
         console.log("Container:")
+        console.log(ccontainer.container[1][0])
+        console.log(VMolecule(ccontainer.container[1][0]).canonicalSMILES(1))
+        console.log(water_molecule.json)
+        console.log("test.js reactHCl with water")
+        process.exit()
         VContainerWithDB(ccontainer).show(()=>{
             console.log("Test 1 complete: Container should show chlorane and oxidane.")
             lookupPropylene(water_molecule)
