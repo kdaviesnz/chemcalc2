@@ -6,13 +6,17 @@ const VMolecule = (mmolecule) => {
     return {
         canonicalSMILES: (units) => {
 
-            const mmolecule_sans_hydrogens = _.cloneDeep(mmolecule).slice(1).filter((atom)=>{
+            const mmolecule_sans_hydrogens = _.cloneDeep(mmolecule[0]).slice(1).filter((atom)=>{
                 return atom[0] !== 'H'
             })
 
             // Convert molecule to CanonicalSmiles
             // @todo branches, rings
             const SMILES = _.cloneDeep(mmolecule_sans_hydrogens).reduce((carry, current_atom, index, arr)=> {
+                if (typeof current_atom !== 'object') {
+                    console.log('Molecule.js Atom must be an object. Got ' + current_atom + ' instead')
+                    throw new Error("Atom is not an object")
+                }
                 if (CAtom(current_atom, index, mmolecule).isPositivelyCharged()) {
                     carry = carry + "[" + current_atom[0] + "+]"
                 } else if (CAtom(current_atom, index, mmolecule).isNegativelyCharged()) {

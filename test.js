@@ -55,26 +55,25 @@ client.connect(err => {
     const db = client.db("chemistry")
 
     // @todo searchBySmiles should have callback passed in.
-    const onMoleculeNotFound =  (search) => {
-        console.log("Molecule not found " + search)
-        pkl.searchBySMILES(search.replace(/\(\)/g, ""), db, (molecule_from_pubchem) => {
-            if (molecule_from_pubchem !== null) {
-                console.log("Molecule found in pubchem")
-                molecule_from_pubchem['json'] = MoleculeFactory(search)
-                db.collection("molecules").insertOne(molecule_from_pubchem, (err, result) => {
-                    if (err) {
-                        console.log(err)
-                        client.close()
-                        process.exit()
-                    } else {
-                        console.log("Molecule " + search + " added to database")
-                        client.close()
-                        process.exit()
-                    }
-                })
-            }
-
-        })
+    const onMoleculeNotFound =  (onMoleculeAddedToDBCallback) => {
+        return (search) => {
+            console.log("Molecule not found " + search)
+            pkl.searchBySMILES(search.replace(/\(\)/g, ""), db, (molecule_from_pubchem) => {
+                if (molecule_from_pubchem !== null) {
+                    console.log("Molecule found in pubchem")
+                    molecule_from_pubchem['json'] = MoleculeFactory(search)
+                    db.collection("molecules").insertOne(molecule_from_pubchem, (err, result) => {
+                        if (err) {
+                            console.log(err)
+                            client.close()
+                            process.exit()
+                        } else {
+                            onMoleculeAddedToDBCallback(search)
+                        }
+                    })
+                }
+            })
+        }
     }
 
     // MOLECULE MODEL
@@ -83,31 +82,13 @@ client.connect(err => {
     // atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
     const propylene = MoleculeFactory("CC=C")
     const watermolecule = MoleculeFactory("water", verbose)
-    console.log(VMolecule(watermolecule).canonicalSMILES(1))
+   // console.log(VMolecule(watermolecule).canonicalSMILES(1))
     const hcl = MoleculeFactory("HCl", verbose)
     //VMolecule(hcl).render(1)
-    console.log(VMolecule(hcl).canonicalSMILES(1))
-    console.log(VMolecule(propylene).canonicalSMILES(1))
+    //console.log(VMolecule(hcl).canonicalSMILES(1))
+    //console.log(VMolecule(propylene).canonicalSMILES(1))
     //VMolecule(propylene).render(1)
 
-    const lookupHCL = (propylene) => {
-        MoleculeLookup(db, "HCl", "SMILES", true).then(
-            // "resolves" callback
-            (molecule) => {
-                console.log("Molecule found")
-                console.log(molecule)
-                /*
-                pkl.fetchSubstructuresBySMILES(molecule.CanonicalSMILES, db, (molecule, db, SMILES)=> {
-                    console.log("Molecule: " + molecule)
-                })
-                */
-            },
-            // Nothing found callback
-            onMoleculeNotFound,
-            // "rejects" callback
-            onErrorLookingUpMoleculeInDB
-        )
-    }
 
     const lookupPropylene = (callback) => {
         MoleculeLookup(db, "CC=C", "SMILES", true).then(
@@ -123,13 +104,64 @@ client.connect(err => {
                 */
             },
             // Nothing found callback
-            onMoleculeNotFound,
+            onMoleculeNotFound((search)=>{
+                console.log("Molecule " + search + " added to database")
+                client.close()
+                process.exit()
+            }),
             // "rejects" callback
             onErrorLookingUpMoleculeInDB
         )
     }
 
-    lookupPropylene(lookupHCL)
+    const reactHClWithWater = (hcl_molecue, water_molecule) => {
+        const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
+        console.log("Adding HCl to container")
+        ccontainer.add(hcl_molecue.json, 1, verbose)
+        console.log("Adding water to container")
+        ccontainer.add(water_molecule.json, 1, verbose)
+        const Clneg = ccontainer.container[2]
+        console.log(VMolecule(ccontainer.container[1]).canonicalSMILES(1))
+        console.log(VMolecule(Clneg).canonicalSMILES(1))
+        process.exit()
+    }
+
+    const lookupWater = (hcl_molecule) => {
+        MoleculeLookup(db, "O", "SMILES", true).then(
+            // "resolves" callback
+            (water_molecule) => {
+                reactHClWithWater(hcl_molecule, water_molecule)
+            },
+            // Nothing found callback
+            onMoleculeNotFound((search)=>{
+                console.log("Molecule " + search + " added to database")
+                client.close()
+                process.exit()
+            }),
+            // "rejects" callback
+            onErrorLookingUpMoleculeInDB
+        )
+    }
+
+    const lookupHCl = () => {
+        MoleculeLookup(db, "Cl", "SMILES", true).then(
+            // "resolves" callback
+            // molecule found
+            (hcl_molecule) => {
+                lookupWater(hcl_molecule)
+            },
+            // Nothing found callback
+            onMoleculeNotFound((search)=>{
+                console.log("Molecule " + search + " added to database")
+                client.close()
+                process.exit()
+            }),
+            // "rejects" callback
+            onErrorLookingUpMoleculeInDB
+        )
+    }
+
+    lookupHCl()
 
 
 
