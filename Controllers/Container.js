@@ -22,7 +22,6 @@ class CContainer {
     
     __doReactionRecursive(reagent_index, substrate_index) {
 
-        
         if (reagent_index === undefined) {
             if (this.verbose) {
                  console.log("Container.js::reagent index is null")
@@ -30,8 +29,12 @@ class CContainer {
             return this.__doReactionRecursive(reagent_index, substrate_index+1)
         }
         
-        const reagents = this.container.slice(1,this.container.length)
+        const reagents = this.container.slice(2,this.container.length)
         const reagent = reagents[reagent_index]
+
+        if (this.test_number === 1 && reagent_index === 0) {
+            reagent[0].IUPACName.should.be.equal('chlorane')
+        }
         
         if (reagent[reagent_index][1] === 0) {
             if (this.verbose) {
@@ -41,34 +44,32 @@ class CContainer {
             return this.__doReactionRecursive(reagent_index, substrate_index+1)
         }
               
-        const substrates = this.container.slice(1,this.container.length)
-       
+        const substrates = this.container.slice(1,this.container.length-1)
+
+        if (this.test_number ===1 && reagent_index === 0) {
+            // substrates should be water
+            substrates[0][0].IUPACName.should.be.equal('oxidane')
+        }
+
         if (undefined === substrates[substrate_index]) {
             return
         }
 
-
-        
-        if (this.test_number ===6) {
-            // reagent should be water
-            // substrates should be propylene, water
+        if (this.test_number ===1 && reagent_index === 0) {
+            substrate_index.should.be.equal(0)
+            substrates[substrate_index][0].IUPACName.should.be.equal('oxidane')
         }
 
         const substrate = substrates[substrate_index]
-        
-                if (substrate[substrate_index][1] === 0) {
+
+        if (substrate[substrate_index][1] === 0) {
             if (this.verbose) {
-                 console.log("Container.js::no substrate left")
+                console.log("Container.js::no substrate left")
                 console.log(substrate)
             }
             return
         }
         
-
-        if (this.test_number ===6) {
-            // substrate_index should be 0
-            // substrate should be propylene
-        }
 
         if (this.verbose) {
             console.log("Controllers/Container.js:: Got substrate ->")
@@ -76,17 +77,15 @@ class CContainer {
         }
 
         if (reagent === substrate) {
-            
             if (this.verbose) {
                 console.log('reagent and substrate are the same')
             }
             return this.__doReactionRecursive(reagent_index, substrate_index+1)
-            
         } else {
 
-            const substrate_families = Families(substrate[0].slice(1), this.verbose).families
-            const reagent_families = Families(reagent[0].slice(1), this.verbose).families
-                            
+            const substrate_families = Families(substrate[0].json.slice(1), this.verbose).families
+            const reagent_families = Families(reagent[0].json.slice(1), this.verbose).families
+
             if (this.verbose) {
                 console.log("Controllers/Container.js substrate families ->")
                 console.log(substrate_families)
@@ -105,41 +104,8 @@ class CContainer {
              // The functional group of an alkene is the C=C double bond.
              // The C=C double bond is nucleophilic
              let reaction = false
-                                 
-                                 
-             // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-             if (this.test_number === 4) {
-                  substrate_families.alkene().length.should.be.equal(2)
-             }
 
-             if (this.test_number === 6) {
-                 /*
-                 if(substrate_families.alkene(this.verbose).length !== 2){
-                     console.log("Details:")
-                     console.log('Substrate index: ' + substrate_index) // 1
-                     console.log('Reagent index: ' + reagent_index) // 0
-                     console.log("Substrate: ")
-                     console.log(substrate) // water
-                     console.log("Reagent: ")
-                     console.log(reagent)
-                 }
-                 substrate_families.alkene(this.verbose).length.should.be.equal(2)
-                  */
-             }
 
-             if (this.test_number === 7) {
-                 //console.log(substrate_index)
-                 //console.log('Substrate')
-                 //console.log(substrate)
-                 if (substrate_index === 1) {
-                     // substrate is water
-                     substrate_families.alkene(this.verbose).length.should.be.equal(0)
-                 } else {
-                     substrate_families.alkene(this.verbose).length.should.be.equal(2)
-                 }
-
-             }
-                   
              if (substrate_families.alkene(this.verbose).length > 0) {
 
                  const is_water = reagent[0].length === 4 && reagent[0][1][0]==='H'
@@ -365,7 +331,8 @@ class CContainer {
              } 
             
              if (!reaction) {
-                // Not alkene              
+                // Not alkene
+                console.log("Doing Bronsted Lowry reaction: " + substrate[0].IUPACName + " + " + reagent[0].IUPACName)
                 reaction = bronstedLowry.react()
              }
             
@@ -504,7 +471,7 @@ class CContainer {
             // 5. water --> water
             // 6. water --> deprontonated sulfuric acid
             // this needs to be changed to a recursive function as reagents can change
-            const reagents = this.container.slice(1,this.container.length)
+            const reagents = this.container.slice(2,this.container.length)
 
         if (this.verbose) {
            console.log("Test number: ")
@@ -513,9 +480,6 @@ class CContainer {
            console.log(reagents)
         }
 
-        if (this.test_number === 6) {
-            // propylene, water
-        }
 
         if (null === reagent_index) {
             reagent_index = reagents.length -1
@@ -532,12 +496,12 @@ class CContainer {
             console.log(reagent)
         }
 
-        if (this.test_number === 6) {
-            // reagent_index should be 1
-            // reagent should be 1
+        if (this.test_number === 1) {
+            // reagent_index should be 0
+            reagent_index.should.be.equal(0)
         }
 
-        this.__doReactionRecursive(reagent_index, reagent, 0)
+        this.__doReactionRecursive(reagent_index, 0)
 
         return this.__doReactionsRecursive(reagent_index -1)
 
@@ -599,9 +563,6 @@ class CContainer {
             if (this.test_number === 1) {
                 reagents.length.should.be.equal(1)
                 reagents[0][0].IUPACName.should.be.equal("chlorane")
-                console.log('controolers container reagents')
-                process.exit()
-
             }
 
             if (this.test_number === 6) {
