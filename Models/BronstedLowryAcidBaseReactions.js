@@ -1,39 +1,9 @@
+// @see Organic Chemistry 8th Edition P51
 const CAtom = require('../Controllers/Atom')
 const Families = require('../Models/Families')
 const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_number, verbose) => {
 
-    const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule,
-                   electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index) => {
-
-        if (verbose) {
-            console.log("Models/BronstedLowryAcidBaseReactions.js Doing Bronsted Lowry reactions ->")
-            console.log(
-                {
-                    "nucleophile molecule" : nucleophile_molecule,
-                    "nucleopile atom index" : nucleophile_atom_index,
-                    "electrophile molecle" : electrophile_molecule,
-                    "electrophile atom index" : electrophile_atom_index,
-                    "nucleophile molecule index" : nucleophile_molecule_index,
-                    "electrophile molecule index" : electrophile_molecule_index,
-                    "container" : container,
-                    "molecule controller" : MoleculeController
-                }
-            )
-        }
-
-        if (test_number === 7) {
-
-            // @todo check why nucleophile molecule is undefined
-            if (nucleophile_molecule !== undefined) {
-                nucleophile_atom_index.should.be.equal(8)
-            }
-            if (electrophile_molecule !== undefined) {
-                // Nucleophile molecue is propylene
-                // Electrophile molecue is sulfuric acid
-                electrophile_molecule_index.should.be.equal(3)
-                // process.exit()
-            }
-        }
+    const react = () => {   
 
         // SEE organic chemistry 8th edition p245
 // propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
