@@ -32,9 +32,7 @@ class CContainer {
         const reagents = this.container.slice(2,this.container.length)
         const reagent = reagents[reagent_index]
 
-        if (this.test_number === 1 && reagent_index === 0) {
-            reagent[0].IUPACName.should.be.equal('chlorane')
-        }
+        
         
         if (reagent[reagent_index][1] === 0) {
             if (this.verbose) {
@@ -46,19 +44,13 @@ class CContainer {
               
         const substrates = this.container.slice(1,this.container.length-1)
 
-        if (this.test_number ===1 && reagent_index === 0) {
-            // substrates should be water
-            substrates[0][0].IUPACName.should.be.equal('oxidane')
-        }
+        
 
         if (undefined === substrates[substrate_index]) {
             return
         }
 
-        if (this.test_number ===1 && reagent_index === 0) {
-            substrate_index.should.be.equal(0)
-            substrates[substrate_index][0].IUPACName.should.be.equal('oxidane')
-        }
+        
 
         const substrate = substrates[substrate_index]
 
@@ -111,10 +103,7 @@ class CContainer {
                  const is_water = reagent[0].length === 4 && reagent[0][1][0]==='H'
                      && reagent[0][2][0]==='H' && reagent[0][3][0]==='O'
 
-                 if (this.test_number === 6) {
-                     // reagent is water, substrate is propylene
-                     is_water.should.be.equal(true)
-                 }
+                 
 
                  // if reagent is water then return as is, as water does not react to alkenes.
                  if (is_water) {
@@ -131,11 +120,7 @@ class CContainer {
 // than the pKa of the protonated alcohol (Section 2.10).
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
 
-                 if (this.test_number === 7) {
-                     // for first round substrate is propyline (CC=C)
-                     // reagent is sulfuric acid H2SO4 (electrophile, donates H+)
-                     reagent[0].length.should.be.equal(8)
-                 }
+                 
 
                  // Substrate is alkene (nucleophile)
                  // Find the nucleophile on the C=C bond
@@ -188,32 +173,19 @@ class CContainer {
                                              process.exit()
                                         }
                                       
-                                        if (this.test_number === 7) {
-                    // electrophile is sulfuric acid H2SO4
-                    // Index of first hydrogen atom
-                    electrophile_atom_index.should.be.equal(0)
-                                         }
+                                        
 
                 // See organic chemistry 8th edition ch 6 p 235
                 // C=C (butene, nucleophile) -> HBr (H is electrophile)
-                if (this.test_number === 4) {
-                    electrophile_atom_index.should.be.equal(1)
-                }
+                
                  
                 // See organic chemistry 8th edition ch 6 p 235
                 // C=C (butene, nucleophile) -> HBr (H is electrophile)
-                if (this.test_number === 4) {
-                                              nucleophile_atom_index.should.be.equal(6)  // correct
-                    nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("C")
-                    // Check double bond
-                                              Set().intersection(nucleophile_molecule[nucleophile_atom_index].slice(4), nucleophile_molecule[8].slice(4)).length.should.be.equal(4)
-                }
+                
 
                 reaction = bronstedLowry.react()
 
-                if (this.test_number === 7) {
-                     reaction.should.not.be.equal(false)
-                }
+                
 
                 // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
                  
@@ -228,25 +200,7 @@ class CContainer {
                        
                      this.container = reaction
                 
-                     if (this.test_number === 7) {
-                        // false, protonated propylene, water, deprotonated sulfuric acid
-                        this.container.length.should.be.equal(4)
-                        
-                    // SEE organic chemistry 8th edition p245
-// propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (test 7)
-// 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
-// alkene (a nucleophile) that is bonded to the most hydrogens.
-// 2. H2O (a nucleophile) adds to the carbocation (an electrophile), forming a protonated alcohol.
-// 3. The protonated alcohol loses a proton because the pH of the solution is greater
-// than the pKa of the protonated alcohol (Section 2.10).
-// (We saw that protonated alcohols are very strong acids; Section 2.6.)
-                    // false, protonated propylene, water, deprotonated sulfuric acid
-                         reaction[0].should.be.equal(false)
-                         reaction[1][0].length.should.be.equal(11) // protonated propylene
-                         reaction[2][0].length.should.be.equal(4) // water
-                         reaction[3][0].length.should.be.equal(7) // deprotonated sulfuric acid
-                         reaction.length.should.be.equal(4)
-                      }
+                     
                      
                  }
                  
@@ -257,10 +211,7 @@ class CContainer {
                  const is_water = substrate[0].length === 4 && substrate[0][1][0]==='H'
                      && substrate[0][2][0]==='H' && substrate[0][3][0]==='O'
 
-                 if (this.test_number === 6) {
-                     // substrate is water, reagent is propylene
-                     is_water.should.be.equal(true)
-                 }
+                 
 
                  // if substrate is water then return as is, as water does not react to alkenes.
                  if (is_water) {
@@ -283,10 +234,7 @@ class CContainer {
                 const electrophile_atom_index = this.MoleculeController(substrate[0]).electrophileIndex(this.test_number)
 
 
-                if (this.test_number === 4) {
-                    reagent[nucleophile_atom_index][0].should.be.equal("C")
-                    AtomController(reagent[nucleophile_atom_index], nucleophile_atom_index, reagent.slice(1)).bondCount.should.be.equal(2)
-                }
+                
 
                 // const react = (nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
                 reaction = bronstedLowry.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
