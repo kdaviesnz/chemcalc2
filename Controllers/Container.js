@@ -142,28 +142,12 @@ class CContainer {
                  const nucleophile_molecule = substrate
                  const nucleophile_molecule_index = 1
 
-                 // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-                 // Check nucleophile is CC=CC
-                 if (this.test_number === 4) {
-                     nucleophile_molecule[6][0].should.be.equal("C")
-                     nucleophile_molecule[8][0].should.be.equal("C")
-                     // Confirm double bond
-                     Set().intersection(nucleophile_molecule[6].slice(4), nucleophile_molecule[8].slice(4)).length.should.be.equal(4)
-                 }
+                
 
                  const electrophile_molecule = reagent
                  const electrophile_molecule_index = this.container.length -1
                 
-                 if (this.test_number === 4) {
-                    electrophile_molecule[1][0].should.be.equal("H")
-                    electrophile_molecule[2][0].should.be.equal("Br")
-                    Set().intersection(electrophile_molecule[1].slice(4), electrophile_molecule[2].slice(4)).length.should.be.equal(2)
-                 }
-                                         
-                 if (this.test_number === 7) {
-                        // sulfuric acid
-                        electrophile_molecule_index.should.be.equal(3)
-                 }
+                 
 
                  const nucleophile_atom_index = this.MoleculeController(substrate[0]).nucleophileIndex(this.test_number)
 
@@ -175,19 +159,8 @@ class CContainer {
 // 3. The protonated alcohol loses a proton because the pH of the solution is greater
 // than the pKa of the protonated alcohol (Section 2.10).
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
-                 if (this.test_number === 6) {
-                     // const nucleophile_atom_index = this.MoleculeController(substrate).nucleophileIndex(this.test_number)
-                    nucleophile_atom_index.should.be.equal(8)
-                 }
-                                      
-                 if (this.test_number === 7) {
-                    /*
-                    
-                     */
-                    // Should be 8 not 9
-                    // const nucleophile_atom_index = this.MoleculeController(substrate).nucleophileIndex(this.test_number)
-                    nucleophile_atom_index.should.be.equal(8)
-                 }
+                                 
+                 
                  
                  // SEE organic chemistry 8th edition p245
 // propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
@@ -236,16 +209,14 @@ class CContainer {
                                               Set().intersection(nucleophile_molecule[nucleophile_atom_index].slice(4), nucleophile_molecule[8].slice(4)).length.should.be.equal(4)
                 }
 
-                reaction = bronstedLowry.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, nucleophile_molecule_index, electrophile_molecule_index)
+                reaction = bronstedLowry.react()
 
                 if (this.test_number === 7) {
                      reaction.should.not.be.equal(false)
                 }
 
                 // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-                 if (this.test_number === 4) {
-                    reaction.should.not.be.equal(false)
-                 }
+                 
                  
                  if (reaction === false) {
                       reaction = lewis.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, this.test_number)
