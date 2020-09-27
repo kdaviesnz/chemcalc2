@@ -93,6 +93,56 @@ client.connect(err => {
     //console.log(VMolecule(propylene).canonicalSMILES(1))
     //VMolecule(propylene).render(1)
 
+
+    // @see Organic Chemistry 8th Edition P51
+    const reactOxidaniumWithChloride = (chloride_molecule, oxidanium_molecule) => {
+        console.log("Getting new container")
+        const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
+        console.log("Adding oxidanium to container")
+        ccontainer.add(_.cloneDeep(oxidanium_molecule).json, 1, verbose)
+        console.log("Adding chloride to container")
+        ccontainer.add(_.cloneDeep(chloride_molecule).json, 1, verbose)
+        console.log("Container:")
+        VContainerWithDB(ccontainer).show(()=>{
+            console.log("Test 3 complete: Container should show prop-1-ene and oxidane.")
+            process.exit()
+        })
+    }
+
+    const lookUpOxidanium = (chloride_molecule) => {
+        MoleculeLookup(db, "[OH3+]", "SMILES", true).then(
+            // "resolves" callback
+            (oxidanium_molecule) => {
+                reactOxidaniumWithChloride(chloride_molecule, oxidanium_molecule)
+            },
+            // Nothing found callback
+            onMoleculeNotFound((search)=>{
+                console.log("Molecule " + search + " added to database")
+                client.close()
+                process.exit()
+            }),
+            // "rejects" callback
+            onErrorLookingUpMoleculeInDB
+        )
+    }
+
+    const lookUpChloride = () => {
+        MoleculeLookup(db, "[Cl-]", "SMILES", true).then(
+            // "resolves" callback
+            (chloride_molecule) => {
+                lookUpOxidanium(chloride_molecule)
+            },
+            // Nothing found callback
+            onMoleculeNotFound((search)=>{
+                console.log("Molecule " + search + " added to database")
+                client.close()
+                process.exit()
+            }),
+            // "rejects" callback
+            onErrorLookingUpMoleculeInDB
+        )
+    }
+
     const reactPropyleneWithWater = (propylene_molecue, water_molecule) => {
         console.log("Getting new container")
         const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
@@ -103,8 +153,9 @@ client.connect(err => {
         ccontainer.add(_.cloneDeep(propylene_molecue).json, 1, verbose)
         console.log("Container:")
         VContainerWithDB(ccontainer).show(()=>{
-            console.log("Test 2 complete: Container should show prop-1-ene and oxidane.")
-            process.exit()
+            console.log("Test 2 complete: Container should show prop-1-ene and oxidane.\n")
+            // Start test 3
+            lookUpChloride()
         })
     }
 
