@@ -544,6 +544,7 @@ const CMolecule = (mmolecule, verbose) => {
             atom = container[container.length -1][0][target_atom_index]
         }
         console.log(atom)
+        console.log('molecule.js 547')
         process.exit()
         const target_atom_electron_to_share_index = __electronToShareIndex(atom)
 
