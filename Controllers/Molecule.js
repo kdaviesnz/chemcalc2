@@ -909,12 +909,19 @@ const CMolecule = (mmolecule, verbose) => {
         },
         push: (atoms_or_atomic_symbols, container, target_molecule_index, test_number, target_atom_index, source_atom_index, source_molecule_index) => {
 
-
-            const molecule = mmolecule[0] // mmolecule[1] is the number of units
+            // NOTES
+            // Brondsted Lowry reactions:
+            // atoms_or_atomic_symbols is the proton from the electrophile.
+            // mmolecule is the nucleophile (molecule containing the atom
+            // that attacks the proton from the electrophile).
+            // Target atom is what the arrow points to (attacks) and will
+            // always be the proton atom from the electrophile.
+            // Source atom is what the arrow points from (tail) and will
+            // always be the atom from the nucleophile.            
+            
+           
             // atoms_or_atomic_symbols are atoms from electrophile
             // mmolecule is the nucleophile
-
-
             // MOLECULE MODEL
 // pKa, atom, atom, atom ...
 // ATOM MODEL
@@ -922,52 +929,16 @@ const CMolecule = (mmolecule, verbose) => {
 
             // atoms_or_atomic symbols is an array containing the atom we are
             // pushing and the atoms linked to that atom
-            // atom_index is the index of the atom we are pushing
-
-            //  C:OC (nucleohile) ----> AlCl2 (lectrophile) (target)
-            // atoms_or_atomic_symbols AlCl3
-
-
-            // [Br-] (nucleophile) -----> carbocation CC[C+]C
-            // Br atom should bond to carbon that has three bonds
-            // Target atom index should be 8 (electrophile)
-            // Source atom index should be 1
-
+            // atom_index is the index of the atom we are pushing            
             const atoms = atoms_or_atomic_symbols.map(
                 (atom_or_atomic_symbol) => {
                     return typeof atom_or_atomic_symbol === "string" ? AtomFactory(atom_or_atomic_symbol) : atom_or_atomic_symbol
                 }
             )
-
-
-            //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
-            // [Br-] (nucleophile) -----> carbocation CC[C+]C
-            // Br atom should bond to carbon that has three bonds
-            // Target atom index should be 8 (electrophile)
-            // Source atom index should be 1
-            if (undefined === source_atom_index) {
-                source_atom_index = determineNucleophileIndex(test_number)
-            }
-
-
-            // [Br-] (nucleophile) -----> carbocation CC[C+]C
-            // Br atom should bond to carbon that has three bonds
-            // Target atom index should be 8 (electrophile)
-            // Source atom index should be 1
-
-            if (source_atom_index !== false) {
-
-                // [Br-] (nucleophile) -----> carbocation CC[C+]C
-                // Br atom should bond to carbon that has three bonds
-                // Target atom index should be 8 (electrophile)
-                // Source atom index should be 1
-                // returns container
-                return __makeCovalentBond(container, source_molecule_index, target_molecule_index, source_atom_index, target_atom_index, test_number) // return molecule
-            }
-
-            molecule[0] = pKa(molecule.slice(1))
-
-            return molecule
+            
+            // returns container
+            return __makeCovalentBond(container, source_molecule_index, target_molecule_index, source_atom_index, target_atom_index, test_number)           
+            
         },
         remove: (container, molecule_index, atom_or_atomic_symbol) => {
 
