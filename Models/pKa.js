@@ -8,7 +8,7 @@ const pKa = (pka_atoms) => {
             :fg.functionalGroups.water.length > 0? 14
                 :fg.functionalGroups.protonated_water.length > 0? -1.74
                     :fg.functionalGroups.ether.length >0?-3.5:12345
-    return pKa_value
+    return [pKa_value, ...pka_atoms]
 
 }
 module.exports = pKa

@@ -5,8 +5,6 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 
     const react = () => {
 
-        console.log("BronstedLowry reaction")
-        process.exit()
 
 
         // SEE organic chemistry 8th edition p245
@@ -61,10 +59,9 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
                 // -6.3 HCl, 14 H2O
                 // Test number 1
                 // Container - [false, [HCl], [H2O]]
-                if (test_number === 1) {
-                    (container[1][0] <= container[2][0]).should.be.equal(true)
-                }
-                
+              //  console.log('here')
+                //process.exit()
+
                 // compare pka values
                 if (container[1][0] <= container[2][0]) {
                     // @see Organic Chemistry 8th Edition P51
@@ -120,46 +117,19 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 // 3. The protonated alcohol loses a proton because the pH of the solution is greater
 // than the pKa of the protonated alcohol (Section 2.10).
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
-        
 
-        if (test_number === 7) {
-            // SEE organic chemistry 8th edition p245
-
-            
-        }
-
-        if (electrophile_molecule[electrophile_atom_index+1][0] !== "H") {
-
-            if (test_number === 1) {
-                console.log("BronstedLowryAcidBaseReactions::Should have a proton test number 1")
-                process.exit()
-            }
-
-            // See organic chemistry 8th edition ch 6 p 235
-            // C=C (butene, nucleophile) -> HBr (H is electrophile)
-
-            return false
-        }
-
-        
 
 
         // react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index)
         // Here the substrate (base) has no proton and the reagent (acid) does.
         // So we remove the proton from the reagent and add it to the substrate.
-        const proton_index = MoleculeController(electrophile_molecule).indexOf("H")
+        const proton_index = MoleculeController(container[electrophile_molecule_index]).indexOf("H")
         proton_index.should.be.greaterThan(0);
 
 
-        
         // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-
-
         // remove proton
-
         // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-        
-        
         // SEE organic chemistry 8th edition p245
 // propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
 // 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
@@ -180,29 +150,21 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 // 3. The protonated alcohol loses a proton because the pH of the solution is greater
 // than the pKa of the protonated alcohol (Section 2.10).
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
-        container = MoleculeController(electrophile_molecule).removeProton(
+
+        container = MoleculeController(container[electrophile_molecule_index]).removeProton(
             container,
-            electrophile_molecule_index,
-            MoleculeController(electrophile_molecule).itemAt(proton_index),
-            test_number,
-            verbose
+            proton_index
         )
 
-        
 
         // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-
-        
         // proton is the last element in the container
-        const proton = container[container.length-1][1]
+        const proton = container[container.length-1][0][1]
 
-        
-        
+
         // Move the proton to first molecule
         container.splice(container.length-1,1) // remove proton from container
-        
-        // H+ (electrophile) <------- H2O (nucleophile)
-        
+
 
         // SEE organic chemistry 8th edition p245
 // propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
@@ -212,15 +174,16 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 // 3. The protonated alcohol loses a proton because the pH of the solution is greater
 // than the pKa of the protonated alcohol (Section 2.10).
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
-        
-        
-        
 
-        container = MoleculeController(nucleophile_molecule).push([proton], container, container.length-1, test_number, 1, nucleophile_atom_index +1)
+        /*
+                push: (atoms_or_atomic_symbols, container, target_molecule_index, test_number, target_atom_index, source_atom_index, source_molecule_index) => {
+         */
+        container = MoleculeController(container[nucleophile_molecule_index]).push(proton, container, nucleophile_molecule_index, test_number, nucleophile_atom_index, electrophile_atom_index, electrophile_molecule_index)
 
-        
-        
-        
+
+
+        console.log(container)
+        process.exit()
 
         // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
         // After pushing proton to nucleophile

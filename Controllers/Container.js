@@ -251,13 +251,10 @@ class CContainer {
             
              if (!reaction) {
                 // Not alkene
-                console.log("Doing Bronsted Lowry reaction: " + substrate[0].IUPACName + " + " + reagent[0].IUPACName)
+                console.log("Doing Bronsted Lowry reaction: ")
                 reaction = bronstedLowry.react()
              }
             
-             if (this.test_number === 1) {
-                reaction.should.not.be.equal(false)
-            }
 
             // [Br-] (nucleophile) -----> carbocation
             // Br atom should bond to carbon that has three bonds
@@ -479,25 +476,6 @@ class CContainer {
 
             const reagents = this.container.slice(2,this.container.length).reverse()
 
-            if (this.test_number === 1) {
-                reagents.length.should.be.equal(1)
-                reagents[0][0].IUPACName.should.be.equal("chlorane")
-            }
-
-            if (this.test_number === 6) {
-                // water, propylene
-                reagents.length.should.be.equal(2)
-            }
-
-            if (this.test_number === 7) {
-                // sulfuric acid, water, propylene
-                if (this.verbose && reagents.length !== 3) {
-                    console.log('Reagents:')
-                    console.log(reagents)
-                }
-                reagents.length.should.be.equal(3)
-            }
-            
             // SEE organic chemistry 8th edition p245
             // test 6/7
 // propylene CC=C (test 6) / water H2O (test 6) / sulfuric acid H2SO4 (test 7)
@@ -507,16 +485,8 @@ class CContainer {
 // 3. The protonated alcohol loses a proton because the pH of the solution is greater
 // than the pKa of the protonated alcohol (Section 2.10).
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
-            if (this.test_number === 6) {
-                // false, propylene, water
-                this.container.length.should.be.equal(3)
-            }
-            
-            if (this.test_number === 7) {
-                // false, propylene, water
-                this.container.length.should.be.equal(4)
-            }
-            
+
+
             // test 7
             // propylene CC=C (test 6) / water H2O (test 6) / sulfuric acid H2SO4 (test 7)
             // reagents: sulfuric acid H2SO4, water
