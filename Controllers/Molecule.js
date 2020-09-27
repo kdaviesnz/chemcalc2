@@ -20,10 +20,9 @@ const CMolecule = (mmolecule, verbose) => {
     }
 
     const __negativelyChargedAtoms = (test_number) => {
-        const molecule = mmolecule[0] // mmolecule[1] is the number of units
-        const negatively_charged_atoms = molecule.slice(1).reduce(
+        const negatively_charged_atoms = mmolecule[0].slice(1).reduce(
             (carry, atom, index) => {
-                if (atom[0] !== "H" && CAtom(atom, index,molecule).isNegativelyCharged(test_number)) {
+                if (atom[0] !== "H" && CAtom(atom, index,mmolecule[0]).isNegativelyCharged(test_number)) {
                     carry.push([
                         index,
                         atom
@@ -33,9 +32,6 @@ const CMolecule = (mmolecule, verbose) => {
             },
             []
         )
-        if (test_number === 4.1) {
-            negatively_charged_atoms.length.should.be.equal(7777)
-        }
         return negatively_charged_atoms
     }
 
@@ -249,25 +245,9 @@ const CMolecule = (mmolecule, verbose) => {
         // 5.2 test 5, carbocation electrophile so should return true
 
 
-        // H2O (nucleophile) <------- HCl (electrophile)
-        if (undefined !== test_number && test_number === 1) {
-            molecule.length.should.be.equal(4)
-            molecule[3][0].should.be.equal("O")
-        }
-
-        // Cl- (nucleophile) <------- H3O (electrophile)
-        if (undefined !== test_number && test_number === 2) {
-            molecule.length.should.be.equal(2)
-            molecule[1][0].should.be.equal("Cl")
-        }
-        
         // Check for negatively charged atoms
          const negatively_charged_atoms = __negativelyChargedAtoms(test_number)
-         if (undefined !== test_number && test_number === 5.1) {
-             // 5.1 test 5, [Br-] nucleophile so should return 1
-             negatively_charged_atoms.length.should.be.equal(1)
-         }
-        
+
         if (negatively_charged_atoms.length > 0) {
             return negatively_charged_atoms[0][0] + 1
         } 

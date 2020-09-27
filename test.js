@@ -139,8 +139,7 @@ client.connect(err => {
         ccontainer.add(hcl_molecue.json, 1, verbose, 1)
         VContainerWithDB(ccontainer).show(()=>{
             console.log("Test 1 complete: Container should show chloride and oxidanium.")
-          //  lookupPropylene(water_molecule)
-            process.exit()
+            lookupPropylene(water_molecule)
         })
     }
 
