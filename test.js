@@ -137,15 +137,8 @@ client.connect(err => {
         console.log("Adding HCl to container")
         // pass in only .json
         ccontainer.add(hcl_molecue.json, 1, verbose, 1)
-        console.log(ccontainer.container[1])
-        console.log(ccontainer.container[2])
-        console.log(VMolecule(ccontainer.container[2][0]).canonicalSMILES(1))
-        console.log(ccontainer.container[1][0])
-        console.log(VMolecule(ccontainer.container[1][0]).canonicalSMILES(1))
-        console.log('reachHClWithWater()')
-        process.exit()
         VContainerWithDB(ccontainer).show(()=>{
-            console.log("Test 1 complete: Container should show chlorane and oxidane.")
+            console.log("Test 1 complete: Container should show chloride and oxidanium.")
           //  lookupPropylene(water_molecule)
             process.exit()
         })

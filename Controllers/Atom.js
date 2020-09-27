@@ -82,7 +82,13 @@ Example oxygen with 2 bonds
 
         const neutral_atom= AtomFactory(atom[0])
         const neutral_atom_free_slot_count = neutral_atom[3]
-        const is_positively_charged = neutral_atom_free_slot_count  > (__freeSlots(test_number) + __bondCount(atom[0], test_number) + __doubleBondCount(test_number))
+       // console.log(neutral_atom)
+       // console.log(atom)
+       // console.log(neutral_atom_free_slot_count)
+       // console.log(__bondCount(test_number))
+        //const is_positively_charged = neutral_atom_free_slot_count  > (__freeSlots(test_number) + __bondCount(atom[0], test_number) + __doubleBondCount(test_number))
+        // eg H3)
+        const is_positively_charged = neutral_atom_free_slot_count  < __bondCount(test_number)
 
         return is_positively_charged
     }
