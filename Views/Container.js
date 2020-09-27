@@ -1,6 +1,8 @@
 const VMolecule = require('../Views/Molecule')
 const MoleculeLookup = require('../Controllers/MoleculeLookup')
 const PubChemLookup = require('../Controllers/PubChemLookup')
+const MoleculeFactory = require('../Models/MoleculeFactory')
+
 const pkl = PubChemLookup((err)=>{
     console.log(err)
     process.exit()
@@ -24,7 +26,7 @@ const VContainer = (client) => {
             const mmolecule = item[0]
             const units = item[1]
 
-            console.log(VMolecule(mmolecule).canonicalSMILES(units))
+            console.log("Looking up: " + VMolecule(mmolecule).canonicalSMILES(units))
 
             MoleculeLookup(db, VMolecule(mmolecule).canonicalSMILES(units), "SMILES", true).then(
                 // "resolves" callback - molecule found in db
@@ -42,7 +44,7 @@ const VContainer = (client) => {
                                     client.close()
                                     process.exit()
                                 } else {
-                                    __containerStringRecursive(__containerString(container_string, molecule), container, current_index + 1, callback)
+                                    __containerStringRecursive(__containerString(container_string, molecule_from_pubchem), container, current_index + 1, callback)
                                 }
                             })
                         }

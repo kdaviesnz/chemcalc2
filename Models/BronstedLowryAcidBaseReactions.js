@@ -162,10 +162,6 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         const proton = container[container.length-1][0][1]
 
 
-        // Move the proton to first molecule
-        container.splice(container.length-1,1) // remove proton from container
-
-
         // SEE organic chemistry 8th edition p245
 // propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
 // 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
@@ -196,9 +192,8 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
          )
 
 
+        container.splice(container.length-1,1) // remove proton from container
 
-        console.log(container)
-        process.exit()
 
         // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
         // After pushing proton to nucleophile

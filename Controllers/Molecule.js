@@ -543,9 +543,6 @@ const CMolecule = (mmolecule, verbose) => {
             console.log(container[container.length -1])
             atom = container[container.length -1][0][target_atom_index]
         }
-        console.log(atom)
-        console.log('molecule.js 547')
-        process.exit()
         const target_atom_electron_to_share_index = __electronToShareIndex(atom)
 
         // Get index of first free electron on source atom
@@ -558,20 +555,20 @@ const CMolecule = (mmolecule, verbose) => {
 
         // Protons are always target atoms (electrophiles) - where the arrow would be pointing to
         // Brondsted Lowry reaction: target atom is proton
-        if (container[target_molecule_index][0]==="H") {
-
+        if (container[target_molecule_index][0][1][0]==="H") {
 
             // proton?
             // proton has no electrons
-            if (container[target_molecule_index][0].length===4) {
-                             
+            if (container[target_molecule_index][0][1].length===4) {
+
+
                 // add electrons from source atom to target atom (proton)
                 // target atom is a proton and has no electrons
-
                 if (source_atom_lone_pairs.length > 0) {
                     // container[target_molecule_index][target_atom_index] is a proton
-                    container[target_molecule_index][target_atom_index].push(source_atom_lone_pairs[0])
-                    container[target_molecule_index][target_atom_index].push(source_atom_lone_pairs[1])
+                    container[target_molecule_index][0][target_atom_index].push(source_atom_lone_pairs[0])
+                    container[target_molecule_index][0][target_atom_index].push(source_atom_lone_pairs[1])
+                    container[source_molecule_index][0].push(container[target_molecule_index][0][1])
                 } else {
 
                     // Does the source atom have a double bond?
@@ -605,7 +602,7 @@ const CMolecule = (mmolecule, verbose) => {
                 // the target atom has un unfillec valence shell
                 // electrophile
                 // free slots is a number
-                const free_slots = CAtom(container[target_molecule_index][target_atom_index], target_atom_index,  mmolecule[0]).freeSlots(test_number)
+                const free_slots = CAtom(container[target_molecule_index][0][target_atom_index], target_atom_index,  mmolecule[0]).freeSlots(test_number)
 
                 
 
@@ -641,17 +638,18 @@ const CMolecule = (mmolecule, verbose) => {
             }
         }
 
-        mmolecule[0] = pKa(molecule.slice(1))
+        container[target_molecule_index][0] = pKa(container[target_molecule_index][0].slice(1))
 
-        console.log(mmolecule)
-        console.log("covalent bondddd")
-        process.exit()
+//        console.log(container[1])
+//        console.log(container[2])
+//        console.log("covalent bondddd")
+//        process.exit()
 
         //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
 
         // Check there is a bond between nucleophile atom (source) and electrophile atom (target)
 
-        return mmolecule
+        return container
 
     }
 

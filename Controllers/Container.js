@@ -277,60 +277,10 @@ class CContainer {
                 reaction = lewis.react(null, null, null, null, this.test_number, verbose)
             }
              
-            
-            if (this.test_number === 1) {
-                reaction.length.should.be.equal(3)
-                reaction[0].should.be.equal(false)
-                reaction[1][0].length.should.be.equal(2)
-                reaction[1][0][0].should.be.equal(2.86)
-                reaction[1][0][1][0].should.be.equal("Cl")
-                reaction[2][0].length.should.be.equal(5)
 
-                reaction[2][0][0].should.be.equal(-1.74)
-                reaction[2][0][1][0].should.be.equal("H")
-                reaction[2][0][3][0].should.be.equal("O")
-                reaction[2][0][4][0].should.be.equal("H")
-            }
-
-            // [Cl-] (nucleophile)  <- H3O (electrophile)
-            if (this.test_number === 2) {
-                reaction.length.should.be.equal(3)
-                reaction[0].should.be.equal(false)
-                reaction[1][0].length.should.be.equal(3)
-                reaction[1][0][0].should.be.equal(-6.3)
-                reaction[1][0][1][0].should.be.equal("Cl")
-                reaction[2][0].length.should.be.equal(4)
-                reaction[2][0][0].should.be.equal(14)
-                reaction[2][0][1][0].should.be.equal("H")
-                                        reaction[2][0][3][0].should.be.equal("O")
-             }
-                                 
-             if (this.test_number === 3) {
-                reaction.length.should.be.equal(2) // should be 2
-                reaction[0].should.be.equal(false)
-                reaction[1][0].length.should.be.equal(14)
-                reaction[1][0][0].should.be.equal(-3.5)
-                reaction[1][0][1][0].should.be.equal("H")
-                reaction[1][0][2][0].should.be.equal("H")
-                reaction[1][0][3][0].should.be.equal("H")
-                reaction[1][0][4][0].should.be.equal("C")
-                reaction[1][0][5][0].should.be.equal("O")
-                reaction[1][0][6][0].should.be.equal("H")
-                reaction[1][0][7][0].should.be.equal("H")
-                reaction[1][0][8][0].should.be.equal("H")
-                reaction[1][0][9][0].should.be.equal("C")
-                reaction[1][0][10][0].should.be.equal("Al")
-                reaction[1][0][11][0].should.be.equal("Cl")
-                reaction[1][0][12][0].should.be.equal("Cl")
-                reaction[1][0][13][0].should.be.equal("Cl")
-                // check for bond between Al and Oxygen
-                Set().intersection(reaction[1][0][5].slice(4), reaction[1][0][10].slice(4)).length.should.not.be.equal(0)
-            }
-            
             // At this point it is possible that the number of different molecules
             // to have changed. eg when the reagent bonds to the substrate
             // hence we need to check the container again
-           
             this.container = reaction
             
             const container_items = this.container.slice(1,this.container.length)
