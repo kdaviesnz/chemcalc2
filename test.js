@@ -1,6 +1,7 @@
 // https://www.npmjs.com/package/should
 // npm i should
 const should = require('should')
+const _ = require('lodash');
 
 const MoleculeController = require('./Controllers/Molecule')
 const FunctionalGroups = require('./Models/FunctionalGroups')
@@ -97,9 +98,9 @@ client.connect(err => {
         const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
         console.log("Adding water to container")
         // pass in only .json
-        ccontainer.add(water_molecule.json, 1, verbose)
+        ccontainer.add(_.cloneDeep(water_molecule).json, 1, verbose)
         console.log("Adding propylene to container")
-        ccontainer.add(propylene_molecue.json, 1, verbose)
+        ccontainer.add(_.cloneDeep(propylene_molecue).json, 1, verbose)
         console.log("Container:")
         VContainerWithDB(ccontainer).show(()=>{
             console.log("Test 2 complete: Container should show prop-1-ene and oxidane.")
@@ -129,16 +130,18 @@ client.connect(err => {
         )
     }
 
+    // @see Organic Chemistry 8th Edition P51
     const reactHClWithWater = (hcl_molecue, water_molecule) => {
         const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
+        console.log("Getting container")
         console.log("Adding water to container")
         // pass in only .json
-        ccontainer.add(water_molecule.json, 1, verbose, 1)
+        ccontainer.add(_.cloneDeep(water_molecule).json, 1, verbose, 1)
         console.log("Adding HCl to container")
         // pass in only .json
-        ccontainer.add(hcl_molecue.json, 1, verbose, 1)
+        ccontainer.add(_.cloneDeep(hcl_molecue).json, 1, verbose, 1)
         VContainerWithDB(ccontainer).show(()=>{
-            console.log("Test 1 complete: Container should show chloride and oxidanium.")
+            console.log("Test 1 complete: Container should show chloride and oxidanium.\n")
             lookupPropylene(water_molecule)
         })
     }

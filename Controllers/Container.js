@@ -211,8 +211,6 @@ class CContainer {
                  const is_water = substrate[0].length === 4 && substrate[0][1][0]==='H'
                      && substrate[0][2][0]==='H' && substrate[0][3][0]==='O'
 
-                 
-
                  // if substrate is water then return as is, as water does not react to alkenes.
                  if (is_water) {
                      if (this.verbose) {
@@ -228,10 +226,10 @@ class CContainer {
                 const electrophile_molecule_index = 1
 
                 // Find the nucleophile on the C=C bond
-                const nucleophile_atom_index = this.MoleculeController(reagent[0]).nucleophileIndex(this.test_number)
+                const nucleophile_atom_index = this.MoleculeController(reagent).nucleophileIndex(this.test_number)
 
                 // Find the nucleophile
-                const electrophile_atom_index = this.MoleculeController(substrate[0]).electrophileIndex(this.test_number)
+                const electrophile_atom_index = this.MoleculeController(substrate).electrophileIndex(this.test_number)
 
 
                 

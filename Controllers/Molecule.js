@@ -334,18 +334,6 @@ const CMolecule = (mmolecule, verbose) => {
 
         const molecule = mmolecule[0] // mmolecule[1] is the number of units
         
-        // H2O (nucleophile) <------- HCl (electrophile)
-        if (undefined !== test_number && test_number === 1) {
-            molecule.length.should.be.equal(4)
-            molecule[3][0].should.be.equal("O")
-        }
-
-        // Cl (nucleophile) <------- HCl (electrophile) __atomsWithLonePairs()
-        if (undefined !== test_number && test_number === 2) {
-            molecule.length.should.be.equal(2)
-            molecule[1][0].should.be.equal("Cl")
-        }
-
         // Check nucleophile for lone pairs
         const atoms_with_lone_pairs = molecule.slice(1).map(
             (atom, index) => {
@@ -361,21 +349,9 @@ const CMolecule = (mmolecule, verbose) => {
         )
 
         // H2O (nucleophile) <------- HCl (electrophile) __atomsWithLonePairs
-        if (test_number === 1) {
-            atoms_with_lone_pairs[0][0].should.be.equal(2)
-            atoms_with_lone_pairs[0][1][0].should.be.equal("O")
-        }
 
         // Cl (nucleophile) <------- HCl (electrophile)
-        if (test_number === 2) {
-            atoms_with_lone_pairs[0][0].should.be.equal(8888)
-            atoms_with_lone_pairs[0][1][0].should.be.equal("Cl")
-        }
 
-        if (test_number === 3) {
-            atoms_with_lone_pairs[0][0].should.be.equal(4)
-            atoms_with_lone_pairs[0][1][0].should.be.equal("O")
-        }
 
         return atoms_with_lone_pairs
     }
@@ -389,22 +365,6 @@ const CMolecule = (mmolecule, verbose) => {
         return molecule.slice(1).map(
 
             (atom, index) => {
-
-                console.log('m' + test_number)
-
-                if (test_number == 3.1) {
-                    // AlCl3 , Al is an electrophile
-                    if (atom[0] === 'Al') {
-                        CAtom(atom, index, molecule).freeSlots(test_number).should.be.equal(6)
-                    }
-                }
-
-                if (test_number == 5.1) {
-                    // freeSlots() returns a number
-                    
-                    CAtom(atom, index ,molecule).freeSlots(test_number).should.be.equal(9) // Check
-                }
-
 
                 if ((atom[0]==="H" && CAtom(atom, index,molecule).carbons().length > 0) || CAtom(atom, index,mmolecule).freeSlots(test_number) === 0 ) {
                     return null
