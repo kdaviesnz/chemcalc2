@@ -536,8 +536,16 @@ const CMolecule = (mmolecule, verbose) => {
         In the molecule H2, the hydrogen atoms share the two electrons via covalent bonding.[7] Covalency is greatest between atoms of similar electronegativities. Thus, covalent bonding does not necessarily require that the two atoms be of the same elements, only that they be of comparable electronegativity. Covalent bonding that entails sharing of electrons over more than two atoms is said to be delocalized.
          */
         // Get index of first free electron on target atom
-        // Brondsted Lowry reaction: target atom is proton 
-        const target_atom_electron_to_share_index = __electronToShareIndex(container[target_molecule_index][target_atom_index])
+        // Brondsted Lowry reaction: target atom is proton
+        let atom = container[target_molecule_index][0][target_atom_index]
+        if (atom === undefined) {
+            // proton will be the last element in container
+            console.log(container[container.length -1])
+            atom = container[container.length -1][0][target_atom_index]
+        }
+        console.log(atom)
+        process.exit()
+        const target_atom_electron_to_share_index = __electronToShareIndex(atom)
 
         // Get index of first free electron on source atom
         // Brondsted Lowry reaction: source atom is atom on nucleophile attacking the proton, mmolecule is the nucleophile

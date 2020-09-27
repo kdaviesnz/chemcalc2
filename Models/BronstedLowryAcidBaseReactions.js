@@ -187,8 +187,8 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         // always be the proton atom from the electrophile.
         // Source atom is what the arrow points from (tail) and will
         // always be the atom from the nucleophile.
-        container = MoleculeController(container[nucleophile_molecule_index]).push(proton, container, 
-                      electrophile_molecule_index, 
+        container = MoleculeController(container[nucleophile_molecule_index]).push(proton, container,
+                      container.length -1,
                       test_number, 
                       electrophile_atom_index, 
                       nucleophile_atom_index,
