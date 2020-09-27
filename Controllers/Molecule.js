@@ -512,66 +512,23 @@ const CMolecule = (mmolecule, verbose) => {
         container, source_molecule_index, target_molecule_index, source_atom_index, target_atom_index, test_number
     ) => {
 
+            // NOTES
+            // Brondsted Lowry reactions:
+            // atoms_or_atomic_symbols is the proton from the electrophile.
+            // mmolecule is the nucleophile (molecule containing the atom
+            // that attacks the proton from the electrophile).
+            // Target atom is what the arrow points to (attacks) and will
+            // always be the proton atom from the electrophile.
+            // Source atom is what the arrow points from (tail) and will
+            // always be the atom from the nucleophile.  
+        
         /*
         @todo
         We subtract the number of units of the source molecule (mmolecule[1]) from
         the number of units of the target molecule (target_molecule[1]), rounding
         to 0 units if necessary.
         */
-        
-        // H+ (electrophile) <------- H:OH
-        // atoms [[proton]]
-        // mmolecule H2O
-        // Proton is our electrophile, where the arrow would be pointing to
-        // H2O is our nucleophile, where the arrow would be pointing from
-        // H+ (electrophile) <------- Cl- (nucleophile) (source atom)
-        // atoms [[proton]]
-        // mmolecule Cl-
-        // Proton is our electrophile, where the arrow would be pointing to
-        // Cl- is our nucleophile, where the arrow would be pointing from
-
-        //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
-        // This is the index of the target atom after adding it to mmolecule
-        const target_atom_mmolecule_index = mmolecule[0].length + target_atom_index -1
-
-        // H2O (nucleophile) -------> H+ (electrophile)
-
-        // Cl- (nucleophile) -------> H+ (electrophile)
-
-        // C:OC (nucleophile) ---------> AlCl3 (electrophile)
-
-        //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
-
-
-        // [Br-] (nucleophile) -----> carbocation CC[C+]C
-        // Br atom should bond to carbon that has three bonds
-        // Target atom index should be 8 (electrophile)
-        // Source atom index should be 1
-
-        // Add atoms to molecule.
-        // At this point main atom won't be bonded.
-        /*
-        atoms.map(
-            (atom) => {
-                mmolecule[0].push(atom)
-                return atom
-            }
-        )
-        */
-
-        // H2O (nucleophile) -------> H+ (electrophile)
-
-        // Cl- (nucleophile) -------> H+ (electrophile)
-
-        // C:OC (nucleophile) ---------> AlCl3 (electrophile)
-
-        //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
-
-        // [Br-] (nucleophile) -----> carbocation CC[C+]C
-        // Br atom should bond to carbon that has three bonds
-        // Target atom index should be 8 (electrophile)
-        // Source atom index should be 1
-
+               
 
         // Now create the bond
 
@@ -579,63 +536,33 @@ const CMolecule = (mmolecule, verbose) => {
         In the molecule H2, the hydrogen atoms share the two electrons via covalent bonding.[7] Covalency is greatest between atoms of similar electronegativities. Thus, covalent bonding does not necessarily require that the two atoms be of the same elements, only that they be of comparable electronegativity. Covalent bonding that entails sharing of electrons over more than two atoms is said to be delocalized.
          */
         // Get index of first free electron on target atom
-
-
-        const target_atom_electron_to_share_index = __electronToShareIndex(mmolecule[0][target_atom_index])
-
-        // H3O
-
-        // ClH
-
-        // C:OC (nucleophile) ---------> AlCl3 (electrophile)
-
-        //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
-
-        // [Br-] (nucleophile) -----> carbocation CC[C+]C
-        // Br atom should bond to carbon that has three bonds
-        // Target atom index should be 8 (electrophile)
-        // Source atom index should be 1
+        // Brondsted Lowry reaction: target atom is proton 
+        const target_atom_electron_to_share_index = __electronToShareIndex(container[target_molecule_index][target_atom_index])
 
         // Get index of first free electron on source atom
-        const source_atom_electron_to_share_index = __electronToShareIndex(mmolecule[0][source_atom_index])
-
-        // H3O
-
-        // HCl
-        // AlCl3 + C:OC
-
-        //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
-
-        // [Br-] (nucleophile) -----> carbocation CC[C+]C
-        // Br atom should bond to carbon that has three bonds
-        // Target atom index should be 8 (electrophile)
-        // Source atom index should be 1
+        // Brondsted Lowry reaction: source atom is atom on nucleophile attacking the proton, mmolecule is the nucleophile
+        const source_atom_electron_to_share_index = __electronToShareIndex(mmolecule[0][source_atom_index])        
 
         // Get lone pair from source atom (atom arrow would be pointing from (nucleophile))
         const source_atom_lone_pairs = CAtom(mmolecule[0][source_atom_index], source_atom_index, mmolecule[0]).lonePairs(test_number)
 
 
-        // [Br-] (nucleophile) -----> carbocation CC[C+]C
-        // Br atom should bond to carbon that has three bonds
-        // Target atom index should be 8 (electrophile)
-        // Source atom index should be 1
-
         // Protons are always target atoms (electrophiles) - where the arrow would be pointing to
-
-
-        if (mmolecule[0][target_atom_mmolecule_index][0]==="H") {
+        // Brondsted Lowry reaction: target atom is proton
+        if (container[target_molecule_index][0]==="H") {
 
 
             // proton?
-            if (mmolecule[0][target_atom_mmolecule_index].length===4) {
+            // proton has no electrons
+            if (container[target_molecule_index][0].length===4) {
+                             
                 // add electrons from source atom to target atom (proton)
                 // target atom is a proton and has no electrons
 
-
                 if (source_atom_lone_pairs.length > 0) {
-                    // mmolecule[target_atom_mmolecule_index] is a proton
-                    mmolecule[0][target_atom_mmolecule_index].push(source_atom_lone_pairs[0])
-                    mmolecule[0][target_atom_mmolecule_index].push(source_atom_lone_pairs[1])
+                    // container[target_molecule_index][target_atom_index] is a proton
+                    container[target_molecule_index][target_atom_index].push(source_atom_lone_pairs[0])
+                    container[target_molecule_index][target_atom_index].push(source_atom_lone_pairs[1])
                 } else {
 
                     // Does the source atom have a double bond?
@@ -645,8 +572,8 @@ const CMolecule = (mmolecule, verbose) => {
                     // remove the double bond by removing electrons from bonded atom (turn into single bond)
                     if (double_bond) {
                         mmolecule[0] = CAtom(mmolecule[0][source_atom_index], source_atom_index,mmolecule[0]).removeDoubleBond(test_number)
-                        mmolecule[0][target_atom_mmolecule_index].push(double_bond[0])
-                        mmolecule[0][target_atom_mmolecule_index].push(double_bond[1])
+                        container[target_molecule_index][target_atom_index].push(double_bond[0])
+                        container[target_molecule_index][target_atom_index].push(double_bond[1])
                     }
 
                 }
@@ -661,10 +588,7 @@ const CMolecule = (mmolecule, verbose) => {
             // Source atom should always have a lone pair (nucleophile)
 
 
-            // [Br-] (nucleophile) -----> carbocation CC[C+]C
-            // Br atom should bond to carbon that has three bonds
-            // Target atom index should be 8 (electrophile)
-            // Source atom index should be 1
+            
 
             if (!target_atom_electron_to_share_index) {
 
@@ -672,13 +596,9 @@ const CMolecule = (mmolecule, verbose) => {
                 // the target atom has un unfillec valence shell
                 // electrophile
                 // free slots is a number
-                const free_slots = CAtom(mmolecule[0][target_atom_mmolecule_index], target_atom_mmolecule_index,  mmolecule[0]).freeSlots(test_number)
+                const free_slots = CAtom(container[target_molecule_index][target_atom_index], target_atom_index,  mmolecule[0]).freeSlots(test_number)
 
-                // [Br-] (nucleophile) -----> carbocation CC[C+]C
-                // Br atom should bond to carbon that has three bonds
-                // Target atom index should be 8 (electrophile)
-                // Source atom index should be 1
-
+                
 
                 if (free_slots > 0) {
 
@@ -688,18 +608,12 @@ const CMolecule = (mmolecule, verbose) => {
                     // mmolecule[target_atom_mmolecule_index].push(free_slots[1])
 
                     // add free electron from source atom to target atom
-                    mmolecule[0][target_atom_mmolecule_index].push(mmolecule[0][source_atom_index][4 + source_atom_electron_to_share_index])
+                    container[target_molecule_index][target_atom_index].push(mmolecule[0][source_atom_index][4 + source_atom_electron_to_share_index])
                     // add another free electron from source atom to target atom
-                    mmolecule[0][target_atom_mmolecule_index].push(mmolecule[0][source_atom_index][5 + source_atom_electron_to_share_index])
+                    container[target_molecule_index][target_atom_index].push(mmolecule[0][source_atom_index][5 + source_atom_electron_to_share_index])
 
 
-                    // test for bond
-                    // [Br-] (nucleophile) -----> carbocation CC[C+]C
-                    // Br atom should bond to carbon that has three bonds
-                    // Target atom index should be 8 (electrophile)
-                    // Source atom index should be 1
-
-
+                    
 
                 }
 
@@ -711,7 +625,7 @@ const CMolecule = (mmolecule, verbose) => {
 
                 // add shared electron from atom being pushed to target atom
                 // test 5 - atom_to_push_molecule_index is undefined
-                mmolecule[0][target_atom_mmolecule_index].push(mmolecule[0][atom_to_push_molecule_index][5 + source_atom_electron_to_share_index])
+                container[target_molecule_index][target_atom_index].push(mmolecule[0][atom_to_push_molecule_index][5 + source_atom_electron_to_share_index])
 
 
 
