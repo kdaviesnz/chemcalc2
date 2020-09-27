@@ -176,9 +176,24 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
 
         /*
-                push: (atoms_or_atomic_symbols, container, target_molecule_index, test_number, target_atom_index, source_atom_index, source_molecule_index) => {
+                push: (atoms_or_atomic_symbols, container, 
+                target_molecule_index, 
+                test_number, 
+                target_atom_index, 
+                source_atom_index, 
+                source_molecule_index) => {
          */
-        container = MoleculeController(container[nucleophile_molecule_index]).push(proton, container, nucleophile_molecule_index, test_number, nucleophile_atom_index, electrophile_atom_index, electrophile_molecule_index)
+        // Target atom is what the arrow points to (attacks) and will
+        // always be the proton atom from the electrophile.
+        // Source atom is what the arrow points from (tail) and will
+        // always be the atom from the nucleophile.
+        container = MoleculeController(container[nucleophile_molecule_index]).push(proton, container, 
+                      electrophile_molecule_index, 
+                      test_number, 
+                      electrophile_atom_index, 
+                      nucleophile_atom_index,
+                      nucleophile_molecule_index
+         )
 
 
 
