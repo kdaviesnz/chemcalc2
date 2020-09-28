@@ -17,7 +17,7 @@ const MoleculeFactory = (canonicalSmiles, verbose) => {
     // // pKa, atom, atom, atom ...
     return [
         pKa(atoms),
-        ...atoms
+        [...atoms]
     ]
 
 }

@@ -23,7 +23,8 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     }
 
     // parse a SMILES string, returns an array of SMILES tokens [{type: '...', value: '...'}, ...]
-    const smiles_tokens = smiles.parse(canonicalSMILES.replace("H",""))
+    const smiles_tokens = smiles.parse(canonicalSMILES.replace(/H[0-9]*/,""))
+    //const smiles_tokens = smiles.parse(canonicalSMILES)
 
     // [Cl-]
     /*

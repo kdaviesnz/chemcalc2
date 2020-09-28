@@ -790,7 +790,8 @@ const CMolecule = (mmolecule, verbose) => {
 
             // atoms_or_atomic symbols is an array containing the atom we are
             // pushing and the atoms linked to that atom
-            // atom_index is the index of the atom we are pushing            
+            // atom_index is the index of the atom we are pushing
+            //console.log(atoms_or_atomic_symbols)
             const atoms = atoms_or_atomic_symbols.map(
                 (atom_or_atomic_symbol) => {
                     return typeof atom_or_atomic_symbol === "string" ? AtomFactory(atom_or_atomic_symbol, 0) : atom_or_atomic_symbol
@@ -972,6 +973,7 @@ const CMolecule = (mmolecule, verbose) => {
             // mmolecule[0] is the molecule we are removing the proton from
 
             // Hydrogen atom from HCl
+            console.log(mmolecule[0])
             const bond_count = _bondCount(mmolecule[0][proton_index])
 
             if (bond_count === 0) {
@@ -980,7 +982,7 @@ const CMolecule = (mmolecule, verbose) => {
 
             // Remove all electrons from proton
             mmolecule[0][proton_index].splice(5)
-            mmolecule[0][proton_index].length.should.be.equal(4)
+            mmolecule[0][proton_index].length.should.be.equal(5)
 
             // Remove proton from molecule and add it to the container as a new molecule
             const proton = mmolecule[0][proton_index]

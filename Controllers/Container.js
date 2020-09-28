@@ -265,9 +265,7 @@ class CContainer {
         // nucleophile is [Br-]
         // carbocation is added to [Br-]
         // Br and C form bond
-            if (this.test_number === 5) {
-                reaction.should.be.equal(false)
-            }
+            reaction.should.not.be.equal(false)
 
             if (!reaction) {
                 // No alkene and not Bronsted Lowry

@@ -6,7 +6,8 @@ const VMolecule = (mmolecule) => {
     return {
         canonicalSMILES: (units) => {
 
-            const mmolecule_sans_hydrogens = _.cloneDeep(mmolecule).slice(1).filter((atom)=>{
+
+            const mmolecule_sans_hydrogens = _.cloneDeep(mmolecule[1]).filter((atom)=>{
                 return atom[0] !== 'H'
             })
 

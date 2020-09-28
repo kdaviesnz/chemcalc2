@@ -81,26 +81,32 @@ client.connect(err => {
         }
     }
 
-    MoleculeLookup(db, "[Cl-]", "SMILES", true).then(
+/*
+    MoleculeLookup(db, "[OH3+]", "SMILES", true).then(
         // "resolves" callback
-        (chloride_molecule) => {
+        (oxide_molecule) => {
             console('molecule found')
             process.exit()
 //            lookUpOxidanium(chloride_molecule)
         },
         // Nothing found callback
-        onMoleculeNotFound((search) => {
+        (search) => {
+            console.log(search)
+            const m = MoleculeFactory(search)
+            console.log(VMolecule(m).canonicalSMILES(1))
             console.log("Molecule " + search + " added to database")
             client.close()
             process.exit()
-        }),
+        },
         // "rejects" callback
         (err) => {
 
         }
     )
+*/
 
-    if (false) {
+    if (true) {
+
         // MOLECULE MODEL
         // pKa, atom, atom, atom ...
         // ATOM MODEL
@@ -254,7 +260,7 @@ client.connect(err => {
             )
         }
 
-        // lookupHCl()
+        lookupHCl()
 
     }
 
