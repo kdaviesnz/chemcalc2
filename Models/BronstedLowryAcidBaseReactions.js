@@ -16,8 +16,8 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
 
 
-        const substrate_proton_index = MoleculeController([container[1][0][1], 1]).indexOf("H", false, verbose)
-        const reagent_proton_index = MoleculeController([container[2][0][1], 1]).indexOf("H", false, verbose)
+        const substrate_proton_index = MoleculeController([container[1][0], 1]).indexOf("H", false, verbose)
+        const reagent_proton_index = MoleculeController([container[2][0], 1]).indexOf("H", false, verbose)
 
         if (substrate_proton_index !== false && reagent_proton_index === false) {
             electrophile_molecule_index = 1
@@ -74,6 +74,9 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
                 nucleophile_atom_index = MoleculeController(nucleophile_molecule).nucleophileIndex(test_number)
 
             } else {
+                // @see Organic Chemistry 8th Edition P51
+                // HCl is the proton donator and is our electrophile as protons do not have electrons
+                // H2O (nucleophile) is the proton acceptor as the oxygen has lone pairs of electrons.
                 electrophile_molecule_index = 2
                 electrophile_molecule = container[electrophile_molecule_index]
                 electrophile_atom_index = reagent_proton_index
@@ -83,7 +86,6 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 
             }
         }
-
 
         if (undefined === electrophile_molecule ) {
             console.log("BronstedLowryAcidBaseReactions::electrophile_molecule is undefined or null")
@@ -99,12 +101,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
             process.exit()
         }
 
-
-
-
         // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-
-
 
         // SEE organic chemistry 8th edition p245
 // propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
@@ -148,11 +145,16 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 // than the pKa of the protonated alcohol (Section 2.10).
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
 
+        proton_index.should.not.be.equal(false)
+
         container = MoleculeController(container[electrophile_molecule_index]).removeProton(
             container,
-            proton_index
+            proton_index,
+            electrophile_molecule_index
         )
 
+        console.log("BronstedLowryAcidBaseReactions.js")
+        process.exit()
 
         // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
         // proton is the last element in the container

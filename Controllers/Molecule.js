@@ -646,20 +646,11 @@ const CMolecule = (mmolecule, verbose) => {
 // atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
         indexOf: (atom_or_atomic_symbol, include_carbons, verbose) => {
 
-            const molecule = mmolecule[0] // mmolecule[1] is the number of units
-
-            if (verbose) {
-                console.log("Controllers/Molecule.js Finding index of ->")
-                console.log(atom_or_atomic_symbol)
-                console.log("molecule ->")
-                console.log(molecule)
-            }
+            mmolecule[0].length.should.be.equal(2) // first element is pKA value, second element is arrayh of atoms
+            const molecule = mmolecule[0][1] // mmolecule[1] is the number of units, mmolecule[0][0] is the pka value
+            molecule.should.be.an.Array()
 
             if (atom_or_atomic_symbol === "H" || atom_or_atomic_symbol[0] === "H") {
-
-                if (verbose) {
-                    console.log("Controllers/Molecule.js Atom to get index of is hydrogen so getting atoms that have hydrogens")
-                }
 
                 // get molecule atoms that have hydrogens, keeping track of hydrogen indexes
                 const candidate_atoms = molecule.reduce((carry, current_molecule_atom, index) => {
@@ -705,41 +696,19 @@ const CMolecule = (mmolecule, verbose) => {
                     return carry
                 }, [])
 
-                if (verbose) {
-                    console.log("Controllers/Molecule.js Candidate atoms ->")
-                    console.log(candidate_atoms)
-                    console.log("molecule ->")
-                    console.log(molecule)
-                }
-
                 // check for oxygen atom and if found return the index of hydrogen atom bonded to the oxygen atom
                 const o = candidate_atoms.filter((candidate_atom) => {
-                    return candidate_atom[0] === "O"
+                    return candidate_atom[0][0] === "O"
                 })
 
                 if (o.length > 0) {
-                    if (verbose) {
-                        console.log("Controllers/Molecule.js Returning index of oxygen atom ->")
-                        console.log(o[0][1])
-                        console.log("molecule ->")
-                        console.log(molecule)
-                    }
                     return o[0][1]
                 }
 
                 if (candidate_atoms.length === 0) {
-                    if (verbose) {
-                        console.log("Controllers/Molecule.js Atom index not found so returning false")
-                    }
                     return false;
                 }
 
-                if (verbose) {
-                    console.log("Controllers/Molecule.js Returning atom index ->")
-                    console.log(candidate_atoms[0][1])
-                    console.log("molecule ->")
-                    console.log(molecule)
-                }
                 return candidate_atoms[0][1]
 
             }
@@ -749,21 +718,9 @@ const CMolecule = (mmolecule, verbose) => {
                     const i = molecule.reduce((carry, current, index) => {
                         return typeof current.length === "number" && current[0] === atom_or_atomic_symbol ? index : carry
                     }, false)
-                    if (verbose) {
-                        console.log("Controllers/Molecule.js Returning atom index not hydrogen ->")
-                        console.log(i)
-                        console.log("molecule ->")
-                        console.log(molecule)
-                    }
                     return i
                 } else {
                     const i = molecule.search(atom_or_atomic_symbol)
-                    if (verbose) {
-                        console.log("Controllers/Molecule.jss Returning atom index not hydrogen ->")
-                        console.log(i)
-                        console.log("molecule ->")
-                        console.log(molecule)
-                    }
                     return i
                 }
             }
@@ -960,7 +917,7 @@ const CMolecule = (mmolecule, verbose) => {
         atomsWithFreeSlots: __atomsWithFreeSlots,
         nucleophileIndex: determineNucleophileIndex,
         electrophileIndex: determineElectrophileIndex,
-        removeProton: (container,  proton_index,) => {
+        removeProton: (container,  proton_index, molecule_index) => {
 
             // SEE organic chemistry 8th edition p245
 // propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
@@ -973,8 +930,6 @@ const CMolecule = (mmolecule, verbose) => {
             // mmolecule[0] is the molecule we are removing the proton from
 
             // Hydrogen atom from HCl
-            console.log(proton_index)
-            console.log(mmolecule[0][1])
             const bond_count = _bondCount(mmolecule[0][1][proton_index])
 
             if (bond_count === 0) {
@@ -982,18 +937,19 @@ const CMolecule = (mmolecule, verbose) => {
             }
 
             // Remove all electrons from proton
-            mmolecule[0][proton_index].splice(5)
-            mmolecule[0][proton_index].length.should.be.equal(5)
+            mmolecule[0][1][proton_index].splice(5)
+            mmolecule[0][1][proton_index].length.should.be.equal(5)
 
             // Remove proton from molecule and add it to the container as a new molecule
-            const proton = mmolecule[0][proton_index]
-            mmolecule[0].splice(proton_index, 1)
+            const proton = mmolecule[0][1][proton_index]
+            mmolecule[0][1].splice(proton_index, 1)
             container.push([[null, proton],1]) // 1 is units
 
-            mmolecule[0] = pKa(mmolecule[0].slice(1))
+            mmolecule[0][0] = pKa(mmolecule[0].slice(1))
 
 
-            //  container[molecule_index] = mmolecule
+            container[molecule_index] = mmolecule
+
 
             return container
 
