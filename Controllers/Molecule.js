@@ -973,8 +973,9 @@ const CMolecule = (mmolecule, verbose) => {
             // mmolecule[0] is the molecule we are removing the proton from
 
             // Hydrogen atom from HCl
-            console.log(mmolecule[0])
-            const bond_count = _bondCount(mmolecule[0][proton_index])
+            console.log(proton_index)
+            console.log(mmolecule[0][1])
+            const bond_count = _bondCount(mmolecule[0][1][proton_index])
 
             if (bond_count === 0) {
                 return container
