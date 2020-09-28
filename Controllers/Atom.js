@@ -14,7 +14,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                 if (current_atom_index === _atom_index) {
                     return false
                 }
-                const shared_electrons = Set().intersection(atom_electrons, _atom.slice(4))
+                const shared_electrons = Set().intersection(atom_electrons, _atom.slice(5))
 
                 return shared_electrons.reduce(
                     (c, electron) => {
@@ -52,7 +52,7 @@ Eg Carbon
 A neutral carbon atom has 4 free slots.
 If we remove one of the slots we now have a carbocation.
 Neutral carbon free slots count (4) > carbon with a free slot removed free slots count (3).
-const neutral_carbon = AtomFactory(“C”)
+const neutral_carbon = AtomFactory(“C”, 0)
 const neutral_carbon_free_slot_count = neutral_carbon.__freeSlots().length
 const is_positively_charged = neutral_carbon_free_slot_count  > atom.__freeSlots().length
 But what if the free slot was removed by a bond? In that case we have lost an electron but gained another:
@@ -64,7 +64,7 @@ Neutral carbon free slots count (4) > carbon with three free slots removed free 
 Taking the last example if we remove the last free slot without adding a bond:
 Neutral carbon free slots count (4) > carbon with four free slots removed free slots count (0) + number of bonds atom has (3)
 Hence:
-const neutral_atom= AtomFactory(atom[0])
+const neutral_atom= AtomFactory(atom[0], 0)
 const neutral_atom_free_slot_count = neutral_atom.__freeSlots().length
 const is_positively_charged = neutral_atom_free_slot_count  > (atom.__freeSlots().length + atom.__bonds.length)
 
@@ -80,7 +80,7 @@ Example oxygen with 2 bonds
         //const electrons_used_in_bonds_count = __Bonds(atom[0])
         //const is_positively_charged = (atom[3]*2) > (atom.slice(4).length)
 
-        const neutral_atom= AtomFactory(atom[0])
+        const neutral_atom= AtomFactory(atom[0], 0)
         const neutral_atom_free_slot_count = neutral_atom[3]
        // console.log(neutral_atom)
        // console.log(atom)
@@ -149,7 +149,7 @@ Example oxygen with 2 bonds
         return atoms.filter(
             (__atom) => {
                 if (__atom[0] === "C") {
-                    return Set().intersection(__atom.slice(4), atom.slice(4)).length > 0
+                    return Set().intersection(__atom.slice(5), atom.slice(4)).length > 0
                 }
                 return false
             }
@@ -166,7 +166,7 @@ Example oxygen with 2 bonds
                     return __atom
                 }
 
-                const shared_electrons = Set().intersection(atom_electrons, __atom.slice(4))
+                const shared_electrons = Set().intersection(atom_electrons, __atom.slice(5))
 
                 if (shared_electrons.length !== 4) {
                     return __atom
@@ -197,7 +197,7 @@ Example oxygen with 2 bonds
                     return false
                 }
 
-                const shared_electrons = Set().intersection(atom_electrons, __atom.slice(4))
+                const shared_electrons = Set().intersection(atom_electrons, __atom.slice(5))
 
                 if (shared_electrons.length !== 4) {
                     return false
@@ -235,7 +235,7 @@ Example oxygen with 2 bonds
         return atoms.filter(
             (__atom) => {
                 if (__atom[0] === "H") {
-                    return Set().intersection(__atom.slice(4), atom.slice(4)).length > 0
+                    return Set().intersection(__atom.slice(5), atom.slice(4)).length > 0
                 }
                 return false
             }
@@ -257,7 +257,7 @@ Example oxygen with 2 bonds
                 if (current_atom_index === __atom_index) {
                     return carry
                 }
-                return [...carry, ...__atom.slice(4)]
+                return [...carry, ...__atom.slice(5)]
             },
             []
         )
@@ -476,7 +476,7 @@ We then return the total number of free slots minus the number of slots already 
                     if (__atom === null || undefined === __atom.slice) {
                         return carry
                     }
-                    __atom.slice(4).map(
+                    __atom.slice(5).map(
                         (electron) => {
                             carry.push(electron)
                             return electron

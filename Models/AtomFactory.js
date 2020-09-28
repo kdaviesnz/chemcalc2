@@ -27,7 +27,7 @@ const PeriodicTable = require('./PeriodicTable')
 // atomic symbol, proton count, max valence count*, max number of bonds, velectron1, velectron2, velectron3
 // electrons are unique strings, v=valence
 // * Maximum number of electrons in valence shell.
-const AtomFactory = (atomicSymbol) => {
+const AtomFactory = (atomicSymbol, charge) => {
 
 /*
 PeriodicTable:
@@ -81,6 +81,7 @@ PeriodicTable:
          atomicSymbol === "H"? 1
              :atomicSymbol === "Al"?3:
              8 - 1*PeriodicTable[atomicSymbol].electrons_per_shell.split("-").pop(),
+         charge,
          ...range.range(0,PeriodicTable[atomicSymbol].electrons_per_shell.split("-").pop(),1).map((i)=>{
              return uniqid()
          })

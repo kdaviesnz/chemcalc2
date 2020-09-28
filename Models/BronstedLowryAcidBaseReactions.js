@@ -16,8 +16,6 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 // than the pKa of the protonated alcohol (Section 2.10).
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
 
-        
-           
             const substrate_proton_index = MoleculeController(container[1]).indexOf("H", false, verbose)
             const reagent_proton_index = MoleculeController(container[2]).indexOf("H", false, verbose)
 

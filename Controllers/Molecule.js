@@ -10,7 +10,7 @@ const CMolecule = (mmolecule, verbose) => {
 
     // get the type of bond between two atoms
     const __bondType = (atom1, atom2) => {
-        const shared_electrons = Set().intersection(atom1.slice(4), atom2.slice(4))
+        const shared_electrons = Set().intersection(atom1.slice(5), atom2.slice(5))
         // @todo triple bonds
         if (shared_electrons.length === 0) {
             return false
@@ -382,7 +382,7 @@ const CMolecule = (mmolecule, verbose) => {
 
         const molecule = mmolecule[0] // mmolecule[1] is the number of units
         
-        const atom_electrons = atom.slice(4)
+        const atom_electrons = atom.slice(5)
         const lone_pairs = atom_electrons.filter(
             (atom_electron) => {
                 return atoms.filter(
@@ -390,7 +390,7 @@ const CMolecule = (mmolecule, verbose) => {
                         if (current_atom_index === _atom_index) {
                             return true
                         }
-                        const _atom_electrons = _atom.slice(4)
+                        const _atom_electrons = _atom.slice(5)
                         return _atom_electrons.indexOf(atom_electron) > -1
                     }
                 ).length === 1
@@ -416,7 +416,7 @@ const CMolecule = (mmolecule, verbose) => {
     }
 
     const __electronToShareIndex = (atom) => {
-        const atom_valence_electrons = atom.slice(4)
+        const atom_valence_electrons = atom.slice(5)
         const atom_electron_to_share_index = atom_valence_electrons.reduce(
             (carry, atom_electron, index) => {
                 const is_shared = __isShared(atom_electron)
@@ -430,7 +430,7 @@ const CMolecule = (mmolecule, verbose) => {
 
     const __electronToRemoveIndex = (atom) => {
         const molecule = mmolecule[0] // mmolecule[1] is the number of units
-        const atom_valence_electrons = atom.slice(4)
+        const atom_valence_electrons = atom.slice(5)
         const atom_electron_to_remove_index = atom_valence_electrons.reduce(
             (carry, atom_electron, index) => {
                 const is_shared = __isShared(atom_electron)
@@ -605,7 +605,7 @@ const CMolecule = (mmolecule, verbose) => {
             console.log(atom)
         }
 
-        const valence_electrons = atom.slice(4).filter(
+        const valence_electrons = atom.slice(5).filter(
             (electron) => {
                 return null !== electron
             }
@@ -673,14 +673,14 @@ const CMolecule = (mmolecule, verbose) => {
                             return carry // only count hydrogens not bounded to carbons
                         }
 
-                        const current_molecule_atom_valence_electrons = current_molecule_atom.slice(4)
+                        const current_molecule_atom_valence_electrons = current_molecule_atom.slice(5)
 
                         // check current atom for hydrogens
                         // find the index of hydrogen atom bonded to the current molecule atom
                         const H_index = molecule.reduce((_carry, _current, _index) => {
                             if (_current[0] === "H") {
                                 const hydrogen_atom = _current
-                                const hydrogen_atom_valence_electrons = hydrogen_atom.slice(4)
+                                const hydrogen_atom_valence_electrons = hydrogen_atom.slice(5)
                                 //if (hydrogen_atom_valence_electrons.intersect(current_molecule_atom_valence_electrons)>0) {
                                 const array_intersection = hydrogen_atom_valence_electrons.filter(function (x) {
                                     // checking second array contains the element "x"
@@ -793,7 +793,7 @@ const CMolecule = (mmolecule, verbose) => {
             // atom_index is the index of the atom we are pushing            
             const atoms = atoms_or_atomic_symbols.map(
                 (atom_or_atomic_symbol) => {
-                    return typeof atom_or_atomic_symbol === "string" ? AtomFactory(atom_or_atomic_symbol) : atom_or_atomic_symbol
+                    return typeof atom_or_atomic_symbol === "string" ? AtomFactory(atom_or_atomic_symbol, 0) : atom_or_atomic_symbol
                 }
             )
             
@@ -832,7 +832,7 @@ const CMolecule = (mmolecule, verbose) => {
                 atom_index = mmolecule.reduce((carry, current, index) => {
                     return typeof current !== "string" && typeof current.length === "number" && current[0] === atom_or_atomic_symbol ? index : carry
                 }, false)
-                atom = AtomFactory(atom_or_atomic_symbol)
+                atom = AtomFactory(atom_or_atomic_symbol, 0)
             } else {
                 atom_index = mmolecule.indexOf(atom_or_atomic_symbol)
                 atom = atom_or_atomic_symbol
@@ -886,9 +886,9 @@ const CMolecule = (mmolecule, verbose) => {
             electron.should.be.a.String()
 
             if (mmolecule[atom_index][0] === 'H') {
-                mmolecule[atom_index].splice(4)
+                mmolecule[atom_index].splice(5)
             } else {
-                mmolecule[atom_index].splice(4 + electron_to_remove_index, 1)
+                mmolecule[atom_index].splice(5 + electron_to_remove_index, 1)
             }
 
             const bonded_atom_index = mmolecule.reduce((carry, current_molecule_atom, index) => {
@@ -979,7 +979,7 @@ const CMolecule = (mmolecule, verbose) => {
             }
 
             // Remove all electrons from proton
-            mmolecule[0][proton_index].splice(4)
+            mmolecule[0][proton_index].splice(5)
             mmolecule[0][proton_index].length.should.be.equal(4)
 
             // Remove proton from molecule and add it to the container as a new molecule

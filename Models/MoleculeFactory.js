@@ -2,10 +2,6 @@ const AtomsFactory = require('./AtomsFactory')
 const pKa = require('../Models/pKa')
 const MoleculeFactory = (canonicalSmiles, verbose) => {
 
-    if (verbose) {
-        console.log("MoleculeFactory:: Processing " + canonicalSmiles)
-    }
-
     if (canonicalSmiles.toLowerCase() === "water") {
         return MoleculeFactory("O", verbose)
     }

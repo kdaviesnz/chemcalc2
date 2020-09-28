@@ -58,6 +58,7 @@ client.connect(err => {
 
     const VContainerWithDB = VContainer(client)
 
+
     // @todo searchBySmiles should have callback passed in.
     const onMoleculeNotFound =  (onMoleculeAddedToDBCallback) => {
         return (search) => {
@@ -80,159 +81,182 @@ client.connect(err => {
         }
     }
 
-    // MOLECULE MODEL
-    // pKa, atom, atom, atom ...
-    // ATOM MODEL
-    // atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
-    const propylene = MoleculeFactory("CC=C")
-    const watermolecule = MoleculeFactory("water", verbose)
-   // console.log(VMolecule(watermolecule).canonicalSMILES(1))
-    const hcl = MoleculeFactory("HCl", verbose)
-    //VMolecule(hcl).render(1)
-    //console.log(VMolecule(hcl).canonicalSMILES(1))
-    //console.log(VMolecule(propylene).canonicalSMILES(1))
-    //VMolecule(propylene).render(1)
-
-
-    // @see Organic Chemistry 8th Edition P51
-    const reactOxidaniumWithChloride = (chloride_molecule, oxidanium_molecule) => {
-        console.log("Getting new container")
-        const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
-        console.log("Adding oxidanium to container")
-        ccontainer.add(_.cloneDeep(oxidanium_molecule).json, 1, verbose)
-        console.log("Adding chloride to container")
-        ccontainer.add(_.cloneDeep(chloride_molecule).json, 1, verbose)
-        console.log("Container:")
-        VContainerWithDB(ccontainer).show(()=>{
-            console.log("Test 3 complete: Container should show prop-1-ene and oxidane.")
+    MoleculeLookup(db, "[Cl-]", "SMILES", true).then(
+        // "resolves" callback
+        (chloride_molecule) => {
+            console('molecule found')
             process.exit()
-        })
-    }
+//            lookUpOxidanium(chloride_molecule)
+        },
+        // Nothing found callback
+        onMoleculeNotFound((search) => {
+            console.log("Molecule " + search + " added to database")
+            client.close()
+            process.exit()
+        }),
+        // "rejects" callback
+        (err) => {
 
-    const lookUpOxidanium = (chloride_molecule) => {
-        MoleculeLookup(db, "[OH3+]", "SMILES", true).then(
-            // "resolves" callback
-            (oxidanium_molecule) => {
-                reactOxidaniumWithChloride(chloride_molecule, oxidanium_molecule)
-            },
-            // Nothing found callback
-            onMoleculeNotFound((search)=>{
-                console.log("Molecule " + search + " added to database")
-                client.close()
+        }
+    )
+
+    if (false) {
+        // MOLECULE MODEL
+        // pKa, atom, atom, atom ...
+        // ATOM MODEL
+        // atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
+        const propylene = MoleculeFactory("CC=C")
+        const watermolecule = MoleculeFactory("water", verbose)
+        // console.log(VMolecule(watermolecule).canonicalSMILES(1))
+        const hcl = MoleculeFactory("HCl", verbose)
+        //VMolecule(hcl).render(1)
+        //console.log(VMolecule(hcl).canonicalSMILES(1))
+        //console.log(VMolecule(propylene).canonicalSMILES(1))
+        //VMolecule(propylene).render(1)
+
+
+        // @see Organic Chemistry 8th Edition P51
+        const reactOxidaniumWithChloride = (chloride_molecule, oxidanium_molecule) => {
+            console.log("Getting new container")
+            const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
+            console.log("Adding oxidanium to container")
+            ccontainer.add(_.cloneDeep(oxidanium_molecule).json, 1, verbose)
+            console.log("Adding chloride to container")
+            ccontainer.add(_.cloneDeep(chloride_molecule).json, 1, verbose)
+            console.log("Container:")
+            console.log(chloride_molecule)
+            VContainerWithDB(ccontainer).show(() => {
+                console.log("Test 3 complete: Container should show prop-1-ene and oxidane.")
                 process.exit()
-            }),
-            // "rejects" callback
-            onErrorLookingUpMoleculeInDB
-        )
-    }
+            })
+        }
 
-    const lookUpChloride = () => {
-        MoleculeLookup(db, "[Cl-]", "SMILES", true).then(
-            // "resolves" callback
-            (chloride_molecule) => {
-                lookUpOxidanium(chloride_molecule)
-            },
-            // Nothing found callback
-            onMoleculeNotFound((search)=>{
-                console.log("Molecule " + search + " added to database")
-                client.close()
-                process.exit()
-            }),
-            // "rejects" callback
-            onErrorLookingUpMoleculeInDB
-        )
-    }
+        const lookUpOxidanium = (chloride_molecule) => {
+            MoleculeLookup(db, "[OH3+]", "SMILES", true).then(
+                // "resolves" callback
+                (oxidanium_molecule) => {
+                    reactOxidaniumWithChloride(chloride_molecule, oxidanium_molecule)
+                },
+                // Nothing found callback
+                onMoleculeNotFound((search) => {
+                    console.log("Molecule " + search + " added to database")
+                    client.close()
+                    process.exit()
+                }),
+                // "rejects" callback
+                onErrorLookingUpMoleculeInDB
+            )
+        }
 
-    const reactPropyleneWithWater = (propylene_molecue, water_molecule) => {
-        console.log("Getting new container")
-        const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
-        console.log("Adding water to container")
-        // pass in only .json
-        ccontainer.add(_.cloneDeep(water_molecule).json, 1, verbose)
-        console.log("Adding propylene to container")
-        ccontainer.add(_.cloneDeep(propylene_molecue).json, 1, verbose)
-        console.log("Container:")
-        VContainerWithDB(ccontainer).show(()=>{
-            console.log("Test 2 complete: Container should show prop-1-ene and oxidane.\n")
-            // Start test 3
-            lookUpChloride()
-        })
-    }
+        const lookUpChloride = () => {
+            MoleculeLookup(db, "[Cl-]", "SMILES", true).then(
+                // "resolves" callback
+                (chloride_molecule) => {
+                    lookUpOxidanium(chloride_molecule)
+                },
+                // Nothing found callback
+                onMoleculeNotFound((search) => {
+                    console.log("Molecule " + search + " added to database")
+                    client.close()
+                    process.exit()
+                }),
+                // "rejects" callback
+                onErrorLookingUpMoleculeInDB
+            )
+        }
 
-    const lookupPropylene = (water_molecule) => {
-        MoleculeLookup(db, "CC=C", "SMILES", true).then(
-            // "resolves" callback
-            (propylene_molecue) => {
-                reactPropyleneWithWater(propylene_molecue, water_molecule)
-                /*
-                pkl.fetchSubstructuresBySMILES(molecule.CanonicalSMILES, db, (molecule, db, SMILES)=> {
-                    console.log("Molecule: " + molecule)
-                })
-                */
-            },
-            // Nothing found callback
-            onMoleculeNotFound((search)=>{
-                console.log("Molecule " + search + " added to database")
-                client.close()
-                process.exit()
-            }),
-            // "rejects" callback
-            onErrorLookingUpMoleculeInDB
-        )
-    }
+        const reactPropyleneWithWater = (propylene_molecue, water_molecule) => {
+            console.log("Getting new container")
+            const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
+            console.log("Adding water to container")
+            // pass in only .json
+            ccontainer.add(_.cloneDeep(water_molecule).json, 1, verbose)
+            console.log("Adding propylene to container")
+            ccontainer.add(_.cloneDeep(propylene_molecue).json, 1, verbose)
+            console.log("Container:")
+            VContainerWithDB(ccontainer).show(() => {
+                console.log("Test 2 complete: Container should show prop-1-ene and oxidane.\n")
+                // Start test 3
+                lookUpChloride()
+            })
+        }
 
-    // @see Organic Chemistry 8th Edition P51
-    const reactHClWithWater = (hcl_molecue, water_molecule) => {
-        const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
-        console.log("Getting container")
-        console.log("Adding water to container")
-        // pass in only .json
-        ccontainer.add(_.cloneDeep(water_molecule).json, 1, verbose, 1)
-        console.log("Adding HCl to container")
-        // pass in only .json
-        ccontainer.add(_.cloneDeep(hcl_molecue).json, 1, verbose, 1)
-        VContainerWithDB(ccontainer).show(()=>{
-            console.log("Test 1 complete: Container should show chloride and oxidanium.\n")
-            lookupPropylene(water_molecule)
-        })
-    }
+        const lookupPropylene = (water_molecule) => {
+            MoleculeLookup(db, "CC=C", "SMILES", true).then(
+                // "resolves" callback
+                (propylene_molecue) => {
+                    reactPropyleneWithWater(propylene_molecue, water_molecule)
+                    /*
+                    pkl.fetchSubstructuresBySMILES(molecule.CanonicalSMILES, db, (molecule, db, SMILES)=> {
+                        console.log("Molecule: " + molecule)
+                    })
+                    */
+                },
+                // Nothing found callback
+                onMoleculeNotFound((search) => {
+                    console.log("Molecule " + search + " added to database")
+                    client.close()
+                    process.exit()
+                }),
+                // "rejects" callback
+                onErrorLookingUpMoleculeInDB
+            )
+        }
 
-    const lookupWater = (hcl_molecule) => {
-        MoleculeLookup(db, "O", "SMILES", true).then(
-            // "resolves" callback
-            (water_molecule) => {
-                reactHClWithWater(hcl_molecule, water_molecule)
-            },
-            // Nothing found callback
-            onMoleculeNotFound((search)=>{
-                console.log("Molecule " + search + " added to database")
-                client.close()
-                process.exit()
-            }),
-            // "rejects" callback
-            onErrorLookingUpMoleculeInDB
-        )
-    }
+        // @see Organic Chemistry 8th Edition P51
+        const reactHClWithWater = (hcl_molecue, water_molecule) => {
+            const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
+            console.log("Getting container")
+            console.log("Adding water to container")
+            // pass in only .json
+            ccontainer.add(_.cloneDeep(water_molecule).json, 1, verbose, 1)
+            console.log("Adding HCl to container")
+            // pass in only .json
+            ccontainer.add(_.cloneDeep(hcl_molecue).json, 1, verbose, 1)
+            VContainerWithDB(ccontainer).show(() => {
+                console.log("Test 1 complete: Container should show chloride and oxidanium.\n")
+                lookupPropylene(water_molecule)
+            })
+        }
 
-    const lookupHCl = () => {
-        MoleculeLookup(db, "Cl", "SMILES", true).then(
-            // "resolves" callback
-            // molecule found
-            (hcl_molecule) => {
-                lookupWater(hcl_molecule)
-            },
-            // Nothing found callback
-            onMoleculeNotFound((search)=>{
-                console.log("Molecule " + search + " added to database")
-                client.close()
-                process.exit()
-            }),
-            // "rejects" callback
-            onErrorLookingUpMoleculeInDB
-        )
-    }
+        const lookupWater = (hcl_molecule) => {
+            MoleculeLookup(db, "O", "SMILES", true).then(
+                // "resolves" callback
+                (water_molecule) => {
+                    reactHClWithWater(hcl_molecule, water_molecule)
+                },
+                // Nothing found callback
+                onMoleculeNotFound((search) => {
+                    console.log("Molecule " + search + " added to database")
+                    client.close()
+                    process.exit()
+                }),
+                // "rejects" callback
+                onErrorLookingUpMoleculeInDB
+            )
+        }
 
-    lookupHCl()
+        const lookupHCl = () => {
+            MoleculeLookup(db, "Cl", "SMILES", true).then(
+                // "resolves" callback
+                // molecule found
+                (hcl_molecule) => {
+                    lookupWater(hcl_molecule)
+                },
+                // Nothing found callback
+                onMoleculeNotFound((search) => {
+                    console.log("Molecule " + search + " added to database")
+                    client.close()
+                    process.exit()
+                }),
+                // "rejects" callback
+                onErrorLookingUpMoleculeInDB
+            )
+        }
+
+        // lookupHCl()
+
+    }
 
 
 

@@ -9,15 +9,11 @@ const _ = require('lodash');
 
 const AtomsFactory = (canonicalSMILES, verbose) => {
 
-    if (verbose) {
-        console.log("AtomsFactory:: canonicalSMILES -> " + canonicalSMILES)
-    }
-
     // https://www.npmjs.com/package/smiles
     const smiles = require('smiles')
 
     const getFreeElectron = (used_electrons, atom, atom_index ) => {
-        const electrons = atom.slice(4).filter(
+        const electrons = atom.slice(5).filter(
             (electron) => {
                 return used_electrons.indexOf(electron) === -1
             }
@@ -29,40 +25,32 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     // parse a SMILES string, returns an array of SMILES tokens [{type: '...', value: '...'}, ...]
     const smiles_tokens = smiles.parse(canonicalSMILES.replace("H",""))
 
-    if (verbose) {
-        console.log("AtomsFactory:: smiles_tokens -> ")
-        console.log(smiles_tokens)
-    }
-
+    // [Cl-]
+    /*
+    [ { type: 'BracketAtom', value: 'begin' },
+  { type: 'ElementSymbol', value: 'Cl' },
+  { type: 'Charge', value: -1 },
+  { type: 'BracketAtom', value: 'end' } ]
+     */
     const atoms_with_tokens = _.cloneDeep(smiles_tokens).map(
-        (row) => {
+        (row, i, arr) => {
             if (row.type === "AliphaticOrganic" || row.type === "ElementSymbol") {
-                return AtomFactory(row.value)
+                const charge = undefined !== arr[i+1] && arr[i+1]['type']==='Charge'?arr[i+1]['value']*1:0
+                return AtomFactory(row.value, charge)
             }
             return row
         }
     )
 
-
-    if (verbose) {
-        console.log("AtomsFactory:: atoms_with_tokens -> ")
-        console.log(atoms_with_tokens)
-    }
-
     // Filter out brackets
     const atoms_with_tokens_no_brackets = _.cloneDeep(atoms_with_tokens).filter(
         (row) => {
-            if (undefined !== row.type && row.type === "BracketAtom") {
+            if (undefined !== row.type && (row.type === "BracketAtom" || row.type === "Charge")) {
                 return false
             }
             return true
         }
     )
-
-    if (verbose) {
-        console.log("AtomsFactory:: atoms_with_tokens_no_brackets -> ")
-        console.log(atoms_with_tokens_no_brackets)
-    }
 
     // Add the bonds and branches
     let branch_number = 0
@@ -137,7 +125,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                 is_new_branch.should.be.equal(false)
                 // Change tracker to show new parent atom
                 const tracker_index = 0 // @todo - should be index of previous atom on same branch
-                tracker.push([ tracker_index, ...atoms_with_tokens_no_brackets[tracker_index].slice(4)])
+                tracker.push([ tracker_index, ...atoms_with_tokens_no_brackets[tracker_index].slice(5)])
                 branch_number++
                 is_new_branch = true
                 // Change row to null as it's not an atom row
@@ -159,13 +147,6 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }
     )
 
-
-    if (verbose) {
-        console.log("AtomsFactory:: atoms_with_bonds -> ")
-        console.log(atoms_with_bonds)
-    }
-
-
     // Remove bonds using filter
 // @todo
     const atoms = _.cloneDeep(atoms_with_bonds).filter(
@@ -174,26 +155,21 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }
     )
 
-    if (verbose) {
-        console.log("AtomsFactory:: atoms -> ")
-        console.log(atoms)
-    }
-
 
     // Add hydrogens
     const atoms_with_hydrogens = _.cloneDeep(atoms).reduce(
         (carry, current, index, arr) => {
             if (typeof current.length === "number" && current[0]!=='H') { // we have an atom
                 // Check how many bonds it currently has
-                const valence_electrons = current.slice(4)
+                const valence_electrons = current.slice(5)
                 // Check each valence electron to see if it is being shared
                 const actual_number_of_bonds = CMolecule([atoms, 1]).bondCount(current)
                 // current[3] is the number of electrons the atom has when it is neutrally charged
-                const number_of_hydrogens_required = current[3] - actual_number_of_bonds
+                const number_of_hydrogens_required = current[3] - actual_number_of_bonds + (current[4]) // current[4] is the charge
                 if (number_of_hydrogens_required > 0) {
                     range.range(0, number_of_hydrogens_required,1).map(
                         (e_index) => {
-                            const hydrogen = AtomFactory('H')
+                            const hydrogen = AtomFactory('H', 0)
                             hydrogen.push(valence_electrons[e_index])
                             current.push(hydrogen[hydrogen.length-2])
                             carry.push(hydrogen)
@@ -206,12 +182,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         },
         []
     )
-    //  atomic symbol, proton count, valence count, number of bonds, velectron1, velectron2, velectron3
-
-    if (verbose) {
-        console.log("AtomsFactory:: atoms_with_hydrogens -> ")
-        console.log(atoms_with_hydrogens)
-    }
+    //  atomic symbol, proton count, valence count, number of bonds, charge, velectron1, velectron2, velectron3
 
     return atoms_with_hydrogens
 
