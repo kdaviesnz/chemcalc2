@@ -3,7 +3,7 @@ const Set = require('../Models/Set')
 const _ = require('lodash');
 const AtomFactory = require('../Models/AtomFactory')
 
-const CAtom = (atom, current_atom_index) => {
+const CAtom = (atom, current_atom_index, mmolecule) => {
 
     mmolecule.length.should.be.equal(2) // molecule, units
     mmolecule[0].length.should.be.equal(2) // pKa, atoms
@@ -153,7 +153,7 @@ Example oxygen with 2 bonds
     }
     
     const __carbons = (test_number) => {
-        const atoms = mmolecule[0][1].slice(1)
+        const atoms = mmolecule[0][1]
         return atoms.filter(
             (__atom) => {
                 if (__atom[0] === "C") {
@@ -239,7 +239,7 @@ Example oxygen with 2 bonds
             console.log('Atom.js Atom must be an object. Got ' + atom + ' instead')
             throw new Error("Atom is not an object")
         }
-        const atoms = mmolecule[0][1].slice(1)
+        const atoms = mmolecule[0][1]
         return atoms.filter(
             (__atom) => {
                 if (__atom[0] === "H") {
@@ -257,7 +257,7 @@ Example oxygen with 2 bonds
 
 
     const __electron_haystack = (test_number) => {
-        const atoms = mmolecule.slice(1)
+        const atoms = mmolecule[0][1]
         const atom_electrons = atom.slice(5)
         return atoms.reduce(
             (carry, __atom, __atom_index) => {
@@ -306,60 +306,11 @@ We then return the total number of free slots minus the number of slots already 
 */
     const __freeSlots = (test_number) => {
 
-        /*
-                          "C": {
-        "group":14,
-        "column":"IVA",
-        "atomic_number":6,
-        "name":"carbon",
-        "atomic_weight":12.001,
-        "electrons_per_shell": "2-4",
-        "state_of_matter":"solid",
-        "subcategory":"reactive nonmetal"
-    },
-
-    2 bonds, 2 free slots
-       "O": {
-        "group":16,
-        "column":"VIA",
-        "atomic_number":8,
-        "name":"oxygen",
-        "atomic_weight":15.999,
-        "electrons_per_shell": "2-6",
-        "state_of_matter":"gas",
-        "subcategory":"reactive nonmetal"
-    },
-
-    3 bonds, 1 free slot
-        "N": {
-        "group":15,
-        "column":"VA",
-        "atomic_number":7,
-        "name":"nitrogen",
-        "atomic_weight":14.007,
-        "electrons_per_shell": "2-5",
-        "state_of_matter":"gas",
-        "subcategory":"reactive nonmetal"
-    },
-
-
-        "Al": {
-        "group":13,
-        "column":"111A",
-        "atomic_number":13,
-        "name":"aluminium",
-        "atomic_weight":26.982,
-        "electrons_per_shell": "2-8-3",
-        "state_of_matter":"solid",
-        "subcategory":"post transition metal"
-    },
-
-    */
         // Basic checks
         atom.should.not.be.null()
         atom.length.should.not.be.equal(0)
         current_atom_index.should.not.be.null()
-        mmolecule.should.not.be.null
+
         // C, 2 - 4 , max 4 bonds 0 free slots
         // N, 2-5  max 3 bonds, 1 free slot
         //O, 2-6 2 max 2 bonds  2 free slots
@@ -367,93 +318,36 @@ We then return the total number of free slots minus the number of slots already 
         // the third shell can hold up to 18
         const info = PeriodicTable[atom[0]]
 
-        if (test_number == 3.1) {
-            /*
-            electrophile should have free slots
-{ group: 13,
-  column: '111A',
-  atomic_number: 13,
-  name: 'aluminium',
-  atomic_weight: 26.982,
-  electrons_per_shell: '2-8-3',
-  state_of_matter: 'solid',
-  subcategory: 'post transition metal' }
-
-
-             */
-        }
-
-        if (test_number == 5.1) {
-            /*
-            { group: 17,
-  column: 'VIIA',
-  atomic_number: 35,
-  name: 'bromine',
-  atomic_weight: 79.904,
-  electrons_per_shell: '2-8-18-7',
-  state_of_matter: 'liquid',
-  subcategory: 'reactive nonmetal' }
-
-             */
-        }
         const number_of_shells = info["electrons_per_shell"].split("-").length
         const m = [2,8,18,32]
 
         // This is the maximum number of electrons the atom can have in its outer shell
         const max_possible_number_of_electrons = m[number_of_shells-1]
 
-        if (test_number == 3.1) {
-            max_possible_number_of_electrons.should.be.equal(18)
-        }
-        if (test_number == 5.1) {
-            max_possible_number_of_electrons.should.be.equal(32)
-        }
-
         // This is the number of bonds where the atom shares one of its outershell electrons
+        // eg for oxygen this number is 6
         const max_possible_number_of_shared_electron_bonds = info["electrons_per_shell"].split("-").pop() * 1
 
-        if (test_number == 3.1 ) {
-            if (atom[0] === 'Al') {
-                max_possible_number_of_shared_electron_bonds.should.be.equal(3)
-            }
-        }
+        const used_electrons = __usedElectrons(test_number) // eg for water this will be an array of 4 electrons
 
-        if (test_number == 5.1) {
-            max_possible_number_of_shared_electron_bonds.should.be.equal(7)
-        }
+        used_electrons.should.be.an.Array()
+        // Number of used electrons should always be even
+       // (used_electrons.length % 2 == 0).should.be.equal(true)
 
-        const used_electrons = __usedElectrons(test_number)
+        // eg water
+        // oxygen atom has 4 electrons used (bonds to hydrogen, used_electrons) with a spare 2 electrons
+        return (max_possible_number_of_shared_electron_bonds - used_electrons.length) / 2
 
-        if (test_number == 3.1) {
-            if (atom[0] === 'Al') {
-                used_electrons.length.should.be.equal(6)
-            }
-        }
-
-        if (test_number == 5.1) {
-            used_electrons.length.should.be.equal(0)
-        }
-
+        /*
         let free_slots = null
-
         if (used_electrons.length <= max_possible_number_of_shared_electron_bonds *2) {
             // 18 - 6 / 2
             free_slots = (max_possible_number_of_electrons - (max_possible_number_of_shared_electron_bonds*2)) / 2
         } else {
             free_slots = (max_possible_number_of_electrons - used_electrons.length) / 2
         }
-
-        if (test_number == 3.1) { // AlCl3
-            if (atom[0] === 'Al') {
-                free_slots.should.be.equal(6)
-            }
-        }
-
-        if (test_number == 5.1) { //[Br-]
-            used_electrons.length.should.be.equal(0)
-        }
-
         return free_slots < 0? 0 : free_slots
+         */
     }
     
     const __isCarbocation = (test_number) => {
@@ -507,7 +401,7 @@ We then return the total number of free slots minus the number of slots already 
         },
         doubleBond: __doubleBond,
         removeDoubleBond: __removeDoubleBond,
-        hydrogens: __hydrogens(),
+        hydrogens: __hydrogens,
         carbons: __carbons,
         freeSlots: __freeSlots,
         bondCount:__bondCount,

@@ -3,11 +3,15 @@ const CAtom = require('../Controllers/Atom')
 const _ = require('lodash');
 
 const VMolecule = (mmolecule) => {
+
+    mmolecule.length.should.be.equal(2) // molecule, units
+    mmolecule[0].length.should.be.equal(2) // pKa, atoms
+
     return {
-        canonicalSMILES: (units) => {
 
+        canonicalSMILES: () => {
 
-            const mmolecule_sans_hydrogens = _.cloneDeep(mmolecule[1]).filter((atom)=>{
+            const mmolecule_sans_hydrogens = _.cloneDeep(mmolecule[0][1]).filter((atom)=>{
                 return atom[0] !== 'H'
             })
 
@@ -36,13 +40,13 @@ const VMolecule = (mmolecule) => {
 
             return SMILES
         },
-        'render' : (units) => {
-            console.log('{' + mmolecule.reduce((working, current, i, arr)=>{
+        'render' : () => {
+            console.log('{' + mmolecule[0][1].reduce((working, current, i, arr)=>{
                 if (i > 0) {
                     working += current[0] // atomic symbol
                 }
                 return working
-            }, '') + ' X ' + units + '}')
+            }, '') + ' X ' + mmolecule[1] + '}')
         }
     }
 }
