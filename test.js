@@ -48,14 +48,28 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
 
 
 // CAtom tests
-    const m = MoleculeFactory("O") // water
-    m[0].should.be.equal(14) // pKa
-    m[1].should.be.an.Array()
-    m[1].length.should.be.equal(140)
-    m[1][2][0].should.be.equal("O")
-    const atom = CAtom(m[1][2], 2, m)
-    
-    
+    const w = MoleculeFactory("O") // water
+    w[0].should.be.equal(14) // pKa
+    w[1].should.be.an.Array()
+    w[1].length.should.be.equal(140)
+    w[1][2][0].should.be.equal("O")
+    const o = CAtom(w[1][2], 2, w)
+    /*
+    doubleBond: __doubleBond,
+        removeDoubleBond: __removeDoubleBond,
+        hydrogens: __hydrogens(),
+        carbons: __carbons,
+        freeSlots: __freeSlots,
+        bondCount:__bondCount,
+        doubleBondCount:__doubleBondCount,*/
+    o.hydrogens.length.should.be.equal(2)
+    o.carbons.length.should.be.equal(0)
+    o.freeSlots.length.should.be.equal(2)
+    o.bondCount.length.should.be.equal(2)
+o.doubleBondCount.length.should.be.equal(0)
+
+
+
 
 // Tests start
 const uri = "mongodb+srv://" + process.env.MONGODBUSER + ":" + process.env.MONGODBPASSWORD + "@cluster0.awqh6.mongodb.net/chemistry?retryWrites=true&w=majority";
