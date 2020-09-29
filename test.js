@@ -48,30 +48,13 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
 }
 
 // CAtom tests
-const oxide = MoleculeFactory("[OH3+]")
-console.log(oxide)
-oxide[0].should.be.equal(-1.74) // pKa
-oxide[1].should.be.an.Array()
-oxide[1].length.should.be.equal(4)
-oxide[1][3][0].should.be.equal("O")
-const oxide_oxygen = CAtom(oxide[1][3], 2, [oxide,1])
-// Number of  electrons should always be even
-oxide[1][3].slice(5).length.should.be.equal(6)
-oxide_oxygen.hydrogens().length.should.be.equal(3)
-oxide_oxygen.carbons().length.should.be.equal(0)
-oxide_oxygen.freeSlots().should.be.equal(0)
-oxide_oxygen.bondCount().should.be.equal(3)
-oxide_oxygen.doubleBondCount().should.be.equal(0)
-oxide_oxygen.isNegativelyCharged().should.be.false()
-oxide_oxygen.isPositivelyCharged().should.be.true()
-VMolecule([oxide,1]).canonicalSMILES().should.be.equal("[O+]")
-
-
+// https://www.quora.com/How-many-electrons-are-in-H2O
 const w = MoleculeFactory("O") // water
 w[0].should.be.equal(14) // pKa
 w[1].should.be.an.Array()
 w[1].length.should.be.equal(3)
 w[1][2][0].should.be.equal("O")
+w[1][2].slice(5).length.should.be.equal(10)
 const oxygen = CAtom(w[1][2], 2, [w,1])
 oxygen.hydrogens().length.should.be.equal(2)
 oxygen.carbons().length.should.be.equal(0)
@@ -81,6 +64,25 @@ oxygen.doubleBondCount().should.be.equal(0)
 oxygen.isNegativelyCharged().should.be.false()
 oxygen.isPositivelyCharged().should.be.false()
 VMolecule([w,1]).canonicalSMILES().should.be.equal("O")
+
+const oxide = MoleculeFactory("[OH3+]")
+console.log(oxide)
+oxide[0].should.be.equal(-1.74) // pKa
+oxide[1].should.be.an.Array()
+oxide[1].length.should.be.equal(4)
+oxide[1][3][0].should.be.equal("O")
+const oxide_oxygen = CAtom(oxide[1][3], 2, [oxide,1])
+// Number of  electrons should always be even
+oxide[1][3].slice(5).length.should.be.equal(8)
+oxide_oxygen.hydrogens().length.should.be.equal(3)
+oxide_oxygen.carbons().length.should.be.equal(0)
+oxide_oxygen.freeSlots().should.be.equal(0)
+oxide_oxygen.bondCount().should.be.equal(3)
+oxide_oxygen.doubleBondCount().should.be.equal(0)
+oxide_oxygen.isNegativelyCharged().should.be.false()
+oxide_oxygen.isPositivelyCharged().should.be.true()
+VMolecule([oxide,1]).canonicalSMILES().should.be.equal("[O+]")
+
 
 
 
