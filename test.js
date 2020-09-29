@@ -54,7 +54,7 @@ w[0].should.be.equal(14) // pKa
 w[1].should.be.an.Array()
 w[1].length.should.be.equal(3)
 w[1][2][0].should.be.equal("O")
-w[1][2].slice(5).length.should.be.equal(6)
+w[1][2].slice(5).length.should.be.equal(8) // oxygen has 6 valence electrons plus one electron from each of the two hydrogens
 const oxygen = CAtom(w[1][2], 2, [w,1])
 oxygen.hydrogens().length.should.be.equal(2)
 oxygen.carbons().length.should.be.equal(0)
@@ -73,7 +73,7 @@ oxide[1].length.should.be.equal(4)
 oxide[1][3][0].should.be.equal("O")
 const oxide_oxygen = CAtom(oxide[1][3], 2, [oxide,1])
 // Number of  electrons should always be even
-oxide[1][3].slice(5).length.should.be.equal(8)
+oxide[1][3].slice(5).length.should.be.equal(9) // oxygen has 6 valence electrons plus one electron from each of the three hydrogens
 oxide_oxygen.hydrogens().length.should.be.equal(3)
 oxide_oxygen.carbons().length.should.be.equal(0)
 oxide_oxygen.freeSlots().should.be.equal(0)
