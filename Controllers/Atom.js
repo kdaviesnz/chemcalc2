@@ -5,11 +5,17 @@ const AtomFactory = require('../Models/AtomFactory')
 
 const CAtom = (atom, current_atom_index, mmolecule) => {
 
+    mmolecule.length.should.be.equal(2) // molecule, units
+    mmolecule[0].length.should.be.equal(2) // pKa, atoms
+    atom.length.should.be.greaterThan(3) 
+    
     const __Bonds = () => {
 
-        const atoms = mmolecule.slice(1)
+        const atoms = mmolecule[0][1].slice(1)
         const atom_electrons = atom.slice(5)
+        
         const r =  atoms.map(
+            
             (_atom, _atom_index) => {
 
                 if (current_atom_index === _atom_index) {
@@ -19,13 +25,13 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                 const shared_electrons = Set().intersection(atom_electrons, _atom.slice(5))
 
                 return shared_electrons.reduce(
-                    (c, electron) => {
-                        c.push(
+                    (carry, electron) => {
+                        carry.push(
                             [
                                 electron
                             ]
                         )
-                        return c;
+                        return carry;
                     },
                     []
                 )
