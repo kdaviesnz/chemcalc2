@@ -11,7 +11,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     
     const __Bonds = () => {
 
-        const atoms = mmolecule[0][1].slice(1)
+        const atoms = mmolecule[0][1]
         const atom_electrons = atom.slice(5)
         
         const r =  atoms.map(
