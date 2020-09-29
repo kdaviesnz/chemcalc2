@@ -47,12 +47,24 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
 }
 
 
+// CAtom tests
+    const m = MoleculeFactory("O") // water
+    m[0].should.be.equal(14) // pKa
+    m[1].should.be.an.Array()
+    m[1].length.should.be.equal(140)
+    m[1][2][0].should.be.equal("O")
+    const atom = CAtom(m[1][2], 2, m)
+    
+    
+
 // Tests start
 const uri = "mongodb+srv://" + process.env.MONGODBUSER + ":" + process.env.MONGODBPASSWORD + "@cluster0.awqh6.mongodb.net/chemistry?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 client.connect(err => {
-
+    
+    
+    
     assert.equal(err, null);
     const db = client.db("chemistry")
 
