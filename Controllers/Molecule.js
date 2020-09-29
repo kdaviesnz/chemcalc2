@@ -452,6 +452,10 @@ const CMolecule = (mmolecule, verbose) => {
         container, source_molecule_index, target_molecule_index, source_atom_index, target_atom_index, test_number
     ) => {
 
+        mmolecule.length.should.be.equal(2) // molecule, units
+        mmolecule[0].length.should.be.equal(2) // pKa, atoms
+        source_atom_index.should.be.greaterThan(-1)
+
             // NOTES
             // Brondsted Lowry reactions:
             // atoms_or_atomic_symbols is the proton from the electrophile.
@@ -468,16 +472,15 @@ const CMolecule = (mmolecule, verbose) => {
         the number of units of the target molecule (target_molecule[1]), rounding
         to 0 units if necessary.
         */
-               
 
         // Now create the bond
-
         /*
         In the molecule H2, the hydrogen atoms share the two electrons via covalent bonding.[7] Covalency is greatest between atoms of similar electronegativities. Thus, covalent bonding does not necessarily require that the two atoms be of the same elements, only that they be of comparable electronegativity. Covalent bonding that entails sharing of electrons over more than two atoms is said to be delocalized.
          */
         // Get index of first free electron on target atom
         // Brondsted Lowry reaction: target atom is proton
-        let atom = container[target_molecule_index][0][target_atom_index]
+        let atom = container[target_molecule_index][target_atom_index]
+
         if (atom === undefined) {
             // proton will be the last element in container
             console.log(container[container.length -1])
@@ -487,7 +490,12 @@ const CMolecule = (mmolecule, verbose) => {
 
         // Get index of first free electron on source atom
         // Brondsted Lowry reaction: source atom is atom on nucleophile attacking the proton, mmolecule is the nucleophile
-        const source_atom_electron_to_share_index = __electronToShareIndex(mmolecule[0][source_atom_index])        
+        console.log(source_atom_index)
+        console.log(mmolecule[0][1][source_atom_index])
+        const source_atom_electron_to_share_index = __electronToShareIndex(mmolecule[0][1][source_atom_index])
+        console.log(source_atom_electron_to_share_index)
+        console.log("Controllers/Molecle.js:push")
+        process.exit()
 
         // Get lone pair from source atom (atom arrow would be pointing from (nucleophile))
         const source_atom_lone_pairs = CAtom(mmolecule[0][source_atom_index], source_atom_index, mmolecule[0]).lonePairs(test_number)
@@ -726,6 +734,11 @@ const CMolecule = (mmolecule, verbose) => {
             }
         },
         push: (atoms_or_atomic_symbols, container, target_molecule_index, test_number, target_atom_index, source_atom_index, source_molecule_index) => {
+
+            mmolecule.length.should.be.equal(2) // molecule, units
+            mmolecule[0].length.should.be.equal(2) // pKa, atoms
+
+            source_atom_index.should.be.greaterThan(-1)
 
             // NOTES
             // Brondsted Lowry reactions:

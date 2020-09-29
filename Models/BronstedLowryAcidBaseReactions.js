@@ -83,7 +83,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
                 nucleophile_molecule_index = 1
                 nucleophile_molecule = container[nucleophile_molecule_index]
                 nucleophile_atom_index = MoleculeController(nucleophile_molecule).nucleophileIndex()
-
+                nucleophile_atom_index.should.be.greaterThan(-1)
             }
         }
 
@@ -153,12 +153,13 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
             electrophile_molecule_index
         )
 
-        console.log("BronstedLowryAcidBaseReactions.js")
-        process.exit()
 
         // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
         // proton is the last element in the container
         const proton = container[container.length-1][0][1]
+
+        proton.should.be.an.Array()
+        proton[0].should.be.equal[0]
 
 
         // SEE organic chemistry 8th edition p245
@@ -182,6 +183,9 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         // always be the proton atom from the electrophile.
         // Source atom is what the arrow points from (tail) and will
         // always be the atom from the nucleophile.
+        // Add proton to nucleophile
+        nucleophile_atom_index.should.be.greaterThan(-1)
+
         container = MoleculeController(container[nucleophile_molecule_index]).push(proton, container,
             container.length -1,
             test_number,
@@ -189,6 +193,12 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
             nucleophile_atom_index,
             nucleophile_molecule_index
         )
+
+        console.log(container)
+        console.log("BronstedLowryAcidBaseReactions.js")
+        process.exit()
+
+
 
 
         container.splice(container.length-1,1) // remove proton from container
