@@ -20,9 +20,13 @@ const CMolecule = (mmolecule, verbose) => {
     }
 
     const __negativelyChargedAtoms = (test_number) => {
-        const negatively_charged_atoms = mmolecule[0].slice(1).reduce(
+
+        mmolecule.length.should.be.equal(2) // molecule, units
+        mmolecule[0].length.should.be.equal(2) // pKa, atoms
+
+        const negatively_charged_atoms = mmolecule[0][1].slice(1).reduce(
             (carry, atom, index) => {
-                if (atom[0] !== "H" && CAtom(atom, index,mmolecule[0]).isNegativelyCharged(test_number)) {
+                if (atom[0] !== "H" && CAtom(atom, index,mmolecule[0][1]).isNegativelyCharged(test_number)) {
                     carry.push([
                         index,
                         atom
@@ -220,39 +224,24 @@ const CMolecule = (mmolecule, verbose) => {
     }
 
     const determineNucleophileIndex = (test_number) => {
-        
-        const molecule = mmolecule[0] // mmolecule[1] is the number of units
-        
-       // [Br-] (nucleophile, electron donor) -----> carbocation
-        // Br atom should bond to carbon that has three bonds
-        // Target atom index should be 8 (electrophile)
-        // Source atom index should be 1
-        // substrate is [Br-]
-        // reagent is carbocation
-        // see organic chenistry 8th edition ch 6 p235
-        // [Br-] (nucleophile) -----> carbocation
-        // Br atom should bond to carbon that has three bonds
-        // Target atom index should be 8
-        // Source atom index should be 1
-        // Organic Chemistry 8th edition, P199
-        // test_number 5
-        // [Br-] + carbocation (alkane)
-        // electrophile is [C+] cation on carbocation
-        // nucleophile is [Br-]
-        // carbocation is added to [Br-]
-        // Br and C form bond
-        // 5.1 test 5, [Br-] nucleophile so should return true
-        // 5.2 test 5, carbocation electrophile so should return true
 
+        mmolecule.length.should.be.equal(2) // molecule, units
+        mmolecule[0].length.should.be.equal(2) // pKa, atoms
+
+        const molecule = mmolecule[0] // mmolecule[1] is the number of units
 
         // Check for negatively charged atoms
-         const negatively_charged_atoms = __negativelyChargedAtoms(test_number)
+        const negatively_charged_atoms = __negativelyChargedAtoms(test_number)
 
         if (negatively_charged_atoms.length > 0) {
             return negatively_charged_atoms[0][0] + 1
         } 
         
-         const atoms_with_lone_pairs = __atomsWithLonePairs(test_number)
+        const atoms_with_lone_pairs = __atomsWithLonePairs(test_number)
+        atoms_with_lone_pairs.should.be.an.Array()
+        console.log("atoms with lone pairs")
+        console.log(atoms_with_lone_pairs)
+        process.exit()
 
         if (atoms_with_lone_pairs.length === 0) {
 
@@ -268,13 +257,6 @@ const CMolecule = (mmolecule, verbose) => {
 // 3. The protonated alcohol loses a proton because the pH of the solution is greater
 // than the pKa of the protonated alcohol (Section 2.10).
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
-            if (test_number === 6) {
-                double_bonds.length.should.be.greaterThan(0)
-            }
-
-            if (test_number === 4) {
-                double_bonds.length.should.be.greaterThan(0)
-            }
 
             if (double_bonds.length > 0) {
                 // Determine carbon with most hydrogens
@@ -315,15 +297,6 @@ const CMolecule = (mmolecule, verbose) => {
 
         } else {
             // H2O (nucleophile) <------- HCl (electrophile)
-            if (test_number === 1) {
-                atoms_with_lone_pairs[0][0].should.be.equal(2)
-                molecule[atoms_with_lone_pairs[0][0]+1][0].should.be.equal("O")
-            }
-            // Cl- (nucleophile) <------- H3O (electrophile)
-            if (test_number === 2) {
-                atoms_with_lone_pairs[0][0].should.be.equal(777)
-                molecule[atoms_with_lone_pairs[0][0]+1][0].should.be.equal("Cl")
-            }
             return atoms_with_lone_pairs[0][0] + 1 // take into account pka
         }
 
@@ -332,12 +305,13 @@ const CMolecule = (mmolecule, verbose) => {
 
     const __atomsWithLonePairs =  (test_number) => {
 
-        const molecule = mmolecule[0] // mmolecule[1] is the number of units
-        
+        mmolecule.length.should.be.equal(2) // molecule, units
+        mmolecule[0].length.should.be.equal(2) // pKa, atoms
+
         // Check nucleophile for lone pairs
-        const atoms_with_lone_pairs = molecule.slice(1).map(
+        const atoms_with_lone_pairs = mmolecule[0][1].slice(1).map(
             (atom, index) => {
-                if (atom[0] === "H" || CAtom(atom, index+1, molecule).lonePairs(test_number).length === 0) {
+                if (atom[0] === "H" || CAtom(atom, index+1, mmolecule[0][1]).lonePairs(test_number).length === 0) {
                     return null
                 }
                 return [index, atom]
@@ -490,44 +464,44 @@ const CMolecule = (mmolecule, verbose) => {
 
         // Get index of first free electron on source atom
         // Brondsted Lowry reaction: source atom is atom on nucleophile attacking the proton, mmolecule is the nucleophile
-        console.log(source_atom_index)
-        console.log(mmolecule[0][1][source_atom_index])
         const source_atom_electron_to_share_index = __electronToShareIndex(mmolecule[0][1][source_atom_index])
-        console.log(source_atom_electron_to_share_index)
-        console.log("Controllers/Molecle.js:push")
-        process.exit()
 
         // Get lone pair from source atom (atom arrow would be pointing from (nucleophile))
-        const source_atom_lone_pairs = CAtom(mmolecule[0][source_atom_index], source_atom_index, mmolecule[0]).lonePairs(test_number)
-
+        const source_atom_lone_pairs = CAtom(mmolecule[0][1][source_atom_index], source_atom_index, mmolecule[0][1]).lonePairs(test_number)
+        source_atom_lone_pairs.should.be.an.Array()
 
         // Protons are always target atoms (electrophiles) - where the arrow would be pointing to
         // Brondsted Lowry reaction: target atom is proton
-        if (container[target_molecule_index][0][1][0]==="H") {
+        if (container[target_molecule_index][target_atom_index][1][0]==="H") {
 
             // proton?
             // proton has no electrons
-            if (container[target_molecule_index][0][1].length===4) {
-
+            if (container[target_molecule_index][target_atom_index][1].length===5) {
 
                 // add electrons from source atom to target atom (proton)
                 // target atom is a proton and has no electrons
                 if (source_atom_lone_pairs.length > 0) {
                     // container[target_molecule_index][target_atom_index] is a proton
-                    container[target_molecule_index][0][target_atom_index].push(source_atom_lone_pairs[0])
-                    container[target_molecule_index][0][target_atom_index].push(source_atom_lone_pairs[1])
-                    container[source_molecule_index][0].push(container[target_molecule_index][0][1])
+                    //  container[target_molecule_index][1] are the units
+                    //  container[target_molecule_index][0][1] are the atoms
+                   // console.log(container[target_molecule_index][target_atom_index])
+                   // console.log(container[target_molecule_index][target_atom_index][1])
+                   // process.exit()
+                    container[target_molecule_index][target_atom_index][1].push(source_atom_lone_pairs[0])
+                    container[target_molecule_index][target_atom_index][1].push(source_atom_lone_pairs[1])
+                    // Add proton to target molecule
+                    container[source_molecule_index][0][1].push(container[target_molecule_index][0][1])
                 } else {
 
                     // Does the source atom have a double bond?
                     // returns a set of electrons or false
-                    const double_bond = CAtom(mmolecule[0][source_atom_index], source_atom_index, molecule).doubleBond(test_number)
+                    const double_bond = CAtom(mmolecule[0][1][source_atom_index], source_atom_index, mmolecule[0]).doubleBond(test_number)
 
                     // remove the double bond by removing electrons from bonded atom (turn into single bond)
                     if (double_bond) {
-                        mmolecule[0] = CAtom(mmolecule[0][source_atom_index], source_atom_index,mmolecule[0]).removeDoubleBond(test_number)
-                        container[target_molecule_index][target_atom_index].push(double_bond[0])
-                        container[target_molecule_index][target_atom_index].push(double_bond[1])
+                        mmolecule[0] = CAtom(mmolecule[0][1][source_atom_index], source_atom_index,mmolecule[0]).removeDoubleBond(test_number)
+                        container[target_molecule_index][0][1][target_atom_index].push(double_bond[0])
+                        container[target_molecule_index][0][1][target_atom_index].push(double_bond[1])
                     }
 
                 }
@@ -587,11 +561,6 @@ const CMolecule = (mmolecule, verbose) => {
         }
 
         container[target_molecule_index][0] = pKa(container[target_molecule_index][0].slice(1))
-
-//        console.log(container[1])
-//        console.log(container[2])
-//        console.log("covalent bondddd")
-//        process.exit()
 
         //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
 

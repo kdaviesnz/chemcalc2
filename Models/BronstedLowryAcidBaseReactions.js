@@ -194,9 +194,9 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
             nucleophile_molecule_index
         )
 
-        console.log(container)
-        console.log("BronstedLowryAcidBaseReactions.js")
-        process.exit()
+        //console.log(container[1][0])
+        //console.log("BronstedLowryAcidBaseReactions.js")
+        //process.exit()
 
 
 

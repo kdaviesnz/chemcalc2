@@ -5,15 +5,17 @@ const AtomFactory = require('../Models/AtomFactory')
 
 const CAtom = (atom, current_atom_index, mmolecule) => {
 
-    const __Bonds = (atomic_symbol) => {
+    const __Bonds = () => {
+
         const atoms = mmolecule.slice(1)
-        const atom_electrons = atom.slice(4)
+        const atom_electrons = atom.slice(5)
         const r =  atoms.map(
             (_atom, _atom_index) => {
 
                 if (current_atom_index === _atom_index) {
                     return false
                 }
+
                 const shared_electrons = Set().intersection(atom_electrons, _atom.slice(5))
 
                 return shared_electrons.reduce(
@@ -38,8 +40,8 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         return r
     }
 
-    const __bondCount = (atomic_symbol, test_number) => {
-        return __Bonds(atomic_symbol).filter((item)=>{
+    const __bondCount = (test_number) => {
+        return __Bonds().filter((item)=>{
             return item.length > 0
         }).length
     }
@@ -80,6 +82,8 @@ Example oxygen with 2 bonds
         //const electrons_used_in_bonds_count = __Bonds(atom[0])
         //const is_positively_charged = (atom[3]*2) > (atom.slice(4).length)
 
+        console.log("isPositivelyCharged")
+        console.log(mmolecule)
         const neutral_atom= AtomFactory(atom[0], 0)
         const neutral_atom_free_slot_count = neutral_atom[3]
        // console.log(neutral_atom)
@@ -88,7 +92,9 @@ Example oxygen with 2 bonds
        // console.log(__bondCount(test_number))
         //const is_positively_charged = neutral_atom_free_slot_count  > (__freeSlots(test_number) + __bondCount(atom[0], test_number) + __doubleBondCount(test_number))
         // eg H3)
-        const is_positively_charged = atom[4] === 1 || neutral_atom_free_slot_count  < __bondCount(test_number)
+        console.log("BOND COUNT")
+        console.log(__bondCount(test_number))
+        const is_positively_charged =  neutral_atom_free_slot_count  < __bondCount(test_number)
 
         return is_positively_charged
     }
@@ -117,7 +123,7 @@ Example oxygen with 2 bonds
         //const electrons_used_in_bonds_count = __Bonds(atom[0])
         // const is_negatively_charged = (atom[3] *2) < (atom.slice(4).length)
         // const is_negatively_charged = atom.slice(4).length > 8
-        const is_negatively_charged = atom[4] === -1 || (atom.slice(4).length - __Bonds(atom[0]).length) > atom[2]
+        const is_negatively_charged =  (atom.slice(5).length - __Bonds(atom[0]).length) > atom[2]
         if (test_number == 3.2) {
             // CO:C (nucleophile) ------> AlCl3 (electrophile) O: is the nucleophile (base, donates an electron pair), Al is the electrophile (acid, accepts an electron pair) See 2.12 Organic Chemistry 8th Edition P76
 /*
@@ -149,7 +155,7 @@ Example oxygen with 2 bonds
         return atoms.filter(
             (__atom) => {
                 if (__atom[0] === "C") {
-                    return Set().intersection(__atom.slice(5), atom.slice(4)).length > 0
+                    return Set().intersection(__atom.slice(5), atom.slice(5)).length > 0
                 }
                 return false
             }
@@ -158,7 +164,7 @@ Example oxygen with 2 bonds
     
     const __removeDoubleBond = (test_number) => {
         const atoms = mmolecule.slice(1)
-        const atom_electrons = atom.slice(4)
+        const atom_electrons = atom.slice(5)
         const atoms_double_bond_removed =  atoms.map(
             (__atom, __atom_index) => {
 
@@ -168,7 +174,7 @@ Example oxygen with 2 bonds
 
                 const shared_electrons = Set().intersection(atom_electrons, __atom.slice(5))
 
-                if (shared_electrons.length !== 4) {
+                if (shared_electrons.length !== 5) {
                     return __atom
                 }
 
@@ -189,7 +195,7 @@ Example oxygen with 2 bonds
 
     const __doubleBond = (test_number) => {
         const atoms = mmolecule.slice(1)
-        const atom_electrons = atom.slice(4)
+        const atom_electrons = atom.slice(5)
         const r =  atoms.map(
             (__atom, __atom_index) => {
 
@@ -199,7 +205,7 @@ Example oxygen with 2 bonds
 
                 const shared_electrons = Set().intersection(atom_electrons, __atom.slice(5))
 
-                if (shared_electrons.length !== 4) {
+                if (shared_electrons.length !== 5) {
                     return false
                 }
 
@@ -235,7 +241,7 @@ Example oxygen with 2 bonds
         return atoms.filter(
             (__atom) => {
                 if (__atom[0] === "H") {
-                    return Set().intersection(__atom.slice(5), atom.slice(4)).length > 0
+                    return Set().intersection(__atom.slice(5), atom.slice(5)).length > 0
                 }
                 return false
             }
@@ -243,14 +249,14 @@ Example oxygen with 2 bonds
     }
 
     const __isProton = () => {
-        return atom[0] === "H" && atom.length === 4
+        return atom[0] === "H" && atom.length === 5
     }
 
 
 
     const __electron_haystack = (test_number) => {
         const atoms = mmolecule.slice(1)
-        const atom_electrons = atom.slice(4)
+        const atom_electrons = atom.slice(5)
         return atoms.reduce(
             (carry, __atom, __atom_index) => {
 
@@ -266,7 +272,7 @@ Example oxygen with 2 bonds
 
     const __freeElectrons = (test_number) => {
 
-        const atom_electrons = atom.slice(4)
+        const atom_electrons = atom.slice(5)
         const electron_haystack = __electron_haystack(test_number)
 
         return atom_electrons.filter(
@@ -278,7 +284,7 @@ Example oxygen with 2 bonds
 
     const __usedElectrons = (test_number) => {
 
-        const atom_electrons = atom.slice(4)
+        const atom_electrons = atom.slice(5)
         const electron_haystack = __electron_haystack(test_number)
 
         return atom_electrons.filter(
@@ -488,7 +494,7 @@ We then return the total number of free slots minus the number of slots already 
             )
 
             // Check current atom electrons to see if they're being used
-            const lone_electrons = atom.slice(4).filter(
+            const lone_electrons = atom.slice(5).filter(
                 (electron, index) => {
                     return electrons_from_other_atoms.indexOf(electron) === -1
                 }
