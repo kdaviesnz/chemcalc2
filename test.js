@@ -54,7 +54,7 @@ w[0].should.be.equal(14) // pKa
 w[1].should.be.an.Array()
 w[1].length.should.be.equal(3)
 w[1][2][0].should.be.equal("O")
-w[1][2].slice(5).length.should.be.equal(10)
+w[1][2].slice(5).length.should.be.equal(6)
 const oxygen = CAtom(w[1][2], 2, [w,1])
 oxygen.hydrogens().length.should.be.equal(2)
 oxygen.carbons().length.should.be.equal(0)
