@@ -3,7 +3,7 @@ const Set = require('../Models/Set')
 const _ = require('lodash');
 const AtomFactory = require('../Models/AtomFactory')
 
-const CAtom = (atom, current_atom_index, mmolecule) => {
+const CAtom = (atom, current_atom_index) => {
 
     mmolecule.length.should.be.equal(2) // molecule, units
     mmolecule[0].length.should.be.equal(2) // pKa, atoms

@@ -102,6 +102,7 @@ client.connect(err => {
                             onMoleculeAddedToDBCallback(search)
                         }
                     })
+
                 }
             })
         }
