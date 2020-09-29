@@ -26,7 +26,7 @@ const CMolecule = (mmolecule, verbose) => {
 
         const negatively_charged_atoms = mmolecule[0][1].slice(1).reduce(
             (carry, atom, index) => {
-                if (atom[0] !== "H" && CAtom(atom, index,mmolecule[0][1]).isNegativelyCharged(test_number)) {
+                if (atom[0] !== "H" && CAtom(atom, index,mmolecule).isNegativelyCharged(test_number)) {
                     carry.push([
                         index,
                         atom
@@ -238,10 +238,6 @@ const CMolecule = (mmolecule, verbose) => {
         } 
         
         const atoms_with_lone_pairs = __atomsWithLonePairs(test_number)
-        atoms_with_lone_pairs.should.be.an.Array()
-        console.log("atoms with lone pairs")
-        console.log(atoms_with_lone_pairs)
-        process.exit()
 
         if (atoms_with_lone_pairs.length === 0) {
 
@@ -311,7 +307,7 @@ const CMolecule = (mmolecule, verbose) => {
         // Check nucleophile for lone pairs
         const atoms_with_lone_pairs = mmolecule[0][1].slice(1).map(
             (atom, index) => {
-                if (atom[0] === "H" || CAtom(atom, index+1, mmolecule[0][1]).lonePairs(test_number).length === 0) {
+                if (atom[0] === "H" || CAtom(atom, index+1, mmolecule).lonePairs(test_number).length === 0) {
                     return null
                 }
                 return [index, atom]
@@ -467,7 +463,7 @@ const CMolecule = (mmolecule, verbose) => {
         const source_atom_electron_to_share_index = __electronToShareIndex(mmolecule[0][1][source_atom_index])
 
         // Get lone pair from source atom (atom arrow would be pointing from (nucleophile))
-        const source_atom_lone_pairs = CAtom(mmolecule[0][1][source_atom_index], source_atom_index, mmolecule[0][1]).lonePairs(test_number)
+        const source_atom_lone_pairs = CAtom(mmolecule[0][1][source_atom_index], source_atom_index, mmolecule).lonePairs(test_number)
         source_atom_lone_pairs.should.be.an.Array()
 
         // Protons are always target atoms (electrophiles) - where the arrow would be pointing to

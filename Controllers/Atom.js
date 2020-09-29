@@ -88,8 +88,6 @@ Example oxygen with 2 bonds
         //const electrons_used_in_bonds_count = __Bonds(atom[0])
         //const is_positively_charged = (atom[3]*2) > (atom.slice(4).length)
 
-        console.log("isPositivelyCharged")
-        console.log(mmolecule)
         const neutral_atom= AtomFactory(atom[0], 0)
         const neutral_atom_free_slot_count = neutral_atom[3]
        // console.log(neutral_atom)
@@ -98,8 +96,6 @@ Example oxygen with 2 bonds
        // console.log(__bondCount(test_number))
         //const is_positively_charged = neutral_atom_free_slot_count  > (__freeSlots(test_number) + __bondCount(atom[0], test_number) + __doubleBondCount(test_number))
         // eg H3)
-        console.log("BOND COUNT")
-        console.log(__bondCount(test_number))
         const is_positively_charged =  neutral_atom_free_slot_count  < __bondCount(test_number)
 
         return is_positively_charged
@@ -157,7 +153,7 @@ Example oxygen with 2 bonds
     }
     
     const __carbons = (test_number) => {
-        const atoms = mmolecule.slice(1)
+        const atoms = mmolecule[0][1].slice(1)
         return atoms.filter(
             (__atom) => {
                 if (__atom[0] === "C") {
@@ -169,7 +165,7 @@ Example oxygen with 2 bonds
     }
     
     const __removeDoubleBond = (test_number) => {
-        const atoms = mmolecule.slice(1)
+        const atoms = mmolecule[0][1].slice(1)
         const atom_electrons = atom.slice(5)
         const atoms_double_bond_removed =  atoms.map(
             (__atom, __atom_index) => {
@@ -195,12 +191,12 @@ Example oxygen with 2 bonds
             }
         )
 
-        return [mmolecule[0], ...atoms_double_bond_removed]
+        return [mmolecule[0][0], ...atoms_double_bond_removed]
 
     }
 
     const __doubleBond = (test_number) => {
-        const atoms = mmolecule.slice(1)
+        const atoms = mmolecule[0][1].slice(1)
         const atom_electrons = atom.slice(5)
         const r =  atoms.map(
             (__atom, __atom_index) => {
@@ -243,7 +239,7 @@ Example oxygen with 2 bonds
             console.log('Atom.js Atom must be an object. Got ' + atom + ' instead')
             throw new Error("Atom is not an object")
         }
-        const atoms = mmolecule.slice(1)
+        const atoms = mmolecule[0][1].slice(1)
         return atoms.filter(
             (__atom) => {
                 if (__atom[0] === "H") {
@@ -476,7 +472,7 @@ We then return the total number of free slots minus the number of slots already 
 
 
             // Remove current atom
-            const molecule_minus_current_atom = mmolecule.filter(
+            const molecule_minus_current_atom = mmolecule[0][1].filter(
                 (atom , index) => {
                     return index !== current_atom_index
                 }

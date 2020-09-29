@@ -18,8 +18,7 @@ const VMolecule = (mmolecule) => {
                     console.log('Molecule.js Atom must be an object. Got ' + current_atom + ' instead')
                     throw new Error("Atom is not an object")
                 }
-                console.log("current atommm")
-                console.log(current_atom)
+
                 if (CAtom(current_atom, index, mmolecule).isPositivelyCharged()) {
                     carry = carry + "[" + current_atom[0] + "+]"
                 } else if (CAtom(current_atom, index, mmolecule).isNegativelyCharged()) {
