@@ -476,10 +476,12 @@ const CMolecule = (mmolecule, verbose) => {
         container[target_molecule_index][0].should.be.an.Array() // the actual molecule
         container[target_molecule_index][1].should.be.an.Number() // units
         container[target_molecule_index][0].length.should.be.equal(2) // pKa, atoms
-        container[target_molecule_index][0][0].should.be.an.Number() // pKa
+        if (container[target_molecule_index][0][0] !== null) {
+            container[target_molecule_index][0][0].should.be.an.Number() // pKa
+        }
         container[target_molecule_index][0][1].should.be.an.Array() // atoms
 
-        if (container[target_molecule_index][target_atom_index][1][0]==="H") {
+        if (container[target_molecule_index][0][1][target_atom_index][0]==="H") {
 
             // proton?
             // proton has no electrons

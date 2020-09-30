@@ -4,7 +4,6 @@ const _ = require('lodash');
 
 const VMolecule = (mmolecule) => {
 
-    console.log(mmolecule)
     mmolecule.length.should.be.equal(2) // molecule, units
     mmolecule[0].length.should.be.equal(2) // pKa, atoms
 
@@ -15,6 +14,9 @@ const VMolecule = (mmolecule) => {
             const mmolecule_sans_hydrogens = _.cloneDeep(mmolecule[0][1]).filter((atom)=>{
                 return atom[0] !== 'H'
             })
+
+            console.log("VMolecule molecule sans hydrogens")
+            console.log(mmolecule_sans_hydrogens)
 
             // Convert molecule to CanonicalSmiles
             // @todo branches, rings

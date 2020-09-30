@@ -7,6 +7,8 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
     mmolecule.length.should.be.equal(2) // molecule, units
     mmolecule[0].length.should.be.equal(2) // pKa, atoms
+    console.log(atom)
+    atom.should.be.an.Array()
     atom.length.should.be.greaterThan(3)
     
     const __Bonds = () => {
