@@ -523,7 +523,17 @@ const CMolecule = (mmolecule, verbose) => {
                 // the target atom has un unfillec valence shell
                 // electrophile
                 // free slots is a number
-                const free_slots = CAtom(container[target_molecule_index][0][target_atom_index], target_atom_index,  mmolecule).freeSlots(test_number)
+                // Target atom is what the arrow points to (attacks) and will
+                // always be the proton atom from the electrophile.
+                // Source atom is what the arrow points from (tail) and will
+                // always be the atom from the nucleophile.
+                container[target_molecule_index][0].should.be.an.Array() // the actual molecule
+                container[target_molecule_index][1].should.be.an.Number() // units
+                container[target_molecule_index][0][1][target_atom_index].should.be.an.Array() // atoms
+                const free_slots = CAtom(container[target_molecule_index][0][1][target_atom_index], target_atom_index,  mmolecule).freeSlots(test_number)
+
+                //console.log("FREE SLOTS CMolecule.js")
+                //console.log(free_slots)
 
                 
 
@@ -534,8 +544,18 @@ const CMolecule = (mmolecule, verbose) => {
                     // add another free electron from source atom to target atom
                     // mmolecule[target_atom_mmolecule_index].push(free_slots[1])
 
+                    // Target atom is what the arrow points to (attacks) and will
+                    // always be the proton atom from the electrophile.
+                    // Source atom is what the arrow points from (tail) and will
+                    // always be the atom from the nucleophile.
+
                     // add free electron from source atom to target atom
-                    container[target_molecule_index][target_atom_index].push(mmolecule[0][source_atom_index][4 + source_atom_electron_to_share_index])
+                    mmolecule[0].should.be.an.Array() // the actual molecule
+                    mmolecule[0].length.should.be.equal(2) // pKa, atoms
+                    mmolecule[0][0].should.be.an.Number() // pka
+                    mmolecule[0][1].should.be.an.Array() // atoms
+                    // Push electrons
+                    container[target_molecule_index][target_atom_index].push(mmolecule[0][source_atom_index][5 + source_atom_electron_to_share_index])
                     // add another free electron from source atom to target atom
                     container[target_molecule_index][target_atom_index].push(mmolecule[0][source_atom_index][5 + source_atom_electron_to_share_index])
 
