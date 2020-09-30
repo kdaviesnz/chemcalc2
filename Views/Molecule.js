@@ -4,6 +4,7 @@ const _ = require('lodash');
 
 const VMolecule = (mmolecule) => {
 
+    console.log(mmolecule)
     mmolecule.length.should.be.equal(2) // molecule, units
     mmolecule[0].length.should.be.equal(2) // pKa, atoms
 

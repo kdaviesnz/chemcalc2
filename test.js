@@ -58,44 +58,36 @@ w[1][2].slice(5).length.should.be.equal(8) // oxygen has 6 valence electrons plu
 const oxygen = CAtom(w[1][2], 2, [w,1])
 oxygen.hydrogens().length.should.be.equal(2)
 oxygen.carbons().length.should.be.equal(0)
-oxygen.freeSlots().should.be.equal(1)
+oxygen.freeSlots().should.be.equal(0)
 oxygen.bondCount().should.be.equal(2)
 oxygen.doubleBondCount().should.be.equal(0)
 oxygen.isNegativelyCharged().should.be.false()
 oxygen.isPositivelyCharged().should.be.false()
 VMolecule([w,1]).canonicalSMILES().should.be.equal("O")
 
+console.log("Running initial tests ...")
 const oxide = MoleculeFactory("[OH3+]")
-console.log(oxide)
 oxide[0].should.be.equal(-1.74) // pKa
 oxide[1].should.be.an.Array()
 oxide[1].length.should.be.equal(4)
 oxide[1][3][0].should.be.equal("O")
 const oxide_oxygen = CAtom(oxide[1][3], 2, [oxide,1])
-// Number of  electrons should always be even
 oxide[1][3].slice(5).length.should.be.equal(9) // oxygen has 6 valence electrons plus one electron from each of the three hydrogens
 oxide_oxygen.hydrogens().length.should.be.equal(3)
 oxide_oxygen.carbons().length.should.be.equal(0)
-oxide_oxygen.freeSlots().should.be.equal(0)
+oxide_oxygen.freeSlots().should.be.equal(-1)
 oxide_oxygen.bondCount().should.be.equal(3)
 oxide_oxygen.doubleBondCount().should.be.equal(0)
 oxide_oxygen.isNegativelyCharged().should.be.false()
 oxide_oxygen.isPositivelyCharged().should.be.true()
 VMolecule([oxide,1]).canonicalSMILES().should.be.equal("[O+]")
-
-
-
-
-process.exit("Initial tests done")
-
+console.log("Initial tests ok, now running main tests ...")
 
 // Tests start
 const uri = "mongodb+srv://" + process.env.MONGODBUSER + ":" + process.env.MONGODBPASSWORD + "@cluster0.awqh6.mongodb.net/chemistry?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 client.connect(err => {
-    
-    
     
     assert.equal(err, null);
     const db = client.db("chemistry")
@@ -150,7 +142,7 @@ client.connect(err => {
     )
 */
 
-    if (false) {
+    if (true) {
 
         // MOLECULE MODEL
         // pKa, atom, atom, atom ...
@@ -266,7 +258,6 @@ client.connect(err => {
             ccontainer.add(_.cloneDeep(hcl_molecue).json, 1, verbose, 1)
             VContainerWithDB(ccontainer).show(() => {
                 console.log("Test 1 complete: Container should show chloride and oxidanium.\n")
-                process.exit()
                 lookupPropylene(water_molecule)
             })
         }

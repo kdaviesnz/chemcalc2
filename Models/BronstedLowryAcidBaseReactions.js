@@ -1,6 +1,8 @@
 // @see Organic Chemistry 8th Edition P51
 const CAtom = require('../Controllers/Atom')
 const Families = require('../Models/Families')
+const _ = require('lodash');
+
 const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_number, verbose) => {
 
     const react = () => {
@@ -147,20 +149,51 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 
         proton_index.should.not.be.equal(false)
 
+        // Some checks
+        container[0].should.be.an.Boolean()
+        _.cloneDeep(container).slice(1).map((molecule)=>{
+            molecule.length.should.be.equal(2)
+            molecule[0].should.be.an.Array() // actual molecule
+            molecule[1].should.be.an.Number() // units
+            molecule[0].length.should.be.equal(2) // pKa, atoms
+            molecule[0][0].should.be.an.Number() // pka
+            molecule[0][1].should.be.an.Array() // atoms
+            _.cloneDeep(molecule[0][1]).map((atom)=>{
+                atom.should.be.an.Array()
+            })
+        })
+
         container = MoleculeController(container[electrophile_molecule_index]).removeProton(
             container,
             proton_index,
             electrophile_molecule_index
         )
 
+        // Some checks
+        container[0].should.be.an.Boolean()
+        _.cloneDeep(container).slice(1).map((molecule)=>{
+            molecule.length.should.be.equal(2)
+            molecule[0].should.be.an.Array() // actual molecule
+            molecule[1].should.be.an.Number() // units
+            molecule[0].length.should.be.equal(2) // pKa, atoms
+            if (molecule[0][0] !== null) {
+                molecule[0][0].should.be.an.Number() // pka
+            }
+            molecule[0][1].should.be.an.Array() // atoms
+            _.cloneDeep(molecule[0][1]).map((atom)=>{
+                atom.should.be.an.Array()
+            })
+        })
+
 
         // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
         // proton is the last element in the container
-        const proton = container[container.length-1][0][1]
+        const proton = container[container.length-1]
 
         proton.should.be.an.Array()
-        proton[0].should.be.equal[0]
-
+        proton.length.should.be.equal(2)
+        proton[1].should.be.an.Number()
+        proton[0].should.be.an.Array()
 
         // SEE organic chemistry 8th edition p245
 // propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
@@ -186,6 +219,22 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         // Add proton to nucleophile
         nucleophile_atom_index.should.be.greaterThan(-1)
 
+
+        container[0].should.be.an.Boolean()
+        _.cloneDeep(container).slice(1).map((molecule)=>{
+            molecule.length.should.be.equal(2)
+            molecule[0].should.be.an.Array() // actual molecule
+            molecule[1].should.be.an.Number() // units
+            molecule[0].length.should.be.equal(2) // pKa, atoms
+            if (molecule[0][0] !== null) {
+                molecule[0][0].should.be.an.Number() // pka
+            }
+            molecule[0][1].should.be.an.Array() // atoms
+            _.cloneDeep(molecule[0][1]).map((atom)=>{
+                atom.should.be.an.Array()
+            })
+        })
+
         container = MoleculeController(container[nucleophile_molecule_index]).push(proton, container,
             container.length -1,
             test_number,
@@ -193,12 +242,6 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
             nucleophile_atom_index,
             nucleophile_molecule_index
         )
-
-        //console.log(container[1][0])
-        //console.log("BronstedLowryAcidBaseReactions.js")
-        //process.exit()
-
-
 
 
         container.splice(container.length-1,1) // remove proton from container

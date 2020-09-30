@@ -7,7 +7,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
     mmolecule.length.should.be.equal(2) // molecule, units
     mmolecule[0].length.should.be.equal(2) // pKa, atoms
-    atom.length.should.be.greaterThan(3) 
+    atom.length.should.be.greaterThan(3)
     
     const __Bonds = () => {
 
@@ -325,18 +325,22 @@ We then return the total number of free slots minus the number of slots already 
         const max_possible_number_of_electrons = m[number_of_shells-1]
 
         // This is the number of bonds where the atom shares one of its outershell electrons
-        // eg for oxygen this number is 6
-        const max_possible_number_of_shared_electron_bonds = info["electrons_per_shell"].split("-").pop() * 1
+        // eg for oxygen this number is 2
+        const electrons_per_shell = info["electrons_per_shell"].split("-")
+        // eg oxygen m[1] - 6 = 8 - 6 so oxygen can form 2 bonds.
+        const max_possible_number_of_shared_electron_bonds = m[electrons_per_shell.length-1] - electrons_per_shell.pop() * 1
 
-        const used_electrons = __usedElectrons(test_number) // eg for water this will be an array of 4 electrons
+        return max_possible_number_of_shared_electron_bonds - __bondCount()
 
-        used_electrons.should.be.an.Array()
+//        const used_electrons = __usedElectrons(test_number) // eg for water this will be an array of 4 electrons
+
+  //      used_electrons.should.be.an.Array()
         // Number of used electrons should always be even
        // (used_electrons.length % 2 == 0).should.be.equal(true)
 
         // eg water
-        // oxygen atom has 4 electrons used (bonds to hydrogen, used_electrons) with a spare 2 electrons
-        return (max_possible_number_of_shared_electron_bonds - used_electrons.length) / 2
+        // oxygen atom in H2O has 4 electrons used (bonds to hydrogen, used_electrons) with a spare 2 electrons
+        //return (max_possible_number_of_shared_electron_bonds - used_electrons.length) / 2
 
         /*
         let free_slots = null

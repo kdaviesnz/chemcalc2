@@ -23,12 +23,10 @@ const VContainer = (client) => {
             callback()
         } else {
             const item = container[current_index]
-            const mmolecule = item[0]
+            const mmolecule = item
             const units = item[1]
 
             console.log(VMolecule(mmolecule).canonicalSMILES(units))
-            console.log("VContainer")
-            process.exit();
 
             MoleculeLookup(db, VMolecule(mmolecule).canonicalSMILES(units), "SMILES", true).then(
                 // "resolves" callback - molecule found in db

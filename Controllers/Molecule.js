@@ -386,6 +386,7 @@ const CMolecule = (mmolecule, verbose) => {
     }
 
     const __electronToShareIndex = (atom) => {
+        atom.should.be.an.Array()
         const atom_valence_electrons = atom.slice(5)
         const atom_electron_to_share_index = atom_valence_electrons.reduce(
             (carry, atom_electron, index) => {
@@ -449,13 +450,15 @@ const CMolecule = (mmolecule, verbose) => {
          */
         // Get index of first free electron on target atom
         // Brondsted Lowry reaction: target atom is proton
-        let atom = container[target_molecule_index][target_atom_index]
+        let atom = container[target_molecule_index][0]
 
         if (atom === undefined) {
+            console.log("Fetching atom")
             // proton will be the last element in container
-            console.log(container[container.length -1])
             atom = container[container.length -1][0][target_atom_index]
         }
+
+        atom.should.be.an.Array()
         const target_atom_electron_to_share_index = __electronToShareIndex(atom)
 
         // Get index of first free electron on source atom
@@ -520,7 +523,7 @@ const CMolecule = (mmolecule, verbose) => {
                 // the target atom has un unfillec valence shell
                 // electrophile
                 // free slots is a number
-                const free_slots = CAtom(container[target_molecule_index][0][target_atom_index], target_atom_index,  mmolecule[0]).freeSlots(test_number)
+                const free_slots = CAtom(container[target_molecule_index][0][target_atom_index], target_atom_index,  mmolecule).freeSlots(test_number)
 
                 
 
@@ -921,7 +924,7 @@ const CMolecule = (mmolecule, verbose) => {
             // Remove proton from molecule and add it to the container as a new molecule
             const proton = mmolecule[0][1][proton_index]
             mmolecule[0][1].splice(proton_index, 1)
-            container.push([[null, proton],1]) // 1 is units
+            container.push([[null, [proton]],1]) // 1 is units
 
             mmolecule[0][0] = pKa(mmolecule[0].slice(1))
 
