@@ -471,11 +471,19 @@ const CMolecule = (mmolecule, verbose) => {
 
         // Protons are always target atoms (electrophiles) - where the arrow would be pointing to
         // Brondsted Lowry reaction: target atom is proton
+        container[target_molecule_index].should.be.an.Array() // actual molecule, units
+        container[target_molecule_index].length.should.be.equal(2)
+        container[target_molecule_index][0].should.be.an.Array() // the actual molecule
+        container[target_molecule_index][1].should.be.an.Number() // units
+        container[target_molecule_index][0].length.should.be.equal(2) // pKa, atoms
+        container[target_molecule_index][0][0].should.be.an.Number() // pKa
+        container[target_molecule_index][0][1].should.be.an.Array() // atoms
+
         if (container[target_molecule_index][target_atom_index][1][0]==="H") {
 
             // proton?
             // proton has no electrons
-            if (container[target_molecule_index][target_atom_index][1].length===5) {
+            if (container[target_molecule_index][0][1][target_atom_index].length===5) {
 
                 // add electrons from source atom to target atom (proton)
                 // target atom is a proton and has no electrons
@@ -486,8 +494,8 @@ const CMolecule = (mmolecule, verbose) => {
                    // console.log(container[target_molecule_index][target_atom_index])
                    // console.log(container[target_molecule_index][target_atom_index][1])
                    // process.exit()
-                    container[target_molecule_index][target_atom_index][1].push(source_atom_lone_pairs[0])
-                    container[target_molecule_index][target_atom_index][1].push(source_atom_lone_pairs[1])
+                    container[target_molecule_index][0][1][target_atom_index].push(source_atom_lone_pairs[0])
+                    container[target_molecule_index][0][1][target_atom_index].push(source_atom_lone_pairs[1])
                     // Add proton to target molecule
                     container[source_molecule_index][0][1].push(container[target_molecule_index][0][1])
                 } else {
@@ -550,17 +558,17 @@ const CMolecule = (mmolecule, verbose) => {
                     // always be the atom from the nucleophile.
 
                     // add free electron from source atom to target atom
+                    container[target_molecule_index][0].should.be.an.Array() // the actual molecule
+                    container[target_molecule_index][1].should.be.an.Number() // units
+                    container[target_molecule_index][0][1][target_atom_index].should.be.an.Array() // atoms
                     mmolecule[0].should.be.an.Array() // the actual molecule
                     mmolecule[0].length.should.be.equal(2) // pKa, atoms
                     mmolecule[0][0].should.be.an.Number() // pka
                     mmolecule[0][1].should.be.an.Array() // atoms
                     // Push electrons
-                    container[target_molecule_index][target_atom_index].push(mmolecule[0][source_atom_index][5 + source_atom_electron_to_share_index])
+                    container[target_molecule_index][0][1][target_atom_index].push(mmolecule[0][1][source_atom_index][5 + source_atom_electron_to_share_index])
                     // add another free electron from source atom to target atom
-                    container[target_molecule_index][target_atom_index].push(mmolecule[0][source_atom_index][5 + source_atom_electron_to_share_index])
-
-
-                    
+                    container[target_molecule_index][0][1][target_atom_index].push(mmolecule[0][1][source_atom_index][6 + source_atom_electron_to_share_index])
 
                 }
 
