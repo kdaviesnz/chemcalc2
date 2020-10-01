@@ -8,6 +8,31 @@ const Families = require('../Models/Families')
 
 const CMolecule = (mmolecule, verbose) => {
 
+    const __checkContainer = (container) => {
+        container.should.be.an.Array()
+        container[0].should.be.an.Boolean()
+        container.slice(1).map((molecule_plus_units) => {
+            molecule_plus_units.should.be.an.Array()
+            molecule_plus_units.length.should.be.equal(2)
+            molecule_plus_units[0].should.be.an.Array() // the actual molecule
+            if (molecule_plus_units[1] !==null) {
+                molecule_plus_units[1].should.be.an.Number() // units
+            }
+            if (molecule_plus_units[0][0] !==null) {
+                molecule_plus_units[0][0].should.be.an.Number() // pka
+            }
+            molecule_plus_units[0][1].should.be.an.Array() // atoms
+            molecule_plus_units[0][1].map((atom)=>{
+                atom[0].should.be.a.String() // eg 'O', 'C', 'H;
+                atom[1].should.be.a.Number()
+                atom[2].should.be.a.Number()
+                atom[3].should.be.a.Number()
+                atom[4].should.be.a.Number()
+            })
+        })
+
+    }
+
     // get the type of bond between two atoms
     const __bondType = (atom1, atom2) => {
         const shared_electrons = Set().intersection(atom1.slice(5), atom2.slice(5))
@@ -205,16 +230,7 @@ const CMolecule = (mmolecule, verbose) => {
         }
 
         if (is_negatively_charged) {
-            if (verbose) {
-                console.log("Controllers/Molecule.js::determineElectrophileIndex Atom is negatively charged so return false")
-            }
             return false
-        }
-
-        if (verbose) {
-            console.log("Controllers/Molecule.js::determineElectrophileIndex() Returning electrophile index " + electrophile_index)
-            console.log("Molecule ->")
-            console.log(molecule)
         }
 
         if (test_number *1 === 7.1) {
@@ -423,6 +439,8 @@ const CMolecule = (mmolecule, verbose) => {
         container, source_molecule_index, target_molecule_index, source_atom_index, target_atom_index, test_number
     ) => {
 
+        __checkContainer(container)
+
         mmolecule.length.should.be.equal(2) // molecule, units
         mmolecule[0].length.should.be.equal(2) // pKa, atoms
         source_atom_index.should.be.greaterThan(-1)
@@ -453,7 +471,6 @@ const CMolecule = (mmolecule, verbose) => {
         let atom = container[target_molecule_index][0]
 
         if (atom === undefined) {
-            console.log("Fetching atom")
             // proton will be the last element in container
             atom = container[container.length -1][0][target_atom_index]
         }
@@ -480,6 +497,7 @@ const CMolecule = (mmolecule, verbose) => {
             container[target_molecule_index][0][0].should.be.an.Number() // pKa
         }
         container[target_molecule_index][0][1].should.be.an.Array() // atoms
+        container[target_molecule_index][0][1][target_atom_index].should.be.an.Array() // target atom
 
         if (container[target_molecule_index][0][1][target_atom_index][0]==="H") {
 
@@ -493,13 +511,13 @@ const CMolecule = (mmolecule, verbose) => {
                     // container[target_molecule_index][target_atom_index] is a proton
                     //  container[target_molecule_index][1] are the units
                     //  container[target_molecule_index][0][1] are the atoms
-                   // console.log(container[target_molecule_index][target_atom_index])
-                   // console.log(container[target_molecule_index][target_atom_index][1])
                    // process.exit()
                     container[target_molecule_index][0][1][target_atom_index].push(source_atom_lone_pairs[0])
                     container[target_molecule_index][0][1][target_atom_index].push(source_atom_lone_pairs[1])
                     // Add proton to target molecule
-                    container[source_molecule_index][0][1].push(container[target_molecule_index][0][1])
+                    __checkContainer(container)
+                    container[source_molecule_index][0][1].push(container[target_molecule_index][0][1][target_atom_index])
+                    __checkContainer(container)
                 } else {
 
                     // Does the source atom have a double bond?
@@ -542,10 +560,6 @@ const CMolecule = (mmolecule, verbose) => {
                 container[target_molecule_index][0][1][target_atom_index].should.be.an.Array() // atoms
                 const free_slots = CAtom(container[target_molecule_index][0][1][target_atom_index], target_atom_index,  mmolecule).freeSlots(test_number)
 
-                //console.log("FREE SLOTS CMolecule.js")
-                //console.log(free_slots)
-
-                
 
                 if (free_slots > 0) {
 
@@ -589,11 +603,16 @@ const CMolecule = (mmolecule, verbose) => {
             }
         }
 
-        container[target_molecule_index][0] = pKa(container[target_molecule_index][0].slice(1))
+        __checkContainer(container)
+
+        // Set pKa
+        container[target_molecule_index][0][0] = pKa(container[target_molecule_index][0].slice(1))
 
         //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
 
         // Check there is a bond between nucleophile atom (source) and electrophile atom (target)
+
+        __checkContainer(container)
 
         return container
 
@@ -603,14 +622,6 @@ const CMolecule = (mmolecule, verbose) => {
 
         const molecule = mmolecule[0] // mmolecule[1] is the number of units
         
-        if (verbose) {
-            console.log('Controllers/Molecule.js:: Getting bond count for atom ->')
-            console.log('Controllers/Molecule.js:: Molecule')
-            console.log(mmolecule)
-            console.log('Controllers/Molecule.js:: atom')
-            console.log(atom)
-        }
-
         const valence_electrons = atom.slice(5).filter(
             (electron) => {
                 return null !== electron
@@ -639,9 +650,6 @@ const CMolecule = (mmolecule, verbose) => {
             0
         )
 
-        if (verbose) {
-            console.log('Controllers/Molecule.js:: Number of bonds ->' + shared_electrons_count / 2 );
-        }
         return shared_electrons_count / 2;
     }
 
@@ -759,7 +767,6 @@ const CMolecule = (mmolecule, verbose) => {
             // atoms_or_atomic symbols is an array containing the atom we are
             // pushing and the atoms linked to that atom
             // atom_index is the index of the atom we are pushing
-            //console.log(atoms_or_atomic_symbols)
             const atoms = atoms_or_atomic_symbols.map(
                 (atom_or_atomic_symbol) => {
                     return typeof atom_or_atomic_symbol === "string" ? AtomFactory(atom_or_atomic_symbol, 0) : atom_or_atomic_symbol
@@ -817,6 +824,7 @@ const CMolecule = (mmolecule, verbose) => {
 
 
             if (atom_index === false) {
+                __checkContainer(container)
                 return container
             }
 
@@ -837,6 +845,7 @@ const CMolecule = (mmolecule, verbose) => {
             }
 
             if (bond_count === 0) {
+                __checkContainer(container)
                 return container
             }
 
@@ -878,6 +887,7 @@ const CMolecule = (mmolecule, verbose) => {
             }
 
             if (bonded_atom_index === false) {
+                __checkContainer(container)
                 return container
             }
 
@@ -914,6 +924,7 @@ const CMolecule = (mmolecule, verbose) => {
             container[molecule_index] = mmolecule
 
 
+            __checkContainer(container)
             return container
 
         },
@@ -944,6 +955,7 @@ const CMolecule = (mmolecule, verbose) => {
             const bond_count = _bondCount(mmolecule[0][1][proton_index])
 
             if (bond_count === 0) {
+                __checkContainer(container)
                 return container
             }
 
@@ -961,7 +973,7 @@ const CMolecule = (mmolecule, verbose) => {
 
             container[molecule_index] = mmolecule
 
-
+            __checkContainer(container)
             return container
 
         },

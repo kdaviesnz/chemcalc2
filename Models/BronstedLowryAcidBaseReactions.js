@@ -17,6 +17,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 // than the pKa of the protonated alcohol (Section 2.10).
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
 
+        // Find what item in the container has the proton
 
         const substrate_proton_index = MoleculeController([container[1][0], 1]).indexOf("H", false, verbose)
         const reagent_proton_index = MoleculeController([container[2][0], 1]).indexOf("H", false, verbose)
@@ -24,35 +25,16 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         if (substrate_proton_index !== false && reagent_proton_index === false) {
             electrophile_molecule_index = 1
             electrophile_molecule = container[electrophile_molecule_index]
-            electrophile_atom_index = substrate_proton_index
             nucleophile_molecule_index = 2
             nucleophile_molecule = container[nucleophile_molecule_index]
-            nucleophile_atom_index = MoleculeController(electrophile_molecule).nucleophileIndex()
         } else if (substrate_proton_index === false && reagent_proton_index !== false) {
-
             // Cl- (nucleophile)  <---- H3O (electrophile, what arrow points to)
             // test 4 CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-
             electrophile_molecule_index = 2
             electrophile_molecule = container[electrophile_molecule_index]
-            electrophile_atom_index = reagent_proton_index
             nucleophile_molecule_index = 1
             nucleophile_molecule = container[nucleophile_molecule_index]
-            nucleophile_atom_index = MoleculeController(nucleophile_molecule).nucleophileIndex()
 
-            if (test_number === 2) {
-                nucleophile_atom_index.should.be.equal(1) // Cl-
-                electrophile_atom_index.should.be.equal(4)
-                nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("Cl")
-                electrophile_molecule[electrophile_atom_index][0].should.be.equal("H")
-            }
-
-            if (test_number === 4) {
-                nucleophile_atom_index.should.be.equal(6) // C on C=C
-                electrophile_atom_index.should.be.equal(1)   // H
-                nucleophile_molecule[nucleophile_atom_index][0].should.be.equal("C")
-                electrophile_molecule[electrophile_atom_index][0].should.be.equal("H")
-            }
         } else if (substrate_proton_index=== false && reagent_proton_index === false) {
             console.log("substrate_proton_index and reagent_proton_index are false")
             return false
@@ -70,22 +52,16 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
                 // H2O (nucleophile) is the proton acceptor as the oxygen has lone pairs of electrons.
                 electrophile_molecule_index = 1
                 electrophile_molecule = container[electrophile_molecule_index]
-                electrophile_atom_index = substrate_proton_index
                 nucleophile_molecule_index = 2 //
                 nucleophile_molecule = container[nucleophile_molecule_index]
-                nucleophile_atom_index = MoleculeController(nucleophile_molecule).nucleophileIndex(test_number)
-
             } else {
                 // @see Organic Chemistry 8th Edition P51
                 // HCl is the proton donator and is our electrophile as protons do not have electrons
                 // H2O (nucleophile) is the proton acceptor as the oxygen has lone pairs of electrons.
                 electrophile_molecule_index = 2
                 electrophile_molecule = container[electrophile_molecule_index]
-                electrophile_atom_index = reagent_proton_index
                 nucleophile_molecule_index = 1
                 nucleophile_molecule = container[nucleophile_molecule_index]
-                nucleophile_atom_index = MoleculeController(nucleophile_molecule).nucleophileIndex()
-                nucleophile_atom_index.should.be.greaterThan(-1)
             }
         }
 
@@ -94,17 +70,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
             process.exit()
         }
 
-        if (electrophile_atom_index === null || electrophile_atom_index === undefined) {
-            electrophile_atom_index = MoleculeController(electrophile_molecule).indexOf("H")
-        }
-
-        if (electrophile_atom_index === null || electrophile_atom_index === undefined) {
-            console.log("BronstedLowryAcidBaseReactions::electrophile_atom_index is undefined or null")
-            process.exit()
-        }
-
         // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
-
         // SEE organic chemistry 8th edition p245
 // propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
 // 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
@@ -119,8 +85,8 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         // react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index)
         // Here the substrate (base) has no proton and the reagent (acid) does.
         // So we remove the proton from the reagent and add it to the substrate.
-        const proton_index = MoleculeController(container[electrophile_molecule_index]).indexOf("H")
-        proton_index.should.be.greaterThan(-1);
+//        const proton_index = MoleculeController(container[electrophile_molecule_index]).indexOf("H")
+        MoleculeController(container[electrophile_molecule_index]).indexOf("H").should.be.greaterThan(-1);
 
 
         // CC=CC (nucleophile, substrate) -------> HBr (electrophile, reagent)
@@ -136,8 +102,6 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
 
 
-
-
         // SEE organic chemistry 8th edition p245
 // propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
 // 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
@@ -147,7 +111,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 // than the pKa of the protonated alcohol (Section 2.10).
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
 
-        proton_index.should.not.be.equal(false)
+        MoleculeController(container[electrophile_molecule_index]).indexOf("H").should.not.be.equal(false)
 
         // Some checks
         container[0].should.be.an.Boolean()
@@ -165,7 +129,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 
         container = MoleculeController(container[electrophile_molecule_index]).removeProton(
             container,
-            proton_index,
+            MoleculeController(container[electrophile_molecule_index]).indexOf("H"),
             electrophile_molecule_index
         )
 
@@ -217,7 +181,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         // Source atom is what the arrow points from (tail) and will
         // always be the atom from the nucleophile.
         // Add proton to nucleophile
-        nucleophile_atom_index.should.be.greaterThan(-1)
+        MoleculeController(container[nucleophile_molecule_index]).nucleophileIndex().should.be.greaterThan(-1)
 
 
         container[0].should.be.an.Boolean()
@@ -235,11 +199,18 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
             })
         })
 
+        // HCl is the proton donator and is our electrophile as protons do not have electrons (target)
+        // H2O (nucleophile) is the proton acceptor as the oxygen has lone pairs of electrons (source)
+
+        //push(atoms_or_atomic_symbols, container, target_molecule_index, test_number, target_atom_index, source_atom_index, source_molecule_index)
+        console.log("target atom index")
+        console.log(container[electrophile_molecule_index][0])
+        console.log(MoleculeController(container[electrophile_molecule_index]).indexOf("H"))
         container = MoleculeController(container[nucleophile_molecule_index]).push(proton, container,
             container.length -1,
             test_number,
-            electrophile_atom_index,
-            nucleophile_atom_index,
+            MoleculeController(container[electrophile_molecule_index]).indexOf("H"),
+            MoleculeController(container[nucleophile_molecule_index]).nucleophileIndex(),
             nucleophile_molecule_index
         )
 

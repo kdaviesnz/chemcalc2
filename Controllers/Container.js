@@ -14,18 +14,11 @@ class CContainer {
         this.MoleculeController = MoleculeController
         this.test_number = test_number
         this.verbose = verbose
-        if (this.verbose) {
-            console.log("Controllers/Container.js::Created container controller object ->")
-            console.log(this)
-        }
     }
     
     __doReactionRecursive(reagent_index, substrate_index) {
 
         if (reagent_index === undefined) {
-            if (this.verbose) {
-                 console.log("Container.js::reagent index is null")
-            }
             return this.__doReactionRecursive(reagent_index, substrate_index+1)
         }
         
@@ -35,10 +28,6 @@ class CContainer {
         
         
         if (reagent[reagent_index][1] === 0) {
-            if (this.verbose) {
-                 console.log("Container.js::no reagent left")
-                console.log(reagent)
-            }
             return this.__doReactionRecursive(reagent_index, substrate_index+1)
         }
               
@@ -55,41 +44,16 @@ class CContainer {
         const substrate = substrates[substrate_index]
 
         if (substrate[substrate_index][1] === 0) {
-            if (this.verbose) {
-                console.log("Container.js::no substrate left")
-                console.log(substrate)
-            }
             return
         }
         
-
-        if (this.verbose) {
-            console.log("Controllers/Container.js:: Got substrate ->")
-            console.log(substrate)
-        }
-
         if (reagent === substrate) {
-            if (this.verbose) {
-                console.log('reagent and substrate are the same')
-            }
             return this.__doReactionRecursive(reagent_index, substrate_index+1)
         } else {
 
             const substrate_families = Families(substrate[0].slice(1), this.verbose).families
             const reagent_families = Families(reagent[0].slice(1), this.verbose).families
 
-            if (this.verbose) {
-                console.log("Controllers/Container.js substrate families ->")
-                console.log(substrate_families)
-                console.log("Controllers/Container.js substrate alkene ->")
-                console.log(substrate_families.alkene(this.verbose))
-                console.log("Controllers/Container.js reagent families ->")
-                console.log(reagent_families)
-                console.log("Controllers/Container.js reagent alkene ->")
-                console.log(reagent_families.alkene(this.verbose))
-             }
-
-            
              const bronstedLowry = BronstedLowryAcidBaseReactions(this.container, this.MoleculeController, this.test_number, this.verbose)
              const lewis = LewisAcidBaseReactions(this.container, this.MoleculeController, this.test_number, this.verbose)
 
@@ -161,15 +125,6 @@ class CContainer {
 
 
                     console.log("Error - trying to react water with an alkene")
-                                            /*
-                                            console.log('Reagent')
-                                            console.log(reagent) // water
-                                            console.log('Substrate')
-                                            console.log(substrate) // propylene
-                                            console.log(substrate_families.alkene(this.verbose).length)
-                                            console.log(is_water)
-
-                                             */
                                              process.exit()
                                         }
                                       
@@ -213,9 +168,6 @@ class CContainer {
 
                  // if substrate is water then return as is, as water does not react to alkenes.
                  if (is_water) {
-                     if (this.verbose) {
-                         console.log('Container::Not processing as substrate is water and reagent is an alkene')
-                     }
                      return this.__doReactionRecursive(reagent_index, substrate_index+1)
                  }
 
@@ -335,14 +287,6 @@ class CContainer {
             // this needs to be changed to a recursive function as reagents can change
             const reagents = this.container.slice(2,this.container.length)
 
-        if (this.verbose) {
-           console.log("Test number: ")
-           console.log(this.test_number)
-           console.log("Reagents: ")
-           console.log(reagents)
-        }
-
-
         if (null === reagent_index) {
             reagent_index = reagents.length -1
         }
@@ -353,15 +297,6 @@ class CContainer {
         }
             
         const reagent = reagents[reagent_index]
-        if (this.verbose) {
-              console.log("Controllers/Container.js:: Got reagent ->")
-            console.log(reagent)
-        }
-
-        if (this.test_number === 1) {
-            // reagent_index should be 0
-            reagent_index.should.be.equal(0)
-        }
 
         this.__doReactionRecursive(reagent_index, 0)
 
@@ -389,12 +324,7 @@ class CContainer {
 // than the pKa of the protonated alcohol (Section 2.10). 
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
         
-        if (verbose) {
-            console.log("Controllers/Container.js::Adding ->")
-            console.log(molecule.IUPACName)
-            console.log("to container")
-        }
-        
+
         // Organic Chemistry 8th edition, P199
         // test_number 5
         // [Br-] + carbocation (alkane)
@@ -408,11 +338,6 @@ class CContainer {
         // Add item to container.
         this.container.push([molecule, units])
 
-        if (verbose) {
-            console.log("Controllers/Container.js:: Container before processing reaction ->")
-            console.log(this.container)
-            console.log("Length:" + this.container.length)
-        }
 
         // First element is pKa value,
         // container[2] is reagent
@@ -450,17 +375,8 @@ class CContainer {
 
 
         } else {
-            if (this.verbose) {
-            console.log("Controller/Container.js:: Container only has substrate so not processing a reaction ")
-        
-            }
         }
 
-        if (this.verbose) {
-            console.log("Controller/Container.js:: Container after adding -> ")
-            console.log(molecule_array_or_string)
-            console.log(this.container)
-        }
 
 
     } // add()
