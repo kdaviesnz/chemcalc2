@@ -7,7 +7,16 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 
     const react = () => {
 
-
+        // EXPLANATION
+        // In a Browsted Lowry reaction one molecule donates a proton
+        // to another atom.
+        // The proton is the target (what the arrow would be pointing to)
+        // and is our electrophile.
+        // The atom receiving the proton is the source (what the arrow would be 
+        // pointing from) and is our nucleophile.
+        
+        // SEE organic chemistry 8th edition p51
+        
         // SEE organic chemistry 8th edition p245
 // propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
 // 1. H+ (an electrophile, sulfuric acid) adds to the sp2 carbon (double bond) of the
@@ -18,6 +27,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
 
         // Find what item in the container has the proton
+        // map molecules that have protons
 
         const substrate_proton_index = MoleculeController([container[1][0], 1]).indexOf("H", false, verbose)
         const reagent_proton_index = MoleculeController([container[2][0], 1]).indexOf("H", false, verbose)
