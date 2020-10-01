@@ -28,6 +28,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 
         // Find what item in the container has the proton
         // map molecules that have protons
+        const proton_map = _.cloneDeep()
 
         const substrate_proton_index = MoleculeController([container[1][0], 1]).indexOf("H", false, verbose)
         const reagent_proton_index = MoleculeController([container[2][0], 1]).indexOf("H", false, verbose)
