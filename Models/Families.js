@@ -1,6 +1,10 @@
 const Set = require('./Set')
-const Families = (fg_atoms) => {
+const Families = (mmolecule) => {
 
+    mmolecule.length.should.be.equal(2) // molecule, units
+    mmolecule[0].length.should.be.equal(2) // pKa, atoms
+
+    const fg_atoms = mmolecule[0][1]
 
     // https://www.masterorganicchemistry.com/2010/06/18/know-your-pkas/
     // atoms

@@ -258,7 +258,7 @@ const CMolecule = (mmolecule, verbose) => {
         if (atoms_with_lone_pairs.length === 0) {
 
             // Check for double bonds
-            const double_bonds = Families(molecule.slice(1)).families.alkene()
+            const double_bonds = Families(mmolecule).families.alkene()
 
             // test_number 6
             // SEE organic chemistry 8th edition p245

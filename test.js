@@ -228,6 +228,7 @@ client.connect(err => {
             MoleculeLookup(db, "CC=C", "SMILES", true).then(
                 // "resolves" callback
                 (propylene_molecue) => {
+                    console.log("Reacting propylene with water")
                     reactPropyleneWithWater(propylene_molecue, water_molecule)
                     /*
                     pkl.fetchSubstructuresBySMILES(molecule.CanonicalSMILES, db, (molecule, db, SMILES)=> {

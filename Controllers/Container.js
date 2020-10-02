@@ -51,8 +51,8 @@ class CContainer {
             return this.__doReactionRecursive(reagent_index, substrate_index+1)
         } else {
 
-            const substrate_families = Families(substrate[0].slice(1), this.verbose).families
-            const reagent_families = Families(reagent[0].slice(1), this.verbose).families
+            const substrate_families = Families([substrate[0], 1]).families
+            const reagent_families = Families([reagent[0], 1]).families
 
             const bronstedLowry = BronstedLowryAcidBaseReactions(this.container, this.MoleculeController, this.test_number, this.verbose)
             const lewis = LewisAcidBaseReactions(this.container, this.MoleculeController, this.test_number, this.verbose)
@@ -64,8 +64,9 @@ class CContainer {
 
             if (substrate_families.alkene(this.verbose).length > 0) {
 
-                const is_water = reagent[0].length === 4 && reagent[0][1][0]==='H'
-                    && reagent[0][2][0]==='H' && reagent[0][3][0]==='O'
+
+                const is_water = reagent[0][1].length === 3 && reagent[0][1][0][0]==='H'
+                    && reagent[0][1][1][0]==='H' && reagent[0][1][2][0]==='O'
 
 
 
@@ -163,8 +164,9 @@ class CContainer {
             } else if (reagent_families.alkene(this.verbose).length > 0) {
 
 
-                const is_water = substrate[0].length === 4 && substrate[0][1][0]==='H'
-                    && substrate[0][2][0]==='H' && substrate[0][3][0]==='O'
+                const is_water = substrate[0][1].length === 3 && substrate[0][1][0][0]==='H'
+                    && substrate[0][1][1][0]==='H' && substrate[0][1][2][0]==='O'
+
 
                 // if substrate is water then return as is, as water does not react to alkenes.
                 if (is_water) {
