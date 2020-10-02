@@ -95,8 +95,6 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         // Add proton to nucleophile
         //push(atoms_or_atomic_symbols, container, target_molecule_index, test_number, target_atom_index, source_atom_index, source_molecule_index)
         // Source is our nucleophile that is attacking the proton molecule (electrophile)
-        console.log(source_index_map)
-        console.log(container[source_index_map.source_molecule_index][0])
 
         container = MoleculeController(container[source_index_map.source_molecule_index]).push(proton, container,
             container.length -1,
@@ -108,10 +106,6 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 
 
         container.splice(container.length-1,1) // remove proton from container
-
-        console.log("BronstedLowryAcidBaseReactions.js:")
-        console.log(container[1][0])
-        console.log(container[2][0])
 
         return container
 

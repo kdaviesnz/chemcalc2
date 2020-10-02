@@ -166,8 +166,6 @@ client.connect(err => {
             ccontainer.add(_.cloneDeep(oxidanium_molecule).json, 1, verbose)
             console.log("Adding chloride to container")
             ccontainer.add(_.cloneDeep(chloride_molecule).json, 1, verbose)
-            console.log("Container:")
-            console.log(chloride_molecule)
             VContainerWithDB(ccontainer).show(() => {
                 console.log("Test 3 complete: Container should show prop-1-ene and oxidane.")
                 process.exit()
@@ -216,7 +214,6 @@ client.connect(err => {
             ccontainer.add(_.cloneDeep(water_molecule).json, 1, verbose)
             console.log("Adding propylene to container")
             ccontainer.add(_.cloneDeep(propylene_molecue).json, 1, verbose)
-            console.log("Container:")
             VContainerWithDB(ccontainer).show(() => {
                 console.log("Test 2 complete: Container should show prop-1-ene and oxidane.\n")
                 // Start test 3

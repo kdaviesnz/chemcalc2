@@ -121,29 +121,7 @@ Example oxygen with 2 bonds
         //const electrons_used_in_bonds_count = __Bonds(atom[0])
         // const is_negatively_charged = (atom[3] *2) < (atom.slice(4).length)
         // const is_negatively_charged = atom.slice(4).length > 8
-        const is_negatively_charged =  (atom.slice(5).length - __Bonds(atom[0]).length) > atom[2]
-        if (test_number == 3.2) {
-            // CO:C (nucleophile) ------> AlCl3 (electrophile) O: is the nucleophile (base, donates an electron pair), Al is the electrophile (acid, accepts an electron pair) See 2.12 Organic Chemistry 8th Edition P76
-/*
-[ 'O',
-  8,
-  6,
-  2,
-  'bqdtz06g6kdjb9unn',
-  'bqdtz06g6kdjb9uno',
-  'bqdtz06g6kdjb9unp',
-  'bqdtz06g6kdjb9unq',
-  'bqdtz06g6kdjb9unr',
-  'bqdtz06g6kdjb9uns',
-  'bqdtz06g6kdjb9unm',
-  'bqdtz06g6kdjb9unw' ]
-
- */
-            is_negatively_charged.should.be.equal(false)
-        }
-        if (test_number === 5.1) {
-            is_negatively_charged.should.be.equal(true)
-        }
+        const is_negatively_charged = atom[4] === -1 || ((atom.slice(5).length - __Bonds(atom[0]).length) > atom[2])
         return is_negatively_charged
         
     }

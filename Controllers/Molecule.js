@@ -48,8 +48,10 @@ const CMolecule = (mmolecule, verbose) => {
 
         mmolecule.length.should.be.equal(2) // molecule, units
         mmolecule[0].length.should.be.equal(2) // pKa, atoms
+        mmolecule[0][0].should.be.an.Number() // pKa
+        mmolecule[0][1].should.be.an.Array() // atoms
 
-        const negatively_charged_atoms = mmolecule[0][1].slice(1).reduce(
+        const negatively_charged_atoms = mmolecule[0][1].reduce(
             (carry, atom, index) => {
                 if (atom[0] !== "H" && CAtom(atom, index,mmolecule).isNegativelyCharged(test_number)) {
                     carry.push([
@@ -250,7 +252,7 @@ const CMolecule = (mmolecule, verbose) => {
         const negatively_charged_atoms = __negativelyChargedAtoms(test_number)
 
         if (negatively_charged_atoms.length > 0) {
-            return negatively_charged_atoms[0][0] + 1
+            return negatively_charged_atoms[0][0]
         } 
         
         const atoms_with_lone_pairs = __atomsWithLonePairs(test_number)
@@ -522,7 +524,7 @@ const CMolecule = (mmolecule, verbose) => {
 
                     // Does the source atom have a double bond?
                     // returns a set of electrons or false
-                    const double_bond = CAtom(mmolecule[0][1][source_atom_index], source_atom_index, mmolecule[0]).doubleBond(test_number)
+                    const double_bond = CAtom(mmolecule[0][1][source_atom_index], source_atom_index, mmolecule).doubleBond(test_number)
 
                     // remove the double bond by removing electrons from bonded atom (turn into single bond)
                     if (double_bond) {
