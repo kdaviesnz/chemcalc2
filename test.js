@@ -147,6 +147,7 @@ client.connect(err => {
                 if (molecule_from_pubchem !== null) {
                     console.log("Molecule found in pubchem")
                     molecule_from_pubchem['json'] = MoleculeFactory(search)
+                    molecule_from_pubchem['search'] = search
                     db.collection("molecules").insertOne(molecule_from_pubchem, (err, result) => {
                         if (err) {
                             console.log(err)

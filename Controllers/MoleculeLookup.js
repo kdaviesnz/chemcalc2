@@ -6,7 +6,7 @@ const MoleculeLookup = (db, search, search_type, add_hydrogens, debug_statement,
     new Promise(
         (resolve, notFound, reject) => {
             db.collection('molecules').findOne(
-                {"CanonicalSMILES":search},
+                {$or:[{"CanonicalSMILES":search}, {"search":search}]},
                 function (Err, molecule) {
 
                     // An error occurred

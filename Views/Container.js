@@ -26,7 +26,7 @@ const VContainer = (client) => {
             const mmolecule = item
             const units = item[1]
 
-            console.log(VMolecule(mmolecule).canonicalSMILES(units))
+            //console.log(VMolecule(mmolecule).canonicalSMILES(units))
 
             MoleculeLookup(db, VMolecule(mmolecule).canonicalSMILES(units), "SMILES", true).then(
                 // "resolves" callback - molecule found in db
@@ -38,6 +38,7 @@ const VContainer = (client) => {
                     pkl.searchBySMILES(search.replace(/\(\)/g, ""), db, (molecule_from_pubchem) => {
                         if (molecule_from_pubchem !== null) {
                             molecule_from_pubchem['json'] = MoleculeFactory(search)
+                            molecule_from_pubchem['search'] = search
                             db.collection("molecules").insertOne(molecule_from_pubchem, (err, result) => {
                                 if (err) {
                                     console.log(err)
