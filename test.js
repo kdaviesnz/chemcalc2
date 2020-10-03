@@ -47,6 +47,8 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
     process.exit()
 }
 
+console.log("Running initial tests ...")
+
 // CAtom tests
 // https://www.quora.com/How-many-electrons-are-in-H2O
 const w = MoleculeFactory("O") // water
@@ -65,7 +67,6 @@ oxygen.isNegativelyCharged().should.be.false()
 oxygen.isPositivelyCharged().should.be.false()
 VMolecule([w,1]).canonicalSMILES().should.be.equal("O")
 
-console.log("Running initial tests ...")
 const oxide = MoleculeFactory("[OH3+]")
 oxide[0].should.be.equal(-1.74) // pKa
 oxide[1].should.be.an.Array()
@@ -82,6 +83,25 @@ oxide_oxygen.isNegativelyCharged().should.be.false()
 oxide_oxygen.isPositivelyCharged().should.be.true()
 VMolecule([oxide,1]).canonicalSMILES().should.be.equal("[O+]")
 console.log("Initial tests ok, now running main tests ...")
+
+const chloride = MoleculeFactory("[Cl-]")
+chloride[0].should.be.equal(2.86) // pKa
+chloride[1].should.be.an.Array()
+chloride[1].length.should.be.equal(1)
+chloride[1][0][0].should.be.equal("Cl")
+const chloride_chlorine = CAtom(chloride[1][0], 0, [chloride,1])
+chloride[1][0].slice(5).length.should.be.equal(7) // number of electrons - should be 7
+chloride_chlorine.hydrogens().length.should.be.equal(0) // Cl- has no hydrogens
+chloride_chlorine.carbons().length.should.be.equal(0)
+chloride_chlorine.freeSlots().should.be.equal(1) // ???
+chloride_chlorine.bondCount().should.be.equal(0)
+chloride_chlorine.doubleBondCount().should.be.equal(0)
+chloride_chlorine.isNegativelyCharged().should.be.true()
+chloride_chlorine.isPositivelyCharged().should.be.false()
+VMolecule([oxide,1]).canonicalSMILES().should.be.equal("[Cl-]")
+console.log("Initial tests ok, now running main tests ...")
+
+process.exit()
 
 // Tests start
 const uri = "mongodb+srv://" + process.env.MONGODBUSER + ":" + process.env.MONGODBPASSWORD + "@cluster0.awqh6.mongodb.net/chemistry?retryWrites=true&w=majority";

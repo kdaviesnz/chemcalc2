@@ -121,7 +121,26 @@ Example oxygen with 2 bonds
         //const electrons_used_in_bonds_count = __Bonds(atom[0])
         // const is_negatively_charged = (atom[3] *2) < (atom.slice(4).length)
         // const is_negatively_charged = atom.slice(4).length > 8
-        const is_negatively_charged = atom[4] === -1 || ((atom.slice(5).length - __Bonds(atom[0]).length) > atom[2])
+        // For Cl- atom[2] is 7
+        // Atoms that gain extra electrons become negatively charged. A neutral chlorine atom, for example, contains 17 protons and 17 electrons. By adding one more electron we get a negatively charged Cl- ion with a net charge of -1.
+        //  Because the number of electrons is no longer equal to the number of protons, each is now an ion and has a +1 (sodium cation) or –1 (chloride anion) charge.
+        console.log("Cl-")
+        console.log(atom)
+        console.log(atom[2])
+        console.log(atom.slice(5).length)
+
+        // Get number of protons
+        const info = PeriodicTable[atom[0]]
+        console.log(info)
+        const number_of_protons = info['group']
+
+        // get total number of electrons
+        const electrons_per_shell_arr = info["electrons_per_shell"].split("-")
+        const number_of_electrons_minus_valence_electrons = electrons_per_shell_arr.slice(0, -1).reduce((a, b) => a*1 + b*1, 0)
+        const total_number_of_electrons = atom.slice(5).length + number_of_electrons_minus_valence_electrons
+        const is_negatively_charged = total_number_of_electrons  < number_of_protons
+        console.log(total_number_of_electrons)
+        return false
         return is_negatively_charged
         
     }
@@ -290,13 +309,25 @@ We then return the total number of free slots minus the number of slots already 
         //O, 2-6 2 max 2 bonds  2 free slots
         // Al 2-8-3 ? max ?bonds free slots
         // the third shell can hold up to 18
+        /*
+        { group: 17,
+  column: 'VIIA',
+  atomic_number: 17,
+  name: 'chlorine',
+  atomic_weight: 35.45,
+  electrons_per_shell: '2-8-7',
+  state_of_matter: 'gas',
+  subcategory: 'reactive nonmetal' }
+         */
         const info = PeriodicTable[atom[0]]
 
         const number_of_shells = info["electrons_per_shell"].split("-").length
-        const m = [2,8,18,32]
+        const m = [2,8,8,32]
 
         // This is the maximum number of electrons the atom can have in its outer shell
+        // For chlorine this is 18
         const max_possible_number_of_electrons = m[number_of_shells-1]
+        console.log(max_possible_number_of_electrons)
 
         // This is the number of bonds where the atom shares one of its outershell electrons
         // eg for oxygen this number is 2
@@ -306,26 +337,6 @@ We then return the total number of free slots minus the number of slots already 
 
         return max_possible_number_of_shared_electron_bonds - __bondCount()
 
-//        const used_electrons = __usedElectrons(test_number) // eg for water this will be an array of 4 electrons
-
-  //      used_electrons.should.be.an.Array()
-        // Number of used electrons should always be even
-       // (used_electrons.length % 2 == 0).should.be.equal(true)
-
-        // eg water
-        // oxygen atom in H2O has 4 electrons used (bonds to hydrogen, used_electrons) with a spare 2 electrons
-        //return (max_possible_number_of_shared_electron_bonds - used_electrons.length) / 2
-
-        /*
-        let free_slots = null
-        if (used_electrons.length <= max_possible_number_of_shared_electron_bonds *2) {
-            // 18 - 6 / 2
-            free_slots = (max_possible_number_of_electrons - (max_possible_number_of_shared_electron_bonds*2)) / 2
-        } else {
-            free_slots = (max_possible_number_of_electrons - used_electrons.length) / 2
-        }
-        return free_slots < 0? 0 : free_slots
-         */
     }
     
     const __isCarbocation = (test_number) => {
