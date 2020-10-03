@@ -322,7 +322,7 @@ We then return the total number of free slots minus the number of slots already 
         const info = PeriodicTable[atom[0]]
 
         const number_of_shells = info["electrons_per_shell"].split("-").length
-        const m = [2,8,8,32]
+        const m = [2,8,18,32]
 
         // This is the maximum number of electrons the atom can have in its outer shell
         // For chlorine this is 18
