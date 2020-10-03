@@ -84,6 +84,32 @@ oxide_oxygen.isPositivelyCharged().should.be.true()
 VMolecule([oxide,1]).canonicalSMILES().should.be.equal("[O+]")
 console.log("Initial tests ok, now running main tests ...")
 
+const hydrochloric_acid = MoleculeFactory("Cl")
+hydrochloric_acid[0].should.be.equal(2.86) // pKa
+hydrochloric_acid[1].should.be.an.Array()
+hydrochloric_acid[1].length.should.be.equal(1)
+hydrochloric_acid[1][0][0].should.be.equal("H")
+hydrochloric_acid[1][1][0].should.be.equal("Cl")
+const hydrochloric_acid_chlorine = CAtom(hydrochloric_acid[1][1], 0, [hydrochloric_acid,1])
+hydrochloric_acid[1][1].slice(5).length.should.be.equal(8) // number of electrons - should be 8
+hydrochloric_acid_chlorine.hydrogens().length.should.be.equal(0) // Cl- has no hydrogens
+hydrochloric_acid_chlorine.carbons().length.should.be.equal(0)
+hydrochloric_acid_chlorine.freeSlots().should.be.equal(11) // ???
+hydrochloric_acid_chlorine.bondCount().should.be.equal(1)
+hydrochloric_acid_chlorine.doubleBondCount().should.be.equal(0)
+hydrochloric_acid_chlorine.isNegativelyCharged().should.be.true()
+hydrochloric_acid_chlorine.isPositivelyCharged().should.be.false()
+const hydrochloric_acid_hydrogen = CAtom(hydrochloric_acid[1][0], 0, [hydrochloric_acid,1])
+hydrochloric_acid[1][0].slice(5).length.should.be.equal(2) // number of electrons - should be 2
+hydrochloric_acid_hydrogen.hydrogens().length.should.be.equal(0) // Cl- has no hydrogens
+hydrochloric_acid_hydrogen.carbons().length.should.be.equal(0)
+hydrochloric_acid_hydrogen.freeSlots().should.be.equal(0) 
+hydrochloric_acid_hydrogen.bondCount().should.be.equal(1)
+hydrochloric_acid_hydrogen.doubleBondCount().should.be.equal(0)
+hydrochloric_acid_hydrogen.isNegativelyCharged().should.be.false()
+hydrochloric_acid_hydrogen.isPositivelyCharged().should.be.false()
+VMolecule([hydrochloric_acid,1]).canonicalSMILES().should.be.equal("HCl")
+
 const chloride = MoleculeFactory("[Cl-]")
 chloride[0].should.be.equal(2.86) // pKa
 chloride[1].should.be.an.Array()
