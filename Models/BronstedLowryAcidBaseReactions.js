@@ -60,9 +60,9 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
          */
 
         // Next find what molecule has the source atom that attacks the proton
-        const source_index_map = _.cloneDeep(container).slice(1).splice(target_molecule_index -2, 1).reduce((carry, molecule_with_units, index)=> {
+        const source_index_map = _.cloneDeep(container).slice(1).reduce((carry, molecule_with_units, index)=> {
             const nucleophile_atom_index = MoleculeController([molecule_with_units[0], 1]).nucleophileIndex()
-            if (nucleophile_atom_index === false) {
+            if (nucleophile_atom_index === false || index === proton_index_map.proton_molecule_index - 1) {
                 return carry
             }
             if (carry === null) {
@@ -78,6 +78,19 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
                 "pKa": molecule_with_units[0][0]
             }:carry
         }, null)
+
+        if (undefined == source_index_map.source_atom_index) {
+            console.log("WARNING: source atom index is undefined")
+            console.log("Target index map:")
+            console.log(proton_index_map)
+            console.log("Source index map:")
+            console.log(source_index_map)
+            console.log(container[source_index_map.source_molecule_index][0])
+            console.log("Container:")
+            container.slice(1).map((item)=>{
+                console.log(item[0])
+            })
+        }
 
         container = MoleculeController(container[proton_index_map.proton_molecule_index]).removeProton(
             container,
@@ -95,6 +108,8 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         // Add proton to nucleophile
         //push(atoms_or_atomic_symbols, container, target_molecule_index, test_number, target_atom_index, source_atom_index, source_molecule_index)
         // Source is our nucleophile that is attacking the proton molecule (electrophile)
+
+
 
         container = MoleculeController(container[source_index_map.source_molecule_index]).push(proton, container,
             container.length -1,
