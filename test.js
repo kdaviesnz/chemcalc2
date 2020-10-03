@@ -51,7 +51,7 @@ console.log("Running initial tests ...")
 
 // CAtom tests
 // https://www.quora.com/How-many-electrons-are-in-H2O
-const w = MoleculeFactory("O") // water
+const w = MoleculeFactory("O") // water H2O
 w[0].should.be.equal(14) // pKa
 w[1].should.be.an.Array()
 w[1].length.should.be.equal(3)
@@ -79,36 +79,36 @@ oxide_oxygen.carbons().length.should.be.equal(0)
 oxide_oxygen.freeSlots().should.be.equal(-1)
 oxide_oxygen.bondCount().should.be.equal(3)
 oxide_oxygen.doubleBondCount().should.be.equal(0)
-oxide_oxygen.isNegativelyCharged().should.be.false()
+oxide_oxygen.isNegativelyCharged().should.be.false() // proton count 8, total number of electrons 11
 oxide_oxygen.isPositivelyCharged().should.be.true()
 VMolecule([oxide,1]).canonicalSMILES().should.be.equal("[O+]")
-console.log("Initial tests ok, now running main tests ...")
 
-const hydrochloric_acid = MoleculeFactory("Cl")
-hydrochloric_acid[0].should.be.equal(2.86) // pKa
+
+const hydrochloric_acid = MoleculeFactory("Cl") // HCl
+hydrochloric_acid[0].should.be.equal(-6.3) // pKa
 hydrochloric_acid[1].should.be.an.Array()
-hydrochloric_acid[1].length.should.be.equal(1)
+hydrochloric_acid[1].length.should.be.equal(2)
 hydrochloric_acid[1][0][0].should.be.equal("H")
 hydrochloric_acid[1][1][0].should.be.equal("Cl")
 const hydrochloric_acid_chlorine = CAtom(hydrochloric_acid[1][1], 0, [hydrochloric_acid,1])
 hydrochloric_acid[1][1].slice(5).length.should.be.equal(8) // number of electrons - should be 8
-hydrochloric_acid_chlorine.hydrogens().length.should.be.equal(0) // Cl- has no hydrogens
+hydrochloric_acid_chlorine.hydrogens().length.should.be.equal(1) // Cl- has no hydrogens
 hydrochloric_acid_chlorine.carbons().length.should.be.equal(0)
-hydrochloric_acid_chlorine.freeSlots().should.be.equal(11) // ???
+hydrochloric_acid_chlorine.freeSlots().should.be.equal(10)
 hydrochloric_acid_chlorine.bondCount().should.be.equal(1)
 hydrochloric_acid_chlorine.doubleBondCount().should.be.equal(0)
-hydrochloric_acid_chlorine.isNegativelyCharged().should.be.true()
+hydrochloric_acid_chlorine.isNegativelyCharged().should.be.false()
 hydrochloric_acid_chlorine.isPositivelyCharged().should.be.false()
 const hydrochloric_acid_hydrogen = CAtom(hydrochloric_acid[1][0], 0, [hydrochloric_acid,1])
 hydrochloric_acid[1][0].slice(5).length.should.be.equal(2) // number of electrons - should be 2
-hydrochloric_acid_hydrogen.hydrogens().length.should.be.equal(0) // Cl- has no hydrogens
+hydrochloric_acid_hydrogen.hydrogens().length.should.be.equal(1) // Cl- has no hydrogens
 hydrochloric_acid_hydrogen.carbons().length.should.be.equal(0)
 hydrochloric_acid_hydrogen.freeSlots().should.be.equal(0) 
 hydrochloric_acid_hydrogen.bondCount().should.be.equal(1)
 hydrochloric_acid_hydrogen.doubleBondCount().should.be.equal(0)
 hydrochloric_acid_hydrogen.isNegativelyCharged().should.be.false()
 hydrochloric_acid_hydrogen.isPositivelyCharged().should.be.false()
-VMolecule([hydrochloric_acid,1]).canonicalSMILES().should.be.equal("HCl")
+VMolecule([hydrochloric_acid,1]).canonicalSMILES().should.be.equal("Cl")
 
 const chloride = MoleculeFactory("[Cl-]")
 chloride[0].should.be.equal(2.86) // pKa
@@ -124,10 +124,8 @@ chloride_chlorine.bondCount().should.be.equal(0)
 chloride_chlorine.doubleBondCount().should.be.equal(0)
 chloride_chlorine.isNegativelyCharged().should.be.true()
 chloride_chlorine.isPositivelyCharged().should.be.false()
-VMolecule([oxide,1]).canonicalSMILES().should.be.equal("[Cl-]")
+VMolecule([chloride,1]).canonicalSMILES().should.be.equal("[Cl-]")
 console.log("Initial tests ok, now running main tests ...")
-
-process.exit()
 
 // Tests start
 const uri = "mongodb+srv://" + process.env.MONGODBUSER + ":" + process.env.MONGODBPASSWORD + "@cluster0.awqh6.mongodb.net/chemistry?retryWrites=true&w=majority";

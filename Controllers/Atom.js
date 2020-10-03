@@ -53,95 +53,46 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         }).length
     }
 
-    const __isPositivelyCharged = (test_number) => {
-        
-       /*
-How to determine if an atom is positively charged (cation)
-Eg Carbon
-A neutral carbon atom has 4 free slots.
-If we remove one of the slots we now have a carbocation.
-Neutral carbon free slots count (4) > carbon with a free slot removed free slots count (3).
-const neutral_carbon = AtomFactory(“C”, 0)
-const neutral_carbon_free_slot_count = neutral_carbon.__freeSlots().length
-const is_positively_charged = neutral_carbon_free_slot_count  > atom.__freeSlots().length
-But what if the free slot was removed by a bond? In that case we have lost an electron but gained another:
-Neutral carbon free slots count (4) > carbon with a free slot removed free slots count (3) + number of bonds atom has (1)
-And if two bonds:
-Neutral carbon free slots count (4) > carbon with two free slots removed free slots count (2) + number of bonds atom has (2)
-And if three bonds:
-Neutral carbon free slots count (4) > carbon with three free slots removed free slots count (1) + number of bonds atom has (3)
-Taking the last example if we remove the last free slot without adding a bond:
-Neutral carbon free slots count (4) > carbon with four free slots removed free slots count (0) + number of bonds atom has (3)
-Hence:
-const neutral_atom= AtomFactory(atom[0], 0)
-const neutral_atom_free_slot_count = neutral_atom.__freeSlots().length
-const is_positively_charged = neutral_atom_free_slot_count  > (atom.__freeSlots().length + atom.__bonds.length)
-
-Example oxygen with 2 bonds
-2 > (0 + 2)
-*/ 
-        
-        // atomic symbol, proton count, valence count,  number of bonds, velectron1, velectron2, velectron3
-        // Electrophile
-        // 5.2 test 5, [C+] carbocation electrophile so should return true
-         // We need to also take into account electrons used in bonds
-        // __Bonds = (atomic_symbol)
-        //const electrons_used_in_bonds_count = __Bonds(atom[0])
-        //const is_positively_charged = (atom[3]*2) > (atom.slice(4).length)
-
-        const neutral_atom= AtomFactory(atom[0], 0)
-        const neutral_atom_free_slot_count = neutral_atom[3]
-        // eg H3)
-        const is_positively_charged =  neutral_atom_free_slot_count  < __bondCount(test_number)
-
-        return is_positively_charged
-    }
-    
-    const __isNegativelyCharged = (test_number) => {
-        
-      /*
-How to determine if an atom is negatively charged (ion)
-Eg [Br-]
-A neutral Br atom has 7 valence electrons.
-Hence a Br atom that has more than 7 valence electrons is negatively charged.
-But what if the Bromine atom has more than 7 valence electrons because of a bond?
-In that case we need to take into account that bond.
-Hence:
-const is_negatively_charged = (atom.slice(4).length - atom.__bonds.length) > atom[2]
-
-Example oxygen with 2 bonds
-(8 - 2) > 6
-*/
-        // Nucleophile
-        // 5.1 test 5, [Br-] nucleophile so should return true
-        // atomic symbol, proton count, valence count,  number of bonds, velectron1, velectron2, velectron3
-        // @todo
-        // We need to also take into account electrons used in bonds
-        // __Bonds = (atomic_symbol)
-        //const electrons_used_in_bonds_count = __Bonds(atom[0])
-        // const is_negatively_charged = (atom[3] *2) < (atom.slice(4).length)
-        // const is_negatively_charged = atom.slice(4).length > 8
-        // For Cl- atom[2] is 7
-        // Atoms that gain extra electrons become negatively charged. A neutral chlorine atom, for example, contains 17 protons and 17 electrons. By adding one more electron we get a negatively charged Cl- ion with a net charge of -1.
-        //  Because the number of electrons is no longer equal to the number of protons, each is now an ion and has a +1 (sodium cation) or –1 (chloride anion) charge.
-        console.log("Cl-")
-        console.log(atom)
-        console.log(atom[2])
-        console.log(atom.slice(5).length)
+    const __numberOfProtons = () => {
 
         // Get number of protons
         const info = PeriodicTable[atom[0]]
-        console.log(info)
-        const number_of_protons = info['group']
+        return number_of_protons = info['atomic_number'] * 1
 
-        // get total number of electrons
-        const electrons_per_shell_arr = info["electrons_per_shell"].split("-")
-        const number_of_electrons_minus_valence_electrons = electrons_per_shell_arr.slice(0, -1).reduce((a, b) => a*1 + b*1, 0)
-        const total_number_of_electrons = atom.slice(5).length + number_of_electrons_minus_valence_electrons
-        const is_negatively_charged = total_number_of_electrons  < number_of_protons
-        console.log(total_number_of_electrons)
-        return false
-        return is_negatively_charged
+    }
+
+    const __numberOfElectrons = () => {
+
+        // Get number of electrons
+        const info = PeriodicTable[atom[0]]
+        return atom.slice(5).length + ((info["electrons_per_shell"].split("-")).slice(0, -1).reduce((a, b) => a*1 + b*1, 0)) * 1
+
+    }
+
+    // Number of bonds atom can have and be neutral
+    const __neutralAtomMaxBondCount = () => {
+        const info = PeriodicTable[atom[0]]
+        const valence_electrons_count = info["electrons_per_shell"].split("-").pop()
+        return valence_electrons_count < 3 ? 2 - valence_electrons_count : 8 - valence_electrons_count
+
+    }
+
+
+    const __isPositivelyCharged = (test_number) => {
+
+        // Get number of bonds and if greater than the number of max bonds for a neutral atom
+        // then return true
+        return __bondCount(test_number) > __neutralAtomMaxBondCount() || __numberOfElectrons() < __numberOfProtons()
+
+    }
+
+    const __isNegativelyCharged = (test_number) => {
+        
+        // Get total number of electrons and if greater than the number of protons return true
+        if (__bondCount(test_number) > __neutralAtomMaxBondCount() ) {
+            return false
+        }
+        return __numberOfElectrons() - __bondCount() > __numberOfProtons()
         
     }
     
@@ -327,7 +278,6 @@ We then return the total number of free slots minus the number of slots already 
         // This is the maximum number of electrons the atom can have in its outer shell
         // For chlorine this is 18
         const max_possible_number_of_electrons = m[number_of_shells-1]
-        console.log(max_possible_number_of_electrons)
 
         // This is the number of bonds where the atom shares one of its outershell electrons
         // eg for oxygen this number is 2
@@ -343,6 +293,7 @@ We then return the total number of free slots minus the number of slots already 
         // atom, current_atom_index, mmolecule
         return atom[0] === "C" && __isPositivelyCharged(test_number)
     }
+
 
     return {
         isCarbocation: __isCarbocation,
@@ -395,6 +346,8 @@ We then return the total number of free slots minus the number of slots already 
         freeSlots: __freeSlots,
         bondCount:__bondCount,
         doubleBondCount:__doubleBondCount,
+        numberOfProtons:__numberOfProtons,
+        numberOfElectrons:__numberOfElectrons
     }
 }
 

@@ -23,9 +23,14 @@ const VMolecule = (mmolecule) => {
                     throw new Error("Atom is not an object")
                 }
 
-                if (CAtom(current_atom, index, mmolecule).isPositivelyCharged()) {
+                const catom = CAtom(current_atom, index, mmolecule)
+                const proton_count = catom.numberOfProtons()
+                const bond_count = catom.bondCount()
+                const electron_count = catom.numberOfElectrons()
+
+                if (catom.isPositivelyCharged()) {
                     carry = carry + "[" + current_atom[0] + "+]"
-                } else if (CAtom(current_atom, index, mmolecule).isNegativelyCharged()) {
+                } else if (catom.isNegativelyCharged()) {
                     carry = carry + "[" + current_atom[0] + "-]"
                 } else {
                     carry += current_atom[0] // eg "" + "C"

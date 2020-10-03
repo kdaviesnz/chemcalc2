@@ -74,6 +74,15 @@ PeriodicTable:
     },
 8-1*7=1
      */
+
+    /*    // [Cl-]
+    /*
+    [ { type: 'BracketAtom', value: 'begin' },
+  { type: 'ElementSymbol', value: 'Cl' },
+  { type: 'Charge', value: -1 },
+  { type: 'BracketAtom', value: 'end' } ]
+     */
+    // If charge is -1 then we need to add an extra electron
      return [
          atomicSymbol,
          PeriodicTable[atomicSymbol].atomic_number*1,
@@ -82,7 +91,7 @@ PeriodicTable:
              :atomicSymbol === "Al"?3:
              8 - 1*PeriodicTable[atomicSymbol].electrons_per_shell.split("-").pop(),
          charge,
-         ...range.range(0,PeriodicTable[atomicSymbol].electrons_per_shell.split("-").pop(),1).map((i)=>{
+         ...range.range(0,PeriodicTable[atomicSymbol].electrons_per_shell.split("-").pop()*1 + (charge < 0?charge * -1:0),1).map((i)=>{
              return uniqid()
          })
      ]
