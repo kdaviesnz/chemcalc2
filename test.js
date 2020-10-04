@@ -51,22 +51,6 @@ console.log("Running initial tests ...")
 
 // CAtom tests
 // https://www.quora.com/How-many-electrons-are-in-H2O
-// Organic Chemistry 8th Edition P75
-const aluminium_chloride = MoleculeFactory("[Al](Cl)(Cl)Cl")
-aluminium_chloride[0].should.be.equal(14) // pKa
-aluminium_chloride[1].should.be.an.Array()
-aluminium_chloride[1].length.should.be.equal(3)
-aluminium_chloride[1][2][0].should.be.equal("O")
-aluminium_chloride[1][2].slice(5).length.should.be.equal(8) // oxygen has 6 valence electrons plus one electron from each of the two hydrogens
-const al = CAtom(aluminium_chloride[1][2], 2, [aluminium_chloride,1])
-al.hydrogens().length.should.be.equal(2)
-al.carbons().length.should.be.equal(0)
-al.freeSlots().should.be.equal(0)
-al.bondCount().should.be.equal(2)
-al.doubleBondCount().should.be.equal(0)
-al.isNegativelyCharged().should.be.false()
-al.isPositivelyCharged().should.be.false()
-VMolecule([aluminium_chloride,1]).canonicalSMILES().should.be.equal("O")
 
 const w = MoleculeFactory("O") // water H2O
 w[0].should.be.equal(14) // pKa
@@ -142,6 +126,31 @@ chloride_chlorine.doubleBondCount().should.be.equal(0)
 chloride_chlorine.isNegativelyCharged().should.be.true()
 chloride_chlorine.isPositivelyCharged().should.be.false()
 VMolecule([chloride,1]).canonicalSMILES().should.be.equal("[Cl-]")
+
+
+// Organic Chemistry 8th Edition P76
+const aluminium_chloride = MoleculeFactory("[Al](Cl)(Cl)Cl")
+aluminium_chloride[1].should.be.an.Array()
+aluminium_chloride[1].length.should.be.equal(4)
+aluminium_chloride[1][0][0].should.be.equal("Al")
+aluminium_chloride[1][1][0].should.be.equal("Cl")
+aluminium_chloride[1][2][0].should.be.equal("Cl")
+aluminium_chloride[1][3][0].should.be.equal("Cl")
+aluminium_chloride[1][0].slice(5).length.should.be.equal(6)
+aluminium_chloride[1][1].slice(5).length.should.be.equal(8)
+aluminium_chloride[1][2].slice(5).length.should.be.equal(8)
+aluminium_chloride[1][3].slice(5).length.should.be.equal(8)
+const al = CAtom(aluminium_chloride[1][0], 0, [aluminium_chloride,1])
+al.hydrogens().length.should.be.equal(0)
+al.carbons().length.should.be.equal(0)
+al.freeSlots().should.be.equal(12)
+al.bondCount().should.be.equal(3)
+al.doubleBondCount().should.be.equal(0)
+al.isNegativelyCharged().should.be.false()
+al.isPositivelyCharged().should.be.false()
+VMolecule([aluminium_chloride,1]).canonicalSMILES().should.be.equal("O")
+
+
 console.log("Initial tests ok, now running main tests ...")
 
 // Tests start
