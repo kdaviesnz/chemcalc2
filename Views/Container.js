@@ -38,6 +38,10 @@ const VContainer = (client) => {
                     pkl.searchBySMILES(search.replace(/\(\)/g, ""), db, (molecule_from_pubchem) => {
                         if (molecule_from_pubchem !== null) {
                             molecule_from_pubchem['json'] = MoleculeFactory(search)
+                           // console.log("Views/Container.js")
+                            console.log("Container::Adding " + search + ' to db')
+                            //console.log(molecule_from_pubchem['json'])
+                            //process.exit()
                             molecule_from_pubchem['search'] = search
                             db.collection("molecules").insertOne(molecule_from_pubchem, (err, result) => {
                                 if (err) {

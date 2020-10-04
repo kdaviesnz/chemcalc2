@@ -73,7 +73,7 @@ oxide[1].should.be.an.Array()
 oxide[1].length.should.be.equal(4)
 oxide[1][3][0].should.be.equal("O")
 const oxide_oxygen = CAtom(oxide[1][3], 2, [oxide,1])
-oxide[1][3].slice(5).length.should.be.equal(9) // oxygen has 6 valence electrons plus one electron from each of the three hydrogens
+oxide[1][3].slice(5).length.should.be.equal(8) // oxide 8 electrons as it is positively charged.
 oxide_oxygen.hydrogens().length.should.be.equal(3)
 oxide_oxygen.carbons().length.should.be.equal(0)
 oxide_oxygen.freeSlots().should.be.equal(-1)
@@ -211,12 +211,8 @@ client.connect(err => {
             ccontainer.add(_.cloneDeep(oxidanium_molecule).json, 1, verbose)
             console.log("Adding chloride (Cl-) to container")
             ccontainer.add(_.cloneDeep(chloride_molecule).json, 1, verbose)
-            console.log("Container:")
-            ccontainer.container.slice(1).map((item)=>{
-                console.log(item[0])
-            })
             VContainerWithDB(ccontainer).show(() => {
-                console.log("Test 3 complete: Container should show prop-1-ene and oxidane.")
+                console.log("Test 3 complete: Container should show chlorane (Cl) and oxidane (water).")
                 process.exit()
             })
         }
@@ -225,6 +221,10 @@ client.connect(err => {
             MoleculeLookup(db, "[OH3+]", "SMILES", true).then(
                 // "resolves" callback
                 (oxidanium_molecule) => {
+                    //console.log("oxidanium")
+                    //console.log(oxidanium_molecule.json[1][3])
+                    //process.exit()
+                    _.cloneDeep(oxidanium_molecule.json[1][3]).slice(5).length.should.be.equal(8)
                     reactOxidaniumWithChloride(chloride_molecule, oxidanium_molecule)
                 },
                 // Nothing found callback
@@ -242,7 +242,7 @@ client.connect(err => {
             MoleculeLookup(db, "[Cl-]", "SMILES", true).then(
                 // "resolves" callback
                 (chloride_molecule) => {
-                    lookUpOxidanium(chloride_molecule)
+                    lookUpOxidanium(_.cloneDeep(chloride_molecule))
                 },
                 // Nothing found callback
                 onMoleculeNotFound((search) => {
@@ -275,7 +275,8 @@ client.connect(err => {
                 // "resolves" callback
                 (propylene_molecue) => {
                     console.log("Reacting propylene with water")
-                    reactPropyleneWithWater(propylene_molecue, water_molecule)
+                    _.cloneDeep(water_molecule.json[1][2]).slice(5).length.should.be.equal(8)
+                    reactPropyleneWithWater(_.cloneDeep(propylene_molecue), _.cloneDeep(water_molecule))
                     /*
                     pkl.fetchSubstructuresBySMILES(molecule.CanonicalSMILES, db, (molecule, db, SMILES)=> {
                         console.log("Molecule: " + molecule)
@@ -303,9 +304,11 @@ client.connect(err => {
             console.log("Adding HCl to container")
             // pass in only .json
             ccontainer.add(_.cloneDeep(hcl_molecue).json, 1, verbose, 1)
+            // Check H3O oxygen has 8 electrons and not 9
+            _.cloneDeep(ccontainer.container[1][0][1][2]).slice(5).length.should.be.equal(8)
             VContainerWithDB(ccontainer).show(() => {
                 console.log("Test 1 complete: Container should show chloride and oxidanium.\n")
-                lookupPropylene(water_molecule)
+                lookupPropylene(_.cloneDeep(water_molecule))
             })
         }
 
@@ -313,6 +316,7 @@ client.connect(err => {
             MoleculeLookup(db, "O", "SMILES", true).then(
                 // "resolves" callback
                 (water_molecule) => {
+                    _.cloneDeep(water_molecule.json[1][2]).slice(5).length.should.be.equal(8)
                     reactHClWithWater(hcl_molecule, water_molecule)
                 },
                 // Nothing found callback

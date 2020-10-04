@@ -111,7 +111,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
 
 
 
-        container = MoleculeController(container[source_index_map.source_molecule_index]).push(proton, container,
+        container = MoleculeController(container[source_index_map.source_molecule_index]).addProton(proton, container,
             container.length -1,
             test_number,
             0, // this will 0 as we've removed the proton from the electrophile and added it to our container as a separate item

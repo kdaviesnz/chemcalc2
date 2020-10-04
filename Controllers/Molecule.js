@@ -5,6 +5,7 @@ const pKa = require('../Models/pKa')
 const should = require('should')
 const Set = require('../Models/Set')
 const Families = require('../Models/Families')
+const _ = require('lodash');
 
 const CMolecule = (mmolecule, verbose) => {
 
@@ -501,6 +502,10 @@ const CMolecule = (mmolecule, verbose) => {
         container[target_molecule_index][0][1].should.be.an.Array() // atoms
         container[target_molecule_index][0][1][target_atom_index].should.be.an.Array() // target atom
 
+        if (container[target_molecule_index][0][1][target_atom_index][0]==="H" && container[target_molecule_index][0][1][target_atom_index].length===5 ) {
+            console.log("WARNING: Adding a proton using push(). Use addProton() instead.")
+        }
+
         if (container[target_molecule_index][0][1][target_atom_index][0]==="H") {
 
             // proton?
@@ -776,7 +781,7 @@ const CMolecule = (mmolecule, verbose) => {
             )
             
             // returns container
-            return __makeCovalentBond(container, source_molecule_index, target_molecule_index, source_atom_index, target_atom_index, test_number)           
+            return __makeCovalentBond(container, source_molecule_index, target_molecule_index, source_atom_index, target_atom_index, test_number)
             
         },
         remove: (container, molecule_index, atom_or_atomic_symbol) => {
@@ -980,7 +985,109 @@ const CMolecule = (mmolecule, verbose) => {
 
         },
 
-        bondType: __bondType
+        bondType: __bondType,
+
+        addProton: (atoms_or_atomic_symbols, container, target_molecule_index, test_number, target_atom_index, source_atom_index, source_molecule_index) => {
+
+            mmolecule.length.should.be.equal(2) // molecule, units
+            mmolecule[0].length.should.be.equal(2) // pKa, atoms
+
+            source_atom_index.should.be.greaterThan(-1)
+
+            const atoms = atoms_or_atomic_symbols.map(
+                (atom_or_atomic_symbol) => {
+                    return typeof atom_or_atomic_symbol === "string" ? AtomFactory(atom_or_atomic_symbol, 0) : atom_or_atomic_symbol
+                }
+            )
+
+            __checkContainer(container)
+
+            mmolecule.length.should.be.equal(2) // molecule, units
+            mmolecule[0].length.should.be.equal(2) // pKa, atoms
+            source_atom_index.should.be.greaterThan(-1)
+
+            let atom = container[target_molecule_index][0]
+
+            // Get number electrons the source atom has
+            const source_atom_electrons = _.cloneDeep(container[source_molecule_index][0][1][source_atom_index]).slice(5).length
+
+            if (atom === undefined) {
+                // proton will be the last element in container
+                atom = container[container.length -1][0][target_atom_index]
+            }
+
+            atom.should.be.an.Array()
+            const target_atom_electron_to_share_index = __electronToShareIndex(atom)
+
+            // Get index of first free electron on source atom
+            // Brondsted Lowry reaction: source atom is atom on nucleophile attacking the proton, mmolecule is the nucleophile
+            const source_atom_electron_to_share_index = __electronToShareIndex(mmolecule[0][1][source_atom_index])
+
+            // Get lone pair from source atom (atom arrow would be pointing from (nucleophile))
+            const source_atom_lone_pairs = CAtom(mmolecule[0][1][source_atom_index], source_atom_index, mmolecule).lonePairs(test_number)
+            source_atom_lone_pairs.should.be.an.Array()
+
+            // Protons are always target atoms (electrophiles) - where the arrow would be pointing to
+            // Brondsted Lowry reaction: target atom is proton
+            container[target_molecule_index].should.be.an.Array() // actual molecule, units
+            container[target_molecule_index].length.should.be.equal(2)
+            container[target_molecule_index][0].should.be.an.Array() // the actual molecule
+            container[target_molecule_index][1].should.be.an.Number() // units
+            container[target_molecule_index][0].length.should.be.equal(2) // pKa, atoms
+            if (container[target_molecule_index][0][0] !== null) {
+                container[target_molecule_index][0][0].should.be.an.Number() // pKa
+            }
+            container[target_molecule_index][0][1].should.be.an.Array() // atoms
+            container[target_molecule_index][0][1][target_atom_index].should.be.an.Array() // target atom
+            container[target_molecule_index][0][1][target_atom_index][0].should.be.equal("H")
+            _.cloneDeep(container[target_molecule_index][0][1][target_atom_index]).slice(5).length.should.be.equal(0)
+
+            // add electrons from source atom to target atom (proton)
+            // target atom is a proton and has no electrons
+            if (source_atom_lone_pairs.length > 0) {
+                // container[target_molecule_index][target_atom_index] is a proton
+                //  container[target_molecule_index][1] are the units
+                //  container[target_molecule_index][0][1] are the atoms
+                // process.exit()
+                container[target_molecule_index][0][1][target_atom_index].push(source_atom_lone_pairs[0])
+                container[target_molecule_index][0][1][target_atom_index].push(source_atom_lone_pairs[1])
+                // Add proton to target molecule
+                __checkContainer(container)
+                container[source_molecule_index][0][1].push(container[target_molecule_index][0][1][target_atom_index])
+                __checkContainer(container)
+            } else {
+
+                // Does the source atom have a double bond?
+                // returns a set of electrons or false
+                const double_bond = CAtom(mmolecule[0][1][source_atom_index], source_atom_index, mmolecule).doubleBond(test_number)
+
+                // remove the double bond by removing electrons from bonded atom (turn into single bond)
+                if (double_bond) {
+                    mmolecule[0] = CAtom(mmolecule[0][1][source_atom_index], source_atom_index,mmolecule[0]).removeDoubleBond(test_number)
+                    container[target_molecule_index][0][1][target_atom_index].push(double_bond[0])
+                    container[target_molecule_index][0][1][target_atom_index].push(double_bond[1])
+                }
+
+            }
+
+            __checkContainer(container)
+
+            // Set pKa
+            container[target_molecule_index][0][0] = pKa(container[target_molecule_index][0].slice(1))
+
+
+            __checkContainer(container)
+
+            // Check source atom still has the same number of electrons
+            _.cloneDeep(container[source_molecule_index][0][1][source_atom_index]).slice(5).length.should.equal(source_atom_electrons)
+
+
+            return container
+
+
+
+
+        }
     }
 }
 
