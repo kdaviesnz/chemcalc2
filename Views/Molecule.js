@@ -22,7 +22,7 @@ const VMolecule = (mmolecule) => {
         // @todo branches consisting of more than one atom)
         if (catom_current.bondCount() === 1 
             && Set.intersect(previous_atom_electrons,current_atom_electrons)===1) {
-               return true)
+               return true
         }
         return false
     }
@@ -30,12 +30,66 @@ const VMolecule = (mmolecule) => {
     const __endOfBranch = (current_atom, index, mmolecule_sans_hydrogens) => {
         const catom_current = CAtom(current_atom, index, mmolecule)
         if (catom_current.bondCount() === 1) {
-               return true)
+               return true
         }
         return false
     }
 
-    __SMILES_recursive = (mmolecule_sans_hydrogens, carry, current_atom, previous_atom, branch_level, index) => {
+    const __getAtomAsSMILE = (catom, carry) => {
+        if (catom.isPositivelyCharged()) {
+            carry = carry + "[" + current_atom[0] + "+]"
+        } else if (catom.isNegativelyCharged()) {
+            carry = carry + "[" + current_atom[0] + "-]"
+        } else {
+            carry += (__addBrackets(current_atom[0])?"[":"") + current_atom[0] + (__addBrackets(current_atom[0])?"]":"") // eg "" + "C"
+        }
+        // Get the type of bond between the current atom and the next non - hydrogen atom
+        const next_atom = mmolecule_sans_hydrogens[index + 1]
+        if (next_atom) {
+            carry = carry + CMolecule(mmolecule_sans_hydrogens).bondType(current_atom, next_atom)
+        }
+    }
+
+
+    const __SMILES_recursive = (mmolecule_sans_hydrogens, carry, current_atom, previous_atom, branch_level, index) => {
+
+        if (typeof current_atom !== 'object') {
+            console.log('Molecule.js Atom must be an object. Got ' + current_atom + ' instead')
+            throw new Error("Atom is not an object")
+        }
+        current_atom.should.be.an.Array()
+
+        // First atom?
+        if (carry === "") {
+
+            // Get how many atoms are attached to the atom, but don't include hydrogens
+            const catom = CAtom(atom, index, mmolecule)
+            const bonds = CAtom(atom, index, mmolecule).indexedBonds('', 'H')
+            /*
+            [
+                {
+                     index:3 // index of the current atom is bonded to
+                     electron_pair: ["il8089098","8909809uu"]
+                },
+                ...
+
+            ]
+             */
+
+            if (bonds.length < 2) {
+                carry = carry + __getAtomAsSMILE(catom, carry)
+            } else {
+                // First atom but has more than one atom attached to it eg C(C)O
+                // Therefore we need start recursively branching
+
+            }
+
+        }
+
+
+
+
+
 
         if (undefined === mmolecule_sans_hydrogens) {
             return carry
