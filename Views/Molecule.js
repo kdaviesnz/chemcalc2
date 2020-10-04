@@ -21,7 +21,19 @@ const VMolecule = (mmolecule) => {
         const catom_current = CAtom(current_atom, index, mmolecule)
         console.log(current_atom)
         console.log(catom_current.bondCount())
-        process.exit()
+        if (catom_current.bondCount() === 1 
+            && Set.intersect(previous_atom_electrons,current_atom_electrons)===1) {
+               return true)
+        }
+        return false
+    }
+    
+    const __endOfBranch = (current_atom, index, mmolecule_sans_hydrogens) => {
+        const catom_current = CAtom(current_atom, index, mmolecule)
+        if (catom_current.bondCount() === 1) {
+               return true)
+        }
+        return false
     }
 
     __SMILES_recursive = (mmolecule_sans_hydrogens, carry, current_atom, previous_atom, branch_level, index) => {
@@ -43,6 +55,7 @@ const VMolecule = (mmolecule) => {
         // New branch?
         if (__newBranch(mmolecule_sans_hydrogens[index-1], current_atom, previous_atom, index, mmolecule_sans_hydrogens)) {
             carry += "("
+            branch_level++
         }
 
         if (catom.isPositivelyCharged()) {
@@ -57,8 +70,14 @@ const VMolecule = (mmolecule) => {
         if (next_atom) {
             carry = carry + CMolecule(mmolecule_sans_hydrogens).bondType(current_atom, next_atom)
         }
+        
+        // End of branch?
+        if (branch_level > 0 && __endOfBranch(current_atom, index, mmolecule_sans_hydrogens)) {
+            carry += ")"
+            branch_level--
+        }
 
-        return  __SMILES_recursive = (mmolecule_sans_hydrogens, carry, current_atom, previous_atom, branch_level, index +1)
+        return  __SMILES_recursive(mmolecule_sans_hydrogens, carry, current_atom, previous_atom, branch_level, index +1)
 
 
     }
@@ -72,7 +91,7 @@ const VMolecule = (mmolecule) => {
                 return atom[0] !== 'H'
             })
 
-            console.log("...")
+            
 
             // mmolecule_sans_hydrogens
             /*
@@ -133,6 +152,7 @@ const VMolecule = (mmolecule) => {
 
             // Convert molecule to CanonicalSmiles
             // @todo branches, rings
+            /*
             const SMILES = _.cloneDeep(mmolecule_sans_hydrogens).reduce((carry, current_atom, index, arr)=> {
 
                 if (typeof current_atom !== 'object') {
@@ -164,6 +184,8 @@ const VMolecule = (mmolecule) => {
                 }
                 return carry
             }, "")
+            */
+            
 
             return SMILES
         },
