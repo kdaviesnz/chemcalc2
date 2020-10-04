@@ -77,7 +77,7 @@ const VMolecule = (mmolecule) => {
             branch_level--
         }
 
-        return  __SMILES_recursive(mmolecule_sans_hydrogens, carry, current_atom, previous_atom, branch_level, index +1)
+        return  __SMILES_recursive(mmolecule_sans_hydrogens, carry, mmolecule_sans_hydrogens[index], mmolecule_sans_hydrogens[index+1], branch_level, index +1)
 
 
     }
@@ -185,7 +185,9 @@ const VMolecule = (mmolecule) => {
                 return carry
             }, "")
             */
-            
+            SMILES =  __SMILES_recursive(mmolecule_sans_hydrogens, "", mmolecule_sans_hydrogens[0], null, 0, index)
+
+
 
             return SMILES
         },
