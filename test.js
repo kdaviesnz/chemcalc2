@@ -51,7 +51,7 @@ console.log("Running initial tests ...")
 
 // CAtom tests
 // https://www.quora.com/How-many-electrons-are-in-H2O
-
+// Organic Chemistry 8th Edition P75
 const aluminium_chloride = MoleculeFactory("[Al](Cl)(Cl)Cl")
 aluminium_chloride[0].should.be.equal(14) // pKa
 aluminium_chloride[1].should.be.an.Array()
