@@ -207,10 +207,14 @@ client.connect(err => {
         const reactOxidaniumWithChloride = (chloride_molecule, oxidanium_molecule) => {
             console.log("Getting new container")
             const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
-            console.log("Adding oxidanium to container")
+            console.log("Adding oxidanium (H3O+) to container")
             ccontainer.add(_.cloneDeep(oxidanium_molecule).json, 1, verbose)
-            console.log("Adding chloride to container")
+            console.log("Adding chloride (Cl-) to container")
             ccontainer.add(_.cloneDeep(chloride_molecule).json, 1, verbose)
+            console.log("Container:")
+            ccontainer.container.slice(1).map((item)=>{
+                console.log(item[0])
+            })
             VContainerWithDB(ccontainer).show(() => {
                 console.log("Test 3 complete: Container should show prop-1-ene and oxidane.")
                 process.exit()
