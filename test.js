@@ -51,6 +51,23 @@ console.log("Running initial tests ...")
 
 // CAtom tests
 // https://www.quora.com/How-many-electrons-are-in-H2O
+
+const aluminium_chloride = MoleculeFactory("[Al](Cl)(Cl)Cl")
+aluminium_chloride[0].should.be.equal(14) // pKa
+aluminium_chloride[1].should.be.an.Array()
+aluminium_chloride[1].length.should.be.equal(3)
+aluminium_chloride[1][2][0].should.be.equal("O")
+aluminium_chloride[1][2].slice(5).length.should.be.equal(8) // oxygen has 6 valence electrons plus one electron from each of the two hydrogens
+const al = CAtom(aluminium_chloride[1][2], 2, [aluminium_chloride,1])
+al.hydrogens().length.should.be.equal(2)
+al.carbons().length.should.be.equal(0)
+al.freeSlots().should.be.equal(0)
+al.bondCount().should.be.equal(2)
+al.doubleBondCount().should.be.equal(0)
+al.isNegativelyCharged().should.be.false()
+al.isPositivelyCharged().should.be.false()
+VMolecule([aluminium_chloride,1]).canonicalSMILES().should.be.equal("O")
+
 const w = MoleculeFactory("O") // water H2O
 w[0].should.be.equal(14) // pKa
 w[1].should.be.an.Array()
