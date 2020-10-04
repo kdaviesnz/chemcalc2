@@ -19,8 +19,7 @@ const VMolecule = (mmolecule) => {
         const previous_atom_electrons = _.cloneDeep(previous_atom.slice(5))
         const current_atom_electrons = _.cloneDeep(current_atom.slice(5))
         const catom_current = CAtom(current_atom, index, mmolecule)
-        console.log(current_atom)
-        console.log(catom_current.bondCount())
+        // @todo branches consisting of more than one atom)
         if (catom_current.bondCount() === 1 
             && Set.intersect(previous_atom_electrons,current_atom_electrons)===1) {
                return true)
@@ -53,7 +52,7 @@ const VMolecule = (mmolecule) => {
         const electron_count = catom.numberOfElectrons()
 
         // New branch?
-        if (__newBranch(mmolecule_sans_hydrogens[index-1], current_atom, previous_atom, index, mmolecule_sans_hydrogens)) {
+        if (__newBranch(previous_atom, current_atom, index, mmolecule_sans_hydrogens)) {
             carry += "("
             branch_level++
         }
