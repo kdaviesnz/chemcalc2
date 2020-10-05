@@ -18,7 +18,7 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number, verb
                 electrophile_molecule_electrophile_atom_index = substrate_nucleophile_atom_index               
             } else {
                 // compare pKa values
-                if (container[substrate_molecule_index][1][substrate_electrophile_atom_index][0]) > 
+                if (container[substrate_molecule_index][1][substrate_electrophile_atom_index][0] >
                     container[reagent_molecule_index][1][reagent_electrophile_atom_index][0]) {
                        nucleophile_molecule_index = reagent_molecule_index
                        nucleophile_molecule_nucleophile_atom_index = reagent_nucleophile_atom_index     
@@ -35,7 +35,7 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number, verb
             
         }
         
-        if (substrate_nucleophile_atom_index !=== false && reagent_nucleophile_atom_index === false) {
+        if (substrate_nucleophile_atom_index !== false && reagent_nucleophile_atom_index === false) {
             if (reagent_electrophile_atom_index === false) {
                 return false
             }

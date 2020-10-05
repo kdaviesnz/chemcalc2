@@ -12,21 +12,7 @@ const VMolecule = (mmolecule) => {
         return atomic_symbol === "Al"
     }
 
-    const __newBranch = (previous_atom, current_atom, index, mmolecule_sans_hydrogens) => {
-        if (previous_atom === null) {
-            return false
-        }
-        const previous_atom_electrons = _.cloneDeep(previous_atom.slice(5))
-        const current_atom_electrons = _.cloneDeep(current_atom.slice(5))
-        const catom_current = CAtom(current_atom, index, mmolecule)
-        // @todo branches consisting of more than one atom)
-        if (catom_current.bondCount() === 1 
-            && Set.intersect(previous_atom_electrons,current_atom_electrons)===1) {
-               return true
-        }
-        return false
-    }
-    
+
     const __endOfBranch = (current_atom, index, mmolecule_sans_hydrogens) => {
         const catom_current = CAtom(current_atom, index, mmolecule)
         if (catom_current.bondCount() === 1) {
@@ -91,25 +77,39 @@ const VMolecule = (mmolecule) => {
             return __SMILES_recursive(carry, mmolecule[0][1][index+1], current_atom, index+1)
         }
 
+
         if (typeof current_atom !== 'object') {
             console.log('Molecule.js Atom must be an object. Got ' + current_atom + ' instead')
             throw new Error("Atom is not an object")
         }
         current_atom.should.be.an.Array()
 
-
         const catom = CAtom(current_atom, index, mmolecule)
         const bonds = catom.indexedBonds('H').filter((bond)=> {
             return bond.atom_index > index
         })
+
+        //console.log('bonds:')
+        //console.log(current_atom[0])
+        //console.log(bonds)
+        if (bonds.length === 0) {
+            carry = carry + __getAtomAsSMILE(catom, current_atom)
+            //return __SMILES_recursive(carry, mmolecule[0][1][index+1], current_atom, index+1)
+            return carry
+        }
+
 
         // First non-hydrogen atom?
         if (carry === "") {
 
             // Get how many atoms are attached to the atom, but don't include hydrogens
             if (bonds.length < 2) {
+                // COC
                 //carry = carry + __getAtomAsSMILE(catom, current_atom)
+                // C
                 carry = carry + __getAtomAsSMILE(catom, current_atom)
+                return __SMILES_recursive(carry, mmolecule[0][1][index+1], current_atom, index+1)
+
             } else {
 
                 // First atom but has more than one atom attached to it eg C(C)O
@@ -119,9 +119,12 @@ const VMolecule = (mmolecule) => {
 
         } else {
 
+            // COC
             // Get how many atoms are attached to the atom, but don't include hydrogens
-            if (bonds.length < 3) {
-                carry = carry + __getAtomAsSMILE(catom, carry)
+            if (bonds.length < 2) {
+                // O atom in COC bonds.length = 1 as we do not count the first C-O bond
+                carry = carry + __getAtomAsSMILE(catom, current_atom)
+                return __SMILES_recursive(carry, mmolecule[0][1][index+1], current_atom, index+1)
             } else {
                 // First atom but has more than one atom attached to it eg C(C)O
                 // Therefore we need start recursively branching
@@ -292,7 +295,7 @@ const VMolecule = (mmolecule) => {
             mmolecule[0][1][0][0].should.be.an.String()
             SMILES =  __SMILES_recursive("", mmolecule[0][1][0], null, 0, true)
 
-            return SMILES
+            return  SMILES
         },
         'render' : () => {
             console.log('{' + mmolecule[0][1].reduce((working, current, i, arr)=>{
