@@ -271,6 +271,23 @@ client.connect(err => {
         //console.log(VMolecule(propylene).canonicalSMILES(1))
         //VMolecule(propylene).render(1)
 
+        const lookUpMethylEther = () => {
+            MoleculeLookup(db, "COC", "SMILES", true).then(
+                // "resolves" callback
+                (methyl_ether_molecule) => {
+                    lookupAluminiumChloride(methyl_ether_molecule)
+                },
+                // Nothing found callback
+                onMoleculeNotFound((search) => {
+                    console.log("Molecule " + search + " added to database")
+                    client.close()
+                    process.exit()
+                }),
+                // "rejects" callback
+                onErrorLookingUpMoleculeInDB
+            )
+        }
+
 
         // @see Organic Chemistry 8th Edition P51
         const reactOxidaniumWithChloride = (chloride_molecule, oxidanium_molecule) => {
