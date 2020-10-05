@@ -48,6 +48,10 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         }, null)
 
 
+        if (proton_index_map === null) {
+            return false
+        }
+
         const target_molecule_index = proton_index_map.proton_molecule_index // this is the molecule containing the proton (electrophile)
         const target_proton_atom_index = proton_index_map.proton_atom_index
 

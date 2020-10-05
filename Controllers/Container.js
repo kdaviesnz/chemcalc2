@@ -18,6 +18,10 @@ class CContainer {
 
     __doReactionRecursive(reagent_index, substrate_index) {
 
+        if (this.container.length === 2) {
+            return
+        }
+
         if (reagent_index === undefined) {
             return this.__doReactionRecursive(reagent_index, substrate_index+1)
         }
@@ -25,9 +29,15 @@ class CContainer {
         const reagents = this.container.slice(2,this.container.length)
         const reagent = reagents[reagent_index]
 
+        this.container[1].should.be.an.Array()
+
+   //     console.log(this.container[1])
+      //  console.log(reagents)
+     //   process.exit()
 
 
-        if (reagent[reagent_index][1] === 0) {
+
+        if (reagents[reagent_index][1] === 0) {
             return this.__doReactionRecursive(reagent_index, substrate_index+1)
         }
 
@@ -149,7 +159,7 @@ class CContainer {
                 if (reaction === false) {
                     console.log("Doing lewis reaction (Controllers/Container.js) 1")
                     process.exit
-                    reaction = lewis.react(nucleophile_atom_index, electrophile_molecule)
+                    reaction = lewis.react(nucleophile_atom_index, reagent_index)
                     if (reaction !== false) {
                         this.container = reaction
                     }
@@ -212,35 +222,30 @@ class CContainer {
                 reaction = bronstedLowry.react()
             }
 
-
-            // [Br-] (nucleophile) -----> carbocation
-            // Br atom should bond to carbon that has three bonds
-            // Target atom index should be 8
-            // Source atom index should be 1
-            // Organic Chemistry 8th edition, P199
-            // test_number 5
-            // [Br-] + carbocation (alkane)
-            // electrophile is [C+] cation on carbocation
-            // nucleophile is [Br-]
-            // carbocation is added to [Br-]
-            // Br and C form bond
-            reaction.should.not.be.equal(false)
-
             if (!reaction) {
                 // No alkene and not Bronsted Lowry
                 // do Lewis acid base teaction
+                /*
+                console.log(substrate_index)
+                console.log(reagent_index)
+                console.log(this.container)
+                console.log(reagent)
+                 */
                 console.log("Doing lewis reaction (Controllers/Container.js) 3")
-                process.exit
+//               process.exit()
 
-                reaction = lewis.react(null, null, null, null, this.test_number, verbose)
+                reaction = lewis.react(substrate_index + 1, reagent_index)
             }
 
 
             // At this point it is possible that the number of different molecules
             // to have changed. eg when the reagent bonds to the substrate
             // hence we need to check the container again
-            this.container = reaction
+            if (reaction !== false) {
+                this.container = reaction
+            }
 
+            console.log(this.container)
             const container_items = this.container.slice(1,this.container.length)
             if (container_items.length < reagents.length) {
                 // reagent and substrate have bonded
@@ -257,45 +262,10 @@ class CContainer {
 
     __doReactionsRecursive(reagent_index) {
 
-        // test 6
-        // ccontainer6.add(propylene, 1, verbose)
-        // ccontainer6.add(watermolecule, 1, verbose)
-        // r -> s
-        // 1.1. water -> propylene (no reaction)
-        // 1.2. water -> water (no reaction)
-        // 2.1 propylene -> propylene (no reaction)
-        // 2.2 propylene -> water (no reaction)
-
-        // test 7
-        // ccontainer6.add(propylene, 1, verbose)
-        // ccontainer6.add(watermolecule, 1, verbose)
-        // ccontainer6.add(sulfuric_acid, 1, verbose)
-        // r -> s
-        // 1.1 sulfuric acid (e) -> propylene (n) = deprotonated sulfuric acid, protonated propylene
-        // 1.2 deprotonated sulfuric acid -> water
-        // 1.3 deprotonated sulfuric acid -> deprotonated sulfuric acid
-        // 2.1 water (n) -> protonated propylene (e) oxygen atom on water attacks carbocation on propylene
-        // nb: container will now have hydrated protonated propylene, deprontonated sulfuric acid
-        // as water molecule is now bonded to protonated propylene
-        // thus we need to take into account that the number of reagents/substrates has change (todo)
-        // 2.1 deprontonated sulfuric acid -> hydrated protonated propylene
-        // 2.2 deprontonated sulfuric acid -> deprontonated sulfuric acid
-        // 3.1 hydrated protonated propylene -> hydrated protonated propylene
-        // 3.2 hydrated protonated propylene -> deprontonated sulfuric acid
-
-        // test 7
-        // propylene CC=C (test 6) / water H2O (test 6) / sulfuric acid H2SO4 (test 7)
-        // reagents: sulfuric acid H2SO4, water
-        // substrates: propylene, water, sulfuric acid
-        // reagent --> substrate
-        // 1. sulfuric acid --> propylene
-        // 2. sulfuric acid --> water
-        // 2. sulfuric acid --> sulfuric acid
-        // 4. water --> protonated propylene
-        // 5. water --> water
-        // 6. water --> deprontonated sulfuric acid
         // this needs to be changed to a recursive function as reagents can change
         const reagents = this.container.slice(2,this.container.length)
+
+        reagents.should.be.an.Array()
 
         if (null === reagent_index) {
             reagent_index = reagents.length -1

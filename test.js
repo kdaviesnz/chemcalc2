@@ -195,7 +195,6 @@ VMolecule([chloride,1]).canonicalSMILES().should.be.equal("[Cl-]")
 
 
 console.log("Initial tests ok, now running main tests ...")
-process.exit()
 
 // Tests start
 const uri = "mongodb+srv://" + process.env.MONGODBUSER + ":" + process.env.MONGODBPASSWORD + "@cluster0.awqh6.mongodb.net/chemistry?retryWrites=true&w=majority";
@@ -280,6 +279,7 @@ client.connect(err => {
             ccontainer.add(_.cloneDeep(methyl_ether_molecule).json, 1, verbose)
             console.log("Adding aluminium chloride to container")
             ccontainer.add(_.cloneDeep(aluminium_chloride_molecule).json, 1, verbose)
+            console.log(VMolecule(ccontainer.container[1]).canonicalSMILES())
             console.log("Test 4 complete: Container should show chlorane (Cl) and oxidane (water).")
             process.exit()
             VContainerWithDB(ccontainer).show(() => {
@@ -292,7 +292,7 @@ client.connect(err => {
             MoleculeLookup(db, "[Al](Cl)(Cl)Cl", "SMILES", true).then(
                 // "resolves" callback
                 (aluminium_chloride_molecule) => {
-                    lookupAluminiumChloride(methyl_ether_molecule, aluminium_chloride_molecule)
+                    reactAluminiumChlorideWithMethylEther(methyl_ether_molecule, aluminium_chloride_molecule)
                 },
                 // Nothing found callback
                 onMoleculeNotFound((search) => {
@@ -306,6 +306,7 @@ client.connect(err => {
         }
 
         const lookUpMethylEther = () => {
+            console.log("lookupMethylEther()")
             MoleculeLookup(db, "COC", "SMILES", true).then(
                 // "resolves" callback
                 (methyl_ether_molecule) => {
@@ -468,7 +469,8 @@ client.connect(err => {
             )
         }
 
-        lookupHCl()
+      //  lookupHCl()
+        lookUpMethylEther()
 
     }
 

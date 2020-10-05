@@ -105,55 +105,31 @@ const CMolecule = (mmolecule, verbose) => {
         return hydrogens
     }
 
-    const determineElectrophileIndex = (test_number) => {
+    const determineElectrophileIndex = () => {
+
+        mmolecule.length.should.be.equal(2) // molecule, units
+        mmolecule[0].length.should.be.equal(2) // pKa, atoms
 
         const molecule = mmolecule[0] // mmolecule[1] is the number of units
         let electrophile_index = false
 
-        // [Br-] (nucleophile, electron donor) -----> carbocation
-        // Br atom should bond to carbon that has three bonds
-        // Target atom index should be 8 (electrophile)
-        // Source atom index should be 1
-        // substrate is [Br-]
-        // reagent is carbocation
-        // see organic chenistry 8th edition ch 6 p235
-        // [Br-] (nucleophile) -----> carbocation
-        // Br atom should bond to carbon that has three bonds
-        // Target atom index should be 8
-        // Source atom index should be 1
-        // Organic Chemistry 8th edition, P199
-        // test_number 5
-        // [Br-] + carbocation (alkane)
-        // electrophile is [C+] cation on carbocation
-        // nucleophile is [Br-]
-        // carbocation is added to [Br-]
-        // Br and C form bond
-        // 5.1 test 5, [Br-] nucleophile so should return false
-        // 5.2 test 5, carbocation electrophile so should not return false
-
-        const hydrogens = __hydrogensNotAttachedToCarbons(test_number)
+        const hydrogens = __hydrogensNotAttachedToCarbons()
 
         // Get hydrogens not attached to carbons
-
         // Check atoms for free slots
         // returns [index, atom] pairs
-
         if (hydrogens.length > 0) {
             // See organic chemistry 8th edition ch 6 p 235
             // C=C (butene, nucleophile) -> HBr (H is electrophile)
-            if (test_number === 4.1) {
-                hydrogens[0][0].should.be.equal(0)
-            }
             electrophile_index = hydrogens[0][0]
-
         } else {
 
-            const positively_charged_atoms = __positivelyChargedAtoms(test_number)
+            const positively_charged_atoms = __positivelyChargedAtoms()
 
             if (positively_charged_atoms.length > 0) {
                 electrophile_index = positively_charged_atoms[0][0]
             } else {
-                const atoms_with_free_slots = __atomsWithFreeSlots(test_number)
+                const atoms_with_free_slots = __atomsWithFreeSlots()
 
                 // See organic chemistry 8th edition ch 6 p 235
                 // C=C (butene, nucleophile) -> HBr (H is electrophile)
@@ -167,7 +143,7 @@ const CMolecule = (mmolecule, verbose) => {
         }
         // Check atom isnt negatively charged (nucleophile)
         // const CAtom = (atom, current_atom_index, mmolecule)
-        const is_negatively_charged = CAtom(mmolecule[0][1][electrophile_index], electrophile_index, mmolecule).isNegativelyCharged(test_number)
+        const is_negatively_charged = CAtom(mmolecule[0][1][electrophile_index], electrophile_index, mmolecule).isNegativelyCharged()
 
         if (is_negatively_charged) {
             return false
@@ -275,16 +251,14 @@ const CMolecule = (mmolecule, verbose) => {
         return atoms_with_lone_pairs
     }
 
-    const __atomsWithFreeSlots = (test_number) => {
+    const __atomsWithFreeSlots = () => {
         
         const molecule = mmolecule[0] // mmolecule[1] is the number of units
         
         // Check substrate for free slots
         return molecule[1].map(
-
             (atom, index) => {
-
-                if ((atom[0]==="H" && CAtom(atom, index,molecule).carbons().length > 0) || CAtom(atom, index,mmolecule).freeSlots(test_number) === 0 ) {
+                if ((atom[0]==="H" && CAtom(atom, index,mmolecule).carbons().length > 0) || CAtom(atom, index,mmolecule).freeSlots() === 0 ) {
                     return null
                 }
                 return [index, atom]
@@ -368,25 +342,21 @@ const CMolecule = (mmolecule, verbose) => {
      source_atom_index is the index of the atom that the arrow would be pointing from (nucleophile)
      */
     const __makeCovalentBond = (
-        container, source_molecule_index, target_molecule_index, source_atom_index, target_atom_index, test_number
+        container, source_molecule_index, target_molecule, target_molecule_index, source_atom_index, target_atom_index, test_number
     ) => {
 
         __checkContainer(container)
 
         mmolecule.length.should.be.equal(2) // molecule, units
         mmolecule[0].length.should.be.equal(2) // pKa, atoms
+
+        target_molecule.length.should.be.equal(2) // molecule, units
+        target_molecule[0].length.should.be.equal(2) // pKa, atoms
+
         source_atom_index.should.be.greaterThan(-1)
 
-            // NOTES
-            // Brondsted Lowry reactions:
-            // atoms_or_atomic_symbols is the proton from the electrophile.
-            // mmolecule is the nucleophile (molecule containing the atom
-            // that attacks the proton from the electrophile).
-            // Target atom is what the arrow points to (attacks) and will
-            // always be the proton atom from the electrophile.
-            // Source atom is what the arrow points from (tail) and will
-            // always be the atom from the nucleophile.  
-        
+        mmolecule[0][1][source_atom_index][0].should.be.an.String()
+
         /*
         @todo
         We subtract the number of units of the source molecule (mmolecule[1]) from
@@ -395,81 +365,35 @@ const CMolecule = (mmolecule, verbose) => {
         */
 
         // Now create the bond
-        /*
-        In the molecule H2, the hydrogen atoms share the two electrons via covalent bonding.[7] Covalency is greatest between atoms of similar electronegativities. Thus, covalent bonding does not necessarily require that the two atoms be of the same elements, only that they be of comparable electronegativity. Covalent bonding that entails sharing of electrons over more than two atoms is said to be delocalized.
-         */
-        // Get index of first free electron on target atom
+        // Get index of first free electron on target atom (electrophile)
         // Brondsted Lowry reaction: target atom is proton
-        let atom = container[target_molecule_index][0]
+        let target_atom = target_molecule[0][1][target_atom_index]
 
-        if (atom === undefined) {
+        if (target_atom === undefined) {
             // proton will be the last element in container
-            atom = container[container.length -1][0][target_atom_index]
+            target_atom = container[container.length -1][0][target_atom_index]
         }
 
-        atom.should.be.an.Array()
-        const target_atom_electron_to_share_index = __electronToShareIndex(atom)
+        target_atom.should.be.an.Array()
+        target_atom[0].should.be.an.String()
+        const target_atom_electron_to_share_index = __electronToShareIndex(target_atom)
 
         // Get index of first free electron on source atom
-        // Brondsted Lowry reaction: source atom is atom on nucleophile attacking the proton, mmolecule is the nucleophile
+        // source atom is atom on nucleophile attacking the proton, mmolecule is the nucleophile
         const source_atom_electron_to_share_index = __electronToShareIndex(mmolecule[0][1][source_atom_index])
 
         // Get lone pair from source atom (atom arrow would be pointing from (nucleophile))
         const source_atom_lone_pairs = CAtom(mmolecule[0][1][source_atom_index], source_atom_index, mmolecule).lonePairs(test_number)
         source_atom_lone_pairs.should.be.an.Array()
 
-        // Protons are always target atoms (electrophiles) - where the arrow would be pointing to
-        // Brondsted Lowry reaction: target atom is proton
-        container[target_molecule_index].should.be.an.Array() // actual molecule, units
-        container[target_molecule_index].length.should.be.equal(2)
-        container[target_molecule_index][0].should.be.an.Array() // the actual molecule
-        container[target_molecule_index][1].should.be.an.Number() // units
-        container[target_molecule_index][0].length.should.be.equal(2) // pKa, atoms
-        if (container[target_molecule_index][0][0] !== null) {
-            container[target_molecule_index][0][0].should.be.an.Number() // pKa
-        }
-        container[target_molecule_index][0][1].should.be.an.Array() // atoms
-        container[target_molecule_index][0][1][target_atom_index].should.be.an.Array() // target atom
-
-        if (container[target_molecule_index][0][1][target_atom_index][0]==="H" && container[target_molecule_index][0][1][target_atom_index].length===5 ) {
+        if (target_molecule[0][1][target_atom_index][0]==="H" && target_molecule[0][1][target_atom_index].length===5 ) {
             console.log("WARNING: Adding a proton using push(). Use addProton() instead.")
         }
 
-        if (container[target_molecule_index][0][1][target_atom_index][0]==="H") {
+        if (target_molecule[0][1][target_atom_index][0]==="H") {
 
-            // proton?
             // proton has no electrons
             if (container[target_molecule_index][0][1][target_atom_index].length===5) {
-
-                // add electrons from source atom to target atom (proton)
-                // target atom is a proton and has no electrons
-                if (source_atom_lone_pairs.length > 0) {
-                    // container[target_molecule_index][target_atom_index] is a proton
-                    //  container[target_molecule_index][1] are the units
-                    //  container[target_molecule_index][0][1] are the atoms
-                   // process.exit()
-                    container[target_molecule_index][0][1][target_atom_index].push(source_atom_lone_pairs[0])
-                    container[target_molecule_index][0][1][target_atom_index].push(source_atom_lone_pairs[1])
-                    // Add proton to target molecule
-                    __checkContainer(container)
-                    container[source_molecule_index][0][1].push(container[target_molecule_index][0][1][target_atom_index])
-                    __checkContainer(container)
-                } else {
-
-                    // Does the source atom have a double bond?
-                    // returns a set of electrons or false
-                    const double_bond = CAtom(mmolecule[0][1][source_atom_index], source_atom_index, mmolecule).doubleBond(test_number)
-
-                    // remove the double bond by removing electrons from bonded atom (turn into single bond)
-                    if (double_bond) {
-                        mmolecule[0] = CAtom(mmolecule[0][1][source_atom_index], source_atom_index,mmolecule[0]).removeDoubleBond(test_number)
-                        container[target_molecule_index][0][1][target_atom_index].push(double_bond[0])
-                        container[target_molecule_index][0][1][target_atom_index].push(double_bond[1])
-                    }
-
-                }
-
-            } else {
                 console.log("To do: Add hydrogen bond where hydrogen is not a proton")
             }
 
@@ -477,10 +401,6 @@ const CMolecule = (mmolecule, verbose) => {
 
             // Not hydrogen
             // Source atom should always have a lone pair (nucleophile)
-
-
-            
-
             if (!target_atom_electron_to_share_index) {
 
                 // Target atom has no free electrons so check if it has free slots ie that
@@ -491,11 +411,10 @@ const CMolecule = (mmolecule, verbose) => {
                 // always be the proton atom from the electrophile.
                 // Source atom is what the arrow points from (tail) and will
                 // always be the atom from the nucleophile.
-                container[target_molecule_index][0].should.be.an.Array() // the actual molecule
-                container[target_molecule_index][1].should.be.an.Number() // units
-                container[target_molecule_index][0][1][target_atom_index].should.be.an.Array() // atoms
-                const free_slots = CAtom(container[target_molecule_index][0][1][target_atom_index], target_atom_index,  mmolecule).freeSlots(test_number)
-
+                target_molecule[0].should.be.an.Array() // the actual molecule (electrophile (mmolecule is our nucleophile)(
+                target_molecule[1].should.be.an.Number() // units
+                target_molecule[0][1][target_atom_index].should.be.an.Array() // atoms
+                const free_slots = CAtom(target_molecule[0][1][target_atom_index], target_atom_index,  mmolecule).freeSlots()
 
                 if (free_slots > 0) {
 
@@ -526,27 +445,38 @@ const CMolecule = (mmolecule, verbose) => {
 
             } else {
 
-
                 // add shared electron from target atom to source atom
-                mmolecule[0][source_atom_index].push(mmolecule[0][target_atom_mmolecule_index][4 + target_atom_electron_to_share_index])
+                const electron_from_target_atom_to_share = target_molecule[0][1][target_atom_index][5 + target_atom_electron_to_share_index]
+                electron_from_target_atom_to_share.should.be.an.String()
+
+                console.log("Container/Molecule.js To do check target electron to share is not being used")
+
+                container[source_molecule_index][0][1][source_atom_index][0].should.be.an.String
+                container[source_molecule_index][0][1][source_atom_index].push(electron_from_target_atom_to_share)
 
                 // add shared electron from atom being pushed to target atom
-                // test 5 - atom_to_push_molecule_index is undefined
-                container[target_molecule_index][target_atom_index].push(mmolecule[0][atom_to_push_molecule_index][5 + source_atom_electron_to_share_index])
+                const electron_from_source_atom_to_share = container[source_molecule_index][0][1][source_atom_index][5 + source_atom_electron_to_share_index]
+                electron_from_source_atom_to_share.should.be.an.String()
+                electron_from_source_atom_to_share.should.not.equal(electron_from_target_atom_to_share)
 
+                console.log("Container/Molecule.js To do check source electron to share is not being used")
 
+                target_molecule[0][1][target_atom_index].push(electron_from_source_atom_to_share)
 
+                // Now add the atoms from the target molecule to the source molecule (target_molecule[0][1])
+                container[source_molecule_index][0][1] = [...container[source_molecule_index][0][1], ...target_molecule[0][1] ] // COC, Al chloride
+
+                // Remove target molecule from container if required as it has been absorbed by the source molecule
+                if (undefined != container[target_molecule_index]) {
+                    container.splice(target_molecule_index, 1)
+                }
             }
         }
 
         __checkContainer(container)
 
         // Set pKa
-        container[target_molecule_index][0][0] = pKa(container[target_molecule_index][0].slice(1))
-
-        //  CC=CC (nucleophile) ----> HBr (electrophile) (target)
-
-        // Check there is a bond between nucleophile atom (source) and electrophile atom (target)
+        container[source_molecule_index][0][0] = pKa(container[source_molecule_index][0][1])
 
         __checkContainer(container)
 
@@ -680,37 +610,19 @@ const CMolecule = (mmolecule, verbose) => {
             mmolecule.length.should.be.equal(2) // molecule, units
             mmolecule[0].length.should.be.equal(2) // pKa, atoms
 
+            // the nucleophile
             source_atom_index.should.be.greaterThan(-1)
 
-            // NOTES
-            // Brondsted Lowry reactions:
-            // atoms_or_atomic_symbols is the proton from the electrophile.
-            // mmolecule is the nucleophile (molecule containing the atom
-            // that attacks the proton from the electrophile).
-            // Target atom is what the arrow points to (attacks) and will
-            // always be the proton atom from the electrophile.
-            // Source atom is what the arrow points from (tail) and will
-            // always be the atom from the nucleophile.            
-            
-           
-            // atoms_or_atomic_symbols are atoms from electrophile
-            // mmolecule is the nucleophile
-            // MOLECULE MODEL
-// pKa, atom, atom, atom ...
-// ATOM MODEL
-// atomic symbol, proton count, valence count, std number of bonds, velectron1, velectron2, velectron3
-
-            // atoms_or_atomic symbols is an array containing the atom we are
-            // pushing and the atoms linked to that atom
-            // atom_index is the index of the atom we are pushing
             const atoms = atoms_or_atomic_symbols.map(
                 (atom_or_atomic_symbol) => {
                     return typeof atom_or_atomic_symbol === "string" ? AtomFactory(atom_or_atomic_symbol, 0) : atom_or_atomic_symbol
                 }
             )
-            
+
+            const target_molecule = container[target_molecule_index] === undefined ? [[pKa(atoms), atoms], 1]: container[target_molecule_index]
+
             // returns container
-            return __makeCovalentBond(container, source_molecule_index, target_molecule_index, source_atom_index, target_atom_index, test_number)
+            return __makeCovalentBond(container, source_molecule_index, target_molecule, target_molecule_index, source_atom_index, target_atom_index, test_number)
             
         },
         remove: (container, molecule_index, atom_or_atomic_symbol) => {
