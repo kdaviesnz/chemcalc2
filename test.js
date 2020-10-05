@@ -271,6 +271,37 @@ client.connect(err => {
         //console.log(VMolecule(hcl).canonicalSMILES(1))
         //console.log(VMolecule(propylene).canonicalSMILES(1))
         //VMolecule(propylene).render(1)
+        
+        // @see Organic Chemistry 8th Edition P76
+        const reactAluminiumChlorideWithMethylEther = (methyl_ether_molecule, aluminium_chloride_molecule) => {
+            console.log("Getting new container")
+            const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
+            console.log("Adding methyl_ether_molecule (COC) to container")
+            ccontainer.add(_.cloneDeep(methyl_ether_molecule).json, 1, verbose)
+            console.log("Adding aluminium chloride to container")
+            ccontainer.add(_.cloneDeep(aluminium_chloride_molecule).json, 1, verbose)
+            VContainerWithDB(ccontainer).show(() => {
+                console.log("Test 4 complete: Container should show chlorane (Cl) and oxidane (water).")
+                process.exit()
+            })
+        }
+        
+        const lookupAluminiumChloride = (methyl_ether_molecule) => {
+            MoleculeLookup(db, "[Al](Cl)(Cl)Cl", "SMILES", true).then(
+                // "resolves" callback
+                (aluminium_chloride_molecule) => {
+                    lookupAluminiumChloride(methyl_ether_molecule, aluminium_chloride_molecule)
+                },
+                // Nothing found callback
+                onMoleculeNotFound((search) => {
+                    console.log("Molecule " + search + " added to database")
+                    client.close()
+                    process.exit()
+                }),
+                // "rejects" callback
+                onErrorLookingUpMoleculeInDB
+            )
+        }
 
         const lookUpMethylEther = () => {
             MoleculeLookup(db, "COC", "SMILES", true).then(
