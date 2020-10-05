@@ -35,7 +35,16 @@ const VMolecule = (mmolecule) => {
         return false
     }
 
-    const __getAtomAsSMILE = (catom, carry) => {
+    const __getAtomAsSMILE = (catom, current_atom) => {
+
+        if (catom.isPositivelyCharged()) {
+           return "[" + current_atom[0] + "+]"
+        } else if (catom.isNegativelyCharged()) {
+            return "[" + current_atom[0] + "-]"
+        } else {
+            return  (__addBrackets(current_atom[0])?"[":"") + current_atom[0] + (__addBrackets(current_atom[0])?"]":"") // eg "" + "C"
+        }
+        /*
         if (catom.isPositivelyCharged()) {
             carry = carry + "[" + current_atom[0] + "+]"
         } else if (catom.isNegativelyCharged()) {
@@ -48,10 +57,39 @@ const VMolecule = (mmolecule) => {
         if (next_atom) {
             carry = carry + CMolecule(mmolecule_sans_hydrogens).bondType(current_atom, next_atom)
         }
+        */
+
     }
 
+    const __addBranches = (bonds) => {
+        let branch = ""
 
-    const __SMILES_recursive = (mmolecule_sans_hydrogens, carry, current_atom, previous_atom, branch_level, index) => {
+        bonds.map((bond)=> {
+            /*
+            {
+                atom: ['Cl', ....]
+                index:3 // index of the current atom is bonded to
+                shared_electrons: ["il8089098","8909809uu"]
+            },
+            */
+            const current_atom = mmolecule[0][1][bond.atom_index]
+            branch =  branch + "(" + __SMILES_recursive("", current_atom, null, bond.atom_index) + ")"
+        })
+
+        return branch
+    }
+
+    const __SMILES_recursive = (carry, current_atom, previous_atom, index, outer) => {
+
+        if (current_atom === undefined) {
+            return carry
+        }
+
+        current_atom[0].should.be.an.String()
+
+        if (current_atom[0]==='H') {
+            return __SMILES_recursive(carry, mmolecule[0][1][index+1], current_atom, index+1)
+        }
 
         if (typeof current_atom !== 'object') {
             console.log('Molecule.js Atom must be an object. Got ' + current_atom + ' instead')
@@ -59,37 +97,46 @@ const VMolecule = (mmolecule) => {
         }
         current_atom.should.be.an.Array()
 
-        // First atom?
+
+        const catom = CAtom(current_atom, index, mmolecule)
+        const bonds = catom.indexedBonds('H').filter((bond)=> {
+            return bond.atom_index > index
+        })
+
+        // First non-hydrogen atom?
         if (carry === "") {
 
             // Get how many atoms are attached to the atom, but don't include hydrogens
-            const catom = CAtom(atom, index, mmolecule)
-            const bonds = CAtom(atom, index, mmolecule).indexedBonds('', 'H')
-            /*
-            [
-                {
-                     index:3 // index of the current atom is bonded to
-                     electron_pair: ["il8089098","8909809uu"]
-                },
-                ...
-
-            ]
-             */
-
             if (bonds.length < 2) {
+                //carry = carry + __getAtomAsSMILE(catom, current_atom)
+                carry = carry + __getAtomAsSMILE(catom, current_atom)
+            } else {
+
+                // First atom but has more than one atom attached to it eg C(C)O
+                // Therefore we need start recursively branching
+                carry = carry + __getAtomAsSMILE(catom, current_atom) + __addBranches(bonds)
+            }
+
+        } else {
+
+            // Get how many atoms are attached to the atom, but don't include hydrogens
+            if (bonds.length < 3) {
                 carry = carry + __getAtomAsSMILE(catom, carry)
             } else {
                 // First atom but has more than one atom attached to it eg C(C)O
                 // Therefore we need start recursively branching
-
+                carry = carry + __addBranches(bonds)
             }
 
         }
 
+        return carry
+
+        //return __SMILES_recursive(carry, mmolecule[0][1][index+1], current_atom, index+1)
 
 
 
-
+        /*
 
         if (undefined === mmolecule_sans_hydrogens) {
             return carry
@@ -132,6 +179,8 @@ const VMolecule = (mmolecule) => {
 
         return  __SMILES_recursive(mmolecule_sans_hydrogens, carry, mmolecule_sans_hydrogens[index], mmolecule_sans_hydrogens[index+1], branch_level, index +1)
 
+*/
+
 
     }
 
@@ -139,12 +188,12 @@ const VMolecule = (mmolecule) => {
 
         canonicalSMILES: () => {
 
-
+/*
             const mmolecule_sans_hydrogens = _.cloneDeep(mmolecule[0][1]).filter((atom)=>{
                 return atom[0] !== 'H'
             })
 
-            
+            */
 
             // mmolecule_sans_hydrogens
             /*
@@ -238,9 +287,10 @@ const VMolecule = (mmolecule) => {
                 return carry
             }, "")
             */
-            SMILES =  __SMILES_recursive(mmolecule_sans_hydrogens, "", mmolecule_sans_hydrogens[0], null, 0, index)
-
-
+           // SMILES =  __SMILES_recursive(mmolecule_sans_hydrogens, "", mmolecule_sans_hydrogens[0], null, 0, index)
+            mmolecule[0][1][0].should.be.an.Array()
+            mmolecule[0][1][0][0].should.be.an.String()
+            SMILES =  __SMILES_recursive("", mmolecule[0][1][0], null, 0, true)
 
             return SMILES
         },

@@ -69,9 +69,9 @@ const CMolecule = (mmolecule, verbose) => {
 
     const __positivelyChargedAtoms = (test_number) => {
         const molecule = mmolecule[0] // mmolecule[1] is the number of units
-        const positively_charged_atoms = molecule.slice(1).reduce(
+        const positively_charged_atoms = molecule[1].reduce(
             (carry, atom, index) => {
-                if (atom[0] !== "H" && CAtom(atom, index,molecule).isPositivelyCharged(test_number)) {
+                if (atom[0] !== "H" && CAtom(atom, index,mmolecule).isPositivelyCharged(test_number)) {
                     carry.push([
                         index,
                         atom
@@ -81,9 +81,7 @@ const CMolecule = (mmolecule, verbose) => {
             },
             []
         )
-        if (test_number == 4.1) {
-            positively_charged_atoms.length.should.be.equal(7777)
-        }
+
         return positively_charged_atoms
     }
 
@@ -135,26 +133,11 @@ const CMolecule = (mmolecule, verbose) => {
 
         const hydrogens = __hydrogensNotAttachedToCarbons(test_number)
 
-
-        if (test_number === 4.1) {
-            hydrogens.length.should.be.equal(1)
-        }
-
-        if (test_number === 5.1) {  // mmolecle = [Br-]
-            hydrogens.length.should.be.equal(0)
-        }
-
-        if (test_number * 1=== 7.1) {
-            hydrogens.length.should.be.equal(2)
-        }
-
         // Get hydrogens not attached to carbons
 
         // Check atoms for free slots
         // returns [index, atom] pairs
-        if (test_number === 5.2) {
-            hydrogens.length.should.be.equal(0)
-        }
+
         if (hydrogens.length > 0) {
             // See organic chemistry 8th edition ch 6 p 235
             // C=C (butene, nucleophile) -> HBr (H is electrophile)
@@ -167,78 +150,29 @@ const CMolecule = (mmolecule, verbose) => {
 
             const positively_charged_atoms = __positivelyChargedAtoms(test_number)
 
-            if (test_number === 5.2) {
-                    // [Br-] (nucleophile, electron donor) -----> carbocation
-        // Br atom should bond to carbon that has three bonds
-        // Target atom index should be 8 (electrophile)
-        // Source atom index should be 1
-        // substrate is [Br-]
-        // reagent is carbocation
-        // see organic chenistry 8th edition ch 6 p235
-        // [Br-] (nucleophile) -----> carbocation
-        // Br atom should bond to carbon that has three bonds
-        // Target atom index should be 8
-        // Source atom index should be 1
-        // Organic Chemistry 8th edition, P199
-        // test_number 5
-        // [Br-] + carbocation (alkane)
-        // electrophile is [C+] cation on carbocation
-        // nucleophile is [Br-]
-        // carbocation is added to [Br-]
-        // Br and C form bond
-        // 5.1 test 5, [Br-] nucleophile so should return false
-        // 5.2 test 5, carbocation electrophile so should not return false
-                
-                
-                
-               
-                positively_charged_atoms.length.should.be.equal(1) // the carbocation
-            }
-
             if (positively_charged_atoms.length > 0) {
-                electrophile_index = positively_charged_atoms[0][0] + 1
+                electrophile_index = positively_charged_atoms[0][0]
             } else {
                 const atoms_with_free_slots = __atomsWithFreeSlots(test_number)
 
                 // See organic chemistry 8th edition ch 6 p 235
                 // C=C (butene, nucleophile) -> HBr (H is electrophile)
-                if (test_number == 4.1) {
-                    
-                    
-                    atoms_with_free_slots.length.should.be.equal(1)
-                }
-
-                if (test_number == 5.1) {
-                    atoms_with_free_slots.length.should.be.equal(1)
-                }
-
                 if (atoms_with_free_slots.length === 0) {
                     return false
                 } else {
-                    electrophile_index =  atoms_with_free_slots[0][0] + 1 // take into account pKa value
+                    electrophile_index =  atoms_with_free_slots[0][0]
                 }
             }
 
         }
         // Check atom isnt negatively charged (nucleophile)
         // const CAtom = (atom, current_atom_index, mmolecule)
-        const is_negatively_charged = CAtom(molecule[electrophile_index + 1], 0, molecule).isNegativelyCharged(test_number)
-
-        if (test_number *1 === 7.1) {
-            is_negatively_charged.should.be.equal(false)
-        }
-
-        if (test_number === 5.1) {
-            is_negatively_charged.should.be.equal(true)
-        }
+        const is_negatively_charged = CAtom(mmolecule[0][1][electrophile_index], electrophile_index, mmolecule).isNegativelyCharged(test_number)
 
         if (is_negatively_charged) {
             return false
         }
 
-        if (test_number *1 === 7.1) {
-            electrophile_index.should.be.equal(0)
-        }
         return electrophile_index
     }
 
@@ -284,11 +218,6 @@ const CMolecule = (mmolecule, verbose) => {
                     carbon_2_hydrogens.length.should.be.equal(1)
                 }
 
-                if (test_number === 6) {
-                    keys[0].should.be.equal('5')
-                    keys[1].should.be.equal('8')
-                }
-
                 if (carbon_1_hydrogens.length >= carbon_2_hydrogens.length ) {
                     return keys[0]*1
                 } else {
@@ -312,6 +241,7 @@ const CMolecule = (mmolecule, verbose) => {
 
         } else {
             // H2O (nucleophile) <------- HCl (electrophile)
+
             return atoms_with_lone_pairs[0][0] + 1 // take into account pka
         }
 
@@ -350,8 +280,7 @@ const CMolecule = (mmolecule, verbose) => {
         const molecule = mmolecule[0] // mmolecule[1] is the number of units
         
         // Check substrate for free slots
-
-        return molecule.slice(1).map(
+        return molecule[1].map(
 
             (atom, index) => {
 

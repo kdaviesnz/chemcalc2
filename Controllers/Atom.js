@@ -9,7 +9,97 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     mmolecule[0].length.should.be.equal(2) // pKa, atoms
     atom.should.be.an.Array()
     atom.length.should.be.greaterThan(3)
-    
+
+    const __indexedBonds = (filter_by) => {
+
+        const atoms = mmolecule[0][1]
+        const atom_electrons = atom.slice(5)
+
+        filter_by.should.be.an.String()
+
+        /*
+[
+    {
+         atom_index:3 // index of the current atom is bonded to
+         shared_electrons: ["il8089098","8909809uu"]
+    },
+    ...
+
+]
+ */
+
+        const r =  _.cloneDeep(atoms).reduce(
+
+            (bonds, _atom, _atom_index) => {
+
+                if ((_.isEqual(_.cloneDeep(atom).sort(), _.cloneDeep(_atom).sort())) || _atom[0]=== 'H') {
+                    return bonds
+                }
+
+                const shared_electrons = Set().intersection(atom_electrons, _atom.slice(5))
+
+                if (shared_electrons.length === 0) {
+                    return bonds
+                }
+
+                bonds.push({
+                    'atom': _atom,
+                    'atom_index': _atom_index,
+                    'shared_electrons': shared_electrons
+                })
+
+                return bonds
+
+            },
+            []
+        )
+
+        return r
+
+        /*
+        const r2 =  atoms.map(
+
+            (_atom, _atom_index) => {
+
+                if (atom === _atom) {
+                    return false
+                }
+
+
+                const shared_electrons = Set().intersection(atom_electrons, _atom.slice(5)).reduce(
+                    (carry, electron) => {
+                        carry.push(
+                                electron
+                        )
+                        return carry;
+                    },
+                    []
+                )
+
+                return {
+                    'atom': _atom,
+                    'atom_index': _atom_index,
+                    'shared_electrons': shared_electrons
+
+                }
+
+            }
+        ).filter(
+            (item) => {
+                return item !== false && item.atom[0] !== filter_by
+            }
+        )
+
+        if(atom[0]==='Cl') {
+            console.log("r")
+            console.log(r)
+            process.exit()
+        }
+        return r
+        */
+
+    }
+
     const __Bonds = () => {
 
         const atoms = mmolecule[0][1]
@@ -270,6 +360,8 @@ We then return the total number of free slots minus the number of slots already 
   state_of_matter: 'gas',
   subcategory: 'reactive nonmetal' }
          */
+
+        atom[0].should.be.an.String()
         const info = PeriodicTable[atom[0]]
 
         const number_of_shells = info["electrons_per_shell"].split("-").length
@@ -347,7 +439,8 @@ We then return the total number of free slots minus the number of slots already 
         bondCount:__bondCount,
         doubleBondCount:__doubleBondCount,
         numberOfProtons:__numberOfProtons,
-        numberOfElectrons:__numberOfElectrons
+        numberOfElectrons:__numberOfElectrons,
+        indexedBonds: __indexedBonds
     }
 }
 
