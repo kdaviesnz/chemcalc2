@@ -84,7 +84,7 @@ dimethyl_ether_oxygen.hydrogens().length.should.be.equal(0)
 dimethyl_ether_oxygen.carbons().length.should.be.equal(2)
 dimethyl_ether_oxygen.bondCount().should.be.equal(2)
 dimethyl_ether_oxygen.freeSlots().should.be.equal(0)
-dimethyl_ether_oxygen.lonePairs().should.be.equal(2)
+dimethyl_ether_oxygen.lonePairs().length.should.be.equal(4)
 dimethyl_ether_oxygen.isNegativelyCharged().should.be.false()
 dimethyl_ether_oxygen.isPositivelyCharged().should.be.false()
 VMolecule([dimethyl_ether,1]).canonicalSMILES().should.be.equal("COC")
@@ -280,6 +280,8 @@ client.connect(err => {
             ccontainer.add(_.cloneDeep(methyl_ether_molecule).json, 1, verbose)
             console.log("Adding aluminium chloride to container")
             ccontainer.add(_.cloneDeep(aluminium_chloride_molecule).json, 1, verbose)
+            console.log("Test 4 complete: Container should show chlorane (Cl) and oxidane (water).")
+            process.exit()
             VContainerWithDB(ccontainer).show(() => {
                 console.log("Test 4 complete: Container should show chlorane (Cl) and oxidane (water).")
                 process.exit()
@@ -331,7 +333,7 @@ client.connect(err => {
             ccontainer.add(_.cloneDeep(chloride_molecule).json, 1, verbose)
             VContainerWithDB(ccontainer).show(() => {
                 console.log("Test 3 complete: Container should show chlorane (Cl) and oxidane (water).")
-                process.exit()
+                lookUpMethylEther()
             })
         }
 

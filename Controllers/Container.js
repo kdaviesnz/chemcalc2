@@ -147,7 +147,9 @@ class CContainer {
 
 
                 if (reaction === false) {
-                    reaction = lewis.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, this.test_number)
+                    console.log("Doing lewis reaction (Controllers/Container.js) 1")
+                    process.exit
+                    reaction = lewis.react(nucleophile_atom_index, electrophile_molecule)
                     if (reaction !== false) {
                         this.container = reaction
                     }
@@ -195,6 +197,9 @@ class CContainer {
                     // substrate does not have a proton
                     // determine electrophile atom on the substrate
                     // do Lewis acid base teaction
+                    console.log("Doing lewis reaction (Controllers/Container.js) 2")
+                    process.exit
+
                     reaction = lewis.react(nucleophile_molecule, nucleophile_atom_index, electrophile_molecule, electrophile_atom_index, this.test_number)
                 }
 
@@ -224,6 +229,9 @@ class CContainer {
             if (!reaction) {
                 // No alkene and not Bronsted Lowry
                 // do Lewis acid base teaction
+                console.log("Doing lewis reaction (Controllers/Container.js) 3")
+                process.exit
+
                 reaction = lewis.react(null, null, null, null, this.test_number, verbose)
             }
 
