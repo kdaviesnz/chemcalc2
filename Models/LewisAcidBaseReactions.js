@@ -2,51 +2,55 @@ const Set = require('../Models/Set')
 
 const LewisAcidBaseReactions = (container, MoleculeController, test_number, verbose) => {
 
-    const react = (substrate_molecule, reagent_molecule) => {
+    const react = (substrate_molecule_index, reagent_molecule_index) => {
 
-             
-            const substrate_electrophile_atom_index = MoleculeController(container[1], verbose).electrophileIndex() // AlCl3
-
- 
-
-            const reagent_electrophile_atom_index = MoleculeController(container[2]).electrophileIndex()
-
-
-            
-
-            // Container [false, [AlCl3], [COC]]
-            if (substrate_electrophile_atom_index !==false) {
-                electrophile_atom_index = substrate_electrophile_atom_index
-                nucleophile_molecule_index = 2
-                electrophile_molecule_index = 1
-                electrophile_molecule = container[1]
-                nucleophile_molecule = container[2]
-                nucleophile_atom_index = MoleculeController(nucleophile_molecule).nucleophileIndex(test_number)
-                if (test_number ===3) {
-                    nucleophile_molecule[nucleophile_atom_index][0].should.be.equal('O')
-                    nucleophile_atom_index.should.be.equal(5)
-                }
-            } else if (reagent_electrophile_atom_index !==false) {
-                electrophile_atom_index = reagent_electrophile_atom_index
-                nucleophile_molecule_index = 1
-                electrophile_molecule_index = 2
-                electrophile_molecule = container[2]
-                nucleophile_molecule = container[1]
-                nucleophile_atom_index = MoleculeController(container[1]).nucleophileIndex(3)
+        const substrate_nucleophile_atom_index = MoleculeController(container[substrate_molecule_index]).nucleophileIndex()
+        const reagent_nucleophile_atom_index = MoleculeController(container[reagent_molecule_index]).nucleophileIndex()
+        
+        const substrate_electrophile_atom_index = MoleculeController(container[substrate_molecule_index]).electrophileIndex()
+        const reagent_electrophile_atom_index = MoleculeController(container[reagent_molecule_index]).electrophileIndex()
+        
+        if (substrate_nucleophile_atom_index !== false && reagent_nucleophile_atom_index !== false) {
+            if (reagent_electrophile_atom_index === false) {
+                nucleophile_molecule_index = reagent_molecule_index
+                nucleophile_molecule_nucleophile_atom_index = reagent_nucleophile_atom_index     
+                electrophile_molecule_index = substrate_molecule_index
+                electrophile_molecule_electrophile_atom_index = substrate_nucleophile_atom_index               
             } else {
+                // compare pKa values
+                if (container[substrate_molecule_index][1][substrate_electrophile_atom_index][0]) > 
+                    container[reagent_molecule_index][1][reagent_electrophile_atom_index][0]) {
+                       nucleophile_molecule_index = reagent_molecule_index
+                       nucleophile_molecule_nucleophile_atom_index = reagent_nucleophile_atom_index     
+                       electrophile_molecule_index = substrate_molecule_index
+                       electrophile_molecule_electrophile_atom_index = substrate_nucleophile_atom_index    
+                 } else {
+                       nucleophile_molecule_index = substrate_molecule_index
+                       nucleophile_molecule_nucleophile_atom_index = substrate_nucleophile_atom_index     
+                       electrophile_molecule_index = reagent_molecule_index
+                       electrophile_molecule_electrophile_atom_index = reagent_nucleophile_atom_index    
+                 }
+                 
+            }  
+            
+        }
+        
+        if (substrate_nucleophile_atom_index !=== false && reagent_nucleophile_atom_index === false) {
+            if (reagent_electrophile_atom_index === false) {
                 return false
             }
+            nucleophile_molecule_index = substrate_molecule_index
+            nucleophile_molecule_nucleophile_atom_index = substrate_nucleophile_atom_index
+        }
         
-
-
-        // AlCl3 (electrophile) <- C:OC (nucleophile)
-        const molecule_to_add_to_index = 0
+        if (substrate_nucleophile_atom_index === false && reagent_nucleophile_atom_index !== false) {
+            if (substrate_electrophile_atom_index === false) {
+                return false
+            }
+            nucleophile_molecule_index = reagent_molecule_index
+            nucleophile_molecule_nucleophile_atom_index = reagent_nucleophile_atom_index
+        }
         
-
-        
-          
-        
-
         
         MoleculeController(nucleophile_molecule).push(electrophile_molecule[0].slice(1), container, molecule_to_add_to_index, test_number, electrophile_atom_index, nucleophile_atom_index )
 
