@@ -124,8 +124,13 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
             source_index_map.source_molecule_index
         )
 
-
-        container.splice(container.length-1,1) // remove proton from container
+        // Adjust number of units
+        if (container[container.length-1][1] > container[source_index_map.source_molecule_index][1]) {
+            container[container.length-1][1] = container[container.length-1][1] - container[source_index_map.source_molecule_index][1]
+        } else {
+            // All protons have been consumec by source
+            container.splice(container.length-1,1) // remove proton from container
+        }
 
         return container
 
