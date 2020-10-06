@@ -13,7 +13,7 @@ const VContainer = (client) => {
     const db = client.db("chemistry")
 
     const __containerString = (container_string, molecule) => {
-        return container_string + "{" + molecule.IUPACName + " (" + molecule.CanonicalSMILES + ")}"
+        return container_string + "{" + (molecule.IUPACName === undefined? molecule.search : molecule.IUPACName) + "} {" + (molecule.CanonicalSMILES === undefined? molecule.search: molecule.CanonicalSMILES) + "}"
     }
 
     const __containerStringRecursive = (container_string, container, current_index, callback) => {
@@ -22,20 +22,23 @@ const VContainer = (client) => {
             console.log(container_string + "]")
             callback()
         } else {
+
             const item = container[current_index]
             const mmolecule = item
             const units = item[1]
 
-            //console.log(VMolecule(mmolecule).canonicalSMILES(units))
-
             MoleculeLookup(db, VMolecule(mmolecule).canonicalSMILES(units), "SMILES", true).then(
                 // "resolves" callback - molecule found in db
                 (molecule) => {
+                   // console.log('Views/Container.js molecule:')
+                   // console.log(molecule)
                     __containerStringRecursive(__containerString(container_string, molecule), container, current_index + 1, callback)
                 },
                 // Nothing found in db callback
                 (search) => {
                     pkl.searchBySMILES(search.replace(/\(\)/g, ""), db, (molecule_from_pubchem) => {
+                        //console.log("molecule from pubchem")
+                        //console.log(molecule_from_pubchem)
                         if (molecule_from_pubchem !== null) {
                             molecule_from_pubchem['json'] = MoleculeFactory(search)
                            // console.log("Views/Container.js")
@@ -52,6 +55,9 @@ const VContainer = (client) => {
                                     __containerStringRecursive(__containerString(container_string, molecule_from_pubchem), container, current_index + 1, callback)
                                 }
                             })
+                        } else {
+                            console.log("Nothing found in pubchem")
+                            return search
                         }
                     })
                 },

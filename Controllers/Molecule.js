@@ -445,23 +445,13 @@ const CMolecule = (mmolecule, verbose) => {
 
             } else {
 
-                // add shared electron from target atom to source atom
-                const electron_from_target_atom_to_share = target_molecule[0][1][target_atom_index][5 + target_atom_electron_to_share_index]
-                electron_from_target_atom_to_share.should.be.an.String()
-
-                console.log("Container/Molecule.js To do check target electron to share is not being used")
+                source_atom_lone_pairs.length.should.be.greaterThan(1)
 
                 container[source_molecule_index][0][1][source_atom_index][0].should.be.an.String
-                container[source_molecule_index][0][1][source_atom_index].push(electron_from_target_atom_to_share)
 
-                // add shared electron from atom being pushed to target atom
-                const electron_from_source_atom_to_share = container[source_molecule_index][0][1][source_atom_index][5 + source_atom_electron_to_share_index]
-                electron_from_source_atom_to_share.should.be.an.String()
-                electron_from_source_atom_to_share.should.not.equal(electron_from_target_atom_to_share)
-
-                console.log("Container/Molecule.js To do check source electron to share is not being used")
-
-                target_molecule[0][1][target_atom_index].push(electron_from_source_atom_to_share)
+                // add source atom electron lone pair from source atom to target atom
+                target_molecule[0][1][target_atom_index].push(source_atom_lone_pairs[0])
+                target_molecule[0][1][target_atom_index].push(source_atom_lone_pairs[1])
 
                 // Now add the atoms from the target molecule to the source molecule (target_molecule[0][1])
                 container[source_molecule_index][0][1] = [...container[source_molecule_index][0][1], ...target_molecule[0][1] ] // COC, Al chloride

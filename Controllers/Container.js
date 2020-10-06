@@ -245,7 +245,6 @@ class CContainer {
                 this.container = reaction
             }
 
-            console.log(this.container)
             const container_items = this.container.slice(1,this.container.length)
             if (container_items.length < reagents.length) {
                 // reagent and substrate have bonded

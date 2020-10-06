@@ -177,12 +177,15 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     }
 
     const __isNegativelyCharged = (test_number) => {
-        
+
+        const double_bonds = __doubleBond(test_number)
+        const number_of_double_bonds = double_bonds.length > 3 ? double_bonds.length / 4 : 0
+
         // Get total number of electrons and if greater than the number of protons return true
-        if (__bondCount(test_number) > __neutralAtomMaxBondCount() ) {
+        if ((__bondCount(test_number) + (number_of_double_bonds)) > __neutralAtomMaxBondCount() ) {
             return false
         }
-        return __numberOfElectrons() - __bondCount() > __numberOfProtons()
+        return __numberOfElectrons() - (__bondCount() + number_of_double_bonds )  > __numberOfProtons()
         
     }
     
@@ -229,8 +232,9 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
     }
 
-    const __doubleBond = (test_number) => {
-        const atoms = mmolecule[0][1].slice(1)
+    const __doubleBond = () => {
+
+        const atoms = mmolecule[0][1]
         const atom_electrons = atom.slice(5)
         const r =  atoms.map(
             (__atom, __atom_index) => {
@@ -241,7 +245,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
                 const shared_electrons = Set().intersection(atom_electrons, __atom.slice(5))
 
-                if (shared_electrons.length !== 5) {
+                if (shared_electrons.length !== 4) {
                     return false
                 }
 
@@ -253,10 +257,6 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                 return item !== false
             }
         )
-
-        if (test_number === 4) {
-            r.length.should.be.equal(1)
-        }
 
         return r.length > 0?r[0]:false
 

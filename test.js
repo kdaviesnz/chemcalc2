@@ -47,7 +47,6 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
     process.exit()
 }
 
-console.log("Running initial tests ...")
 
 // CAtom tests
 // https://www.quora.com/How-many-electrons-are-in-H2O
@@ -55,146 +54,160 @@ console.log("Running initial tests ...")
 // Organic Chemistry 8th Edition P76
 
 // COC dimethyl ether
-const dimethyl_ether = MoleculeFactory("COC")
-dimethyl_ether[1].should.be.an.Array()
-dimethyl_ether[1].length.should.be.equal(9)
-dimethyl_ether[1][0][0].should.be.equal("H")
-dimethyl_ether[1][1][0].should.be.equal("H")
-dimethyl_ether[1][2][0].should.be.equal("H")
-dimethyl_ether[1][3][0].should.be.equal("C")
-dimethyl_ether[1][4][0].should.be.equal("O")
-dimethyl_ether[1][5][0].should.be.equal("H")
-dimethyl_ether[1][6][0].should.be.equal("H")
-dimethyl_ether[1][7][0].should.be.equal("H")
-dimethyl_ether[1][8][0].should.be.equal("C")
-Set().intersection(dimethyl_ether[1][0].slice(5), dimethyl_ether[1][3].slice(5)).length.should.be.equal(2)
-Set().intersection(dimethyl_ether[1][1].slice(5), dimethyl_ether[1][3].slice(5)).length.should.be.equal(2)
-Set().intersection(dimethyl_ether[1][2].slice(5), dimethyl_ether[1][3].slice(5)).length.should.be.equal(2)
-Set().intersection(dimethyl_ether[1][3].slice(5), dimethyl_ether[1][4].slice(5)).length.should.be.equal(2)
-Set().intersection(dimethyl_ether[1][8].slice(5), dimethyl_ether[1][4].slice(5)).length.should.be.equal(2)
-Set().intersection(dimethyl_ether[1][8].slice(5), dimethyl_ether[1][5].slice(5)).length.should.be.equal(2)
-Set().intersection(dimethyl_ether[1][8].slice(5), dimethyl_ether[1][6].slice(5)).length.should.be.equal(2)
-Set().intersection(dimethyl_ether[1][8].slice(5), dimethyl_ether[1][7].slice(5)).length.should.be.equal(2)
-_.cloneDeep(dimethyl_ether[1][3]).slice(5).length.should.be.equal(8)
-_.cloneDeep(dimethyl_ether[1][4]).slice(5).length.should.be.equal(8)
-_.cloneDeep(dimethyl_ether[1][8]).slice(5).length.should.be.equal(8)
-const dimethyl_ether_oxygen = CAtom(dimethyl_ether[1][4], 4, [dimethyl_ether,1])
-dimethyl_ether_oxygen.doubleBondCount().should.be.equal(0)
-dimethyl_ether_oxygen.hydrogens().length.should.be.equal(0)
-dimethyl_ether_oxygen.carbons().length.should.be.equal(2)
-dimethyl_ether_oxygen.bondCount().should.be.equal(2)
-dimethyl_ether_oxygen.freeSlots().should.be.equal(0)
-dimethyl_ether_oxygen.lonePairs().length.should.be.equal(4)
-dimethyl_ether_oxygen.isNegativelyCharged().should.be.false()
-dimethyl_ether_oxygen.isPositivelyCharged().should.be.false()
-VMolecule([dimethyl_ether,1]).canonicalSMILES().should.be.equal("COC")
-MoleculeController([dimethyl_ether,1]).nucleophileIndex().should.be.equal(4)
+if (true) {
 
-const aluminium_chloride = MoleculeFactory("[Al](Cl)(Cl)Cl")
-aluminium_chloride[1].should.be.an.Array()
-aluminium_chloride[1].length.should.be.equal(4)
-aluminium_chloride[1][0][0].should.be.equal("Al")
-aluminium_chloride[1][1][0].should.be.equal("Cl")
-aluminium_chloride[1][2][0].should.be.equal("Cl")
-aluminium_chloride[1][3][0].should.be.equal("Cl")
-Set().intersection(aluminium_chloride[1][1].slice(5), aluminium_chloride[1][0].slice(5)).length.should.be.equal(2)
-Set().intersection(aluminium_chloride[1][2].slice(5), aluminium_chloride[1][0].slice(5)).length.should.be.equal(2)
-Set().intersection(aluminium_chloride[1][3].slice(5), aluminium_chloride[1][0].slice(5)).length.should.be.equal(2)
-Set().intersection(aluminium_chloride[1][1].slice(5), aluminium_chloride[1][2].slice(5)).length.should.be.equal(0)
-Set().intersection(aluminium_chloride[1][1].slice(5), aluminium_chloride[1][3].slice(5)).length.should.be.equal(0)
-Set().intersection(aluminium_chloride[1][2].slice(5), aluminium_chloride[1][3].slice(5)).length.should.be.equal(0)
-aluminium_chloride[1][0].slice(5).length.should.be.equal(6)
-aluminium_chloride[1][1].slice(5).length.should.be.equal(8)
-aluminium_chloride[1][2].slice(5).length.should.be.equal(8)
-aluminium_chloride[1][3].slice(5).length.should.be.equal(8)
-const al = CAtom(aluminium_chloride[1][0], 0, [aluminium_chloride,1])
-al.hydrogens().length.should.be.equal(0)
-al.carbons().length.should.be.equal(0)
-al.freeSlots().should.be.equal(12)
-al.bondCount().should.be.equal(3)
-al.doubleBondCount().should.be.equal(0)
-al.isNegativelyCharged().should.be.false()
-al.isPositivelyCharged().should.be.false()
-VMolecule([aluminium_chloride,1]).canonicalSMILES().should.be.equal("[Al](Cl)(Cl)(Cl)")
-MoleculeController([aluminium_chloride,1]).electrophileIndex().should.be.equal(0)
+    console.log("Running initial tests ...")
 
-const w = MoleculeFactory("O") // water H2O
-w[0].should.be.equal(14) // pKa
-w[1].should.be.an.Array()
-w[1].length.should.be.equal(3)
-w[1][2][0].should.be.equal("O")
-w[1][2].slice(5).length.should.be.equal(8) // oxygen has 6 valence electrons plus one electron from each of the two hydrogens
-const oxygen = CAtom(w[1][2], 2, [w,1])
-oxygen.hydrogens().length.should.be.equal(2)
-oxygen.carbons().length.should.be.equal(0)
-oxygen.freeSlots().should.be.equal(0)
-oxygen.bondCount().should.be.equal(2)
-oxygen.doubleBondCount().should.be.equal(0)
-oxygen.isNegativelyCharged().should.be.false()
-oxygen.isPositivelyCharged().should.be.false()
-VMolecule([w,1]).canonicalSMILES().should.be.equal("O")
+    const chloride = MoleculeFactory("[Cl-]")
+    chloride[0].should.be.equal(2.86) // pKa
+    chloride[1].should.be.an.Array()
+    chloride[1].length.should.be.equal(1)
+    chloride[1][0][0].should.be.equal("Cl")
+    const chloride_chlorine = CAtom(chloride[1][0], 0, [chloride, 1])
+    chloride[1][0].slice(5).length.should.be.equal(8) // number of electrons - should be 8
+    chloride_chlorine.hydrogens().length.should.be.equal(0) // Cl- has no hydrogens
+    chloride_chlorine.carbons().length.should.be.equal(0)
+    chloride_chlorine.freeSlots().should.be.equal(11) // ???
+    chloride_chlorine.bondCount().should.be.equal(0)
+    chloride_chlorine.doubleBondCount().should.be.equal(0)
+    chloride_chlorine.isNegativelyCharged().should.be.true()
+    chloride_chlorine.isPositivelyCharged().should.be.false()
+    VMolecule([chloride, 1]).canonicalSMILES().should.be.equal("[Cl-]")
 
-const oxide = MoleculeFactory("[OH3+]")
-oxide[0].should.be.equal(-1.74) // pKa
-oxide[1].should.be.an.Array()
-oxide[1].length.should.be.equal(4)
-oxide[1][3][0].should.be.equal("O")
-const oxide_oxygen = CAtom(oxide[1][3], 2, [oxide,1])
-oxide[1][3].slice(5).length.should.be.equal(8) // oxide 8 electrons as it is positively charged.
-oxide_oxygen.hydrogens().length.should.be.equal(3)
-oxide_oxygen.carbons().length.should.be.equal(0)
-oxide_oxygen.freeSlots().should.be.equal(-1)
-oxide_oxygen.bondCount().should.be.equal(3)
-oxide_oxygen.doubleBondCount().should.be.equal(0)
-oxide_oxygen.isNegativelyCharged().should.be.false() // proton count 8, total number of electrons 11
-oxide_oxygen.isPositivelyCharged().should.be.true()
-VMolecule([oxide,1]).canonicalSMILES().should.be.equal("[O+]")
+    const propylene = MoleculeFactory("C=C")
+    Set().intersection(propylene[1][2].slice(5),propylene[1][5].slice(5)).length.should.be.equal(4)
+    const propylene_carbon = CAtom(propylene[1][2], 2, [propylene, 1])
+    propylene_carbon.doubleBondCount().should.be.equal(1)
+    VMolecule([propylene, 1]).canonicalSMILES().should.be.equal("C=C")
 
+    const dimethyl_ether = MoleculeFactory("COC")
+    dimethyl_ether[1].should.be.an.Array()
+    dimethyl_ether[1].length.should.be.equal(9)
+    dimethyl_ether[1][0][0].should.be.equal("H")
+    dimethyl_ether[1][1][0].should.be.equal("H")
+    dimethyl_ether[1][2][0].should.be.equal("H")
+    dimethyl_ether[1][3][0].should.be.equal("C")
+    dimethyl_ether[1][4][0].should.be.equal("O")
+    dimethyl_ether[1][5][0].should.be.equal("H")
+    dimethyl_ether[1][6][0].should.be.equal("H")
+    dimethyl_ether[1][7][0].should.be.equal("H")
+    dimethyl_ether[1][8][0].should.be.equal("C")
+    Set().intersection(dimethyl_ether[1][0].slice(5), dimethyl_ether[1][3].slice(5)).length.should.be.equal(2)
+    Set().intersection(dimethyl_ether[1][1].slice(5), dimethyl_ether[1][3].slice(5)).length.should.be.equal(2)
+    Set().intersection(dimethyl_ether[1][2].slice(5), dimethyl_ether[1][3].slice(5)).length.should.be.equal(2)
+    Set().intersection(dimethyl_ether[1][3].slice(5), dimethyl_ether[1][4].slice(5)).length.should.be.equal(2)
+    Set().intersection(dimethyl_ether[1][8].slice(5), dimethyl_ether[1][4].slice(5)).length.should.be.equal(2)
+    Set().intersection(dimethyl_ether[1][8].slice(5), dimethyl_ether[1][5].slice(5)).length.should.be.equal(2)
+    Set().intersection(dimethyl_ether[1][8].slice(5), dimethyl_ether[1][6].slice(5)).length.should.be.equal(2)
+    Set().intersection(dimethyl_ether[1][8].slice(5), dimethyl_ether[1][7].slice(5)).length.should.be.equal(2)
+    _.cloneDeep(dimethyl_ether[1][3]).slice(5).length.should.be.equal(8)
+    _.cloneDeep(dimethyl_ether[1][4]).slice(5).length.should.be.equal(8)
+    _.cloneDeep(dimethyl_ether[1][8]).slice(5).length.should.be.equal(8)
+    const dimethyl_ether_oxygen = CAtom(dimethyl_ether[1][4], 4, [dimethyl_ether, 1])
+    dimethyl_ether_oxygen.doubleBondCount().should.be.equal(0)
+    dimethyl_ether_oxygen.hydrogens().length.should.be.equal(0)
+    dimethyl_ether_oxygen.carbons().length.should.be.equal(2)
+    dimethyl_ether_oxygen.bondCount().should.be.equal(2)
+    dimethyl_ether_oxygen.freeSlots().should.be.equal(0)
+    dimethyl_ether_oxygen.lonePairs().length.should.be.equal(4)
+    dimethyl_ether_oxygen.isNegativelyCharged().should.be.false()
+    dimethyl_ether_oxygen.isPositivelyCharged().should.be.false()
+    VMolecule([dimethyl_ether, 1]).canonicalSMILES().should.be.equal("COC")
+    MoleculeController([dimethyl_ether, 1]).nucleophileIndex().should.be.equal(4)
 
-const hydrochloric_acid = MoleculeFactory("Cl") // HCl
-hydrochloric_acid[0].should.be.equal(-6.3) // pKa
-hydrochloric_acid[1].should.be.an.Array()
-hydrochloric_acid[1].length.should.be.equal(2)
-hydrochloric_acid[1][0][0].should.be.equal("H")
-hydrochloric_acid[1][1][0].should.be.equal("Cl")
-const hydrochloric_acid_chlorine = CAtom(hydrochloric_acid[1][1], 0, [hydrochloric_acid,1])
-hydrochloric_acid[1][1].slice(5).length.should.be.equal(8) // number of electrons - should be 8
-hydrochloric_acid_chlorine.hydrogens().length.should.be.equal(1) // Cl- has no hydrogens
-hydrochloric_acid_chlorine.carbons().length.should.be.equal(0)
-hydrochloric_acid_chlorine.freeSlots().should.be.equal(10)
-hydrochloric_acid_chlorine.bondCount().should.be.equal(1)
-hydrochloric_acid_chlorine.doubleBondCount().should.be.equal(0)
-hydrochloric_acid_chlorine.isNegativelyCharged().should.be.false()
-hydrochloric_acid_chlorine.isPositivelyCharged().should.be.false()
-const hydrochloric_acid_hydrogen = CAtom(hydrochloric_acid[1][0], 0, [hydrochloric_acid,1])
-hydrochloric_acid[1][0].slice(5).length.should.be.equal(2) // number of electrons - should be 2
-hydrochloric_acid_hydrogen.hydrogens().length.should.be.equal(1) // Cl- has no hydrogens
-hydrochloric_acid_hydrogen.carbons().length.should.be.equal(0)
-hydrochloric_acid_hydrogen.freeSlots().should.be.equal(0) 
-hydrochloric_acid_hydrogen.bondCount().should.be.equal(1)
-hydrochloric_acid_hydrogen.doubleBondCount().should.be.equal(0)
-hydrochloric_acid_hydrogen.isNegativelyCharged().should.be.false()
-hydrochloric_acid_hydrogen.isPositivelyCharged().should.be.false()
-VMolecule([hydrochloric_acid,1]).canonicalSMILES().should.be.equal("Cl")
+    const aluminium_chloride = MoleculeFactory("[Al](Cl)(Cl)Cl")
+    aluminium_chloride[1].should.be.an.Array()
+    aluminium_chloride[1].length.should.be.equal(4)
+    aluminium_chloride[1][0][0].should.be.equal("Al")
+    aluminium_chloride[1][1][0].should.be.equal("Cl")
+    aluminium_chloride[1][2][0].should.be.equal("Cl")
+    aluminium_chloride[1][3][0].should.be.equal("Cl")
+    Set().intersection(aluminium_chloride[1][1].slice(5), aluminium_chloride[1][0].slice(5)).length.should.be.equal(2)
+    Set().intersection(aluminium_chloride[1][2].slice(5), aluminium_chloride[1][0].slice(5)).length.should.be.equal(2)
+    Set().intersection(aluminium_chloride[1][3].slice(5), aluminium_chloride[1][0].slice(5)).length.should.be.equal(2)
+    Set().intersection(aluminium_chloride[1][1].slice(5), aluminium_chloride[1][2].slice(5)).length.should.be.equal(0)
+    Set().intersection(aluminium_chloride[1][1].slice(5), aluminium_chloride[1][3].slice(5)).length.should.be.equal(0)
+    Set().intersection(aluminium_chloride[1][2].slice(5), aluminium_chloride[1][3].slice(5)).length.should.be.equal(0)
+    aluminium_chloride[1][0].slice(5).length.should.be.equal(6)
+    aluminium_chloride[1][1].slice(5).length.should.be.equal(8)
+    aluminium_chloride[1][2].slice(5).length.should.be.equal(8)
+    aluminium_chloride[1][3].slice(5).length.should.be.equal(8)
+    const al = CAtom(aluminium_chloride[1][0], 0, [aluminium_chloride, 1])
+    al.hydrogens().length.should.be.equal(0)
+    al.carbons().length.should.be.equal(0)
+    al.freeSlots().should.be.equal(12)
+    al.bondCount().should.be.equal(3)
+    al.doubleBondCount().should.be.equal(0)
+    al.isNegativelyCharged().should.be.false()
+    al.isPositivelyCharged().should.be.false()
+    VMolecule([aluminium_chloride, 1]).canonicalSMILES().should.be.equal("[Al](Cl)(Cl)(Cl)")
+    MoleculeController([aluminium_chloride, 1]).electrophileIndex().should.be.equal(0)
 
-const chloride = MoleculeFactory("[Cl-]")
-chloride[0].should.be.equal(2.86) // pKa
-chloride[1].should.be.an.Array()
-chloride[1].length.should.be.equal(1)
-chloride[1][0][0].should.be.equal("Cl")
-const chloride_chlorine = CAtom(chloride[1][0], 0, [chloride,1])
-chloride[1][0].slice(5).length.should.be.equal(8) // number of electrons - should be 8
-chloride_chlorine.hydrogens().length.should.be.equal(0) // Cl- has no hydrogens
-chloride_chlorine.carbons().length.should.be.equal(0)
-chloride_chlorine.freeSlots().should.be.equal(11) // ???
-chloride_chlorine.bondCount().should.be.equal(0)
-chloride_chlorine.doubleBondCount().should.be.equal(0)
-chloride_chlorine.isNegativelyCharged().should.be.true()
-chloride_chlorine.isPositivelyCharged().should.be.false()
-VMolecule([chloride,1]).canonicalSMILES().should.be.equal("[Cl-]")
+    const w = MoleculeFactory("O") // water H2O
+    w[0].should.be.equal(14) // pKa
+    w[1].should.be.an.Array()
+    w[1].length.should.be.equal(3)
+    w[1][2][0].should.be.equal("O")
+    w[1][2].slice(5).length.should.be.equal(8) // oxygen has 6 valence electrons plus one electron from each of the two hydrogens
+    const oxygen = CAtom(w[1][2], 2, [w, 1])
+    oxygen.hydrogens().length.should.be.equal(2)
+    oxygen.carbons().length.should.be.equal(0)
+    oxygen.freeSlots().should.be.equal(0)
+    oxygen.bondCount().should.be.equal(2)
+    oxygen.doubleBondCount().should.be.equal(0)
+    oxygen.isNegativelyCharged().should.be.false()
+    oxygen.isPositivelyCharged().should.be.false()
+    VMolecule([w, 1]).canonicalSMILES().should.be.equal("O")
+
+    const oxide = MoleculeFactory("[OH3+]")
+    oxide[0].should.be.equal(-1.74) // pKa
+    oxide[1].should.be.an.Array()
+    oxide[1].length.should.be.equal(4)
+    oxide[1][3][0].should.be.equal("O")
+    const oxide_oxygen = CAtom(oxide[1][3], 2, [oxide, 1])
+    oxide[1][3].slice(5).length.should.be.equal(8) // oxide 8 electrons as it is positively charged.
+    oxide_oxygen.hydrogens().length.should.be.equal(3)
+    oxide_oxygen.carbons().length.should.be.equal(0)
+    oxide_oxygen.freeSlots().should.be.equal(-1)
+    oxide_oxygen.bondCount().should.be.equal(3)
+    oxide_oxygen.doubleBondCount().should.be.equal(0)
+    oxide_oxygen.isNegativelyCharged().should.be.false() // proton count 8, total number of electrons 11
+    oxide_oxygen.isPositivelyCharged().should.be.true()
+    VMolecule([oxide, 1]).canonicalSMILES().should.be.equal("[O+]")
 
 
-console.log("Initial tests ok, now running main tests ...")
+    const hydrochloric_acid = MoleculeFactory("Cl") // HCl
+    hydrochloric_acid[0].should.be.equal(-6.3) // pKa
+    hydrochloric_acid[1].should.be.an.Array()
+    hydrochloric_acid[1].length.should.be.equal(2)
+    hydrochloric_acid[1][0][0].should.be.equal("H")
+    hydrochloric_acid[1][1][0].should.be.equal("Cl")
+    const hydrochloric_acid_chlorine = CAtom(hydrochloric_acid[1][1], 0, [hydrochloric_acid, 1])
+    hydrochloric_acid[1][1].slice(5).length.should.be.equal(8) // number of electrons - should be 8
+    hydrochloric_acid_chlorine.hydrogens().length.should.be.equal(1) // Cl- has no hydrogens
+    hydrochloric_acid_chlorine.carbons().length.should.be.equal(0)
+    hydrochloric_acid_chlorine.freeSlots().should.be.equal(10)
+    hydrochloric_acid_chlorine.bondCount().should.be.equal(1)
+    hydrochloric_acid_chlorine.doubleBondCount().should.be.equal(0)
+    hydrochloric_acid_chlorine.isNegativelyCharged().should.be.false()
+    hydrochloric_acid_chlorine.isPositivelyCharged().should.be.false()
+    const hydrochloric_acid_hydrogen = CAtom(hydrochloric_acid[1][0], 0, [hydrochloric_acid, 1])
+    hydrochloric_acid[1][0].slice(5).length.should.be.equal(2) // number of electrons - should be 2
+    hydrochloric_acid_hydrogen.hydrogens().length.should.be.equal(1) // Cl- has no hydrogens
+    hydrochloric_acid_hydrogen.carbons().length.should.be.equal(0)
+    hydrochloric_acid_hydrogen.freeSlots().should.be.equal(0)
+    hydrochloric_acid_hydrogen.bondCount().should.be.equal(1)
+    hydrochloric_acid_hydrogen.doubleBondCount().should.be.equal(0)
+    hydrochloric_acid_hydrogen.isNegativelyCharged().should.be.false()
+    hydrochloric_acid_hydrogen.isPositivelyCharged().should.be.false()
+    VMolecule([hydrochloric_acid, 1]).canonicalSMILES().should.be.equal("Cl")
+
+
+
+
+    console.log("Initial tests ok, now running main tests ...")
+
+}
 
 // Tests start
 const uri = "mongodb+srv://" + process.env.MONGODBUSER + ":" + process.env.MONGODBPASSWORD + "@cluster0.awqh6.mongodb.net/chemistry?retryWrites=true&w=majority";
@@ -275,15 +288,16 @@ client.connect(err => {
         const reactAluminiumChlorideWithMethylEther = (methyl_ether_molecule, aluminium_chloride_molecule) => {
             console.log("Getting new container")
             const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
-            console.log("Adding methyl_ether_molecule (COC) to container")
+            console.log("Adding methyl ether (COC) to container")
             ccontainer.add(_.cloneDeep(methyl_ether_molecule).json, 1, verbose)
             console.log("Adding aluminium chloride to container")
             ccontainer.add(_.cloneDeep(aluminium_chloride_molecule).json, 1, verbose)
-            console.log(VMolecule(ccontainer.container[1]).canonicalSMILES())
-            console.log("Test 4 complete: Container should show chlorane (Cl) and oxidane (water).")
-            process.exit()
+            // Check there is a single bond between the first carbon and the oxygen
+            Set().intersection(ccontainer.container[1][0][1][3].slice(5), ccontainer.container[1][0][1][4].slice(5)).length.should.be.equal(2)
+            // Check there is a single bond between the oxygen and the aluminium
+            Set().intersection(ccontainer.container[1][0][1][4].slice(5), ccontainer.container[1][0][1][9].slice(5)).length.should.be.equal(2)
             VContainerWithDB(ccontainer).show(() => {
-                console.log("Test 4 complete: Container should show chlorane (Cl) and oxidane (water).")
+                console.log("Test 4 complete: Container should show C[O+](C)([Al-](Cl)(Cl)(Cl)).")
                 process.exit()
             })
         }
@@ -306,7 +320,6 @@ client.connect(err => {
         }
 
         const lookUpMethylEther = () => {
-            console.log("lookupMethylEther()")
             MoleculeLookup(db, "COC", "SMILES", true).then(
                 // "resolves" callback
                 (methyl_ether_molecule) => {
@@ -333,7 +346,7 @@ client.connect(err => {
             console.log("Adding chloride (Cl-) to container")
             ccontainer.add(_.cloneDeep(chloride_molecule).json, 1, verbose)
             VContainerWithDB(ccontainer).show(() => {
-                console.log("Test 3 complete: Container should show chlorane (Cl) and oxidane (water).")
+                console.log("Test 3 complete: Container should show chlorane (Cl) and oxidane (water).\n\n")
                 lookUpMethylEther()
             })
         }
@@ -469,8 +482,8 @@ client.connect(err => {
             )
         }
 
-      //  lookupHCl()
-        lookUpMethylEther()
+       lookupHCl()
+      //  lookUpMethylEther()
 
     }
 
