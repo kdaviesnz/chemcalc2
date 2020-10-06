@@ -824,7 +824,7 @@ const CMolecule = (mmolecule, verbose) => {
             container[molecule_index] = mmolecule
             
             // Make sure we push the proton to the container last
-            container.push([[null, [proton]],1]) // 1 is units
+            container.push([[null, [proton]],mmolecule[1]]) // mmolecule[1] is units
                         
             __checkContainer(container)
             
