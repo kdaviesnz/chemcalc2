@@ -346,6 +346,9 @@ const CMolecule = (mmolecule, verbose) => {
     ) => {
 
         __checkContainer(container)
+        
+        const source_molecule_before = _.cloneDeep(container(source_molecule_index))
+        const target_molecule_before = _.cloneDeep(container(target_molecule_index))
 
         mmolecule.length.should.be.equal(2) // molecule, units
         mmolecule[0].length.should.be.equal(2) // pKa, atoms
@@ -458,8 +461,18 @@ const CMolecule = (mmolecule, verbose) => {
 
                 // Remove target molecule from container if required as it has been absorbed by the source molecule
                 if (undefined != container[target_molecule_index]) {
-                    container.splice(target_molecule_index, 1)
+                    if (container[target_molecule_index][1] > container[source_molecule_index][1]) {
+                        container[target_molecule_index][1] = container[target_molecule_index][1] - container[source_molecule_index][1]
+                    } else {
+                        container.splice(target_molecule_index, 1)
+                    }
                 }
+                
+                if (container[source_molecule_index][1]) > target_molecule[1]) {
+                    source_molecule_before[1] = container[source_molecule_index][1]) - target_molecule[1]
+                    container.push(source_molecule_before)
+                }
+                
             }
         }
 
