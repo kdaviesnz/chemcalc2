@@ -290,6 +290,60 @@ client.connect(err => {
         //console.log(VMolecule(propylene).canonicalSMILES(1))
         //VMolecule(propylene).render(1)
         
+        // @see Organic Chemistry 8th Edition P199
+        const reactButeneWithBomide = (butene_molecule, bromide_molecule) => {
+            console.log("Getting new container")
+            const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
+            console.log("Adding butene (CC=CC) to container")
+            ccontainer.add(_.cloneDeep(butene_molecule).json, 1, verbose)
+            console.log("Adding bromide to container")
+            ccontainer.add(_.cloneDeep(bromide_molecule).json, 1, verbose)
+            // Check there is a single bond between the first carbon and the oxygen
+            Set().intersection(ccontainer.container[1][0][1][3].slice(5), ccontainer.container[1][0][1][4].slice(5)).length.should.be.equal(2)
+            // Check there is a single bond between the oxygen and the aluminium
+            Set().intersection(ccontainer.container[1][0][1][4].slice(5), ccontainer.container[1][0][1][9].slice(5)).length.should.be.equal(2)
+           /*
+            VContainerWithDB(ccontainer).show(() => {
+                console.log("Test 5 complete: Container should show C[O+](C)([Al-](Cl)(Cl)(Cl)).")
+                process.exit()
+            })
+            */
+        }
+        
+        const lookUpBromide = (butene_molecule) => {
+            MoleculeLookup(db, "Br", "SMILES", true).then(
+                // "resolves" callback
+                (bromide_molecule) => {
+                    reactButeneWithBomide = (butene_molecule, bromide_molecule)
+                },
+                // Nothing found callback
+                onMoleculeNotFound((search) => {
+                    console.log("Molecule " + search + " added to database")
+                    client.close()
+                    process.exit()
+                }),
+                // "rejects" callback
+                onErrorLookingUpMoleculeInDB
+            )
+        }
+        
+        const lookUpButene = () => {
+            MoleculeLookup(db, "CC=CC", "SMILES", true).then(
+                // "resolves" callback
+                (butene_molecule) => {
+                    lookupBromide(butene_molecule)
+                },
+                // Nothing found callback
+                onMoleculeNotFound((search) => {
+                    console.log("Molecule " + search + " added to database")
+                    client.close()
+                    process.exit()
+                }),
+                // "rejects" callback
+                onErrorLookingUpMoleculeInDB
+            )
+        }
+        
         // @see Organic Chemistry 8th Edition P76
         const reactAluminiumChlorideWithMethylEther = (methyl_ether_molecule, aluminium_chloride_molecule) => {
             console.log("Getting new container")
