@@ -63,7 +63,6 @@ if (true) {
     const bromide = MoleculeFactory("Br")
     VMolecule([bromide, 1]).canonicalSMILES().should.be.equal("Br")
 
-    process.exit()
 
     const chloride = MoleculeFactory("[Cl-]")
     chloride[0].should.be.equal(2.86) // pKa
