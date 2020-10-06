@@ -63,7 +63,6 @@ if (true) {
     const bromide = MoleculeFactory("Br")
     VMolecule([bromide, 1]).canonicalSMILES().should.be.equal("Br")
 
-
     const chloride = MoleculeFactory("[Cl-]")
     chloride[0].should.be.equal(2.86) // pKa
     chloride[1].should.be.an.Array()
@@ -291,7 +290,7 @@ client.connect(err => {
         //VMolecule(propylene).render(1)
         
         // @see Organic Chemistry 8th Edition P199
-        const reactButeneWithBomide = (butene_molecule, bromide_molecule) => {
+        const reactButeneWithBromide = (butene_molecule, bromide_molecule) => {
             console.log("Getting new container")
             const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
             console.log("Adding butene (CC=CC) to container")
@@ -299,9 +298,14 @@ client.connect(err => {
             console.log("Adding bromide to container")
             ccontainer.add(_.cloneDeep(bromide_molecule).json, 1, verbose)
             // Check there is a single bond between the first carbon and the oxygen
-            Set().intersection(ccontainer.container[1][0][1][3].slice(5), ccontainer.container[1][0][1][4].slice(5)).length.should.be.equal(2)
+         //   Set().intersection(ccontainer.container[1][0][1][3].slice(5), ccontainer.container[1][0][1][4].slice(5)).length.should.be.equal(2)
             // Check there is a single bond between the oxygen and the aluminium
-            Set().intersection(ccontainer.container[1][0][1][4].slice(5), ccontainer.container[1][0][1][9].slice(5)).length.should.be.equal(2)
+         //   Set().intersection(ccontainer.container[1][0][1][4].slice(5), ccontainer.container[1][0][1][9].slice(5)).length.should.be.equal(2)
+            console.log(ccontainer.container[1][0])
+            console.log(ccontainer.container[2][0])
+            console.log("Test 5 complete: Container should show C[O+](C)([Al-](Cl)(Cl)(Cl)).")
+            process.exit()
+
            /*
             VContainerWithDB(ccontainer).show(() => {
                 console.log("Test 5 complete: Container should show C[O+](C)([Al-](Cl)(Cl)(Cl)).")
@@ -314,7 +318,7 @@ client.connect(err => {
             MoleculeLookup(db, "Br", "SMILES", true).then(
                 // "resolves" callback
                 (bromide_molecule) => {
-                    reactButeneWithBomide = (butene_molecule, bromide_molecule)
+                    reactButeneWithBromide(butene_molecule, bromide_molecule)
                 },
                 // Nothing found callback
                 onMoleculeNotFound((search) => {
@@ -331,7 +335,7 @@ client.connect(err => {
             MoleculeLookup(db, "CC=CC", "SMILES", true).then(
                 // "resolves" callback
                 (butene_molecule) => {
-                    lookupBromide(butene_molecule)
+                    lookUpBromide(butene_molecule)
                 },
                 // Nothing found callback
                 onMoleculeNotFound((search) => {
@@ -357,8 +361,8 @@ client.connect(err => {
             // Check there is a single bond between the oxygen and the aluminium
             Set().intersection(ccontainer.container[1][0][1][4].slice(5), ccontainer.container[1][0][1][9].slice(5)).length.should.be.equal(2)
             VContainerWithDB(ccontainer).show(() => {
-                console.log("Test 4 complete: Container should show C[O+](C)([Al-](Cl)(Cl)(Cl)).")
-                process.exit()
+                console.log("Test 4 complete: Container should show C[O+](C)([Al-](Cl)(Cl)(Cl)).\n\n")
+                lookUpButene()
             })
         }
         

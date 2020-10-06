@@ -202,7 +202,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     }
     
     const __removeDoubleBond = (test_number) => {
-        const atoms = mmolecule[0][1].slice(1)
+        const atoms = mmolecule[0][1]
         const atom_electrons = atom.slice(5)
         const atoms_double_bond_removed =  atoms.map(
             (__atom, __atom_index) => {
@@ -228,7 +228,13 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             }
         )
 
-        return [mmolecule[0][0], ...atoms_double_bond_removed]
+        // Atom we are removing the double bond from should still have the same number of electrons
+        atom.slice(5).length.should.be.equal(atom_electrons.length)
+
+        // We should still have the same number of atoms
+        atoms.length.should.be.equal(mmolecule[0][1].length)
+
+        return [mmolecule[0][0], atoms_double_bond_removed]
 
     }
 

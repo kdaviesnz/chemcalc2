@@ -187,8 +187,8 @@ const CMolecule = (mmolecule, verbose) => {
                 // Determine carbon with most hydrogens
                 const keys = Object.keys(double_bonds[0])
                 // Get number of hydrogens for first carbon
-                const carbon_1_hydrogens = CAtom(double_bonds[0][keys[0]], 0, molecule).hydrogens
-                const carbon_2_hydrogens = CAtom(double_bonds[0][keys[1]], 1, molecule).hydrogens
+                const carbon_1_hydrogens = CAtom(double_bonds[0][keys[0]], 0, mmolecule).hydrogens
+                const carbon_2_hydrogens = CAtom(double_bonds[0][keys[1]], 1, mmolecule).hydrogens
                 if (test_number === 4) {
                     carbon_1_hydrogens.length.should.be.equal(1)
                     carbon_2_hydrogens.length.should.be.equal(1)
@@ -849,6 +849,8 @@ const CMolecule = (mmolecule, verbose) => {
 
         addProton: (atoms_or_atomic_symbols, container, target_molecule_index, test_number, target_atom_index, source_atom_index, source_molecule_index) => {
 
+
+
             mmolecule.length.should.be.equal(2) // molecule, units
             mmolecule[0].length.should.be.equal(2) // pKa, atoms
 
@@ -923,7 +925,15 @@ const CMolecule = (mmolecule, verbose) => {
 
                 // remove the double bond by removing electrons from bonded atom (turn into single bond)
                 if (double_bond) {
-                    mmolecule[0] = CAtom(mmolecule[0][1][source_atom_index], source_atom_index,mmolecule[0]).removeDoubleBond(test_number)
+
+                    const molecule_with_double_bond_removed = CAtom(mmolecule[0][1][source_atom_index], source_atom_index, mmolecule).removeDoubleBond(test_number)
+                  //  console.log("MOLECULE WITH DOUBLE BOND REMOVED B4")
+                   // console.log(container[source_molecule_index][0])
+                   // console.log("MOLECULE WITH DOUBLE BOND REMOVED")
+                   // console.log(molecule_with_double_bond_removed)
+                  //  process.exit()
+                    container[source_molecule_index][0] =  molecule_with_double_bond_removed
+                    __checkContainer(container)
                     container[target_molecule_index][0][1][target_atom_index].push(double_bond[0])
                     container[target_molecule_index][0][1][target_atom_index].push(double_bond[1])
                 }
@@ -932,6 +942,9 @@ const CMolecule = (mmolecule, verbose) => {
 
             __checkContainer(container)
 
+
+
+
             // Set pKa
             container[target_molecule_index][0][0] = pKa(container[target_molecule_index][0].slice(1))
 
@@ -939,6 +952,8 @@ const CMolecule = (mmolecule, verbose) => {
             __checkContainer(container)
 
             // Check source atom still has the same number of electrons
+            //console.log(source_atom_index)
+            //console.log(container[source_molecule_index][0][1])
             _.cloneDeep(container[source_molecule_index][0][1][source_atom_index]).slice(5).length.should.equal(source_atom_electrons)
 
 

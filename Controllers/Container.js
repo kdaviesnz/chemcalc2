@@ -109,7 +109,7 @@ class CContainer {
 
 
 
-                const nucleophile_atom_index = this.MoleculeController(substrate[0]).nucleophileIndex(this.test_number)
+                const nucleophile_atom_index = this.MoleculeController(substrate).nucleophileIndex(this.test_number)
 
                 // SEE organic chemistry 8th edition p245
 // propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
@@ -130,23 +130,8 @@ class CContainer {
 // 3. The protonated alcohol loses a proton because the pH of the solution is greater
 // than the pKa of the protonated alcohol (Section 2.10).
 // (We saw that protonated alcohols are very strong acids; Section 2.6.)
-                const electrophile_atom_index = this.MoleculeController(reagent[0]).electrophileIndex(this.test_number + ".1")
-                if (this.test_number === 6) {
-                    // Shouldn't be here as reagent is water and substrate is alkene
+                const electrophile_atom_index = this.MoleculeController(reagent).electrophileIndex(this.test_number + ".1")
 
-
-                    console.log("Error - trying to react water with an alkene")
-                    process.exit()
-                }
-
-
-
-                // See organic chemistry 8th edition ch 6 p 235
-                // C=C (butene, nucleophile) -> HBr (H is electrophile)
-
-
-                // See organic chemistry 8th edition ch 6 p 235
-                // C=C (butene, nucleophile) -> HBr (H is electrophile)
 
 
                 reaction = bronstedLowry.react()
