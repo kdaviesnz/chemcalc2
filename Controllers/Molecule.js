@@ -777,7 +777,9 @@ const CMolecule = (mmolecule, verbose) => {
         atomsWithFreeSlots: __atomsWithFreeSlots,
         nucleophileIndex: determineNucleophileIndex,
         electrophileIndex: determineElectrophileIndex,
-        removeProton: (container,  proton_index, molecule_index) => {
+        removeProton: (container,  proton_index, molecule_index, reactant_units) => {
+            
+            const mmolecule_before = _.cloneDeep(mmolecule)
 
             // SEE organic chemistry 8th edition p245
 // propylene CC=C (6.1) / water H2O (6.2) / sulfuric acid H2SO4 (6.3)
@@ -804,14 +806,28 @@ const CMolecule = (mmolecule, verbose) => {
             // Remove proton from molecule and add it to the container as a new molecule
             const proton = mmolecule[0][1][proton_index]
             mmolecule[0][1].splice(proton_index, 1)
-            container.push([[null, [proton]],1]) // 1 is units
+            
 
             mmolecule[0][0] = pKa(mmolecule[0].slice(1))
 
-
+            mmolecule[1] = reactant_units
+            
+            
+            // reactant_units is the number of units of reactant that wr
+            // are reacting the molecule witj
+           
+            if (mmolecule[1] > reactant_units) {
+                mmolecule_before[1] = mmolecule[1] - reactant_units
+                container.push(mmolecule_before)
+            }
+            
             container[molecule_index] = mmolecule
-
+            
+            // Make sure we push the proton to the container last
+            container.push([[null, [proton]],1]) // 1 is units
+                        
             __checkContainer(container)
+            
             return container
 
         },
