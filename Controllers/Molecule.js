@@ -6,6 +6,7 @@ const should = require('should')
 const Set = require('../Models/Set')
 const Families = require('../Models/Families')
 const _ = require('lodash');
+const VMolecule = require('../Views/Molecule')
 
 const CMolecule = (mmolecule, verbose) => {
 
@@ -28,7 +29,9 @@ const CMolecule = (mmolecule, verbose) => {
                 atom[1].should.be.a.Number()
                 atom[2].should.be.a.Number()
                 atom[3].should.be.a.Number()
-                atom[4].should.be.a.Number()
+                if (atom[4] !== '+') {
+                    atom[4].should.be.a.Number()
+                }
             })
         })
 
@@ -189,10 +192,6 @@ const CMolecule = (mmolecule, verbose) => {
                 // Get number of hydrogens for first carbon
                 const carbon_1_hydrogens = CAtom(double_bonds[0][keys[0]], 0, mmolecule).hydrogens
                 const carbon_2_hydrogens = CAtom(double_bonds[0][keys[1]], 1, mmolecule).hydrogens
-                if (test_number === 4) {
-                    carbon_1_hydrogens.length.should.be.equal(1)
-                    carbon_2_hydrogens.length.should.be.equal(1)
-                }
 
                 if (carbon_1_hydrogens.length >= carbon_2_hydrogens.length ) {
                     return keys[0]*1
@@ -467,8 +466,8 @@ const CMolecule = (mmolecule, verbose) => {
                         container.splice(target_molecule_index, 1)
                     }
                 }
-                
-                if (container[source_molecule_index][1] > target_molecule[1]) {
+
+                if (container[source_molecule_index] !== undefined && container[source_molecule_index][1] > target_molecule[1]) {
                     source_molecule_before[1] = container[source_molecule_index][1] - target_molecule[1]
                     container.push(source_molecule_before)
                 }
@@ -479,7 +478,9 @@ const CMolecule = (mmolecule, verbose) => {
         __checkContainer(container)
 
         // Set pKa
-        container[source_molecule_index][0][0] = pKa(container[source_molecule_index][0][1])
+        if (container[source_molecule_index] !== undefined) {
+            container[source_molecule_index][0][0] = pKa(container[source_molecule_index][0][1])
+        }
 
         __checkContainer(container)
 
@@ -849,8 +850,6 @@ const CMolecule = (mmolecule, verbose) => {
 
         addProton: (atoms_or_atomic_symbols, container, target_molecule_index, test_number, target_atom_index, source_atom_index, source_molecule_index) => {
 
-
-
             mmolecule.length.should.be.equal(2) // molecule, units
             mmolecule[0].length.should.be.equal(2) // pKa, atoms
 
@@ -896,9 +895,11 @@ const CMolecule = (mmolecule, verbose) => {
             container[target_molecule_index][0].should.be.an.Array() // the actual molecule
             container[target_molecule_index][1].should.be.an.Number() // units
             container[target_molecule_index][0].length.should.be.equal(2) // pKa, atoms
+
             if (container[target_molecule_index][0][0] !== null) {
                 container[target_molecule_index][0][0].should.be.an.Number() // pKa
             }
+
             container[target_molecule_index][0][1].should.be.an.Array() // atoms
             container[target_molecule_index][0][1][target_atom_index].should.be.an.Array() // target atom
             container[target_molecule_index][0][1][target_atom_index][0].should.be.equal("H")
@@ -926,16 +927,25 @@ const CMolecule = (mmolecule, verbose) => {
                 // remove the double bond by removing electrons from bonded atom (turn into single bond)
                 if (double_bond) {
 
-                    const molecule_with_double_bond_removed = CAtom(mmolecule[0][1][source_atom_index], source_atom_index, mmolecule).removeDoubleBond(test_number)
-                  //  console.log("MOLECULE WITH DOUBLE BOND REMOVED B4")
-                   // console.log(container[source_molecule_index][0])
-                   // console.log("MOLECULE WITH DOUBLE BOND REMOVED")
+                    //console.log("MOLECULE WITH DOUBLE BOND REMOVED B4")
+                    //console.log(VMolecule(container[source_molecule_index]).canonicalSMILES())
+                    const molecule_with_double_bond_removed = CAtom(_.cloneDeep(mmolecule[0][1][source_atom_index]), source_atom_index, _.clone(mmolecule)).removeDoubleBond(test_number)
+                    //console.log("MOLECULE WITH DOUBLE BOND REMOVED")
                    // console.log(molecule_with_double_bond_removed)
-                  //  process.exit()
+                   // console.log(VMolecule([molecule_with_double_bond_removed,1]).canonicalSMILES())
                     container[source_molecule_index][0] =  molecule_with_double_bond_removed
+                 //   container[source_molecule_index][0][1][source_atom_index][4] = 1
+
                     __checkContainer(container)
                     container[target_molecule_index][0][1][target_atom_index].push(double_bond[0])
                     container[target_molecule_index][0][1][target_atom_index].push(double_bond[1])
+
+                    // Add proton to target molecule
+                    __checkContainer(container)
+                    container[source_molecule_index][0][1].push(container[target_molecule_index][0][1][target_atom_index])
+                    __checkContainer(container)
+
+
                 }
 
             }

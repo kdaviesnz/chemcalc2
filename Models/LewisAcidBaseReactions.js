@@ -28,10 +28,17 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number, verb
         console.log(substrate_electrophile_atom_index)
         */
 
-        container[substrate_molecule_index][0][1][substrate_nucleophile_atom_index][0].should.be.an.String() // O
-        reagent[0][1][reagent_electrophile_atom_index][0].should.be.an.String() // Al
+        if (substrate_nucleophile_atom_index !== undefined && substrate_nucleophile_atom_index!== false) {
+            container[substrate_molecule_index][0][1][substrate_nucleophile_atom_index][0].should.be.an.String() // O
+        }
 
-        if (substrate_nucleophile_atom_index !== false && reagent_nucleophile_atom_index !== false) {
+        if (reagent_electrophile_atom_index !== undefined && reagent_electrophile_atom_index!== false) {
+            reagent[0][1][reagent_electrophile_atom_index][0].should.be.an.String() // Al
+        }
+
+
+
+        if ((substrate_nucleophile_atom_index !== false && substrate_nucleophile_atom_index !== undefined) && reagent_nucleophile_atom_index !== false) {
             if (reagent_electrophile_atom_index === false) {
                 nucleophile_molecule_index = reagent_molecule_index
                 nucleophile_molecule_nucleophile_atom_index = reagent_nucleophile_atom_index
@@ -66,8 +73,8 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number, verb
             }
             nucleophile_molecule_index = substrate_molecule_index
             nucleophile_molecule_nucleophile_atom_index = substrate_nucleophile_atom_index
-        } else if (substrate_nucleophile_atom_index === false && reagent_nucleophile_atom_index !== false) {
-            if (substrate_electrophile_atom_index === false) {
+        } else if ((substrate_nucleophile_atom_index === false || substrate_nucleophile_atom_index === undefined) && (reagent_nucleophile_atom_index !== false)) {
+            if (substrate_electrophile_atom_index === false || substrate_electrophile_atom_index === undefined) {
                 return false
             }
             nucleophile_molecule_index = reagent_molecule_index

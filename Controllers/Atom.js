@@ -172,8 +172,13 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
         // Get number of bonds and if greater than the number of max bonds for a neutral atom
         // then return true
-        return __bondCount(test_number) > __neutralAtomMaxBondCount() || __numberOfElectrons() < __numberOfProtons()
-
+        /*
+        if (atom[0] === 'C') {
+            console.log(atom)
+            console.log("atom.js Is positively charged bond count: " + __bondCount(test_number) + " neutral atom max bond count:" + __neutralAtomMaxBondCount() + " number of electrons " + __numberOfElectrons() + ' number of protons ' + __numberOfProtons())
+        }*/
+        //return atom[4] === '+' || (__bondCount(test_number) > __neutralAtomMaxBondCount() || __numberOfElectrons() < __numberOfProtons())
+        return atom[4] === '+' || atom[4] === 1
     }
 
     const __isNegativelyCharged = (test_number) => {
@@ -213,15 +218,21 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
                 const shared_electrons = Set().intersection(atom_electrons, __atom.slice(5))
 
-                if (shared_electrons.length !== 5) {
+                // Double bond not found
+                if (shared_electrons.length !== 4) {
                     return __atom
                 }
 
                 // removed shared_electrons from __atom
                 // lodash
+                // Change bond to a single bond
+                // Do not remove electrons from source atom (atom)
                 _.remove(__atom, (item) => {
                     return item === shared_electrons[0] || item === shared_electrons[1]
                 })
+
+                // Mark atom as positively charged
+                __atom[4] = '+'
 
                 return __atom
 
