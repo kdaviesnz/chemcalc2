@@ -99,7 +99,8 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         container = MoleculeController(container[proton_index_map.proton_molecule_index]).removeProton(
             container,
             MoleculeController(container[proton_index_map.proton_molecule_index]).indexOf("H"),
-            proton_index_map.proton_molecule_index
+            proton_index_map.proton_molecule_index,
+            container[source_index_map.source_molecule_index][1] // how many units of molecules to remove proton from
         )
 
         const proton = container[container.length-1]
