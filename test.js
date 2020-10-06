@@ -59,7 +59,11 @@ if (true) {
     console.log("Running initial tests ...")
     
     const butene = MoleculeFactory("CC=CC")
+    VMolecule([butene, 1]).canonicalSMILES().should.be.equal("CC=CC")
     const bromide = MoleculeFactory("Br")
+    VMolecule([bromide, 1]).canonicalSMILES().should.be.equal("Br")
+
+    process.exit()
 
     const chloride = MoleculeFactory("[Cl-]")
     chloride[0].should.be.equal(2.86) // pKa

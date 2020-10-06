@@ -123,7 +123,7 @@ const VMolecule = (mmolecule) => {
                 //carry = carry + __getAtomAsSMILE(catom, current_atom)
                 // C
                 carry = carry + __getAtomAsSMILE(catom, current_atom)
-             //   console.log ("4 CARRY branch:" + branch_index + " " + carry)
+               // console.log ("4 CARRY branch:" + branch_index + " " + carry)
                 return __SMILES_recursive(carry, mmolecule[0][1][index+1], current_atom, index+1, branch_index)
 
             } else {
@@ -140,19 +140,19 @@ const VMolecule = (mmolecule) => {
             // Get how many atoms are attached to the atom, but don't include hydrogens
             if (bonds.length < 2) {
                 // O atom in COC bonds.length = 1 as we do not count the first C-O bond
-                carry = carry + __getAtomAsSMILE(catom, current_atom)
-              //  console.log ("3 CARRY branch:" + branch_index + " " + carry)
+                carry = carry + __getBondType(current_atom, previous_atom) + __getAtomAsSMILE(catom, current_atom)
+                //console.log ("3 CARRY branch:" + branch_index + " " + carry)
                 return __SMILES_recursive(carry, mmolecule[0][1][index+1], current_atom, index+1, branch_index)
             } else {
                 // First atom but has more than one atom attached to it eg C(C)O
                 // Therefore we need start recursively branching
-             //   console.log ("2 CARRY branch:" + branch_index + " " + carry)
+                //console.log ("2 CARRY branch:" + branch_index + " " + carry)
                 carry = carry +  __getAtomAsSMILE(catom, current_atom) + __addBranches(bonds, branch_index+1)
             }
 
         }
 
-     //   console.log ("1 CARRY branch:" + branch_index + " " + carry)
+       //console.log ("1 CARRY branch:" + branch_index + " " + carry)
         return carry
 
 
