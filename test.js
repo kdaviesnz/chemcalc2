@@ -57,6 +57,9 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
 if (true) {
 
     console.log("Running initial tests ...")
+    
+    const butene = MoleculeFactory("CC=CC")
+    const bromide = MoleculeFactory("Br")
 
     const chloride = MoleculeFactory("[Cl-]")
     chloride[0].should.be.equal(2.86) // pKa
