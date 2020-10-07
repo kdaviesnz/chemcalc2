@@ -62,7 +62,7 @@ const VMolecule = (mmolecule) => {
 
     }
 
-    const __addBranches = (bonds, branch_index, processed_atoms_indexes) => {
+    const __addBranches = (bonds, branch_index, processed_atoms_indexes, previous_atom) => {
         let branch = ""
 
         bonds.map((bond, index)=> {
@@ -83,7 +83,7 @@ const VMolecule = (mmolecule) => {
            //     console.log('WARNING 6: atom already added')
             }
          //   console.log(5)
-            branch =  branch + "(" + __SMILES_recursive("", current_atom, null, bond.atom_index, branch_index, processed_atoms_indexes) + ")"
+            branch =  branch + "(" + __getBondType(current_atom, previous_atom) + __SMILES_recursive("", current_atom, null, bond.atom_index, branch_index, processed_atoms_indexes) + ")"
            // console.log ("ADD branches  branch:" + branch_index + " " + current_atom[0] + " " + current_atom[5] + branch)
         })
 
@@ -148,7 +148,7 @@ const VMolecule = (mmolecule) => {
         if (bonds.length === 0) {
             //console.log(index)
             if (carry !== "" && processed_atoms_indexes.includes(index)) {
-                return carry
+                return __getBondType(current_atom, previous_atom) + carry
             }
             if (!processed_atoms_indexes.includes(index)) {
                 processed_atoms_indexes.push(index)
@@ -194,12 +194,12 @@ const VMolecule = (mmolecule) => {
                 if (!processed_atoms_indexes.includes(index)) {
                     processed_atoms_indexes.push(index)
                     //console.log('b1')
-                    carry = carry + __getAtomAsSMILE(catom, current_atom, processed_atoms_indexes, index) + __addBranches(bonds, branch_index+1, processed_atoms_indexes)
+                    carry = carry + __getAtomAsSMILE(catom, current_atom, processed_atoms_indexes, index) + __addBranches(bonds, branch_index+1, processed_atoms_indexes, current_atom)
                     //console.log ("3 CARRY branch:" + branch_index + " " + carry + ' ' + current_atom[0] + ' ' + current_atom[5])
                     return carry
                 } else {
                     //console.log('WARNING 3: atom already added')
-                    return carry
+                    return  carry
                 }
 
             }
@@ -231,7 +231,7 @@ const VMolecule = (mmolecule) => {
                 if (!processed_atoms_indexes.includes(index)) {
                     processed_atoms_indexes.push(index)
                     //console.log('b2')
-                    carry = carry +  __getAtomAsSMILE(catom, current_atom, processed_atoms_indexes, index) + __addBranches(bonds, branch_index+1, processed_atoms_indexes)
+                    carry = carry +  __getAtomAsSMILE(catom, current_atom, processed_atoms_indexes, index) + __addBranches(bonds, branch_index+1, processed_atoms_indexes, current_atom)
                   //  console.log ("1 CARRY branch:" + branch_index + " " + carry + ' ' + current_atom[0] + ' ' + current_atom[5])
                     return carry
                 } else {

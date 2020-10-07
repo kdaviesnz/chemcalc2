@@ -59,7 +59,7 @@ if (true) {
     console.log("Running initial tests ...")
     
     const sulphuric_acid = MoleculeFactory("OS(=O)(=O)O")
-    VMolecule([sulphuric_acid, 1]).canonicalSMILES().should.be.equal("CC[C+]C") 
+    VMolecule([sulphuric_acid, 1]).canonicalSMILES().should.be.equal("OS(=O)(=O)(O)")
 
     const butane = MoleculeFactory("CC[C+]C")
     VMolecule([butane, 1]).canonicalSMILES().should.be.equal("CC[C+]C")
@@ -321,7 +321,6 @@ client.connect(err => {
            // process.exit()
             VContainerWithDB(ccontainer).show(() => {
                 console.log("Test 6 complete: Container should show [{2-bromobutane} {CCC(C)Br}].\n\n")
-                process.exit()
                 //lookUpButene()
             })
         }
@@ -548,8 +547,13 @@ client.connect(err => {
             ccontainer.add(_.cloneDeep(sulphuric_acid_molecue).json, 1, verbose)
             console.log("Adding propylene to container")
             ccontainer.add(_.cloneDeep(propylene_molecue).json, 1, verbose)
+            // console.log(ccontainer.container[1][0])
+           // console.log(ccontainer.container[2][0])
+            VMolecule([ccontainer.container[1][0], 1]).canonicalSMILES().should.be.equal("[O-]S(=O)(=O)(O)") // hydrogen_sulfate
+            VMolecule([ccontainer.container[2][0], 1]).canonicalSMILES().should.be.equal("CC[C+]") // propylcation
+
             VContainerWithDB(ccontainer).show(() => {
-                console.log("Test 7 complete: Container should show prop-1-ene and oxidane.\n")
+                console.log("Test 7 complete: Container should show [{hydrogen sulfate} {OS(=O)(=O)[O-]}{propane} {CC[CH2+]}].\n")
                 // Start test 3
                // lookUpChloride()
             })
