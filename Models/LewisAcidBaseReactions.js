@@ -36,8 +36,6 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number, verb
             reagent[0][1][reagent_electrophile_atom_index][0].should.be.an.String() // Al
         }
 
-
-
         if ((substrate_nucleophile_atom_index !== false && substrate_nucleophile_atom_index !== undefined) && reagent_nucleophile_atom_index !== false) {
             if (reagent_electrophile_atom_index === false) {
                 nucleophile_molecule_index = reagent_molecule_index
@@ -79,6 +77,8 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number, verb
             }
             nucleophile_molecule_index = reagent_molecule_index
             nucleophile_molecule_nucleophile_atom_index = reagent_nucleophile_atom_index
+            electrophile_molecule_index = substrate_molecule_index
+            electrophile_molecule_electrophile_atom_index = substrate_electrophile_atom_index
         }
 
        // console.log(nucleophile_molecule_index) // Methyl ether (O, donates lone pair, substrate, already in container array)

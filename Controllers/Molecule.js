@@ -344,8 +344,15 @@ const CMolecule = (mmolecule, verbose) => {
         container, source_molecule_index, target_molecule, target_molecule_index, source_atom_index, target_atom_index, test_number
     ) => {
 
+        target_molecule_index.should.not.be.equal(source_molecule_index)
+
         __checkContainer(container)
-        
+
+        container[source_molecule_index].should.be.an.Array()
+        container[source_molecule_index].length.should.be.equal(2)
+        container[source_molecule_index][0].should.be.an.Array()
+        container[source_molecule_index][1].should.be.an.Number()
+
         const source_molecule_before = _.cloneDeep(container[source_molecule_index])
         const target_molecule_before = _.cloneDeep(container[target_molecule_index])
 
@@ -358,6 +365,8 @@ const CMolecule = (mmolecule, verbose) => {
         source_atom_index.should.be.greaterThan(-1)
 
         mmolecule[0][1][source_atom_index][0].should.be.an.String()
+
+
 
         /*
         @todo
@@ -400,6 +409,7 @@ const CMolecule = (mmolecule, verbose) => {
             }
 
         } else {
+
 
             // Not hydrogen
             // Source atom should always have a lone pair (nucleophile)
@@ -447,6 +457,7 @@ const CMolecule = (mmolecule, verbose) => {
 
             } else {
 
+
                 source_atom_lone_pairs.length.should.be.greaterThan(1)
 
                 container[source_molecule_index][0][1][source_atom_index][0].should.be.an.String
@@ -455,19 +466,37 @@ const CMolecule = (mmolecule, verbose) => {
                 target_molecule[0][1][target_atom_index].push(source_atom_lone_pairs[0])
                 target_molecule[0][1][target_atom_index].push(source_atom_lone_pairs[1])
 
+                //console.log(container[source_molecule_index][0][1][source_atom_index])
+                //console.log(container[target_molecule_index][0][1][target_atom_index])
+
+                container[target_molecule_index][0][1][target_atom_index][4] = 0
+
+                // Bond target atom to source atom
+                //container[target_molecule_index][0][1][target_atom_index].push()
+
                 // Now add the atoms from the target molecule to the source molecule (target_molecule[0][1])
                 container[source_molecule_index][0][1] = [...container[source_molecule_index][0][1], ...target_molecule[0][1] ] // COC, Al chloride
 
+
                 // Remove target molecule from container if required as it has been absorbed by the source molecule
-                if (undefined != container[target_molecule_index]) {
+                if (undefined !== container[target_molecule_index]) {
                     if (container[target_molecule_index][1] > container[source_molecule_index][1]) {
                         container[target_molecule_index][1] = container[target_molecule_index][1] - container[source_molecule_index][1]
                     } else {
                         container.splice(target_molecule_index, 1)
+                        if (source_molecule_index > target_molecule_index) {
+                            source_molecule_index--
+                        }
                     }
                 }
 
-                if (container[source_molecule_index] !== undefined && container[source_molecule_index][1] > target_molecule[1]) {
+                container[source_molecule_index].should.be.an.Array()
+                container[source_molecule_index].length.should.be.equal(2)
+                container[source_molecule_index][0].should.be.an.Array()
+                container[source_molecule_index][1].should.be.an.Number()
+
+                // container[source_molecule_index] should always be defined
+                if (container[source_molecule_index][1] > target_molecule[1]) {
                     source_molecule_before[1] = container[source_molecule_index][1] - target_molecule[1]
                     container.push(source_molecule_before)
                 }
@@ -478,9 +507,7 @@ const CMolecule = (mmolecule, verbose) => {
         __checkContainer(container)
 
         // Set pKa
-        if (container[source_molecule_index] !== undefined) {
-            container[source_molecule_index][0][0] = pKa(container[source_molecule_index][0][1])
-        }
+        container[source_molecule_index][0][0] = pKa(container[source_molecule_index][0][1])
 
         __checkContainer(container)
 
@@ -610,6 +637,8 @@ const CMolecule = (mmolecule, verbose) => {
             }
         },
         push: (atoms_or_atomic_symbols, container, target_molecule_index, test_number, target_atom_index, source_atom_index, source_molecule_index) => {
+
+            target_molecule_index.should.not.be.equal(source_molecule_index)
 
             mmolecule.length.should.be.equal(2) // molecule, units
             mmolecule[0].length.should.be.equal(2) // pKa, atoms

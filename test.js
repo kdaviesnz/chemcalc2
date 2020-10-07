@@ -60,9 +60,10 @@ if (true) {
 
     const butane = MoleculeFactory("CC[C+]C")
     VMolecule([butane, 1]).canonicalSMILES().should.be.equal("CC[C+]C")
-
+    MoleculeController([butane, 1]).electrophileIndex().should.be.equal(10)
     const bromide_neg = MoleculeFactory("[Br-]")
     VMolecule([bromide_neg, 1]).canonicalSMILES().should.be.equal("[Br-]")
+    MoleculeController([bromide_neg, 1]).nucleophileIndex().should.be.equal(0)
 
     const butene = MoleculeFactory("CC=CC")
     VMolecule([butene, 1]).canonicalSMILES().should.be.equal("CC=CC")
@@ -303,12 +304,12 @@ client.connect(err => {
             ccontainer.add(_.cloneDeep(butane_molecule[0]), 1, verbose)
             console.log("Adding bromide_molecule (Br-] to container")
             ccontainer.add(_.cloneDeep(bromide_molecule[0]), 1, verbose)
-            // Check there is a single bond between the first carbon and the oxygen
-            //Set().intersection(ccontainer.container[1][0][1][3].slice(5), ccontainer.container[1][0][1][4].slice(5)).length.should.be.equal(2)
-            // Check there is a single bond between the oxygen and the aluminium
-            //Set().intersection(ccontainer.container[1][0][1][4].slice(5), ccontainer.container[1][0][1][9].slice(5)).length.should.be.equal(2)
-            console.log(ccontainer.container.length)
-            console.log(ccontainer.container[1][0])
+            // bromine - check it has only one bond
+            CAtom(ccontainer.container[1][0][1][0], 0, ccontainer.container[1]).bondCount().should.be.equal(1)
+            // Check there is a bond between bromine and carbon atoms
+            Set().intersection(ccontainer.container[1][0][1][0].slice(5), ccontainer.container[1][0][1][8].slice(5)).length.should.be.equal(2)
+            console.log(ccontainer.container[1][0][1])
+            console.log(VMolecule([ccontainer.container[1][0], 1]).canonicalSMILES())
             process.exit()
             VContainerWithDB(ccontainer).show(() => {
                 console.log("Test 6 complete: Container should show C[O+](C)([Al-](Cl)(Cl)(Cl)).\n\n")
