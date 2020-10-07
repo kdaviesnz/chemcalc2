@@ -13,13 +13,13 @@ const VContainer = (client) => {
     const db = client.db("chemistry")
 
     const __containerString = (container_string, molecule) => {
-        return container_string + "{" + (molecule.IUPACName === undefined? molecule.search : molecule.IUPACName) + "} {" + (molecule.CanonicalSMILES === undefined? molecule.search: molecule.CanonicalSMILES) + "}"
+        return container_string + "\n|  {" + (molecule.IUPACName === undefined? molecule.search : molecule.IUPACName) + "}  "
     }
 
     const __containerStringRecursive = (container_string, container, current_index, callback) => {
 
         if (undefined === container[current_index]) {
-            console.log(container_string + "]")
+            console.log(container_string + "|\n|_________________________")
             callback()
         } else {
 
@@ -76,7 +76,7 @@ const VContainer = (client) => {
     return (ccontainer) => {
         return {
             'show': (callback) => {
-                const container_string = "["
+                const container_string = "|"
                 __containerStringRecursive(container_string, ccontainer.container.slice(1), 0, callback)
             }
         }
