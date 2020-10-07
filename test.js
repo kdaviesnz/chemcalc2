@@ -309,6 +309,7 @@ client.connect(err => {
             // Check there is a bond between bromine and carbon atoms
             Set().intersection(ccontainer.container[1][0][1][0].slice(5), ccontainer.container[1][0][1][8].slice(5)).length.should.be.equal(2)
             console.log(ccontainer.container[1][0][1])
+           // process.exit()
             console.log(VMolecule([ccontainer.container[1][0], 1]).canonicalSMILES())
             process.exit()
             VContainerWithDB(ccontainer).show(() => {
