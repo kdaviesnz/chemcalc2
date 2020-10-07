@@ -308,12 +308,17 @@ client.connect(err => {
             CAtom(ccontainer.container[1][0][1][0], 0, ccontainer.container[1]).bondCount().should.be.equal(1)
             // Check there is a bond between bromine and carbon atoms
             Set().intersection(ccontainer.container[1][0][1][0].slice(5), ccontainer.container[1][0][1][8].slice(5)).length.should.be.equal(2)
-            console.log(ccontainer.container[1][0][1])
+            ccontainer.container[1][0][1].filter((a)=> {
+              return a[0]==='C'
+            }).length.should.be.equal(4)
+
+         //   console.log(ccontainer.container[1][0][1])
            // process.exit()
-            console.log(VMolecule([ccontainer.container[1][0], 1]).canonicalSMILES())
-            process.exit()
+           // console.log(VMolecule([ccontainer.container[1][0], 1]).canonicalSMILES())
+           // process.exit()
             VContainerWithDB(ccontainer).show(() => {
-                console.log("Test 6 complete: Container should show C[O+](C)([Al-](Cl)(Cl)(Cl)).\n\n")
+                console.log("Test 6 complete: Container should show [{2-bromobutane} {CCC(C)Br}].\n\n")
+                process.exit()
                 //lookUpButene()
             })
         }
