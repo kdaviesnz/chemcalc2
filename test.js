@@ -539,6 +539,49 @@ client.connect(err => {
                 lookUpChloride()
             })
         }
+        
+        const reactPropyleneWithSulphuricAcid = (propylene_molecue, water_molecule, sulphuric_acid_molecue) => {
+            console.log("Getting new container")
+            const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
+            console.log("Adding sulphuric_acid to container")
+            // pass in only .json
+            ccontainer.add(_.cloneDeep(sulphuric_acid_molecue).json, 1, verbose)
+            console.log("Adding propylene to container")
+            ccontainer.add(_.cloneDeep(propylene_molecue).json, 1, verbose)
+            VContainerWithDB(ccontainer).show(() => {
+                console.log("Test 7 complete: Container should show prop-1-ene and oxidane.\n")
+                // Start test 3
+               // lookUpChloride()
+            })
+        }
+        
+        
+        const lookUpSulphuricAcid = (water_molecule, propylene_molecue)  => {
+            MoleculeLookup(db, "OS(=O)(=O)O", "SMILES", true).then(
+                // "resolves" callback
+                (sulphuric_acid_molecue) => {
+                    console.log("Reacting propylene with sulphuric acid")
+                    _.cloneDeep(water_molecule.json[1][2]).slice(5).length.should.be.equal(8)
+                    reactPropyleneWithSulphuricAcid(_.cloneDeep(propylene_molecue), _.cloneDeep(water_molecule), _.cloneDeep(sulphuric_acid_molecue))
+                   
+                    
+                    
+                    /*
+                    pkl.fetchSubstructuresBySMILES(molecule.CanonicalSMILES, db, (molecule, db, SMILES)=> {
+                        console.log("Molecule: " + molecule)
+                    })
+                    */
+                },
+                // Nothing found callback
+                onMoleculeNotFound((search) => {
+                    console.log("Molecule " + search + " added to database")
+                    client.close()
+                    process.exit()
+                }),
+                // "rejects" callback
+                onErrorLookingUpMoleculeInDB
+            )
+        }
 
         const lookupPropylene = (water_molecule) => {
             MoleculeLookup(db, "CC=C", "SMILES", true).then(
@@ -547,6 +590,9 @@ client.connect(err => {
                     console.log("Reacting propylene with water")
                     _.cloneDeep(water_molecule.json[1][2]).slice(5).length.should.be.equal(8)
                     reactPropyleneWithWater(_.cloneDeep(propylene_molecue), _.cloneDeep(water_molecule))
+                   
+                    lookUpSulphuricAcid(water_molecule, propylene_molecue)
+                    
                     /*
                     pkl.fetchSubstructuresBySMILES(molecule.CanonicalSMILES, db, (molecule, db, SMILES)=> {
                         console.log("Molecule: " + molecule)
