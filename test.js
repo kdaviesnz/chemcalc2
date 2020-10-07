@@ -57,6 +57,9 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
 if (true) {
 
     console.log("Running initial tests ...")
+    
+    const sulphuric_acid = MoleculeFactory("OS(=O)(=O)O")
+    VMolecule([sulphuric_acid, 1]).canonicalSMILES().should.be.equal("CC[C+]C") 
 
     const butane = MoleculeFactory("CC[C+]C")
     VMolecule([butane, 1]).canonicalSMILES().should.be.equal("CC[C+]C")
