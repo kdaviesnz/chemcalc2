@@ -84,16 +84,7 @@ const BronstedLowryAcidBaseReactions = (container, MoleculeController, test_numb
         }, null)
 
         if (undefined == source_index_map.source_atom_index) {
-            console.log("WARNING: source atom index is undefined")
-            console.log("Target index map:")
-            console.log(proton_index_map)
-            console.log("Source index map:")
-            console.log(source_index_map)
-            console.log(container[source_index_map.source_molecule_index][0])
-            console.log("Container:")
-            container.slice(1).map((item)=>{
-                console.log(item[0])
-            })
+            return false
         }
 
         container = MoleculeController(container[proton_index_map.proton_molecule_index]).removeProton(

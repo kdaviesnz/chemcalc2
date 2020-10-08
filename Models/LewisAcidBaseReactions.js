@@ -16,17 +16,6 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number, verb
         const substrate_electrophile_atom_index = MoleculeController(container[substrate_molecule_index]).electrophileIndex()
         const reagent_electrophile_atom_index = MoleculeController(reagent).electrophileIndex()
 
-        // At this point the reagent has not been added to the container array
-        /*
-        console.log('Reagent (Aluminium chloride) nucleophile atom index:');
-        console.log(reagent_nucleophile_atom_index)
-        console.log('Substrate (Aluminium chloride) nucleophile atom index:');
-        console.log(substrate_nucleophile_atom_index)
-        console.log('Reagent (Aluminium chloride) electrophile atom index:');
-        console.log(reagent_electrophile_atom_index)
-        console.log('Substrate (Aluminium chloride) electrophile atom index:');
-        console.log(substrate_electrophile_atom_index)
-        */
 
         if (substrate_nucleophile_atom_index !== undefined && substrate_nucleophile_atom_index!== false) {
             container[substrate_molecule_index][0][1][substrate_nucleophile_atom_index][0].should.be.an.String() // O
@@ -49,6 +38,11 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number, verb
                 electrophile_molecule_electrophile_atom_index = reagent_electrophile_atom_index
                 electrophile_molecule = reagent
             } else {
+
+                if (container[substrate_molecule_index][1][substrate_electrophile_atom_index] === undefined) {
+                    return false
+                }
+
                 // compare pKa values
                 if (container[substrate_molecule_index][1][substrate_electrophile_atom_index][0] >
                     container[reagent_molecule_index][1][reagent_electrophile_atom_index][0]) {
@@ -71,6 +65,9 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number, verb
             }
             nucleophile_molecule_index = substrate_molecule_index
             nucleophile_molecule_nucleophile_atom_index = substrate_nucleophile_atom_index
+            electrophile_molecule = reagent
+            electrophile_molecule_index = reagent_molecule_index
+            electrophile_molecule_electrophile_atom_index = reagent_electrophile_atom_index
         } else if ((substrate_nucleophile_atom_index === false || substrate_nucleophile_atom_index === undefined) && (reagent_nucleophile_atom_index !== false)) {
             if (substrate_electrophile_atom_index === false || substrate_electrophile_atom_index === undefined) {
                 return false
@@ -79,6 +76,8 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number, verb
             nucleophile_molecule_nucleophile_atom_index = reagent_nucleophile_atom_index
             electrophile_molecule_index = substrate_molecule_index
             electrophile_molecule_electrophile_atom_index = substrate_electrophile_atom_index
+            electrophile_molecule = container[substrate_molecule_index]
+
         }
 
        // console.log(nucleophile_molecule_index) // Methyl ether (O, donates lone pair, substrate, already in container array)
@@ -88,6 +87,9 @@ const LewisAcidBaseReactions = (container, MoleculeController, test_number, verb
         if (undefined !== container[nucleophile_molecule_index]) {
             const electrophile_atoms = electrophile_molecule[0][1]
             electrophile_atoms[0][0].should.be.an.String()
+            if (electrophile_molecule_index === nucleophile_molecule_index) {
+                return false
+            }
             //   push: (atoms_or_atomic_symbols, container, target_molecule_index, test_number, target_atom_index, source_atom_index, source_molecule_index) => {
             container = MoleculeController(container[nucleophile_molecule_index]).push(
                 electrophile_atoms,

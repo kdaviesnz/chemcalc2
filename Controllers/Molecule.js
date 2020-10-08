@@ -673,10 +673,6 @@ const CMolecule = (mmolecule, verbose) => {
                 test_mode_2 = true
             }
 
-            if (test_mode) {
-                molecule_index.should.be.equal(1)
-                atom_or_atomic_symbol[0].should.be.equal("H")
-            }
 
             //  HCl + H2O <-> Cl- + H3O+
             // mmolecule is HCl
@@ -695,13 +691,6 @@ const CMolecule = (mmolecule, verbose) => {
                 atom = atom_or_atomic_symbol
             }
 
-            if (test_mode) {
-                atom_index.should.be.equal(1)
-            }
-
-            if (test_mode_2) {
-                atom_index.should.be.equal(1)
-            }
 
 
             if (atom_index === false) {
@@ -712,13 +701,6 @@ const CMolecule = (mmolecule, verbose) => {
             // Hydrogen atom from HCl / H3O
 
             const atom_to_remove = mmolecule[atom_index]
-            if (test_mode) {
-                atom_to_remove[0].should.be.equal("H")
-            }
-
-            if (test_mode_2) {
-                atom_to_remove[0].should.be.equal("H")
-            }
 
             const bond_count = _bondCount(atom_to_remove)
             if (test_mode) {
@@ -759,13 +741,6 @@ const CMolecule = (mmolecule, verbose) => {
                     ? index : carry
             }, false)
 
-            if (test_mode) {
-                bonded_atom_index.should.be.equal(2)
-            }
-
-            if (test_mode_2) {
-                bonded_atom_index.should.be.equal(2)
-            }
 
             if (bonded_atom_index === false) {
                 __checkContainer(container)
@@ -774,9 +749,6 @@ const CMolecule = (mmolecule, verbose) => {
 
             // remove shared electron
             const bonded_atom = mmolecule[bonded_atom_index]
-            if (test_mode) {
-                bonded_atom[0].should.be.equal("Cl")
-            }
 
 
             bonded_atom.push(electron)
@@ -792,13 +764,7 @@ const CMolecule = (mmolecule, verbose) => {
             mmolecule.splice(atom_index, 1)
 
 
-            if (test_mode) {
-                mmolecule.length.should.be.equal(2)
-            }
 
-            if (test_mode_2) {
-                mmolecule.length.should.be.equal(2)
-            }
 
             mmolecule[0] = pKa(mmolecule.slice(1))
 

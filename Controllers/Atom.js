@@ -32,7 +32,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
             (bonds, _atom, _atom_index) => {
 
-                if ((_.isEqual(_.cloneDeep(atom).sort(), _.cloneDeep(_atom).sort())) || _atom[0]=== 'H') {
+                if ((_.isEqual(_.cloneDeep(atom).sort(), _.cloneDeep(_atom).sort())) || _atom[0]=== filter_by) {
                     return bonds
                 }
 

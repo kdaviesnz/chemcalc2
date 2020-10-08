@@ -1,14 +1,13 @@
-const MoleculeLookup = require('./Controllers/MoleculeLookup')
+const MoleculeLookup = require('../Controllers/MoleculeLookup')
+const should = require('should')
+const _ = require('lodash');
 
-const Hydrate = (mmolecule, ccontainer, callback) => {
-
-    mmolecule.length.should.be.equal(2) // molecule, units
-    mmolecule[0].length.should.be.equal(2) // pKa, atoms
+const Hydrate = (db, ccontainer, callback) => {
 
     MoleculeLookup(db, "O", "SMILES", true).then(
         (water_molecule) => {
             _.cloneDeep(water_molecule.json[1][2]).slice(5).length.should.be.equal(8)
-            ccontainer.add(_.cloneDeep(water_molecule).json, 1, verbose, 1)
+            ccontainer.add(_.cloneDeep(water_molecule).json, 1, false, 1)
             callback(ccontainer)
         },
         (search) => {
