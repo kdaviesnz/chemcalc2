@@ -1,7 +1,11 @@
 const RulesLookup = require('../Models/RulesLookup')
 const FindSubstrates = require('../Models/FindSubstrates')
+const Families = require('../Models/Families')
 
 const FetchReactions = (verbose,  db, chemical_to_synthesise_JSON_object, child_reaction_string, render, Err) => {
+
+
+    const families = Families([chemical_to_synthesise_JSON_object, 1]).families
 
     /*
     Get the functional groups that the chemical we are trying to synthesise belongs to. Then

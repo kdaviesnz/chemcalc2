@@ -6,12 +6,14 @@ const MoleculeLookup = (db, search, search_type, add_hydrogens, debug_statement,
     new Promise(
         (resolve, notFound, reject) => {
             db.collection('molecules').findOne(
-                {$or:[{"CanonicalSMILES":search}, {"search":search}]},
+                {$or:[{"CanonicalSMILES":search}, {"search":search}, {"IUPACName":search}]},
                 function (Err, molecule) {
 
                     // An error occurred
                     if (Err) {
-                        reject(err)
+                        console.log(Err)
+                        process.exit()
+                        // reject(Err)
                     }
 
                     if (null === molecule) {

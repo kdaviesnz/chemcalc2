@@ -20,12 +20,17 @@ rl.on('line', (line) => {
         rl.prompt()
     } else if (lineTrimmed === "") {
         rl.prompt()
-    } else if (lineTrimmed.toLowerCase(),substr(0,10) === "synthesize") {
+    } else if (lineTrimmed.toLowerCase().substr(0,10) === "synthesize") {
         Synthesize(
             verbose,
-            lineTrimmed.toLowerCase(),subStr(10),
+            lineTrimmed.toLowerCase().substr(10),
+            "",
+            "",
             (rule, molecule_JSON_object,substrate_JSON_object)=>{
 
+            },
+            (err) => {
+                console.log("Error synthesizing " + search)
             }
         )
         rl.prompt()

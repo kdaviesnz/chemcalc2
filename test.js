@@ -9,6 +9,7 @@ const Canonical_SMILESParser = require("./Models/CanonicalSMILESParser")
 const AtomFactory = require('./Models/AtomFactory')
 const Hydrate = require('./Models/Hydrate')
 const Dehydrate = require('./Models/Dehydrate')
+const BondDisassociate = require('./Models/BondDissassociate')
 
 const MoleculeFactory = require('./Models/MoleculeFactory')
 const PeriodicTable = require("./Models/PeriodicTable")
@@ -287,7 +288,32 @@ client.connect(err => {
     )
 */
 
-    // Specifiy reactions
+    // Specific reactions
+    // Bond disassociation
+    // Methylammonium C[N+]
+    MoleculeLookup(db, "C[N+]", "SMILES", true).then(
+        // "resolves" callback
+        (methylammonium_molecule) => {
+            console.log("Getting new container")
+            const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
+            console.log("Adding methylammonium to container")
+            ccontainer.add(_.cloneDeep(methylammonium_molecule).json, 1, verbose)
+            console.log("Breaking bonds ...")
+            BondDisassociate(db, ccontainer, (ccontainer)=> {
+                VContainerWithDB(ccontainer).show(() => {
+                    console.log("Breaking bonds test complete: Container should show methanamine.\n")
+                })
+            })
+        },
+        onMoleculeNotFound((search) => {
+            console.log("Molecule " + search + " added to database")
+            client.close()
+            process.exit()
+        }),
+        // "rejects" callback
+        onErrorLookingUpMoleculeInDB
+    )
+
     // Dehydration reaction
     // See Organic Chemistry 8th Edition P468
     MoleculeLookup(db, "C[O+]", "SMILES", true).then(
@@ -300,6 +326,7 @@ client.connect(err => {
             ccontainer.add(_.cloneDeep(methyoxonium_molecule).json, 1, verbose)
             console.log("Dehydrating ...")
             Dehydrate(db, ccontainer, (ccontainer)=> {
+
                 VContainerWithDB(ccontainer).show(() => {
                     console.log("Dehydration test complete: Container should show carbanylium and oxidane.\n")
                 })
