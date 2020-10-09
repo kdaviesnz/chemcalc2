@@ -1,5 +1,5 @@
-return
 
+/*
 const CanonicalSMILESParserV2 = require('./CanonicalSMILESParserV2')
 const WackerOxidation = require('./reactions/WackerOxidation')
 const PermanganateOxidation = require('./reactions/PermanganateOxidation')
@@ -13,20 +13,24 @@ const FunctionalGroups = require('./FunctionalGroups')
 const AcidCatalyzedRingOpening = require('./reactions/AcidCatalyzedRingOpening')
 const AlcoholDehydration = require('./reactions/AlcoholDehydration')
 const AkylHalideDehydration = require('./reactions/AkylHalideDehydration')
+*/
+const Families = require('../Models/Families')
 
-const FindSubstrates = (verbose,  db, rule, end_product_JSON_object, child_reaction_as_string, render, Err) => {
+const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string, render, Err) => {
 
-    end_product_JSON_object.functionalGroups = FunctionalGroups(end_product_JSON_object).functionalGroups
+    const end_product_functional_groups = Families(mmolecule).families_as_array()
 
     /*
     Each rule has a substrate and an end product. A substrate in this context is basically just a functional group. We get the end product functional groups and for each of them we try and match them against the rule substrate functional group. If there’s a match we perform an operation to determine the possible substrates and reagents.
     */
-
+   // console.log("FindSubstrates " + rule.substrate['functional group'])
+   // console.log(end_product_functional_groups)
+   // process.exit()
     switch(rule.substrate['functional group']) {
 
 
         case "alkyne":
-            end_product_JSON_object.functional_groups.map(
+            end_product_functional_groups.map(
                 (functional_group)=> {
                     switch (functional_group) {
                         case "ketone":
@@ -171,7 +175,7 @@ const FindSubstrates = (verbose,  db, rule, end_product_JSON_object, child_react
 
 
         case "epoxide":
-            end_product_JSON_object.functional_groups.map(
+            end_product_functional_groups.map(
                 (functional_group)=> {
                     switch (functional_group) {
                         case "alcohol":
@@ -206,7 +210,8 @@ const FindSubstrates = (verbose,  db, rule, end_product_JSON_object, child_react
             break
 
         case "alkene":
-            end_product_JSON_object.functional_groups.map(
+            // ['alcohol']
+            end_product_functional_groups.map(
                 (functional_group)=> {
                     switch (functional_group) {
                         case "ketone":
@@ -420,7 +425,7 @@ const FindSubstrates = (verbose,  db, rule, end_product_JSON_object, child_react
 
         case "carboxylate ester":
 
-            end_product_JSON_object.functional_groups.map(
+            end_product_functional_groups.map(
                 (functional_group)=> {
                     switch (functional_group) {
                         case "carboxylic salt":

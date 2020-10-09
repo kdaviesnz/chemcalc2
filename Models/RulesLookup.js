@@ -3,6 +3,7 @@ const RulesLookup = (db, functional_group) =>
         (resolve, reject) => {
             // Do mongo lookup
             // “secondary amine”
+            // {"substrate.functional group":"alkene", "products":"alcohol"}
             db.collection("rules").find({products:functional_group}).toArray((err, rules) => {
                 if (err) {
                     reject(err)

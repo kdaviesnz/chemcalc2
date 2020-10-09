@@ -10,6 +10,7 @@ const AtomFactory = require('./Models/AtomFactory')
 const Hydrate = require('./Models/Hydrate')
 const Dehydrate = require('./Models/Dehydrate')
 const BondDisassociate = require('./Models/BondDissassociate')
+const FetchReactions = require('./Models/FetchReactions')
 
 const MoleculeFactory = require('./Models/MoleculeFactory')
 const PeriodicTable = require("./Models/PeriodicTable")
@@ -263,6 +264,24 @@ client.connect(err => {
 
     const VContainerWithDB = VContainer(client)
 
+    // Test fetch reactions
+    if (true) {
+
+        FetchReactions(
+            true,
+            db,
+            [MoleculeFactory("CO"),1],
+            "",
+            ()=>{
+
+            },
+            (Err) => {
+
+            }
+        )
+
+    }
+
 
     // @todo searchBySmiles should have callback passed in.
     const onMoleculeNotFound =  (onMoleculeAddedToDBCallback) => {
@@ -315,57 +334,59 @@ client.connect(err => {
     // Specific reactions
     // Bond disassociation
     // Methylammonium C[N+]
-    MoleculeLookup(db, "C[N+]", "SMILES", true).then(
-        // "resolves" callback
-        (methylammonium_molecule) => {
-            console.log("Getting new container")
-            const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
-            console.log("Adding methylammonium to container")
-            ccontainer.add(_.cloneDeep(methylammonium_molecule).json, 1, verbose)
-            console.log("Breaking bonds ...")
-            BondDisassociate(db, ccontainer, (ccontainer)=> {
-                VContainerWithDB(ccontainer).show(() => {
-                    console.log("Breaking bonds test complete: Container should show methanamine.\n")
+    if (false) {
+        MoleculeLookup(db, "C[N+]", "SMILES", true).then(
+            // "resolves" callback
+            (methylammonium_molecule) => {
+                console.log("Getting new container")
+                const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
+                console.log("Adding methylammonium to container")
+                ccontainer.add(_.cloneDeep(methylammonium_molecule).json, 1, verbose)
+                console.log("Breaking bonds ...")
+                BondDisassociate(db, ccontainer, (ccontainer) => {
+                    VContainerWithDB(ccontainer).show(() => {
+                        console.log("Breaking bonds test complete: Container should show methanamine.\n")
+                    })
                 })
-            })
-        },
-        onMoleculeNotFound((search) => {
-            console.log("Molecule " + search + " added to database")
-            client.close()
-            process.exit()
-        }),
-        // "rejects" callback
-        onErrorLookingUpMoleculeInDB
-    )
+            },
+            onMoleculeNotFound((search) => {
+                console.log("Molecule " + search + " added to database")
+                client.close()
+                process.exit()
+            }),
+            // "rejects" callback
+            onErrorLookingUpMoleculeInDB
+        )
 
-    // Dehydration reaction
-    // See Organic Chemistry 8th Edition P468
-    MoleculeLookup(db, "C[O+]", "SMILES", true).then(
-        // "resolves" callback
-        (methyoxonium_molecule) => {
+        // Dehydration reaction
+        // See Organic Chemistry 8th Edition P468
+        MoleculeLookup(db, "C[O+]", "SMILES", true).then(
+            // "resolves" callback
+            (methyoxonium_molecule) => {
 
-            console.log("Getting new container")
-            const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
-            console.log("Adding methyoxonium to container")
-            ccontainer.add(_.cloneDeep(methyoxonium_molecule).json, 1, verbose)
-            console.log("Dehydrating ...")
-            Dehydrate(db, ccontainer, (ccontainer)=> {
+                console.log("Getting new container")
+                const ccontainer = new CContainer([false], MoleculeFactory, MoleculeController, 1, verbose)
+                console.log("Adding methyoxonium to container")
+                ccontainer.add(_.cloneDeep(methyoxonium_molecule).json, 1, verbose)
+                console.log("Dehydrating ...")
+                Dehydrate(db, ccontainer, (ccontainer) => {
 
-                VContainerWithDB(ccontainer).show(() => {
-                    console.log("Dehydration test complete: Container should show carbanylium and oxidane.\n")
+                    VContainerWithDB(ccontainer).show(() => {
+                        console.log("Dehydration test complete: Container should show carbanylium and oxidane.\n")
+                    })
                 })
-            })
-        },
-        // Nothing found callback
-        onMoleculeNotFound((search) => {
-            console.log("Molecule " + search + " added to database")
-            client.close()
-            process.exit()
-        }),
-        // "rejects" callback
-        onErrorLookingUpMoleculeInDB
-    )
+            },
+            // Nothing found callback
+            onMoleculeNotFound((search) => {
+                console.log("Molecule " + search + " added to database")
+                client.close()
+                process.exit()
+            }),
+            // "rejects" callback
+            onErrorLookingUpMoleculeInDB
+        )
 
+    }
 
     if (false) {
 

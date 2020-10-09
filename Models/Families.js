@@ -5,6 +5,7 @@ const Families = (mmolecule) => {
 
     mmolecule.length.should.be.equal(2) // molecule, units
     mmolecule[0].length.should.be.equal(2) // pKa, atoms
+    mmolecule[0][1].should.be.an.Array()
 
     const fg_atoms = mmolecule[0][1]
 
