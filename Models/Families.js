@@ -1,4 +1,6 @@
 const Set = require('./Set')
+const CAtom = require('../Controllers/Atom')
+
 const Families = (mmolecule) => {
 
     mmolecule.length.should.be.equal(2) // molecule, units
@@ -249,54 +251,91 @@ const Families = (mmolecule) => {
 
 
 
+    // Returns bool
     const alcohol = () => {
 
+        // @todo
+        /*
         if (glycol()){
             return []
         }
-        
-        // Look for oxygen atom with 1 hydrogen bond, 1 carbon bond, and 2 lone pairs
-        return fg_atoms.map(
-            (atom, atom_index) => {
-                const carbon_bonds = __carbonBonds(atom, atom_index)
-                if (atom[0] === "O" 
-                    && __lonePairs(atom,atom_index ).length === 2
-                    && __hydrogenBonds(atom, atom_index).length === 1
-                    && carbon_bonds.length === 1
-                   ){
-                    const carbon_atom_index = carbon_bonds[0][0]
-                    return {
-                        atom_index: atom,
-                        carbon_bonds_index: carbon_bonds[0][1]
-                    }
-                }
+        */
+        // Alcohol, any of a class of organic compounds characterized by one or more hydroxyl (―OH) groups attached to a carbon atom of an alkyl group (hydrocarbon chain).
+        // Look for oxygen atom
+        const atoms = mmolecule[0][1]
+        return atoms.filter((oxygen_atom, oxygen_atom_index)=>{
+
+            // Not an oxygen atom
+            if (oxygen_atom[0] !== "O") {
+                return false
             }
-        ).filter((item) => {
-            return item !== false
-        })
+
+            // Not -OH
+            const oxygen_atom_object = CAtom(oxygen_atom, oxygen_atom_index, mmolecule)
+            if(oxygen_atom_object.bondCount()!==2) { // 1 hydrogen bond plus 1 carbon atom
+                return false
+            }
+
+            const indexed_bonds = oxygen_atom_object.indexedBonds("")
+
+            // Check we have 1 hydrogen attached to the oxygen atom
+            if (indexed_bonds.filter((bond) => {
+                    if (bond.atom[0] !== "H") {
+                        return false
+                    }
+                    const hydrogen_atom = CAtom(bond.atom, bond.atom_index, mmolecule)
+                    if (hydrogen_atom.bondCount() !== 1) {
+                        return false
+                    }
+                    return true
+                }
+            ).length !== 1) {
+                return false
+            }
+
+
+
+            // Check we have 1 carbon attached to the oxygen atom
+            if (indexed_bonds.filter((bond) => {
+                    return bond.atom[0] === "C"
+                }
+            ).length !== 1) {
+                return false
+            }
+
+            return true
+
+        }).length !== 0
+
+
+
     }
 
 
 
     const alkene = (verbose) => {
         
-        // Look for carbon carbon double bonds
-        return fg_atoms.map(
-            (atom, carbon_atom_index) => {
-                const carbon_double_bonds = __doubleCarbonBonds(atom, carbon_atom_index)
-                if (atom[0] === "C" && carbon_double_bonds.length === 1){
-                        const bonded_carbon_index = carbon_double_bonds[0][0]
-                        const ret = {}
-                        ret[carbon_atom_index] = atom
-                        ret[bonded_carbon_index] = carbon_double_bonds[0][1]
-                        return ret
-                }
+        return mmolecule[0][1].filter((carbon_atom, carbon_atom_index)=>{
+
+            if (carbon_atom[0] !== "C") {
                 return false
             }
-        ).filter((item) => {
-            return item !== false
-        })
-        
+
+            const carbon_atom_object = CAtom(carbon_atom, carbon_atom_index, mmolecule)
+
+            if (carbon_atom_object.doubleBondCount() !== 1) {
+                return false
+            }
+
+            const double_bonds = carbon_atom_object.indexedDoubleBonds("")
+            if (double_bonds.length !==1 || double_bonds[0].atom[0] !== "C") {
+                return false
+            }
+
+            return true
+
+        }).length > 0
+
     }
 
 
@@ -344,14 +383,29 @@ const Families = (mmolecule) => {
     const families = {
         "double_bonds": __doubleCarbonBonds,
         "alkene": alkene,
+        "alcohol": alcohol
     }
 
+    const families_as_array = () => {
+        const arr = []
+        if (alkene()) {
+            arr.push("alkene")
+        }
+        if (alcohol()) {
+            arr.push("alcohol")
+        }
+
+        return arr
+
+    }
 
 
 
     return {
         families: families,
+        families_as_array: families_as_array
     }
+
 
 }
 

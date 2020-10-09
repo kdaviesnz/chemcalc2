@@ -56,6 +56,30 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
 
 // Organic Chemistry 8th Edition P76
 
+const Families = require('./Models/Families')
+
+
+// Test families:
+if (true) {
+
+    // Alcohol
+    const alcohol = MoleculeFactory("CO")
+
+    // Alkene
+    const alkene = MoleculeFactory("C=C")
+
+    Families([alkene, 1]).families.alkene().should.be.true()
+    Families([alcohol, 1]).families.alcohol().should.be.true()
+    Families([alcohol, 1]).families.alkene().should.be.false()
+    Families([alkene, 1]).families.alcohol().should.be.false()
+
+    //console.log(Families([alkene, 1]).families_as_array())
+    //console.log(Families([alcohol, 1]).families_as_array())
+
+
+}
+
+
 // COC dimethyl ether
 if (true) {
 

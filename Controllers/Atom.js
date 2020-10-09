@@ -10,6 +10,86 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     atom.should.be.an.Array()
     atom.length.should.be.greaterThan(3)
 
+    const __indexedDoubleBonds = (filter_by) => {
+
+        const atoms = mmolecule[0][1]
+        const atom_electrons = atom.slice(5)
+
+        filter_by.should.be.an.String()
+
+        const r =  _.cloneDeep(atoms).reduce(
+
+            (bonds, _atom, _atom_index) => {
+
+                if ((_.isEqual(_.cloneDeep(atom).sort(), _.cloneDeep(_atom).sort())) || _atom[0]=== filter_by) {
+                    return bonds
+                }
+
+                const shared_electrons = Set().intersection(atom_electrons, _atom.slice(5))
+
+                if (shared_electrons.length !==4) {
+                    return bonds
+                }
+
+                bonds.push({
+                    'atom': _atom,
+                    'atom_index': _atom_index,
+                    'shared_electrons': shared_electrons
+                })
+
+                return bonds
+
+            },
+            []
+        )
+
+        return r
+
+        /*
+        const r2 =  atoms.map(
+
+            (_atom, _atom_index) => {
+
+                if (atom === _atom) {
+                    return false
+                }
+
+
+                const shared_electrons = Set().intersection(atom_electrons, _atom.slice(5)).reduce(
+                    (carry, electron) => {
+                        carry.push(
+                                electron
+                        )
+                        return carry;
+                    },
+                    []
+                )
+
+                return {
+                    'atom': _atom,
+                    'atom_index': _atom_index,
+                    'shared_electrons': shared_electrons
+
+                }
+
+            }
+        ).filter(
+            (item) => {
+                return item !== false && item.atom[0] !== filter_by
+            }
+        )
+
+        if(atom[0]==='Cl') {
+            console.log("r")
+            console.log(r)
+            process.exit()
+        }
+        return r
+        */
+
+    }
+
+
     const __indexedBonds = (filter_by) => {
 
         const atoms = mmolecule[0][1]
@@ -457,7 +537,8 @@ We then return the total number of free slots minus the number of slots already 
         doubleBondCount:__doubleBondCount,
         numberOfProtons:__numberOfProtons,
         numberOfElectrons:__numberOfElectrons,
-        indexedBonds: __indexedBonds
+        indexedBonds: __indexedBonds,
+        indexedDoubleBonds: __indexedDoubleBonds
     }
 }
 
