@@ -40,9 +40,10 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
         "HYDRATE": Dehydrate,
     }
 
-    let products = [mmolecule] // substrate should aways be first element
+    let products = [mmolecule, rule.products[1]] // substrate should aways be first element
     commands_reversed.map((command_reversed, index)=>{
         if (undefined !== commands_reversed_map[command_reversed]) {
+            console.log(commands_reversed_map[command_reversed])
             const container_substrate = products[0]
             container_substrate.length.should.be.equal(2) // molecule, units
             container_substrate[0].length.should.be.equal(2) // pKa, atoms
@@ -50,10 +51,9 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
             const container_reagent =  [MoleculeFactory(reagents_reversed[index]),1]
             products = commands_reversed_map[command_reversed](container_substrate, container_reagent)
             console.log("PRODUCTS")
+            console.log(products)
             console.log(VMolecule(products[0]).canonicalSMILES())
             //console.log(VMolecule(products[1]).canonicalSMILES())
-            console.log('FindSubstrates.js')
-            process.exit()
         }
     })
 
