@@ -37,6 +37,14 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
     0:"ADD proton"
     1:"HYDRATE"
     2:"REMOVE proton from water"
+    
+     C=C -> [C+]C
+    [C+]C -> C[O+]C
+     C[O+]C -> COC
+     
+     COC -> C[O+]C
+     C[O+]C -> [C+]C 
+     ? C=C / CC
     */
 
     const commands_reversed_map = {
