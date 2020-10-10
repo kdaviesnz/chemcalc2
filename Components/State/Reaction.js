@@ -20,6 +20,43 @@ class Reaction {
 
     }
     
+    breakBond(source_atom_index, target_atom_index) {
+        
+        const atoms = mmolecule[0][1]
+
+        const source_atom = CAtom(this.mmolecule[0][1][source_atom_index], source_atom_index, this.mmolecule)
+        const target_atom = CAtom(this.reagent[0][1][target_atom_index], target_atom_index, this.reagent)
+             
+        
+        const molecules = []
+
+        
+        
+
+
+
+        const shared_electrons = source_atom.sharedElectrons(target_atom)
+
+        // Remove electron from source atom
+        _.remove(this.mmolecule[0][1][source_atom_index], (v, i)=> {
+                return shared_electrons[0] === v 
+        })
+        
+        // Remove electron from target atom
+         _.remove(this.reagent[0][1][target_atom_index], (v, i)=> {
+                return shared_electrons[1] === v 
+        })
+ 
+        if (this.mmolecule[0][1][source_atom_index][0] === "+") {
+
+            this.mmoleculemmolecule[0][1][atom_index][4] = 0
+            
+        }
+
+            
+        
+    }
+    
     bondAtoms(source_atom_index, target_atom_index) {
         const source_free_electrons = CAtom(this.mmolecule[0][1][source_atom_index], source_atom_index, this.mmolecule).freeElectrons()
         const target_free_electrons = CAtom(this.reagent[0][1][target_atom_index], target_atom_index, this.reagent).freeElectrons()
