@@ -1,8 +1,17 @@
-const MoleculeController = require('../controllers/MoleculeController')
+//const MoleculeController = require('../controllers/MoleculeController')
+//const FindDoubleBondPair = require('./FindDoubleBondPair')
+const Reaction = require("../Components/State/Reaction")
 
 const RemoveProton = (mmolecule, reagent) => {
-    const target_molecule_controller = MoleculeController(mmolecule)
-   // return target_molecule_controller.removeProton(proton).products
+
+    const reaction = new Reaction(mmolecule, reagent)
+
+    reaction.removeProtonFromReagent()
+
+    return [
+        reaction.mmolecule,
+        reaction.reagent
+    ]
 }
 
 module.exports = RemoveProton

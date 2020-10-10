@@ -2,15 +2,23 @@
 //const FindDoubleBondPair = require('./FindDoubleBondPair')
 const Reaction = require("../Components/State/Reaction")
 
-const AddProtonToHydroxylGroup = (mmolecule, reagent) => {
+const AddProtonToHydroxylGroup = (container_molecule, container_reagent) => {
 
-    const reaction = new Reaction(mmolecule, reagent)
+    container_molecule.length.should.be.equal(2) // molecule, units
+    container_molecule[0].length.should.be.equal(2) // pKa, atoms
+    container_molecule[0][1].should.be.an.Array()
+
+    container_reagent.length.should.be.equal(2) // molecule, units
+    container_reagent[0].length.should.be.equal(2) // pKa, atoms
+    container_reagent[0][1].should.be.an.Array()
+
+    const reaction = new Reaction(container_molecule, container_reagent)
 
     reaction.addProtonFromReagentToHydroxylGroup()
 
     return [
-        reaction.mmolecule,
-        reaction.reagent
+        reaction.container_substrate,
+        reaction.container_reagent
     ]
 }
 

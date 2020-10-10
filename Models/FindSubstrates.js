@@ -15,6 +15,12 @@ const AlcoholDehydration = require('./reactions/AlcoholDehydration')
 const AkylHalideDehydration = require('./reactions/AkylHalideDehydration')
 */
 const Families = require('../Models/Families')
+const AddProtonToHydroxylGroup = require('../Commands/AddProtonToHydroxylGroup')
+const BreakBond = require('../Commands/BreakBond')
+const AddProton = require('../Commands/AddProton')
+const RemoveProton = require('../Commands/RemoveProton')
+const MoleculeFactory = require('../Models/MoleculeFactory')
+const VMolecule = require('../Views/Molecule')
 
 const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string, render, Err) => {
 
@@ -26,19 +32,31 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
     commands_reversed.length.should.be.equal(reagents_reversed.length)
 
     const commands_reversed_map = {
-        "REMOVE proton": addProton,
-        "ADD bond": removeBond,
-        "ADD proton": removeProton,
-        "REMOVE proton from water": AddProtonToHydroxlGroup
+        "REMOVE proton": AddProton,
+        "ADD bond": BreakBond,
+        "ADD proton": RemoveProton,
+        "REMOVE proton from water": AddProtonToHydroxylGroup
     }
 
     let products = [mmolecule] // substrate should aways be first element
     commands_reversed.map((command_reversed, index)=>{
         if (undefined !== commands_reversed_map[command_reversed]) {
-            products = command_reversed_map[command_reversed](products[0], MoleculeFactory(reagents_reversed[index]))
+            const container_substrate = products[0]
+            container_substrate.length.should.be.equal(2) // molecule, units
+            container_substrate[0].length.should.be.equal(2) // pKa, atoms
+            container_substrate[0][1].should.be.an.Array()
+            const container_reagent =  [MoleculeFactory(reagents_reversed[index]),1]
+            products = commands_reversed_map[command_reversed](container_substrate, container_reagent)
+            console.log("PRODUCTS")
+            console.log(VMolecule(products[0]).canonicalSMILES())
+            //console.log(VMolecule(products[1]).canonicalSMILES())
+            console.log('FindSubstrates.js')
+            process.exit()
         }
     })
 
+    console.log('FindSubstrates.js')
+    process.exit()
 
 
     if (false) {

@@ -1,24 +1,28 @@
-const CAtom = require('../Controllers/Atom')
+const CAtom = require('../../Controllers/Atom')
 const _ = require('lodash');
 
-const MoleculeAI = (mmolecule) => {
+const MoleculeAI = (container_molecule) => {
 
-    mmolecule.length.should.be.equal(2) // molecule, units
-    mmolecule[0].length.should.be.equal(2) // pKa, atoms
+    container_molecule.length.should.be.equal(2) // molecule, units
+    container_molecule[0].length.should.be.equal(2) // pKa, atoms
+    container_molecule[0][0].should.be.an.Number() // pka
+    container_molecule[0][1].should.be.an.Array()
+    container_molecule[0][1][0].should.be.an.Array()
+    container_molecule[0][1][0][0].should.be.an.String()
 
 
     // All required parameters should be passed by MoleculeAI()
-    // No method should change state of mmolecule
+    // No method should change state of container_molecule
     return {
 
         "findProtonIndex": () => {
-            return _.findIndex(mmolecule[0][1], (atom, index)=>{
+            return _.findIndex(container_molecule[0][1], (atom, index)=>{
 
                 if (atom[0] !== "H") {
                     return false
                 }
 
-                const hydrogen_atom_object = CAtom(atom, index, mmolecule)
+                const hydrogen_atom_object = CAtom(atom, index, container_molecule)
 
                 return hydrogen_atom_object.bondCount() === 1
 
@@ -27,7 +31,8 @@ const MoleculeAI = (mmolecule) => {
 
         "findHydroxylOxygenIndex":() => {
 
-            return _.findIndex(mmolecule[0][1], (oxygen_atom, oxygen_atom_index)=>{
+            return _.findIndex(container_molecule[0][1], (oxygen_atom, oxygen_atom_index)=>{
+
 
                 // @todo Famillies alcohol
                 // Not an oxygen atom
@@ -36,10 +41,11 @@ const MoleculeAI = (mmolecule) => {
                 }
 
                 // Not -OH
-                const oxygen_atom_object = CAtom(oxygen_atom, oxygen_atom_index, mmolecule)
+                const oxygen_atom_object = CAtom(oxygen_atom, oxygen_atom_index, container_molecule)
                 if(oxygen_atom_object.bondCount()!==2) { // 1 hydrogen bond plus 1 carbon atom
                     return false
                 }
+
 
                 const indexed_bonds = oxygen_atom_object.indexedBonds("")
 
@@ -48,7 +54,7 @@ const MoleculeAI = (mmolecule) => {
                         if (bond.atom[0] !== "H") {
                             return false
                         }
-                        const hydrogen_atom = CAtom(bond.atom, bond.atom_index, mmolecule)
+                        const hydrogen_atom = CAtom(bond.atom, bond.atom_index, container_molecule)
                         if (hydrogen_atom.bondCount() !== 1) {
                             return false
                         }
@@ -58,6 +64,7 @@ const MoleculeAI = (mmolecule) => {
                     return false
                 }
 
+
                 // Check we have 1 carbon attached to the oxygen atom
                 if (indexed_bonds.filter((bond) => {
                         return bond.atom[0] === "C"
@@ -65,6 +72,8 @@ const MoleculeAI = (mmolecule) => {
                 ).length !== 1) {
                     return false
                 }
+
+                return true
             })
 
         }
@@ -73,4 +82,4 @@ const MoleculeAI = (mmolecule) => {
     }
 }
 
-module.exports = Molecule
+module.exports = MoleculeAI

@@ -8,7 +8,7 @@ const Families = (mmolecule) => {
     mmolecule[0].length.should.be.equal(2) // pKa, atoms
     mmolecule[0][1].should.be.an.Array()
 
-    const Molecule = require("../Components/Stateless/Molecule")(mmolecule)
+    const MoleculeAI = require("../Components/Stateless/MoleculeAI")(mmolecule)
 
     const fg_atoms = mmolecule[0][1]
 
@@ -265,7 +265,7 @@ const Families = (mmolecule) => {
         }
         */
         // Alcohol, any of a class of organic compounds characterized by one or more hydroxyl (―OH) groups attached to a carbon atom of an alkyl group (hydrocarbon chain).
-        return Molecule.findHydroxylOxygenIndex() > -1
+        return MoleculeAI.findHydroxylOxygenIndex() > -1
 
     }
 
