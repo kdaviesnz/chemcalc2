@@ -1,21 +1,15 @@
-const MoleculeController = require('../controllers/MoleculeController')
+const Reaction = require("../Components/State/Reaction")
 
-const BondAtoms = (molecule, molecule_cation_atom = null, molecule_anion_atom = null) => {
-    const m_c = MoleculeController(molecule)
-    if (null == molecule_cation_atom) {
-        molecule_cation_atom = FindCationAtom(molecule)
-    }
+const BondAtoms = (mmolecule, reagent, mmolecule_atom_index, reagent_atom_index) => {
 
-    if (null == molecule_anion_atom) {
-        molecule_cation_atom = FindAnionAtom(molecule)
-    }
+    const reaction = new Reaction(mmolecule, reagent)
 
-    if (null === molecule_cation_atom || null === molecule_anion_atom) {
-        return {
-            products: molecule
-        }
-    }
-    return m_c.bondAtoms(molecule, molecule_cation_atom, molecule_anion_atom)
+    reaction.bondAtoms(mmolecule_atom_index, reagent_atom_index)
+
+    return [
+        reaction.mmolecule,
+        reaction.reagent
+    ]
 }
 
 module.exports = BondAtoms
