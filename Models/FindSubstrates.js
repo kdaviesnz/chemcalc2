@@ -21,6 +21,7 @@ const AddProton = require('../Commands/AddProton')
 const RemoveProton = require('../Commands/RemoveProton')
 const MoleculeFactory = require('../Models/MoleculeFactory')
 const VMolecule = require('../Views/Molecule')
+const Dehydrate = require('../Commands/Dehydrate')
 
 const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string, render, Err) => {
 
@@ -35,7 +36,8 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
         "REMOVE proton": AddProton,
         "ADD bond": BreakBond,
         "ADD proton": RemoveProton,
-        "REMOVE proton from water": AddProtonToHydroxylGroup
+        "REMOVE proton from water": AddProtonToHydroxylGroup,
+        "HYDRATE": Dehydrate,
     }
 
     let products = [mmolecule] // substrate should aways be first element
