@@ -19,6 +19,16 @@ class Reaction {
         this.moleculeAI = require("../Stateless/MoleculeAI")(mmolecule)
 
     }
+    
+    bondAtoms(source_atom_index, target_atom_index) {
+        const source_free_electrons = CAtom(this.mmolecule[0][1][source_atom_index], source_atom_index, this.mmolecule).freeElectrons()
+        const target_free_electrons = CAtom(this.reagent[0][1][target_atom_index], target_atom_index, this.reagent).freeElectrons()
+             
+        if (source_free_electrons.length > 1 && target_free_electrons.length > 1) {
+            this.reagent.push(source_free_electrons[0])
+            this.mmolecule.push(target_free_electrons[1])          
+        }
+    }
 
     addProtonToSubstrate(target_atom, target_atom_index, proton) {
         const free_electrons = CAtom(target_atom, target_atom_index, this.mmolecule).freeElectrons()
