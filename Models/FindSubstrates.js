@@ -32,6 +32,13 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
 
     commands_reversed.length.should.be.equal(reagents_reversed.length)
 
+    // Commands
+    /*
+    0:"ADD proton"
+    1:"HYDRATE"
+    2:"REMOVE proton from water"
+    */
+
     const commands_reversed_map = {
         "REMOVE proton": AddProton,
         "ADD bond": BreakBond,
