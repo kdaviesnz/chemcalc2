@@ -1,11 +1,14 @@
 const Set = require('./Set')
 const CAtom = require('../Controllers/Atom')
 
+
 const Families = (mmolecule) => {
 
     mmolecule.length.should.be.equal(2) // molecule, units
     mmolecule[0].length.should.be.equal(2) // pKa, atoms
     mmolecule[0][1].should.be.an.Array()
+
+    const Molecule = require("../Components/Stateless/Molecule")(mmolecule)
 
     const fg_atoms = mmolecule[0][1]
 
@@ -262,53 +265,7 @@ const Families = (mmolecule) => {
         }
         */
         // Alcohol, any of a class of organic compounds characterized by one or more hydroxyl (―OH) groups attached to a carbon atom of an alkyl group (hydrocarbon chain).
-        // Look for oxygen atom
-        const atoms = mmolecule[0][1]
-        return atoms.filter((oxygen_atom, oxygen_atom_index)=>{
-
-            // Not an oxygen atom
-            if (oxygen_atom[0] !== "O") {
-                return false
-            }
-
-            // Not -OH
-            const oxygen_atom_object = CAtom(oxygen_atom, oxygen_atom_index, mmolecule)
-            if(oxygen_atom_object.bondCount()!==2) { // 1 hydrogen bond plus 1 carbon atom
-                return false
-            }
-
-            const indexed_bonds = oxygen_atom_object.indexedBonds("")
-
-            // Check we have 1 hydrogen attached to the oxygen atom
-            if (indexed_bonds.filter((bond) => {
-                    if (bond.atom[0] !== "H") {
-                        return false
-                    }
-                    const hydrogen_atom = CAtom(bond.atom, bond.atom_index, mmolecule)
-                    if (hydrogen_atom.bondCount() !== 1) {
-                        return false
-                    }
-                    return true
-                }
-            ).length !== 1) {
-                return false
-            }
-
-
-
-            // Check we have 1 carbon attached to the oxygen atom
-            if (indexed_bonds.filter((bond) => {
-                    return bond.atom[0] === "C"
-                }
-            ).length !== 1) {
-                return false
-            }
-
-            return true
-
-        }).length !== 0
-
-
+        return Molecule.findHydroxylOxygenIndex() > -1
 
     }
 
