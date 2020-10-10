@@ -28,7 +28,8 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
     const commands_reversed_map = {
         "REMOVE proton": addProton,
         "ADD bond": removeBond,
-        "ADD proton": removeProton
+        "ADD proton": removeProton,
+        "REMOVE proton from water": AddProtonToHydroxlGroup
     }
 
     let products = [mmolecule] // substrate should aways be first element
