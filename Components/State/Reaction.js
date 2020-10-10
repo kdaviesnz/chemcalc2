@@ -43,7 +43,7 @@ class Reaction {
         })
         
         // Remove electron from target atom
-         _.remove(this.reagent[0][1][target_atom_index], (v, i)=> {
+         _.remove(this.mmolecule[0][1][target_atom_index], (v, i)=> {
                 return shared_electrons[1] === v 
         })
  
@@ -52,6 +52,10 @@ class Reaction {
             this.mmoleculemmolecule[0][1][atom_index][4] = 0
             
         }
+        
+        
+        
+        // @todo work out if we now have two molecules
 
             
         
