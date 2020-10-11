@@ -193,18 +193,14 @@ const Families = (mmolecule) => {
 
 
         // If no nitrogen atom with a lone pair return false
-        return fg_atoms.map(
+        return mmolecule[0][1].filter(
             (atom, atom_index) => {
-                if (atom[0] === "N" && __lonePairs(atom, atom_index).length === 1){
-                    return {
-                        atom_index: atom
-                    }
+                if (atom[0] === "N" && CAtom(atom, atom_index, mmolecule).lonePairs().length === 1){
+                    return true
                 }
                 return false
             }
-        ).filter((item) => {
-            return item !== false
-        })
+        ).length > 0
         
                
     }
@@ -342,6 +338,7 @@ const Families = (mmolecule) => {
         "double_bonds": __doubleCarbonBonds,
         "alkene": alkene,
         "alcohol": alcohol
+        "amine": amine
     }
 
     const families_as_array = () => {
@@ -351,6 +348,9 @@ const Families = (mmolecule) => {
         }
         if (alcohol()) {
             arr.push("alcohol")
+        }
+        if (amine()) {
+            arr.push("amine")
         }
 
         return arr
