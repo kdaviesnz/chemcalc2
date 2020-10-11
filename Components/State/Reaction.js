@@ -146,6 +146,32 @@ class Reaction {
             this.container_substrate[0][1][target_atom_index][4] = "+"
         }
     }
+    
+    removeProton(proton_index) {
+        // [C+]CH3
+        // We remove the proton from the second carbon
+        const proton = CAtom(container_substrate[0][1][proton_index], proton_index,container_substrate)
+        const bonds  = proton.indexedBonds("")
+        if (bonds[0].atom[0] === "C") {
+            const carbon_bonds = CAtom(container_substrate[0][1][bonds[0].atom_index], bonds[0].atom_index,container_substrate).indexedBonds("")
+            
+            // look for carbon carbon bond
+            carbon_bonds.map((bond)=>{
+                if (bond.atom[0]==="C") {
+                    // add electrons shared with the proton to the carbon atom to form a double bond
+                    container_substrate[0][1][bond.atom_index].push(bonds[0].shared_electrons[0]
+                    container_substrate[0][1][bond.atom_index].push(bonds[0].shared_electrons[1]  
+                    container_substrate[0][1][bond.atom_index][4] = 0                                                
+                }
+            })
+            
+            
+        }
+        container_substrate[0][1][bonds[0].atom_index][4] = 0
+                
+        // Remove the proton         
+        this.container_substrate[0][1].splice(proton_index, 1)
+    }
 
     removeProtonFromReagent(proton_index) {
         this.container_reagent[0][1].splice(proton_index, 1)
