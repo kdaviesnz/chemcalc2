@@ -46,6 +46,14 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
      C[O+]C -> [C+]C 
      ? [C+]C -> C=C / CC
     */
+    
+    const commands_map = {
+        "REMOVE proton": RemoveProton,
+        "ADD bond": AddBond,
+        "ADD proton": AddProton,
+        "REMOVE proton from water": RemoveProtonToHydroxylGroup,
+        "HYDRATE": Hydrate,
+    }
 
     const commands_reversed_map = {
         "REMOVE proton": AddProton,
@@ -72,8 +80,20 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
         }
     })
 
+    
+    // Test
+    let products_testing = [products[0]]
+    rule.commands.map((command, index) => {
+       if (undefined !== commands_map[command]) {
+           const container_substrate = products_testing[0]
+           const container_reagent =  [MoleculeFactory(rule.reagents[index]),1]
+           products_testing = commands_map[command](container_substrate, container_reagent)            
+       }
+    })
+    _.isEqual(products_testing[0], products[0]).should.be.equal(true)
     console.log('FindSubstrates.js')
     process.exit()
+    return products
 
 
     if (false) {
