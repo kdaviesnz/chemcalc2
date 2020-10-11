@@ -29,13 +29,14 @@ const MoleculeAI = (container_molecule) => {
                 return atom_object.isNegativelyCharged()
             })
 
-            if (negative_atom_index > 0) {
+
+            if (negative_atom_index > -1) {
                 return negative_atom_index
             }
 
             // Look for double bond with most hydrogens
             let hydrogen_count = 0
-            return container_molecule[0][1].reduce((carry, atom, index)=> {
+            const nucleophile_index = container_molecule[0][1].reduce((carry, atom, index)=> {
                 const atom_object = CAtom(atom, index,container_molecule)
                 const double_bonds = atom_object.indexedDoubleBonds("").filter((double_bond)=>{
                     // Check that atom we are bonding to has more than the current number of hydrogens
@@ -58,6 +59,20 @@ const MoleculeAI = (container_molecule) => {
                 return carry
 
             }, -1)
+
+            // Verifications checks
+            if (undefined === container_molecule[0][1][nucleophile_index]) {
+                return -1
+            }
+
+            nucleophile_index.should.be.an.Number()
+
+            const nucleophile_atom_object = CAtom(container_molecule[0][1][nucleophile_index], nucleophile_index, container_molecule)
+            if (nucleophile_atom_object.isNegativelyCharged() === false && nucleophile_atom_object.doubleBondCount() === 0) {
+                return -1
+            }
+
+            return nucleophile_index
 
         },
 

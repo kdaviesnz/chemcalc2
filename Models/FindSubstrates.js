@@ -31,7 +31,7 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
     const end_product_functional_groups = Families(mmolecule).families_as_array()
 
     const commands_reversed = rule.commands.reverse()
-    const reagents_reversed = rule.reagents.reverse()
+    const reagents_reversed = rule.synthesis_reagents
 
     commands_reversed.length.should.be.equal(reagents_reversed.length)
 

@@ -5,7 +5,7 @@ const MoleculeFactory = (canonicalSmiles, verbose) => {
     if (canonicalSmiles.toLowerCase() === "water") {
         return MoleculeFactory("O", verbose)
     }
-    
+
     const _atoms = () => {
         const a = AtomsFactory(canonicalSmiles, verbose)
         return a

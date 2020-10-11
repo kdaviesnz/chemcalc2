@@ -2,6 +2,8 @@
 const CAtom = require('../../Controllers/Atom')
 const _ = require('lodash');
 const VMolecule = require('../../Views/Molecule')
+const MoleculeFactory = require('../../Models/MoleculeFactory')
+const AtomFactory = require('../../Models/AtomFactory')
 
 class Reaction {
 
@@ -16,14 +18,22 @@ class Reaction {
         this.container_substrate = container_substrate
         this.container_reagent = container_reagent
 
-        this.ReagentAI = require("../Stateless/MoleculeAI")(container_reagent)
-        this.MoleculeAI = require("../Stateless/MoleculeAI")(container_substrate)
+        this.setMoleculeAI()
+        this.setReagentAI()
+    }
 
+    setReagentAI() {
+        this.ReagentAI = require("../Stateless/MoleculeAI")(this.container_reagent)
+    }
+
+    setMoleculeAI() {
+        this.MoleculeAI = require("../Stateless/MoleculeAI")(this.container_substrate)
     }
 
     hydrate() {
         const water_molecule = MoleculeFactory("O")
         this.container_reagent = [water_molecule,1]
+        this.setReagentAI()
         const water_ai = require("../Stateless/MoleculeAI")([water_molecule,1])
         const water_oxygen_index = water_ai.findWaterOxygenIndex()
         const electrons = CAtom(water_molecule[1][water_oxygen_index], 
@@ -33,6 +43,7 @@ class Reaction {
         this.container_substrate[0][1][electrophile_index].push(electrons[0])
         this.container_substrate[0][1][electrophile_index].push(electrons[1])    
         this.container_substrate[0][1][electrophile_index][4] = ""
+        this.setMoleculeAI()
     }
     
     dehydrate() {
@@ -99,6 +110,8 @@ class Reaction {
 
             this.container_substrate[0][1][non_hydrogen_bond.atom_index][4] = '+'
 
+            this.setMoleculeAI()
+
 
         })
 
@@ -132,7 +145,8 @@ class Reaction {
             this.container_substrate[0][1][atom_index][4] = 0
             
         }
-        
+
+        this.setMoleculeAI()
         
         
         // @todo work out if we now have two molecules
@@ -149,6 +163,8 @@ class Reaction {
             this.reagent.push(source_free_electrons[0])
             this.container_substrate.push(target_free_electrons[1])          
         }
+
+        this.setMoleculeAI()
     }
 
     addProtonToSubstrate(target_atom, target_atom_index, proton) {
@@ -159,6 +175,7 @@ class Reaction {
             this.container_substrate[0][1].push(proton)
             this.container_substrate[0][1][target_atom_index][4] = "+"
         }
+        this.setMoleculeAI()
     }
     
     removeProton() {
@@ -237,23 +254,44 @@ class Reaction {
          addProtonToReagent()       
         // Remove the proton         
         this.container_substrate[0][1].splice(proton_index, 1)
+
+        this.setMoleculeAI()
     }
 
     removeProtonFromReagent(proton_index) {
         this.container_reagent[0][1].splice(proton_index, 1)
+        this.setReagentAI()
     }
             
     addProtonToReagent( ) {
 
-        const atom_index = this.ReagentAI.findNucleophileIndex()
+        const atom_nucleophile_index = this.ReagentAI.findNucleophileIndex()
+
+        console.log("State/Reaction.js Adding proton to reagent")
+//        console.log(VMolecule(this.container_reagent).canonicalSMILES())
+  //      console.log(atom_nucleophile_index)
+    //    process.exit('State/Reaction.js')
+
         const reagent_atoms = _.cloneDeep(this.container_reagent[0][1])
         
-        const proton = MoleculeFactory("H")
-        const free_electrons = CAtom(this.container_reagent[0][1][atom_index], atom_index, this.container_reagent)
+        const proton = AtomFactory("H", 0)
+        proton.pop()
+
+        proton.length.should.be.equal(5)
+        proton[0].should.be.equal('H')
+
+        const free_electrons = CAtom(this.container_reagent[0][1][atom_nucleophile_index], atom_nucleophile_index, this.container_reagent).freeElectrons()
+
+
+        console.log(free_electrons)
+        process.exit()
+
         proton.push(free_electrons[0])
         proton.push(free_electrons[1])
         this.container_reagent[0][1].push(proton)
         this.container_reagent[0][1].length.should.not.equal(reagent_atoms.length)
+
+        this.setReagentAI()
         
 
     }
@@ -272,9 +310,10 @@ class Reaction {
         this.container_sunstrate[0][1][water_oxygen_index][4] = 0
         
         this.addProtonToReagent()
-        
-       
-       
+
+        this.setMoleculeAI()
+
+
     }
 
     addProtonFromReagentToHydroxylGroup() {
@@ -293,6 +332,7 @@ class Reaction {
 
         this.container_substrate[0][1].length.should.not.equal(substrate_atoms.length)
 
+        this.setMoleculeAI()
 
     }
 
