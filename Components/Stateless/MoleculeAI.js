@@ -76,6 +76,44 @@ const MoleculeAI = (container_molecule) => {
                 return true
             })
 
+        },
+
+        "findWaterOxygenIndex":() => {
+
+            return _.findIndex(container_molecule[0][1], (oxygen_atom, oxygen_atom_index)=>{
+
+
+                // Not an oxygen atom
+                if (oxygen_atom[0] !== "O") {
+                    return false
+                }
+
+                // Not -OH2
+                const oxygen_atom_object = CAtom(oxygen_atom, oxygen_atom_index, container_molecule)
+                if(oxygen_atom_object.bondCount()< 3) { // 2 hydrogen bonds plus 1 carbon atom
+                    return false
+                }
+
+                const indexed_bonds = oxygen_atom_object.indexedBonds("")
+
+                // Check we have 2 hydrogens attached to the oxygen atom
+                if (indexed_bonds.filter((bond) => {
+                        if (bond.atom[0] !== "H") {
+                            return false
+                        }
+                        const hydrogen_atom = CAtom(bond.atom, bond.atom_index, container_molecule)
+                        if (hydrogen_atom.bondCount() !== 1) {
+                            return false
+                        }
+                        return true
+                    }
+                ).length !== 2) {
+                    return false
+                }
+
+                return true
+            })
+
         }
 
 

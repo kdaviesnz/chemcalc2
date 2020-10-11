@@ -196,6 +196,8 @@ class Reaction {
 
     removeProtonFromWater() {
 
+        const water_oxygen_index = this.MoleculeAI.findWaterOxygenIndex()
+
         proton[0].should.be.equal("H")
         const reagent_atoms = _.cloneDeep(this.container_reagent[0][1])
         this.removeProtonFromReagent(proton_index)
