@@ -21,6 +21,10 @@ class Reaction {
 
     }
 
+    hydrate() {
+        
+    }
+    
     dehydrate() {
 
         const atoms = this.container_substrate[0][1]
