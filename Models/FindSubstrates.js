@@ -83,6 +83,7 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
         }
     })
 
+    console.log(VMolecule(products[1]).canonicalSMILES())
     console.log('FindSubstrates.js')
     process.exit()
 

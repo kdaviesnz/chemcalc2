@@ -231,30 +231,6 @@ class Reaction {
         }
 
 
-
-
-        if (bonds[0].atom[0] === "C") {
-            const carbon_bonds = CAtom(this.container_substrate[0][1][bonds[0].atom_index], bonds[0].atom_index, this.container_substrate).indexedBonds("")
-            
-            // look for carbon carbon bond
-            carbon_bonds.map((bond)=>{
-                if (bond.atom[0]==="C") {
-                    // add electrons shared with the proton to the carbon atom to form a double bond
-                    container_substrate[0][1][bond.atom_index].push(bonds[0].shared_electrons[0])
-                    container_substrate[0][1][bond.atom_index].push(bonds[0].shared_electrons[1])
-                    container_substrate[0][1][bond.atom_index][4] = 0                                                
-                }
-            })
-            
-            
-        }
-        container_substrate[0][1][bonds[0].atom_index][4] = 0
-                
-         // Add proton to reagent       
-         addProtonToReagent()       
-        // Remove the proton         
-        this.container_substrate[0][1].splice(proton_index, 1)
-
         this.setMoleculeAI()
     }
 
@@ -281,10 +257,7 @@ class Reaction {
         proton[0].should.be.equal('H')
 
         const free_electrons = CAtom(this.container_reagent[0][1][atom_nucleophile_index], atom_nucleophile_index, this.container_reagent).freeElectrons()
-
-
-        console.log(free_electrons)
-        process.exit()
+        free_electrons.length.should.be.greaterThan(1)
 
         proton.push(free_electrons[0])
         proton.push(free_electrons[1])
