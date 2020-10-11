@@ -44,7 +44,7 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
      
      COC -> C[O+]C
      C[O+]C -> [C+]C 
-     ? C=C / CC
+     ? [C+]C -> C=C / CC
     */
 
     const commands_reversed_map = {
