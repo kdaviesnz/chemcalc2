@@ -150,17 +150,17 @@ class Reaction {
     removeProton(proton_index) {
         // [C+]CH3
         // We remove the proton from the second carbon
-        const proton = CAtom(container_substrate[0][1][proton_index], proton_index,container_substrate)
+        const proton = CAtom(this.container_substrate[0][1][proton_index], proton_index, this.container_substrate)
         const bonds  = proton.indexedBonds("")
         if (bonds[0].atom[0] === "C") {
-            const carbon_bonds = CAtom(container_substrate[0][1][bonds[0].atom_index], bonds[0].atom_index,container_substrate).indexedBonds("")
+            const carbon_bonds = CAtom(this.container_substrate[0][1][bonds[0].atom_index], bonds[0].atom_index, this.container_substrate).indexedBonds("")
             
             // look for carbon carbon bond
             carbon_bonds.map((bond)=>{
                 if (bond.atom[0]==="C") {
                     // add electrons shared with the proton to the carbon atom to form a double bond
-                    container_substrate[0][1][bond.atom_index].push(bonds[0].shared_electrons[0]
-                    container_substrate[0][1][bond.atom_index].push(bonds[0].shared_electrons[1]  
+                    container_substrate[0][1][bond.atom_index].push(bonds[0].shared_electrons[0])
+                    container_substrate[0][1][bond.atom_index].push(bonds[0].shared_electrons[1])
                     container_substrate[0][1][bond.atom_index][4] = 0                                                
                 }
             })
@@ -192,7 +192,24 @@ class Reaction {
         this.container_reagent[0][1].length.should.not.equal(reagent_atoms.length)
         
 
-    }         
+    }
+
+    removeProtonFromWater() {
+
+        proton[0].should.be.equal("H")
+        const reagent_atoms = _.cloneDeep(this.container_reagent[0][1])
+        this.removeProtonFromReagent(proton_index)
+        this.container_reagent[0][1].length.should.not.equal(reagent_atoms.length)
+        const hydroxylOxygenIndex = this.MoleculeAI.findHydroxylOxygenIndex()
+
+        this.container_substrate[0][1][hydroxylOxygenIndex][0].should.be.equal("O")
+        const substrate_atoms = _.cloneDeep(this.container_substrate[0][1])
+        this.addProtonToSubstrate(this.container_substrate[0][1][hydroxylOxygenIndex], hydroxylOxygenIndex, proton) // changes this.container_substrate
+
+        this.container_substrate[0][1].length.should.not.equal(substrate_atoms.length)
+
+
+    }
 
     addProtonFromReagentToHydroxylGroup() {
 

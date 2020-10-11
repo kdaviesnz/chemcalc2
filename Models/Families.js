@@ -337,7 +337,7 @@ const Families = (mmolecule) => {
     const families = {
         "double_bonds": __doubleCarbonBonds,
         "alkene": alkene,
-        "alcohol": alcohol
+        "alcohol": alcohol,
         "amine": amine
     }
 

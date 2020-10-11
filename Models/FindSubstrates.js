@@ -22,6 +22,8 @@ const RemoveProton = require('../Commands/RemoveProton')
 const MoleculeFactory = require('../Models/MoleculeFactory')
 const VMolecule = require('../Views/Molecule')
 const Dehydrate = require('../Commands/Dehydrate')
+const BondAtoms = require('../Commands/BondAtoms')
+const RemoveProtonFromWater = require('../Commands/RemoveProtonFromWater')
 
 const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string, render, Err) => {
 
@@ -49,9 +51,9 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
     
     const commands_map = {
         "REMOVE proton": RemoveProton,
-        "ADD bond": AddBond,
+        "ADD bond": BondAtoms,
         "ADD proton": AddProton,
-        "REMOVE proton from water": RemoveProtonToHydroxylGroup,
+        "REMOVE proton from water": RemoveProtonFromWater,
         "HYDRATE": Hydrate,
     }
 
@@ -79,6 +81,9 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
             //console.log(VMolecule(products[1]).canonicalSMILES())
         }
     })
+
+    console.log('FindSubstrates.js')
+    process.exit()
 
     
     // Test
