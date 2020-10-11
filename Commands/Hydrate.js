@@ -1,6 +1,6 @@
 const Reaction = require("../Components/State/Reaction")
 
-const Dehydrate = (container_molecule, container_reagent) => {
+const Hydrate = (container_molecule, container_reagent) => {
 
     container_molecule.length.should.be.equal(2) // molecule, units
     container_molecule[0].length.should.be.equal(2) // pKa, atoms
@@ -12,7 +12,7 @@ const Dehydrate = (container_molecule, container_reagent) => {
 
     const reaction = new Reaction(container_molecule, container_reagent)
 
-    reaction.dehydrate()
+    reaction.hydrate()
 
     return [
         reaction.container_substrate,
@@ -20,4 +20,4 @@ const Dehydrate = (container_molecule, container_reagent) => {
     ]
 }
 
-module.exports = Dehydrate
+module.exports = hydrate
