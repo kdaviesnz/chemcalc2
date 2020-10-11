@@ -6,7 +6,7 @@ const RemoveProton = (container_molecule, container_reagent) => {
 
     const reaction = new Reaction(container_molecule, container_reagent)
 
-    reaction.removeProtonFromReagent()
+    reaction.removeProton()
 
     return [
         reaction.container_substrate,
