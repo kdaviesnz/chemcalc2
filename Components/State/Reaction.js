@@ -22,7 +22,17 @@ class Reaction {
     }
 
     hydrate() {
-        
+        const water_molecule = MoleculeFactory("O")
+        this.container_reagent = [water_molecule,1]
+        const water_ai = require("../Stateless/MoleculeAI")([water_molecule,1])
+        const water_oxygen_index = water_ai.findWaterOxygenIndex()
+        const electrons = CAtom(water_molecule[1][water_oxygen_index], 
+                                water_oxygen_index,
+                                [water_molecule,1]).freeElectrons()
+        const electrophile_index = this.MoleculeAI.findElectrophileIndex()
+        this.container_substrate[0][1][electrophile_index].push(electrons[0])
+        this.container_substrate[0][1][electrophile_index].push(electrons[1])    
+        this.container_substrate[0][1][electrophile_index][4] = "+"
     }
     
     dehydrate() {
