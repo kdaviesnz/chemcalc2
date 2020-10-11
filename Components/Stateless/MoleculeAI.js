@@ -15,16 +15,32 @@ const MoleculeAI = (container_molecule) => {
     // No method should change state of container_molecule
     return {
         
+        
+        /*
+        
+
+
+        */
          "findElectrophileIndex": () => {
             return _.findIndex(container_molecule[0][1], (atom, index)=>{
 
-                if (atom[0] !== "H") {
-                    return false
+                const atom_object = CAtom(atom, index,container_molecule)
+               
+                if (atom_object.isPositivelyCharged() ) {
+                    return true
                 }
-
-                const hydrogen_atom_object = CAtom(atom, index, container_molecule)
-
-                return hydrogen_atom_object.bondCount() === 1
+                
+                if (atom_object.freeSlots().length > 0) {
+                    return true
+                }
+                
+                if (atom[0]==="H" && atom_object.indexedBonds("").filter((bond)=>{
+                    return bond.atom !== "C"
+                }).length === 0) {
+                    return true
+                }
+                
+                return false
 
             })
         },
