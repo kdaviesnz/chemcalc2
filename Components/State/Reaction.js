@@ -32,7 +32,7 @@ class Reaction {
         const electrophile_index = this.MoleculeAI.findElectrophileIndex()
         this.container_substrate[0][1][electrophile_index].push(electrons[0])
         this.container_substrate[0][1][electrophile_index].push(electrons[1])    
-        this.container_substrate[0][1][electrophile_index][4] = "+"
+        this.container_substrate[0][1][electrophile_index][4] = ""
     }
     
     dehydrate() {
