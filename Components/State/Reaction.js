@@ -172,23 +172,44 @@ class Reaction {
             return bond.atom[0] === 'H'
         }).pop()
 
-        if (this.container_substrate[0][1][electrophile_index][0]=== "C"){
+        if (this.container_substrate[0][1][electrophile_index][0]!== "C"){
+            
+            this.addProtonToReagent()  
+                this.container_substrate[0][1][electrophile_index][4] = 0
+                this.container_substrate[0][1].splice(hydrogen_bond.atom_index, 1)
+            
+        } else {
 
             // Check for carbons bonds
             const carbon_bond = electrophile_bonds.filter((bond)=>{
                 return bond.atom[0] === "C"
             }).pop()
 
-            if (undefined !== carbon_bond) {
+            if (undefined === carbon_bond) {
+                
+                this.addProtonToReagent()  
+                this.container_substrate[0][1][electrophile_index][4] = 0
+                this.container_substrate[0][1].splice(hydrogen_bond.atom_index, 1)
+                
+            } else {
 
                 // Change bond to double bond
                 const shared_electrons = hydrogen_bond.shared_electrons
                 this.container_substrate[0][1][electrophile_index].push(shared_electrons[0])
                 this.container_substrate[0][1][electrophile_index].push(shared_electrons[1])
 
-                // Remove proton from carbon bond
-              /  this.container_substrate[0][1].splice(hydrogen_bond.atom_index, 1)
-
+                // Remove proton bonded to second carbon
+                const carbon_hydrogen_bond = CAtom(carbon_bond.atom,
+                                                  carbon_bond.atom_index,
+                                                   this.container_substrate).indexedBonds("")
+                                                   .filter((bond)=>{
+                        return bond.atom[0] === 'H'
+                }).pop()
+                
+                this.addProtonToReagent()  
+                this.container_substrate[0][1][electrophile_index][4] = 0
+                this.container_substrate[0][1].splice(carbon_hydrogen_bond.atom_index, 1)
+                
             }
         }
 
