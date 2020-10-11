@@ -169,6 +169,8 @@ class Reaction {
         }
         container_substrate[0][1][bonds[0].atom_index][4] = 0
                 
+         // Add proton to reagent       
+         addProtonToReagent()       
         // Remove the proton         
         this.container_substrate[0][1].splice(proton_index, 1)
     }
@@ -176,6 +178,21 @@ class Reaction {
     removeProtonFromReagent(proton_index) {
         this.container_reagent[0][1].splice(proton_index, 1)
     }
+            
+    addProtonToReagent( ) {
+
+        const atom_index = this.ReagentAI.findNucleophileIndex()
+        const reagent_atoms = _.cloneDeep(this.container_reagent[0][1])
+        
+        const proton = MoleculeFactory("H")
+        const free_electrons = CAtom(this.container_reagent[0][1][atom_index], atom_index, this.container_reagent)
+        proton.push(free_electrons[0])
+        proton.push(free_electrons[1])
+        this.container_reagent[0][1].push(proton)
+        this.container_reagent[0][1].length.should.not.equal(reagent_atoms.length)
+        
+
+    }         
 
     addProtonFromReagentToHydroxylGroup() {
 
@@ -192,12 +209,6 @@ class Reaction {
         this.addProtonToSubstrate(this.container_substrate[0][1][hydroxylOxygenIndex], hydroxylOxygenIndex, proton) // changes this.container_substrate
 
         this.container_substrate[0][1].length.should.not.equal(substrate_atoms.length)
-
-//        console.log(VMolecule(this.container_substrate).canonicalSMILES())
-
-  //      console.log("Reaction.js")
-
-    //    process.exit()
 
 
     }
