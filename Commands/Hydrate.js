@@ -20,4 +20,4 @@ const Hydrate = (container_molecule, container_reagent) => {
     ]
 }
 
-module.exports = hydrate
+module.exports = Hydrate

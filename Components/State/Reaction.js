@@ -161,11 +161,40 @@ class Reaction {
         }
     }
     
-    removeProton(proton_index) {
+    removeProton() {
         // [C+]CH3
         // We remove the proton from the second carbon
-        const proton = CAtom(this.container_substrate[0][1][proton_index], proton_index, this.container_substrate)
-        const bonds  = proton.indexedBonds("")
+        const electrophile_index = this.MoleculeAI.findElectrophileIndex()
+        const electrophile = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
+        const electrophile_bonds  = electrophile.indexedBonds("")
+
+        const hydrogen_bond = electrophile_bonds.filter((bond)=>{
+            return bond.atom[0] === 'H'
+        }).pop()
+
+        if (this.container_substrate[0][1][electrophile_index][0]=== "C"){
+
+            // Check for carbons bonds
+            const carbon_bond = electrophile_bonds.filter((bond)=>{
+                return bond.atom[0] === "C"
+            }).pop()
+
+            if (undefined !== carbon_bond) {
+
+                // Change bond to double bond
+                const shared_electrons = hydrogen_bond.shared_electrons
+                this.container_substrate[0][1][electrophile_index].push(shared_electrons[0])
+                this.container_substrate[0][1][electrophile_index].push(shared_electrons[1])
+
+                // Remove proton from carbon bond
+              /  this.container_substrate[0][1].splice(hydrogen_bond.atom_index, 1)
+
+            }
+        }
+
+
+
+
         if (bonds[0].atom[0] === "C") {
             const carbon_bonds = CAtom(this.container_substrate[0][1][bonds[0].atom_index], bonds[0].atom_index, this.container_substrate).indexedBonds("")
             

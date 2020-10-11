@@ -24,6 +24,7 @@ const VMolecule = require('../Views/Molecule')
 const Dehydrate = require('../Commands/Dehydrate')
 const BondAtoms = require('../Commands/BondAtoms')
 const RemoveProtonFromWater = require('../Commands/RemoveProtonFromWater')
+const Hydrate = require('../Commands/Hydrate')
 
 const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string, render, Err) => {
 
