@@ -21,6 +21,46 @@ const MoleculeAI = (container_molecule) => {
 
 
         */
+        "findNucleophileIndex": () => {
+
+            // Look for negatively charged atom
+            const negative_atom_index = _.findIndex(container_molecule[0][1], (atom, index)=>{
+                const atom_object = CAtom(atom, index,container_molecule)
+                return atom_object.isNegativelyCharged()
+            })
+
+            if (negative_atom_index > 0) {
+                return negative_atom_index
+            }
+
+            // Look for double bond with most hydrogens
+            let hydrogen_count = 0
+            return container_molecule[0][1].reduce((carry, atom, index)=> {
+                const atom_object = CAtom(atom, index,container_molecule)
+                const double_bonds = atom_object.indexedDoubleBonds("").filter((double_bond)=>{
+                    // Check that atom we are bonding to has more than the current number of hydrogens
+                    if (double_bond.atom[0]!=="C") {
+                        return false
+                    }
+                    const bonded_atom_object_hydrogen_bonds = CAtom(double_bond.atom, double_bond.atom_index, container_molecule).filter(
+                        (bonded_atom_object_bonds)=>{
+                            return bonded_atom_object_bonds.atom[0] === "H"
+                        }
+                    )
+                    if (bonded_atom_object_hydrogen_bonds > hydrogen_count) {
+                        hydrogen_count = bonded_atom_object_hydrogen_bonds.length
+                        return true
+                    } else {
+                        return false
+                    }
+                })
+                carry = double_bonds.length > 0? double_bonds[0].atom_index:carry
+                return carry
+
+            }, -1)
+
+        },
+
          "findElectrophileIndex": () => {
             return _.findIndex(container_molecule[0][1], (atom, index)=>{
 
