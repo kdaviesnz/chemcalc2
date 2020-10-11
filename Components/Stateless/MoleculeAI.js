@@ -14,6 +14,20 @@ const MoleculeAI = (container_molecule) => {
     // All required parameters should be passed by MoleculeAI()
     // No method should change state of container_molecule
     return {
+        
+         "findElectrophileIndex": () => {
+            return _.findIndex(container_molecule[0][1], (atom, index)=>{
+
+                if (atom[0] !== "H") {
+                    return false
+                }
+
+                const hydrogen_atom_object = CAtom(atom, index, container_molecule)
+
+                return hydrogen_atom_object.bondCount() === 1
+
+            })
+        },
 
         "findProtonIndex": () => {
             return _.findIndex(container_molecule[0][1], (atom, index)=>{
