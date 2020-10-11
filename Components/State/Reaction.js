@@ -197,20 +197,20 @@ class Reaction {
     removeProtonFromWater() {
 
         const water_oxygen_index = this.MoleculeAI.findWaterOxygenIndex()
-
-        proton[0].should.be.equal("H")
-        const reagent_atoms = _.cloneDeep(this.container_reagent[0][1])
-        this.removeProtonFromReagent(proton_index)
-        this.container_reagent[0][1].length.should.not.equal(reagent_atoms.length)
-        const hydroxylOxygenIndex = this.MoleculeAI.findHydroxylOxygenIndex()
-
-        this.container_substrate[0][1][hydroxylOxygenIndex][0].should.be.equal("O")
-        const substrate_atoms = _.cloneDeep(this.container_substrate[0][1])
-        this.addProtonToSubstrate(this.container_substrate[0][1][hydroxylOxygenIndex], hydroxylOxygenIndex, proton) // changes this.container_substrate
-
-        this.container_substrate[0][1].length.should.not.equal(substrate_atoms.length)
-
-
+        const oxygen_proton_bond = CAtom(this.container_sunstrate[0][1][water_oxygen_index],
+                                    water_oxygen_index,
+                                    this.container_sunstrate).filter((bond)=>{
+            return bond.atom[0] === "H"
+        }).pop()
+                                    
+        this.container_substrate[0][1].splice(oxygen_proton_bond.bond_index, 1)
+        
+        this.container_sunstrate[0][1][water_oxygen_index][4] = 0
+        
+        this.addProtonToReagent()
+        
+       
+       
     }
 
     addProtonFromReagentToHydroxylGroup() {
