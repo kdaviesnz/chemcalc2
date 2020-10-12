@@ -23,8 +23,9 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     }
 
     // parse a SMILES string, returns an array of SMILES tokens [{type: '...', value: '...'}, ...]
-    const smiles_tokens = smiles.parse(canonicalSMILES.replace(/H[0-9]*/,""))
+    const smiles_tokens = smiles.parse(canonicalSMILES)
     //const smiles_tokens = smiles.parse(canonicalSMILES)
+
 
     // [Cl-]
     /*
@@ -52,6 +53,9 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
             return true
         }
     )
+
+
+
 
     // Add the bonds and branches
     let branch_number = 0
@@ -138,6 +142,11 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                 is_new_branch = false
                 // Change row to null as it's not an atom row
                 res = null
+            } else if (undefined !== row.type && row.type === "HydrogenCount") {
+
+                if (typeof processed_atoms[processed_atoms.length -2][0] === "string") {
+                    processed_atoms[processed_atoms.length -2].push(row.value)
+                }
             }
             return res
 
@@ -160,13 +169,23 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     // Add hydrogens
     const atoms_with_hydrogens = _.cloneDeep(atoms).reduce(
         (carry, current, index, arr) => {
+
             if (typeof current.length === "number" && current[0]!=='H') { // we have an atom
-                // Check how many bonds it currently has
-                const valence_electrons = current.slice(5)
-                // Check each valence electron to see if it is being shared
-                const actual_number_of_bonds = CMolecule([atoms, 1]).bondCount(current)
-                // current[3] is the number of electrons the atom has when it is neutrally charged
-                const number_of_hydrogens_required = current[3] - actual_number_of_bonds + (current[4]) // current[4] is the charge
+                // if last element of atom is a number then this is the number of hydrogens
+                let number_of_hydrogens_required = 0
+                let valence_electrons = []
+                if (typeof current[current.length-1] === "number") {
+                    number_of_hydrogens_required = current[current.length-1]
+                    current.pop()
+                    valence_electrons = current.slice(5)
+                } else {
+                    // Check how many bonds it currently has
+                    valence_electrons = current.slice(5)
+                    // Check each valence electron to see if it is being shared
+                    const actual_number_of_bonds = CMolecule([atoms, 1]).bondCount(current)
+                    // current[3] is the number of electrons the atom has when it is neutrally charged
+                    number_of_hydrogens_required = current[3] - actual_number_of_bonds + (current[4]) // current[4] is the charge
+                }
                 if (number_of_hydrogens_required > 0) {
                     range.range(0, number_of_hydrogens_required,1).map(
                         (e_index) => {

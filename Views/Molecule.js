@@ -43,22 +43,22 @@ const VMolecule = (mmolecule) => {
         } else if (catom.isNegativelyCharged()) {
             return "[" + current_atom[0] + "-]"
         } else {
+
+            // Check the number of hydrogen bonds
+            const indexed_bonds = catom.indexedBonds("")
+            const indexed_double_bonds = catom.indexedDoubleBonds("")
+            if (indexed_bonds.length + indexed_double_bonds.length < current_atom[3]) {
+                const hydrogens = indexed_bonds.filter((bond)=>{
+                    return bond.atom[0] === "H"
+                })
+                if (hydrogens.length > 0) {
+                    return "[" + current_atom[0] + "H" + hydrogens.length + "]"
+                }
+            }
+
             return  (__addBrackets(current_atom[0])?"[":"") + current_atom[0] + (__addBrackets(current_atom[0])?"]":"") // eg "" + "C"
         }
-        /*
-        if (catom.isPositivelyCharged()) {
-            carry = carry + "[" + current_atom[0] + "+]"
-        } else if (catom.isNegativelyCharged()) {
-            carry = carry + "[" + current_atom[0] + "-]"
-        } else {
-            carry += (__addBrackets(current_atom[0])?"[":"") + current_atom[0] + (__addBrackets(current_atom[0])?"]":"") // eg "" + "C"
-        }
-        // Get the type of bond between the current atom and the next non - hydrogen atom
-        const next_atom = mmolecule_sans_hydrogens[index + 1]
-        if (next_atom) {
-            carry = carry + CMolecule(mmolecule_sans_hydrogens).bondType(current_atom, next_atom)
-        }
-        */
+
 
     }
 

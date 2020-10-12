@@ -60,6 +60,22 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
 const Families = require('./Models/Families')
 
 
+const oxide = MoleculeFactory("[OH3+]")
+oxide[0].should.be.equal(-1.74) // pKa
+oxide[1].should.be.an.Array()
+oxide[1].length.should.be.equal(4)
+oxide[1][3][0].should.be.equal("O")
+const oxide_oxygen = CAtom(oxide[1][3], 2, [oxide, 1])
+oxide[1][3].slice(5).length.should.be.equal(8) // oxide 8 electrons as it is positively charged.
+oxide_oxygen.hydrogens().length.should.be.equal(3)
+oxide_oxygen.carbons().length.should.be.equal(0)
+oxide_oxygen.freeSlots().should.be.equal(-1)
+oxide_oxygen.bondCount().should.be.equal(3)
+oxide_oxygen.doubleBondCount().should.be.equal(0)
+oxide_oxygen.isNegativelyCharged().should.be.false() // proton count 8, total number of electrons 11
+oxide_oxygen.isPositivelyCharged().should.be.true()
+VMolecule([oxide, 1]).canonicalSMILES().should.be.equal("[O+]")
+
 // Test families:
 if (true) {
 
@@ -85,7 +101,20 @@ if (true) {
 if (true) {
 
     console.log("Running initial tests ...")
-    
+
+
+    const methyline = MoleculeFactory("[CH2]")
+
+     // Check number of hydrogens
+    methyline[1].filter((atom)=>{
+        return atom[0] === "H"
+    }).length.should.be.equal(2)
+
+    const methyline_s = VMolecule([methyline, 1]).canonicalSMILES()
+    methyline_s.should.be.equal("[CH2]")
+
+
+
     const sulphuric_acid = MoleculeFactory("OS(=O)(=O)O")
     VMolecule([sulphuric_acid, 1]).canonicalSMILES().should.be.equal("OS(=O)(=O)(O)")
 
@@ -202,21 +231,7 @@ if (true) {
     oxygen.isPositivelyCharged().should.be.false()
     VMolecule([w, 1]).canonicalSMILES().should.be.equal("O")
 
-    const oxide = MoleculeFactory("[OH3+]")
-    oxide[0].should.be.equal(-1.74) // pKa
-    oxide[1].should.be.an.Array()
-    oxide[1].length.should.be.equal(4)
-    oxide[1][3][0].should.be.equal("O")
-    const oxide_oxygen = CAtom(oxide[1][3], 2, [oxide, 1])
-    oxide[1][3].slice(5).length.should.be.equal(8) // oxide 8 electrons as it is positively charged.
-    oxide_oxygen.hydrogens().length.should.be.equal(3)
-    oxide_oxygen.carbons().length.should.be.equal(0)
-    oxide_oxygen.freeSlots().should.be.equal(-1)
-    oxide_oxygen.bondCount().should.be.equal(3)
-    oxide_oxygen.doubleBondCount().should.be.equal(0)
-    oxide_oxygen.isNegativelyCharged().should.be.false() // proton count 8, total number of electrons 11
-    oxide_oxygen.isPositivelyCharged().should.be.true()
-    VMolecule([oxide, 1]).canonicalSMILES().should.be.equal("[O+]")
+
 
 
     const hydrochloric_acid = MoleculeFactory("Cl") // HCl

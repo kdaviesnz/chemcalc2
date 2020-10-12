@@ -68,20 +68,7 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
     }
 
     // Test that by running commands we get the correct result
-    let products_testing = []
-    rule.commands.map((command, index) => {
-        if (undefined !== commands_map[command]) {
-            console.log(commands_map[command])
-            const container_substrate = products_testing[0]
-            const container_reagent =  [MoleculeFactory(rule.reagents[index]),1]
-            products_testing = commands_map[command](container_substrate, container_reagent)
-        }
-    })
 
-    console.log(products_testing[0][0])
-    console.log(VMolecule(products_testing[1]).canonicalSMILES())
-    console.log('FindSubstrates.js')
-    process.exit()
 
     const results = []
     let products = [mmolecule, rule.products[1]] // substrate should aways be first element
@@ -113,7 +100,7 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
     
     // Test that by running commands we get the correct result
     console.log(products[0][0])
-   // let products_testing = [products[0]]
+   let products_testing = [products[0]]
     rule.commands.map((command, index) => {
        if (undefined !== commands_map[command]) {
            console.log(commands_map[command])
