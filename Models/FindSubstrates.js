@@ -80,13 +80,13 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
             container_substrate[0][1].should.be.an.Array()
             const container_reagent =  [MoleculeFactory(reagents_reversed[index]),1]
             products = commands_reversed_map[command_reversed](container_substrate, container_reagent)
+            console.log(VMolecule(products[0]).canonicalSMILES())
+            console.log(VMolecule(products[1]).canonicalSMILES())
             results.push(products)
         }
     })
 
 
-    console.log(VMolecule(products[0]).canonicalSMILES())
-    console.log(VMolecule(products[1]).canonicalSMILES())
     console.log('FindSubstrates.js')
     process.exit()
 

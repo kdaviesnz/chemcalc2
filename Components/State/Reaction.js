@@ -214,6 +214,7 @@ class Reaction {
             return bond.atom[0] === 'H'
         }).pop()
 
+
         if (this.container_substrate[0][1][electrophile_index][0]!== "C"){
             
             this.addProtonToReagent()  
@@ -240,6 +241,7 @@ class Reaction {
                 this.container_substrate[0][1][electrophile_index].push(shared_electrons[0])
                 this.container_substrate[0][1][electrophile_index].push(shared_electrons[1])
 
+
                 // Remove proton bonded to second carbon
                 const carbon_hydrogen_bond = CAtom(carbon_bond.atom,
                                                   carbon_bond.atom_index,
@@ -255,7 +257,7 @@ class Reaction {
             }
         }
 
-
+        this.setReagentAI()
         this.setMoleculeAI()
     }
 
@@ -297,11 +299,6 @@ class Reaction {
 
         const atom_nucleophile_index = this.ReagentAI.findNucleophileIndex()
 
-        //console.log("State/Reaction.js Adding proton to reagent")
-//        console.log(VMolecule(this.container_reagent).canonicalSMILES())
-  //      console.log(atom_nucleophile_index)
-    //    process.exit('State/Reaction.js')
-
         const reagent_atoms = _.cloneDeep(this.container_reagent[0][1])
         
         const proton = AtomFactory("H", 0)
@@ -316,7 +313,10 @@ class Reaction {
         proton.push(free_electrons[0])
         proton.push(free_electrons[1])
         this.container_reagent[0][1].push(proton)
+
         this.container_reagent[0][1].length.should.not.equal(reagent_atoms.length)
+
+        this.container_reagent[0][1][atom_nucleophile_index][4] = 0
 
         this.setReagentAI()
         
