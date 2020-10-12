@@ -97,14 +97,20 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
     // Test that by running commands we get the correct result
    let products_testing = [results_reversed[0].substrates[0], results_reversed[0].reagent]
     results_reversed.map((result, index) => {
-           console.log("Testing results")
-           console.log("Command: " + result.command)
-           console.log(commands_map[result.command])
+           //console.log("Testing results")
+           //console.log("Command: " + result.command)
+           //console.log(commands_map[result.command])
            const container_substrate = products_testing[0]
            const container_reagent =   products_testing[1]
            products_testing = commands_map[result.command](container_substrate, container_reagent)
+       // console.log("Products-")
+       // console.log(products_testing[0][0])
+        //console.log(products_testing[1][0])
     })
-   // _.isEqual(products_testing[0], products[0]).should.be.equal(true)
+    console.log(VMolecule(results_reversed[0].substrates[0]).canonicalSMILES())
+    console.log(VMolecule(products_testing[0]).canonicalSMILES())
+    _.isEqual(products_testing[0], results_reversed[0].substrates[0]).should.be.equal(true)
+
     console.log('FindSubstrates.js')
     process.exit()
     return products

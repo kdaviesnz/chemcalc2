@@ -59,14 +59,27 @@ class Reaction {
         this.setReagentAI()
         const water_ai = require("../Stateless/MoleculeAI")([water_molecule,1])
         const water_oxygen_index = water_ai.findWaterOxygenIndex()
-        const electrons = CAtom(water_molecule[1][water_oxygen_index], 
+        const electrons = CAtom(water_molecule[1][water_oxygen_index],
                                 water_oxygen_index,
                                 [water_molecule,1]).freeElectrons()
+        electrons.length.should.be.greaterThan(1)
         const electrophile_index = this.MoleculeAI.findElectrophileIndex()
+
+        electrophile_index.should.not.be.equal(-1)
+
         this.container_substrate[0][1][electrophile_index].push(electrons[0])
         this.container_substrate[0][1][electrophile_index].push(electrons[1])    
-        this.container_substrate[0][1][electrophile_index][4] = ""
+        this.container_substrate[0][1][electrophile_index][4] = 0
+
+        this.container_substrate[0][1].push(water_molecule[1][0])
+        this.container_substrate[0][1].push(water_molecule[1][1])
+        this.container_substrate[0][1].push(water_molecule[1][2])
+
         this.setMoleculeAI()
+
+        // Check we have a water molecule attached to main molecule
+        this.MoleculeAI.findWaterOxygenIndex().should.be.greaterThan(-1)
+
     }
     
     dehydrate() {
@@ -269,7 +282,14 @@ class Reaction {
 
     addProton() {
 
-        const atom_nucleophile_index = this.MoleculeAI.findNucleophileIndex()
+        let atom_nucleophile_index = this.MoleculeAI.findNucleophileIndex()
+
+        if (atom_nucleophile_index === -1 && !this.MoleculeAI.isWater()) {
+            // try carbon atom
+            atom_nucleophile_index = _.findIndex(_.cloneDeep(this.container_substrate[0][1]), (atom)=>{
+                return atom[0] === "C"
+            })
+        }
         atom_nucleophile_index.should.be.an.Number()
         atom_nucleophile_index.should.be.greaterThan(-1)
 
@@ -287,7 +307,10 @@ class Reaction {
         proton.push(free_electrons[0])
         proton.push(free_electrons[1])
         this.container_substrate[0][1].push(proton)
-        this.container_substrate[0][1].length.should.not.equal(reagent_atoms.length)
+
+        this.container_substrate[0][1][atom_nucleophile_index][4] = "+"
+
+        this.container_substrate[0][1].length.should.not.equal(atoms.length)
 
         this.setMoleculeAI()
 
@@ -298,6 +321,8 @@ class Reaction {
     addProtonToReagent( ) {
 
         const atom_nucleophile_index = this.ReagentAI.findNucleophileIndex()
+
+        atom_nucleophile_index.should.not.be.equal(-1)
 
         const reagent_atoms = _.cloneDeep(this.container_reagent[0][1])
         
@@ -330,17 +355,17 @@ class Reaction {
         this.container_substrate[0][1][water_oxygen_index][0].should.be.equal("O")
         const oxygen_proton_bond = CAtom(this.container_substrate[0][1][water_oxygen_index],
                                     water_oxygen_index,
-                                    this.container_substrate).filter((bond)=>{
+                                    this.container_substrate).indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "H"
         }).pop()
-                                    
+
+        this.container_substrate[0][1][water_oxygen_index][4] = 0
         this.container_substrate[0][1].splice(oxygen_proton_bond.bond_index, 1)
-        
-        this.container_sunstrate[0][1][water_oxygen_index][4] = 0
-        
+
         this.addProtonToReagent()
 
         this.setMoleculeAI()
+        this.setReagentAI()
 
 
     }

@@ -21,7 +21,28 @@ const MoleculeAI = (container_molecule) => {
 
 
         */
+        "isWater":() => {
+            if  (container_molecule[0][1].length !== 3) {
+                return false
+            }
+            const oxygen_atom_index = _.findIndex(_.cloneDeep(container_molecule[0][1]), (atom)=>{
+                return atom[0] === "O"
+            })
+            if (oxygen_atom_index === -1) {
+                return false
+            }
+            const oxygen_object = CAtom(container_molecule[0][1][oxygen_atom_index], oxygen_atom_index, container_molecule)
+            const indexed_bonds = oxygen_object.indexedBonds("")
+            if (indexed_bonds.length !==2 ) {
+                return false
+            }
+            return indexed_bonds.filter((bond)=>{
+                return bond.atom[0] === "H"
+            }).length === 2
+        },
+
         "findNucleophileIndex": () => {
+
 
             // Look for negatively charged atom
             const negative_atom_index = _.findIndex(container_molecule[0][1], (atom, index)=>{
@@ -36,7 +57,7 @@ const MoleculeAI = (container_molecule) => {
 
             // Look for double bond with most hydrogens
             let hydrogen_count = 0
-            const nucleophile_index = container_molecule[0][1].reduce((carry, atom, index)=> {
+            let nucleophile_index = container_molecule[0][1].reduce((carry, atom, index)=> {
                 const atom_object = CAtom(atom, index,container_molecule)
                 const double_bonds = atom_object.indexedDoubleBonds("").filter((double_bond)=>{
                     // Check that atom we are bonding to has more than the current number of hydrogens
@@ -62,13 +83,17 @@ const MoleculeAI = (container_molecule) => {
 
             // Verifications checks
             if (undefined === container_molecule[0][1][nucleophile_index]) {
-                return -1
+                nucleophile_index = -1
             }
+
+            // Check for atom with free electrons
+            nucleophile_index = _.findIndex(container_molecule[0][1], (atom, atom_index) => {
+                return atom[0] !== "H" && CAtom(atom, atom_index, container_molecule).freeElectrons().length > 0
+            })
 
             nucleophile_index.should.be.an.Number()
 
-            const nucleophile_atom_object = CAtom(container_molecule[0][1][nucleophile_index], nucleophile_index, container_molecule)
-            if (nucleophile_atom_object.isNegativelyCharged() === false && nucleophile_atom_object.doubleBondCount() === 0) {
+            if (nucleophile_index === -1) {
                 return -1
             }
 
@@ -168,17 +193,14 @@ const MoleculeAI = (container_molecule) => {
 
             return _.findIndex(container_molecule[0][1], (oxygen_atom, oxygen_atom_index)=>{
 
-
                 // Not an oxygen atom
                 if (oxygen_atom[0] !== "O") {
                     return false
                 }
 
-                console.log("got here")
-
                 // Not -OH2
                 const oxygen_atom_object = CAtom(oxygen_atom, oxygen_atom_index, container_molecule)
-                if(oxygen_atom_object.bondCount()< 3) { // 2 hydrogen bonds plus 1 carbon atom
+                if(oxygen_atom_object.bondCount()< 1) { // 2 hydrogen bonds plus optionally 1 carbon atom
                     return false
                 }
 

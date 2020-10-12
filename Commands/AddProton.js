@@ -9,8 +9,8 @@ const AddProton= (mmolecule, reagent) => {
     reaction.addProton()
 
     return [
-        reaction.mmolecule,
-        reaction.reagent
+        reaction.container_substrate,
+        reaction.container_reagent
     ]
 }
 

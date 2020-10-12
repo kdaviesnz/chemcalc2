@@ -14,6 +14,10 @@ const Hydrate = (container_molecule, container_reagent) => {
 
     reaction.hydrate()
 
+    // Check we have a water molecule attached to main molecule
+    const molecule_ai = require('../Components/Stateless/MoleculeAI')(reaction.container_substrate)
+    molecule_ai.findWaterOxygenIndex().should.be.greaterThan(-1)
+
     return [
         reaction.container_substrate,
         reaction.container_reagent
