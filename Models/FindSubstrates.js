@@ -29,6 +29,8 @@ const _ = require('lodash');
 
 const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string, render, Err) => {
 
+    console.log("FindSubstrates")
+    console.log(VMolecule(mmolecule).canonicalSMILES())
     const end_product_functional_groups = Families(mmolecule).families_as_array()
 
     const commands_reversed = _.cloneDeep(rule.commands).reverse()
@@ -90,8 +92,8 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
     })
 
     const results_reversed = _.cloneDeep(results).reverse()
+    console.log("FindSubstrates.js substrate:")
     console.log(VMolecule(results_reversed[0].substrates[0]).canonicalSMILES())
-    process.exit()
 
     //console.log(rule.commands)
     //console.log(results_reversed)
@@ -110,12 +112,7 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
        // console.log(products_testing[0][0])
         //console.log(products_testing[1][0])
     })
-    console.log(VMolecule(results_reversed[0].substrates[0]).canonicalSMILES())
-    console.log(VMolecule(products_testing[0]).canonicalSMILES())
     _.isEqual(products_testing[0], results_reversed[0].substrates[0]).should.be.equal(true)
-
-    console.log('FindSubstrates.js')
-    process.exit()
     return products
 
 

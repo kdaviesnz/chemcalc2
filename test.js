@@ -309,6 +309,19 @@ client.connect(err => {
             }
         )
 
+        FetchReactions(
+            true,
+            db,
+            [MoleculeFactory("C(O)C"),1],
+            "",
+            ()=>{
+
+            },
+            (Err) => {
+
+            }
+        )
+
     }
 
 
