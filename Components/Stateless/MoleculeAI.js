@@ -173,6 +173,8 @@ const MoleculeAI = (container_molecule) => {
                     return false
                 }
 
+                console.log("got here")
+
                 // Not -OH2
                 const oxygen_atom_object = CAtom(oxygen_atom, oxygen_atom_index, container_molecule)
                 if(oxygen_atom_object.bondCount()< 3) { // 2 hydrogen bonds plus 1 carbon atom

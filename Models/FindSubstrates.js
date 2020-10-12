@@ -25,12 +25,13 @@ const Dehydrate = require('../Commands/Dehydrate')
 const BondAtoms = require('../Commands/BondAtoms')
 const RemoveProtonFromWater = require('../Commands/RemoveProtonFromWater')
 const Hydrate = require('../Commands/Hydrate')
+const _ = require('lodash');
 
 const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string, render, Err) => {
 
     const end_product_functional_groups = Families(mmolecule).families_as_array()
 
-    const commands_reversed = rule.commands.reverse()
+    const commands_reversed = _.cloneDeep(rule.commands).reverse()
     const reagents_reversed = rule.synthesis_reagents
 
     commands_reversed.length.should.be.equal(reagents_reversed.length)
@@ -66,32 +67,56 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
         "HYDRATE": Dehydrate,
     }
 
+    // Test that by running commands we get the correct result
+    let products_testing = []
+    rule.commands.map((command, index) => {
+        if (undefined !== commands_map[command]) {
+            console.log(commands_map[command])
+            const container_substrate = products_testing[0]
+            const container_reagent =  [MoleculeFactory(rule.reagents[index]),1]
+            products_testing = commands_map[command](container_substrate, container_reagent)
+        }
+    })
+
+    console.log(products_testing[0][0])
+    console.log(VMolecule(products_testing[1]).canonicalSMILES())
+    console.log('FindSubstrates.js')
+    process.exit()
+
+    const results = []
     let products = [mmolecule, rule.products[1]] // substrate should aways be first element
     commands_reversed.map((command_reversed, index)=>{
         if (undefined !== commands_reversed_map[command_reversed]) {
-            console.log(commands_reversed_map[command_reversed])
             const container_substrate = products[0]
             container_substrate.length.should.be.equal(2) // molecule, units
             container_substrate[0].length.should.be.equal(2) // pKa, atoms
             container_substrate[0][1].should.be.an.Array()
             const container_reagent =  [MoleculeFactory(reagents_reversed[index]),1]
             products = commands_reversed_map[command_reversed](container_substrate, container_reagent)
-            console.log("PRODUCTS")
-            console.log(products)
-            console.log(VMolecule(products[0]).canonicalSMILES())
-            //console.log(VMolecule(products[1]).canonicalSMILES())
+            console.log("Command: ")
+            console.log(commands_reversed_map[command_reversed])
+            console.log("Products:")
+            console.log("Substrate")
+            console.log(products[0][0])
+            console.log("Reagent")
+            console.log(products[1][0])
+            results.push(products)
         }
     })
 
+
+    console.log(products[0][0])
     console.log(VMolecule(products[1]).canonicalSMILES())
     console.log('FindSubstrates.js')
     process.exit()
 
     
-    // Test
-    let products_testing = [products[0]]
+    // Test that by running commands we get the correct result
+    console.log(products[0][0])
+   // let products_testing = [products[0]]
     rule.commands.map((command, index) => {
        if (undefined !== commands_map[command]) {
+           console.log(commands_map[command])
            const container_substrate = products_testing[0]
            const container_reagent =  [MoleculeFactory(rule.reagents[index]),1]
            products_testing = commands_map[command](container_substrate, container_reagent)            
