@@ -37,23 +37,25 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     const atoms_with_tokens = _.cloneDeep(smiles_tokens).map(
         (row, i, arr) => {
             if (row.type === "AliphaticOrganic" || row.type === "ElementSymbol") {
-                const charge = undefined !== arr[i+1] && arr[i+1]['type']==='Charge'?arr[i+1]['value']*1:0
-                return AtomFactory(row.value, charge)
+             //   const charge = undefined !== arr[i+1] && arr[i+1]['type']==='Charge'?arr[i+1]['value']*1:0
+              //  console.log(arr[i+1])
+              //  console.log("Charge:" + charge)
+                return AtomFactory(row.value, 0)
             }
             return row
         }
     )
 
+
     // Filter out brackets
     const atoms_with_tokens_no_brackets = _.cloneDeep(atoms_with_tokens).filter(
         (row) => {
-            if (undefined !== row.type && (row.type === "BracketAtom" || row.type === "Charge")) {
+            if (undefined !== row.type && (row.type === "BracketAtom")) {
                 return false
             }
             return true
         }
     )
-
 
 
 
@@ -143,10 +145,10 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                 // Change row to null as it's not an atom row
                 res = null
             } else if (undefined !== row.type && row.type === "HydrogenCount") {
+                res = row
 
-                if (typeof processed_atoms[processed_atoms.length -2][0] === "string") {
-                    processed_atoms[processed_atoms.length -2].push(row.value)
-                }
+            } else if (undefined !== row.type && row.type === "Charge") {
+                res = row
             }
             return res
 
@@ -166,8 +168,34 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     )
 
 
+
+    const atoms_with_hydrogen_counts = _.cloneDeep(atoms).reduce(
+        (carry, current, index, atoms) => {
+            if (undefined === current.type || current.type === 'Charge') {
+                if (undefined !== atoms[index+1] && atoms[index+1].type === "HydrogenCount") {
+                    current.push(atoms[index+1].value)
+                }
+                carry.push(current)
+            }
+            return carry
+        }, []
+    )
+
+    const atoms_with_charges = _.cloneDeep(atoms_with_hydrogen_counts).reduce(
+        (carry, current, index, atoms) => {
+            if (typeof current[0]==="string") {
+                if (undefined !== atoms[index+1] && atoms[index+1].type === "Charge") {
+                    current[4] =  atoms[index+1].value === 1 ? "+":-1
+                }
+                carry.push(current)
+            }
+            return carry
+        }, []
+    )
+
+
     // Add hydrogens
-    const atoms_with_hydrogens = _.cloneDeep(atoms).reduce(
+    const atoms_with_hydrogens = _.cloneDeep(atoms_with_charges).reduce(
         (carry, current, index, arr) => {
 
             if (typeof current.length === "number" && current[0]!=='H') { // we have an atom
@@ -203,7 +231,6 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         []
     )
     //  atomic symbol, proton count, valence count, number of bonds, charge, velectron1, velectron2, velectron3
-
     return atoms_with_hydrogens
 
 }
