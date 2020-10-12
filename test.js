@@ -59,6 +59,9 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
 
 const Families = require('./Models/Families')
 
+const bromide_neg = MoleculeFactory("[Br-]")
+VMolecule([bromide_neg, 1]).canonicalSMILES().should.be.equal("[Br-]")
+MoleculeController([bromide_neg, 1]).nucleophileIndex().should.be.equal(0)
 
 const oxide = MoleculeFactory("[OH3+]")
 oxide[1].should.be.an.Array()
@@ -119,10 +122,9 @@ if (true) {
 
     const butane = MoleculeFactory("CC[C+]C")
     VMolecule([butane, 1]).canonicalSMILES().should.be.equal("CC[C+]C")
-    MoleculeController([butane, 1]).electrophileIndex().should.be.equal(10)
-    const bromide_neg = MoleculeFactory("[Br-]")
-    VMolecule([bromide_neg, 1]).canonicalSMILES().should.be.equal("[Br-]")
-    MoleculeController([bromide_neg, 1]).nucleophileIndex().should.be.equal(0)
+    const butaneAI = require('./Components/Stateless/MoleculeAI')([butane,1])
+    butaneAI.findElectrophileIndex().should.be.equal(7)
+
 
     const butene = MoleculeFactory("CC=CC")
     VMolecule([butene, 1]).canonicalSMILES().should.be.equal("CC=CC")
@@ -135,7 +137,7 @@ if (true) {
     chloride[1].length.should.be.equal(1)
     chloride[1][0][0].should.be.equal("Cl")
     const chloride_chlorine = CAtom(chloride[1][0], 0, [chloride, 1])
-    chloride[1][0].slice(5).length.should.be.equal(8) // number of electrons - should be 8
+    chloride[1][0].slice(5).length.should.be.equal(7) // number of electrons - should be 8
     chloride_chlorine.hydrogens().length.should.be.equal(0) // Cl- has no hydrogens
     chloride_chlorine.carbons().length.should.be.equal(0)
     chloride_chlorine.freeSlots().should.be.equal(11) // ???

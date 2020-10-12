@@ -101,6 +101,10 @@ const MoleculeAI = (container_molecule) => {
         },
 
         "findProtonIndex": () => {
+
+            console.log('MoleculeAI:')
+            console.log(container_molecule[0][1])
+
             return _.findIndex(container_molecule[0][1], (atom, index)=>{
 
                 if (atom[0] !== "H") {

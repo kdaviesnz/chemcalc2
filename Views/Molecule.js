@@ -38,19 +38,33 @@ const VMolecule = (mmolecule) => {
             return "X"
         }
 
+        const indexed_bonds = catom.indexedBonds("")
+        const indexed_double_bonds = catom.indexedDoubleBonds("")
+        const hydrogens = indexed_bonds.filter((bond)=>{
+            return bond.atom[0] === "H"
+        })
+
         if (catom.isPositivelyCharged()) {
-           return "[" + current_atom[0] + "+]"
+            if (indexed_bonds.length + indexed_double_bonds.length !== current_atom[3]) {
+                if (hydrogens.length > 0) {
+                    return "[" + current_atom[0] + "H" + hydrogens.length + "+]"
+                }
+            }
+            return "[" + current_atom[0] + "+]"
         } else if (catom.isNegativelyCharged()) {
+
+            if (indexed_bonds.length + indexed_double_bonds.length !== current_atom[3]) {
+                if (hydrogens.length > 0) {
+                    return "[" + current_atom[0] + "H" + hydrogens.length + "-]"
+                }
+            }
+
             return "[" + current_atom[0] + "-]"
+
         } else {
 
             // Check the number of hydrogen bonds
-            const indexed_bonds = catom.indexedBonds("")
-            const indexed_double_bonds = catom.indexedDoubleBonds("")
             if (indexed_bonds.length + indexed_double_bonds.length < current_atom[3]) {
-                const hydrogens = indexed_bonds.filter((bond)=>{
-                    return bond.atom[0] === "H"
-                })
                 if (hydrogens.length > 0) {
                     return "[" + current_atom[0] + "H" + hydrogens.length + "]"
                 }

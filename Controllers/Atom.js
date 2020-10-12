@@ -263,6 +263,10 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
     const __isNegativelyCharged = (test_number) => {
 
+        if (atom[4] === -1) {
+            return true
+        }
+
         const double_bonds = __doubleBond(test_number)
         const number_of_double_bonds = double_bonds.length > 3 ? double_bonds.length / 4 : 0
 

@@ -11,9 +11,18 @@ class Reaction {
 
         container_substrate.length.should.be.equal(2) // molecule, units
         container_substrate[0].length.should.be.equal(2) // pKa, atoms
+        container_substrate[0][0].should.be.an.Number() // pka
+        container_substrate[0][1].should.be.an.Array()
+        container_substrate[0][1][0].should.be.an.Array()
+        container_substrate[0][1][0][0].should.be.an.String()
+
 
         container_reagent.length.should.be.equal(2) // molecule, units
         container_reagent[0].length.should.be.equal(2) // pKa, atoms
+        container_reagent[0][0].should.be.an.Number() // pka
+        container_reagent[0][1].should.be.an.Array()
+        container_reagent[0][1][0].should.be.an.Array()
+        container_reagent[0][1][0][0].should.be.an.String()
 
         this.container_substrate = container_substrate
         this.container_reagent = container_reagent
@@ -23,10 +32,24 @@ class Reaction {
     }
 
     setReagentAI() {
+        this.container_reagent.length.should.be.equal(2) // molecule, units
+        this.container_reagent[0].length.should.be.equal(2) // pKa, atoms
+        this.container_reagent[0][0].should.be.an.Number() // pka
+        this.container_reagent[0][1].should.be.an.Array()
+        this.container_reagent[0][1][0].should.be.an.Array()
+        this.container_reagent[0][1][0][0].should.be.an.String()
         this.ReagentAI = require("../Stateless/MoleculeAI")(this.container_reagent)
     }
 
     setMoleculeAI() {
+
+        this.container_substrate.length.should.be.equal(2) // molecule, units
+        this.container_substrate[0].length.should.be.equal(2) // pKa, atoms
+        this.container_substrate[0][0].should.be.an.Number() // pka
+        this.container_substrate[0][1].should.be.an.Array()
+        this.container_substrate[0][1][0].should.be.an.Array()
+        this.container_substrate[0][1][0][0].should.be.an.String()
+
         this.MoleculeAI = require("../Stateless/MoleculeAI")(this.container_substrate)
     }
 
@@ -237,6 +260,7 @@ class Reaction {
     }
 
     removeProtonFromReagent(proton_index) {
+        proton_index.should.be.greaterThan(-1)
         this.container_reagent[0][1].splice(proton_index, 1)
         this.setReagentAI()
     }
@@ -324,6 +348,7 @@ class Reaction {
     addProtonFromReagentToHydroxylGroup() {
 
         const proton_index = this.ReagentAI.findProtonIndex()
+        proton_index.should.be.greaterThan(-1)
         const reagent_atoms = _.cloneDeep(this.container_reagent[0][1])
         this.removeProtonFromReagent(proton_index)
         this.container_reagent[0][1].length.should.not.equal(reagent_atoms.length)
