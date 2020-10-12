@@ -105,6 +105,15 @@ if (true) {
     console.log("Running initial tests ...")
 
 
+    const oxidane = MoleculeFactory("CO")
+    const o = oxidane[1][99]
+    o[0].should.be.equal("O")
+    CAtom(o, 99, [oxidane, 1]).indexedBonds().length.should.be.equal(3)
+    CAtom(o, 99, [oxidane, 1]).indexedBonds().filter((bond)=>{
+        return bond.atom[0] === "H"
+    }).length.should.be.equal(3)
+    VMolecule([oxidane, 1]).canonicalSMILES().should.be.equal("CO")
+    
     const methyline = MoleculeFactory("[CH2]")
 
      // Check number of hydrogens
