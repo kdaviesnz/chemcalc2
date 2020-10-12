@@ -106,14 +106,18 @@ if (true) {
 
 
     const oxidane = MoleculeFactory("CO")
-    const o = oxidane[1][99]
+    const o = oxidane[1][5]
     o[0].should.be.equal("O")
-    CAtom(o, 99, [oxidane, 1]).indexedBonds().length.should.be.equal(3)
-    CAtom(o, 99, [oxidane, 1]).indexedBonds().filter((bond)=>{
+    CAtom(o, 5, [oxidane, 1]).indexedBonds("").length.should.be.equal(2)
+    CAtom(o, 5, [oxidane, 1]).indexedBonds("").filter((bond)=>{
         return bond.atom[0] === "H"
-    }).length.should.be.equal(3)
+    }).length.should.be.equal(1)
     VMolecule([oxidane, 1]).canonicalSMILES().should.be.equal("CO")
-    
+
+    const oxonium = MoleculeFactory("[OH3+]")
+    VMolecule([oxonium, 1]).canonicalSMILES().should.be.equal("[OH3+]")
+
+
     const methyline = MoleculeFactory("[CH2]")
 
      // Check number of hydrogens
