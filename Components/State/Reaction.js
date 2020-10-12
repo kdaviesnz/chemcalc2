@@ -146,10 +146,16 @@ class Reaction {
 
             this.container_substrate[0][1][non_hydrogen_bond.atom_index][4] = '+'
 
-            this.setMoleculeAI()
 
 
         })
+
+
+        // Check we do not have a water molecule attached to main molecule
+        this.MoleculeAI.findWaterOxygenIndex().should.be.equal(-1)
+
+        this.setMoleculeAI()
+
 
 
     }

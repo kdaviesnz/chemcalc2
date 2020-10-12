@@ -72,6 +72,7 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
 
     const results = []
     let products = [mmolecule, rule.products[1]] // substrate should aways be first element
+    console.log("Find substrates")
     commands_reversed.map((command_reversed, index)=>{
         if (undefined !== commands_reversed_map[command_reversed]) {
             const container_substrate = products[0]
@@ -82,13 +83,15 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
             products = commands_reversed_map[command_reversed](container_substrate, container_reagent)
             results.push({
                 "command":command_reversed,
-                "reagent": products.pop(),
-                "substrates": products
+                "reagent": products[1],
+                "substrates": [products[0]]
             })
         }
     })
 
     const results_reversed = _.cloneDeep(results).reverse()
+    console.log(VMolecule(results_reversed[0].substrates[0]).canonicalSMILES())
+    process.exit()
 
     //console.log(rule.commands)
     //console.log(results_reversed)
