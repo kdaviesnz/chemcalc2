@@ -80,29 +80,31 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
             container_substrate[0][1].should.be.an.Array()
             const container_reagent =  [MoleculeFactory(reagents_reversed[index]),1]
             products = commands_reversed_map[command_reversed](container_substrate, container_reagent)
-            console.log(VMolecule(products[0]).canonicalSMILES())
-            console.log(VMolecule(products[1]).canonicalSMILES())
-            results.push(products)
+            results.push({
+                "command":command_reversed,
+                "reagent": products.pop(),
+                "substrates": products
+            })
         }
     })
 
+    const results_reversed = _.cloneDeep(results).reverse()
 
-    console.log('FindSubstrates.js')
-    process.exit()
-
-    
+    //console.log(rule.commands)
+    //console.log(results_reversed)
+    //console.log('FindSubstrates.js!!')
+    //process.exit()
     // Test that by running commands we get the correct result
-    console.log(products[0][0])
-   let products_testing = [products[0]]
-    rule.commands.map((command, index) => {
-       if (undefined !== commands_map[command]) {
-           console.log(commands_map[command])
+   let products_testing = [results_reversed[0].substrates[0], results_reversed[0].reagent]
+    results_reversed.map((result, index) => {
+           console.log("Testing results")
+           console.log("Command: " + result.command)
+           console.log(commands_map[result.command])
            const container_substrate = products_testing[0]
-           const container_reagent =  [MoleculeFactory(rule.reagents[index]),1]
-           products_testing = commands_map[command](container_substrate, container_reagent)            
-       }
+           const container_reagent =   products_testing[1]
+           products_testing = commands_map[result.command](container_substrate, container_reagent)
     })
-    _.isEqual(products_testing[0], products[0]).should.be.equal(true)
+   // _.isEqual(products_testing[0], products[0]).should.be.equal(true)
     console.log('FindSubstrates.js')
     process.exit()
     return products
