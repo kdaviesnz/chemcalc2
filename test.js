@@ -311,7 +311,7 @@ client.connect(err => {
                 console.log('test.js: product ')
                 console.log(VMolecule(product).canonicalSMILES())
                 console.log("Reactions:")
-                results.map((r)=>{
+                reactions.map((r)=>{
                     console.log(r.command)
                     console.log("Substrate:" + VMolecule(r.substrate).canonicalSMILES())
                     console.log("Reagent:" + VMolecule(r.reagent).canonicalSMILES())

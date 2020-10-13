@@ -133,6 +133,7 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
 
  */
     // Test that by running commands we get the correct result
+    /*
     console.log("Testing result:")
     const results_reversed = _.cloneDeep(results).reverse()
     let products_testing = [_.cloneDeep(results_reversed[0].substrate), _.cloneDeep(results_reversed[0].reagent)]
@@ -161,7 +162,7 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
 
     //console.log("End Calling FindSubstrates")
     //console.log(VMolecule(_.cloneDeep(mmolecule)).canonicalSMILES())
-
+*/
 
     render(results, mmolecule)
 

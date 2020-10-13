@@ -218,7 +218,9 @@ class Reaction {
             proton.push(free_electrons[0])
             proton.push(free_electrons[1])
             this.container_substrate[0][1].push(proton)
-            this.container_substrate[0][1][target_atom_index][4] = "+"
+            this.container_substrate[0][1][target_atom_index][4] =
+                this.container_substrate[0][1][target_atom_index][4]=== "-"
+                || this.container_substrate[0][1][target_atom_index][4] < 0? 0:"+"
         }
         this.setMoleculeAI()
     }
@@ -321,7 +323,9 @@ class Reaction {
         proton.push(free_electrons[1])
         this.container_substrate[0][1].push(proton)
 
-        this.container_substrate[0][1][atom_nucleophile_index][4] = "+"
+        this.container_substrate[0][1][atom_nucleophile_index][4] =
+            this.container_substrate[0][1][atom_nucleophile_index][4] === "-"
+            || this.container_substrate[0][1][atom_nucleophile_index][4] < 0? 0: "+"
 
         this.container_substrate[0][1].length.should.not.equal(atoms.length)
 
@@ -354,7 +358,9 @@ class Reaction {
 
         this.container_reagent[0][1].length.should.not.equal(reagent_atoms.length)
 
-        this.container_reagent[0][1][atom_nucleophile_index][4] = "+"
+        this.container_reagent[0][1][atom_nucleophile_index][4] =
+            this.container_reagent[0][1][atom_nucleophile_index][4] === "-"
+            || this.container_reagent[0][1][atom_nucleophile_index][4] < 0 ?0:"+"
 
         this.setReagentAI()
         
