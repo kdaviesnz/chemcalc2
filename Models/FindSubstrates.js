@@ -164,7 +164,7 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
     //console.log(VMolecule(_.cloneDeep(mmolecule)).canonicalSMILES())
 */
 
-    render(results, mmolecule)
+    render(results, mmolecule, rule)
 
 
 }

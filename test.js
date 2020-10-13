@@ -309,10 +309,11 @@ client.connect(err => {
             db,
             [MoleculeFactory("C(O)C"),1],
             "",
-            (reactions, product)=>{
-                console.log('test.js: product ')
-                console.log(VMolecule(product).canonicalSMILES())
-                console.log("Reactions:")
+            (reactions, product, rule)=>{
+               // console.log('test.js: product ')
+               // console.log(VMolecule(product).canonicalSMILES())
+               // console.log("Reactions:")
+                /*
                 reactions.map((r)=>{
                     console.log(r.command)
                     console.log("Substrate:" + VMolecule(r.substrate).canonicalSMILES())
@@ -321,7 +322,8 @@ client.connect(err => {
                     console.log(VMolecule(r.products[0]).canonicalSMILES())
                     console.log(VMolecule(r.products[1]).canonicalSMILES())
                 })
-                VReactions(reactions, product).render()
+                */
+                VReactions(reactions, product, rule).render()
                 process.exit()
             },
             (Err) => {
