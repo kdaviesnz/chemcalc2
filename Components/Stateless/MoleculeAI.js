@@ -64,19 +64,25 @@ const MoleculeAI = (container_molecule) => {
                     if (double_bond.atom[0]!=="C") {
                         return false
                     }
-                    const bonded_atom_object_hydrogen_bonds = CAtom(double_bond.atom, double_bond.atom_index, container_molecule).filter(
+
+
+                    const bonded_atom_object_hydrogen_bonds = CAtom(double_bond.atom, double_bond.atom_index, container_molecule).indexedBonds("").filter(
                         (bonded_atom_object_bonds)=>{
                             return bonded_atom_object_bonds.atom[0] === "H"
                         }
                     )
-                    if (bonded_atom_object_hydrogen_bonds > hydrogen_count) {
+
+                    if (bonded_atom_object_hydrogen_bonds.length >= hydrogen_count) {
                         hydrogen_count = bonded_atom_object_hydrogen_bonds.length
                         return true
                     } else {
                         return false
                     }
+
                 })
+
                 carry = double_bonds.length > 0? double_bonds[0].atom_index:carry
+
                 return carry
 
             }, -1)
@@ -84,6 +90,10 @@ const MoleculeAI = (container_molecule) => {
             // Verifications checks
             if (undefined === container_molecule[0][1][nucleophile_index]) {
                 nucleophile_index = -1
+            }
+
+            if (nucleophile_index > -1) {
+                return nucleophile_index
             }
 
             // Check for atom with free electrons

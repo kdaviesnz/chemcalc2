@@ -60,7 +60,7 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
 const Families = require('./Models/Families')
 
 const ethanol = MoleculeFactory("C(O)C")
-VMolecule([ethanol, 1]).canonicalSMILES().should.be.equal("C(O)C")
+VMolecule([ethanol, 1]).canonicalSMILES().should.be.equal("C(O)(C)")
 
 
 const bromide_neg = MoleculeFactory("[Br-]")
@@ -301,19 +301,6 @@ client.connect(err => {
 
     // Test fetch reactions
     if (true) {
-// CC(O)CCNC
-        FetchReactions(
-            true,
-            db,
-            [MoleculeFactory("CO"),1],
-            "",
-            ()=>{
-
-            },
-            (Err) => {
-
-            }
-        )
 
         FetchReactions(
             true,
@@ -327,6 +314,22 @@ client.connect(err => {
 
             }
         )
+
+// CC(O)CCNC
+        /*
+        FetchReactions(
+            true,
+            db,
+            [MoleculeFactory("CO"),1],
+            "",
+            ()=>{
+
+            },
+            (Err) => {
+
+            }
+        )
+*/
 
     }
 

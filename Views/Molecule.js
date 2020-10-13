@@ -136,7 +136,7 @@ const VMolecule = (mmolecule) => {
             if (processed_atoms_indexes.includes(next_atom_index)) {
                 return carry
             }
-            processed_atoms_indexes.push(next_atom_index)
+           // processed_atoms_indexes.push(next_atom_index)
             return __SMILES_recursive(carry, mmolecule[0][1][next_atom_index], previous_atom, next_atom_index, branch_index, processed_atoms_indexes)
         }
 
@@ -146,18 +146,11 @@ const VMolecule = (mmolecule) => {
         }
         current_atom.should.be.an.Array()
 
-//        console.log(current_atom[0])
-
         const catom = CAtom(current_atom, index, mmolecule)
 
-      //  console.log(index)
-       // console.log(catom.indexedBonds('H'))
         const bonds = catom.indexedBonds('H').filter((bond)=> {
-          //  return bond.atom_index > index && !processed_atoms_indexes.includes(bond.atom_index)
             return !processed_atoms_indexes.includes(bond.atom_index)
         })
-
-        //console.log("BONDS LENGTH: " + bonds.length + ' ' + current_atom[0])
 
         if (bonds.length === 0) {
             //console.log(index)

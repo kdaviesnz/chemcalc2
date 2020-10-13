@@ -4,6 +4,7 @@ const _ = require('lodash');
 const VMolecule = require('../../Views/Molecule')
 const MoleculeFactory = require('../../Models/MoleculeFactory')
 const AtomFactory = require('../../Models/AtomFactory')
+const Set = require('../../Models/Set')
 
 class Reaction {
 
@@ -247,6 +248,7 @@ class Reaction {
                 return bond.atom[0] === "C"
             }).pop()
 
+
             if (undefined === carbon_bond) {
                 
                 this.addProtonToReagent()  
@@ -255,24 +257,15 @@ class Reaction {
                 
             } else {
 
+
                 // Change bond to double bond
-                const shared_electrons = hydrogen_bond.shared_electrons
-                this.container_substrate[0][1][electrophile_index].push(shared_electrons[0])
-                this.container_substrate[0][1][electrophile_index].push(shared_electrons[1])
+                const shared_electrons = hydrogen_bond.shared_electrons // electrons shared between electrophile and hydrogen
+                this.container_substrate[0][1][carbon_bond.atom_index].push(shared_electrons[0])
+                this.container_substrate[0][1][carbon_bond.atom_index].push(shared_electrons[1])
 
-
-                // Remove proton bonded to second carbon
-                const carbon_hydrogen_bond = CAtom(carbon_bond.atom,
-                                                  carbon_bond.atom_index,
-                                                   this.container_substrate).indexedBonds("")
-                                                   .filter((bond)=>{
-                        return bond.atom[0] === 'H'
-                }).pop()
-                
-                this.addProtonToReagent()  
+                this.addProtonToReagent()
                 this.container_substrate[0][1][electrophile_index][4] = 0
-                this.container_substrate[0][1].splice(carbon_hydrogen_bond.atom_index, 1)
-                
+
             }
         }
 
@@ -307,7 +300,25 @@ class Reaction {
         proton.length.should.be.equal(5)
         proton[0].should.be.equal('H')
 
-        const free_electrons = CAtom(this.container_substrate[0][1][atom_nucleophile_index], atom_nucleophile_index, this.container_substrate).freeElectrons()
+//        console.log("reactio removeProtoon()")
+  //      console.log(this.container_substrate[0][1])
+    //    console.log(atom_nucleophile_index)
+
+        let free_electrons = CAtom(this.container_substrate[0][1][atom_nucleophile_index], atom_nucleophile_index, this.container_substrate).freeElectrons()
+
+        if (free_electrons.length === 0) {
+            // Check for double bond and if there is one break it and get shared electrons from that.
+            const double_bonds = CAtom(this.container_substrate[0][1][atom_nucleophile_index], atom_nucleophile_index, this.container_substrate).indexedDoubleBonds("")
+//            console.log(double_bonds)
+            if (double_bonds.length > 0) {
+                const shared_electrons = double_bonds[0].shared_electrons.slice(0,2)
+                this.container_substrate[0][1][double_bonds[0].atom_index].pop()
+                this.container_substrate[0][1][double_bonds[0].atom_index].pop()
+                free_electrons = shared_electrons
+            }
+
+        }
+
         free_electrons.length.should.be.greaterThan(1)
 
         proton.push(free_electrons[0])
