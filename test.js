@@ -311,9 +311,13 @@ client.connect(err => {
                 console.log('test.js: product ')
                 console.log(VMolecule(product).canonicalSMILES())
                 console.log("Reactions:")
-                reactions.map((r)=>{
+                results.map((r)=>{
                     console.log(r.command)
-                    console.log(VMolecule(r.substrates[0]).canonicalSMILES())
+                    console.log("Substrate:" + VMolecule(r.substrate).canonicalSMILES())
+                    console.log("Reagent:" + VMolecule(r.reagent).canonicalSMILES())
+                    console.log("Products:")
+                    console.log(VMolecule(r.products[0]).canonicalSMILES())
+                    console.log(VMolecule(r.products[1]).canonicalSMILES())
                 })
                 process.exit()
             },

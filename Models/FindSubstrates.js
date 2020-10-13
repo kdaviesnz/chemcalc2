@@ -29,8 +29,8 @@ const _ = require('lodash');
 
 const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string, render, Err) => {
 
-    console.log("Calling FindSubstrates")
-    console.log(VMolecule(_.cloneDeep(mmolecule)).canonicalSMILES())
+  //  console.log("Calling FindSubstrates")
+   // console.log(VMolecule(_.cloneDeep(mmolecule)).canonicalSMILES())
     // const end_product_functional_groups = Families(mmolecule).families_as_array()
 
     const commands_reversed = _.cloneDeep(rule.commands).reverse()
@@ -76,25 +76,50 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
     let products = [_.cloneDeep(mmolecule), _.cloneDeep(rule.products[1])] // substrate should aways be first element
     commands_reversed.map((command_reversed, index) => {
         if (undefined !== commands_reversed_map[command_reversed]) {
-            const container_substrate = products[0]
+            const container_substrate = _.cloneDeep(products[0])
             container_substrate.length.should.be.equal(2) // molecule, units
             container_substrate[0].length.should.be.equal(2) // pKa, atoms
             container_substrate[0][1].should.be.an.Array()
-            const container_reagent = [MoleculeFactory(reagents_reversed[index]), 1]
-            products = commands_reversed_map[command_reversed](container_substrate, container_reagent)
+            const container_reagent = [MoleculeFactory(_.cloneDeep(reagents_reversed[index])), 1]
+            products = commands_reversed_map[command_reversed](_.cloneDeep(container_substrate), _.cloneDeep(container_reagent))
             //console.log(commands_reversed_map[command_reversed])
             //console.log("Products after running command:")
             //console.log(VMolecule(products[0]).canonicalSMILES())
             //console.log(VMolecule(products[1]).canonicalSMILES())
             results.push({
-                "command": command_reversed,
-                "reagent": products[1],
-                "substrates": [products[0]]
+                "command": _.cloneDeep(command_reversed),
+                "reagent": _.cloneDeep( container_reagent),
+                "substrate": _.cloneDeep(container_substrate),
+                "products": _.cloneDeep(products)
             })
         }
     })
 
+
+/*
+    console.log("FindSubstrates.js results")
+    results.map((r)=>{
+        console.log(r.command)
+        console.log("Substrate:" + VMolecule(r.substrate).canonicalSMILES())
+        console.log("Reagent:" + VMolecule(r.reagent).canonicalSMILES())
+        console.log("Products:")
+        console.log(VMolecule(r.products[0]).canonicalSMILES())
+        console.log(VMolecule(r.products[1]).canonicalSMILES())
+    })
+
+    console.log("\n\n")
+
+    console.log("FindSubstrates.js results reversed")
+    results_reversed.map((r)=>{
+        console.log(r.command)
+        console.log("Substrate:" + VMolecule(r.substrate).canonicalSMILES())
+        console.log("Reagent:" + VMolecule(r.reagent).canonicalSMILES())
+        console.log("Products:")
+        console.log(VMolecule(r.products[0]).canonicalSMILES())
+    })
+
     const results_reversed = _.cloneDeep(results).reverse()
+    //process.exit()
     //console.log("FindSubstrates.js substrate:")
     //console.log(VMolecule(results_reversed[0].substrates[0]).canonicalSMILES())
 
@@ -104,17 +129,21 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
     //console.log(results_reversed)
     //console.log('FindSubstrates.js!!')
     //process.exit()
+
+
+ */
     // Test that by running commands we get the correct result
     console.log("Testing result:")
-    let products_testing = [results_reversed[0].substrates[0], results_reversed[0].reagent]
+    const results_reversed = _.cloneDeep(results).reverse()
+    let products_testing = [_.cloneDeep(results_reversed[0].substrate), _.cloneDeep(results_reversed[0].reagent)]
     results_reversed.map((result, index) => {
         //console.log("Testing results")
         //console.log("Command: " + result.command)
         //console.log(commands_map[result.command])
-        const container_substrate = products_testing[0]
-        const container_reagent = products_testing[1]
+        const container_substrate = _.cloneDeep(products_testing[0])
+        const container_reagent = _.cloneDeep(products_testing[1])
         //  console.log(commands_map[result.command])
-        products_testing = commands_map[result.command](container_substrate, container_reagent)
+        products_testing = commands_map[result.command](_.cloneDeep(container_substrate), _.cloneDeep(container_reagent))
 
         //console.log("Products after running command:")
         //console.log(VMolecule(products_testing[0]).canonicalSMILES())
@@ -123,18 +152,18 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
         // console.log(products_testing[0][0])
         //console.log(products_testing[1][0])
     })
-    _.isEqual(products_testing[0], results_reversed[0].substrates[0]).should.be.equal(true)
+    _.isEqual(products_testing[0], results_reversed[0].substrate).should.be.equal(true)
 
     //console.log(VMolecule(products_testing[0]).canonicalSMILES())
     //console.log(VMolecule(products_testing[1]).canonicalSMILES())
 
     //  process.exit()
 
-    console.log("End Calling FindSubstrates")
-    console.log(VMolecule(_.cloneDeep(mmolecule)).canonicalSMILES())
+    //console.log("End Calling FindSubstrates")
+    //console.log(VMolecule(_.cloneDeep(mmolecule)).canonicalSMILES())
 
 
-    render(results_reversed, mmolecule)
+    render(results, mmolecule)
 
 
 }
