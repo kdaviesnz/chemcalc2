@@ -1,7 +1,7 @@
 const RulesLookup = require('../Models/RulesLookup')
 const FindSubstrates = require('../Models/FindSubstrates')
 const Families = require('../Models/Families')
-const VMolecule = require('../Views/Molecule')
+const VMolecule = require('../Components/Stateless/Views/Molecule')
 const _ = require('lodash');
 
 

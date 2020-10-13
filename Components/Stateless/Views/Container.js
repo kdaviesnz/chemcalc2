@@ -1,7 +1,7 @@
-const VMolecule = require('../Views/Molecule')
-const MoleculeLookup = require('../Controllers/MoleculeLookup')
-const PubChemLookup = require('../Controllers/PubChemLookup')
-const MoleculeFactory = require('../Models/MoleculeFactory')
+const VMolecule = require('../../../Components/Stateless/Views/Molecule')
+const MoleculeLookup = require('../../../Controllers/MoleculeLookup')
+const PubChemLookup = require('../../../Controllers/PubChemLookup')
+const MoleculeFactory = require('../../../Models/MoleculeFactory')
 
 const pkl = PubChemLookup((err)=>{
     console.log(err)

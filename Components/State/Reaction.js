@@ -1,7 +1,7 @@
 
 const CAtom = require('../../Controllers/Atom')
 const _ = require('lodash');
-const VMolecule = require('../../Views/Molecule')
+const VMolecule = require('../../Components/Stateless/Views/Molecule')
 const MoleculeFactory = require('../../Models/MoleculeFactory')
 const AtomFactory = require('../../Models/AtomFactory')
 const Set = require('../../Models/Set')

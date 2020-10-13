@@ -20,11 +20,13 @@ const CAtom = require('./Controllers/Atom')
 const range = require("range")
 const Set = require('./Models/Set')
 
-const VMolecule = require('./Views/Molecule')
-const VContainer = require('./Views/Container');
+const VMolecule = require('./Components/Stateless/Views/Molecule')
+const VContainer = require('./Components/Stateless/Views/Container');
+const VReactions = require('./Components/Stateless/Views/Reactions');
 
 const MoleculeLookup = require('./Controllers/MoleculeLookup')
 const PubChemLookup = require('./Controllers/PubChemLookup')
+
 
 // Install using npm install pubchem-access
 const pubchem = require("pubchem-access").domain("compound");
@@ -319,6 +321,7 @@ client.connect(err => {
                     console.log(VMolecule(r.products[0]).canonicalSMILES())
                     console.log(VMolecule(r.products[1]).canonicalSMILES())
                 })
+                VReactions(reactions, product).render()
                 process.exit()
             },
             (Err) => {

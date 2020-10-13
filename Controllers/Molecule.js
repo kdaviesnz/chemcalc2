@@ -6,7 +6,7 @@ const should = require('should')
 const Set = require('../Models/Set')
 const Families = require('../Models/Families')
 const _ = require('lodash');
-const VMolecule = require('../Views/Molecule')
+const VMolecule = require('../Components/Stateless/Views/Molecule')
 
 const CMolecule = (mmolecule, verbose) => {
 
