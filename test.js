@@ -59,6 +59,10 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
 
 const Families = require('./Models/Families')
 
+const ethanol = MoleculeFactory("C(O)C")
+VMolecule([ethanol, 1]).canonicalSMILES().should.be.equal("C(O)C")
+
+
 const bromide_neg = MoleculeFactory("[Br-]")
 VMolecule([bromide_neg, 1]).canonicalSMILES().should.be.equal("[Br-]")
 MoleculeController([bromide_neg, 1]).nucleophileIndex().should.be.equal(0)
@@ -105,6 +109,7 @@ if (true) {
     console.log("Running initial tests ...")
 
 
+
     const oxidane = MoleculeFactory("CO")
     const o = oxidane[1][5]
     o[0].should.be.equal("O")
@@ -113,6 +118,7 @@ if (true) {
         return bond.atom[0] === "H"
     }).length.should.be.equal(1)
     VMolecule([oxidane, 1]).canonicalSMILES().should.be.equal("CO")
+
 
     const oxonium = MoleculeFactory("[OH3+]")
     VMolecule([oxonium, 1]).canonicalSMILES().should.be.equal("[OH3+]")
