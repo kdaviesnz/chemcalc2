@@ -358,7 +358,7 @@ class Reaction {
 
         this.container_reagent[0][1].length.should.not.equal(reagent_atoms.length)
 
-        this.container_reagent[0][1][atom_nucleophile_index][4] = 0
+        this.container_reagent[0][1][atom_nucleophile_index][4] = "+"
 
         this.setReagentAI()
         
@@ -379,10 +379,13 @@ class Reaction {
         this.container_substrate[0][1][water_oxygen_index][4] = 0
         this.container_substrate[0][1].splice(oxygen_proton_bond.bond_index, 1)
 
+
         this.addProtonToReagent()
 
         this.setMoleculeAI()
         this.setReagentAI()
+
+        console.log(this.container_reagent[0][1])
 
 
     }
