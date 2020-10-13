@@ -307,8 +307,15 @@ client.connect(err => {
             db,
             [MoleculeFactory("C(O)C"),1],
             "",
-            ()=>{
-
+            (reactions, product)=>{
+                console.log('test.js: product ')
+                console.log(VMolecule(product).canonicalSMILES())
+                console.log("Reactions:")
+                reactions.map((r)=>{
+                    console.log(r.command)
+                    console.log(VMolecule(r.substrates[0]).canonicalSMILES())
+                })
+                process.exit()
             },
             (Err) => {
 

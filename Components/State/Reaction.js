@@ -300,16 +300,12 @@ class Reaction {
         proton.length.should.be.equal(5)
         proton[0].should.be.equal('H')
 
-//        console.log("reactio removeProtoon()")
-  //      console.log(this.container_substrate[0][1])
-    //    console.log(atom_nucleophile_index)
-
         let free_electrons = CAtom(this.container_substrate[0][1][atom_nucleophile_index], atom_nucleophile_index, this.container_substrate).freeElectrons()
 
         if (free_electrons.length === 0) {
             // Check for double bond and if there is one break it and get shared electrons from that.
             const double_bonds = CAtom(this.container_substrate[0][1][atom_nucleophile_index], atom_nucleophile_index, this.container_substrate).indexedDoubleBonds("")
-//            console.log(double_bonds)
+
             if (double_bonds.length > 0) {
                 const shared_electrons = double_bonds[0].shared_electrons.slice(0,2)
                 this.container_substrate[0][1][double_bonds[0].atom_index].pop()
@@ -384,8 +380,6 @@ class Reaction {
 
         this.setMoleculeAI()
         this.setReagentAI()
-
-        console.log(this.container_reagent[0][1])
 
 
     }

@@ -1,11 +1,17 @@
 const RulesLookup = require('../Models/RulesLookup')
 const FindSubstrates = require('../Models/FindSubstrates')
 const Families = require('../Models/Families')
+const VMolecule = require('../Views/Molecule')
+const _ = require('lodash');
+
 
 const FetchReactions = (verbose,  db, mmolecule, child_reaction_string, render, Err) => {
 
 
     const families = Families(mmolecule).families
+
+   // console.log('FetchReactions: families')
+   // console.log(Families(mmolecule).families_as_array())
 
     /*
     Get the functional groups that the chemical we are trying to synthesise belongs to. Then
@@ -22,6 +28,9 @@ const FetchReactions = (verbose,  db, mmolecule, child_reaction_string, render, 
             RulesLookup(db, functional_group).then(
                 (rules) => {
 
+
+//                    console.log(functional_group)
+
                     if (rules.length===0) {
                         console.log("No rules found for " + functional_group)
                     }
@@ -31,11 +40,12 @@ const FetchReactions = (verbose,  db, mmolecule, child_reaction_string, render, 
 
                             // Find the substrates that when the reaction steps are applied, will result in
                             // the end product and render results
+
                             FindSubstrates(
                                 verbose,
                                 db,
                                 rule,
-                                mmolecule,
+                                _.cloneDeep(mmolecule),
                                 child_reaction_string,
                                 render,
                                 (err) => {
@@ -43,6 +53,8 @@ const FetchReactions = (verbose,  db, mmolecule, child_reaction_string, render, 
                                     Err(err)
                                 }
                             ) // FindSubstrates()
+
+
 
                         }
                     ) // rules.map
