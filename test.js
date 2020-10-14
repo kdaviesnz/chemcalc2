@@ -324,7 +324,7 @@ client.connect(err => {
                 })
                 */
                 VReactions(reactions, product, rule).render()
-                process.exit()
+
             },
             (Err) => {
 

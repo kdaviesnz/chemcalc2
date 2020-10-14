@@ -367,6 +367,33 @@ class Reaction {
 
     }
 
+    deprotonateNonHydroxylOxygen() {
+
+        const oxygen_index = this.MoleculeAI.findNonWaterOxygenIndex()
+
+        if (oxygen_index === -1) {
+            return false
+        }
+
+        this.container_substrate[0][1][oxygen_index][0].should.be.equal("O")
+        const oxygen_proton_bond = CAtom(this.container_substrate[0][1][oxygen_index],
+            oxygen_index,
+            this.container_substrate).indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "H"
+        }).pop()
+
+        this.container_substrate[0][1][oxygen_index][4] = 0
+        this.container_substrate[0][1].splice(oxygen_proton_bond.bond_index, 1)
+
+
+        this.addProtonToReagent()
+
+        this.setMoleculeAI()
+        this.setReagentAI()
+
+
+    }
+
     removeProtonFromWater() {
 
         const water_oxygen_index = this.MoleculeAI.findWaterOxygenIndex()
@@ -406,6 +433,43 @@ class Reaction {
         this.container_substrate[0][1].length.should.not.equal(substrate_atoms.length)
 
         this.setMoleculeAI()
+
+    }
+
+    addProtonFromReagentToNonHydroxylGroup() {
+
+        const proton_index = this.ReagentAI.findProtonIndex()
+        proton_index.should.be.greaterThan(-1)
+        const reagent_atoms = _.cloneDeep(this.container_reagent[0][1])
+        this.removeProtonFromReagent(proton_index)
+        this.container_reagent[0][1].length.should.not.equal(reagent_atoms.length)
+
+
+        const oxygen_index = this.MoleculeAI.findNonHydroxylOxygenIndex()
+
+
+
+       // console.log(this.container_substrate[0][1])
+
+        //console.log(VMolecule(this.container_substrate).canonicalSMILES())
+
+       // console.log(oxygen_index)
+
+       // process.exit()
+
+        if (oxygen_index === -1) {
+            return false
+        }
+
+
+        this.container_substrate[0][1][oxygen_index][0].should.be.equal("O")
+        const substrate_atoms = _.cloneDeep(this.container_substrate[0][1])
+        this.addProtonToSubstrate(this.container_substrate[0][1][oxygen_index], oxygen_index) // changes this.container_substrate
+
+        this.container_substrate[0][1].length.should.not.equal(substrate_atoms.length)
+
+        this.setMoleculeAI()
+        this.setReagentAI()
 
     }
 

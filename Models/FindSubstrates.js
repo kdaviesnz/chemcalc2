@@ -25,16 +25,23 @@ const Dehydrate = require('../Commands/Dehydrate')
 const BondAtoms = require('../Commands/BondAtoms')
 const RemoveProtonFromWater = require('../Commands/RemoveProtonFromWater')
 const Hydrate = require('../Commands/Hydrate')
+const DeprotonateNonHydroxylOxygen = require('../Commands/DeprotonateNonHydroxylOxygen')
+const ProtonateNonHydroxylOxygen = require('../Commands/ProtonateNonHydroxylOxygen')
 const _ = require('lodash');
 
 const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string, render, Err) => {
 
-  //  console.log("Calling FindSubstrates")
-   // console.log(VMolecule(_.cloneDeep(mmolecule)).canonicalSMILES())
-    // const end_product_functional_groups = Families(mmolecule).families_as_array()
+    console.log("Calling FindSubstrates")
+    console.log(VMolecule(_.cloneDeep(mmolecule)).canonicalSMILES())
+    const end_product_functional_groups = Families(mmolecule).families_as_array()
 
     const commands_reversed = _.cloneDeep(rule.commands).reverse()
-    const reagents_reversed = rule.synthesis_reagents
+    const reagents_reversed = undefined !== rule.synthesis_reagents ? rule.synthesis_reagents: _.cloneDeep(rule.reagents).reverse()
+
+    console.log(rule.links)
+    console.log(rule.commands)
+
+    // https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Map%3A_Organic_Chemistry_(McMurry)/18%3A_Ethers_and_Epoxides_Thiols_and_Sulfides/18.06%3A_Reactions_of_Epoxides_-_Ring-opening
 
     commands_reversed.length.should.be.equal(reagents_reversed.length)
 
@@ -59,6 +66,7 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
         "ADD proton": AddProton,
         "REMOVE proton from water": RemoveProtonFromWater,
         "HYDRATE": Hydrate,
+        "DEPROTONATE nonhydroxyl oxygen": DeprotonateNonHydroxylOxygen
     }
 
     const commands_reversed_map = {
@@ -67,6 +75,7 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
         "ADD proton": RemoveProton,
         "REMOVE proton from water": AddProtonToHydroxylGroup,
         "HYDRATE": Dehydrate,
+        "DEPROTONATE nonhydroxyl oxygen": ProtonateNonHydroxylOxygen
     }
 
     // Test that by running commands we get the correct result
@@ -81,8 +90,9 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
             container_substrate[0].length.should.be.equal(2) // pKa, atoms
             container_substrate[0][1].should.be.an.Array()
             const container_reagent = [MoleculeFactory(_.cloneDeep(reagents_reversed[index])), 1]
+            console.log(commands_reversed_map[command_reversed])
             products = commands_reversed_map[command_reversed](_.cloneDeep(container_substrate), _.cloneDeep(container_reagent))
-            //console.log(commands_reversed_map[command_reversed])
+            console.log(products)
             //console.log("Products after running command:")
             //console.log(VMolecule(products[0]).canonicalSMILES())
             //console.log(VMolecule(products[1]).canonicalSMILES())

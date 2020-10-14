@@ -150,6 +150,29 @@ const MoleculeAI = (container_molecule) => {
             })
         },
 
+        "findNonHydroxylOxygenIndex":() => {
+
+            return _.findIndex(container_molecule[0][1], (oxygen_atom, oxygen_atom_index)=>{
+
+
+                // Not an oxygen atom
+                if (oxygen_atom[0] !== "O") {
+                    return false
+                }
+
+                const oxygen_atom_object = CAtom(oxygen_atom, oxygen_atom_index, container_molecule)
+
+                if(oxygen_atom_object.bondCount()< 3) { // 1 hydrogen bond plus 1 carbon atom
+                    return false
+                }
+
+
+
+                return true
+            })
+
+        },
+
         "findHydroxylOxygenIndex":() => {
 
             return _.findIndex(container_molecule[0][1], (oxygen_atom, oxygen_atom_index)=>{
@@ -234,7 +257,33 @@ const MoleculeAI = (container_molecule) => {
                 return true
             })
 
+
+
+        },
+
+        "findNonWaterOxygenIndex":() => {
+
+            return _.findIndex(container_molecule[0][1], (oxygen_atom, oxygen_atom_index)=>{
+
+                // Not an oxygen atom
+                if (oxygen_atom[0] !== "O") {
+                    return false
+                }
+
+                const oxygen_atom_object = CAtom(oxygen_atom, oxygen_atom_index, container_molecule)
+                if(oxygen_atom_object.bondCount() < 3) {
+                    return false
+                }
+
+
+
+                return true
+            })
+
+
+
         }
+
 
 
     }
