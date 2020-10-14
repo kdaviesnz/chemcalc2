@@ -14,9 +14,9 @@ const ProtonateNonHyroxylOxygen = (container_molecule, container_reagent) => {
 
     const reaction = new Reaction(container_molecule, container_reagent)
 
-    reaction.addProtonFromReagentToNonHydroxylGroup()
+    const result = reaction.addProtonFromReagentToNonHydroxylGroup()
 
-    return reaction === false? false : [
+    return result === false? false : [
         reaction.container_substrate,
         reaction.container_reagent
     ]
