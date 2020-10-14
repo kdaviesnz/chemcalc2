@@ -17,9 +17,6 @@ const VReaction = (reactions, container_end_product, rule) => {
             })
              */
 
-
-
-            console.log("\n\n")
             console.log(VMolecule(container_end_product).canonicalSMILES() + " synthesis")
             console.log("Mechanism: " + rule.mechanism)
 
@@ -31,8 +28,6 @@ const VReaction = (reactions, container_end_product, rule) => {
                     + " = " + VMolecule(reaction.substrate).canonicalSMILES().bold)
                 }
             )
-
-            console.log("\n\n")
 
 
         }

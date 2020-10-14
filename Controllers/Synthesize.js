@@ -21,6 +21,7 @@ const Set = require('../Models/Set')
 
 const VMolecule = require('../Components/Stateless/Views/Molecule')
 const VContainer = require('../Components/Stateless/Views/Container');
+const VReactions = require('../Components/Stateless/Views/Reactions');
 
 const MoleculeLookup = require('../Controllers/MoleculeLookup')
 const PubChemLookup = require('../Controllers/PubChemLookup')
@@ -72,10 +73,10 @@ const Synthesize = (verbose,  molecule_to_synthesize_name, search_type, child_re
         const onMoleculeNotFound = (onMoleculeAddedToDBCallback) => {
             return (search) => {
                 console.log("Molecule not found in db " + search)
-                pkl.searchBySMILES(search.replace(/\(\)/g, ""), db, (molecule_from_pubchem) => {
+                pkl.searchByName(search, db, (molecule_from_pubchem) => {
                     if (molecule_from_pubchem !== null) {
                         console.log("Molecule found in pubchem")
-                        molecule_from_pubchem['json'] = MoleculeFactory(search)
+                        molecule_from_pubchem['json'] = MoleculeFactory(molecule_from_pubchem.CanonicalSMILES)
                         molecule_from_pubchem['search'] = search
                         db.collection("molecules").insertOne(molecule_from_pubchem, (err, result) => {
                             if (err) {
@@ -83,7 +84,7 @@ const Synthesize = (verbose,  molecule_to_synthesize_name, search_type, child_re
                                 client.close()
                                 process.exit()
                             } else {
-                                onMoleculeAddedToDBCallback(search)
+                                onMoleculeAddedToDBCallback(search, db, [molecule_from_pubchem.json, 1], child_reaction_string, render)
                             }
                         })
 
@@ -96,16 +97,17 @@ const Synthesize = (verbose,  molecule_to_synthesize_name, search_type, child_re
             // "resolves" callback
             (molecule) => {
                 // Fetch and render reactions that synthesise chemical
-                console.log('Synthesize.js')
-                FetchReactions(verbose, db, molecule.json, child_reaction_string, render, (err) =>{
+                FetchReactions(verbose, db, [molecule.json,1], child_reaction_string, render, (err) =>{
                     console.log('There was an error fetching reactions for ' + molecule_to_synthesize_name)
                     Err(err)
                 })
             },
-            onMoleculeNotFound((search) => {
+            onMoleculeNotFound((search, db, container_molecule, child_reaction_string, render) => {
                 console.log("Molecule " + search + " added to database")
-                client.close()
-                process.exit()
+                FetchReactions(verbose, db, container_molecule, child_reaction_string, render, (err) =>{
+                    console.log('There was an error fetching reactions for ' + molecule_to_synthesize_name)
+                    Err(err)
+                })
             }),
             // "rejects" callback
             onErrorLookingUpMoleculeInDB

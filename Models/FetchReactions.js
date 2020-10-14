@@ -7,6 +7,12 @@ const _ = require('lodash');
 
 const FetchReactions = (verbose,  db, mmolecule, child_reaction_string, render, Err) => {
 
+    mmolecule.length.should.be.equal(2) // molecule, units
+    mmolecule[0].length.should.be.equal(2) // pKa, atoms
+    mmolecule[0][0].should.be.an.Number() // pka
+    mmolecule[0][1].should.be.an.Array()
+    mmolecule[0][1][0].should.be.an.Array()
+    mmolecule[0][1][0][0].should.be.an.String()
 
     const families = Families(mmolecule).families
 

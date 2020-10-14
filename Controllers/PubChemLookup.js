@@ -20,14 +20,15 @@ const PubChemLookup = (Err) => {
         "Fingerprint2D"]
 
     const searchByName = (name, db, callback, debug_statement) => {
-// https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/heroin/property/MolecularFormula/JSON
 
-        /*
+        console.log("PubChem: searchByName() " + name)
+
         setTimeout(function() {
         }, Math.floor(Math.random() * 3000))
-        */
 
-        request('https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/' + name + '/property/' + properties.join(',') + '/JSON', {json: true}, (err, res, body) => {
+        // https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/ethanol/property/CanonicalSMILES,IUPACName/JSON
+
+        request('https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/' + name + '/property/CanonicalSMILES,IUPACName/JSON', {json: true}, (err, res, body) => {
             if (err) {
                 Err(err)
                 console.log('PubchemLookup searchByName()'+ debug_statement)
@@ -42,6 +43,7 @@ const PubChemLookup = (Err) => {
                     console.log('PubchemLookup searchByName()')
                     process.exit()
                 } else {
+                    console.log(body)
                     callback(body.PropertyTable.Properties[0])
                 }
             }

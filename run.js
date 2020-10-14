@@ -2,6 +2,7 @@ const readline = require('readline');
 const help = require('help')('usage.txt')
 const ReactionSchemaParser = require('./Controllers/ReactionSchemaParser')
 const Synthesize = require('./Controllers/Synthesize')
+const VReactions = require('./Components/Stateless/Views/Reactions');
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -21,19 +22,20 @@ rl.on('line', (line) => {
     } else if (lineTrimmed === "") {
         rl.prompt()
     } else if (lineTrimmed.toLowerCase().substr(0,10) === "synthesize") {
+        console.log("Finding reactions for " + lineTrimmed.substr(10) + "...")
         Synthesize(
             verbose,
             lineTrimmed.toLowerCase().substr(10),
             "",
             "",
-            (rule, molecule_JSON_object,substrate_JSON_object)=>{
-
+            (reactions, product, rule)=>{
+                    VReactions(reactions, product, rule).render()
+                    rl.prompt()
             },
             (err) => {
                 console.log("Error synthesizing " + search)
             }
         )
-        rl.prompt()
     } else {
         //isobutene -> HCl
         //"2-chloro-2-methylbutane /"
