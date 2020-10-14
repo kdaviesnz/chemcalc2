@@ -111,6 +111,13 @@ if (true) {
     console.log("Running initial tests ...")
 
 
+    // epoxide acidic ring opening
+    // CC(C)(CO)OC
+    // 2-Methoxy-2-methylpropan-1-ol
+    const Two_Methoxy_2_methylpropan_1_ol = MoleculeFactory("CC(C)(CO)OC")
+    VMolecule([Two_Methoxy_2_methylpropan_1_ol, 1]).canonicalSMILES().should.be.equal("CC(C)(CO)(OC)")
+
+
 
     const oxidane = MoleculeFactory("CO")
     const o = oxidane[1][5]

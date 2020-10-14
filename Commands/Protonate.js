@@ -2,11 +2,11 @@
 //const FindDoubleBondPair = require('./FindDoubleBondPair')
 const Reaction = require("../Components/State/Reaction")
 
-const AddProton= (mmolecule, reagent) => {
+const Protonate = (mmolecule, reagent) => {
 
     const reaction = new Reaction(mmolecule, reagent)
 
-    reaction.addProton()
+    reaction.protonate()
 
     return [
         reaction.container_substrate,
@@ -14,4 +14,4 @@ const AddProton= (mmolecule, reagent) => {
     ]
 }
 
-module.exports = AddProton
+module.exports = Protonate

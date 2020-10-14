@@ -2,11 +2,11 @@
 //const FindDoubleBondPair = require('./FindDoubleBondPair')
 const Reaction = require("../Components/State/Reaction")
 
-const RemoveProton = (container_molecule, container_reagent) => {
+const Deprotonate = (container_molecule, container_reagent) => {
 
     const reaction = new Reaction(container_molecule, container_reagent)
 
-    reaction.removeProton()
+    reaction.deprotonate()
 
     return [
         reaction.container_substrate,
@@ -14,4 +14,4 @@ const RemoveProton = (container_molecule, container_reagent) => {
     ]
 }
 
-module.exports = RemoveProton
+module.exports = Deprotonate

@@ -17,8 +17,8 @@ const AkylHalideDehydration = require('./reactions/AkylHalideDehydration')
 const Families = require('../Models/Families')
 const AddProtonToHydroxylGroup = require('../Commands/AddProtonToHydroxylGroup')
 const BreakBond = require('../Commands/BreakBond')
-const AddProton = require('../Commands/AddProton')
-const RemoveProton = require('../Commands/RemoveProton')
+const Protonate = require('../Commands/Protonate')
+const Deprotonate = require('../Commands/Deprotonate')
 const MoleculeFactory = require('../Models/MoleculeFactory')
 const VMolecule = require('../Components/Stateless/Views/Molecule')
 const Dehydrate = require('../Commands/Dehydrate')
@@ -55,9 +55,9 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
     if (commands_reversed.length <= reagents_reversed.length) {
 
         const commands_map = {
-            "REMOVE proton": RemoveProton,
+            "DEPROTONATE": Deprotonate,
             "ADD bond": BondAtoms,
-            "ADD proton": AddProton,
+            "PROTONATE": Protonate,
             "REMOVE proton from water": RemoveProtonFromWater,
             "HYDRATE": Hydrate,
             "DEPROTONATE nonhydroxyl oxygen": DeprotonateNonHydroxylOxygen,
@@ -69,9 +69,9 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
         }
 
         const commands_reversed_map = {
-            "REMOVE proton": AddProton,
+            "DEPROTONATE": Protonate,
             "ADD bond": BreakBond,
-            "ADD proton": RemoveProton,
+            "PROTONATE": Deprotonate,
             "REMOVE proton from water": AddProtonToHydroxylGroup,
             "HYDRATE": Dehydrate,
             "DEPROTONATE nonhydroxyl oxygen": ProtonateNonHydroxylOxygen,

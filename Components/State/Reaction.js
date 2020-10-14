@@ -250,7 +250,7 @@ class Reaction {
         this.setMoleculeAI()
     }
     
-    removeProton() {
+    deprotonate() {
         // [C+]CH3
         // We remove the proton from the second carbon
         const electrophile_index = this.MoleculeAI.findElectrophileIndex()
@@ -306,7 +306,7 @@ class Reaction {
         this.setReagentAI()
     }
 
-    addProton() {
+    protonate() {
 
         let atom_nucleophile_index = this.MoleculeAI.findNucleophileIndex()
 
