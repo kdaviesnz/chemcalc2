@@ -17,13 +17,16 @@ class Reaction {
         container_substrate[0][1][0].should.be.an.Array()
         container_substrate[0][1][0][0].should.be.an.String()
 
-
-        container_reagent.length.should.be.equal(2) // molecule, units
-        container_reagent[0].length.should.be.equal(2) // pKa, atoms
-        container_reagent[0][0].should.be.an.Number() // pka
-        container_reagent[0][1].should.be.an.Array()
-        container_reagent[0][1][0].should.be.an.Array()
-        container_reagent[0][1][0][0].should.be.an.String()
+        if (undefined !== container_reagent) {
+            container_reagent.length.should.be.equal(2) // molecule, units
+            container_reagent[0].length.should.be.equal(2) // pKa, atoms
+            container_reagent[0][0].should.be.an.Number() // pka
+            container_reagent[0][1].should.be.an.Array()
+            if (undefined !== container_reagent[0][1][0]) {
+                container_reagent[0][1][0].should.be.an.Array()
+                container_reagent[0][1][0][0].should.be.an.String()
+            }
+        }
 
         this.container_substrate = container_substrate
         this.container_reagent = container_reagent
@@ -37,8 +40,10 @@ class Reaction {
         this.container_reagent[0].length.should.be.equal(2) // pKa, atoms
         this.container_reagent[0][0].should.be.an.Number() // pka
         this.container_reagent[0][1].should.be.an.Array()
-        this.container_reagent[0][1][0].should.be.an.Array()
-        this.container_reagent[0][1][0][0].should.be.an.String()
+        if (undefined !== this.container_reagent[0][1][0]) {
+            this.container_reagent[0][1][0].should.be.an.Array()
+            this.container_reagent[0][1][0][0].should.be.an.String()
+        }
         this.ReagentAI = require("../Stateless/MoleculeAI")(this.container_reagent)
     }
 
@@ -52,6 +57,26 @@ class Reaction {
         this.container_substrate[0][1][0][0].should.be.an.String()
 
         this.MoleculeAI = require("../Stateless/MoleculeAI")(this.container_substrate)
+    }
+
+    deprotonateCarbonyl() {
+        return false
+    }
+
+    protonateCarbonyl() {
+        return false
+    }
+
+    transferProton() {
+        return false
+    }
+
+    dereduce() {
+        return false
+    }
+
+    reduce() {
+        return false
     }
 
     hydrate() {

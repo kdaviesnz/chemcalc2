@@ -27,6 +27,12 @@ const RemoveProtonFromWater = require('../Commands/RemoveProtonFromWater')
 const Hydrate = require('../Commands/Hydrate')
 const DeprotonateNonHydroxylOxygen = require('../Commands/DeprotonateNonHydroxylOxygen')
 const ProtonateNonHydroxylOxygen = require('../Commands/ProtonateNonHydroxylOxygen')
+const Reduce = require('../Commands/Reduce')
+const Dereduce = require('../Commands/Dereduce')
+const TransferProton = require('../Commands/TransferProton')
+const DeprotonateCarbonyl = require('../Commands/DeprotonateCarbonyl')
+const ProtonateCarbonyl = require('../Commands/ProtonateCarbonyl')
+
 const _ = require('lodash');
 
 const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string, render, Err) => {
@@ -95,7 +101,12 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
         "ADD proton": AddProton,
         "REMOVE proton from water": RemoveProtonFromWater,
         "HYDRATE": Hydrate,
-        "DEPROTONATE nonhydroxyl oxygen": DeprotonateNonHydroxylOxygen
+        "DEPROTONATE nonhydroxyl oxygen": DeprotonateNonHydroxylOxygen,
+        "TRANSFER proton": TransferProton,
+        "PROTONATE carbonyl": ProtonateCarbonyl,
+        "DEPROTONATE carbonyl": DeprotonateCarbonyl,
+        "REDUCE" : Reduce,
+        "DEREDUCE": Dereduce
     }
 
     const commands_reversed_map = {
@@ -104,7 +115,12 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
         "ADD proton": RemoveProton,
         "REMOVE proton from water": AddProtonToHydroxylGroup,
         "HYDRATE": Dehydrate,
-        "DEPROTONATE nonhydroxyl oxygen": ProtonateNonHydroxylOxygen
+        "DEPROTONATE nonhydroxyl oxygen": ProtonateNonHydroxylOxygen,
+        "TRANSFER proton": TransferProton,
+        "PROTONATE carbonyl": DeprotonateCarbonyl,
+        "DEPROTONATE carbonyl": ProtonateCarbonyl,
+        "REDUCE" : Dereduce,
+        "DEREDUCE": Reduce
     }
 
     // Test that by running commands we get the correct result

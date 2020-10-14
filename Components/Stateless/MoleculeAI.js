@@ -7,8 +7,10 @@ const MoleculeAI = (container_molecule) => {
     container_molecule[0].length.should.be.equal(2) // pKa, atoms
     container_molecule[0][0].should.be.an.Number() // pka
     container_molecule[0][1].should.be.an.Array()
-    container_molecule[0][1][0].should.be.an.Array()
-    container_molecule[0][1][0][0].should.be.an.String()
+    if (undefined !== container_molecule[0][1][0]) {
+        container_molecule[0][1][0].should.be.an.Array()
+        container_molecule[0][1][0][0].should.be.an.String()
+    }
 
 
     // All required parameters should be passed by MoleculeAI()
