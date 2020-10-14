@@ -1,14 +1,14 @@
 const Reaction = require("../Components/State/Reaction")
 
-const BondAtoms = (mmolecule, reagent, mmolecule_atom_index, reagent_atom_index) => {
+const BondAtoms = (mmolecule, reagent) => {
 
     const reaction = new Reaction(mmolecule, reagent)
 
-    reaction.bondAtoms(mmolecule_atom_index, reagent_atom_index)
+    const result = reaction.bondAtoms()
 
-    return [
-        reaction.mmolecule,
-        reaction.reagent
+    return result === false ? false: [
+        reaction.container_substrate,
+        reaction.container_reagent
     ]
 }
 

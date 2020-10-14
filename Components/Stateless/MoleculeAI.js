@@ -114,6 +114,7 @@ const MoleculeAI = (container_molecule) => {
         },
 
          "findElectrophileIndex": () => {
+
             return _.findIndex(container_molecule[0][1], (atom, index)=>{
 
                 const atom_object = CAtom(atom, index,container_molecule)
@@ -164,10 +165,16 @@ const MoleculeAI = (container_molecule) => {
 
                 const oxygen_atom_object = CAtom(oxygen_atom, oxygen_atom_index, container_molecule)
 
-                if(oxygen_atom_object.bondCount()< 3) { // 1 hydrogen bond plus 1 carbon atom
+                const bonds = oxygen_atom_object.indexedBonds("")
+
+                // Get hydrogen_bonds
+                const hydrogen_bonds = bonds.filter((bond)=>{
+                    return bond.atom[0] === "H"
+                })
+
+                if (hydrogen_bonds.length === 1 && bonds.length === 2) {
                     return false
                 }
-
 
 
                 return true

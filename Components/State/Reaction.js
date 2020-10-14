@@ -186,9 +186,17 @@ class Reaction {
 
     }
     
-    breakBond(source_atom_index, target_atom_index) {
-        
+    breakBond() {
+
+
+        const electrophile_index = this.MoleculeAI.findElectrophileIndex()
+
+        console.log("electrophile index:")
+        console.log(electrophile_index)
+
         const atoms = this.container_substrate[0][1]
+
+        console.log(atoms[electrophile_index])
 
         const source_atom = CAtom(this.container_substrate[0][1][source_atom_index], source_atom_index, this.container_substrate)
         const target_atom = CAtom(this.container_reagent[0][1][target_atom_index], target_atom_index, this.reagent)
@@ -223,7 +231,19 @@ class Reaction {
         
     }
     
-    bondAtoms(source_atom_index, target_atom_index) {
+    bondAtoms() {
+
+        console.log("bondAtoms")
+        console.log(VMolecule(this.container_substrate))
+        console.log(this.container_reagent)
+
+        if (undefined === this.container_reagent) {
+            const electrophile_index = this.MoleculeAI.findElectrophileIndex()
+            const nucleophile_index = this.MoleculeAI.findNucleophileIndex()
+            const electrophile_free_electrons = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate).freeElectrons()
+        }
+
+
         const source_free_electrons = CAtom(this.container_substrate[0][1][source_atom_index], source_atom_index, this.container_substrate).freeElectrons()
         const target_free_electrons = CAtom(this.reagent[0][1][target_atom_index], target_atom_index, this.reagent).freeElectrons()
              
@@ -396,6 +416,8 @@ class Reaction {
 
         const oxygen_index = this.MoleculeAI.findNonWaterOxygenIndex()
 
+        oxygen_index.should.not.be.equal(-1)
+
         if (oxygen_index === -1) {
             return false
         }
@@ -471,7 +493,7 @@ class Reaction {
 
 
         const oxygen_index = this.MoleculeAI.findNonHydroxylOxygenIndex()
-
+        oxygen_index.should.not.be.equal(-1)
 
 
        // console.log(this.container_substrate[0][1])

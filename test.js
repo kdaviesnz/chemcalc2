@@ -114,8 +114,8 @@ if (true) {
     // epoxide acidic ring opening
     // CC(C)(CO)OC
     // 2-Methoxy-2-methylpropan-1-ol
-    const Two_Methoxy_2_methylpropan_1_ol = MoleculeFactory("CC(C)(CO)OC")
-    VMolecule([Two_Methoxy_2_methylpropan_1_ol, 1]).canonicalSMILES().should.be.equal("CC(C)(CO)(OC)")
+    const Two_Methoxy_2_methylpropan_1_ol = MoleculeFactory("COC(C)(C)CO")
+    VMolecule([Two_Methoxy_2_methylpropan_1_ol, 1]).canonicalSMILES().should.be.equal("COC(C)(C)(CO)")
 
 
 
@@ -314,12 +314,12 @@ client.connect(err => {
         FetchReactions(
             true,
             db,
-            [MoleculeFactory("C(O)C"),1],
+            [MoleculeFactory("COC(C)(C)CO"), 1],
             "",
-            (reactions, product, rule)=>{
-               // console.log('test.js: product ')
-               // console.log(VMolecule(product).canonicalSMILES())
-               // console.log("Reactions:")
+            (reactions, product, rule) => {
+                // console.log('test.js: product ')
+                // console.log(VMolecule(product).canonicalSMILES())
+                // console.log("Reactions:")
                 /*
                 reactions.map((r)=>{
                     console.log(r.command)
@@ -338,6 +338,36 @@ client.connect(err => {
 
             }
         )
+
+        if (false) {
+            FetchReactions(
+                true,
+                db,
+                [MoleculeFactory("C(O)C"), 1],
+                "",
+                (reactions, product, rule) => {
+                    // console.log('test.js: product ')
+                    // console.log(VMolecule(product).canonicalSMILES())
+                    // console.log("Reactions:")
+                    /*
+                    reactions.map((r)=>{
+                        console.log(r.command)
+                        console.log("Substrate:" + VMolecule(r.substrate).canonicalSMILES())
+                        console.log("Reagent:" + VMolecule(r.reagent).canonicalSMILES())
+                        console.log("Products:")
+                        console.log(VMolecule(r.products[0]).canonicalSMILES())
+                        console.log(VMolecule(r.products[1]).canonicalSMILES())
+                    })
+                    */
+                    VReactions(reactions, product, rule).render()
+
+
+                },
+                (Err) => {
+
+                }
+            )
+        }
 
 // CC(O)CCNC
         /*

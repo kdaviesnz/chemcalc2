@@ -1,6 +1,6 @@
 const Reaction = require("../Components/State/Reaction")
 
-const BreakBond = (container_substrate, reagent, mmolecule_atom_index, reagent_atom_index) => {
+const BreakBond = (container_substrate, reagent) => {
 
     container_substrate.length.should.be.equal(2) // molecule, units
     container_substrate[0].length.should.be.equal(2) // pKa, atoms
@@ -8,7 +8,7 @@ const BreakBond = (container_substrate, reagent, mmolecule_atom_index, reagent_a
 
     const reaction = new Reaction(container_substrate, reagent)
 
-    reaction.breakBond(mmolecule_atom_index, reagent_atom_index)
+    reaction.breakBond()
 
     return [
         reaction.container_substrate,
