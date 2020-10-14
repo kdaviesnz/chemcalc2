@@ -1,3 +1,6 @@
 Help for chemcalculator
 
 ChemCalc > synthesize oxidanium
+
+ChemCalc > synthesize ethanol
+

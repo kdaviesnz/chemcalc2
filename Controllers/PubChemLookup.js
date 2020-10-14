@@ -22,8 +22,10 @@ const PubChemLookup = (Err) => {
     const searchByName = (name, db, callback, debug_statement) => {
 // https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/heroin/property/MolecularFormula/JSON
 
+        /*
         setTimeout(function() {
         }, Math.floor(Math.random() * 3000))
+        */
 
         request('https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/' + name + '/property/' + properties.join(',') + '/JSON', {json: true}, (err, res, body) => {
             if (err) {

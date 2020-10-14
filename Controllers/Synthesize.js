@@ -19,8 +19,8 @@ const CAtom = require('../Controllers/Atom')
 const range = require("range")
 const Set = require('../Models/Set')
 
-const VMolecule = require('../Views/Molecule')
-const VContainer = require('../Views/Container');
+const VMolecule = require('../Components/Stateless/Views/Molecule')
+const VContainer = require('../Components/Stateless/Views/Container');
 
 const MoleculeLookup = require('../Controllers/MoleculeLookup')
 const PubChemLookup = require('../Controllers/PubChemLookup')
@@ -71,7 +71,7 @@ const Synthesize = (verbose,  molecule_to_synthesize_name, search_type, child_re
 
         const onMoleculeNotFound = (onMoleculeAddedToDBCallback) => {
             return (search) => {
-                console.log("Molecule not found " + search)
+                console.log("Molecule not found in db " + search)
                 pkl.searchBySMILES(search.replace(/\(\)/g, ""), db, (molecule_from_pubchem) => {
                     if (molecule_from_pubchem !== null) {
                         console.log("Molecule found in pubchem")
@@ -92,7 +92,7 @@ const Synthesize = (verbose,  molecule_to_synthesize_name, search_type, child_re
             }
         }
 
-        MoleculeLookup(db, "C[N+]", "SMILES", true).then(
+        MoleculeLookup(db, molecule_to_synthesize_name, "SMILES", true).then(
             // "resolves" callback
             (molecule) => {
                 // Fetch and render reactions that synthesise chemical
