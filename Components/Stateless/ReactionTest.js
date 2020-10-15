@@ -44,6 +44,22 @@ const ReactionTest = (command, substrate, reagent, expected_result, rule) => {
 
     console.log(VMolecule(substrate).canonicalSMILES())
 
+
+
+
+    // [PROTONATE] COC(C)(C)(=C) + OS(=O)(=O)(O) = COC(C)(C)([C+])
+
+    // Incorrect
+    // [HYDRATE] COC(C)(C)([CH2+]) + O = COC(C)(C)(C[OH2+])
+    // Should be
+    // [HYDRATE] COC(C)(C)([CH3+]) + O = COC(C)(C)(C[OH2+])
+    // DEHYDRATE command is wrong
+
+
+    // Correct
+    // [REMOVE proton from water] COC(C)(C)(C[OH2+]) + [O+] = COC(C)(C)(CO)
+
+
     VMolecule(expected_result).canonicalSMILES().should.be.equal(VMolecule(products[0]).canonicalSMILES())
 
 
