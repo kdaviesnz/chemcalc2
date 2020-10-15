@@ -1,8 +1,8 @@
 const Reaction = require("../Components/State/Reaction")
 
-const BondAtoms = (mmolecule, reagent) => {
+const BondAtoms = (mmolecule, reagent, rule) => {
 
-    const reaction = new Reaction(mmolecule, reagent)
+    const reaction = new Reaction(mmolecule, reagent, rule)
 
     const result = reaction.bondAtoms()
 

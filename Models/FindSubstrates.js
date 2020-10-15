@@ -101,14 +101,14 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
                 const container_reagent = [MoleculeFactory(_.cloneDeep(reagents_reversed[index])), 1]
                 console.log("Command:")
                 console.log(commands_reversed_map[command_reversed])
-                products = commands_reversed_map[command_reversed](_.cloneDeep(container_substrate), _.cloneDeep(container_reagent))
+                products = commands_reversed_map[command_reversed](_.cloneDeep(container_substrate), _.cloneDeep(container_reagent), rule)
                 if (products === false) {
                     console.log("Returning false")
                     return false
                 }
-                console.log("Products:")
+                console.log("Products:" + rule._id + ' ' + rule.mechanism)
+                console.log(commands_reversed_map[command_reversed])
                 console.log(VMolecule(products[0]).canonicalSMILES())
-                console.log(VMolecule(products[1]).canonicalSMILES())
                 results.push({
                     "command": _.cloneDeep(command_reversed),
                     "reagent": _.cloneDeep( container_reagent),

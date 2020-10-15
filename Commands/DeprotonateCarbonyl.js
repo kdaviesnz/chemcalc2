@@ -2,7 +2,7 @@
 //const FindDoubleBondPair = require('./FindDoubleBondPair')
 const Reaction = require("../Components/State/Reaction")
 
-const DeprotonateCarbonyl = (container_molecule, container_reagent) => {
+const DeprotonateCarbonyl = (container_molecule, container_reagent, rule) => {
 
     container_molecule.length.should.be.equal(2) // molecule, units
     container_molecule[0].length.should.be.equal(2) // pKa, atoms
@@ -12,7 +12,7 @@ const DeprotonateCarbonyl = (container_molecule, container_reagent) => {
     container_reagent[0].length.should.be.equal(2) // pKa, atoms
     container_reagent[0][1].should.be.an.Array()
 
-    const reaction = new Reaction(container_molecule, container_reagent)
+    const reaction = new Reaction(container_molecule, container_reagent, rule)
 
 
     const result = reaction.deprotonateCarbonyl()

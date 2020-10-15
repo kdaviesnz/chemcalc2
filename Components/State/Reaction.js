@@ -8,7 +8,7 @@ const Set = require('../../Models/Set')
 
 class Reaction {
 
-    constructor(container_substrate, container_reagent) {
+    constructor(container_substrate, container_reagent, rule) {
 
         container_substrate.length.should.be.equal(2) // molecule, units
         container_substrate[0].length.should.be.equal(2) // pKa, atoms
@@ -30,6 +30,8 @@ class Reaction {
 
         this.container_substrate = container_substrate
         this.container_reagent = container_reagent
+
+        this.rule = rule
 
         this.setMoleculeAI()
         this.setReagentAI()
@@ -191,8 +193,13 @@ class Reaction {
 
         const electrophile_index = this.MoleculeAI.findElectrophileIndex()
 
-        console.log("electrophile index:")
-        console.log(electrophile_index)
+        if (electrophile_index === -1) {
+            console.log("Electrophile not found")
+            console.log("breakBond()")
+            console.log(this.rule.mechanism)
+            // electrophile_index.should.not.be.equal(-1)
+            return false
+        }
 
         const atoms = this.container_substrate[0][1]
 
@@ -237,22 +244,74 @@ class Reaction {
         console.log(VMolecule(this.container_substrate))
         console.log(this.container_reagent)
 
+        const electrophile_index = this.MoleculeAI.findElectrophileIndex()
+
+        if (electrophile_index === -1) {
+            console.log("bondAtoms() no electrophile found (1)")
+            return false
+        }
+
         if (undefined === this.container_reagent) {
-            const electrophile_index = this.MoleculeAI.findElectrophileIndex()
+
             const nucleophile_index = this.MoleculeAI.findNucleophileIndex()
+
+            if (nucleophile_index === -1) {
+                console.log("bondAtoms() no nucleophile found (1)")
+                return false
+            }
+
             const electrophile_free_electrons = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate).freeElectrons()
+            const nucleophile_free_electrons = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate).freeElectrons()
+
+            if (nucleophile_free_electrons.length < 2) {
+                console.log("bondAtoms() nucleopile has no free electrons")
+                return false
+            }
+
+            this.container_substrate[0][1][electrophile_index].push(nucleophile_free_electrons[0])
+            this.container_substrate[0][1][electrophile_index].push(nucleophile_free_electrons[1])
+            this.container_substrate[0][1][electrophile_index][4] = 0
+
+            _.remove(this.container_substrate[0][1][nucleophile_index], (electron)=>{
+                return electron === nucleophile_free_electrons[0] || electron === nucleophile_free_electrons[1]
+            })
+
+            this.container_substrate[0][1][nucleophile_index][4] = 0
+
+        } else {
+
+            const nucleophile_index = this.ReagentAI.findNucleophileIndex()
+            if (nucleophile_index === -1) {
+                console.log("bondAtoms() no nucleophile found (2)")
+                return false
+            }
+
+            const electrophile_free_electrons = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate).freeElectrons()
+            const nucleophile_free_electrons = CAtom(this.container_reagent[0][1][nucleophile_index], nucleophile_index, this.container_reagent).freeElectrons()
+
+            if (nucleophile_free_electrons.length < 2) {
+                console.log("bondAtoms() nucleopile has no free electrons 2")
+                return false
+            }
+
+            this.container_substrate[0][1][electrophile_index].push(nucleophile_free_electrons[0])
+            this.container_substrate[0][1][electrophile_index].push(nucleophile_free_electrons[1])
+            this.container_substrate[0][1][electrophile_index][4] = 0
+
+            _.remove(this.container_reagent[0][1][nucleophile_index], (electron)=>{
+                return electron === nucleophile_free_electrons[0] || electron === nucleophile_free_electrons[1]
+            })
+
+            this.container_reagent[0][1][nucleophile_index][4] = 0
+
         }
 
 
-        const source_free_electrons = CAtom(this.container_substrate[0][1][source_atom_index], source_atom_index, this.container_substrate).freeElectrons()
-        const target_free_electrons = CAtom(this.reagent[0][1][target_atom_index], target_atom_index, this.reagent).freeElectrons()
-             
-        if (source_free_electrons.length > 1 && target_free_electrons.length > 1) {
-            this.reagent.push(source_free_electrons[0])
-            this.container_substrate.push(target_free_electrons[1])          
-        }
 
         this.setMoleculeAI()
+        this.setReagentAI()
+
+
     }
 
     addProtonToSubstrate(target_atom, target_atom_index) {
@@ -274,6 +333,14 @@ class Reaction {
         // [C+]CH3
         // We remove the proton from the second carbon
         const electrophile_index = this.MoleculeAI.findElectrophileIndex()
+
+        if (electrophile_index === -1) {
+            console.log("Electrophile not found")
+            console.log("deprotonate")
+            console.log(this.rule.mechanism)
+            return false
+        }
+
         const electrophile = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
         const electrophile_bonds  = electrophile.indexedBonds("")
 

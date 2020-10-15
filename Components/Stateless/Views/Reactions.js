@@ -24,7 +24,7 @@ const VReaction = (reactions, container_end_product, rule) => {
                 (reaction) => {
                     console.log("[" + reaction.command.bold.red + "] "
                         + VMolecule(reaction.products[0]).canonicalSMILES().green
-                    + " + " + VMolecule(reaction.products[1]).canonicalSMILES().yellow
+                    + " + " + (reaction.products[1]=== undefined || reaction.products[1][0][1].length === 0 ? "No reagent" : VMolecule(reaction.products[1]).canonicalSMILES().yellow)
                     + " = " + VMolecule(reaction.substrate).canonicalSMILES().bold)
                 }
             )
