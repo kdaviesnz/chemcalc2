@@ -8,6 +8,10 @@ const VMolecule = (mmolecule) => {
     mmolecule.length.should.be.equal(2) // molecule, units
     mmolecule[0].length.should.be.equal(2) // pKa, atoms
 
+    const __isRing = (current_atom) => {
+        __getIndexOfNextAtom(current_atom, current_atom_index)
+    }
+
     const __getBondType = (current_atom, previous_atom) => {
 
         if (previous_atom === null) {
@@ -120,6 +124,10 @@ const VMolecule = (mmolecule) => {
     const __SMILES_recursive = (carry, current_atom, previous_atom, index, branch_index, processed_atoms_indexes) => {
 
      //   console.log('Recursion ' + branch_index)
+        // Index: 3 Bonds: 3 1
+        // Loop atom is the bottom one on the benzene ring
+        // AssertionError: expected 'C(=CCC(C=C)(CO))(C)' to be 'C1=CC=C(C=C1)CO'
+        // VMolecule([benyzl_alcohol, 1]).canonicalSMILES().should.be.equal("C1=CC=C(C=C1)CO")
 
         processed_atoms_indexes.should.be.an.Array()
 
@@ -176,7 +184,14 @@ const VMolecule = (mmolecule) => {
         // First non-hydrogen atom?
         if (carry === "") {
 
+
+            // Index: 3 Bonds: 3 1
+            // Loop atom is the bottom one on the benzene ring
+            // AssertionError: expected 'C(=CCC(C=C)(CO))(C)' to be 'C1=CC=C(C=C1)CO'
+            // VMolecule([benyzl_alcohol, 1]).canonicalSMILES().should.be.equal("C1=CC=C(C=C1)CO")
+
             // Get how many atoms are attached to the atom, but don't include hydrogens
+
             if (bonds.length < 2) {
                 // COC
                 //carry = carry + __getAtomAsSMILE(catom, current_atom)
@@ -200,7 +215,12 @@ const VMolecule = (mmolecule) => {
               //  console.log ("6 CARRY branch:" + branch_index + " " + carry)
                 if (!processed_atoms_indexes.includes(index)) {
                     processed_atoms_indexes.push(index)
-                    //console.log('b1')
+                    console.log('b1')
+                    console.log(bonds)
+                    console.log(bonds.length)
+                    console.log("Views/Molecule.js")
+                    process.exit()
+                    // Branch or ring?
                     carry = carry + __getAtomAsSMILE(catom, current_atom, processed_atoms_indexes, index) + __addBranches(bonds, branch_index+1, processed_atoms_indexes, current_atom)
                     //console.log ("3 CARRY branch:" + branch_index + " " + carry + ' ' + current_atom[0] + ' ' + current_atom[5])
                     return carry
@@ -259,6 +279,11 @@ const VMolecule = (mmolecule) => {
     return {
 
         canonicalSMILES: () => {
+
+            // Index: 3 Bonds: 3 1
+            // Loop atom is the bottom one on the benzene ring
+            // AssertionError: expected 'C(=CCC(C=C)(CO))(C)' to be 'C1=CC=C(C=C1)CO'
+           // VMolecule([benyzl_alcohol, 1]).canonicalSMILES().should.be.equal("C1=CC=C(C=C1)CO")
 
             mmolecule[0][1][0].should.be.an.Array()
             mmolecule[0][1][0][0].should.be.an.String()

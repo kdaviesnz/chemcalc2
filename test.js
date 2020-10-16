@@ -61,6 +61,28 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
 
 const Families = require('./Models/Families')
 
+
+const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
+const benzyl_alcohol_carbons = benyzl_alcohol[1].filter((atom)=>{
+    return atom[0] === "C"
+})
+const benzyl_alcohol_hydrogens = benyzl_alcohol[1].filter((atom)=>{
+    return atom[0] === "H"
+})
+const benzyl_alcohol_oxygens = benyzl_alcohol[1].filter((atom)=>{
+    return atom[0] === "O"
+})
+benzyl_alcohol_carbons.length.should.be.equal(7)
+benzyl_alcohol_hydrogens.length.should.be.equal(8)
+benzyl_alcohol_oxygens.length.should.be.equal(1)
+// Index: 3 Bonds: 3 1
+// Loop atom is the bottom one on the benzene ring
+VMolecule([benyzl_alcohol, 1]).canonicalSMILES().should.be.equal("C1=CC=C(C=C1)CO")
+
+console.log("test.js")
+process.exit()
+
+
 const ethanol = MoleculeFactory("C(O)C")
 VMolecule([ethanol, 1]).canonicalSMILES().should.be.equal("C(O)(C)")
 
@@ -109,6 +131,7 @@ if (true) {
 if (true) {
 
     console.log("Running initial tests ...")
+
 
 
     // epoxide acidic ring opening
