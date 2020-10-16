@@ -10,6 +10,8 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     atom.should.be.an.Array()
     atom.length.should.be.greaterThan(3)
 
+
+
     const __indexedDoubleBonds = (filter_by) => {
 
         const atoms = mmolecule[0][1]

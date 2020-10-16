@@ -16,13 +16,14 @@ const MoleculeAI = (container_molecule) => {
     // All required parameters should be passed by MoleculeAI()
     // No method should change state of container_molecule
     return {
-        
-        
-        /*
-        
 
 
-        */
+        "chains": (root_atom_index) => {
+            // Recursively fetch chains of atoms where root_atom_index is the first atom
+
+        },
+        
+
         "isWater":() => {
             if  (container_molecule[0][1].length !== 3) {
                 return false
