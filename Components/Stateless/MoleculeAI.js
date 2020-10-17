@@ -51,18 +51,20 @@ const MoleculeAI = (container_molecule) => {
             .cloneDeep(bonds).map(
                 (bond, index) => {
                     
-                     // 1a 0 - 0 - 1 = -1 => 0 ([])
-                     // 1b 1 - 0 - 1 =  0 ([[N]])
+                     // 1a ([])     0 - 0 - 1 = -1 => 0 
+                     // 1b ([[C]])  1 - 0 - 1 =  0 
+                    
                      // 1c 1 - 0 - 1 =  0 ([[N,O]])
                      const chain_index = chains.length-index-1 < 0?chains.length-index:chains.length-index
                      
                      
                      // 1a chains[0] = [C]
-                     // 1b chains[0] = [N,O]
+                     // 1b chains[0] = [C,N]
+                     
                      // 1c chains[0] = [N,O,C]
                      chains[chain_index].push(root_atom_index)
                     
-                     // 1a [[N,O,C,N]]
+                     // 
                      chains = this.chains(root_atom_index, bond.atom_index, chains)
                     
                     
