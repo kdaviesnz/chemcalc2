@@ -39,10 +39,11 @@ const MoleculeAI = (container_molecule) => {
             )
             // 1a. [N]          
             // 1b. [O,C]
-            // 1c. [C]
+            // 1c. []
             // 1d []
             
             if (bonds.length === 0) { 
+                
                 return chains
             }
             
@@ -60,6 +61,7 @@ const MoleculeAI = (container_molecule) => {
                      // 1c chains[0] = [N,O,C]
                      chains[chain_index].push(bond.atom_index)
                     
+                     // 1a [[N,O,C,N]]
                      chains = this.chains(root_atom_index, bond.atom_index, chains)
                     
                     
