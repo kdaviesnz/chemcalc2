@@ -20,20 +20,49 @@ const MoleculeAI = (container_molecule) => {
 
         "chains": (previous_atom_index, root_atom_index, chains) => {
           
+     // 1. CN(O)CN       
+            
+            
             
             // Recursively fetch chains of atoms where root_atom_index is the first atom
-            const root_atom_object = CAtom(container_molecule[0][1][root_atom_index], root_atom_index, container_molecule)
-            const bonds = root_atom_object.indexedBonds("")
-                       
             
-            .cloneDeep(bonds).filter(
+            // 1a. null, C, []
+            // 1b. C, N, [[N]]
+            // 1c. N, O, [[N,O]]
+            // 1d. C, N, [[N,O,C]]
+            const root_atom_object = CAtom(container_molecule[0][1][root_atom_index], root_atom_index, container_molecule)
+            
+            const bonds = root_atom_object.indexedBonds("").filter(
                 (bond) => {
                     return bond.atom_index !== previous_atom_index
                 }
-            ).map(
+            )
+            // 1a. [N]          
+            // 1b. [O,C]
+            // 1c. [C]
+            // 1d []
+            
+            if (bonds.length === 0) { 
+                return chains
+            }
+            
+            .cloneDeep(bonds).map(
                 (bond, index) => {
-                     chains[chains.length-index].push(bond.atom_index)
+                    
+                     // 1a 0 - 0 - 1 = -1 => 0 ([])
+                     // 1b 1 - 0 - 1 =  0 ([[N]])
+                     // 1c 1 - 0 - 1 =  0 ([[N,O]])
+                     const chain_index = chains.length-index-1 < 0?chains.length-index:chains.length-index
+                     
+                     
+                     // 1a chains[0] = [N]
+                     // 1b chains[0] = [N,O]
+                     // 1c chains[0] = [N,O,C]
+                     chains[chain_index].push(bond.atom_index)
+                    
                      chains = this.chains(root_atom_index, bond.atom_index, chains)
+                    
+                    
                 }                
             )
             
