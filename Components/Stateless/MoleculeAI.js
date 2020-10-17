@@ -27,7 +27,8 @@ const MoleculeAI = (container_molecule) => {
             // Recursively fetch chains of atoms where root_atom_index is the first atom
             
             // 1a. null, C, []
-            // 1b. C, N, [[N]]
+            // 1b. C, N, [[C]]
+            
             // 1c. N, O, [[N,O]]
             // 1d. C, N, [[N,O,C]]
             const root_atom_object = CAtom(container_molecule[0][1][root_atom_index], root_atom_index, container_molecule)
@@ -56,10 +57,10 @@ const MoleculeAI = (container_molecule) => {
                      const chain_index = chains.length-index-1 < 0?chains.length-index:chains.length-index
                      
                      
-                     // 1a chains[0] = [N]
+                     // 1a chains[0] = [C]
                      // 1b chains[0] = [N,O]
                      // 1c chains[0] = [N,O,C]
-                     chains[chain_index].push(bond.atom_index)
+                     chains[chain_index].push(root_atom_index)
                     
                      // 1a [[N,O,C,N]]
                      chains = this.chains(root_atom_index, bond.atom_index, chains)
