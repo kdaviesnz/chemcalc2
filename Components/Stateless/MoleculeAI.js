@@ -50,6 +50,8 @@ const MoleculeAI = (container_molecule) => {
                 return chains
             }
             
+            let col  = 0
+            
             .cloneDeep(bonds).map(
                 (bond, index) => {
                     
@@ -73,8 +75,8 @@ const MoleculeAI = (container_molecule) => {
                          if (undefined === chains[chain_index-1]) {
                              chains[chain_index] = []
                          } else {
-                             // [[C,N,O]]***
-                             chains[chain_index] = chains[chain_index-1]
+                             // chains[chain_index-1] = [[C,N,O]]
+                             chains[chain_index] = chains[chain_index-1].slice(0, col)
                          }
                      }
                      chains[chain_index].push(bond.atom_index)
@@ -92,6 +94,7 @@ const MoleculeAI = (container_molecule) => {
                     // 1. CN(O)CN   
                     // 1a chains = [[C,N,O]]
                     
+                    col++
                     
                 }                
             )
