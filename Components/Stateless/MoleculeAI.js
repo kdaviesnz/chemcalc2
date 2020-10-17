@@ -18,20 +18,27 @@ const MoleculeAI = (container_molecule) => {
     return {
 
 
-        "chains": (root_atom_index, chains) => {
+        "chains": (previous_atom_index, root_atom_index, chains) => {
+          
+            
             // Recursively fetch chains of atoms where root_atom_index is the first atom
             const root_atom_object = CAtom(container_molecule[0][1][root_atom_index], root_atom_index, container_molecule)
             const bonds = root_atom_object.indexedBonds("")
                        
             
-            .cloneDeep(bonds).slice(1).map(
+            .cloneDeep(bonds).filter(
                 (bond) => {
-                    
+                    return bond.atom_index !== previous_atom_index
                 }
+            ).map(
+                (bond, index) => {
+                     chains[chains.length-index].push(bond.atom_index)
+                     chains = this.chains(root_atom_index, bond.atom_index, chains)
+                }                
             )
             
-            chains[0].push(bonds[0].atom_index)
-            chains
+            return chains
+            
             
         },
         
