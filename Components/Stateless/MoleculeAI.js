@@ -18,7 +18,7 @@ const MoleculeAI = (container_molecule) => {
     return {
 
 
-        "chains": (previous_atom_index, root_atom_index, chains, chain_index) => {
+        "chains": (previous_atom_index, root_atom_index, chains, chain_index, col) => {
           
      // 1. CN(O)CN       
             
@@ -26,7 +26,7 @@ const MoleculeAI = (container_molecule) => {
             
             // Recursively fetch chains of atoms where root_atom_index is the first atom
             
-            // 1a. previous_atom_index = null, root_atom_index = C, chains = [[C]], chain_index = 0
+            // 1a. previous_atom_index = null, root_atom_index = C, chains = [[C]], chain_index = 0, col = 0
             // 1b previous_atom_index = C, root_atom_index = N  chains = [[C,N]], chain_index = 0
             // 1c previous_atom_index = N, root_atom_index = O  chains = [[C,N,O]], chain_index = 0
             
@@ -50,15 +50,15 @@ const MoleculeAI = (container_molecule) => {
                 return chains
             }
             
-            let col  = 0
+            
             
             .cloneDeep(bonds).map(
                 (bond, index) => {
                     
-                    // 1a. bonds = [N]          
+                    // 1a. bonds = [N],  col = 0         
                     // 1b. bonds = [O,C]
                     
-                    // 1a. previous_atom_index = null, root_atom_index = C, chains = [[C]]
+                    // 1a. previous_atom_index = null, root_atom_index = C, chains = [[C]], col = 0   
                     // 1b previous_atom_index = C, root_atom_index = N  chains = [[C,N]]
                     // 1bb previous_atom_index = C, root_atom_index = N  chains = [[C,N,O]]
                      
@@ -73,6 +73,7 @@ const MoleculeAI = (container_molecule) => {
                      // 1. CN(O)CN 
                      if (undefined === chains[chain_index]) {
                          if (undefined === chains[chain_index-1]) {
+                             // 1a
                              chains[chain_index] = []
                          } else {
                              // chains[chain_index-1] = [[C,N,O]]
@@ -80,7 +81,10 @@ const MoleculeAI = (container_molecule) => {
                          }
                      }
                      chains[chain_index].push(bond.atom_index)
-                     // 1a chains[0] = [C,N]
+                   
+                     col++
+                    
+                     // 1a chains[0] = [C,N] col=1
                      // 1b chains[0] = [C,N,O]
                    
                     //  1bb chains[1] =  (chains[0] = [C,N,O])
@@ -90,11 +94,11 @@ const MoleculeAI = (container_molecule) => {
                      
                     
                      
-                     chains = this.chains(root_atom_index, bond.atom_index, chains)
+                     chains = this.chains(root_atom_index, bond.atom_index, chains, col)
                     // 1. CN(O)CN   
                     // 1a chains = [[C,N,O]]
                     
-                    col++
+                    
                     
                 }                
             )
