@@ -27,8 +27,8 @@ const MoleculeAI = (container_molecule) => {
             // Recursively fetch chains of atoms where root_atom_index is the first atom
             
             // 1a. previous_atom_index = null, root_atom_index = C, chains = [[C]], chain_index = 0, col = 0
-            // 1b previous_atom_index = C, root_atom_index = N  chains = [[C,N]], chain_index = 0
-            // 1c previous_atom_index = N, root_atom_index = O  chains = [[C,N,O]], chain_index = 0
+            // 1b previous_atom_index = C, root_atom_index = N  chains = [[C,N]], chain_index = 0, col = 1
+            // 1c previous_atom_index = N, root_atom_index = O  chains = [[C,N,O]], chain_index = 0, col = 2
             
             
             
@@ -56,11 +56,11 @@ const MoleculeAI = (container_molecule) => {
                 (bond, index) => {
                     
                     // 1a. bonds = [N],  col = 0         
-                    // 1b. bonds = [O,C]
+                    // 1b. bonds = [O,C], col = 1
                     
                     // 1a. previous_atom_index = null, root_atom_index = C, chains = [[C]], col = 0   
-                    // 1b previous_atom_index = C, root_atom_index = N  chains = [[C,N]]
-                    // 1bb previous_atom_index = C, root_atom_index = N  chains = [[C,N,O]]
+                    // 1b previous_atom_index = C, root_atom_index = N  chains = [[C,N]], col = 2
+                    // 1bb previous_atom_index = C, root_atom_index = N  chains = [[C,N,O]], col = 2
                      
                      
                     
@@ -77,6 +77,7 @@ const MoleculeAI = (container_molecule) => {
                              chains[chain_index] = []
                          } else {
                              // chains[chain_index-1] = [[C,N,O]]
+                             // 1bb col = 2
                              chains[chain_index] = chains[chain_index-1].slice(0, col)
                          }
                      }
@@ -85,7 +86,7 @@ const MoleculeAI = (container_molecule) => {
                      col++
                     
                      // 1a chains[0] = [C,N] col=1
-                     // 1b chains[0] = [C,N,O]
+                     // 1b chains[0] = [C,N,O] col=2
                    
                     //  1bb chains[1] =  (chains[0] = [C,N,O])
                     
