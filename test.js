@@ -88,7 +88,7 @@ console.log(benyzl_alcohol[1].map(
     }
 ))
 const benyzl_alcohol_molecule_ai = require("./Components/Stateless/MoleculeAI")([benyzl_alcohol, 1])
-const benyzl_alcohol_chains = chain_test_molecule_ai.chains(null, 2, [[1]], 0, 0, 1)
+const benyzl_alcohol_chains = chain_test_molecule_ai.chains(null, 1, [[1]], 0, 0, 1)
 console.log(benyzl_alcohol_chains)
 process.exit()
 

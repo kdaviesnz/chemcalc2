@@ -20,8 +20,10 @@ const MoleculeAI = (container_molecule) => {
 
         "chains": function(previous_atom_index, root_atom_index, chains, chain_index, col, depth) {
 
-            console.log("Depth = " + depth)
+            console.log("previous atom index = " + previous_atom_index + " root atom index= " + root_atom_index + " chain index= " + chain_index + " col= " + col + " Depth = " + depth)
+            //previous atom index = null root atom index= 1 chain index= 0 col= 0 Depth = 1
             console.log(chains)
+            // [[1]]
             // const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
             /*
             const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
@@ -33,116 +35,12 @@ const MoleculeAI = (container_molecule) => {
   [ 'C', 10, [ 1, 8 ] ],     C)
   [ 'C', 13, [ 6, 15 ] ],   C
   [ 'O', 15, [ 13 ] ] ]     O
-
-
              */
             /*
-           Depth = 1
-[ [ 1 ] ]
-loop
-depth =
-Adding atom 3
-Depth = 2
-[ [ 1, 3 ] ]
-loop
-depth =
-Adding atom 6
-Depth = 3
-[ [ 1, 3, 6 ] ]
-loop
-depth =
-Adding atom 2
-Depth = 4
-[ [ 1, 3, 6, 2 ] ]
-loop
-depth =
-Adding atom 3
-Depth = 5
-[ [ 1, 3, 6, 2, 3 ] ]
-loop
-depth =
-Adding atom 6
-Depth = 6
-[ [ 1, 3, 6, 2, 3, 6 ] ]
-loop
-depth =
-Adding atom 2
-Depth = 7
-[ [ 1, 3, 6, 2, 3, 6, 2 ] ]
-loop
-depth =
-Adding atom 3
-Depth = 8
-[ [ 1, 3, 6, 2, 3, 6, 2, 3 ] ]
-loop
-depth =
-Adding atom 6
-Depth = 9
-[ [ 1, 3, 6, 2, 3, 6, 2, 3, 6 ] ]
-loop
-depth =
-Adding atom 2
-Depth = 10
-[ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2 ] ]
-loop
-depth =
-Adding atom 3
-Depth = 11
-[ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3 ] ]
-loop
-depth =
-Adding atom 6
-Depth = 12
-[ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6 ] ]
-loop
-depth =
-Adding atom 2
-Depth = 13
-[ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2 ] ]
-loop
-depth =
-Adding atom 3
-Depth = 14
-[ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3 ] ]
-loop
-depth =
-Adding atom 6
-Depth = 15
-[ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6 ] ]
-loop
-depth =
-Adding atom 2
-Depth = 16
-[ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2 ] ]
-loop
-depth =
-Adding atom 3
-Depth = 17
-[ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3 ] ]
-loop
-depth =
-Adding atom 6
-Depth = 18
-[ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6 ] ]
-loop
-depth =
-Adding atom 2
-Depth = 19
-[ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2 ] ]
-loop
-depth =
-Adding atom 3
-Depth = 20
-[ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3 ] ]
-loop
-depth =
-Adding atom 6
-Depth = 21
-[ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6 ] ]
-MoleculeAI chains()
+
 
              */
-            if (depth > 20) {
+            if (depth > 10) {
                 console.log("MoleculeAI chains()")
                 process.exit()
             }
@@ -178,6 +76,10 @@ Chains=
                 }
             )
 
+            console.log(root_atom_index)
+            console.log(bonds)
+            console.log("MoleculeAI")
+            process.exit()
             if (bonds.length === 0) {
                 return chains
             }
@@ -206,9 +108,25 @@ Chains=
                          }
                      }
 
-                     console.log("loop")
-                    console.log("depth = ")
+                    console.log("IN LOOP Index= " + index + " Col=" + col + " depth= " + depth)
+                    console.log("Bonds (root atom index = " + root_atom_index + ")")
+                    console.log(bonds.map((bond)=>{
+                        return bond.atom_index
+                    }))
+                    console.log("Chains: ")
+                    console.log(chains)
                     console.log("Adding atom " + bond.atom_index)
+
+                    /*
+IN LOOP Index= 0 Col=0 depth= 1
+Bonds (root atom index = 1)
+[ 2 ]
+Chains:
+[ [ 1 ] ]
+
+                     */
+
+
                      chains[chain_index].push(bond.atom_index)
 
                     col++
