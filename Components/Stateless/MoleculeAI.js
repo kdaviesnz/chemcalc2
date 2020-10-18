@@ -111,7 +111,7 @@ Chains=
                          }
                      }
 
-                     chains[chain_index].push(bond.atom[0])
+                     chains[chain_index].push(bond.atom_index)
                     // "C(O)N"
                      console.log(depth + " chains (After)")
                      console.log(chains) // 1. [ [ 'C', 'O' ] ], 1. [ [ 'C', 'O' ], [ 'C', 'N' ] ]

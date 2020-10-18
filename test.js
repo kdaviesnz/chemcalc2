@@ -62,13 +62,11 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
 const Families = require('./Models/Families')
 
 //const chain_test = MoleculeFactory("CN(O)CN")
-const chain_test = MoleculeFactory("C1(O)CN")
-//console.log(chain_test)
-//process.exit()
+const chain_test = MoleculeFactory("C1CC1")
 const chain_test_molecule_ai = require("./Components/Stateless/MoleculeAI")([chain_test, 1])
 
 //  "chains": (previous_atom_index, root_atom_index, chains, chain_index, col)
-const chains = chain_test_molecule_ai.chains(null, 3, [["C"]], 0, 0, 1)
+const chains = chain_test_molecule_ai.chains(null, 2, [["C"]], 0, 0, 1)
 // [ [ 'C', 'O' ], [ 'C', 'N' ] ]
 console.log("TEst.js")
 console.log(chains)
