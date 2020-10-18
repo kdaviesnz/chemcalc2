@@ -22,6 +22,7 @@ const MoleculeAI = (container_molecule) => {
 
             console.log("Depth = " + depth)
             console.log(chains)
+            // const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
             /*
             const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
             [ [ 'C', 1 ],
