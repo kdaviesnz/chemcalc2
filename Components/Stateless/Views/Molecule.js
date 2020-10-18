@@ -278,6 +278,25 @@ const VMolecule = (mmolecule) => {
 
     return {
 
+        'compressed': () => {
+            return _.cloneDeep(mmolecule[0][1]).map(
+                (atom, index) => {
+                    const c = CAtom(atom, index, _.cloneDeep(mmolecule))
+                    const bonds = c.indexedBonds("").filter((bond)=>{
+                        return bond.atom[0] !== 'H'
+                    }).map(
+                        (bond)=>{
+                            return bond.atom_index + "  " + bond.atom[0]
+                        }
+                    )
+                    return [atom[0], index, bonds]
+                }
+            ).filter(
+                (atom) => {
+                    return atom[0] !== "H"
+                }
+            )
+        },
         canonicalSMILES: () => {
 
             // Index: 3 Bonds: 3 1

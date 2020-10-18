@@ -62,33 +62,18 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
 const Families = require('./Models/Families')
 
 //const chain_test = MoleculeFactory("CN(O)CN")
-const chain_test = MoleculeFactory("C1OC1")
-const chain_test_molecule_ai = require("./Components/Stateless/MoleculeAI")([chain_test, 1])
+//const chain_test = MoleculeFactory("C1OC1")
+//const chain_test_molecule_ai = require("./Components/Stateless/MoleculeAI")([chain_test, 1])
 
 //  "chains": (previous_atom_index, root_atom_index, chains, chain_index, col)
 //const chains = chain_test_molecule_ai.chains(null, 2, [[2]], 0, 0, 1)
 // [ [ 'C', 'O' ], [ 'C', 'N' ] ]
 
 const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
-console.log(benyzl_alcohol[1].map(
-    (atom, index) => {
-        const c = CAtom(atom, index, [benyzl_alcohol,1])
-        const bonds = c.indexedBonds("").filter((bond)=>{
-            return bond.atom[0] !== 'H'
-        }).map(
-            (bond)=>{
-                return bond.atom_index
-            }
-        )
-        return [atom[0], index, bonds]
-    }
-).filter(
-    (atom) => {
-        return atom[0] !== "H"
-    }
-))
+//console.log(VMolecule([benyzl_alcohol,1]).compressed())
+//console.log("test.js")
 const benyzl_alcohol_molecule_ai = require("./Components/Stateless/MoleculeAI")([benyzl_alcohol, 1])
-const benyzl_alcohol_chains = chain_test_molecule_ai.chains(null, 1, [[1]], 0, 0, 1)
+const benyzl_alcohol_chains = benyzl_alcohol_molecule_ai.chains(null, 1, [[1]], 0, 0, 1)
 console.log(benyzl_alcohol_chains)
 process.exit()
 

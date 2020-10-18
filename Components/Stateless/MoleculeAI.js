@@ -1,5 +1,6 @@
 const CAtom = require('../../Controllers/Atom')
 const _ = require('lodash');
+const VMolecule = require('../../Components/Stateless/Views/Molecule')
 
 const MoleculeAI = (container_molecule) => {
 
@@ -20,6 +21,10 @@ const MoleculeAI = (container_molecule) => {
 
         "chains": function(previous_atom_index, root_atom_index, chains, chain_index, col, depth) {
 
+            //console.log(VMolecule(container_molecule).compressed())
+            //console.log('moleculeai')
+            //process.exit()
+
             console.log("previous atom index = " + previous_atom_index + " root atom index= " + root_atom_index + " chain index= " + chain_index + " col= " + col + " Depth = " + depth)
             //previous atom index = null root atom index= 1 chain index= 0 col= 0 Depth = 1
             console.log(chains)
@@ -27,14 +32,22 @@ const MoleculeAI = (container_molecule) => {
             // const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
             /*
             const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
-            [ [ 'C', 1, [ 3, 10 ] ], C1
-  [ 'C', 3, [ 1, 5 ] ],      C
-  [ 'C', 5, [ 3, 6 ] ],      C=
-  [ 'C', 6, [ 5, 8, 13 ] ],  C
-  [ 'C', 8, [ 6, 10 ] ],    (C=
-  [ 'C', 10, [ 1, 8 ] ],     C)
-  [ 'C', 13, [ 6, 15 ] ],   C
-  [ 'O', 15, [ 13 ] ] ]     O
+            [ [ 'C', 1, [ '3  C', '10  C' ] ],
+  [ 'C', 3, [ '1  C', '5  C' ] ],
+  [ 'C', 5, [ '3  C', '6  C' ] ],
+  [ 'C', 6, [ '5  C', '8  C', '13  C' ] ],
+  [ 'C', 8, [ '6  C', '10  C' ] ],
+  [ 'C', 10, [ '1  C', '8  C' ] ],
+  [ 'C', 13, [ '6  C', '15  O' ] ],
+  [ 'O', 15, [ '13  C' ] ] ]
+
+  Final
+  [ [ 1, 3, 5, 6, 8, 10, 1 ],
+  [ 1, 3, 5, 6, 13, 15 ],
+  [ 1, 10, 8, 6, 5, 3, 1 ],
+  [ 1, 10, 8, 6, 5, 13, 15 ] ]
+
+
              */
             /*
 
@@ -70,16 +83,13 @@ Chains=
 
             // "C(O)N"
             // depth = 2 previous atom index= 3 root atom index=4
+           // console.log(container_molecule)
             const bonds = _.cloneDeep(root_atom_object).indexedBonds("").filter(
                 (bond) => {
-                    return bond.atom_index !== previous_atom_index && bond.atom[0] !== "H"
+                   return bond.atom_index !== previous_atom_index && bond.atom[0] !== "H"
                 }
             )
 
-            console.log(root_atom_index)
-            console.log(bonds)
-            console.log("MoleculeAI")
-            process.exit()
             if (bonds.length === 0) {
                 return chains
             }
