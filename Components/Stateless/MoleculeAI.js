@@ -37,48 +37,109 @@ const MoleculeAI = (container_molecule) => {
 
              */
             /*
-            Depth = 1
+           Depth = 1
 [ [ 1 ] ]
+loop
+depth =
+Adding atom 3
 Depth = 2
 [ [ 1, 3 ] ]
+loop
+depth =
+Adding atom 6
 Depth = 3
 [ [ 1, 3, 6 ] ]
+loop
+depth =
+Adding atom 2
 Depth = 4
 [ [ 1, 3, 6, 2 ] ]
+loop
+depth =
+Adding atom 3
 Depth = 5
 [ [ 1, 3, 6, 2, 3 ] ]
+loop
+depth =
+Adding atom 6
 Depth = 6
 [ [ 1, 3, 6, 2, 3, 6 ] ]
+loop
+depth =
+Adding atom 2
 Depth = 7
 [ [ 1, 3, 6, 2, 3, 6, 2 ] ]
+loop
+depth =
+Adding atom 3
 Depth = 8
 [ [ 1, 3, 6, 2, 3, 6, 2, 3 ] ]
+loop
+depth =
+Adding atom 6
 Depth = 9
 [ [ 1, 3, 6, 2, 3, 6, 2, 3, 6 ] ]
+loop
+depth =
+Adding atom 2
 Depth = 10
 [ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2 ] ]
+loop
+depth =
+Adding atom 3
 Depth = 11
 [ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3 ] ]
+loop
+depth =
+Adding atom 6
 Depth = 12
 [ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6 ] ]
+loop
+depth =
+Adding atom 2
 Depth = 13
 [ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2 ] ]
+loop
+depth =
+Adding atom 3
 Depth = 14
 [ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3 ] ]
+loop
+depth =
+Adding atom 6
 Depth = 15
 [ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6 ] ]
+loop
+depth =
+Adding atom 2
 Depth = 16
 [ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2 ] ]
+loop
+depth =
+Adding atom 3
 Depth = 17
 [ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3 ] ]
+loop
+depth =
+Adding atom 6
 Depth = 18
 [ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6 ] ]
+loop
+depth =
+Adding atom 2
 Depth = 19
 [ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2 ] ]
+loop
+depth =
+Adding atom 3
 Depth = 20
 [ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3 ] ]
+loop
+depth =
+Adding atom 6
 Depth = 21
 [ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6 ] ]
+MoleculeAI chains()
 
              */
             if (depth > 20) {
@@ -145,6 +206,9 @@ Chains=
                          }
                      }
 
+                     console.log("loop")
+                    console.log("depth = ")
+                    console.log("Adding atom " + bond.atom_index)
                      chains[chain_index].push(bond.atom_index)
 
                     col++
