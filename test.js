@@ -66,14 +66,16 @@ const chain_test = MoleculeFactory("C1OC1")
 const chain_test_molecule_ai = require("./Components/Stateless/MoleculeAI")([chain_test, 1])
 
 //  "chains": (previous_atom_index, root_atom_index, chains, chain_index, col)
-const chains = chain_test_molecule_ai.chains(null, 2, [[2]], 0, 0, 1)
+//const chains = chain_test_molecule_ai.chains(null, 2, [[2]], 0, 0, 1)
 // [ [ 'C', 'O' ], [ 'C', 'N' ] ]
-console.log("TEst.js")
-console.log(chains)
-console.log("test.js")
-process.exit()
 
 const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
+//console.log(benyzl_alcohol)
+const benyzl_alcohol_molecule_ai = require("./Components/Stateless/MoleculeAI")([benyzl_alcohol, 1])
+const benyzl_alcohol_chains = chain_test_molecule_ai.chains(null, 2, [[1]], 0, 0, 1)
+console.log(benyzl_alcohol_chains)
+process.exit()
+
 const benzyl_alcohol_carbons = benyzl_alcohol[1].filter((atom)=>{
     return atom[0] === "C"
 })

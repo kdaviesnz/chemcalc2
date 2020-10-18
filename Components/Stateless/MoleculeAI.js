@@ -20,6 +20,57 @@ const MoleculeAI = (container_molecule) => {
 
         "chains": function(previous_atom_index, root_atom_index, chains, chain_index, col, depth) {
 
+            console.log("Depth = " + depth)
+            console.log(chains)
+            /*
+            Depth = 1
+[ [ 1 ] ]
+Depth = 2
+[ [ 1, 3 ] ]
+Depth = 3
+[ [ 1, 3, 6 ] ]
+Depth = 4
+[ [ 1, 3, 6, 2 ] ]
+Depth = 5
+[ [ 1, 3, 6, 2, 3 ] ]
+Depth = 6
+[ [ 1, 3, 6, 2, 3, 6 ] ]
+Depth = 7
+[ [ 1, 3, 6, 2, 3, 6, 2 ] ]
+Depth = 8
+[ [ 1, 3, 6, 2, 3, 6, 2, 3 ] ]
+Depth = 9
+[ [ 1, 3, 6, 2, 3, 6, 2, 3, 6 ] ]
+Depth = 10
+[ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2 ] ]
+Depth = 11
+[ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3 ] ]
+Depth = 12
+[ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6 ] ]
+Depth = 13
+[ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2 ] ]
+Depth = 14
+[ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3 ] ]
+Depth = 15
+[ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6 ] ]
+Depth = 16
+[ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2 ] ]
+Depth = 17
+[ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3 ] ]
+Depth = 18
+[ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6 ] ]
+Depth = 19
+[ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2 ] ]
+Depth = 20
+[ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3 ] ]
+Depth = 21
+[ [ 1, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6, 2, 3, 6 ] ]
+
+             */
+            if (depth > 20) {
+                console.log("MoleculeAI chains()")
+                process.exit()
+            }
             /*
             depth = 1 previous atom index= null root atom index=3
 chain index= 0 col = 0
