@@ -25,14 +25,15 @@ const MoleculeAI = (container_molecule) => {
             // const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
             /*
             const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
-            [ [ 'C', 1 ],
-  [ 'C', 3 ],
-  [ 'C', 5 ],
-  [ 'C', 6 ],
-  [ 'C', 8 ],
-  [ 'C', 10 ],
-  [ 'C', 13 ],
-  [ 'O', 15 ] ]
+            [ [ 'C', 1, [ 3, 10 ] ], C1
+  [ 'C', 3, [ 1, 5 ] ],      C
+  [ 'C', 5, [ 3, 6 ] ],      C=
+  [ 'C', 6, [ 5, 8, 13 ] ],  C
+  [ 'C', 8, [ 6, 10 ] ],    (C=
+  [ 'C', 10, [ 1, 8 ] ],     C)
+  [ 'C', 13, [ 6, 15 ] ],   C
+  [ 'O', 15, [ 13 ] ] ]     O
+
 
              */
             /*

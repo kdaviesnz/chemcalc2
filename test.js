@@ -72,7 +72,15 @@ const chain_test_molecule_ai = require("./Components/Stateless/MoleculeAI")([cha
 const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
 console.log(benyzl_alcohol[1].map(
     (atom, index) => {
-        return [atom[0], index]
+        const c = CAtom(atom, index, [benyzl_alcohol,1])
+        const bonds = c.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] !== 'H'
+        }).map(
+            (bond)=>{
+                return bond.atom_index
+            }
+        )
+        return [atom[0], index, bonds]
     }
 ).filter(
     (atom) => {
