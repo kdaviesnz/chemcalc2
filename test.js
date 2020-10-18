@@ -75,6 +75,17 @@ const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
 const benyzl_alcohol_molecule_ai = require("./Components/Stateless/MoleculeAI")([benyzl_alcohol, 1])
 const benyzl_alcohol_chains = benyzl_alcohol_molecule_ai.chains(null, 1, [[1]], 0, 0, 1)
 console.log(benyzl_alcohol_chains)
+console.log("test.js")
+/*
+[ [ 1, 3, 5, 6, 8, 10, 1 ],
+  [ 1, 3, 5, 6, 13, 15 ],
+  [ 1, 10, 8, 6, 5, 3, 1 ],
+  [ 1, 10, 8, 6, 13, 15 ] ]
+
+
+C1CCC(CO)CCC
+
+ */
 process.exit()
 
 const benzyl_alcohol_carbons = benyzl_alcohol[1].filter((atom)=>{

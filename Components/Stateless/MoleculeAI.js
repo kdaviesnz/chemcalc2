@@ -25,14 +25,14 @@ const MoleculeAI = (container_molecule) => {
             //console.log('moleculeai')
             //process.exit()
 
-            console.log("previous atom index = " + previous_atom_index + " root atom index= " + root_atom_index + " chain index= " + chain_index + " col= " + col + " Depth = " + depth)
+            // console.log("previous atom index = " + previous_atom_index + " root atom index= " + root_atom_index + " chain index= " + chain_index + " col= " + col + " Depth = " + depth)
             //previous atom index = null root atom index= 1 chain index= 0 col= 0 Depth = 1
-            console.log(chains)
+            // console.log(chains)
             // [[1]]
             // const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
             /*
             const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
-            [ [ 'C', 1, [ '3  C', '10  C' ] ],
+  [['C', 1, [ '3  C', '10  C' ] ],
   [ 'C', 3, [ '1  C', '5  C' ] ],
   [ 'C', 5, [ '3  C', '6  C' ] ],
   [ 'C', 6, [ '5  C', '8  C', '13  C' ] ],
@@ -42,10 +42,12 @@ const MoleculeAI = (container_molecule) => {
   [ 'O', 15, [ '13  C' ] ] ]
 
   Final
-  [ [ 1, 3, 5, 6, 8, 10, 1 ],
-  [ 1, 3, 5, 6, 13, 15 ],
-  [ 1, 10, 8, 6, 5, 3, 1 ],
-  [ 1, 10, 8, 6, 5, 13, 15 ] ]
+  // C1  =  C   C   =   C    (   C   =   C1   )  C   O
+  //  1     3   5       6    (   8   =   10   )  13  15
+  [ 1, 3, 5, 6, 8, 10, 1 ], correct (benzine ring going clockwise from bottom)
+  [ 1, 3, 5, 6, 13, 15 ], correct (chain starting from bottom of benzene ring and going from the left up to the oxygen
+  [ 1, 10, 8, 6, 5, 3, 1 ], correct (benzine ring going anticlockwise from bottom)
+  [ 1, 10, 8, 6, 5, 13, 15 ]  ???
 
 
              */
@@ -53,10 +55,13 @@ const MoleculeAI = (container_molecule) => {
 
 
              */
+            /*
             if (depth > 10) {
                 console.log("MoleculeAI chains()")
                 process.exit()
             }
+            */
+
             /*
             depth = 1 previous atom index= null root atom index=3
 chain index= 0 col = 0
@@ -98,34 +103,41 @@ Chains=
             
             _.cloneDeep(bonds).map(
                 (bond, index) => {
-                    
+
                     // 1a. bonds = [N],  col = 0         
                     // 1b. bonds = [O,C], col = 1
-                    
+
                     // 1a. previous_atom_index = null, root_atom_index = C, chains = [[C]], col = 0   
                     // 1b previous_atom_index = C, root_atom_index = N  chains = [[C,N]], col = 2
                     // 1bb previous_atom_index = C, root_atom_index = N  chains = [[C,N,O]], col = 2
 
 
                     // "C(O)N"
-                    const chain_index = chains.length+index-1 < 0?chains.length+index:chains.length+index-1
+                    const chain_index = chains.length + index - 1 < 0 ? chains.length + index : chains.length + index - 1
 
-                     if (undefined === chains[chain_index]) {
-                         if (undefined === chains[chain_index-1]) {
-                             chains[chain_index] = []
-                         } else {
-                             chains[chain_index] = chains[chain_index-1].slice(0, col)
-                         }
-                     }
+                    if (undefined === chains[chain_index]) {
+                        if (undefined === chains[chain_index - 1]) {
+                            chains[chain_index] = []
+                        } else {
+                            //console.log("Adding new branch col=" + col + ' loop index=' + index + ' depth= ' + depth)
+                            //console.log(chains)
+                           // chains[chain_index] = chains[chain_index - 1].slice(0, col)
+                            chains[chain_index] = _.cloneDeep(chains[chain_index - 1]).slice(0, depth)
+                            //console.log("Added new branch col=" + col)
+                            //console.log(chains)
+                        }
+                    }
 
-                    console.log("IN LOOP Index= " + index + " Col=" + col + " depth= " + depth)
-                    console.log("Bonds (root atom index = " + root_atom_index + ")")
-                    console.log(bonds.map((bond)=>{
-                        return bond.atom_index
-                    }))
-                    console.log("Chains: ")
-                    console.log(chains)
-                    console.log("Adding atom " + bond.atom_index)
+                    if (chain_index === 55555555) {
+                        console.log("IN LOOP Index= " + index + " Col=" + col + " depth= " + depth + ' chain index=' + chain_index)
+                        console.log("Bonds (root atom index = " + root_atom_index + ")")
+                        console.log(bonds.map((bond) => {
+                            return bond.atom_index
+                        }))
+                        console.log("Chains: ")
+                        console.log(chains)
+                        console.log("Adding atom " + bond.atom_index)
+                    }
 
                     /*
 IN LOOP Index= 0 Col=0 depth= 1
