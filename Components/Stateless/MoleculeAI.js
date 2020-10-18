@@ -20,10 +20,6 @@ const MoleculeAI = (container_molecule) => {
 
         "chains": function(previous_atom_index, root_atom_index, chains, chain_index, col, depth) {
 
-            console.log("depth = " + depth + " previous atom index= " + previous_atom_index + ' root atom index=' + root_atom_index)
-            console.log("chain index= " + chain_index + " col = " + col)
-            console.log("Chains=")
-            console.log(chains)
             /*
             depth = 1 previous atom index= null root atom index=3
 chain index= 0 col = 0
@@ -56,22 +52,7 @@ Chains=
                 }
             )
 
-            console.log(depth + " Bonds (no prevous bond")
-            console.log(_.cloneDeep(bonds).map((bond)=>{
-                return bond.atom[0]
-            }))
-            // "C(O)N"
-            /*
-            1 Bonds: [ 'O', 'N ]
-            2 Bonds: []
-             */
-
-
             if (bonds.length === 0) {
-                // "C(O)N"
-                // 2. [ [ 'C', 'O' ] ]
-                console.log("Returning chains")
-                console.log(chains)
                 return chains
             }
             
@@ -89,63 +70,25 @@ Chains=
 
 
                     // "C(O)N"
-                    console.log(depth + " chains (Before) " + index)
-                    console.log(chains) // 1. [ [ 'C' ] ],  1. [ [ 'C', 'O' ] ]
                     const chain_index = chains.length+index-1 < 0?chains.length+index:chains.length+index-1
-                    console.log("chain index: " + chain_index) // 1. 0, 1. 1
 
                      if (undefined === chains[chain_index]) {
                          if (undefined === chains[chain_index-1]) {
-                             // 1a
-                             console.log(depth + " Branch")
-                             console.log(chains)
                              chains[chain_index] = []
                          } else {
-                             // chains[chain_index-1] = [[C,N,O]]
-                             // 1bb col = 2
-                             // 1 New Branch
-                             console.log(depth + " New Branch")
-                             console.log(chains)
-
                              chains[chain_index] = chains[chain_index-1].slice(0, col)
                          }
                      }
 
                      chains[chain_index].push(bond.atom_index)
-                    // "C(O)N"
-                     console.log(depth + " chains (After)")
-                     console.log(chains) // 1. [ [ 'C', 'O' ] ], 1. [ [ 'C', 'O' ], [ 'C', 'N' ] ]
-
-
 
                     col++
 
 
+                     if (chains[chain_index][0] !== bond.atom_index) {
+                         chains = this.chains(root_atom_index, bond.atom_index, chains, chain_index, col, depth + 1)
+                     }
 
-                    // 1a chains[0] = [C,N] col=1
-                     // 1b chains[0] = [C,N,O] col=2
-                   
-                    //  1bb chains[1] =  (chains[0] = [C,N,O])
-                    
-                     // 1a root_atom_index = C, bond.atom_index = N  chains = [[C,N]]
-                     // 1b root_atom_index = N, bond.atom_index = O  chains = [[C,N,O]]
-                     
-                    
-                     
-                     chains = this.chains(root_atom_index, bond.atom_index, chains, chain_index, col, depth+1)
-
-                    // "C(O)N"
-                    console.log(depth + " Chains after recursive call:")
-                    console.log(chains)
-                    /*
-                     1 Chains after recursive call: [ [ 'C', 'O' ] ]
-                     1 [ [ 'C', 'O' ], [ 'C', 'N' ] ]
-
-                     */
-
-                    
-                    
-                    
                 }                
             )
             
