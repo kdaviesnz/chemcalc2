@@ -21,6 +21,10 @@ const MoleculeAI = (container_molecule) => {
 
         "chains": function(previous_atom_index, root_atom_index, chains, chain_index, col, depth) {
 
+            console.log("Start chains from this.chains() depth=" + depth + '  chain index=' + chain_index)
+            console.log(chains)
+
+
             // "C  O   C  (C) (C)   C   O")
             //  3  4   5  (9) (13)  16  18
             //console.log(this.compressed())
@@ -93,12 +97,34 @@ const MoleculeAI = (container_molecule) => {
             }
 
             /*
-            Entering loop depth = 1 chain index=0
+                        // "C  O   C  (C) (C)   C   O")
+            //  3  4   5  (9) (13)  16  18
+            //console.log(this.compressed())
+            /*
+   [ [ 'C', 3, [ '4  O' ] ],
+  [ 'O', 4, [ '3  C', '5  C' ] ],
+  [ 'C', 5, [ '4  O', '9  C', '13  C', '16  C' ] ],
+  [ 'C', 9, [ '5  C' ] ],
+  [ 'C', 13, [ '5  C' ] ],
+  [ 'C', 16, [ '5  C', '18  O' ] ],
+  [ 'O', 18, [ '16  C' ] ] ]
+
+ Start chains from this.chains() depth=1  chain index=0
+[ [ 3 ] ]
+Entering loop depth = 1 chain index=0
+Start chains from this.chains() depth=2  chain index=0
+[ [ 3, 4 ] ]
 Entering loop depth = 2 chain index=0
+Start chains from this.chains() depth=3  chain index=0
+[ [ 3, 4, 5 ] ]
 Entering loop depth = 3 chain index=0
+Start chains from this.chains() depth=4  chain index=0
+[ [ 3, 4, 5, 9 ] ]
 Returning chains from this.chains() depth=4  chain index=0
 [ [ 3, 4, 5, 9 ] ]
 Entering loop depth = 3 chain index=1
+Start chains from this.chains() depth=4  chain index=1
+[ [ 3, 4, 5, 9 ], [ 3, 4, 5, 13 ] ]
 Returning chains from this.chains() depth=4  chain index=1
 [ [ 3, 4, 5, 9 ], [ 3, 4, 5, 13 ] ]
 Entering loop depth = 3 chain index=3
@@ -110,6 +136,7 @@ Returning chains from this.chains() depth=1  chain index=0
 [ [ 3, 4, 5, 9 ], [ 3, 4, 5, 13 ], <1 empty item>, [ 16 ] ]
 [ [ 3, 4, 5, 9 ], [ 3, 4, 5, 13 ], <1 empty item>, [ 16 ] ]
 VMolecule
+
 
              */
             console.log("Returning chains from this.chains() depth=" + depth + '  chain index=' + chain_index)
