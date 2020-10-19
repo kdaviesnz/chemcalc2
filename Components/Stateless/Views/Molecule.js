@@ -347,9 +347,9 @@ const VMolecule = (mmolecule) => {
             // [ 3, 4, 5, 13 ],
             // <1 empty item>,
             // [ 16 ]
-            console.log(chains)
-            console.log('VMolecule')
-            process.exit()
+         //   console.log(chains)
+         //   console.log('VMolecule')
+         //   process.exit()
             /*
 
              */

@@ -21,8 +21,8 @@ const MoleculeAI = (container_molecule) => {
 
         "chains": function(previous_atom_index, root_atom_index, chains, chain_index, col, depth) {
 
-            console.log("Start chains from this.chains() depth=" + depth + '  chain index=' + chain_index)
-            console.log(chains)
+          //  console.log("Start chains from this.chains() depth=" + depth + '  chain index=' + chain_index)
+          //  console.log(chains)
 
 
             // "C  O   C  (C) (C)   C   O")
@@ -53,23 +53,27 @@ const MoleculeAI = (container_molecule) => {
                     (bond, index) => {
 
                         // Everytime index increments we create a new branch
-                        const chain_index = chains.length + index - 1 < 0 ? chains.length + index : chains.length + index - 1
+                        var chain_index = chains.length + index - 1 < 0 ? chains.length + index : chains.length + index - 1
 
                         //const chain_index = chains.length  - 1 < 0 ? chains.length  : chains.length - 1
 
-                        console.log("Entering loop depth = " + depth + " chain index=" + chain_index + " index=" + index)
+                        // console.log("Entering loop depth = " + depth + " chain index=" + chain_index + " index=" + index)
 
                         if (undefined === chains[chain_index]) {
-                            if (undefined === chains[chain_index - 1]) {
-                                chains[chain_index] = []
-                            } else {
-                                console.log("Adding new branch col=" + col + ' loop index=' + index + ' depth= ' + depth)
+                            // console.log("Adding new branch col=" + col + ' loop index=' + index + ' depth= ' + depth)
+                            //console.log(chains)
+                            // chains[chain_index] = chains[chain_index - 1].slice(0, col)
+                            if (undefined === chains[chain_index - 1] ) {
+                                // "C  O   C  (C) (C)   C   O")
+                                //  3  4   5  (9) (13)  16  18
+                                chain_index = chain_index - 1
+                                //console.log(chain_index)
                                 //console.log(chains)
-                                // chains[chain_index] = chains[chain_index - 1].slice(0, col)
-                                chains[chain_index] = _.cloneDeep(chains[chain_index - 1]).slice(0, depth)
-                                console.log("Added new branch col=" + col )
-                                console.log(chains)
+                                //console.log(bond.atom_index)
                             }
+                            chains[chain_index] = _.cloneDeep(chains[chain_index - 1]).slice(0, depth)
+                            //console.log("Added new branch col=" + col )
+                            //console.log(chains)
                         }
 
                         if (chain_index === 55555555) {
@@ -84,6 +88,14 @@ const MoleculeAI = (container_molecule) => {
                         }
 
 
+                        if (undefined === chains[chain_index]) {
+                            // "C  O   C  (C) (C)   C   O")
+                            //  3  4   5  (9) (13)  16  18
+                            // [ [ 3, 4, 5, 9 ], [ 3, 4, 5, 13 ], [ 3, 4, 5, 16, 18 ] ]
+                          //  console.log(chain_index)
+                           // console.log(chains)
+                           // console.log(bond.atom_index)
+                        }
                         chains[chain_index].push(bond.atom_index)
 
                         col++
@@ -141,8 +153,8 @@ VMolecule
 
 
              */
-            console.log("Returning chains from this.chains() depth=" + depth + '  chain index=' + chain_index)
-            console.log(chains)
+          //  console.log("Returning chains from this.chains() depth=" + depth + '  chain index=' + chain_index)
+           // console.log(chains)
             return chains
 
 
