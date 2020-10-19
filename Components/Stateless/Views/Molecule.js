@@ -5,8 +5,11 @@ const Set = require('../../../Models/Set')
 
 const VMolecule = (mmolecule) => {
 
+
     mmolecule.length.should.be.equal(2) // molecule, units
     mmolecule[0].length.should.be.equal(2) // pKa, atoms
+
+    const MoleculeAI = require("../../../Components/Stateless/MoleculeAI")(mmolecule)
 
     const __isRing = (current_atom) => {
         __getIndexOfNextAtom(current_atom, current_atom_index)
@@ -297,8 +300,86 @@ const VMolecule = (mmolecule) => {
                 }
             )
         },
-        canonicalSMILES: () => {
+        nextAtomIndex: function(chain, current_index) {
+            if (undefined === chain[current_index]) {
+                return false
+            }
+            if (typeof chain[current_index]==='number') {
+                return chain[current_index]
+            } else {
+                return this.nextAtomIndex(chain, current_index+1)
+            }
+        },
+        canonicalSMILES: function(chains) {
 
+            const root_atom_index = 1 // @todo
+
+            if (undefined === chains) {
+                // Get chains
+                chains = MoleculeAI.chains(null, root_atom_index, [[root_atom_index]], 0, 0, 1)
+            }
+            /*
+            [ [ 1, 3, 5, 6, 8, 10, 1 ],
+              [ 1, 3, 5, 6, 13, 15 ],
+              [ 1, 10, 8, 6, 5, 3, 1 ],
+              [ 1, 10, 8, 6, 13, 15 ] ]
+            C1CCC(CO)CCC
+             */
+            if (chains.length===0) {
+                return ""
+            }
+
+            let chain = ""
+            if (chains.length === 1) {
+                // Replace atom indexes with symbols
+                const smiles = _.cloneDeep(chains[0]).reduce(
+                    (carry, atom_index, i, arr) => {
+
+                        if (typeof atom_index !== "number") {
+                            return carry + atom_index
+                        }
+
+                        const atom_object = CAtom(mmolecule[0][1][atom_index], atom_index, mmolecule)
+                        let symbol = mmolecule[0][1][atom_index][0]
+                        const next_atom_index = this.nextAtomIndex(chains[0], i+1)
+
+                        if (next_atom_index === false) {
+                            return carry + symbol
+                        }
+
+                        const bonds = atom_object.indexedBonds("").filter((bond)=>{
+                            return bond.atom_index === next_atom_index
+                        })
+
+                        // Check if we have a loop
+                        const last_index_of = chains[0].lastIndexOf(atom_index)
+                        if (last_index_of !== i) {
+                            // We have a loop
+                            arr[last_index_of] = chains[0][last_index_of] + ""
+                            symbol = symbol + atom_index
+                        }
+
+                        return carry + symbol + (bonds.length > 0? bonds[0].bond_type:"")
+                    },
+                    ""
+                )
+                return smiles
+
+            } else {
+                // Get atom indexes in the second row which are not in the first row
+                const atom_indexes_diff = Set().difference(_.cloneDeep(chains[1]), _.cloneDeep(chains[0]))
+                if (atom_indexes_diff.length !== 0) {
+                    // Inject atom indexes that are not in the second row into the first row
+                    const insertion_point = Set().arraysDifferAt(_.cloneDeep(chains[1]), _.cloneDeep(chains[0]))
+                    chains[0] = Set().insertIntoArray(_.cloneDeep(chains[0]), ["(",...atom_indexes_diff,")"])
+                }
+                chains.splice(1,1)
+                return this.canonicalSMILES(chains)
+            }
+
+
+
+            /*
             // Index: 3 Bonds: 3 1
             // Loop atom is the bottom one on the benzene ring
             // AssertionError: expected 'C(=CCC(C=C)(CO))(C)' to be 'C1=CC=C(C=C1)CO'
@@ -310,6 +391,9 @@ const VMolecule = (mmolecule) => {
             SMILES =  __SMILES_recursive("", mmolecule[0][1][0], null, 0, 0, [])
 
             return  SMILES
+            */
+
+
         },
         'render' : () => {
             console.log('{' + mmolecule[0][1].reduce((working, current, i, arr)=>{

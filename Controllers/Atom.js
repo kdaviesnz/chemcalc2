@@ -127,7 +127,8 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                 bonds.push({
                     'atom': _atom,
                     'atom_index': _atom_index,
-                    'shared_electrons': shared_electrons
+                    'shared_electrons': shared_electrons,
+                    'bond_type': shared_electrons.length == 2? "":"="
                 })
 
                 return bonds
