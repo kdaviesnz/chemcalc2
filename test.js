@@ -61,53 +61,6 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
 
 const Families = require('./Models/Families')
 
-//const chain_test = MoleculeFactory("CN(O)CN")
-//const chain_test = MoleculeFactory("C1OC1")
-//const chain_test_molecule_ai = require("./Components/Stateless/MoleculeAI")([chain_test, 1])
-
-//  "chains": (previous_atom_index, root_atom_index, chains, chain_index, col)
-//const chains = chain_test_molecule_ai.chains(null, 2, [[2]], 0, 0, 1)
-// [ [ 'C', 'O' ], [ 'C', 'N' ] ]
-
-const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
-//console.log(VMolecule([benyzl_alcohol,1]).compressed())
-console.log(VMolecule([benyzl_alcohol,1]).canonicalSMILES())
-console.log("test.js")
-process.exit()
-const benyzl_alcohol_molecule_ai = require("./Components/Stateless/MoleculeAI")([benyzl_alcohol, 1])
-const benyzl_alcohol_chains = benyzl_alcohol_molecule_ai.chains(null, 1, [[1]], 0, 0, 1)
-console.log(benyzl_alcohol_chains)
-console.log("test.js")
-/*
-[ [ 1, 3, 5, 6, 8, 10, 1 ],
-  [ 1, 3, 5, 6, 13, 15 ],
-  [ 1, 10, 8, 6, 5, 3, 1 ],
-  [ 1, 10, 8, 6, 13, 15 ] ]
-
-
-C1CCC(CO)CCC
-
- */
-process.exit()
-
-const benzyl_alcohol_carbons = benyzl_alcohol[1].filter((atom)=>{
-    return atom[0] === "C"
-})
-const benzyl_alcohol_hydrogens = benyzl_alcohol[1].filter((atom)=>{
-    return atom[0] === "H"
-})
-const benzyl_alcohol_oxygens = benyzl_alcohol[1].filter((atom)=>{
-    return atom[0] === "O"
-})
-benzyl_alcohol_carbons.length.should.be.equal(7)
-benzyl_alcohol_hydrogens.length.should.be.equal(8)
-benzyl_alcohol_oxygens.length.should.be.equal(1)
-// Index: 3 Bonds: 3 1
-// Loop atom is the bottom one on the benzene ring
-VMolecule([benyzl_alcohol, 1]).canonicalSMILES().should.be.equal("C1=CC=C(C=C1)CO")
-
-console.log("test.js")
-process.exit()
 
 
 const ethanol = MoleculeFactory("C(O)C")
@@ -132,6 +85,26 @@ oxide_oxygen.doubleBondCount().should.be.equal(0)
 oxide_oxygen.isNegativelyCharged().should.be.false() // proton count 8, total number of electrons 11
 oxide_oxygen.isPositivelyCharged().should.be.true()
 VMolecule([oxide, 1]).canonicalSMILES().should.be.equal("[OH3+]")
+
+const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
+const benyzl_alcohol_molecule_ai = require("./Components/Stateless/MoleculeAI")([benyzl_alcohol, 1])
+const benyzl_alcohol_chains = benyzl_alcohol_molecule_ai.chains(null, 1, [[1]], 0, 0, 1)
+const benzyl_alcohol_carbons = benyzl_alcohol[1].filter((atom)=>{
+    return atom[0] === "C"
+})
+const benzyl_alcohol_hydrogens = benyzl_alcohol[1].filter((atom)=>{
+    return atom[0] === "H"
+})
+const benzyl_alcohol_oxygens = benyzl_alcohol[1].filter((atom)=>{
+    return atom[0] === "O"
+})
+benzyl_alcohol_carbons.length.should.be.equal(7)
+benzyl_alcohol_hydrogens.length.should.be.equal(8)
+benzyl_alcohol_oxygens.length.should.be.equal(1)
+VMolecule([benyzl_alcohol, 1]).canonicalSMILES().should.be.equal("C1=CC=C(CO)C=C1")
+console.log("test.js")
+process.exit()
+
 
 // Test families:
 if (true) {
