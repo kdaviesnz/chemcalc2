@@ -52,21 +52,23 @@ const MoleculeAI = (container_molecule) => {
                 _.cloneDeep(bonds).map(
                     (bond, index) => {
 
-
+                        // Everytime index increments we create a new branch
                         const chain_index = chains.length + index - 1 < 0 ? chains.length + index : chains.length + index - 1
 
-                        console.log("Entering loop depth = " + depth + " chain index=" + chain_index)
+                        //const chain_index = chains.length  - 1 < 0 ? chains.length  : chains.length - 1
+
+                        console.log("Entering loop depth = " + depth + " chain index=" + chain_index + " index=" + index)
 
                         if (undefined === chains[chain_index]) {
                             if (undefined === chains[chain_index - 1]) {
                                 chains[chain_index] = []
                             } else {
-                                //console.log("Adding new branch col=" + col + ' loop index=' + index + ' depth= ' + depth)
+                                console.log("Adding new branch col=" + col + ' loop index=' + index + ' depth= ' + depth)
                                 //console.log(chains)
                                 // chains[chain_index] = chains[chain_index - 1].slice(0, col)
                                 chains[chain_index] = _.cloneDeep(chains[chain_index - 1]).slice(0, depth)
-                                //console.log("Added new branch col=" + col)
-                                //console.log(chains)
+                                console.log("Added new branch col=" + col )
+                                console.log(chains)
                             }
                         }
 
