@@ -328,12 +328,30 @@ const VMolecule = (mmolecule) => {
                 // Get chains
                 chains = MoleculeAI.chains(null, root_atom_index, [[root_atom_index]], 0, 0, 1)
             }
+
+            // "C  O   C  (C) (C)   C   O")
+            //  3  4   5  (9) (13)  16  18
+            //console.log(this.compressed())
             /*
-            [ [ 1, 3, 5, 6, 8, 10, 1 ],
-              [ 1, 3, 5, 6, 13, 15 ],
-              [ 1, 10, 8, 6, 5, 3, 1 ],
-              [ 1, 10, 8, 6, 13, 15 ] ]
-            C1CCC(CO)CCC
+   [ [ 'C', 3, [ '4  O' ] ],
+  [ 'O', 4, [ '3  C', '5  C' ] ],
+  [ 'C', 5, [ '4  O', '9  C', '13  C', '16  C' ] ],
+  [ 'C', 9, [ '5  C' ] ],
+  [ 'C', 13, [ '5  C' ] ],
+  [ 'C', 16, [ '5  C', '18  O' ] ],
+  [ 'O', 18, [ '16  C' ] ] ]
+
+             */
+
+            // [ 3, 4, 5, 9 ]
+            // [ 3, 4, 5, 13 ],
+            // <1 empty item>,
+            // [ 16 ]
+            console.log(chains)
+            console.log('VMolecule')
+            process.exit()
+            /*
+
              */
             if (chains.length===0) {
                 return ""

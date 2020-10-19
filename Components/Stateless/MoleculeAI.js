@@ -98,8 +98,7 @@ Chains=
             if (bonds.length === 0) {
                 return chains
             }
-            
-            
+
             
             _.cloneDeep(bonds).map(
                 (bond, index) => {

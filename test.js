@@ -61,7 +61,13 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
 
 const Families = require('./Models/Families')
 
-
+// epoxide acidic ring opening
+// CC(C)(CO)OC
+// 2-Methoxy-2-methylpropan-1-ol
+const Two_Methoxy_2_methylpropan_1_ol = MoleculeFactory("COC(C)(C)CO")
+VMolecule([Two_Methoxy_2_methylpropan_1_ol, 1]).canonicalSMILES().should.be.equal("COC(C)(C)(CO)")
+console.log("test")
+process.exit()
 
 const ethanol = MoleculeFactory("C(O)C")
 VMolecule([ethanol, 1]).canonicalSMILES().should.be.equal("CO(C)")
@@ -131,11 +137,6 @@ if (true) {
 
 
 
-    // epoxide acidic ring opening
-    // CC(C)(CO)OC
-    // 2-Methoxy-2-methylpropan-1-ol
-    const Two_Methoxy_2_methylpropan_1_ol = MoleculeFactory("COC(C)(C)CO")
-    VMolecule([Two_Methoxy_2_methylpropan_1_ol, 1]).canonicalSMILES().should.be.equal("COC(C)(C)(CO)")
 
     const oxidane = MoleculeFactory("CO")
     const o = oxidane[1][5]
