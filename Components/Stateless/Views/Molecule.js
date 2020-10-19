@@ -310,9 +310,19 @@ const VMolecule = (mmolecule) => {
                 return this.nextAtomIndex(chain, current_index+1)
             }
         },
+        rootAtomIndex: function(current_index) {
+            if (mmolecule[0][1][current_index][0] !== 'H') {
+                return current_index
+            } else {
+                return this.rootAtomIndex(current_index+1)
+            }
+        },
+        addBrackets: function(symbol, charge) {
+            return charge !== "" || symbol === "Br"
+        },
         canonicalSMILES: function(chains) {
 
-            const root_atom_index = 1 // @todo
+            const root_atom_index = this.rootAtomIndex(0)
 
             if (undefined === chains) {
                 // Get chains
@@ -340,11 +350,16 @@ const VMolecule = (mmolecule) => {
                         }
 
                         const atom_object = CAtom(mmolecule[0][1][atom_index], atom_index, mmolecule)
+
+                        const charge = atom_object.isNegativelyCharged()?"-":(atom_object.isPositivelyCharged()?"+":"")
+
                         let symbol = mmolecule[0][1][atom_index][0]
                         const next_atom_index = this.nextAtomIndex(chains[0], i+1)
 
+                        const add_brackets = this.addBrackets(symbol, charge)
+
                         if (next_atom_index === false) {
-                            return carry + symbol
+                            return carry + (add_brackets?"[":"") + symbol + charge + (add_brackets?"]":"")
                         }
 
                         const bonds = atom_object.indexedBonds("").filter((bond)=>{
@@ -356,10 +371,10 @@ const VMolecule = (mmolecule) => {
                         if (last_index_of !== i) {
                             // We have a loop
                             arr[last_index_of] = chains[0][last_index_of] + ""
-                            symbol = symbol + atom_index
+                            symbol = (add_brackets?"[":"") + symbol + charge + (add_brackets?"]":"") + atom_index
                         }
 
-                        return carry + symbol + (bonds.length > 0? bonds[0].bond_type:"")
+                        return carry + (add_brackets?"[":"") + symbol + charge + (add_brackets?"]":"") + (bonds.length > 0? bonds[0].bond_type:"")
                     },
                     ""
                 )
