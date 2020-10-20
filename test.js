@@ -72,6 +72,19 @@ VMolecule([ethanol, 1]).canonicalSMILES().should.be.equal("C(O)C")
 
 
 const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
+console.log(VMolecule([benyzl_alcohol, 1]).compressed())
+/*
+[ [ 'C', 1, [ '3  C', '10  C' ] ],
+  [ 'C', 3, [ '1  C', '5  C' ] ],
+  [ 'C', 5, [ '3  C', '6  C' ] ],
+  [ 'C', 6, [ '5  C', '8  C', '13  C' ] ],
+  [ 'C', 8, [ '6  C', '10  C' ] ],
+  [ 'C', 10, [ '1  C', '8  C' ] ],
+  [ 'C', 13, [ '6  C', '15  O' ] ],
+  [ 'O', 15, [ '13  C' ] ] ]
+ */
+// 1A= 3 5= 6 (8= 10A) 13 15
+
 VMolecule([benyzl_alcohol, 1]).canonicalSMILES().should.be.equal("C1=CC=C(CO)C=C1")
 const benyzl_alcohol_molecule_ai = require("./Components/Stateless/MoleculeAI")([benyzl_alcohol, 1])
 const benzyl_alcohol_carbons = benyzl_alcohol[1].filter((atom)=>{
