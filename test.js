@@ -65,41 +65,29 @@ const Families = require('./Models/Families')
 // CC(C)(CO)OC
 // 2-Methoxy-2-methylpropan-1-ol
 const Two_Methoxy_2_methylpropan_1_ol = MoleculeFactory("COC(C)(C)CO")
-//console.log(VMolecule([Two_Methoxy_2_methylpropan_1_ol, 1]).compressed())
-/*
-[ [ 'C', 3, [ '4  O' ] ],
-  [ 'O', 4, [ '3  C', '5  C' ] ],
-  [ 'C', 5, [ '4  O', '9  C', '13  C', '16  C' ] ],
-  [ 'C', 9, [ '5  C' ] ],
-  [ 'C', 13, [ '5  C' ] ],
-  [ 'C', 16, [ '5  C', '18  O' ] ],
-  [ 'O', 18, [ '16  C' ] ] ]
-
-C O C (C) (C) C O
-
-
-
-[ [ 3, 4, 5, 16, 18 ], [ 3, 4, 5, 13 ], [ 3, 4, 5, 9 ] ]
-
-VMolecule --
-[ [ 3, 4, 5, '(', 13, ')', 18 ], [ 3, 4, 5, 9 ] ]
-C O C (C) O     C O C C
-VMolecule --
-[ [ 3, 4, 5, '(', 9, ')', 13, ')', 18 ] ]
-
-
-COC(C)C)O
-
-
- */
-// COCC(CO)(C)
-// should be COC(C)(CO)(C)
 VMolecule([Two_Methoxy_2_methylpropan_1_ol, 1]).canonicalSMILES().should.be.equal("COC(C)(C)CO")
-console.log("test")
-process.exit()
 
 const ethanol = MoleculeFactory("C(O)C")
-VMolecule([ethanol, 1]).canonicalSMILES().should.be.equal("CO(C)")
+VMolecule([ethanol, 1]).canonicalSMILES().should.be.equal("C(O)C")
+
+
+const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
+VMolecule([benyzl_alcohol, 1]).canonicalSMILES().should.be.equal("C1=CC=C(CO)C=C1")
+const benyzl_alcohol_molecule_ai = require("./Components/Stateless/MoleculeAI")([benyzl_alcohol, 1])
+const benzyl_alcohol_carbons = benyzl_alcohol[1].filter((atom)=>{
+    return atom[0] === "C"
+})
+const benzyl_alcohol_hydrogens = benyzl_alcohol[1].filter((atom)=>{
+    return atom[0] === "H"
+})
+const benzyl_alcohol_oxygens = benyzl_alcohol[1].filter((atom)=>{
+    return atom[0] === "O"
+})
+benzyl_alcohol_carbons.length.should.be.equal(7)
+benzyl_alcohol_hydrogens.length.should.be.equal(8)
+benzyl_alcohol_oxygens.length.should.be.equal(1)
+
+
 
 
 const bromide_neg = MoleculeFactory("[Br-]")
@@ -121,22 +109,7 @@ oxide_oxygen.isNegativelyCharged().should.be.false() // proton count 8, total nu
 oxide_oxygen.isPositivelyCharged().should.be.true()
 VMolecule([oxide, 1]).canonicalSMILES().should.be.equal("[O+]")
 
-const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
-const benyzl_alcohol_molecule_ai = require("./Components/Stateless/MoleculeAI")([benyzl_alcohol, 1])
-const benyzl_alcohol_chains = benyzl_alcohol_molecule_ai.chains(null, 1, [[1]], 0, 0, 1)
-const benzyl_alcohol_carbons = benyzl_alcohol[1].filter((atom)=>{
-    return atom[0] === "C"
-})
-const benzyl_alcohol_hydrogens = benyzl_alcohol[1].filter((atom)=>{
-    return atom[0] === "H"
-})
-const benzyl_alcohol_oxygens = benyzl_alcohol[1].filter((atom)=>{
-    return atom[0] === "O"
-})
-benzyl_alcohol_carbons.length.should.be.equal(7)
-benzyl_alcohol_hydrogens.length.should.be.equal(8)
-benzyl_alcohol_oxygens.length.should.be.equal(1)
-VMolecule([benyzl_alcohol, 1]).canonicalSMILES().should.be.equal("C1=CC=C(CO)C=C1")
+
 
 // Test families:
 if (true) {
