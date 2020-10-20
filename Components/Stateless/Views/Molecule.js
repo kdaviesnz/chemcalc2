@@ -406,6 +406,8 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
 
             } else {
                 // Get atom indexes in the second row which are not in the first row
+                console.log('chains start')
+                console.log(chains)
                 const atom_indexes_diff = Set().difference(_.cloneDeep(chains[1]), _.cloneDeep(chains[0]))
                 if (atom_indexes_diff.length !== 0) {
                     // Inject atom indexes that are not in the second row into the first row
@@ -414,8 +416,8 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                 }
                 // Remove second row as it has been merged into the first row
                 chains.splice(1,1)
-               // console.log("VMolecule --")
-               // console.log(chains)
+                console.log("VMolecule --")
+                console.log(chains)
                 return this.canonicalSMILES(chains)
             }
 
