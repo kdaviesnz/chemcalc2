@@ -65,7 +65,7 @@ const Families = require('./Models/Families')
 // CC(C)(CO)OC
 // 2-Methoxy-2-methylpropan-1-ol
 const Two_Methoxy_2_methylpropan_1_ol = MoleculeFactory("COC(C)(C)CO")
-console.log(VMolecule([Two_Methoxy_2_methylpropan_1_ol, 1]).compressed())
+//console.log(VMolecule([Two_Methoxy_2_methylpropan_1_ol, 1]).compressed())
 /*
 [ [ 'C', 3, [ '4  O' ] ],
   [ 'O', 4, [ '3  C', '5  C' ] ],
@@ -77,29 +77,24 @@ console.log(VMolecule([Two_Methoxy_2_methylpropan_1_ol, 1]).compressed())
 
 C O C (C) (C) C O
 
-[ [ 3, 4, 5, 9 ] ]
-[ [ 3, 4, 5, 9 ], [ 3, 4, 5, 13 ] ]
-[ [ 3, 4, 5, 9 ], [ 3, 4, 5, 13 ], [ 3, 4, 5, 16, 18 ] ]
-[ [ 3, 4, 5, 9 ], [ 3, 4, 5, 13 ], [ 3, 4, 5, 16, 18 ] ]
-[ [ 3, 4, 5, 9 ], [ 3, 4, 5, 13 ], [ 3, 4, 5, 16, 18 ] ]
-[ [ 3, 4, 5, 9 ], [ 3, 4, 5, 13 ], [ 3, 4, 5, 16, 18 ] ]
 
-[ [ 3, 4, 5, 9 ], [ 3, 4, 5, 13 ], [ 3, 4, 5, 16, 18 ] ]
-C O C C
-C O C C
-C O C C O
 
-3, 4, 5, 16, 18
-3, 4, 5, (9) 16 18
+[ [ 3, 4, 5, 16, 18 ], [ 3, 4, 5, 13 ], [ 3, 4, 5, 9 ] ]
 
-3, 4, 5, (13) (9) 16 18
+VMolecule --
+[ [ 3, 4, 5, '(', 13, ')', 18 ], [ 3, 4, 5, 9 ] ]
+C O C (C) O     C O C C
+VMolecule --
+[ [ 3, 4, 5, '(', 9, ')', 13, ')', 18 ] ]
 
-C O C (C) (C) C O
+
+COC(C)C)O
+
 
  */
 // COCC(CO)(C)
 // should be COC(C)(CO)(C)
-VMolecule([Two_Methoxy_2_methylpropan_1_ol, 1]).canonicalSMILES().should.be.equal("COC(C)(C)(CO)")
+VMolecule([Two_Methoxy_2_methylpropan_1_ol, 1]).canonicalSMILES().should.be.equal("COC(C)(C)CO")
 console.log("test")
 process.exit()
 

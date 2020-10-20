@@ -326,8 +326,14 @@ const VMolecule = (mmolecule) => {
 
             if (undefined === chains) {
                 // Get chains
-                chains = MoleculeAI.chains(null, root_atom_index, [[root_atom_index]], 0, 0, 1)
+                /* If compare(a,b) is less than zero, the sort() method sorts a to a lower index than b. In other words, a will come first.
+If compare(a,b) is greater than zero, the sort() method sort b to a lower index than a, i.e., b will come first.
+If compare(a,b) returns zero, the sort() method considers a equals b and leaves their positions unchanged.*/
+                chains = MoleculeAI.chains(null, root_atom_index, [[root_atom_index]], 0, 0, 1).sort((a,b)=>{
+                    return a.length > b.length  ? -1: 1
+                })
             }
+
 
             // "C  O   C  (C) (C)   C   O")
             //  3  4   5  (9) (13)  16  18
@@ -404,9 +410,12 @@ const VMolecule = (mmolecule) => {
                 if (atom_indexes_diff.length !== 0) {
                     // Inject atom indexes that are not in the second row into the first row
                     const insertion_point = Set().arraysDifferAt(_.cloneDeep(chains[1]), _.cloneDeep(chains[0]))
-                    chains[0] = Set().insertIntoArray(_.cloneDeep(chains[0]), ["(",...atom_indexes_diff,")"])
+                    chains[0] = Set().insertIntoArray(_.cloneDeep(chains[0]), ["(",...atom_indexes_diff,")"], insertion_point)
                 }
+                // Remove second row as it has been merged into the first row
                 chains.splice(1,1)
+               // console.log("VMolecule --")
+               // console.log(chains)
                 return this.canonicalSMILES(chains)
             }
 

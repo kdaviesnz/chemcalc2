@@ -10,7 +10,7 @@ const Set = () => {
             return array1.filter((value) => !array2.includes(value))
         },
         insertIntoArray: (array1, array2, insertion_point) => {
-            return [...array1.slice(0, 4), ...array2, ...array1.slice(4)]
+            return [...array1.slice(0, insertion_point), ...array2, ...array1.slice(insertion_point)]
         },
         arraysDifferAt: function(array1, array2, current_index) {
 
