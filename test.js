@@ -82,28 +82,34 @@ console.log(VMolecule([benyzl_alcohol, 1]).compressed())
   [ 'C', 10, [ '1  C', '8  C' ] ],
   [ 'C', 13, [ '6  C', '15  O' ] ],
   [ 'O', 15, [ '13  C' ] ] ]
+  // C1=CC=C(C=C1)CO
+  1 is the bottom C on the benzene ring
+  6 is the top carbon
+chains start
+[ [ 1, 10, 8, 6, 5, 3, 1 ], // benzene ring anti clockwise
+  [ 1, 3, 5, 6, 8, 10, 1 ], // benzene ring clockwise
+  [ 1, 10, 8, 6, 13, 15 ],  // branch to oxygen atom going from right
+  [ 1, 3, 5, 6, 13, 15 ] ]   // branch to oxygen atom going from left
+VMolecule -- Merge benzene ring anti clockwise with benzene ring clockwise - no differences so keep benzene ring anti clockwise
+[ [ 1, 10, 8, 6, 5, 3, 1 ],
+  [ 1, 10, 8, 6, 13, 15 ],
+  [ 1, 3, 5, 6, 13, 15 ] ]
 chains start
 [ [ 1, 10, 8, 6, 5, 3, 1 ],
-  [ 1, 3, 5, 6, 8, 10, 1 ],
   [ 1, 10, 8, 6, 13, 15 ],
   [ 1, 3, 5, 6, 13, 15 ] ]
-VMolecule --
-[ [ 1, 10, 8, 6, 5, 3, 1 ],
-  [ 1, 10, 8, 6, 13, 15 ],
-  [ 1, 3, 5, 6, 13, 15 ] ]
-chains start
-[ [ 1, 10, 8, 6, 5, 3, 1 ],
-  [ 1, 10, 8, 6, 13, 15 ],
-  [ 1, 3, 5, 6, 13, 15 ] ]
-VMolecule --
+VMolecule -- Merge branch to oxygen atom going from right with benzene ring anti clockwise
 [ [ 1, 10, 8, 6, '(', 13, 15, ')', 5, 3, 1 ],
   [ 1, 3, 5, 6, 13, 15 ] ]
 chains start
 [ [ 1, 10, 8, 6, '(', 13, 15, ')', 5, 3, 1 ],
   [ 1, 3, 5, 6, 13, 15 ] ]
-VMolecule --
+VMolecule -- Merge branch to oxygen atom going from left with benzene ring
 [ [ 1, 10, 8, 6, '(', 13, 15, ')', 5, 3, 1 ] ]
-
+C1C=CC(CO)=CC=1 (correct)
+C1C=CC(CO)CC=1 (not correct)
+C1  C=  C  C (CO)    = C C=1 (correct)
+ 1A  10  8  6 (13,15) = 5 3=A
  */
 // 1A= 3 5= 6 (8= 10A) 13 15
 

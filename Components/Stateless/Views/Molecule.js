@@ -310,6 +310,16 @@ const VMolecule = (mmolecule) => {
                 return this.nextAtomIndex(chain, current_index+1)
             }
         },
+        previousAtomIndex: function(chain, current_index) {
+            if (undefined === chain[current_index]) {
+                return false
+            }
+            if (typeof chain[current_index]==='number') {
+                return chain[current_index]
+            } else {
+                return this.previousAtomIndex(chain, current_index-1)
+            }
+        },
         rootAtomIndex: function(current_index) {
             if (mmolecule[0][1][current_index][0] !== 'H') {
                 return current_index
@@ -364,13 +374,14 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
             }
 
             let chain = ""
+            let branch_atom_index = null
             if (chains.length === 1) {
                 // Replace atom indexes with symbols
                 const smiles = _.cloneDeep(chains[0]).reduce(
                     (carry, atom_index, i, arr) => {
 
                         if (typeof atom_index !== "number") {
-                            return carry + atom_index
+                           return carry + atom_index
                         }
 
                         const atom_object = CAtom(mmolecule[0][1][atom_index], atom_index, mmolecule)
@@ -416,8 +427,8 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                 }
                 // Remove second row as it has been merged into the first row
                 chains.splice(1,1)
-                console.log("VMolecule --")
-                console.log(chains)
+               // console.log("VMolecule --")
+               // console.log(chains)
                 return this.canonicalSMILES(chains)
             }
 
