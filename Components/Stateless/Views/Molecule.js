@@ -328,7 +328,7 @@ const VMolecule = (mmolecule) => {
             }
         },
         addBrackets: function(symbol, charge) {
-            return charge !== "" || symbol === "Br"
+            return charge !== "" || symbol === "Br"  || symbol === "Al"
         },
         canonicalSMILES: function(chains) {
 
@@ -386,7 +386,8 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                             if (atom_index==="(") {
                                 branch_atom_index = this.previousAtomIndex(chains[0], i-1)
                             }
-                            if (atom_index===")" && branch_atom_index !== null) {
+                            // OS=(O)=(O)O
+                            if (atom_index===")" && branch_atom_index !== null && chains[0][i-1] !== ")") {
                                 const end_branch_next_atom_index = this.nextAtomIndex(chains[0], i+1)
                                 const branch_bond_atom = CAtom(mmolecule[0][1][end_branch_next_atom_index], end_branch_next_atom_index, mmolecule)
                                 const branch_bond_atom_bonds = branch_bond_atom.indexedBonds("").filter((bond)=>{
@@ -448,7 +449,7 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                     },
                     ""
                 )
-                return smiles
+                return smiles.replace(/\=\(/g, "(=")
 
             } else {
                 // Get atom indexes in the second row which are not in the first row

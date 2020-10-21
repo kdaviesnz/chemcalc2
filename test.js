@@ -205,13 +205,8 @@ if (true) {
     const oxonium = MoleculeFactory("[OH3+]")
     VMolecule([oxonium, 1]).canonicalSMILES().should.be.equal("[O+]")
 
-
-
-
-
-// OS=(O)=(O)O
     const sulphuric_acid = MoleculeFactory("OS(=O)(=O)O")
-    VMolecule([sulphuric_acid, 1]).canonicalSMILES().should.be.equal("OS(=O)(=O)(O)")
+    VMolecule([sulphuric_acid, 1]).canonicalSMILES().should.be.equal("OS(=O)(=O)O")
 
     const butane = MoleculeFactory("CC[C+]C")
     VMolecule([butane, 1]).canonicalSMILES().should.be.equal("CC[C+]C")
@@ -222,7 +217,7 @@ if (true) {
     const butene = MoleculeFactory("CC=CC")
     VMolecule([butene, 1]).canonicalSMILES().should.be.equal("CC=CC")
     const bromide = MoleculeFactory("Br")
-    VMolecule([bromide, 1]).canonicalSMILES().should.be.equal("Br")
+    VMolecule([bromide, 1]).canonicalSMILES().should.be.equal("[Br]")
 
     const chloride = MoleculeFactory("[Cl-]")
     chloride[0].should.be.equal(2.86) // pKa
@@ -306,7 +301,7 @@ if (true) {
     al.doubleBondCount().should.be.equal(0)
     al.isNegativelyCharged().should.be.false()
     al.isPositivelyCharged().should.be.false()
-    VMolecule([aluminium_chloride, 1]).canonicalSMILES().should.be.equal("[Al](Cl)(Cl)(Cl)")
+    VMolecule([aluminium_chloride, 1]).canonicalSMILES().should.be.equal("[Al](Cl)(Cl)Cl")
     MoleculeController([aluminium_chloride, 1]).electrophileIndex().should.be.equal(0)
 
     const w = MoleculeFactory("O") // water H2O
