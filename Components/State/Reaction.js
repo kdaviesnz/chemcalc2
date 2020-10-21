@@ -421,7 +421,8 @@ class Reaction {
             const double_bonds = CAtom(this.container_substrate[0][1][atom_nucleophile_index], atom_nucleophile_index, this.container_substrate).indexedDoubleBonds("")
 
             if (double_bonds.length > 0) {
-                const shared_electrons = double_bonds[0].shared_electrons.slice(0,2)
+                const shared_electrons = _.cloneDeep(double_bonds[0].shared_electrons).slice(0,2)
+                // Remove double bond
                 this.container_substrate[0][1][double_bonds[0].atom_index].pop()
                 this.container_substrate[0][1][double_bonds[0].atom_index].pop()
                 free_electrons = shared_electrons
