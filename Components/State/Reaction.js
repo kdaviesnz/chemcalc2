@@ -457,6 +457,25 @@ class Reaction {
 
         this.setMoleculeAI()
 
+        // Remove proton from the reagent
+        if (null !== this.container_reagent) {
+
+            const reagent_proton_index = this.ReagentAI.findProtonIndex()
+
+            // Set charge
+            const reagent_bonds = CAtom(this.container_reagent[0][1][reagent_proton_index], reagent_proton_index, this.container_reagent).indexedBonds("").filter(
+                (bond) => {
+                    return bond.atom[0] !== "H"
+                }
+            )
+            this.container_reagent[0][1][reagent_bonds[0].atom_index][4] === "+"
+            ||  this.container_reagent[0][1][reagent_bonds[0].atom_index][4] < 0? 0: "-"
+            _.remove(this.container_reagent[0][1], (v, i) => {
+                return i === reagent_proton_index
+            })
+            this.setReagentAI()
+        }
+
 
     }
 
