@@ -380,7 +380,22 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                 const smiles = _.cloneDeep(chains[0]).reduce(
                     (carry, atom_index, i, arr) => {
 
+                        // C1C=CC(CO)=CC=1
                         if (typeof atom_index !== "number") {
+                            if (atom_index==="(") {
+                                branch_atom_index = this.previousAtomIndex(chains[0], i-1)
+                            }
+                            if (atom_index===")" && branch_atom_index !== null) {
+                                const end_branch_next_atom_index = this.nextAtomIndex(chains[0], i+1)
+                                const branch_bond_atom = CAtom(mmolecule[0][1][end_branch_next_atom_index], end_branch_next_atom_index, mmolecule)
+                                const branch_bond_atom_bonds = branch_bond_atom.indexedBonds("").filter((bond)=>{
+                                    return bond.atom_index === branch_atom_index
+                                })
+                                branch_atom_index = null
+                                if (branch_bond_atom_bonds[0] !== undefined) {
+                                    atom_index = ")" + branch_bond_atom_bonds[0].bond_type
+                                }
+                            }
                            return carry + atom_index
                         }
 
@@ -417,8 +432,6 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
 
             } else {
                 // Get atom indexes in the second row which are not in the first row
-                console.log('chains start')
-                console.log(chains)
                 const atom_indexes_diff = Set().difference(_.cloneDeep(chains[1]), _.cloneDeep(chains[0]))
                 if (atom_indexes_diff.length !== 0) {
                     // Inject atom indexes that are not in the second row into the first row

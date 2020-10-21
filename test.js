@@ -61,6 +61,17 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
 
 const Families = require('./Models/Families')
 
+const methyline = MoleculeFactory("[CH2]")
+
+// Check number of hydrogens
+methyline[1].filter((atom)=>{
+    return atom[0] === "H"
+}).length.should.be.equal(2)
+
+const methyline_s = VMolecule([methyline, 1]).canonicalSMILES()
+methyline_s.should.be.equal("[CH2]")
+
+
 // epoxide acidic ring opening
 // CC(C)(CO)OC
 // 2-Methoxy-2-methylpropan-1-ol
@@ -113,7 +124,7 @@ C1  C=  C  C (CO)    = C C=1 (correct)
  */
 // 1A= 3 5= 6 (8= 10A) 13 15
 
-VMolecule([benyzl_alcohol, 1]).canonicalSMILES().should.be.equal("C1=CC=C(CO)C=C1")
+VMolecule([benyzl_alcohol, 1]).canonicalSMILES().should.be.equal("C1C=CC(CO)=CC=1")
 const benyzl_alcohol_molecule_ai = require("./Components/Stateless/MoleculeAI")([benyzl_alcohol, 1])
 const benzyl_alcohol_carbons = benyzl_alcohol[1].filter((atom)=>{
     return atom[0] === "C"
@@ -192,18 +203,10 @@ if (true) {
 
 
     const oxonium = MoleculeFactory("[OH3+]")
-    VMolecule([oxonium, 1]).canonicalSMILES().should.be.equal("[OH3+]")
+    VMolecule([oxonium, 1]).canonicalSMILES().should.be.equal("[O+]")
 
 
-    const methyline = MoleculeFactory("[CH2]")
 
-     // Check number of hydrogens
-    methyline[1].filter((atom)=>{
-        return atom[0] === "H"
-    }).length.should.be.equal(2)
-
-    const methyline_s = VMolecule([methyline, 1]).canonicalSMILES()
-    methyline_s.should.be.equal("[CH2]")
 
 
 
