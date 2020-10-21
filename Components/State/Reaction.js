@@ -417,16 +417,32 @@ class Reaction {
         let free_electrons = CAtom(this.container_substrate[0][1][atom_nucleophile_index], atom_nucleophile_index, this.container_substrate).freeElectrons()
 
         if (free_electrons.length === 0) {
+
             // Check for double bond and if there is one break it and get shared electrons from that.
             const double_bonds = CAtom(this.container_substrate[0][1][atom_nucleophile_index], atom_nucleophile_index, this.container_substrate).indexedDoubleBonds("")
 
             if (double_bonds.length > 0) {
+                const db_atom = CAtom(this.container_substrate[0][1][double_bonds[0].atom_index], double_bonds[0].atom_index, this.container_substrate)
+
                 const shared_electrons = _.cloneDeep(double_bonds[0].shared_electrons).slice(0,2)
+
                 // Remove double bond
-                this.container_substrate[0][1][double_bonds[0].atom_index].pop()
-                this.container_substrate[0][1][double_bonds[0].atom_index].pop()
+                _.remove(this.container_substrate[0][1][double_bonds[0].atom_index], (v)=>{
+                    return v === shared_electrons[0] || v === shared_electrons[1]
+                })
+
                 free_electrons = shared_electrons
+                // Set charge on the former double bonded carbon
+                this.container_substrate[0][1][double_bonds[0].atom_index][4] =
+                    this.container_substrate[0][1][double_bonds[0].atom_index][4] === "-"
+                    || this.container_substrate[0][1][double_bonds[0].atom_index][4] < 0? 0: "+"
+
             }
+
+        } else {
+            this.container_substrate[0][1][atom_nucleophile_index][4] =
+                this.container_substrate[0][1][atom_nucleophile_index][4] === "-"
+                || this.container_substrate[0][1][atom_nucleophile_index][4] < 0? 0: "+"
 
         }
 
@@ -434,11 +450,8 @@ class Reaction {
 
         proton.push(free_electrons[0])
         proton.push(free_electrons[1])
-        this.container_substrate[0][1].push(proton)
 
-        this.container_substrate[0][1][atom_nucleophile_index][4] =
-            this.container_substrate[0][1][atom_nucleophile_index][4] === "-"
-            || this.container_substrate[0][1][atom_nucleophile_index][4] < 0? 0: "+"
+        this.container_substrate[0][1].push(proton)
 
         this.container_substrate[0][1].length.should.not.equal(atoms.length)
 
