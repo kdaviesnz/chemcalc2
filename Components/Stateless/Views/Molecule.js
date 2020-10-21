@@ -377,6 +377,7 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
             let branch_atom_index = null
             if (chains.length === 1) {
                 // Replace atom indexes with symbols
+
                 const smiles = _.cloneDeep(chains[0]).reduce(
                     (carry, atom_index, i, arr) => {
 
@@ -406,15 +407,33 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                         let symbol = mmolecule[0][1][atom_index][0]
                         const next_atom_index = this.nextAtomIndex(chains[0], i+1)
 
-                        const add_brackets = this.addBrackets(symbol, charge)
+                        let add_brackets = this.addBrackets(symbol, charge)
+
+                        const hydrogen_bonds = atom_object.indexedBonds("").filter((bond)=>{
+                            return bond.atom[0] === "H"
+                        })
+
+                        let hydrogens=""
+                        //console.log(atom_object.indexedBonds("").length +atom_object.indexedDoubleBonds("").length)
+                        //console.log(mmolecule[0][1][atom_index][3])
+                        //console.log(hydrogen_bonds.length)
+                        if (atom_object.indexedBonds("").length +atom_object.indexedDoubleBonds("").length < mmolecule[0][1][atom_index][3]) {
+                            if (hydrogen_bonds.length > 0) {
+                                hydrogens = "H" + hydrogen_bonds.length
+                                add_brackets = true
+                          //      console.log('goooot')
+                            }
+                        }
+                        //process.exit()
 
                         if (next_atom_index === false) {
-                            return carry + (add_brackets?"[":"") + symbol + charge + (add_brackets?"]":"")
+                            return carry + (add_brackets?"[":"") + symbol + hydrogens + charge + (add_brackets?"]":"")
                         }
 
                         const bonds = atom_object.indexedBonds("").filter((bond)=>{
                             return bond.atom_index === next_atom_index
                         })
+
 
                         // Check if we have a loop
                         const last_index_of = chains[0].lastIndexOf(atom_index)
@@ -424,7 +443,8 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                             symbol = (add_brackets?"[":"") + symbol + charge + (add_brackets?"]":"") + atom_index
                         }
 
-                        return carry + (add_brackets?"[":"") + symbol + charge + (add_brackets?"]":"") + (bonds.length > 0? bonds[0].bond_type:"")
+
+                        return carry + (add_brackets?"[":"") + symbol + hydrogens + charge + (add_brackets?"]":"") + (bonds.length > 0? bonds[0].bond_type:"")
                     },
                     ""
                 )

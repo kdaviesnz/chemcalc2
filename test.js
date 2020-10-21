@@ -83,7 +83,7 @@ VMolecule([ethanol, 1]).canonicalSMILES().should.be.equal("C(O)C")
 
 
 const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
-console.log(VMolecule([benyzl_alcohol, 1]).compressed())
+//console.log(VMolecule([benyzl_alcohol, 1]).compressed())
 /*
 [ [ 'C', 1, [ '3  C', '10  C' ] ],
   [ 'C', 3, [ '1  C', '5  C' ] ],
@@ -209,7 +209,7 @@ if (true) {
 
 
 
-
+// OS=(O)=(O)O
     const sulphuric_acid = MoleculeFactory("OS(=O)(=O)O")
     VMolecule([sulphuric_acid, 1]).canonicalSMILES().should.be.equal("OS(=O)(=O)(O)")
 
