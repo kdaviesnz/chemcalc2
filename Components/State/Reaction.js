@@ -38,15 +38,17 @@ class Reaction {
     }
 
     setReagentAI() {
-        this.container_reagent.length.should.be.equal(2) // molecule, units
-        this.container_reagent[0].length.should.be.equal(2) // pKa, atoms
-        this.container_reagent[0][0].should.be.an.Number() // pka
-        this.container_reagent[0][1].should.be.an.Array()
-        if (undefined !== this.container_reagent[0][1][0]) {
-            this.container_reagent[0][1][0].should.be.an.Array()
-            this.container_reagent[0][1][0][0].should.be.an.String()
+        if (this.container_reagent !== null && this.container_reagent !== undefined) {
+            this.container_reagent.length.should.be.equal(2) // molecule, units
+            this.container_reagent[0].length.should.be.equal(2) // pKa, atoms
+            this.container_reagent[0][0].should.be.an.Number() // pka
+            this.container_reagent[0][1].should.be.an.Array()
+            if (undefined !== this.container_reagent[0][1][0]) {
+                this.container_reagent[0][1][0].should.be.an.Array()
+                this.container_reagent[0][1][0][0].should.be.an.String()
+            }
+            this.ReagentAI = require("../Stateless/MoleculeAI")(this.container_reagent)
         }
-        this.ReagentAI = require("../Stateless/MoleculeAI")(this.container_reagent)
     }
 
     setMoleculeAI() {
@@ -83,6 +85,7 @@ class Reaction {
 
     hydrate() {
         const water_molecule = MoleculeFactory("O")
+        water_molecule[1][2][4]="+"
         this.container_reagent = [water_molecule,1]
         this.setReagentAI()
         const water_ai = require("../Stateless/MoleculeAI")([water_molecule,1])

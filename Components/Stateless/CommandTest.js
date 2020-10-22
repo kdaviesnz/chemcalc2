@@ -35,7 +35,8 @@ const CommandTest = (command, substrate, reagent, rule) => {
         "PROTONATE carbonyl": ProtonateCarbonyl,
         "DEPROTONATE carbonyl": DeprotonateCarbonyl,
         "REDUCE": Reduce,
-        "DEREDUCE": Dereduce
+        "DEREDUCE": Dereduce,
+        "DEHYDRATE": Dehydrate,
     }
 
 
