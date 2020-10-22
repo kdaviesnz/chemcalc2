@@ -23,21 +23,11 @@ const MoleculeAI = (container_molecule) => {
 
           //  console.log("Start chains from this.chains() depth=" + depth + '  chain index=' + chain_index)
           //  console.log(chains)
-
-
-            // "C  O   C  (C) (C)   C   O")
-            //  3  4   5  (9) (13)  16  18
-            //console.log(this.compressed())
-            /*
-   [ [ 'C', 3, [ '4  O' ] ],
-  [ 'O', 4, [ '3  C', '5  C' ] ],
-  [ 'C', 5, [ '4  O', '9  C', '13  C', '16  C' ] ],
-  [ 'C', 9, [ '5  C' ] ],
-  [ 'C', 13, [ '5  C' ] ],
-  [ 'C', 16, [ '5  C', '18  O' ] ],
-  [ 'O', 18, [ '16  C' ] ] ]
-
-             */
+            if (depth > 20) {
+                console.log(chains)
+                console.log(depth)
+                process.exit()
+            }
 
             const root_atom_object = CAtom(container_molecule[0][1][root_atom_index], root_atom_index, container_molecule)
 

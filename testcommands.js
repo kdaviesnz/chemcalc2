@@ -17,7 +17,30 @@ const CommandTest = require('./Components/Stateless/CommandTest')
 // CC1(C)OC1
 // Start
 const isobutene_oxide = MoleculeFactory("CC1(CO1)C")
+console.log(VMolecule([isobutene_oxide,1]).compressed())
+/*[ [ 'C', 3, 'H 3', 'B 4', 'DB 0', [ '4  C' ] ],
+  [ 'C',
+    4,
+    'H 0',
+    'B 4',
+    'DB 0',
+    [ '3  C', '7  C', '8  O', '12  C' ] ],
+  [ 'C', 7, 'H 2', 'B 4', 'DB 0', [ '4  C', '8  O' ] ],
+  [ 'O', 8, 'H 0', 'B 2', 'DB 0', [ '4  C', '7  C' ] ],
+  [ 'C', 12, 'H 3', 'B 4', 'DB 0', [ '4  C' ] ] ]
+
+  chains
+  [ [ 3, 4, 7, 8, 4, 3 ],    CC1CO
+  [ 3, 4, 7, 8, 4, 7, 8, 4, 3 ],
+  [ 3, 4, 7, 8, 4, 7, 8, 4, 7, 8, 4, 3 ],
+  [ 3, 4, 7, 8, 4, 7, 8, 4, 7, 8, 4, 7, 8, 4, 3 ],
+  [ 3, 4, 7, 8, 4, 7, 8, 4, 7, 8, 4, 7, 8, 4, 7, 8, 4, 3 ],
+  [ 3, 4, 7, 8, 4, 7, 8, 4, 7, 8, 4, 7, 8, 4, 7, 8, 4, 7, 8, 4, 3 ],
+  [ 3, 4, 7, 8, 4, 7, 8, 4, 7, 8, 4, 7, 8, 4, 7, 8, 4, 7, 8, 4, 7 ] ]
+
+*/
 VMolecule([isobutene_oxide,1]).canonicalSMILES()
+
 
 // PROTONATE
 // See Organic Chemistry 8th Edition p245
