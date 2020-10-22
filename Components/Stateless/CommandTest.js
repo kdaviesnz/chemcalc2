@@ -37,6 +37,7 @@ const CommandTest = (command, substrate, reagent, rule) => {
         "REDUCE": Reduce,
         "DEREDUCE": Dereduce,
         "DEHYDRATE": Dehydrate,
+        "ADD proton to hydroxyl group": AddProtonToHydroxylGroup
     }
 
 

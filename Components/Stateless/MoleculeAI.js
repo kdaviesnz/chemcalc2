@@ -333,6 +333,7 @@ VMolecule
 
                 // Not -OH
                 const oxygen_atom_object = CAtom(oxygen_atom, oxygen_atom_index, container_molecule)
+
                 if(oxygen_atom_object.bondCount()!==2) { // 1 hydrogen bond plus 1 carbon atom
                     return false
                 }

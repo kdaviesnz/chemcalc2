@@ -39,7 +39,7 @@ VMolecule(deprotonated_products[1]).canonicalSMILES().should.be.equal("OS(=O)(=O
 
 // HYDRATE
 // See Organic Chemistry 8th Edition p245
-console.log(VMolecule(isopropyl_cation).compressed())
+// console.log(VMolecule(isopropyl_cation).compressed())
 const isopropyl_cation_ai = require("./Components/Stateless/MoleculeAI")(isopropyl_cation)
 isopropyl_cation_ai.findElectrophileIndex().should.be.equal(5)
 const water = MoleculeFactory("O")
@@ -54,5 +54,16 @@ VMolecule(dehydrated_products[0]).canonicalSMILES().should.be.equal("C[CH1+]C")
 
 // REMOVE proton from water
 // See Organic Chemistry 8th Edition p245
+const isopropyloxonium_ai = require("./Components/Stateless/MoleculeAI")(isopropyloxonium)
+isopropyloxonium_ai.findWaterOxygenIndex().should.be.equal(12)
 const deprotonated_hydrated_products = CommandTest("REMOVE proton from water", _.cloneDeep(isopropyloxonium), _.cloneDeep([water,1]))
 VMolecule(deprotonated_hydrated_products[0]).canonicalSMILES().should.be.equal("CC(C)O")
+
+// Add proton to hydroxyl group
+// See Organic Chemistry 8th Edition p245
+const isopropanol = deprotonated_hydrated_products[0]
+//console.log(VMolecule(isopropanol).compressed())
+const isopropanol_ai =  require("./Components/Stateless/MoleculeAI")(isopropanol)
+isopropanol_ai.findHydroxylOxygenIndex().should.be.equal(11)
+const protonated_deprotonated_hydrated_products = CommandTest("ADD proton to hydroxyl group", _.cloneDeep(isopropanol), _.cloneDeep([water,1]))
+VMolecule(protonated_deprotonated_hydrated_products[0]).canonicalSMILES().should.be.equal("CC(C)[O+]")

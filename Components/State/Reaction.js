@@ -560,12 +560,27 @@ class Reaction {
         }).pop()
 
         this.container_substrate[0][1][water_oxygen_index][4] = 0
-        this.container_substrate[0][1].splice(oxygen_proton_bond.bond_index, 1)
 
+        const shared_electrons = oxygen_proton_bond.shared_electrons
 
-        this.addProtonToReagent()
+        // Remove proton from substrate
+        _.remove(this.container_substrate[0][1], (v, i)=>{
+            return i === oxygen_proton_bond.atom_index
+        })
+
+        // Check
+        const o_index = _.findIndex(this.container_substrate[0][1], (a)=>{
+            return a[0] === 'O'
+        })
+        CAtom(this.container_substrate[0][1][o_index], o_index, this.container_substrate).indexedBonds("").filter(
+            (bond)=>{
+                return bond.atom[0]==="H"
+            }
+        ).length.should.be.equal(1)
 
         this.setMoleculeAI()
+
+        this.addProtonToReagent()
         this.setReagentAI()
 
 
