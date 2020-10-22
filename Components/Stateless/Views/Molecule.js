@@ -218,11 +218,6 @@ const VMolecule = (mmolecule) => {
               //  console.log ("6 CARRY branch:" + branch_index + " " + carry)
                 if (!processed_atoms_indexes.includes(index)) {
                     processed_atoms_indexes.push(index)
-                    console.log('b1')
-                    console.log(bonds)
-                    console.log(bonds.length)
-                    console.log("Views/Molecule.js")
-                    process.exit()
                     // Branch or ring?
                     carry = carry + __getAtomAsSMILE(catom, current_atom, processed_atoms_indexes, index) + __addBranches(bonds, branch_index+1, processed_atoms_indexes, current_atom)
                     //console.log ("3 CARRY branch:" + branch_index + " " + carry + ' ' + current_atom[0] + ' ' + current_atom[5])
@@ -345,7 +340,15 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                 chains = MoleculeAI.chains(null, root_atom_index, [[root_atom_index]], 0, 0, 1).sort((a,b)=>{
                     return a.length > b.length  ? -1: 1
                 })
+
+                //console.log('VMolecule')
+                //console.log('chains')
+                //console.log(chains)
+                // [ [ 1, 2, 6 ], [ 1, 2, 4 ], [ 1, 2, 3 ] ]
+
             }
+
+
 
 
             // "C  O   C  (C) (C)   C   O")
@@ -380,8 +383,10 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
             let branch_atom_index = null
             if (chains.length === 1) {
                 // Replace atom indexes with symbols
-//                console.log(chains[0])
+               // console.log(chains[0])
+                //process.exit()
                 /*
+                Apple [ 1, 2, '(', 3, ')', '(', 4, ')', 6 ]
                 [  1,   2, '(', 6, ')', '(', 4, ')', 3 ]
                   OS(O)(=0)=O
                  */
