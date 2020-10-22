@@ -90,8 +90,8 @@ const MoleculeAI = (container_molecule) => {
 
                         col++
 
-
-                        if (chains[chain_index][0] !== bond.atom_index) {
+                        // Check we dont have a loop.
+                        if (chains[chain_index].imdexOf(bond.atom_index) === chains-1)  {
                             chains = this.chains(root_atom_index, bond.atom_index, chains, chain_index, col, depth + 1)
                         }
 
