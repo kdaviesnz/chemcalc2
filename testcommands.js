@@ -7,6 +7,10 @@ const CAtom = require('./Controllers/Atom')
 
 const CommandTest = require('./Components/Stateless/CommandTest')
 
+const sulphuric_acid = MoleculeFactory("OS(=O)(=O)O")
+VMolecule([sulphuric_acid,1]).canonicalSMILES().should.be.equal("OS(O)(=O)=O")
+const sulphuric_acid_ai = require("./Components/Stateless/MoleculeAI")([sulphuric_acid,1])
+
 
 // Epoxide acidic ring opening
 // https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Map%3A_Organic_Chemistry_(McMurry)/Chapter_18%3A_Ethers_and_Epoxides%3B_Thiols_and_Sulfides/18.06_Reactions_of_Epoxides%3A_Ring-opening
@@ -19,15 +23,24 @@ const CommandTest = require('./Components/Stateless/CommandTest')
 const isobutene_oxide = MoleculeFactory("CC1(CO1)C")
 VMolecule([isobutene_oxide,1]).canonicalSMILES().should.be.equal("CC4(C)CO4")
 
+// PROTONATE
+const protonated_ether_products = CommandTest("PROTONATE", _.cloneDeep([isobutene_oxide,1]), _.cloneDeep([sulphuric_acid,1]))
+VMolecule(protonated_ether_products[0]).canonicalSMILES().should.be.equal("CC4(C)C[O+]4")
+const twoTwoDimethyloxoniacyclopropane = protonated_ether_products[0]
+// DEPROTONATE
+const deprotonated_ether_products = CommandTest("DEPROTONATE", _.cloneDeep(twoTwoDimethyloxoniacyclopropane), _.cloneDeep(protonated_ether_products[1]))
+VMolecule(deprotonated_ether_products[0]).canonicalSMILES().should.be.equal("CC4(C)CO4")
+
+// BREAK bond
+
+process.exit()
 
 
 
 
 // PROTONATE
 // See Organic Chemistry 8th Edition p245
-const sulphuric_acid = MoleculeFactory("OS(=O)(=O)O")
 const alkene = MoleculeFactory("CC=C")
-const sulphuric_acid_ai = require("./Components/Stateless/MoleculeAI")([sulphuric_acid,1])
 const alkene_ai = require("./Components/Stateless/MoleculeAI")([alkene,1])
 const nucleophile_index =alkene_ai.findNucleophileIndex()
 const reagent_nucleophile_index = sulphuric_acid_ai.findNucleophileIndex()

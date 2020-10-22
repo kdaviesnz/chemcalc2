@@ -328,6 +328,26 @@ const VMolecule = (mmolecule) => {
         addBrackets: function(symbol, charge) {
             return charge !== "" || symbol === "Br"  || symbol === "Al"
         },
+        getBond: function(chain, atom_index, i) {
+            if (i===0) {
+                return ""
+            }
+            if (typeof chain[i] !== "number") {
+                this.getBond(chain, atom_index, i-1)
+            }
+            const previous_atom_object = CAtom(mmolecule[0][1][chain[i]], chain[i], mmolecule)
+            const bonds = previous_atom_object.indexedBonds("").filter(
+                (bond) => {
+                    return bond.atom_index = atom_index
+                }
+            )
+            if (bonds.length === 0) {
+                this.getBond(chain, atom_index, i-1)
+            }
+
+            return bonds[0].bond_type
+
+        },
         canonicalSMILES: function(chains) {
 
             const root_atom_index = this.rootAtomIndex(0)
@@ -343,14 +363,12 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                         return a.length > b.length  ? -1: 1
                 })
 
-               // console.log('VMolecule')
-               // console.log('chains')
-                // console.log(chains)
+                //console.log('VMolecule')
+                //console.log('chains')
+                //console.log(chains)
                 // apple [ [ 1, 2, 6 ], [ 1, 2, 4 ], [ 1, 2, 3 ] ]
                 // [ [ 1, 2, 3 ], [ 1, 2, 4 ], [ 1, 2, 6 ] ]
             }
-
-
 
 
             // "C  O   C  (C) (C)   C   O")
@@ -390,12 +408,12 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                 /*
                 Apple [ 1, 2, '(', 3, ')', '(', 4, ')', 6 ]
                 [  1,   2, '(', 6, ')', '(', 4, ')', 3 ]
-                  OS(O)(=0)=O
                  */
                 const smiles = _.cloneDeep(chains[0]).reduce(
                     (carry, atom_index, i, arr) => {
 
                         if (typeof atom_index !== "number") {
+                            /*
                             if (atom_index==="(") {
                                 branch_atom_index = this.previousAtomIndex(chains[0], i-1)
                             }
@@ -411,8 +429,11 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                                 }
                                 branch_atom_index = null
                             }
+                            */
                            return carry + atom_index
                         }
+
+                        const bond = this.getBond(_.cloneDeep(chains[0]), atom_index, i)
 
                         const atom_object = CAtom(mmolecule[0][1][atom_index], atom_index, mmolecule)
 
@@ -441,7 +462,7 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                         //process.exit()
 
                         if (next_atom_index === false) {
-                            return carry + (add_brackets?"[":"") + symbol + hydrogens + charge + (add_brackets?"]":"")
+                            return carry + bond + (add_brackets?"[":"") + symbol + hydrogens + charge + (add_brackets?"]":"")
                         }
 
                         const bonds = atom_object.indexedBonds("").filter((bond)=>{
@@ -457,14 +478,14 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                             symbol = (add_brackets?"[":"") + symbol + charge + (add_brackets?"]":"") + atom_index
                         }
 
-
-                        return carry + (add_brackets?"[":"") + symbol + hydrogens + charge + (add_brackets?"]":"") + (bonds.length > 0? bonds[0].bond_type:"")
+                        return carry + (add_brackets?"[":"") + bond + symbol + hydrogens + charge + (add_brackets?"]":"")
                     },
                     ""
                 )
                 // should be OS(=O)(=O)O
                 // OS(O)(=O)O
-                return smiles.replace(/\=\(/g, "(=")
+                return smiles
+               // return smiles.replace(/\=\(/g, "(=")
 
             } else {
                 // Get atom indexes in the second row which are not in the first row
