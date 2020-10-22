@@ -32,6 +32,8 @@ const deprotonated_ether_products = CommandTest("DEPROTONATE", _.cloneDeep(twoTw
 VMolecule(deprotonated_ether_products[0]).canonicalSMILES().should.be.equal("CC4(C)CO4")
 
 // BREAK bond
+const protonated_ether_products_bond_broken = CommandTest("BREAK bond", _.cloneDeep(twoTwoDimethyloxoniacyclopropane))
+VMolecule(protonated_ether_products_bond_broken[0]).canonicalSMILES().should.be.equal("CC4(C)CO4")
 
 process.exit()
 
