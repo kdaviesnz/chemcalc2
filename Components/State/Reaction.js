@@ -395,6 +395,9 @@ class Reaction {
 
     protonate() {
 
+        console.log(VMolecule(this.container_reagent).canonicalSMILES())
+        process.exit()
+        console.log('Reaction.js')
         let atom_nucleophile_index = this.MoleculeAI.findNucleophileIndex()
 
         if (atom_nucleophile_index === -1 && !this.MoleculeAI.isWater()) {
@@ -458,6 +461,7 @@ class Reaction {
         this.setMoleculeAI()
 
         // Remove proton from the reagent
+        /*
         if (null !== this.container_reagent) {
 
             const reagent_proton_index = this.ReagentAI.findProtonIndex()
@@ -475,6 +479,7 @@ class Reaction {
             })
             this.setReagentAI()
         }
+         */
 
 
     }

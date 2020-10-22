@@ -380,11 +380,14 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
             let branch_atom_index = null
             if (chains.length === 1) {
                 // Replace atom indexes with symbols
-
+//                console.log(chains[0])
+                /*
+                [  1,   2, '(', 6, ')', '(', 4, ')', 3 ]
+                  OS(O)(=0)=O
+                 */
                 const smiles = _.cloneDeep(chains[0]).reduce(
                     (carry, atom_index, i, arr) => {
 
-                        // C1C=CC(CO)=CC=1
                         if (typeof atom_index !== "number") {
                             if (atom_index==="(") {
                                 branch_atom_index = this.previousAtomIndex(chains[0], i-1)
@@ -396,10 +399,10 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                                 const branch_bond_atom_bonds = branch_bond_atom.indexedBonds("").filter((bond)=>{
                                     return bond.atom_index === branch_atom_index
                                 })
-                                branch_atom_index = null
                                 if (branch_bond_atom_bonds[0] !== undefined) {
                                     atom_index = ")" + branch_bond_atom_bonds[0].bond_type
                                 }
+                                branch_atom_index = null
                             }
                            return carry + atom_index
                         }
@@ -452,6 +455,8 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                     },
                     ""
                 )
+                // should be OS(=O)(=O)O
+                // OS(O)(=O)O
                 return smiles.replace(/\=\(/g, "(=")
 
             } else {

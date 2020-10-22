@@ -61,6 +61,11 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
 
 const Families = require('./Models/Families')
 
+const sulphuric_acid = MoleculeFactory("OS(=O)(=O)O")
+console.log("OS(=O)(=O)O")
+console.log(VMolecule([sulphuric_acid, 1]).compressed())
+VMolecule([sulphuric_acid, 1]).canonicalSMILES().should.be.equal("OS(=O)(=O)O")
+
 const methyline = MoleculeFactory("[CH2]")
 
 // Check number of hydrogens
@@ -79,7 +84,7 @@ const Two_Methoxy_2_methylpropan_1_ol = MoleculeFactory("COC(C)(C)CO")
 VMolecule([Two_Methoxy_2_methylpropan_1_ol, 1]).canonicalSMILES().should.be.equal("COC(C)(C)CO")
 
 const ethanol = MoleculeFactory("C(O)C")
-VMolecule([ethanol, 1]).canonicalSMILES().should.be.equal("C(O)C")
+VMolecule([ethanol, 1]).canonicalSMILES().should.be.equal("C(C)O")
 
 
 const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
@@ -124,7 +129,7 @@ C1  C=  C  C (CO)    = C C=1 (correct)
  */
 // 1A= 3 5= 6 (8= 10A) 13 15
 
-VMolecule([benyzl_alcohol, 1]).canonicalSMILES().should.be.equal("C1C=CC(CO)=CC=1")
+VMolecule([benyzl_alcohol, 1]).canonicalSMILES().should.be.equal("C1=CC=C(CO)C=C1")
 const benyzl_alcohol_molecule_ai = require("./Components/Stateless/MoleculeAI")([benyzl_alcohol, 1])
 const benzyl_alcohol_carbons = benyzl_alcohol[1].filter((atom)=>{
     return atom[0] === "C"
@@ -205,8 +210,7 @@ if (true) {
     const oxonium = MoleculeFactory("[OH3+]")
     VMolecule([oxonium, 1]).canonicalSMILES().should.be.equal("[O+]")
 
-    const sulphuric_acid = MoleculeFactory("OS(=O)(=O)O")
-    VMolecule([sulphuric_acid, 1]).canonicalSMILES().should.be.equal("OS(=O)(=O)O")
+
 
     const butane = MoleculeFactory("CC[C+]C")
     VMolecule([butane, 1]).canonicalSMILES().should.be.equal("CC[C+]C")
