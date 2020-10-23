@@ -40,7 +40,6 @@ const protonated_ether_products_bond_broken = CommandTest("BREAK bond", _.cloneD
 const two_methylpropan_1_ol = protonated_ether_products_bond_broken[0]
 VMolecule(two_methylpropan_1_ol).canonicalSMILES().should.be.equal("C[C+](C)CO")
 // BOND atoms
-console.log(VMolecule(two_methylpropan_1_ol).compressed())
 const protonated_ether_products_bond_fixed = CommandTest("BOND atoms", _.cloneDeep(two_methylpropan_1_ol))
 VMolecule(protonated_ether_products_bond_fixed[0]).canonicalSMILES().should.be.equal("CC4(C)C[O+]4")
 
@@ -48,6 +47,21 @@ VMolecule(protonated_ether_products_bond_fixed[0]).canonicalSMILES().should.be.e
 const protonated_ether_products_methylated = CommandTest("BOND atoms", _.cloneDeep(two_methylpropan_1_ol),
     _.cloneDeep([methanol,1]))
 VMolecule(protonated_ether_products_methylated[0]).canonicalSMILES().should.be.equal("CC(C)([O+]C)CO")
+// BREAK bond
+const protonated_ether_products_demethylated = CommandTest("BREAK bond", _.cloneDeep(protonated_ether_products_methylated[0]))
+VMolecule(protonated_ether_products_demethylated[0]).canonicalSMILES().should.be.equal("C[C+](C)CO")
+
+// DEPROTONATE nonhydroxyl oxygen
+const protonated_ether_products_methylated_deprotonated = CommandTest("DEPROTONATE nonhydroxyl oxygen", _.cloneDeep(protonated_ether_products_methylated[0]),
+    _.cloneDeep([methanol,1]))
+VMolecule(protonated_ether_products_methylated_deprotonated[0]).canonicalSMILES().should.be.equal("CC(C)(OC)CO")
+// PROTONATE nonhydroxyl oxygen
+const protonated_ether_products_methylated_protonated = CommandTest("PROTONATE nonhydroxyl oxygen",
+    _.cloneDeep(protonated_ether_products_methylated_deprotonated[0]),
+    _.cloneDeep(protonated_ether_products_methylated_deprotonated[1]))
+VMolecule(protonated_ether_products_methylated_protonated[0]).canonicalSMILES().should.be.equal("C[C+](C)CO")
+
+
 
 
 process.exit()

@@ -31,6 +31,7 @@ const CommandTest = (command, substrate, reagent, rule) => {
         "REMOVE proton from water": RemoveProtonFromWater,
         "HYDRATE": Hydrate,
         "DEPROTONATE nonhydroxyl oxygen": DeprotonateNonHydroxylOxygen,
+        "PROTONATE nonhydroxyl oxygen": ProtonateNonHydroxylOxygen,
         "TRANSFER proton": TransferProton,
         "PROTONATE carbonyl": ProtonateCarbonyl,
         "DEPROTONATE carbonyl": DeprotonateCarbonyl,

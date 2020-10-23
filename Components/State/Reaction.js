@@ -611,7 +611,8 @@ class Reaction {
         }).pop()
 
         this.container_substrate[0][1][oxygen_index][4] = 0
-        this.container_substrate[0][1].splice(oxygen_proton_bond.bond_index, 1)
+        this.container_substrate[0][1].splice(oxygen_proton_bond.atom_index, 1)
+        // this.container_substrate[0][1].splice(hydrogen_bond.atom_index, 1)
 
 
         this.addProtonToReagent()
