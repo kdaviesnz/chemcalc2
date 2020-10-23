@@ -16,49 +16,7 @@ VMolecule([methanol,1]).canonicalSMILES().should.be.equal("CO")
 const methanol_ai = require("./Components/Stateless/MoleculeAI")([methanol,1])
 
 
-// Epoxide acidic ring opening
-// https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Map%3A_Organic_Chemistry_(McMurry)/Chapter_18%3A_Ethers_and_Epoxides%3B_Thiols_and_Sulfides/18.06_Reactions_of_Epoxides%3A_Ring-opening
-// PROTONATE
-// BREAK bond
-// BOND atoms
-// DEPROTONATE nonhydroxyl oxygen
-// CC1(C)OC1
-// Start
-const isobutene_oxide = MoleculeFactory("CC1(CO1)C")
-VMolecule([isobutene_oxide,1]).canonicalSMILES().should.be.equal("CC4(C)CO4")
 
-// PROTONATE
-const protonated_ether_products = CommandTest("PROTONATE", _.cloneDeep([isobutene_oxide,1]), _.cloneDeep([sulphuric_acid,1]))
-//VMolecule(protonated_ether_products[0]).canonicalSMILES().should.be.equal("CC4(C)C[O+]4")
-const twoTwoDimethyloxoniacyclopropane = protonated_ether_products[0]
-// DEPROTONATE
-const deprotonated_ether_products = CommandTest("DEPROTONATE", _.cloneDeep(twoTwoDimethyloxoniacyclopropane), _.cloneDeep(protonated_ether_products[1]))
-
-// BREAK bond
-const protonated_ether_products_bond_broken = CommandTest("BREAK bond", _.cloneDeep(twoTwoDimethyloxoniacyclopropane))
-const two_methylpropan_1_ol = protonated_ether_products_bond_broken[0]
-VMolecule(two_methylpropan_1_ol).canonicalSMILES().should.be.equal("C[C+](C)CO")
-// BOND atoms
-const protonated_ether_products_bond_fixed = CommandTest("BOND atoms", _.cloneDeep(two_methylpropan_1_ol))
-VMolecule(protonated_ether_products_bond_fixed[0]).canonicalSMILES().should.be.equal("CC4(C)C[O+]4")
-
-// Bond atoms (substrate + reagent)
-const protonated_ether_products_methylated = CommandTest("BOND atoms", _.cloneDeep(two_methylpropan_1_ol),
-    _.cloneDeep([methanol,1]))
-VMolecule(protonated_ether_products_methylated[0]).canonicalSMILES().should.be.equal("CC(C)([O+]C)CO")
-// BREAK bond
-const protonated_ether_products_demethylated = CommandTest("BREAK bond", _.cloneDeep(protonated_ether_products_methylated[0]))
-VMolecule(protonated_ether_products_demethylated[0]).canonicalSMILES().should.be.equal("C[C+](C)CO")
-
-// DEPROTONATE nonhydroxyl oxygen
-const protonated_ether_products_methylated_deprotonated = CommandTest("DEPROTONATE nonhydroxyl oxygen", _.cloneDeep(protonated_ether_products_methylated[0]),
-    _.cloneDeep([methanol,1]))
-VMolecule(protonated_ether_products_methylated_deprotonated[0]).canonicalSMILES().should.be.equal("CC(C)(OC)CO")
-// PROTONATE nonhydroxyl oxygen
-const protonated_ether_products_methylated_protonated = CommandTest("PROTONATE nonhydroxyl oxygen",
-    _.cloneDeep(protonated_ether_products_methylated_deprotonated[0]),
-    _.cloneDeep(protonated_ether_products_methylated_deprotonated[1]))
-VMolecule(protonated_ether_products_methylated_protonated[0]).canonicalSMILES().should.be.equal("CC(C)([O+]C)CO")
 
 
 // PROTONATE
@@ -121,3 +79,49 @@ VMolecule(protonated_deprotonated_hydrated_products[0]).canonicalSMILES().should
 const dehydrated_products_2 = CommandTest("DEHYDRATE", _.cloneDeep(protonated_deprotonated_hydrated_products[0]))
 const deprotonated_products_2 = CommandTest("DEPROTONATE", _.cloneDeep(dehydrated_products_2[0]), _.cloneDeep(hydrogen_sulfate))
 VMolecule(deprotonated_products_2[0]).canonicalSMILES().should.be.equal("CC=C")
+
+
+
+// Epoxide acidic ring opening
+// https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Map%3A_Organic_Chemistry_(McMurry)/Chapter_18%3A_Ethers_and_Epoxides%3B_Thiols_and_Sulfides/18.06_Reactions_of_Epoxides%3A_Ring-opening
+// PROTONATE
+// BREAK bond
+// BOND atoms
+// DEPROTONATE nonhydroxyl oxygen
+// CC1(C)OC1
+// Start
+const isobutene_oxide = MoleculeFactory("CC1(CO1)C")
+VMolecule([isobutene_oxide,1]).canonicalSMILES().should.be.equal("CC4(C)CO4")
+
+// PROTONATE
+const protonated_ether_products = CommandTest("PROTONATE", _.cloneDeep([isobutene_oxide,1]), _.cloneDeep([sulphuric_acid,1]))
+//VMolecule(protonated_ether_products[0]).canonicalSMILES().should.be.equal("CC4(C)C[O+]4")
+const twoTwoDimethyloxoniacyclopropane = protonated_ether_products[0]
+// DEPROTONATE
+const deprotonated_ether_products = CommandTest("DEPROTONATE", _.cloneDeep(twoTwoDimethyloxoniacyclopropane), _.cloneDeep(protonated_ether_products[1]))
+
+// BREAK bond
+const protonated_ether_products_bond_broken = CommandTest("BREAK bond", _.cloneDeep(twoTwoDimethyloxoniacyclopropane))
+const two_methylpropan_1_ol = protonated_ether_products_bond_broken[0]
+VMolecule(two_methylpropan_1_ol).canonicalSMILES().should.be.equal("C[C+](C)CO")
+// BOND atoms
+const protonated_ether_products_bond_fixed = CommandTest("BOND atoms", _.cloneDeep(two_methylpropan_1_ol))
+VMolecule(protonated_ether_products_bond_fixed[0]).canonicalSMILES().should.be.equal("CC4(C)C[O+]4")
+
+// Bond atoms (substrate + reagent)
+const protonated_ether_products_methylated = CommandTest("BOND atoms", _.cloneDeep(two_methylpropan_1_ol),
+    _.cloneDeep([methanol,1]))
+VMolecule(protonated_ether_products_methylated[0]).canonicalSMILES().should.be.equal("CC(C)([O+]C)CO")
+// BREAK bond
+const protonated_ether_products_demethylated = CommandTest("BREAK bond", _.cloneDeep(protonated_ether_products_methylated[0]))
+VMolecule(protonated_ether_products_demethylated[0]).canonicalSMILES().should.be.equal("C[C+](C)CO")
+
+// DEPROTONATE nonhydroxyl oxygen
+const protonated_ether_products_methylated_deprotonated = CommandTest("DEPROTONATE nonhydroxyl oxygen", _.cloneDeep(protonated_ether_products_methylated[0]),
+    _.cloneDeep([methanol,1]))
+VMolecule(protonated_ether_products_methylated_deprotonated[0]).canonicalSMILES().should.be.equal("CC(C)(OC)CO")
+// PROTONATE nonhydroxyl oxygen
+const protonated_ether_products_methylated_protonated = CommandTest("PROTONATE nonhydroxyl oxygen",
+    _.cloneDeep(protonated_ether_products_methylated_deprotonated[0]),
+    _.cloneDeep(protonated_ether_products_methylated_deprotonated[1]))
+VMolecule(protonated_ether_products_methylated_protonated[0]).canonicalSMILES().should.be.equal("CC(C)([O+]C)CO")
