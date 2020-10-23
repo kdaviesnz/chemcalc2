@@ -595,7 +595,9 @@ class Reaction {
 
     deprotonateNonHydroxylOxygen() {
 
+
         const oxygen_index = this.MoleculeAI.findNonWaterOxygenIndex()
+
 
         oxygen_index.should.not.be.equal(-1)
 
@@ -663,7 +665,13 @@ class Reaction {
 
     addProtonFromReagentToHydroxylGroup() {
 
+        console.log('Reaction.js deprotonateNonHydroxylOxygen')
+        console.log(VMolecule(this.container_reagent).compressed())
+
+
         const proton_index = this.ReagentAI.findProtonIndex()
+
+
         proton_index.should.be.greaterThan(-1)
         const reagent_atoms = _.cloneDeep(this.container_reagent[0][1])
         this.removeProtonFromReagent(proton_index)
@@ -682,22 +690,30 @@ class Reaction {
 
     addProtonFromReagentToNonHydroxylGroup() {
 
-        const proton_index = this.ReagentAI.findProtonIndex()
+
+        const nucleophile_index = this.ReagentAI.findNucleophileIndex()
+
+
+        let proton_index = -1
+        if (nucleophile_index !== -1) {
+            proton_index = CAtom(this.container_reagent[0][1][nucleophile_index], nucleophile_index, this.container_reagent).indexedBonds("").filter((bond)=>{
+                return bond.atom[0] === "H"
+            }).pop().atom_index
+        } else {
+            proton_index = this.ReagentAI.findProtonIndex()
+        }
+
         proton_index.should.be.greaterThan(-1)
+
         const reagent_atoms = _.cloneDeep(this.container_reagent[0][1])
         this.removeProtonFromReagent(proton_index)
         this.container_reagent[0][1].length.should.not.equal(reagent_atoms.length)
 
 
         const oxygen_index = this.MoleculeAI.findNonHydroxylOxygenIndex()
+
+
         oxygen_index.should.not.be.equal(-1)
-
-
-       // console.log(this.container_substrate[0][1])
-
-        //console.log(VMolecule(this.container_substrate).canonicalSMILES())
-
-       // console.log(oxygen_index)
 
 
         if (oxygen_index === -1) {
@@ -711,8 +727,11 @@ class Reaction {
 
         this.container_substrate[0][1].length.should.not.equal(substrate_atoms.length)
 
+
         this.setMoleculeAI()
         this.setReagentAI()
+
+
 
     }
 

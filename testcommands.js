@@ -33,7 +33,6 @@ const protonated_ether_products = CommandTest("PROTONATE", _.cloneDeep([isobuten
 const twoTwoDimethyloxoniacyclopropane = protonated_ether_products[0]
 // DEPROTONATE
 const deprotonated_ether_products = CommandTest("DEPROTONATE", _.cloneDeep(twoTwoDimethyloxoniacyclopropane), _.cloneDeep(protonated_ether_products[1]))
-//VMolecule(deprotonated_ether_products[0]).canonicalSMILES().should.be.equal("CC4(C)CO4")
 
 // BREAK bond
 const protonated_ether_products_bond_broken = CommandTest("BREAK bond", _.cloneDeep(twoTwoDimethyloxoniacyclopropane))
@@ -59,14 +58,7 @@ VMolecule(protonated_ether_products_methylated_deprotonated[0]).canonicalSMILES(
 const protonated_ether_products_methylated_protonated = CommandTest("PROTONATE nonhydroxyl oxygen",
     _.cloneDeep(protonated_ether_products_methylated_deprotonated[0]),
     _.cloneDeep(protonated_ether_products_methylated_deprotonated[1]))
-VMolecule(protonated_ether_products_methylated_protonated[0]).canonicalSMILES().should.be.equal("C[C+](C)CO")
-
-
-
-
-process.exit()
-
-
+VMolecule(protonated_ether_products_methylated_protonated[0]).canonicalSMILES().should.be.equal("CC(C)([O+]C)CO")
 
 
 // PROTONATE
@@ -82,21 +74,20 @@ const double_bonds = CAtom(alkene[1][nucleophile_index], nucleophile_index, [alk
 double_bonds.length.should.be.equal(1)
 const protonated_products = CommandTest("PROTONATE", [alkene,1], [sulphuric_acid,1])
 VMolecule(protonated_products[0]).canonicalSMILES().should.be.equal('C[CH1+]C')
-VMolecule(protonated_products[1]).canonicalSMILES().should.be.equal("[O-]S(=O)(=O)O")
+VMolecule(protonated_products[1]).canonicalSMILES().should.be.equal("[O-]S(O)(=O)=O")
 
 
 // DEPROTONATE
 // See Organic Chemistry 8th Edition p245
 const isopropyl_cation = protonated_products[0]
 const hydrogen_sulfate = protonated_products[1]
+console.log(VMolecule(isopropyl_cation).compressed())
 const deprotonated_products = CommandTest("DEPROTONATE", _.cloneDeep(isopropyl_cation), _.cloneDeep(hydrogen_sulfate))
+VMolecule(deprotonated_products[1]).canonicalSMILES().should.be.equal("OS(O)(=O)=O")
 VMolecule(deprotonated_products[0]).canonicalSMILES().should.be.equal("CC=C")
-VMolecule(deprotonated_products[1]).canonicalSMILES().should.be.equal("OS(=O)(=O)O")
-
 
 // HYDRATE
 // See Organic Chemistry 8th Edition p245
-// console.log(VMolecule(isopropyl_cation).compressed())
 const isopropyl_cation_ai = require("./Components/Stateless/MoleculeAI")(isopropyl_cation)
 isopropyl_cation_ai.findElectrophileIndex().should.be.equal(5)
 const water = MoleculeFactory("O")
