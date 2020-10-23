@@ -37,10 +37,18 @@ const deprotonated_ether_products = CommandTest("DEPROTONATE", _.cloneDeep(twoTw
 
 // BREAK bond
 const protonated_ether_products_bond_broken = CommandTest("BREAK bond", _.cloneDeep(twoTwoDimethyloxoniacyclopropane))
-// C[C+]4CO4
-// not correct - we should no longer have a ring
-// Should be C[C+](C)CO
-VMolecule(protonated_ether_products_bond_broken[0]).canonicalSMILES().should.be.equal("C[C+](C)CO")
+const two_methylpropan_1_ol = protonated_ether_products_bond_broken[0]
+VMolecule(two_methylpropan_1_ol).canonicalSMILES().should.be.equal("C[C+](C)CO")
+// BOND atoms
+console.log(VMolecule(two_methylpropan_1_ol).compressed())
+const protonated_ether_products_bond_fixed = CommandTest("BOND atoms", _.cloneDeep(two_methylpropan_1_ol))
+VMolecule(protonated_ether_products_bond_fixed[0]).canonicalSMILES().should.be.equal("CC4(C)C[O+]4")
+
+// Bond atoms (substrate + reagent)
+const protonated_ether_products_methylated = CommandTest("BOND atoms", _.cloneDeep(two_methylpropan_1_ol),
+    _.cloneDeep([methanol,1]))
+VMolecule(protonated_ether_products_methylated[0]).canonicalSMILES().should.be.equal("CC(C)([O+]C)CO")
+
 
 process.exit()
 

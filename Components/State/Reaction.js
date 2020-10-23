@@ -249,9 +249,7 @@ class Reaction {
         const source_atom = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate)
         const target_atom = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
 
-        const shared_electrons = source_atom.indexedBonds("").filter((bond)=>{
-            return bond.atom_index = electrophile_index
-        }).pop().shared_electrons
+        const shared_electrons = Set().intersection(this.container_substrate[0][1][nucleophile_index].slice(5), this.container_substrate[0][1][electrophile_index].slice(5))
 
         /*
         https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Map%3A_Organic_Chemistry_(Smith)/Chapter_06%3A_Understanding_Organic_Reactions/6.03_Bond_Breaking_and_Bond_Making
@@ -263,9 +261,11 @@ class Reaction {
         if (break_type==="heterolysis") {
 
             // Remove shared electrons from nucleophile
+            const electrons = _.cloneDeep(this.container_substrate[0][1][nucleophile_index]).slice(5)
             _.remove(this.container_substrate[0][1][nucleophile_index], (v, i)=> {
                 return shared_electrons[0] === v || shared_electrons[1] === v
             })
+            this.container_substrate[0][1][nucleophile_index].slice(5).length.should.not.be.equal(electrons.length)
 
             // nucleophile should now be positively charged
             // electrophile should be negatively charged
@@ -280,6 +280,8 @@ class Reaction {
             } else {
                 this.container_substrate[0][1][electrophile_index][4] = "-"
             }
+
+            Set().intersection(this.container_substrate[0][1][nucleophile_index].slice(5), this.container_substrate[0][1][electrophile_index].slice(5)).length.should.be.equal(0)
 
 
         } else {
@@ -308,11 +310,8 @@ class Reaction {
     
     bondAtoms() {
 
-        console.log("bondAtoms")
-        console.log(VMolecule(this.container_substrate))
-        console.log(this.container_reagent)
-
         const electrophile_index = this.MoleculeAI.findElectrophileIndex()
+
 
         if (electrophile_index === -1) {
             console.log("bondAtoms() no electrophile found (1)")
@@ -328,7 +327,7 @@ class Reaction {
                 return false
             }
 
-            const electrophile_free_electrons = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate).freeElectrons()
+           //  const electrophile_free_electrons = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate).freeElectrons()
             const nucleophile_free_electrons = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate).freeElectrons()
 
             if (nucleophile_free_electrons.length < 2) {
@@ -340,13 +339,20 @@ class Reaction {
             this.container_substrate[0][1][electrophile_index].push(nucleophile_free_electrons[1])
             this.container_substrate[0][1][electrophile_index][4] = 0
 
+            /*
             _.remove(this.container_substrate[0][1][nucleophile_index], (electron)=>{
                 return electron === nucleophile_free_electrons[0] || electron === nucleophile_free_electrons[1]
             })
+            */
 
-            this.container_substrate[0][1][nucleophile_index][4] = 0
+            this.container_substrate[0][1][nucleophile_index][4] = this.container_substrate[0][1][nucleophile_index][4] === "-"?0:"+"
+
+            Set().intersection(this.container_substrate[0][1][electrophile_index].slice(5),
+                this.container_substrate[0][1][nucleophile_index].slice(5)).length.should.be.equal(2)
+
 
         } else {
+
 
             const nucleophile_index = this.ReagentAI.findNucleophileIndex()
             if (nucleophile_index === -1) {
@@ -354,7 +360,7 @@ class Reaction {
                 return false
             }
 
-            const electrophile_free_electrons = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate).freeElectrons()
+//            const electrophile_free_electrons = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate).freeElectrons()
             const nucleophile_free_electrons = CAtom(this.container_reagent[0][1][nucleophile_index], nucleophile_index, this.container_reagent).freeElectrons()
 
             if (nucleophile_free_electrons.length < 2) {
@@ -364,13 +370,16 @@ class Reaction {
 
             this.container_substrate[0][1][electrophile_index].push(nucleophile_free_electrons[0])
             this.container_substrate[0][1][electrophile_index].push(nucleophile_free_electrons[1])
-            this.container_substrate[0][1][electrophile_index][4] = 0
+            this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4]==="+"?0:"-"
 
-            _.remove(this.container_reagent[0][1][nucleophile_index], (electron)=>{
-                return electron === nucleophile_free_electrons[0] || electron === nucleophile_free_electrons[1]
-            })
+            this.container_reagent[0][1].map(
+                (atom)=>{
+                    this.container_substrate[0][1].push(atom)
+                    return atom
+                }
+            )
 
-            this.container_reagent[0][1][nucleophile_index][4] = 0
+            this.container_reagent[0][1][nucleophile_index][4] = "+"
 
         }
 
