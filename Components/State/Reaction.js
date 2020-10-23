@@ -191,7 +191,7 @@ class Reaction {
 
     }
     
-    breakBond() {
+    breakBond(break_type="heterolysis") {
 
 
         const electrophile_index = this.MoleculeAI.findElectrophileIndex()
@@ -253,20 +253,49 @@ class Reaction {
             return bond.atom_index = electrophile_index
         }).pop().shared_electrons
 
+        /*
+        https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Map%3A_Organic_Chemistry_(Smith)/Chapter_06%3A_Understanding_Organic_Reactions/6.03_Bond_Breaking_and_Bond_Making
+        If a covalent single bond is broken so that one electron of the shared pair remains with each fragment, as in the first example, this bond-breaking is called homolysis. If the bond breaks with both electrons of the shared pair remaining with one fragment,  this is called heterolysis.
+         */
+       // console.log("Break type=" + break_type)
+       // console.log(this.container_substrate[0][1][electrophile_index][4])
+       // console.log("Reaction.js")
+        if (break_type==="heterolysis") {
 
-        // Remove electron from source atom
-        _.remove(this.container_substrate[0][1][nucleophile_index], (v, i)=> {
-                return shared_electrons[0] === v 
-        })
-        
-        // Remove electron from target atom
-         _.remove(this.container_substrate[0][1][electrophile_index], (v, i)=> {
-                return shared_electrons[1] === v 
-        })
- 
-        if (this.container_substrate[0][1][electrophile_index][0] === "+") {
-            this.container_substrate[0][1][electrophile_index][4] = 0
+            // Remove shared electrons from nucleophile
+            _.remove(this.container_substrate[0][1][nucleophile_index], (v, i)=> {
+                return shared_electrons[0] === v || shared_electrons[1] === v
+            })
+
+            // nucleophile should now be positively charged
+            // electrophile should be negatively charged
+            if (this.container_substrate[0][1][nucleophile_index][4] === "-") {
+                this.container_substrate[0][1][nucleophile_index][4] = 0
+            } else {
+                this.container_substrate[0][1][nucleophile_index][4] = "+"
+            }
+
+            if (this.container_substrate[0][1][electrophile_index][4] === "+") {
+                this.container_substrate[0][1][electrophile_index][4] = 0
+            } else {
+                this.container_substrate[0][1][electrophile_index][4] = "-"
+            }
+
+
+        } else {
+            // Remove electron from source atom
+            _.remove(this.container_substrate[0][1][nucleophile_index], (v, i)=> {
+                return shared_electrons[0] === v
+            })
+
+            // Remove electron from target atom
+            _.remove(this.container_substrate[0][1][electrophile_index], (v, i)=> {
+                return shared_electrons[1] === v
+            })
+
         }
+
+
 
         this.setMoleculeAI()
         

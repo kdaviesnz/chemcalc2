@@ -11,6 +11,10 @@ const sulphuric_acid = MoleculeFactory("OS(=O)(=O)O")
 VMolecule([sulphuric_acid,1]).canonicalSMILES().should.be.equal("OS(O)(=O)=O")
 const sulphuric_acid_ai = require("./Components/Stateless/MoleculeAI")([sulphuric_acid,1])
 
+const methanol = MoleculeFactory("CO")
+VMolecule([methanol,1]).canonicalSMILES().should.be.equal("CO")
+const methanol_ai = require("./Components/Stateless/MoleculeAI")([methanol,1])
+
 
 // Epoxide acidic ring opening
 // https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Map%3A_Organic_Chemistry_(McMurry)/Chapter_18%3A_Ethers_and_Epoxides%3B_Thiols_and_Sulfides/18.06_Reactions_of_Epoxides%3A_Ring-opening
@@ -25,15 +29,18 @@ VMolecule([isobutene_oxide,1]).canonicalSMILES().should.be.equal("CC4(C)CO4")
 
 // PROTONATE
 const protonated_ether_products = CommandTest("PROTONATE", _.cloneDeep([isobutene_oxide,1]), _.cloneDeep([sulphuric_acid,1]))
-VMolecule(protonated_ether_products[0]).canonicalSMILES().should.be.equal("CC4(C)C[O+]4")
+//VMolecule(protonated_ether_products[0]).canonicalSMILES().should.be.equal("CC4(C)C[O+]4")
 const twoTwoDimethyloxoniacyclopropane = protonated_ether_products[0]
 // DEPROTONATE
 const deprotonated_ether_products = CommandTest("DEPROTONATE", _.cloneDeep(twoTwoDimethyloxoniacyclopropane), _.cloneDeep(protonated_ether_products[1]))
-VMolecule(deprotonated_ether_products[0]).canonicalSMILES().should.be.equal("CC4(C)CO4")
+//VMolecule(deprotonated_ether_products[0]).canonicalSMILES().should.be.equal("CC4(C)CO4")
 
 // BREAK bond
 const protonated_ether_products_bond_broken = CommandTest("BREAK bond", _.cloneDeep(twoTwoDimethyloxoniacyclopropane))
-VMolecule(protonated_ether_products_bond_broken[0]).canonicalSMILES().should.be.equal("CC4(C)CO4")
+// C[C+]4CO4
+// not correct - we should no longer have a ring
+// Should be C[C+](C)CO
+VMolecule(protonated_ether_products_bond_broken[0]).canonicalSMILES().should.be.equal("C[C+](C)CO")
 
 process.exit()
 

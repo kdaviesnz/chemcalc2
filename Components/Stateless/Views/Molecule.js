@@ -413,23 +413,6 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                     (carry, atom_index, i, arr) => {
 
                         if (typeof atom_index !== "number") {
-                            /*
-                            if (atom_index==="(") {
-                                branch_atom_index = this.previousAtomIndex(chains[0], i-1)
-                            }
-                            // OS=(O)=(O)O
-                            if (atom_index===")" && branch_atom_index !== null && chains[0][i-1] !== ")") {
-                                const end_branch_next_atom_index = this.nextAtomIndex(chains[0], i+1)
-                                const branch_bond_atom = CAtom(mmolecule[0][1][end_branch_next_atom_index], end_branch_next_atom_index, mmolecule)
-                                const branch_bond_atom_bonds = branch_bond_atom.indexedBonds("").filter((bond)=>{
-                                    return bond.atom_index === branch_atom_index
-                                })
-                                if (branch_bond_atom_bonds[0] !== undefined) {
-                                    atom_index = ")" + branch_bond_atom_bonds[0].bond_type
-                                }
-                                branch_atom_index = null
-                            }
-                            */
                            return carry + atom_index
                         }
 
@@ -456,10 +439,8 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                             if (hydrogen_bonds.length > 0) {
                                 hydrogens = "H" + hydrogen_bonds.length
                                 add_brackets = true
-                          //      console.log('goooot')
                             }
                         }
-                        //process.exit()
 
                         if (next_atom_index === false) {
                             return carry + bond + (add_brackets?"[":"") + symbol + hydrogens + charge + (add_brackets?"]":"")
@@ -475,10 +456,12 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                         if (last_index_of !== i) {
                             // We have a loop
                             arr[last_index_of] = chains[0][last_index_of] + ""
-                            symbol = (add_brackets?"[":"") + symbol + charge + (add_brackets?"]":"") + atom_index
+                            return carry + (add_brackets?"[":"") + bond + symbol + hydrogens + charge + (add_brackets?"]":"") + atom_index
+                        } else {
+                            return carry + (add_brackets?"[":"") + bond + symbol + hydrogens + charge + (add_brackets?"]":"")
                         }
 
-                        return carry + (add_brackets?"[":"") + bond + symbol + hydrogens + charge + (add_brackets?"]":"")
+
                     },
                     ""
                 )
