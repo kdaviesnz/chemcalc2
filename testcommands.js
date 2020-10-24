@@ -179,7 +179,8 @@ const isobutene = MoleculeFactory("CC(C)C=C")
 VMolecule([isobutene,1]).canonicalSMILES().should.be.equal("CC(C)C=C")
 // Hg atom (nucleophile) from reagent bonds with most substituted substrate carbon (electrophile) on the double bond
 const oxymercuration_demercuration_step1 = CommandTest("BOND atoms", [isobutene,1], [mercuriacetate,1])
-VMolecule(oxymercuration_demercuration_step1).canonicalSMILES().should.be.equal("CC(C)C=C")
+oxymercuration_demercuration_step1.should.not.be.equal(false)
+VMolecule(oxymercuration_demercuration_step1[0]).canonicalSMILES().should.be.equal("CC(C)C=C")
 
 
 
