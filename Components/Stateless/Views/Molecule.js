@@ -326,7 +326,7 @@ const VMolecule = (mmolecule) => {
             }
         },
         addBrackets: function(symbol, charge) {
-            return charge !== "" || symbol === "Br"  || symbol === "Al"
+            return charge !== "" || symbol === "Br"  || symbol === "Al" || symbol === "Hg" || symbol === "Ac"
         },
         getBond: function(chain, atom_index, i) {
             if (i===0) {

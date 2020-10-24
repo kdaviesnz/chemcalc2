@@ -241,19 +241,21 @@ VMolecule
 
         },
 
-        "findElectrophileIndex": () => {
+        "findElectrophileIndex": (filterBy) => {
 
             return _.findIndex(container_molecule[0][1], (atom, index)=>{
 
                 const atom_object = CAtom(atom, index,container_molecule)
 
                 if (atom_object.isPositivelyCharged() ) {
+                    if (undefined === filterBy || atom[0] !== filterBy)
                     return true
                 }
 
                 if (atom_object.freeSlots().length > 0) {
                     return true
                 }
+
 
                 if (atom[0]==="H" && atom_object.indexedBonds("").filter((bond)=>{
                     return bond.atom !== "C"

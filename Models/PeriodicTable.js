@@ -133,6 +133,28 @@ const PeriodicTable = {
         "electrons_per_shell": "2-8-1",
         "state_of_matter":"solid",
         "subcategory":"alkali metal"
+    },
+
+    "Ac": {
+        "group":3,
+        "column":"IIIB",
+        "atomic_number":89,
+        "name":"actinium",
+        "atomic_weight":227,
+        "electrons_per_shell": "2-8-18-32-18-9-2",
+        "state_of_matter":"solid",
+        "subcategory":"actinide"
+    },
+
+    "Hg": {
+        "group":12,
+        "column":"IIB",
+        "atomic_number":80,
+        "name":"mercury",
+        "atomic_weight":200.59,
+        "electrons_per_shell": "2-8-18-32-18-2",
+        "state_of_matter":"liquid",
+        "subcategory":"post-transition metal"
     }
 
 

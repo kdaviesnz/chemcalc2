@@ -130,8 +130,8 @@ VMolecule(protonated_ether_products_methylated_protonated[0]).canonicalSMILES().
 // https://chem.libretexts.org/Courses/Sacramento_City_College/SCC%3A_Chem_420_-_Organic_Chemistry_I/Text/09%3A_Reactions_of_Alkenes/9.13%3A_Dihydroxylation_of_Alkenes
 /*
 PROTONATE nonhydroxyl oxygen
-HYDRATE
 BREAK bond
+HYDRATE
 DEPROTONATE nonhydroxyl oxygen
 
 [OH3]
@@ -140,18 +140,46 @@ DEPROTONATE nonhydroxyl oxygen
 O
 [OH3]
 */
-const oxydanium = MoleculeFactory("[O+]")
+const oxydanium = MoleculeFactory("[OH3+]")
+VMolecule([isobutene_oxide,1]).canonicalSMILES().should.be.equal("CC4(C)CO4")
+
 const antidihydroxlation_test_step1 = CommandTest("PROTONATE nonhydroxyl oxygen",
     _.cloneDeep([isobutene_oxide,1]), _.cloneDeep([oxydanium,1]))
-const antidihydroxlation_test_step2 = CommandTest("HYDRATE",
-    _.cloneDeep(antidihydroxlation_test_step1[0]), _.cloneDeep([water,1]))
-const antidihydroxlation_test_step3 = CommandTest("BREAK bond",
-    _.cloneDeep(antidihydroxlation_test_step2[0]))
+VMolecule(antidihydroxlation_test_step1[0]).canonicalSMILES().should.be.equal("CC4(C)C[O+]4") // correct
+
+const antidihydroxlation_test_step2 = CommandTest("BREAK bond",
+    _.cloneDeep(antidihydroxlation_test_step1[0]))
+VMolecule(antidihydroxlation_test_step2[0]).canonicalSMILES().should.be.equal("C[C+](C)CO") // not correct
+
+const antidihydroxlation_test_step3 = CommandTest("HYDRATE",
+    _.cloneDeep(antidihydroxlation_test_step2[0]), _.cloneDeep([water,1]))
+VMolecule(antidihydroxlation_test_step3[0]).canonicalSMILES().should.be.equal("CC([O+])(C)CO")
+
 const antidihydroxlation_test_step4 = CommandTest("DEPROTONATE nonhydroxyl oxygen",
-    _.cloneDeep(antidihydroxlation_test_step3[0]))
+    _.cloneDeep(antidihydroxlation_test_step3[0]), _.cloneDeep([water,1]))
+VMolecule(antidihydroxlation_test_step4[0]).canonicalSMILES().should.be.equal("CC(O)(C)CO")
 
 
-
+// OXYMERCURATION - DEMERCURATION
+// https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Map%3A_Organic_Chemistry_(Wade)/09%3A_Reactions_of_Alkenes/9.05%3A_Hydration_by_Oxymercuration-Demercuration
+/*
+Notice that overall, the oxymercuration - demercuration mechanism follows Markovnikov's Regioselectivity with the OH group attached to the most substituted carbon and the H attached to the least substituted carbon. The reaction is useful, because strong acids are not required and carbocation rearrangements are avoided because no discreet carbocation intermediate forms.
+ */
+// https://www.masterorganicchemistry.com/2011/08/12/reagent-friday-sodium-borohydride-nabh4/#:~:text=What%20it's%20used%20for%3A%20Sodium,aldehydes%20and%20ketones%20to%20alcohols.
+// BOND atoms [Hg](O[Ac])O[Ac]
+// BREAK bond
+// BOND atoms
+// HYDRATE O
+// BREAK bond
+// REMOVE proton from water O
+// REDUCE
+const mercuriacetate = MoleculeFactory("[Hg](O[Ac])O[Ac]")
+VMolecule([mercuriacetate,1]).canonicalSMILES().should.be.equal("[Hg](O[Ac])O[Ac]")
+const isobutene = MoleculeFactory("CC(C)C=C")
+VMolecule([isobutene,1]).canonicalSMILES().should.be.equal("CC(C)C=C")
+// Hg atom (nucleophile) from reagent bonds with most substituted substrate carbon (electrophile) on the double bond
+const oxymercuration_demercuration_step1 = CommandTest("BOND atoms", [isobutene,1], [mercuriacetate,1])
+VMolecule(oxymercuration_demercuration_step1).canonicalSMILES().should.be.equal("CC(C)C=C")
 
 
 

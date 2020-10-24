@@ -94,7 +94,10 @@ class Reaction {
                                 water_oxygen_index,
                                 [water_molecule,1]).freeElectrons()
         electrons.length.should.be.greaterThan(1)
-        const electrophile_index = this.MoleculeAI.findElectrophileIndex()
+        const electrophile_index = this.MoleculeAI.findElectrophileIndex("O")
+
+        //console.log('Reaction.js hydrate()')
+        //console.log(this.container_substrate[0][1][electrophile_index])
 
         electrophile_index.should.not.be.equal(-1)
 
@@ -690,12 +693,19 @@ class Reaction {
     addProtonFromReagentToNonHydroxylGroup() {
 
 
-        const nucleophile_index = this.ReagentAI.findNucleophileIndex()
+        let reagent_atom_index = this.ReagentAI.findNucleophileIndex()
 
+        if (reagent_atom_index === -1) {
+            if (VMolecule(this.container_reagent).canonicalSMILES()=== "[O+]"){
+                reagent_atom_index = _.findIndex(this.container_substrate[0][1], (v,i)=>{
+                    return v[0] === 'O'
+                })
+            }
+        }
 
         let proton_index = -1
-        if (nucleophile_index !== -1) {
-            proton_index = CAtom(this.container_reagent[0][1][nucleophile_index], nucleophile_index, this.container_reagent).indexedBonds("").filter((bond)=>{
+        if (reagent_atom_index !== -1) {
+            proton_index = CAtom(this.container_reagent[0][1][reagent_atom_index], reagent_atom_index, this.container_reagent).indexedBonds("").filter((bond)=>{
                 return bond.atom[0] === "H"
             }).pop().atom_index
         } else {
