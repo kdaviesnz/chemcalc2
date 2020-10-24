@@ -333,19 +333,23 @@ const VMolecule = (mmolecule) => {
                 return ""
             }
             if (typeof chain[i] !== "number") {
-                this.getBond(chain, atom_index, i-1)
-            }
-            const previous_atom_object = CAtom(mmolecule[0][1][chain[i]], chain[i], mmolecule)
-            const bonds = previous_atom_object.indexedBonds("").filter(
-                (bond) => {
-                    return bond.atom_index = atom_index
-                }
-            )
-            if (bonds.length === 0) {
-                this.getBond(chain, atom_index, i-1)
-            }
+                return this.getBond(chain, atom_index, i-1)
+            } else {
 
-            return bonds[0].bond_type
+                const previous_atom_object = CAtom(mmolecule[0][1][chain[i]], chain[i], mmolecule)
+                const bonds = previous_atom_object.indexedBonds("").filter(
+                    (bond) => {
+                        return bond.atom_index === atom_index
+                    }
+                )
+
+                if (bonds.length === 0) {
+                    return this.getBond(chain, atom_index, i - 1)
+                } else {
+                    return bonds[0].bond_type
+                }
+
+            }
 
         },
         canonicalSMILES: function(chains) {

@@ -454,14 +454,18 @@ class Reaction {
                 this.container_substrate[0][1][carbon_bond.atom_index].push(shared_electrons[0])
                 this.container_substrate[0][1][carbon_bond.atom_index].push(shared_electrons[1])
 
+
                 this.addProtonToReagent()
                 this.container_substrate[0][1][electrophile_index][4] = 0
+
 
             }
         }
 
         this.setReagentAI()
         this.setMoleculeAI()
+
+
     }
 
     removeProtonFromReagent(proton_index) {
@@ -665,12 +669,7 @@ class Reaction {
 
     addProtonFromReagentToHydroxylGroup() {
 
-        console.log('Reaction.js deprotonateNonHydroxylOxygen')
-        console.log(VMolecule(this.container_reagent).compressed())
-
-
         const proton_index = this.ReagentAI.findProtonIndex()
-
 
         proton_index.should.be.greaterThan(-1)
         const reagent_atoms = _.cloneDeep(this.container_reagent[0][1])

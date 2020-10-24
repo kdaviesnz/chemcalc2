@@ -39,7 +39,6 @@ VMolecule(protonated_products[1]).canonicalSMILES().should.be.equal("[O-]S(O)(=O
 // See Organic Chemistry 8th Edition p245
 const isopropyl_cation = protonated_products[0]
 const hydrogen_sulfate = protonated_products[1]
-console.log(VMolecule(isopropyl_cation).compressed())
 const deprotonated_products = CommandTest("DEPROTONATE", _.cloneDeep(isopropyl_cation), _.cloneDeep(hydrogen_sulfate))
 VMolecule(deprotonated_products[1]).canonicalSMILES().should.be.equal("OS(O)(=O)=O")
 VMolecule(deprotonated_products[0]).canonicalSMILES().should.be.equal("CC=C")
@@ -50,7 +49,7 @@ const isopropyl_cation_ai = require("./Components/Stateless/MoleculeAI")(isoprop
 isopropyl_cation_ai.findElectrophileIndex().should.be.equal(5)
 const water = MoleculeFactory("O")
 const hydrated_products = CommandTest("HYDRATE", _.cloneDeep(isopropyl_cation), _.cloneDeep([water,1]))
-VMolecule(hydrated_products[0]).canonicalSMILES().should.be.equal("CC(C)[O+]")
+VMolecule(hydrated_products[0]).canonicalSMILES().should.be.equal("CC([O+])C")
 // DEHYDRATE
 // See Organic Chemistry 8th Edition p245
 const isopropyloxonium = hydrated_products[0]
@@ -63,7 +62,7 @@ VMolecule(dehydrated_products[0]).canonicalSMILES().should.be.equal("C[CH1+]C")
 const isopropyloxonium_ai = require("./Components/Stateless/MoleculeAI")(isopropyloxonium)
 isopropyloxonium_ai.findWaterOxygenIndex().should.be.equal(12)
 const deprotonated_hydrated_products = CommandTest("REMOVE proton from water", _.cloneDeep(isopropyloxonium), _.cloneDeep([water,1]))
-VMolecule(deprotonated_hydrated_products[0]).canonicalSMILES().should.be.equal("CC(C)O")
+VMolecule(deprotonated_hydrated_products[0]).canonicalSMILES().should.be.equal("CC(O)C")
 // Add proton to hydroxyl group
 // See Organic Chemistry 8th Edition p245
 const isopropanol = deprotonated_hydrated_products[0]
@@ -71,7 +70,7 @@ const isopropanol = deprotonated_hydrated_products[0]
 const isopropanol_ai =  require("./Components/Stateless/MoleculeAI")(isopropanol)
 isopropanol_ai.findHydroxylOxygenIndex().should.be.equal(11)
 const protonated_deprotonated_hydrated_products = CommandTest("ADD proton to hydroxyl group", _.cloneDeep(isopropanol), _.cloneDeep([water,1]))
-VMolecule(protonated_deprotonated_hydrated_products[0]).canonicalSMILES().should.be.equal("CC(C)[O+]")
+VMolecule(protonated_deprotonated_hydrated_products[0]).canonicalSMILES().should.be.equal("CC([O+])C")
 
 
 // Run commands in reverse
@@ -125,3 +124,23 @@ const protonated_ether_products_methylated_protonated = CommandTest("PROTONATE n
     _.cloneDeep(protonated_ether_products_methylated_deprotonated[0]),
     _.cloneDeep(protonated_ether_products_methylated_deprotonated[1]))
 VMolecule(protonated_ether_products_methylated_protonated[0]).canonicalSMILES().should.be.equal("CC(C)([O+]C)CO")
+
+
+// DIHYDROXYLATION
+// https://chem.libretexts.org/Courses/Sacramento_City_College/SCC%3A_Chem_420_-_Organic_Chemistry_I/Text/09%3A_Reactions_of_Alkenes/9.13%3A_Dihydroxylation_of_Alkenes
+
+PROTONATE nonhydroxyl oxygen
+HYDRATE
+BREAK bond
+DEPROTONATE nonhydroxyl oxygen
+
+[OH3]
+[O]
+""
+O
+[OH3]
+
+
+
+
+
