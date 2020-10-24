@@ -126,9 +126,9 @@ const protonated_ether_products_methylated_protonated = CommandTest("PROTONATE n
 VMolecule(protonated_ether_products_methylated_protonated[0]).canonicalSMILES().should.be.equal("CC(C)([O+]C)CO")
 
 
-// DIHYDROXYLATION
+// ANTI-DIHYDROXYLATION
 // https://chem.libretexts.org/Courses/Sacramento_City_College/SCC%3A_Chem_420_-_Organic_Chemistry_I/Text/09%3A_Reactions_of_Alkenes/9.13%3A_Dihydroxylation_of_Alkenes
-
+/*
 PROTONATE nonhydroxyl oxygen
 HYDRATE
 BREAK bond
@@ -139,6 +139,18 @@ DEPROTONATE nonhydroxyl oxygen
 ""
 O
 [OH3]
+*/
+const oxydanium = MoleculeFactory("[O+]")
+const antidihydroxlation_test_step1 = CommandTest("PROTONATE nonhydroxyl oxygen",
+    _.cloneDeep([isobutene_oxide,1]), _.cloneDeep([oxydanium,1]))
+const antidihydroxlation_test_step2 = CommandTest("HYDRATE",
+    _.cloneDeep(antidihydroxlation_test_step1[0]), _.cloneDeep([water,1]))
+const antidihydroxlation_test_step3 = CommandTest("BREAK bond",
+    _.cloneDeep(antidihydroxlation_test_step2[0]))
+const antidihydroxlation_test_step4 = CommandTest("DEPROTONATE nonhydroxyl oxygen",
+    _.cloneDeep(antidihydroxlation_test_step3[0]))
+
+
 
 
 
