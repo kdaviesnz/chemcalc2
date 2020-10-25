@@ -21,8 +21,8 @@ const MoleculeAI = (container_molecule) => {
 
         "chains": function(previous_atom_index, root_atom_index, chains, chain_index, col, depth) {
 
-          //  console.log("Start chains from this.chains() depth=" + depth + '  chain index=' + chain_index)
-          //  console.log(chains)
+            //  console.log("Start chains from this.chains() depth=" + depth + '  chain index=' + chain_index)
+            //  console.log(chains)
             if (depth > 20) {
                 console.log(chains)
                 console.log(depth)
@@ -82,9 +82,9 @@ const MoleculeAI = (container_molecule) => {
                             // "C  O   C  (C) (C)   C   O")
                             //  3  4   5  (9) (13)  16  18
                             // [ [ 3, 4, 5, 9 ], [ 3, 4, 5, 13 ], [ 3, 4, 5, 16, 18 ] ]
-                          //  console.log(chain_index)
-                           // console.log(chains)
-                           // console.log(bond.atom_index)
+                            //  console.log(chain_index)
+                            // console.log(chains)
+                            // console.log(bond.atom_index)
                         }
                         chains[chain_index].push(bond.atom_index)
 
@@ -143,8 +143,8 @@ VMolecule
 
 
              */
-          //  console.log("Returning chains from this.chains() depth=" + depth + '  chain index=' + chain_index)
-           // console.log(chains)
+            //  console.log("Returning chains from this.chains() depth=" + depth + '  chain index=' + chain_index)
+            // console.log(chains)
             return chains
 
 
@@ -267,7 +267,7 @@ VMolecule
 
                 if (atom_object.isPositivelyCharged() ) {
                     if (undefined === filterBy || atom[0] !== filterBy)
-                    return true
+                        return true
                 }
 
                 if (atom_object.freeSlots().length > 0) {
@@ -288,17 +288,27 @@ VMolecule
             if (i === -1) {
 
                 // check for carbon double bond and return most substituted carbon
-                const carbons = container_molecule[0][1].map((atom, index)=>{
-                    return  CAtom(atom, index,container_molecule)
-                }).filter((atom_object, index)=>{
+                const carbons = container_molecule[0][1].map((atom, index) => {
+                    return CAtom(atom, index, container_molecule)
+                }).filter((atom_object, index) => {
                     return atom_object.symbol === "C" && atom_object.doubleBondCount() > 0
                 }).sort(
-                    (a,b) => {
-                        return a.hydrogens().length < b.hydrogens().length ? -1: 0
+                    (a, b) => {
+                        return a.hydrogens().length < b.hydrogens().length ? -1 : 0
                     }
                 )
 
-                return carbons.length > 0 ? carbons[0].atomIndex: i
+
+                if (carbons.length > 0) {
+                    return carbons[0].atomIndex
+                }
+
+
+                // Check if we have a metal
+                i = _.findIndex(_.cloneDeep(container_molecule[0][1]), (atom, index)=> {
+                    return atom[0] === "Hg" // @todo add isMetal() method to CAtom
+                })
+
             }
 
             return i
