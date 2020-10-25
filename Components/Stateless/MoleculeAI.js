@@ -243,7 +243,7 @@ VMolecule
 
         "findElectrophileIndex": (filterBy) => {
 
-            return _.findIndex(container_molecule[0][1], (atom, index)=>{
+            let i= _.findIndex(container_molecule[0][1], (atom, index)=>{
 
                 const atom_object = CAtom(atom, index,container_molecule)
 
@@ -266,6 +266,25 @@ VMolecule
                 return false
 
             })
+
+            if (i === -1) {
+
+                // check for carbon double bond and return most substituted carbon
+                const carbons = container_molecule[0][1].map((atom, index)=>{
+                    return  CAtom(atom, index,container_molecule)
+                }).filter((atom_object, index)=>{
+                    return atom_object.symbol === "C" && atom_object.doubleBondCount() > 0
+                }).sort(
+                    (a,b) => {
+                        return a.hydrogens().length < b.hydrogens().length ? -1: 0
+                    }
+                )
+
+                return carbons.length > 0 ? carbons[0].atomIndex: i
+            }
+
+            return i
+
         },
 
         "findProtonIndex": () => {

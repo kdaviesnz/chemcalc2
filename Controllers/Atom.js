@@ -545,7 +545,9 @@ We then return the total number of free slots minus the number of slots already 
         numberOfProtons:__numberOfProtons,
         numberOfElectrons:__numberOfElectrons,
         indexedBonds: __indexedBonds,
-        indexedDoubleBonds: __indexedDoubleBonds
+        indexedDoubleBonds: __indexedDoubleBonds,
+        symbol:  atom[0],
+        atomIndex: current_atom_index
     }
 }
 
