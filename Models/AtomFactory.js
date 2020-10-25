@@ -94,7 +94,7 @@ PeriodicTable:
 // electrons are unique strings, v=valence
 // * Maximum number of electrons in valence shell (how many bonds it has when neutrally charged).
 
-     return [
+     const atom = [
          atomicSymbol,
          PeriodicTable[atomicSymbol].atomic_number*1,
          PeriodicTable[atomicSymbol].electrons_per_shell.split("-").pop()*1,
@@ -106,6 +106,18 @@ PeriodicTable:
              return uniqid()
          })
      ]
+
+
+    if (atomicSymbol === "Hg") {
+        // Add electrons from 5th shell
+        range.range(0, 18, 1).map(
+            (i) => {
+                atom.push(uniqid())
+            }
+        )
+    }
+
+    return atom
 
 }
 

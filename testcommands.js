@@ -184,14 +184,14 @@ isobutene_ai.findElectrophileIndex().should.be.equal(11) // electrophile - subst
 //console.log(VMolecule([mercuriacetate,1]).compressed())
 // Bond hg (in reagent) to most substituted carbon (in substrate)
 const mercuriacetate_ai = require("./Components/Stateless/MoleculeAI")([mercuriacetate,1])
-mercuriacetate_ai.findNucleophileIndex().should.be.equal(0) // nucleophile - reagent
-console.log(mercuriacetate[1][0])
+mercuriacetate_ai.findNucleophileIndex().should.be.equal(0) // nucleophile - reagent - has lone pair
 
 VMolecule([isobutene,1]).canonicalSMILES().should.be.equal("CC(C)C=C")
 // Hg atom (nucleophile) from reagent bonds with most substituted substrate carbon (electrophile) on the double bond
 const oxymercuration_demercuration_step1 = CommandTest("BOND atoms", [isobutene,1], [mercuriacetate,1])
 oxymercuration_demercuration_step1.should.not.be.equal(false)
-//console.log(VMolecule(oxymercuration_demercuration_step1[0]).compressed())
+
+console.log(VMolecule(oxymercuration_demercuration_step1[0]).compressed())
 VMolecule(oxymercuration_demercuration_step1[0]).canonicalSMILES().should.be.equal("CC(C)C=C")
 
 

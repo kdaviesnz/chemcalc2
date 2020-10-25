@@ -227,9 +227,27 @@ VMolecule
             }
 
             // Check for atom with free electrons
+            const atoms_with_free_electrons = container_molecule[0][1].map(
+                (atom, atom_index) => {
+                    return CAtom(atom, atom_index, container_molecule)
+                }
+            ).filter(
+                (atom_object, atom_index) => {
+                    return atom_object.symbol !== "H" && atom_object.freeElectrons().length > 0
+                }
+            ).sort(
+                (a,b) => {
+                    return a.symbol === 'Hg' ? -1 : 0
+                }
+            )
+
+            nucleophile_index = atoms_with_free_electrons.length === 0? -1: atoms_with_free_electrons[0].atomIndex
+
+            /*
             nucleophile_index = _.findIndex(container_molecule[0][1], (atom, atom_index) => {
                 return atom[0] !== "H" && CAtom(atom, atom_index, container_molecule).freeElectrons().length > 0
             })
+            */
 
             nucleophile_index.should.be.an.Number()
 
