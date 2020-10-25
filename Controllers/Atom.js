@@ -400,7 +400,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         return atoms.reduce(
             (carry, __atom, __atom_index) => {
 
-                if (current_atom_index === __atom_index) {
+                if (current_atom_index === __atom_index ) {
                     return carry
                 }
                 return [...carry, ...__atom.slice(5)]
@@ -469,7 +469,7 @@ We then return the total number of free slots minus the number of slots already 
         const info = PeriodicTable[atom[0]]
 
         const number_of_shells = info["electrons_per_shell"].split("-").length
-        const m = [2,8,18,32]
+        const m = [2,8,18,32,50,72,98]
 
         // This is the maximum number of electrons the atom can have in its outer shell
         // For chlorine this is 18
@@ -531,6 +531,7 @@ We then return the total number of free slots minus the number of slots already 
                     return electrons_from_other_atoms.indexOf(electron) === -1
                 }
             )
+
 
             return lone_electrons
 

@@ -84,13 +84,23 @@ PeriodicTable:
      */
     // If charge is -1 then we need to add an extra electron
     // If charge is +1 then we need to remove an  electron
+    const max_electrons_per_shell = [
+        2, 8, 18, 32, 50, 72, 98
+    ]
+
+    const electrons_per_shell = PeriodicTable[atomicSymbol].electrons_per_shell.split("-")
+
+    // atomic symbol, proton count, max valence count*, max number of bonds, charge, velectron1, velectron2, velectron3
+// electrons are unique strings, v=valence
+// * Maximum number of electrons in valence shell (how many bonds it has when neutrally charged).
+
      return [
          atomicSymbol,
          PeriodicTable[atomicSymbol].atomic_number*1,
          PeriodicTable[atomicSymbol].electrons_per_shell.split("-").pop()*1,
          atomicSymbol === "H"? 1
              :atomicSymbol === "Al"?3:
-             8 - 1*PeriodicTable[atomicSymbol].electrons_per_shell.split("-").pop(),
+             (atomicSymbol === "Hg"?2:(atomicSymbol === "Ac"?2:8 - 1*electrons_per_shell.pop())),
          charge,
          ...range.range(0,PeriodicTable[atomicSymbol].electrons_per_shell.split("-").pop()*1 + charge * -1,1).map((i)=>{
              return uniqid()

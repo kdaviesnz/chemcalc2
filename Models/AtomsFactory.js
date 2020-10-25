@@ -299,20 +299,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                     valence_electrons = current.slice(5)
                     // Check each valence electron to see if it is being shared
                     const catom = CAtom(_.cloneDeep(current), index, molecule)
-                   // const actual_number_of_bonds = catom.indexedBonds("").length + (catom.indexedDoubleBonds("").length * 2)
-                  //  console.log(current[0])
-                   // console.log(catom.indexedBonds(""))
-                    /*
-[C1=CC=C(C=C1)CO]
-Index: 0 Bonds: 2 1
-Index: 1 Bonds: 2 1
-Index: 2 Bonds: 2 1
-Index: 3 Bonds: 3 1
-Index: 4 Bonds: 2 1
-Index: 5 Bonds: 2 1
-Index: 6 Bonds: 2 0
-Index: 7 Bonds: 1 0
- */
+
                     const actual_number_of_bonds = catom.bondCount() - catom.doubleBondCount() + (catom.doubleBondCount() * 2)
 
                     // current[3] is the number of electrons the atom has when it is neutrally charged
@@ -324,10 +311,12 @@ Index: 7 Bonds: 1 0
                 if (number_of_hydrogens_required > 0) {
                     range.range(0, number_of_hydrogens_required,1).map(
                         (e_index) => {
-                            const hydrogen = AtomFactory('H', 0)
-                            hydrogen.push(valence_electrons[e_index])
-                            current.push(hydrogen[hydrogen.length-2])
-                            carry.push(hydrogen)
+                            if (undefined !== valence_electrons[e_index]) {
+                                const hydrogen = AtomFactory('H', 0)
+                                hydrogen.push(valence_electrons[e_index])
+                                current.push(hydrogen[hydrogen.length - 2])
+                                carry.push(hydrogen)
+                            }
                         }
                     )
                 }
