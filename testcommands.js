@@ -175,22 +175,23 @@ Notice that overall, the oxymercuration - demercuration mechanism follows Markov
 // REMOVE proton from water O
 // REDUCE
 const mercuriacetate = MoleculeFactory("[Hg](O[Ac])O[Ac]")
-console.log(VMolecule([mercuriacetate,1]).compressed())
+//console.log(VMolecule([mercuriacetate,1]).compressed())
 VMolecule([mercuriacetate,1]).canonicalSMILES().should.be.equal("[Hg](O[Ac])O[Ac]")
 const isobutene = MoleculeFactory("CC(C)C=C")
-console.log(VMolecule([isobutene,1]).compressed())
 const isobutene_ai = require("./Components/Stateless/MoleculeAI")([isobutene,1])
-isobutene_ai.findElectrophileIndex().should.be.equal(11) // nucleophile - reagent
+isobutene_ai.findElectrophileIndex().should.be.equal(11) // electrophile - substrate
 
-console.log(VMolecule([mercuriacetate,1]).compressed())
+//console.log(VMolecule([mercuriacetate,1]).compressed())
+// Bond hg (in reagent) to most substituted carbon (in substrate)
 const mercuriacetate_ai = require("./Components/Stateless/MoleculeAI")([mercuriacetate,1])
-mercuriacetate_ai.findNucleophileIndex().should.be.equal(1)
-
+mercuriacetate_ai.findNucleophileIndex().should.be.equal(0) // nucleophile - reagent
+console.log(mercuriacetate[1][0])
 
 VMolecule([isobutene,1]).canonicalSMILES().should.be.equal("CC(C)C=C")
 // Hg atom (nucleophile) from reagent bonds with most substituted substrate carbon (electrophile) on the double bond
 const oxymercuration_demercuration_step1 = CommandTest("BOND atoms", [isobutene,1], [mercuriacetate,1])
 oxymercuration_demercuration_step1.should.not.be.equal(false)
+//console.log(VMolecule(oxymercuration_demercuration_step1[0]).compressed())
 VMolecule(oxymercuration_demercuration_step1[0]).canonicalSMILES().should.be.equal("CC(C)C=C")
 
 
