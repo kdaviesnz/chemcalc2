@@ -194,10 +194,10 @@ console.log(VMolecule([isobutene,1]).compressed())
 isobutene_ai.findNucleophileIndex().should.be.equal(14)
 console.log(VMolecule([mercuriacetate,1]).compressed())
 mercuriacetate_ai.findElectrophileIndex().should.be.equal(0)
-const oxymercuration_demercuration_step1 = CommandTest("BOND atoms", [mercuriacetate,1], [isobutene,1])
 console.log("oxymercuration_demercuration_step1")
+const oxymercuration_demercuration_step1 = CommandTest("BOND atoms", [mercuriacetate,1], [isobutene,1])
 console.log(VMolecule(oxymercuration_demercuration_step1[0]).compressed())
-console.log(VMolecule(oxymercuration_demercuration_step1[0]).canonicalSMILES())
+//console.log(VMolecule(oxymercuration_demercuration_step1[0]).canonicalSMILES())
 /*
 [ [ 'Hg', 0, 'H 0', [ '1  O', '4  O', '18  C', '21  C' ] ],
   [ 'O', 1, 'H 0', [ '0  Hg', '3  Ac' ] ],
@@ -211,6 +211,13 @@ console.log(VMolecule(oxymercuration_demercuration_step1[0]).canonicalSMILES())
   [ 'C', 21, 'H 2', [ '0  Hg', '18  C' ] ] ]
 
  */
+
+// Break bond between Hg and Ac
+console.log("oxymercuration_demercuration_step2")
+const oxymercuration_demercuration_step1_ai = require("./Components/Stateless/MoleculeAI")(oxymercuration_demercuration_step1[0])
+oxymercuration_demercuration_step1_ai.findNucleophileIndex().should.be.equal(0)
+oxymercuration_demercuration_step1_ai.findElectrophileIndex().should.be.equal(999)
+//const oxymercuration_demercuration_step2 = CommandTest("BREAK bond", oxymercuration_demercuration_step1[0])
 
 process.exit()
 
