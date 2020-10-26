@@ -187,7 +187,7 @@ mercuriacetate_ai.findNucleophileIndex().should.be.equal(0) // nucleophile - rea
 VMolecule([isobutene,1]).canonicalSMILES().should.be.equal("CC(C)C=C")
 
 
-// Bond least substituted carbon in isobutene to mercury atom
+// Bond least substituted carbon (nucleophile in isobutene to mercury atom (electrophile)
 // In this step for the purposes of bondAtoms() isobutene (nucleophile) is treated as the reagent and mercuriacetate
 // as the substrate
 console.log(VMolecule([isobutene,1]).compressed())
@@ -195,8 +195,9 @@ isobutene_ai.findNucleophileIndex().should.be.equal(14)
 console.log(VMolecule([mercuriacetate,1]).compressed())
 mercuriacetate_ai.findElectrophileIndex().should.be.equal(0)
 const oxymercuration_demercuration_step1 = CommandTest("BOND atoms", [mercuriacetate,1], [isobutene,1])
-
-
+console.log("oxymercuration_demercuration_step1")
+console.log(VMolecule(oxymercuration_demercuration_step1[0]).compressed())
+console.log(VMolecule(oxymercuration_demercuration_step1[0]).canonicalSMILES())
 
 
 process.exit()

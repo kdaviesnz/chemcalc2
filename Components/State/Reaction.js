@@ -364,11 +364,15 @@ class Reaction {
             }
 
 //            const electrophile_free_electrons = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate).freeElectrons()
-            const nucleophile_free_electrons = CAtom(this.container_reagent[0][1][nucleophile_index], nucleophile_index, this.container_reagent).freeElectrons()
+            let nucleophile_free_electrons = CAtom(this.container_reagent[0][1][nucleophile_index], nucleophile_index, this.container_reagent).freeElectrons()
 
             if (nucleophile_free_electrons.length < 2) {
-                console.log("bondAtoms() nucleopile has no free electrons 2")
-                return false
+                const doubleBonds =  CAtom(this.container_reagent[0][1][nucleophile_index], nucleophile_index, this.container_reagent).indexedDoubleBonds("")
+                if (doubleBonds.length > 0) {
+                    nucleophile_free_electrons = doubleBonds[0].shared_electrons
+                } else {
+                    return false
+                }
             }
 
             this.container_substrate[0][1][electrophile_index].push(nucleophile_free_electrons[0])
