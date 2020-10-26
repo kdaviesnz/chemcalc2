@@ -198,7 +198,19 @@ const oxymercuration_demercuration_step1 = CommandTest("BOND atoms", [mercuriace
 console.log("oxymercuration_demercuration_step1")
 console.log(VMolecule(oxymercuration_demercuration_step1[0]).compressed())
 console.log(VMolecule(oxymercuration_demercuration_step1[0]).canonicalSMILES())
+/*
+[ [ 'Hg', 0, 'H 0', [ '1  O', '4  O', '18  C', '21  C' ] ],
+  [ 'O', 1, 'H 0', [ '0  Hg', '3  Ac' ] ],
+  [ 'Ac', 3, 'H 1', [ '1  O' ] ],
+  [ 'O', 4, 'H 0', [ '0  Hg', '6  Ac' ] ],
+  [ 'Ac', 6, 'H 1', [ '4  O' ] ],
+  [ 'C', 10, 'H 3', [ '12  C' ] ],
+  [ 'C', 12, 'H 1', [ '10  C', '16  C', '18  C' ] ],
+  [ 'C', 16, 'H 3', [ '12  C' ] ],
+  [ 'C', 18, 'H 1', [ '0  Hg', '12  C', '21  C' ] ],
+  [ 'C', 21, 'H 2', [ '0  Hg', '18  C' ] ] ]
 
+ */
 
 process.exit()
 
