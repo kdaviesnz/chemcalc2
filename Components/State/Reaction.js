@@ -386,11 +386,15 @@ class Reaction {
                 }
             )
 
-            this.container_reagent[0][1][nucleophile_index][4] = "+"
+            // Nucleophile has lost electrons so we give it a positive charge
+            this.container_reagent[0][1][nucleophile_index][4] = 
+                this.container_reagent[0][1][nucleophile_index][4] === "-"?"":"+"
 
         }
 
-
+        // Nucleophile has lost electrons so we give it a negative charge
+        this.container_substrate[0][1][electrophile_index][4] = 
+        this.container_substrate[0][1][electrophile_index][4] === "+"?"":"-"
 
         this.setMoleculeAI()
         this.setReagentAI()
