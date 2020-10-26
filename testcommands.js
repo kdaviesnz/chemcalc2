@@ -94,26 +94,37 @@ const isobutene_oxide = MoleculeFactory("CC1(CO1)C")
 VMolecule([isobutene_oxide,1]).canonicalSMILES().should.be.equal("CC4(C)CO4")
 
 // PROTONATE
+// Protonate the oxygen atom
 const protonated_ether_products = CommandTest("PROTONATE", _.cloneDeep([isobutene_oxide,1]), _.cloneDeep([sulphuric_acid,1]))
-//VMolecule(protonated_ether_products[0]).canonicalSMILES().should.be.equal("CC4(C)C[O+]4")
+VMolecule(protonated_ether_products[0]).canonicalSMILES().should.be.equal("CC4(C)C[O+]4")
 const twoTwoDimethyloxoniacyclopropane = protonated_ether_products[0]
 // DEPROTONATE
+// Reverse test - deprotonate the oxygen atom
 const deprotonated_ether_products = CommandTest("DEPROTONATE", _.cloneDeep(twoTwoDimethyloxoniacyclopropane), _.cloneDeep(protonated_ether_products[1]))
+VMolecule(deprotonated_ether_products[0]).canonicalSMILES().should.be.equal("CC4(C)CO4")
 
 // BREAK bond
+// Break bond between the oxygen (electrophile) and most substituted carbon (nucleophile)
+// Carbon will lose electrons and therefore will have a positive charge.
 const protonated_ether_products_bond_broken = CommandTest("BREAK bond", _.cloneDeep(twoTwoDimethyloxoniacyclopropane))
 const two_methylpropan_1_ol = protonated_ether_products_bond_broken[0]
 VMolecule(two_methylpropan_1_ol).canonicalSMILES().should.be.equal("C[C+](C)CO")
+// console.log(VMolecule(two_methylpropan_1_ol).compressed()) // correct
 // BOND atoms
+// Reversal - bond oxygen with most substituted carbon
 const protonated_ether_products_bond_fixed = CommandTest("BOND atoms", _.cloneDeep(two_methylpropan_1_ol))
 VMolecule(protonated_ether_products_bond_fixed[0]).canonicalSMILES().should.be.equal("CC4(C)C[O+]4")
 
+
 // Bond atoms (substrate + reagent)
+// Bond methanol oxygen atom (reagent, nucleophile) with most substituted substrate carbon (electrophile)
 const protonated_ether_products_methylated = CommandTest("BOND atoms", _.cloneDeep(two_methylpropan_1_ol),
     _.cloneDeep([methanol,1]))
 VMolecule(protonated_ether_products_methylated[0]).canonicalSMILES().should.be.equal("CC(C)([O+]C)CO")
 // BREAK bond
+// Reversal - break bond between methanol oxygen atom with most substituted substrate carbon
 const protonated_ether_products_demethylated = CommandTest("BREAK bond", _.cloneDeep(protonated_ether_products_methylated[0]))
+// CC(C)([O+]C)CO remove [O+]
 VMolecule(protonated_ether_products_demethylated[0]).canonicalSMILES().should.be.equal("C[C+](C)CO")
 
 // DEPROTONATE nonhydroxyl oxygen

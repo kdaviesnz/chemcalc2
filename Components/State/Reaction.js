@@ -263,6 +263,10 @@ class Reaction {
        // console.log("Reaction.js")
         if (break_type==="heterolysis") {
 
+            //console.log("Reaction.js break bond")
+            //console.log(_.cloneDeep(this.container_substrate[0][1][nucleophile_index]).slice(0,5))
+            //console.log(_.cloneDeep(this.container_substrate[0][1][electrophile_index]).slice(0,5))
+
             // Remove shared electrons from nucleophile
             const electrons = _.cloneDeep(this.container_substrate[0][1][nucleophile_index]).slice(5)
             _.remove(this.container_substrate[0][1][nucleophile_index], (v, i)=> {
@@ -273,13 +277,13 @@ class Reaction {
             // nucleophile should now be positively charged
             // electrophile should be negatively charged
             if (this.container_substrate[0][1][nucleophile_index][4] === "-") {
-                this.container_substrate[0][1][nucleophile_index][4] = 0
+                this.container_substrate[0][1][nucleophile_index][4] = ""
             } else {
                 this.container_substrate[0][1][nucleophile_index][4] = "+"
             }
 
             if (this.container_substrate[0][1][electrophile_index][4] === "+") {
-                this.container_substrate[0][1][electrophile_index][4] = 0
+                this.container_substrate[0][1][electrophile_index][4] = ""
             } else {
                 this.container_substrate[0][1][electrophile_index][4] = "-"
             }
@@ -321,6 +325,7 @@ class Reaction {
             return false
         }
 
+
         if (undefined === this.container_reagent) {
 
             const nucleophile_index = this.MoleculeAI.findNucleophileIndex()
@@ -331,16 +336,28 @@ class Reaction {
             }
 
            //  const electrophile_free_electrons = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate).freeElectrons()
-            const nucleophile_free_electrons = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate).freeElectrons()
+            let nucleophile_free_electrons = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate).freeElectrons()
 
             if (nucleophile_free_electrons.length < 2) {
-                console.log("bondAtoms() nucleopile has no free electrons")
-                return false
+                console.log("bondAtoms() nucleophile has no free electrons")
+                const doubleBonds =  CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate).indexedDoubleBonds("")
+                if (doubleBonds.length > 0) {
+                    nucleophile_free_electrons = doubleBonds[0].shared_electrons
+                    _.remove(this.container_substrate[0][1][doubleBonds[0].atom_index], (v)=>{
+                        return v === doubleBonds[0].shared_electrons[0] || v === doubleBonds[0].shared_electrons[1]
+                    })
+                    // We give the opposite carbon a positive charge as it has lost electrons
+                    this.container_substrate[0][1][doubleBonds[0].atom_index][4] = this.container_substrate[0][1][doubleBonds[0].atom_index][4] === "-"? "": "+"
+                    // We give the nucleophile a - charge as it will gain and lose electrons
+                    this.container_substrate[0][1][nucleophile_index][4] = this.container_substrate[0][1][nucleophile_index][4] === "+"? 0: "-"
+                } else {
+                    return false
+                }
             }
 
             this.container_substrate[0][1][electrophile_index].push(nucleophile_free_electrons[0])
             this.container_substrate[0][1][electrophile_index].push(nucleophile_free_electrons[1])
-            this.container_substrate[0][1][electrophile_index][4] = 0
+            //this.container_substrate[0][1][electrophile_index][4] = 0
 
             /*
             _.remove(this.container_substrate[0][1][nucleophile_index], (electron)=>{
@@ -356,7 +373,7 @@ class Reaction {
 
         } else {
 
-
+            // Reagent
             const nucleophile_index = this.ReagentAI.findNucleophileIndex()
             if (nucleophile_index === -1) {
                 console.log("bondAtoms() no nucleophile found (2)")
@@ -370,6 +387,13 @@ class Reaction {
                 const doubleBonds =  CAtom(this.container_reagent[0][1][nucleophile_index], nucleophile_index, this.container_reagent).indexedDoubleBonds("")
                 if (doubleBonds.length > 0) {
                     nucleophile_free_electrons = doubleBonds[0].shared_electrons
+                    _.remove(this.container_reagent[0][1][doubleBonds[0].atom_index], (v)=>{
+                      return v === doubleBonds[0].shared_electrons[0] || v === doubleBonds[0].shared_electrons[1]
+                    })
+                    // We give the opposite carbon a positive charge as it has lost electrons
+                    this.container_reagent[0][1][doubleBonds[0].atom_index][4] = this.container_reagent[0][1][doubleBonds[0].atom_index][4] === "-"? "": "+"
+                    // We give the nucleophile a - charge as it will gain and lose electrons
+                    this.container_reagent[0][1][nucleophile_index][4] = this.container_reagent[0][1][nucleophile_index][4] === "+"? 0: "-"
                 } else {
                     return false
                 }
@@ -377,7 +401,7 @@ class Reaction {
 
             this.container_substrate[0][1][electrophile_index].push(nucleophile_free_electrons[0])
             this.container_substrate[0][1][electrophile_index].push(nucleophile_free_electrons[1])
-            this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4]==="+"?0:"-"
+           // this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4]==="+"?0:"-"
 
             this.container_reagent[0][1].map(
                 (atom)=>{
@@ -387,13 +411,14 @@ class Reaction {
             )
 
             // Nucleophile has lost electrons so we give it a positive charge
-            this.container_reagent[0][1][nucleophile_index][4] = 
+            this.container_reagent[0][1][nucleophile_index][4] =
                 this.container_reagent[0][1][nucleophile_index][4] === "-"?"":"+"
 
         }
 
-        // Nucleophile has lost electrons so we give it a negative charge
-        this.container_substrate[0][1][electrophile_index][4] = 
+
+        // electrophile has lost electrons so we give it a negative charge
+        this.container_substrate[0][1][electrophile_index][4] =
         this.container_substrate[0][1][electrophile_index][4] === "+"?"":"-"
 
         this.setMoleculeAI()
