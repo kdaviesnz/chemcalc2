@@ -261,6 +261,9 @@ VMolecule
 
         "findElectrophileIndex": (filterBy) => {
 
+            // Check for atom with too many bonds  and return one of the bonds
+
+
             let i= _.findIndex(container_molecule[0][1], (atom, index)=>{
 
                 const atom_object = CAtom(atom, index,container_molecule)
@@ -284,6 +287,7 @@ VMolecule
                 return false
 
             })
+
 
             if (i === -1) {
 

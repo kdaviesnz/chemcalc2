@@ -198,6 +198,9 @@ class Reaction {
 
 
         const electrophile_index = this.MoleculeAI.findElectrophileIndex()
+        console.log('electrophile index')
+        console.log(electrophile_index)
+
 
         if (electrophile_index === -1) {
             console.log("Electrophile not found")
