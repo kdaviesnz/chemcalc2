@@ -100,7 +100,10 @@ VMolecule(protonated_ether_products[0]).canonicalSMILES().should.be.equal("CC4(C
 const twoTwoDimethyloxoniacyclopropane = protonated_ether_products[0]
 // DEPROTONATE
 // Reverse test - deprotonate the oxygen atom
+console.log(VMolecule(twoTwoDimethyloxoniacyclopropane).compressed())
 const deprotonated_ether_products = CommandTest("DEPROTONATE", _.cloneDeep(twoTwoDimethyloxoniacyclopropane), _.cloneDeep(protonated_ether_products[1]))
+
+process.exit()
 VMolecule(deprotonated_ether_products[0]).canonicalSMILES().should.be.equal("CC4(C)CO4")
 
 // BREAK bond

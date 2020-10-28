@@ -446,9 +446,14 @@ class Reaction {
     }
     
     deprotonate() {
+
         // [C+]CH3
         // We remove the proton from the second carbon
         const electrophile_index = this.MoleculeAI.findElectrophileIndex()
+
+        console.log('reaction.js deprotonate electrophile index')
+        console.log(electrophile_index)
+
 
         if (electrophile_index === -1) {
             console.log("Electrophile not found")
@@ -458,7 +463,11 @@ class Reaction {
         }
 
         const electrophile = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
+
         const electrophile_bonds  = electrophile.indexedBonds("")
+
+      //  console.log('electrophile_bonds')
+       // console.log(electrophile_bonds)
 
         const hydrogen_bond = electrophile_bonds.filter((bond)=>{
             return bond.atom[0] === 'H'
