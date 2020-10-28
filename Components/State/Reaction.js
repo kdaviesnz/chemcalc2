@@ -198,8 +198,8 @@ class Reaction {
 
 
         const electrophile_index = this.MoleculeAI.findElectrophileIndex()
-        console.log('electrophile index')
-        console.log(electrophile_index)
+        //console.log('electrophile index')
+        //console.log(electrophile_index)
 
 
         if (electrophile_index === -1) {
@@ -451,8 +451,8 @@ class Reaction {
         // We remove the proton from the second carbon
         const electrophile_index = this.MoleculeAI.findElectrophileIndex()
 
-        console.log('reaction.js deprotonate electrophile index')
-        console.log(electrophile_index)
+        //console.log('reaction.js deprotonate electrophile index')
+        //console.log(electrophile_index)
 
 
         if (electrophile_index === -1) {

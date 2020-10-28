@@ -264,7 +264,7 @@ VMolecule
             // Check for atom with too many bonds  and return one of the bonds
             const atoms_with_too_many_bonds = container_molecule[0][1].map((atom, atom_index)=> {
                 const atom_object = CAtom(atom, atom_index, container_molecule)
-                atom_object.max_number_of_bonds = atom[4]
+                atom_object.max_number_of_bonds = atom[3]
                 return atom_object
             }).filter((o, atom_index)=>{
                 if (o.symbol==='H') {
@@ -273,14 +273,20 @@ VMolecule
                 return o.indexedBonds("").length > o.max_number_of_bonds
             })
 
+          //  console.log('atoms with too many bonds:')
+          //  console.log(atoms_with_too_many_bonds)
+
             // @todo
             if (atoms_with_too_many_bonds.length > 0) {
-                // For now just get the first atom, first bond
+                // For now just get the first atom
+                return atoms_with_too_many_bonds[0].atomIndex
+                /*
                 return atoms_with_too_many_bonds[0].indexedBonds("").filter((bond)=>{
                     return bond.atom[0] !== 'H'
                 }).sort((a,b)=>{
                     return a.atom[0] === 'O'?-1:0
                 }).pop().atom_index
+                */
             }
 
             let i= _.findIndex(container_molecule[0][1], (atom, index)=>{
