@@ -191,49 +191,42 @@ const isobutene = MoleculeFactory("CC(C)C=C")
 const isobutene_ai = require("./Components/Stateless/MoleculeAI")([isobutene,1])
 isobutene_ai.findElectrophileIndex().should.be.equal(11) // electrophile - substrate
 
-//console.log(VMolecule([mercuriacetate,1]).compressed())
-// Bond hg (in reagent) to most substituted carbon (in substrate)
-const mercuriacetate_ai = require("./Components/Stateless/MoleculeAI")([mercuriacetate,1])
-mercuriacetate_ai.findNucleophileIndex().should.be.equal(0) // nucleophile - reagent - has lone pair
-VMolecule([isobutene,1]).canonicalSMILES().should.be.equal("CC(C)C=C")
-
 
 // Bond least substituted carbon (nucleophile in isobutene to mercury atom (electrophile)
 // In this step for the purposes of bondAtoms() isobutene (nucleophile) is treated as the reagent and mercuriacetate
 // as the substrate
-console.log('isobutene:')
-console.log(VMolecule([isobutene,1]).compressed())
+const mercuriacetate_ai = require("./Components/Stateless/MoleculeAI")([mercuriacetate,1])
+mercuriacetate_ai.findNucleophileIndex().should.be.equal(1) // nucleophile - reagent - has lone pair
+VMolecule([isobutene,1]).canonicalSMILES().should.be.equal("CC(C)C=C")
 isobutene_ai.findNucleophileIndex().should.be.equal(14)
-console.log('mercuriacetate:')
-console.log(VMolecule([mercuriacetate,1]).compressed())
-mercuriacetate_ai.findElectrophileIndex().should.be.equal(0)
+mercuriacetate_ai.findElectrophileIndex().should.be.equal(1)
 const oxymercuration_demercuration_step1 = CommandTest("BOND atoms", [mercuriacetate,1], [isobutene,1])
-console.log('oxymercuration_demercuration_step1 substrate')
-console.log(VMolecule(oxymercuration_demercuration_step1[0]).compressed())
 
-// Bond carbon nuceophile with mercury
 const oxymercuration_demercuration_step1_ai = require("./Components/Stateless/MoleculeAI")(oxymercuration_demercuration_step1[0])
-oxymercuration_demercuration_step1_ai.findNucleophileIndex().should.be.equal(0)
-oxymercuration_demercuration_step1_ai.findElectrophileIndex().should.be.equal(18)
+console.log(VMolecule(oxymercuration_demercuration_step1[0]).compressed())
+oxymercuration_demercuration_step1_ai.findNucleophileIndex().should.be.equal(1)
+oxymercuration_demercuration_step1_ai.findElectrophileIndex().should.be.equal(19)
 const oxymercuration_demercuration_step2 = CommandTest("BOND atoms", oxymercuration_demercuration_step1[0])
 console.log("oxymercuration_demercuration_step2 substrate")
 console.log(VMolecule(oxymercuration_demercuration_step2[0]).compressed())
 /*
-[ [ 'Hg', 0, 'H 0', 'C 0', [ '1  O', '4  O', '18  C', '21  C' ] ],
-  [ 'O', 1, 'H 0', 'C 0', [ '0  Hg', '3  Ac' ] ],
-  [ 'Ac', 3, 'H 1', 'C 0', [ '1  O' ] ],
-  [ 'O', 4, 'H 0', 'C 0', [ '0  Hg', '6  Ac' ] ],
-  [ 'Ac', 6, 'H 1', 'C 0', [ '4  O' ] ],
-  [ 'C', 10, 'H 3', 'C 0', [ '12  C' ] ],
-  [ 'C', 12, 'H 1', 'C 0', [ '10  C', '16  C', '18  C' ] ],
-  [ 'C', 16, 'H 3', 'C 0', [ '12  C' ] ],
-  [ 'C', 18, 'H 1', 'C ', [ '0  Hg', '12  C', '21  C' ] ],
-  [ 'C', 21, 'H 2', 'C ', [ '0  Hg', '18  C' ] ] ]
-
+[ [ 'Hg', 1, 'H 1', 'C 0', [ '2  O', '5  O', '19  C', '22  C' ] ],
+  [ 'O', 2, 'H 0', 'C 0', [ '1  Hg', '4  Ac' ] ],
+  [ 'Ac', 4, 'H 1', 'C 0', [ '2  O' ] ],
+  [ 'O', 5, 'H 0', 'C 0', [ '1  Hg', '7  Ac' ] ],
+  [ 'Ac', 7, 'H 1', 'C 0', [ '5  O' ] ],
+  [ 'C', 11, 'H 3', 'C 0', [ '13  C' ] ],
+  [ 'C', 13, 'H 1', 'C 0', [ '11  C', '17  C', '19  C' ] ],
+  [ 'C', 17, 'H 3', 'C 0', [ '13  C' ] ],
+  [ 'C', 19, 'H 1', 'C ', [ '1  Hg', '13  C', '22  C' ] ],
+  [ 'C', 22, 'H 2', 'C ', [ '1  Hg', '19  C' ] ] ]
  */
 // Break bond between mercury (nucleophile) and oxygen (electrophile)
 const oxymercuration_demercuration_step2_ai = require("./Components/Stateless/MoleculeAI")(oxymercuration_demercuration_step2[0])
-oxymercuration_demercuration_step2_ai.findElectrophileIndex().should.be.equal(1)
+//oxymercuration_demercuration_step2_ai.findNucleophileIndex().should.be.equal(999)
+oxymercuration_demercuration_step2_ai.findElectrophileIndex().should.be.equal(999)
+
+process.exit()
 const oxymercuration_demercuration_step3 = CommandTest("BREAK bond", oxymercuration_demercuration_step2[0])
 
 
