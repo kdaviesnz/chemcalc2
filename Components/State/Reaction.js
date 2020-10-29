@@ -197,58 +197,104 @@ class Reaction {
     breakBond(break_type="heterolysis") {
 
 
-        const electrophile_index = this.MoleculeAI.findElectrophileIndex()
-        //console.log('electrophile index')
-        //console.log(electrophile_index)
+        // Look for overloaded atoms
+        const overloaded_atoms = this.MoleculeAI.findOverloadedAtoms()
 
 
-        if (electrophile_index === -1) {
-            console.log("Electrophile not found")
-            console.log("breakBond()")
-            return false
-        }
-
-        //const atoms = this.container_substrate[0][1]
-        const electrophile_atom_object = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
-        const electrophile_atom_object_bonds = electrophile_atom_object.indexedBonds("").filter(
-            (bond)=>{
-                return bond.atom[0] !== "H"
-            }
-        )
         let nucleophile_index = null
-        if(electrophile_atom_object_bonds.length===1){
-            nucleophile_index = electrophile_atom_object_bonds[0].atom_index
-        }
-        const carbon_bonds = electrophile_atom_object_bonds.filter((bond)=>{
-            return bond.atom[0] === "C"
-        })
-        if (carbon_bonds.length !== electrophile_atom_object_bonds.length) {
+        let electrophile_index = null
+
+        if (overloaded_atoms.length > 0) {
+
+            // For now just get the first atom
             // @todo
-        } else {
-            // Get the most substituted carbon
-            carbon_bonds.sort((bond_a,bond_b)=>{
-                const a_atom = CAtom(this.container_substrate[0][1][bond_a.atom_index], bond_a.atom_index, this.container_substrate)
-                const b_atom = CAtom(this.container_substrate[0][1][bond_b.atom_index], bond_b.atom_index, this.container_substrate)
-                const a_hydrogens = a_atom.indexedBonds("").filter(
-                    (bond)=>{
-                        return bond.atom[0] === "H"
-                    }
-                )
-                const b_hydrogens = b_atom.indexedBonds("").filter(
-                    (bond)=>{
-                        return bond.atom[0] === "H"
-                    }
-                )
-                return a_hydrogens.length < b_hydrogens.length? -1: 0
+            electrophile_index = overloaded_atoms[0].atomIndex
+            //console.log('overloaded_atoms:')
+            //console.log(overloaded_atoms)
+            const electrophile_bonds =  overloaded_atoms[0].indexedBonds("").filter((bond)=>{
+                return bond.atom[0] !== "H"
             })
-            nucleophile_index = carbon_bonds[0].atom_index
-        }
+
+            // Do we have just carbons and hyrogens? If yes then get the most substituted carbon
+            if (electrophile_bonds.filter((bond)=>{
+                return bond.atom[0] !== 'C' && bond.atom[0] !== 'H'
+            }).length ===0) {
+                const carbons = electrophile_bonds.filter((bond)=> {
+                    return bond.atom[0] === "C"
+                }).map((bond)=>{
+                    return CAtom(this.container_substrate[0][1][bond.atom_index], bond.atom_index, this.container_substrate)
+                })
+                nucleophile_index = this.MoleculeAI.findMostSubstitutedCarbon(carbons).atomIndex
+            } else {
+                const bonds_sorted =_.cloneDeep(electrophile_bonds).sort((a, b) => {
+                    return a.atom[0] === "O" ? -1 : 0
+                })
+                nucleophile_index = bonds_sorted[0].atom_index
+            }
+
+            console.log('Reaction.js Break bond (overloaded atom)')
+            console.log('Nucleophile index') // 4 (most substituted carbon)
+            console.log(nucleophile_index)
+            console.log('Electrophile index') // 8 (O, positive charge)
+            console.log(electrophile_index)
 
 
-        if (nucleophile_index === -1) {
-            console.log("Nucleophile not found")
-            console.log("breakBond()")
-            return false
+        } else {
+
+            electrophile_index = this.MoleculeAI.findElectrophileIndex()
+
+            if (electrophile_index === -1) {
+                console.log("Electrophile not found")
+                console.log("breakBond()")
+                return false
+            }
+
+            //const atoms = this.container_substrate[0][1]
+            const electrophile_atom_object = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
+            const electrophile_atom_object_bonds = electrophile_atom_object.indexedBonds("").filter(
+                (bond) => {
+                    return bond.atom[0] !== "H"
+                }
+            )
+
+            if (electrophile_atom_object_bonds.length === 1) {
+                nucleophile_index = electrophile_atom_object_bonds[0].atom_index
+            }
+            const carbon_bonds = electrophile_atom_object_bonds.filter((bond) => {
+                return bond.atom[0] === "C"
+            })
+            if (carbon_bonds.length !== electrophile_atom_object_bonds.length) {
+                // @todo
+            } else {
+                // Get the most substituted carbon
+                // @todo replace with this.MoleculeAI.findMostSubstitutedCarbon(carbons)
+                carbon_bonds.sort((bond_a, bond_b) => {
+                    const a_atom = CAtom(this.container_substrate[0][1][bond_a.atom_index], bond_a.atom_index, this.container_substrate)
+                    const b_atom = CAtom(this.container_substrate[0][1][bond_b.atom_index], bond_b.atom_index, this.container_substrate)
+                    const a_hydrogens = a_atom.indexedBonds("").filter(
+                        (bond) => {
+                            return bond.atom[0] === "H"
+                        }
+                    )
+                    const b_hydrogens = b_atom.indexedBonds("").filter(
+                        (bond) => {
+                            return bond.atom[0] === "H"
+                        }
+                    )
+                    return a_hydrogens.length < b_hydrogens.length ? -1 : 0
+                })
+                nucleophile_index = carbon_bonds[0].atom_index
+            }
+
+
+            if (nucleophile_index === -1) {
+                console.log("Nucleophile not found")
+                console.log("breakBond()")
+                return false
+            }
+
+
+
         }
 
 
@@ -261,10 +307,10 @@ class Reaction {
         https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Map%3A_Organic_Chemistry_(Smith)/Chapter_06%3A_Understanding_Organic_Reactions/6.03_Bond_Breaking_and_Bond_Making
         If a covalent single bond is broken so that one electron of the shared pair remains with each fragment, as in the first example, this bond-breaking is called homolysis. If the bond breaks with both electrons of the shared pair remaining with one fragment,  this is called heterolysis.
          */
-       // console.log("Break type=" + break_type)
-       // console.log(this.container_substrate[0][1][electrophile_index][4])
-       // console.log("Reaction.js")
-        if (break_type==="heterolysis") {
+        // console.log("Break type=" + break_type)
+        // console.log(this.container_substrate[0][1][electrophile_index][4])
+        // console.log("Reaction.js")
+        if (break_type === "heterolysis") {
 
             //console.log("Reaction.js break bond")
             //console.log(_.cloneDeep(this.container_substrate[0][1][nucleophile_index]).slice(0,5))
@@ -272,7 +318,7 @@ class Reaction {
 
             // Remove shared electrons from nucleophile
             const electrons = _.cloneDeep(this.container_substrate[0][1][nucleophile_index]).slice(5)
-            _.remove(this.container_substrate[0][1][nucleophile_index], (v, i)=> {
+            _.remove(this.container_substrate[0][1][nucleophile_index], (v, i) => {
                 return shared_electrons[0] === v || shared_electrons[1] === v
             })
             this.container_substrate[0][1][nucleophile_index].slice(5).length.should.not.be.equal(electrons.length)
@@ -296,16 +342,17 @@ class Reaction {
 
         } else {
             // Remove electron from source atom
-            _.remove(this.container_substrate[0][1][nucleophile_index], (v, i)=> {
+            _.remove(this.container_substrate[0][1][nucleophile_index], (v, i) => {
                 return shared_electrons[0] === v
             })
 
             // Remove electron from target atom
-            _.remove(this.container_substrate[0][1][electrophile_index], (v, i)=> {
+            _.remove(this.container_substrate[0][1][electrophile_index], (v, i) => {
                 return shared_electrons[1] === v
             })
 
         }
+
 
 
 

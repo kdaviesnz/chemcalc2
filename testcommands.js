@@ -109,6 +109,7 @@ VMolecule(deprotonated_ether_products[0]).canonicalSMILES().should.be.equal("CC4
 // BREAK bond
 // Break bond between the oxygen (electrophile) and most substituted carbon (nucleophile)
 // Carbon will lose electrons and therefore will have a positive charge.
+//console.log(VMolecule(twoTwoDimethyloxoniacyclopropane).compressed())
 const protonated_ether_products_bond_broken = CommandTest("BREAK bond", _.cloneDeep(twoTwoDimethyloxoniacyclopropane))
 const two_methylpropan_1_ol = protonated_ether_products_bond_broken[0]
 VMolecule(two_methylpropan_1_ol).canonicalSMILES().should.be.equal("C[C+](C)CO")
@@ -212,25 +213,29 @@ oxymercuration_demercuration_step1_ai.findElectrophileIndex().should.be.equal(19
 const oxymercuration_demercuration_step2 = CommandTest("BOND atoms", oxymercuration_demercuration_step1[0])
 console.log("oxymercuration_demercuration_step2 substrate")
 console.log(VMolecule(oxymercuration_demercuration_step2[0]).compressed())
+//process.exit()
 /*
-[ [ 'Hg', 1, 'H 1', 'C 0', [ '2  O', '5  O', '19  C', '22  C' ] ],
-  [ 'O', 2, 'H 0', 'C 0', [ '1  Hg', '4  Ac' ] ],
-  [ 'Ac', 4, 'H 1', 'C 0', [ '2  O' ] ],
-  [ 'O', 5, 'H 0', 'C 0', [ '1  Hg', '7  Ac' ] ],
-  [ 'Ac', 7, 'H 1', 'C 0', [ '5  O' ] ],
-  [ 'C', 11, 'H 3', 'C 0', [ '13  C' ] ],
-  [ 'C', 13, 'H 1', 'C 0', [ '11  C', '17  C', '19  C' ] ],
-  [ 'C', 17, 'H 3', 'C 0', [ '13  C' ] ],
-  [ 'C', 19, 'H 1', 'C ', [ '1  Hg', '13  C', '22  C' ] ],
-  [ 'C', 22, 'H 2', 'C ', [ '1  Hg', '19  C' ] ] ]
+[ [ 'Hg', 1, 'H 1', 'C ', '-', [ '2  O', '5  O', '22  C' ] ],
+  [ 'O', 2, 'H 0', 'C ', 0, [ '1  Hg', '4  Ac' ] ],
+  [ 'Ac', 4, 'H 1', 'C ', 0, [ '2  O' ] ],
+  [ 'O', 5, 'H 0', 'C ', 0, [ '1  Hg', '7  Ac' ] ],
+  [ 'Ac', 7, 'H 1', 'C ', 0, [ '5  O' ] ],
+  [ 'C', 11, 'H 3', 'C ', 0, [ '13  C' ] ],
+  [ 'C', 13, 'H 1', 'C ', 0, [ '11  C', '17  C', '19  C' ] ],
+  [ 'C', 17, 'H 3', 'C ', 0, [ '13  C' ] ],
+  [ 'C', 19, 'H 1', 'C ', '+', [ '13  C', '22  C' ] ],
+  [ 'C', 22, 'H 2', 'C ', '', [ '1  Hg', '19  C' ] ] ]
  */
 // Break bond between mercury (nucleophile) and oxygen (electrophile)
 const oxymercuration_demercuration_step2_ai = require("./Components/Stateless/MoleculeAI")(oxymercuration_demercuration_step2[0])
 //oxymercuration_demercuration_step2_ai.findNucleophileIndex().should.be.equal(999)
-oxymercuration_demercuration_step2_ai.findElectrophileIndex().should.be.equal(999)
+oxymercuration_demercuration_step2_ai.findElectrophileIndex().should.be.equal(1)
 
-process.exit()
+
 const oxymercuration_demercuration_step3 = CommandTest("BREAK bond", oxymercuration_demercuration_step2[0])
+
+console.log("oxymercuration_demercuration_step3 substrate")
+console.log(VMolecule(oxymercuration_demercuration_step3[0]).compressed())
 
 
 process.exit()
