@@ -190,8 +190,9 @@ Notice that overall, the oxymercuration - demercuration mechanism follows Markov
 // BREAK bond
 // REMOVE proton from water O
 // REDUCE
-const mercuriacetate = MoleculeFactory("[Hg](O[Ac])O[Ac]")
-VMolecule([mercuriacetate,1]).canonicalSMILES().should.be.equal("[Hg](O[Ac])O[Ac]")
+// Mecury has a positive charge
+const mercuriacetate = MoleculeFactory("[Hg+](O[Ac])")
+VMolecule([mercuriacetate,1]).canonicalSMILES().should.be.equal("[Hg+]O[Ac]")
 const isobutene = MoleculeFactory("CC(C)C=C")
 const isobutene_ai = require("./Components/Stateless/MoleculeAI")([isobutene,1])
 isobutene_ai.findElectrophileIndex().should.be.equal(11) // electrophile - substrate
