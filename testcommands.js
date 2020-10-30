@@ -182,6 +182,7 @@ VMolecule(antidihydroxlation_test_step4[0]).canonicalSMILES().should.be.equal("C
 Notice that overall, the oxymercuration - demercuration mechanism follows Markovnikov's Regioselectivity with the OH group attached to the most substituted carbon and the H attached to the least substituted carbon. The reaction is useful, because strong acids are not required and carbocation rearrangements are avoided because no discreet carbocation intermediate forms.
  */
 // https://www.masterorganicchemistry.com/2011/08/12/reagent-friday-sodium-borohydride-nabh4/#:~:text=What%20it's%20used%20for%3A%20Sodium,aldehydes%20and%20ketones%20to%20alcohols.
+// https://www.chemistrysteps.com/oxymercuration-demercuration/
 // BOND atoms
 // BOND atoms
 // BREAK bond

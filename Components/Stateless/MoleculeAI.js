@@ -292,13 +292,15 @@ VMolecule
             return c_sorted[0]
         },
 
-        "findElectrophileIndex": (filterBy) => {
-
-
+        "findElectrophileIndex": (filterBy, mustBe) => {
 
             let i= _.findIndex(container_molecule[0][1], (atom, index)=>{
 
                 const atom_object = CAtom(atom, index,container_molecule)
+
+                if (undefined !== mustBe && atom[0] !== mustBe) {
+                    return false
+                }
 
                 if (atom_object.isPositivelyCharged() ) {
                     if (undefined === filterBy || atom[0] !== filterBy)
@@ -315,6 +317,7 @@ VMolecule
                 }).length === 0) {
                     return true
                 }
+
 
                 return false
 

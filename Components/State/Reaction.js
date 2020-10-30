@@ -94,10 +94,10 @@ class Reaction {
                                 water_oxygen_index,
                                 [water_molecule,1]).freeElectrons()
         electrons.length.should.be.greaterThan(1)
-        const electrophile_index = this.MoleculeAI.findElectrophileIndex("O")
+        const electrophile_index = this.MoleculeAI.findElectrophileIndex("O", "C")
 
         //console.log('Reaction.js hydrate()')
-        //console.log(this.container_substrate[0][1][electrophile_index])
+        //console.log(electrophile_index)
 
         electrophile_index.should.not.be.equal(-1)
 
