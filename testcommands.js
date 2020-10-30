@@ -194,22 +194,23 @@ VMolecule([mercuriacetate,1]).canonicalSMILES().should.be.equal("[Hg](O[Ac])O[Ac
 const isobutene = MoleculeFactory("CC(C)C=C")
 const isobutene_ai = require("./Components/Stateless/MoleculeAI")([isobutene,1])
 isobutene_ai.findElectrophileIndex().should.be.equal(11) // electrophile - substrate
-
-
 // Bond least substituted carbon (nucleophile in isobutene to mercury atom (electrophile)
 // In this step for the purposes of bondAtoms() isobutene (nucleophile) is treated as the reagent and mercuriacetate
 // as the substrate
+console.log('mercuriacetate')
+console.log(VMolecule([mercuriacetate,1]).compressed())
 const mercuriacetate_ai = require("./Components/Stateless/MoleculeAI")([mercuriacetate,1])
-mercuriacetate_ai.findNucleophileIndex().should.be.equal(1) // nucleophile - reagent - has lone pair
+mercuriacetate_ai.findNucleophileIndex().should.be.equal(0) // nucleophile - reagent - has lone pair
 VMolecule([isobutene,1]).canonicalSMILES().should.be.equal("CC(C)C=C")
 isobutene_ai.findNucleophileIndex().should.be.equal(14)
-mercuriacetate_ai.findElectrophileIndex().should.be.equal(1)
+mercuriacetate_ai.findElectrophileIndex().should.be.equal(0)
 const oxymercuration_demercuration_step1 = CommandTest("BOND atoms", [mercuriacetate,1], [isobutene,1])
+console.log('oxymercuration_demercuration_step1')
+console.log(VMolecule(oxymercuration_demercuration_step1[0]).compressed())
 
 const oxymercuration_demercuration_step1_ai = require("./Components/Stateless/MoleculeAI")(oxymercuration_demercuration_step1[0])
-console.log(VMolecule(oxymercuration_demercuration_step1[0]).compressed())
-oxymercuration_demercuration_step1_ai.findNucleophileIndex().should.be.equal(1)
-oxymercuration_demercuration_step1_ai.findElectrophileIndex().should.be.equal(19)
+oxymercuration_demercuration_step1_ai.findNucleophileIndex().should.be.equal(0)
+oxymercuration_demercuration_step1_ai.findElectrophileIndex().should.be.equal(16)
 const oxymercuration_demercuration_step2 = CommandTest("BOND atoms", oxymercuration_demercuration_step1[0])
 console.log("oxymercuration_demercuration_step2 substrate")
 console.log(VMolecule(oxymercuration_demercuration_step2[0]).compressed())
@@ -229,7 +230,7 @@ console.log(VMolecule(oxymercuration_demercuration_step2[0]).compressed())
 // Break bond between mercury (nucleophile) and oxygen (electrophile)
 const oxymercuration_demercuration_step2_ai = require("./Components/Stateless/MoleculeAI")(oxymercuration_demercuration_step2[0])
 //oxymercuration_demercuration_step2_ai.findNucleophileIndex().should.be.equal(999)
-oxymercuration_demercuration_step2_ai.findElectrophileIndex().should.be.equal(1)
+oxymercuration_demercuration_step2_ai.findElectrophileIndex().should.be.equal(0)
 
 
 const oxymercuration_demercuration_step3 = CommandTest("BREAK bond", oxymercuration_demercuration_step2[0])
@@ -237,18 +238,15 @@ const oxymercuration_demercuration_step3 = CommandTest("BREAK bond", oxymercurat
 console.log("oxymercuration_demercuration_step3 substrate")
 console.log(VMolecule(oxymercuration_demercuration_step3[0]).compressed())
 
-
-process.exit()
-
-
 // Hg atom (nucleophile) from reagent bonds with most substituted substrate carbon (electrophile) on the double bond
 
 oxymercuration_demercuration_step3.should.not.be.equal(false)
-//console.log(VMolecule(oxymercuration_demercuration_step3[0]).compressed())
-VMolecule(oxymercuration_demercuration_step3[0]).canonicalSMILES().should.be.equal("CC(C)C(=C)[Hg+](O[Ac])O[Ac]")
 
-const oxymercuration_demercuration_step4 = CommandTest("BREAK bond", oxymercuration_demercuration_step1[2])
+// Hydrate most substituted carbon
+const oxymercuration_demercuration_step4 = CommandTest("HYDRATE", oxymercuration_demercuration_step3[0], [water,1])
 
+console.log("oxymercuration_demercuration_step4 substrate")
+console.log(VMolecule(oxymercuration_demercuration_step4[0]).compressed())
 
 
 

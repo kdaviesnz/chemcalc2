@@ -232,11 +232,13 @@ class Reaction {
                 nucleophile_index = bonds_sorted[0].atom_index
             }
 
+            /*
             console.log('Reaction.js Break bond (overloaded atom)')
             console.log('Nucleophile index') // 4 (most substituted carbon)
             console.log(nucleophile_index)
             console.log('Electrophile index') // 8 (O, positive charge)
             console.log(electrophile_index)
+            */
 
 
         } else {
@@ -461,15 +463,23 @@ class Reaction {
             )
 
             // Nucleophile has lost electrons so we give it a positive charge
-            this.container_reagent[0][1][nucleophile_index][4] =
-                this.container_reagent[0][1][nucleophile_index][4] === "-"?"":"+"
+            // Hack for now
+            // @todo
+            if (this.container_reagent[0][1][nucleophile_index][0]!=="Hg") {
+                this.container_reagent[0][1][nucleophile_index][4] =
+                    this.container_reagent[0][1][nucleophile_index][4] === "-" ? "" : "+"
+            }
 
         }
 
 
         // electrophile has lost electrons so we give it a negative charge
-        this.container_substrate[0][1][electrophile_index][4] =
-        this.container_substrate[0][1][electrophile_index][4] === "+"?"":"-"
+        // Hack for now
+        // @todo
+        if (this.container_substrate[0][1][electrophile_index][0]!=="Hg") {
+            this.container_substrate[0][1][electrophile_index][4] =
+                this.container_substrate[0][1][electrophile_index][4] === "+" ? "" : "-"
+        }
 
         this.setMoleculeAI()
         this.setReagentAI()

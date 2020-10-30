@@ -295,17 +295,22 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                     current.pop()
                     valence_electrons = current.slice(5)
                 } else {
-                    // Check how many bonds it currently has
-                    valence_electrons = current.slice(5)
-                    // Check each valence electron to see if it is being shared
-                    const catom = CAtom(_.cloneDeep(current), index, molecule)
 
-                    const actual_number_of_bonds = catom.bondCount() - catom.doubleBondCount() + (catom.doubleBondCount() * 2)
+                    if (current[0] === "Hg" || current[0] === "Ac") {
+                        number_of_hydrogens_required = 0
+                    } else {
+                        // Check how many bonds it currently has
+                        valence_electrons = current.slice(5)
+                        // Check each valence electron to see if it is being shared
+                        const catom = CAtom(_.cloneDeep(current), index, molecule)
 
-                    // current[3] is the number of electrons the atom has when it is neutrally charged
-                    number_of_hydrogens_required = current[3] - actual_number_of_bonds + (current[4]) // current[4] is the charge
+                        const actual_number_of_bonds = catom.bondCount() - catom.doubleBondCount() + (catom.doubleBondCount() * 2)
 
-                   // console.log("Index: " + index + " Bond count: " + actual_number_of_bonds + " Hydrogens req: " + number_of_hydrogens_required)
+                        // current[3] is the number of electrons the atom has when it is neutrally charged
+                        number_of_hydrogens_required = current[3] - actual_number_of_bonds + (current[4]) // current[4] is the charge
+
+                        // console.log("Index: " + index + " Bond count: " + actual_number_of_bonds + " Hydrogens req: " + number_of_hydrogens_required)
+                    }
                 }
              //   console.log(number_of_hydrogens_required)
                 if (number_of_hydrogens_required > 0) {
