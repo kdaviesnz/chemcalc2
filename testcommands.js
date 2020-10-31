@@ -202,6 +202,11 @@ const oxymercuration_demercuration_step2 = CommandTest("HYDRATE most substituted
 console.log('oxymercuration_demercuration_step2 (HYDRATE most substituted carbon)')
 console.log(VMolecule(oxymercuration_demercuration_step2[0]).compressed())
 
+
+const oxymercuration_demercuration_step3 = CommandTest("REMOVE proton from water", _.cloneDeep(oxymercuration_demercuration_step2[0]), _.cloneDeep([water,1]))
+console.log('oxymercuration_demercuration_step3 (REMOVE proton from water)')
+console.log(VMolecule(oxymercuration_demercuration_step3[0]).compressed())
+
 process.exit()
 
 
@@ -260,7 +265,7 @@ const oxymercuration_demercuration_step2_ai = require("./Components/Stateless/Mo
 oxymercuration_demercuration_step2_ai.findElectrophileIndex().should.be.equal(0)
 
 
-const oxymercuration_demercuration_step3 = CommandTest("BREAK bond", oxymercuration_demercuration_step2[0])
+const oxymercuration_demercuration_step3_old = CommandTest("BREAK bond", oxymercuration_demercuration_step2[0])
 
 console.log("oxymercuration_demercuration_step3 substrate")
 console.log(VMolecule(oxymercuration_demercuration_step3[0]).compressed())

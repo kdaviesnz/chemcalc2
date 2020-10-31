@@ -63,6 +63,12 @@ class Reaction {
         this.MoleculeAI = require("../Stateless/MoleculeAI")(this.container_substrate)
     }
 
+    demercurify() {
+        // @see Demercurify
+        // Replace Hg atom with hydrogen using sodium borohydride as reduction agent.
+
+    }
+
     deprotonateCarbonyl() {
         return false
     }
@@ -745,6 +751,7 @@ class Reaction {
 
         const water_oxygen_index = this.MoleculeAI.findWaterOxygenIndex()
         water_oxygen_index.should.be.greaterThan(-1)
+
         this.container_substrate[0][1][water_oxygen_index][0].should.be.equal("O")
         const oxygen_proton_bond = CAtom(this.container_substrate[0][1][water_oxygen_index],
                                     water_oxygen_index,
@@ -760,16 +767,6 @@ class Reaction {
         _.remove(this.container_substrate[0][1], (v, i)=>{
             return i === oxygen_proton_bond.atom_index
         })
-
-        // Check
-        const o_index = _.findIndex(this.container_substrate[0][1], (a)=>{
-            return a[0] === 'O'
-        })
-        CAtom(this.container_substrate[0][1][o_index], o_index, this.container_substrate).indexedBonds("").filter(
-            (bond)=>{
-                return bond.atom[0]==="H"
-            }
-        ).length.should.be.equal(1)
 
         this.setMoleculeAI()
 
@@ -968,12 +965,14 @@ class Reaction {
             electrophile_index = this.ReagentAI.findElectrophileIndex("")
             this.container_reagent[0][1][electrophile_index].push(free_electrons[0])
             this.container_reagent[0][1][electrophile_index].push(free_electrons[1])
-            this.container_substrate[0][1].push(this.container_reagent[0][1][electrophile_index])
             // @todo
             charge = this.container_reagent[0][1][electrophile_index][0] === "Hg"?"&+":"+"
             this.container_reagent[0][1][electrophile_index][4] =
                 this.container_reagent[0][1][electrophile_index][4] === "-"
                 || this.container_reagent[0][1][electrophile_index][4] < 0? 0: charge
+            _.cloneDeep(this.container_reagent[0][1]).map((reagent_atom)=>{
+                this.container_substrate[0][1].push(reagent_atom)
+            })
         } else {
             electrophile_index = this.MoleculeAI.findElectrophileIndex("")
             this.container_substrate[0][1][electrophile_index].push(free_electrons[0])

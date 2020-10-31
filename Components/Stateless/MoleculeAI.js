@@ -33,6 +33,17 @@ const MoleculeAI = (container_molecule) => {
     }
 
     const __findMostSubstitutedCarbon = (carbons) => {
+
+        // First look for a carbon with a positive charge and attached to another carbon
+        const carbons_with_charge = _.cloneDeep(carbons).filter((atom_object)=>{
+            return atom_object.symbol==="C" && atom_object.charge === "+" || atom_object.charge === "&+"
+        })
+
+        if (carbons_with_charge.length > 0) {
+            return carbons_with_charge[0]
+        }
+
+        // Sort by most substituted
         const c_sorted = carbons.sort((a_atom, b_atom) => {
             const a_hydrogens = a_atom.indexedBonds("").filter(
                 (bond) => {
@@ -331,6 +342,8 @@ VMolecule
         },
 
         "findMostSubstitutedCarbonIndex": () => {
+
+
 
             const carbons = container_molecule[0][1].map((atom, index) => {
                 return CAtom(atom, index, container_molecule)
