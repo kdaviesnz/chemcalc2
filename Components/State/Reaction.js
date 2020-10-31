@@ -83,7 +83,12 @@ class Reaction {
         return false
     }
 
-    hydrate() {
+    hydrateMostSubstitutedCarbon() {
+        const electrophile_index = this.MoleculeAI.findMostSubstitutedCarbonIndex()
+        this.hydrate(electrophile_index)
+    }
+
+    hydrate(electrophile_index) {
         const water_molecule = MoleculeFactory("O")
         water_molecule[1][2][4]="+"
         this.container_reagent = [water_molecule,1]
@@ -94,7 +99,9 @@ class Reaction {
                                 water_oxygen_index,
                                 [water_molecule,1]).freeElectrons()
         electrons.length.should.be.greaterThan(1)
-        const electrophile_index = this.MoleculeAI.findElectrophileIndex("O", "C")
+        if (undefined === electrophile_index) {
+            electrophile_index = this.MoleculeAI.findElectrophileIndex("O", "C")
+        }
 
         //console.log('Reaction.js hydrate()')
         //console.log(electrophile_index)
@@ -845,6 +852,152 @@ class Reaction {
 
 
     }
+
+    protonateCarbonDoubleBond() {
+
+        // @see Organic Chemistry 8th edition p245
+        // Get index of double bond carbon bonded to the most hydrogens
+        let atom_nucleophile_index = this.MoleculeAI.findLeastSubstitutedCarbonPiBondIndex()
+
+        if (atom_nucleophile_index === -1) {
+            return false
+        }
+        atom_nucleophile_index.should.be.an.Number()
+        atom_nucleophile_index.should.be.greaterThan(-1)
+
+        const atoms = _.cloneDeep(this.container_substrate[0][1])
+
+        const proton = AtomFactory("H", 0)
+        proton.pop()
+
+        proton.length.should.be.equal(5)
+        proton[0].should.be.equal('H')
+
+
+        let free_electrons = []
+
+        // Check for double bond and if there is one break it and get shared electrons from that.
+        const double_bonds = CAtom(this.container_substrate[0][1][atom_nucleophile_index], atom_nucleophile_index, this.container_substrate).indexedDoubleBonds("")
+
+        const db_atom = CAtom(this.container_substrate[0][1][double_bonds[0].atom_index], double_bonds[0].atom_index, this.container_substrate)
+
+        const shared_electrons = _.cloneDeep(double_bonds[0].shared_electrons).slice(0,2)
+
+        // Remove double bond
+        _.remove(this.container_substrate[0][1][double_bonds[0].atom_index], (v)=>{
+            return v === shared_electrons[0] || v === shared_electrons[1]
+        })
+
+        free_electrons = shared_electrons
+        // Set charge on the former double bonded carbon
+        this.container_substrate[0][1][double_bonds[0].atom_index][4] =
+            this.container_substrate[0][1][double_bonds[0].atom_index][4] === "-"
+            || this.container_substrate[0][1][double_bonds[0].atom_index][4] < 0? 0: "+"
+
+        free_electrons.length.should.be.greaterThan(1)
+
+        proton.push(free_electrons[0])
+        proton.push(free_electrons[1])
+
+        this.container_substrate[0][1].push(proton)
+
+        this.container_substrate[0][1].length.should.not.equal(atoms.length)
+
+        this.setMoleculeAI()
+
+        // Remove proton from the reagent
+        if (null !== this.container_reagent) {
+
+            const reagent_proton_index = this.ReagentAI.findProtonIndex()
+
+            // Set charge
+            const reagent_bonds = CAtom(this.container_reagent[0][1][reagent_proton_index], reagent_proton_index, this.container_reagent).indexedBonds("").filter(
+                (bond) => {
+                    return bond.atom[0] !== "H"
+                }
+            )
+
+            this.container_reagent[0][1][reagent_bonds[0].atom_index][4] = this.container_reagent[0][1][reagent_bonds[0].atom_index][4] === "+"
+            ||  this.container_reagent[0][1][reagent_bonds[0].atom_index][4] < 0? 0: "-"
+
+            _.remove(this.container_reagent[0][1], (v, i) => {
+                return i === reagent_proton_index
+            })
+
+            this.setReagentAI()
+        }
+
+
+    }
+
+    breakCarbonDoubleBond() {
+
+        // @see Organic Chemistry 8th edition p245
+        // Get index of double bond carbon bonded to the most hydrogens
+        let atom_nucleophile_index = this.MoleculeAI.findLeastSubstitutedCarbonPiBondIndex()
+
+        if (atom_nucleophile_index === -1) {
+            return false
+        }
+        atom_nucleophile_index.should.be.an.Number()
+        atom_nucleophile_index.should.be.greaterThan(-1)
+
+        const atoms = _.cloneDeep(this.container_substrate[0][1])
+
+        let free_electrons = []
+
+        // Check for double bond and if there is one break it and get shared electrons from that.
+        const double_bonds = CAtom(this.container_substrate[0][1][atom_nucleophile_index], atom_nucleophile_index, this.container_substrate).indexedDoubleBonds("")
+
+        const db_atom = CAtom(this.container_substrate[0][1][double_bonds[0].atom_index], double_bonds[0].atom_index, this.container_substrate)
+
+        const shared_electrons = _.cloneDeep(double_bonds[0].shared_electrons).slice(0,2)
+
+        // Remove double bond
+        _.remove(this.container_substrate[0][1][double_bonds[0].atom_index], (v)=>{
+            return v === shared_electrons[0] || v === shared_electrons[1]
+        })
+
+        free_electrons = shared_electrons
+        free_electrons.length.should.be.greaterThan(1)
+
+        let electrophile_index = null
+        let charge = null
+
+        if (this.container_reagent !== null) {
+            electrophile_index = this.ReagentAI.findElectrophileIndex("")
+            this.container_reagent[0][1][electrophile_index].push(free_electrons[0])
+            this.container_reagent[0][1][electrophile_index].push(free_electrons[1])
+            this.container_substrate[0][1].push(this.container_reagent[0][1][electrophile_index])
+            // @todo
+            charge = this.container_reagent[0][1][electrophile_index][0] === "Hg"?"&+":"+"
+            this.container_reagent[0][1][electrophile_index][4] =
+                this.container_reagent[0][1][electrophile_index][4] === "-"
+                || this.container_reagent[0][1][electrophile_index][4] < 0? 0: charge
+        } else {
+            electrophile_index = this.MoleculeAI.findElectrophileIndex("")
+            this.container_substrate[0][1][electrophile_index].push(free_electrons[0])
+            this.container_substrate[0][1][electrophile_index].push(free_electrons[1])
+            this.container_substrate[0][1].push(this.container_substrate[0][1][electrophile_index])
+            // @todo
+            charge = this.container_substrate[0][1][electrophile_index][0] === "Hg"?"&+":"+"
+            this.container_substrate[0][1][electrophile_index][4] =
+                this.container_substrate[0][1][electrophile_index][4] === "-"
+                || this.container_substrate[0][1][electrophile_index][4] < 0? 0: charge
+        }
+
+        // Set charge on the former double bonded carbon
+        this.container_substrate[0][1][double_bonds[0].atom_index][4] =
+            this.container_substrate[0][1][double_bonds[0].atom_index][4] === "-"
+            || this.container_substrate[0][1][double_bonds[0].atom_index][4] < 0? 0: charge
+
+        this.container_substrate[0][1].length.should.not.equal(atoms.length)
+
+        this.setMoleculeAI()
+        this.setReagentAI()
+
+    }
+
 
 
 }

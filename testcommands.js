@@ -183,17 +183,42 @@ Notice that overall, the oxymercuration - demercuration mechanism follows Markov
  */
 // https://www.masterorganicchemistry.com/2011/08/12/reagent-friday-sodium-borohydride-nabh4/#:~:text=What%20it's%20used%20for%3A%20Sodium,aldehydes%20and%20ketones%20to%20alcohols.
 // https://www.chemistrysteps.com/oxymercuration-demercuration/
-// BOND atoms
-// BOND atoms
-// BREAK bond
-// HYDRATE O
-// BREAK bond
-// REMOVE proton from water O
-// REDUCE
 // Mecury has a positive charge
+// BREAK double carbon bond
+// HYDRATE most substituted carbon
 const mercuriacetate = MoleculeFactory("[Hg+](O[Ac])")
 VMolecule([mercuriacetate,1]).canonicalSMILES().should.be.equal("[Hg+]O[Ac]")
 const isobutene = MoleculeFactory("CC(C)C=C")
+
+console.log('mercuriacetate')
+console.log(VMolecule([mercuriacetate,1]).compressed())
+// "Protonate", using the mercury atom, the least substituted carbon
+const oxymercuration_demercuration_step1 = CommandTest("BREAK double carbon bond", [isobutene,1], [mercuriacetate,1])
+console.log('oxymercuration_demercuration_step1 (BREAK double carbon bond)')
+console.log(VMolecule(oxymercuration_demercuration_step1[0]).compressed())
+
+
+const oxymercuration_demercuration_step2 = CommandTest("HYDRATE most substituted carbon", oxymercuration_demercuration_step1[0], [water,1])
+console.log('oxymercuration_demercuration_step2 (HYDRATE most substituted carbon)')
+console.log(VMolecule(oxymercuration_demercuration_step2[0]).compressed())
+
+process.exit()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ===========================================
 const isobutene_ai = require("./Components/Stateless/MoleculeAI")([isobutene,1])
 isobutene_ai.findElectrophileIndex().should.be.equal(11) // electrophile - substrate
 // Bond least substituted carbon (nucleophile in isobutene to mercury atom (electrophile)
@@ -206,14 +231,14 @@ mercuriacetate_ai.findNucleophileIndex().should.be.equal(0) // nucleophile - rea
 VMolecule([isobutene,1]).canonicalSMILES().should.be.equal("CC(C)C=C")
 isobutene_ai.findNucleophileIndex().should.be.equal(14)
 mercuriacetate_ai.findElectrophileIndex().should.be.equal(0)
-const oxymercuration_demercuration_step1 = CommandTest("BOND atoms", [mercuriacetate,1], [isobutene,1])
+const oxymercuration_demercuration_step1_old = CommandTest("BOND atoms", [mercuriacetate,1], [isobutene,1])
 console.log('oxymercuration_demercuration_step1')
 console.log(VMolecule(oxymercuration_demercuration_step1[0]).compressed())
 
 const oxymercuration_demercuration_step1_ai = require("./Components/Stateless/MoleculeAI")(oxymercuration_demercuration_step1[0])
 oxymercuration_demercuration_step1_ai.findNucleophileIndex().should.be.equal(0)
 oxymercuration_demercuration_step1_ai.findElectrophileIndex().should.be.equal(16)
-const oxymercuration_demercuration_step2 = CommandTest("BOND atoms", oxymercuration_demercuration_step1[0])
+const oxymercuration_demercuration_step2_old = CommandTest("BOND atoms", oxymercuration_demercuration_step1[0])
 console.log("oxymercuration_demercuration_step2 substrate")
 console.log(VMolecule(oxymercuration_demercuration_step2[0]).compressed())
 //process.exit()

@@ -13,6 +13,43 @@ const MoleculeAI = (container_molecule) => {
         container_molecule[0][1][0][0].should.be.an.String()
     }
 
+    const __findLeastSubstitutedCarbon = (carbons) => {
+
+        const c_sorted = carbons.sort((a_atom, b_atom) => {
+            const a_hydrogens = a_atom.indexedBonds("").filter(
+                (bond) => {
+                    return bond.atom[0] === "H"
+                }
+            )
+            const b_hydrogens = b_atom.indexedBonds("").filter(
+                (bond) => {
+                    return bond.atom[0] === "H"
+                }
+            )
+            return a_hydrogens.length < b_hydrogens.length ? -1 : 0
+        })
+
+        return c_sorted.pop()
+    }
+
+    const __findMostSubstitutedCarbon = (carbons) => {
+        const c_sorted = carbons.sort((a_atom, b_atom) => {
+            const a_hydrogens = a_atom.indexedBonds("").filter(
+                (bond) => {
+                    return bond.atom[0] === "H"
+                }
+            )
+            const b_hydrogens = b_atom.indexedBonds("").filter(
+                (bond) => {
+                    return bond.atom[0] === "H"
+                }
+            )
+            return a_hydrogens.length < b_hydrogens.length ? -1 : 0
+        })
+
+        return c_sorted[0]
+    }
+
 
     // All required parameters should be passed by MoleculeAI()
     // No method should change state of container_molecule
@@ -171,6 +208,8 @@ VMolecule
             }).length === 2
         },
 
+
+
         "findNucleophileIndex": () => {
 
 
@@ -275,21 +314,33 @@ VMolecule
         },
 
         "findMostSubstitutedCarbon": (carbons) => {
-            const c_sorted = carbons.sort((a_atom, b_atom) => {
-                const a_hydrogens = a_atom.indexedBonds("").filter(
-                    (bond) => {
-                        return bond.atom[0] === "H"
-                    }
-                )
-                const b_hydrogens = b_atom.indexedBonds("").filter(
-                    (bond) => {
-                        return bond.atom[0] === "H"
-                    }
-                )
-                return a_hydrogens.length < b_hydrogens.length ? -1 : 0
+            return __findMostSubstitutedCarbon(carbons)
+        },
+
+        "findLeastSubstitutedCarbonPiBondIndex": () => {
+
+            const carbons = container_molecule[0][1].map((atom, index) => {
+                return CAtom(atom, index, container_molecule)
+            }).filter((atom_object)=>{
+                return atom_object.symbol === 'C' && atom_object.indexedDoubleBonds("").filter((bond)=>{
+                    return bond.atom[0] === "C"
+                }).length > 0
             })
 
-            return c_sorted[0]
+            return __findLeastSubstitutedCarbon(carbons).atomIndex
+        },
+
+        "findMostSubstitutedCarbonIndex": () => {
+
+            const carbons = container_molecule[0][1].map((atom, index) => {
+                return CAtom(atom, index, container_molecule)
+            }).filter((atom_object)=>{
+                return atom_object.symbol === 'C' && atom_object.indexedBonds("").filter((bond)=>{
+                    return bond.atom[0] === "C"
+                }).length > 0
+            })
+
+            return __findMostSubstitutedCarbon(carbons).atomIndex
         },
 
         "findElectrophileIndex": (filterBy, mustBe) => {
