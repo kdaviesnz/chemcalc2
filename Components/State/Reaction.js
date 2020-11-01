@@ -64,8 +64,44 @@ class Reaction {
     }
 
     demercurify() {
-        // @see Demercurify
+
+        // @see https://www.chemistrysteps.com/oxymercuration-demercuration/
         // Replace Hg atom with hydrogen using sodium borohydride as reduction agent.
+        const mercury_atom_index = _.findIndex(_.cloneDeep(this.container_substrate[0][1]), (atom)=>{
+            return atom[0] === "Hg"
+        })
+
+        if (mercury_atom_index === -1) {
+            return false
+        }
+
+        const mercury_atom = CAtom(this.container_substrate[0][1][mercury_atom_index], mercury_atom_index, this.container_substrate)
+
+        // We should just have one carbon bond
+        const carbon_bond = mercury_atom.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "C"
+        }).pop()
+
+        if (undefined === carbon_bond) {
+            return false
+        }
+
+        const shared_electrons = carbon_bond.shared_electrons
+
+
+        // Remove mercury atom
+        _.remove(this.container_substrate[0][1], (v, i)=>{
+                return i === mercury_atom_index
+            }
+        )
+
+        // Add proton
+        const proton = AtomFactory("H")
+        proton.pop()
+        proton.push(shared_electrons[0])
+        proton.push(shared_electrons[1])
+        this.container_substrate[0][1].push(proton)
+        this.setMoleculeAI()
 
     }
 
@@ -102,8 +138,8 @@ class Reaction {
         const water_ai = require("../Stateless/MoleculeAI")([water_molecule,1])
         const water_oxygen_index = water_ai.findWaterOxygenIndex()
         const electrons = CAtom(water_molecule[1][water_oxygen_index],
-                                water_oxygen_index,
-                                [water_molecule,1]).freeElectrons()
+            water_oxygen_index,
+            [water_molecule,1]).freeElectrons()
         electrons.length.should.be.greaterThan(1)
         if (undefined === electrophile_index) {
             electrophile_index = this.MoleculeAI.findElectrophileIndex("O", "C")
@@ -115,7 +151,7 @@ class Reaction {
         electrophile_index.should.not.be.equal(-1)
 
         this.container_substrate[0][1][electrophile_index].push(electrons[0])
-        this.container_substrate[0][1][electrophile_index].push(electrons[1])    
+        this.container_substrate[0][1][electrophile_index].push(electrons[1])
         this.container_substrate[0][1][electrophile_index][4] = 0
 
         this.container_substrate[0][1].push(water_molecule[1][0])
@@ -128,7 +164,7 @@ class Reaction {
         this.MoleculeAI.findWaterOxygenIndex().should.be.greaterThan(-1)
 
     }
-    
+
     dehydrate() {
 
         const atoms = this.container_substrate[0][1]
@@ -206,7 +242,7 @@ class Reaction {
 
 
     }
-    
+
     breakBond(break_type="heterolysis") {
 
 
@@ -372,14 +408,14 @@ class Reaction {
 
 
         this.setMoleculeAI()
-        
-        
+
+
         // @todo work out if we now have two molecules
 
-            
-        
+
+
     }
-    
+
     bondAtoms() {
 
         const electrophile_index = this.MoleculeAI.findElectrophileIndex()
@@ -400,7 +436,7 @@ class Reaction {
                 return false
             }
 
-           //  const electrophile_free_electrons = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate).freeElectrons()
+            //  const electrophile_free_electrons = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate).freeElectrons()
             let nucleophile_free_electrons = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate).freeElectrons()
 
             if (nucleophile_free_electrons.length < 2) {
@@ -453,7 +489,7 @@ class Reaction {
                 if (doubleBonds.length > 0) {
                     nucleophile_free_electrons = doubleBonds[0].shared_electrons
                     _.remove(this.container_reagent[0][1][doubleBonds[0].atom_index], (v)=>{
-                      return v === doubleBonds[0].shared_electrons[0] || v === doubleBonds[0].shared_electrons[1]
+                        return v === doubleBonds[0].shared_electrons[0] || v === doubleBonds[0].shared_electrons[1]
                     })
                     // We give the opposite carbon a positive charge as it has lost electrons
                     this.container_reagent[0][1][doubleBonds[0].atom_index][4] = this.container_reagent[0][1][doubleBonds[0].atom_index][4] === "-"? "": "+"
@@ -466,7 +502,7 @@ class Reaction {
 
             this.container_substrate[0][1][electrophile_index].push(nucleophile_free_electrons[0])
             this.container_substrate[0][1][electrophile_index].push(nucleophile_free_electrons[1])
-           // this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4]==="+"?0:"-"
+            // this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4]==="+"?0:"-"
 
             this.container_reagent[0][1].map(
                 (atom)=>{
@@ -514,7 +550,7 @@ class Reaction {
         }
         this.setMoleculeAI()
     }
-    
+
     deprotonate() {
 
         // [C+]CH3
@@ -536,8 +572,8 @@ class Reaction {
 
         const electrophile_bonds  = electrophile.indexedBonds("")
 
-      //  console.log('electrophile_bonds')
-       // console.log(electrophile_bonds)
+        //  console.log('electrophile_bonds')
+        // console.log(electrophile_bonds)
 
         const hydrogen_bond = electrophile_bonds.filter((bond)=>{
             return bond.atom[0] === 'H'
@@ -545,11 +581,11 @@ class Reaction {
 
 
         if (this.container_substrate[0][1][electrophile_index][0]!== "C"){
-            
-            this.addProtonToReagent()  
-                this.container_substrate[0][1][electrophile_index][4] = 0
-                this.container_substrate[0][1].splice(hydrogen_bond.atom_index, 1)
-            
+
+            this.addProtonToReagent()
+            this.container_substrate[0][1][electrophile_index][4] = 0
+            this.container_substrate[0][1].splice(hydrogen_bond.atom_index, 1)
+
         } else {
 
             // Check for carbons bonds
@@ -559,11 +595,11 @@ class Reaction {
 
 
             if (undefined === carbon_bond) {
-                
-                this.addProtonToReagent()  
+
+                this.addProtonToReagent()
                 this.container_substrate[0][1][electrophile_index][4] = 0
                 this.container_substrate[0][1].splice(hydrogen_bond.atom_index, 1)
-                
+
             } else {
 
 
@@ -686,7 +722,7 @@ class Reaction {
         atom_nucleophile_index.should.not.be.equal(-1)
 
         const reagent_atoms = _.cloneDeep(this.container_reagent[0][1])
-        
+
         const proton = AtomFactory("H", 0)
         proton.pop()
 
@@ -711,7 +747,7 @@ class Reaction {
         this.container_reagent[0][1].length.should.not.equal(reagent_atoms.length)
 
         this.setReagentAI()
-        
+
 
     }
 
@@ -754,8 +790,8 @@ class Reaction {
 
         this.container_substrate[0][1][water_oxygen_index][0].should.be.equal("O")
         const oxygen_proton_bond = CAtom(this.container_substrate[0][1][water_oxygen_index],
-                                    water_oxygen_index,
-                                    this.container_substrate).indexedBonds("").filter((bond)=>{
+            water_oxygen_index,
+            this.container_substrate).indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "H"
         }).pop()
 

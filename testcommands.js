@@ -207,6 +207,13 @@ const oxymercuration_demercuration_step3 = CommandTest("REMOVE proton from water
 console.log('oxymercuration_demercuration_step3 (REMOVE proton from water)')
 console.log(VMolecule(oxymercuration_demercuration_step3[0]).compressed())
 
+
+
+const oxymercuration_demercuration_step4 = CommandTest("DEMERCURIFY", _.cloneDeep(oxymercuration_demercuration_step3[0]))
+console.log('oxymercuration_demercuration_step4 (DEMERCURIFY)')
+console.log(VMolecule(oxymercuration_demercuration_step4[0]).compressed())
+
+
 process.exit()
 
 
@@ -275,7 +282,7 @@ console.log(VMolecule(oxymercuration_demercuration_step3[0]).compressed())
 oxymercuration_demercuration_step3.should.not.be.equal(false)
 
 // Hydrate most substituted carbon
-const oxymercuration_demercuration_step4 = CommandTest("HYDRATE", oxymercuration_demercuration_step3[0], [water,1])
+const oxymercuration_demercuration_step4_OLD = CommandTest("HYDRATE", oxymercuration_demercuration_step3[0], [water,1])
 
 console.log("oxymercuration_demercuration_step4 substrate")
 console.log(VMolecule(oxymercuration_demercuration_step4[0]).compressed())
