@@ -22,6 +22,7 @@ const ProtonateDoubleCarbonBond = require('../../Commands/ProtonateCarbonDoubleB
 const BreakDoubleCarbonBond = require('../../Commands/BreakCarbonDoubleBond')
 const HydrateMostSubstitutedCarbon = require('../../Commands/HydrateMostSubstitutedCarbon')
 const Demercurify =  require('../../Commands/Demercurify')
+const Remercurify =  require('../../Commands/Remercurify')
 
 const CommandTest = (command, substrate, reagent, rule) => {
 
@@ -43,6 +44,7 @@ const CommandTest = (command, substrate, reagent, rule) => {
         "DEREDUCE": Dereduce,
         "DEHYDRATE": Dehydrate,
         "DEMERCURIFY": Demercurify,
+        "REMERCURIFY": Remercurify,
         "ADD proton to hydroxyl group": AddProtonToHydroxylGroup,
         "BREAK double carbon bond": BreakDoubleCarbonBond,
         "HYDRATE most substituted carbon": HydrateMostSubstitutedCarbon

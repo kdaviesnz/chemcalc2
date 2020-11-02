@@ -2,6 +2,12 @@ const CAtom = require('../../Controllers/Atom')
 const _ = require('lodash');
 const VMolecule = require('../../Components/Stateless/Views/Molecule')
 
+/*
+
+findHydroxylOxygenIndex()
+
+ */
+
 const MoleculeAI = (container_molecule) => {
 
     container_molecule.length.should.be.equal(2) // molecule, units

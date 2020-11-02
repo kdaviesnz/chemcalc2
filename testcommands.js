@@ -9,7 +9,7 @@ const CAtom = require('./Controllers/Atom')
 const CommandTest = require('./Components/Stateless/CommandTest')
 
 const sulphuric_acid = MoleculeFactory("OS(=O)(=O)O")
-VMolecule([sulphuric_acid,1]).canonicalSMILES().should.be.equal("OS(O)(=O)=O")
+VMolecule([sulphuric_acid,1]).canonicalSMILES().should.be.oneOf(["OS(O)(=O)=O", "OS(=O)(=O)O"])
 const sulphuric_acid_ai = require("./Components/Stateless/MoleculeAI")([sulphuric_acid,1])
 
 const methanol = MoleculeFactory("CO")
@@ -33,7 +33,7 @@ const double_bonds = CAtom(alkene[1][nucleophile_index], nucleophile_index, [alk
 double_bonds.length.should.be.equal(1)
 const protonated_products = CommandTest("PROTONATE", [alkene,1], [sulphuric_acid,1])
 VMolecule(protonated_products[0]).canonicalSMILES().should.be.equal('C[CH1+]C')
-VMolecule(protonated_products[1]).canonicalSMILES().should.be.equal("[O-]S(O)(=O)=O")
+VMolecule(protonated_products[1]).canonicalSMILES().should.be.oneOf(["[O-]S(O)(=O)=O", "[O-]S(=O)(=O)O"])
 
 
 // DEPROTONATE
@@ -41,7 +41,7 @@ VMolecule(protonated_products[1]).canonicalSMILES().should.be.equal("[O-]S(O)(=O
 const isopropyl_cation = protonated_products[0]
 const hydrogen_sulfate = protonated_products[1]
 const deprotonated_products = CommandTest("DEPROTONATE", _.cloneDeep(isopropyl_cation), _.cloneDeep(hydrogen_sulfate))
-VMolecule(deprotonated_products[1]).canonicalSMILES().should.be.equal("OS(O)(=O)=O")
+VMolecule(deprotonated_products[1]).canonicalSMILES().should.be.oneOf(["OS(O)(=O)=O","OS(=O)(=O)O"])
 VMolecule(deprotonated_products[0]).canonicalSMILES().should.be.equal("CC=C")
 
 // HYDRATE
@@ -50,7 +50,7 @@ const isopropyl_cation_ai = require("./Components/Stateless/MoleculeAI")(isoprop
 isopropyl_cation_ai.findElectrophileIndex().should.be.equal(5)
 const water = MoleculeFactory("O")
 const hydrated_products = CommandTest("HYDRATE", _.cloneDeep(isopropyl_cation), _.cloneDeep([water,1]))
-VMolecule(hydrated_products[0]).canonicalSMILES().should.be.equal("CC([O+])C")
+VMolecule(hydrated_products[0]).canonicalSMILES().should.be.oneOf(["CC([O+])C", "CC(C)[O+]"])
 // DEHYDRATE
 // See Organic Chemistry 8th Edition p245
 const isopropyloxonium = hydrated_products[0]
@@ -63,7 +63,7 @@ VMolecule(dehydrated_products[0]).canonicalSMILES().should.be.equal("C[CH1+]C")
 const isopropyloxonium_ai = require("./Components/Stateless/MoleculeAI")(isopropyloxonium)
 isopropyloxonium_ai.findWaterOxygenIndex().should.be.equal(12)
 const deprotonated_hydrated_products = CommandTest("REMOVE proton from water", _.cloneDeep(isopropyloxonium), _.cloneDeep([water,1]))
-VMolecule(deprotonated_hydrated_products[0]).canonicalSMILES().should.be.equal("CC(O)C")
+VMolecule(deprotonated_hydrated_products[0]).canonicalSMILES().should.be.oneOf("CC(O)C", "CC(C)O")
 // Add proton to hydroxyl group
 // See Organic Chemistry 8th Edition p245
 const isopropanol = deprotonated_hydrated_products[0]
@@ -71,7 +71,7 @@ const isopropanol = deprotonated_hydrated_products[0]
 const isopropanol_ai =  require("./Components/Stateless/MoleculeAI")(isopropanol)
 isopropanol_ai.findHydroxylOxygenIndex().should.be.equal(11)
 const protonated_deprotonated_hydrated_products = CommandTest("ADD proton to hydroxyl group", _.cloneDeep(isopropanol), _.cloneDeep([water,1]))
-VMolecule(protonated_deprotonated_hydrated_products[0]).canonicalSMILES().should.be.equal("CC([O+])C")
+VMolecule(protonated_deprotonated_hydrated_products[0]).canonicalSMILES().should.be.oneOf(["CC([O+])C", "CC(C)[O+]"])
 
 
 // Run commands in reverse
@@ -124,7 +124,7 @@ VMolecule(protonated_ether_products_bond_fixed[0]).canonicalSMILES().should.be.e
 // Bond methanol oxygen atom (reagent, nucleophile) with most substituted substrate carbon (electrophile)
 const protonated_ether_products_methylated = CommandTest("BOND atoms", _.cloneDeep(two_methylpropan_1_ol),
     _.cloneDeep([methanol,1]))
-VMolecule(protonated_ether_products_methylated[0]).canonicalSMILES().should.be.equal("CC(C)([O+]C)CO")
+VMolecule(protonated_ether_products_methylated[0]).canonicalSMILES().should.be.oneOf("CC(C)([O+]C)CO", "CC(C)(CO)[O+]C")
 // BREAK bond
 // Reversal - break bond between methanol oxygen atom with most substituted substrate carbon
 const protonated_ether_products_demethylated = CommandTest("BREAK bond", _.cloneDeep(protonated_ether_products_methylated[0]))
@@ -213,6 +213,11 @@ const oxymercuration_demercuration_step4 = CommandTest("DEMERCURIFY", _.cloneDee
 console.log('oxymercuration_demercuration_step4 (DEMERCURIFY)')
 console.log(VMolecule(oxymercuration_demercuration_step4[0]).compressed())
 
+
+// Reversal
+const oxymercuration_demercuration_step4_reversed = CommandTest("REMERCURIFY", _.cloneDeep(oxymercuration_demercuration_step4[0]))
+console.log('oxymercuration_demercuration_step4_reversed (REMERCURIFY)')
+console.log(VMolecule(oxymercuration_demercuration_step4_reversed[0]).compressed())
 
 process.exit()
 
