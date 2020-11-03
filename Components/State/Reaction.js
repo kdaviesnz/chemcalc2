@@ -69,7 +69,7 @@ class Reaction {
         // @see https://www.chemistrysteps.com/oxymercuration-demercuration/
         // Find index of -OH oxygen atom
         const hydroxyl_oxygen_index = this.MoleculeAI.findHydroxylOxygenIndex()
-        console.log('hydroxyl oxygen index=' + hydroxyl_oxygen_index)
+       // console.log('hydroxyl oxygen index=' + hydroxyl_oxygen_index)
         if (hydroxyl_oxygen_index === -1) {
             return false
         }
@@ -79,7 +79,7 @@ class Reaction {
         const carbon_index = hyroxyl_oxygen_object.indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "C"
         }).pop().atom_index
-        console.log('carbon index=' + carbon_index)
+      //  console.log('carbon index=' + carbon_index)
         const carbon_object = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, this.container_substrate)
 
         // Find index of terminal carbon
@@ -97,36 +97,36 @@ class Reaction {
             terminal_carbon_object_hydrogen_bonds = terminal_carbon_object.indexedBonds("").filter((bond)=>{
                 return bond.atom[0] === "H"
             })
-            return terminal_carbon_object_hydrogen_bonds === 3
+            return terminal_carbon_object_hydrogen_bonds.length === 3
 
         }).pop().atom_index
 
-        console.log('terminal carbon index=' + terminal_carbon_index)
+     //   console.log('terminal carbon index=' + terminal_carbon_index)
 
 
         // Replace hydrogen on terminal carbon with mercuriacetate
         const mercuriacetate = MoleculeFactory("[Hg+](O[Ac])")
 
-        const mercury_atom_index = _.indexOf(mercuriacetate[1], (v, i)=> {
-            return v[0]==="Hg"
-        })
-
-        console.log('mercury atom index=' + mercury_atom_index)
+        const mercury_atom_index = 0
 
         const mercury_atom_object = CAtom(mercuriacetate[1][mercury_atom_index], mercury_atom_index, [mercuriacetate,1])
         //const mercury_atom_free_electrons = mercury_atom_object.freeSlots()
 
         // Pop a hydrogen
-        const shared_electrons = terminal_carbon_object_hydrogen_bonds[0].shared_electrons
+        const shared_electrons = _.cloneDeep(terminal_carbon_object_hydrogen_bonds[0]).shared_electrons
         _.remove(this.container_substrate[0][1], (v,i)=>{
             return i === terminal_carbon_object_hydrogen_bonds[0].atom_index
         })
 
+      //  console.log(shared_electrons)
         // Add mercuriacetate to substrate
-        mercuriacetate[1].push(shared_electrons[0])
-        mercuriacetate[1].push(shared_electrons[1])
+        mercuriacetate[1][0].push(shared_electrons[0])
+        mercuriacetate[1][0].push(shared_electrons[1])
+        mercuriacetate[1][0][4] = ""
 
-        this.container_substrate[0][1].push(mercuriacetate)
+        this.container_substrate[0][1].push(mercuriacetate[1][0])
+        this.container_substrate[0][1].push(mercuriacetate[1][1])
+        this.container_substrate[0][1].push(mercuriacetate[1][2])
 
         this.setMoleculeAI()
 
