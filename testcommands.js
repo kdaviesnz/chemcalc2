@@ -134,12 +134,12 @@ VMolecule(protonated_ether_products_demethylated[0]).canonicalSMILES().should.be
 // DEPROTONATE nonhydroxyl oxygen
 const protonated_ether_products_methylated_deprotonated = CommandTest("DEPROTONATE nonhydroxyl oxygen", _.cloneDeep(protonated_ether_products_methylated[0]),
     _.cloneDeep([methanol,1]))
-VMolecule(protonated_ether_products_methylated_deprotonated[0]).canonicalSMILES().should.be.equal("CC(C)(OC)CO")
+VMolecule(protonated_ether_products_methylated_deprotonated[0]).canonicalSMILES().should.be.oneOf(["CC(C)(OC)CO", "CC(C)(CO)OC"])
 // PROTONATE nonhydroxyl oxygen
 const protonated_ether_products_methylated_protonated = CommandTest("PROTONATE nonhydroxyl oxygen",
     _.cloneDeep(protonated_ether_products_methylated_deprotonated[0]),
     _.cloneDeep(protonated_ether_products_methylated_deprotonated[1]))
-VMolecule(protonated_ether_products_methylated_protonated[0]).canonicalSMILES().should.be.equal("CC(C)([O+]C)CO")
+VMolecule(protonated_ether_products_methylated_protonated[0]).canonicalSMILES().should.be.oneOf(["CC(C)([O+]C)CO", "CC(C)(CO)[O+]C"])
 
 
 // ANTI-DIHYDROXYLATION
@@ -169,11 +169,11 @@ VMolecule(antidihydroxlation_test_step2[0]).canonicalSMILES().should.be.equal("C
 
 const antidihydroxlation_test_step3 = CommandTest("HYDRATE",
     _.cloneDeep(antidihydroxlation_test_step2[0]), _.cloneDeep([water,1]))
-VMolecule(antidihydroxlation_test_step3[0]).canonicalSMILES().should.be.equal("CC([O+])(C)CO")
+VMolecule(antidihydroxlation_test_step3[0]).canonicalSMILES().should.be.oneOf(["CC([O+])(C)CO", "CC(C)([O+])CO"])
 
 const antidihydroxlation_test_step4 = CommandTest("DEPROTONATE nonhydroxyl oxygen",
     _.cloneDeep(antidihydroxlation_test_step3[0]), _.cloneDeep([water,1]))
-VMolecule(antidihydroxlation_test_step4[0]).canonicalSMILES().should.be.equal("CC(O)(C)CO")
+VMolecule(antidihydroxlation_test_step4[0]).canonicalSMILES().should.be.oneOf(["CC(O)(C)CO","CC(C)(O)CO"])
 
 
 // OXYMERCURATION - DEMERCURATION
