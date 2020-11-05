@@ -214,10 +214,15 @@ console.log('oxymercuration_demercuration_step4 (DEMERCURIFY)')
 console.log(VMolecule(oxymercuration_demercuration_step4[0]).compressed())
 
 
-// Reversal
+// Reversal - remercurify
 const oxymercuration_demercuration_step4_reversed = CommandTest("REMERCURIFY", _.cloneDeep(oxymercuration_demercuration_step4[0]))
 console.log('oxymercuration_demercuration_step4_reversed (REMERCURIFY)')
 console.log(VMolecule(oxymercuration_demercuration_step4_reversed[0]).compressed())
+
+// Reversal - readd proton to hyroxyl group
+const oxymercuration_demercuration_step3_reversed = CommandTest("ADD proton to hydroxyl group", _.cloneDeep(oxymercuration_demercuration_step4_reversed[0]), _.cloneDeep([water,1]))
+console.log('oxymercuration_demercuration_step3_reversed (ADD proton to hydroxyl group)')
+console.log(VMolecule(oxymercuration_demercuration_step3_reversed[0]).compressed())
 
 process.exit()
 
