@@ -224,6 +224,11 @@ const oxymercuration_demercuration_step3_reversed = CommandTest("ADD proton to h
 console.log('oxymercuration_demercuration_step3_reversed (ADD proton to hydroxyl group)')
 console.log(VMolecule(oxymercuration_demercuration_step3_reversed[0]).compressed())
 
+// Reversal - remove water
+const oxymercuration_demercuration_step2_reversed = CommandTest("DEHYDRATE", _.cloneDeep(oxymercuration_demercuration_step3_reversed[0]))
+console.log('oxymercuration_demercuration_step2_reversed (DEHYDRATE)')
+console.log(VMolecule(oxymercuration_demercuration_step2_reversed[0]).compressed())
+
 process.exit()
 
 
