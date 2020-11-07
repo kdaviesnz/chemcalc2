@@ -487,6 +487,78 @@ class Reaction {
 
     }
 
+    bondMetal() {
+
+        const metal_atom_index = this.MoleculeAI.findMetalAtomIndex()
+
+
+        if (metal_atom_index === -1) {
+            console.log("bondMetal() no metal atom found (1)")
+            return false
+        }
+
+
+        if (undefined === this.container_reagent) {
+
+            const electrophile_index = this.MoleculeAI.findElectrophileIndex()
+
+            if (electrophile_index === -1) {
+                console.log("bondAtoms() no electrophile found (1)")
+                return false
+            }
+
+
+            let electrophile_free_electrons = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate).freeElectrons()
+
+            this.container_substrate[0][1][metal_atom_index].push(electrophile_index[0])
+            this.container_substrate[0][1][metal_atom_index].push(electrophile_index[1])
+
+            this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4] === "-"?0:"+"
+
+            Set().intersection(this.container_substrate[0][1][metal_atom_index].slice(5),
+                this.container_substrate[0][1][electrophile_index].slice(5)).length.should.be.equal(2)
+
+
+        } else {
+
+            // Reagent
+            const electrophile_index = this.ReagentAI.findElectrophileIndex()
+            if (electrophile_index === -1) {
+                console.log("bondMetalAtoms() no nucleophile found (2)")
+                return false
+            }
+
+//            const electrophile_free_electrons = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate).freeElectrons()
+            let electrophile_free_electrons = CAtom(this.container_reagent[0][1][electrophile_index], electrophile_index, this.container_reagent).freeElectrons()
+
+            this.container_substrate[0][1][metal_atom_index].push(electrophile_free_electrons[0])
+            this.container_substrate[0][1][metal_atom_index].push(electrophile_free_electrons[1])
+
+            this.container_reagent[0][1].map(
+                (atom)=>{
+                    this.container_substrate[0][1].push(atom)
+                    return atom
+                }
+            )
+
+
+        }
+
+
+        // electrophile has lost electrons so we give it a negative charge
+        // Hack for now
+        // @todo
+        if (this.container_substrate[0][1][electrophile_index][0]!=="Hg") {
+            this.container_substrate[0][1][electrophile_index][4] =
+                this.container_substrate[0][1][electrophile_index][4] === "+" ? "" : "-"
+        }
+
+        this.setMoleculeAI()
+        this.setReagentAI()
+
+
+    }
+
     bondAtoms() {
 
         const electrophile_index = this.MoleculeAI.findElectrophileIndex()

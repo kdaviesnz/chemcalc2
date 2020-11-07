@@ -197,21 +197,30 @@ const oxymercuration_demercuration_step1 = CommandTest("BREAK double carbon bond
 console.log('oxymercuration_demercuration_step1 (BREAK double carbon bond)')
 console.log(VMolecule(oxymercuration_demercuration_step1[0]).compressed())
 
-
-const oxymercuration_demercuration_step2 = CommandTest("HYDRATE most substituted carbon", oxymercuration_demercuration_step1[0], [water,1])
-console.log('oxymercuration_demercuration_step2 (HYDRATE most substituted carbon)')
+const oxymercuration_demercuration_step2 = CommandTest("BOND metal", oxymercuration_demercuration_step1[0])
+console.log('oxymercuration_demercuration_step2 (BOND metal)')
 console.log(VMolecule(oxymercuration_demercuration_step2[0]).compressed())
 
+process.exit()
 
-const oxymercuration_demercuration_step3 = CommandTest("REMOVE proton from water", _.cloneDeep(oxymercuration_demercuration_step2[0]), _.cloneDeep([water,1]))
-console.log('oxymercuration_demercuration_step3 (REMOVE proton from water)')
+
+const oxymercuration_demercuration_step3 = CommandTest("HYDRATE most substituted carbon", oxymercuration_demercuration_step2[0], [water,1])
+console.log('oxymercuration_demercuration_step3 (HYDRATE most substituted carbon)')
 console.log(VMolecule(oxymercuration_demercuration_step3[0]).compressed())
 
 
 
-const oxymercuration_demercuration_step4 = CommandTest("DEMERCURIFY", _.cloneDeep(oxymercuration_demercuration_step3[0]))
-console.log('oxymercuration_demercuration_step4 (DEMERCURIFY)')
+process.exit()
+
+const oxymercuration_demercuration_step4 = CommandTest("REMOVE proton from water", _.cloneDeep(oxymercuration_demercuration_step3[0]), _.cloneDeep([water,1]))
+console.log('oxymercuration_demercuration_step4 (REMOVE proton from water)')
 console.log(VMolecule(oxymercuration_demercuration_step4[0]).compressed())
+
+
+
+const oxymercuration_demercuration_step5 = CommandTest("DEMERCURIFY", _.cloneDeep(oxymercuration_demercuration_step4[0]))
+console.log('oxymercuration_demercuration_step5 (DEMERCURIFY)')
+console.log(VMolecule(oxymercuration_demercuration_step5[0]).compressed())
 
 
 // Reversal - remercurify
@@ -228,6 +237,11 @@ console.log(VMolecule(oxymercuration_demercuration_step3_reversed[0]).compressed
 const oxymercuration_demercuration_step2_reversed = CommandTest("DEHYDRATE", _.cloneDeep(oxymercuration_demercuration_step3_reversed[0]))
 console.log('oxymercuration_demercuration_step2_reversed (DEHYDRATE)')
 console.log(VMolecule(oxymercuration_demercuration_step2_reversed[0]).compressed())
+
+// Reversal - bond Hg with C+
+const oxymercuration_demercuration_step1_reversed = CommandTest("BOND atoms", _.cloneDeep(oxymercuration_demercuration_step2_reversed[0]))
+console.log('oxymercuration_demercuration_step1_reversed (bond Hg with C+)')
+console.log(VMolecule(oxymercuration_demercuration_step1_reversed[0]).compressed())
 
 process.exit()
 
