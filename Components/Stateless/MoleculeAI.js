@@ -366,13 +366,18 @@ VMolecule
 
             let i= _.findIndex(container_molecule[0][1], (atom, index)=>{
 
+                // Ignore metals
+                if (atom[0]==="Hg") {
+                    return false
+                }
+
                 const atom_object = CAtom(atom, index,container_molecule)
 
                 if (undefined !== mustBe && atom[0] !== mustBe) {
                     return false
                 }
 
-                if (atom_object.isPositivelyCharged() ) {
+                if (atom_object.isPositivelyCharged() || atom[4] === "&+") {
                     if (undefined === filterBy || atom[0] !== filterBy)
                         return true
                 }
@@ -578,7 +583,26 @@ VMolecule
 
 
 
+        },
+
+
+        "findMetalAtomIndex":() => {
+
+            return _.findIndex(container_molecule[0][1], (metal_atom, metal_atom_index)=>{
+
+                // Not metal atom
+                if (metal_atom[0] !== "Hg") {
+                    return false
+                }
+
+                return true
+            })
+
+
+
         }
+
+
 
 
 

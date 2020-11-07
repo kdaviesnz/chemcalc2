@@ -502,21 +502,22 @@ class Reaction {
 
             const electrophile_index = this.MoleculeAI.findElectrophileIndex()
 
+
             if (electrophile_index === -1) {
                 console.log("bondAtoms() no electrophile found (1)")
                 return false
             }
 
 
-            let electrophile_free_electrons = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate).freeElectrons()
+            let electrophile_free_slots = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate).freeSlots()
 
-            this.container_substrate[0][1][metal_atom_index].push(electrophile_index[0])
-            this.container_substrate[0][1][metal_atom_index].push(electrophile_index[1])
+            if (electrophile_free_slots > 0) {
 
-            this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4] === "-"?0:"+"
+                let metal_atom_free_electrons = CAtom(this.container_substrate[0][1][metal_atom_index], electrophile_index, this.container_substrate).freeElectrons()
 
-            Set().intersection(this.container_substrate[0][1][metal_atom_index].slice(5),
-                this.container_substrate[0][1][electrophile_index].slice(5)).length.should.be.equal(2)
+                this.container_substrate[0][1][electrophile_index].push(metal_atom_free_electrons[0])
+                this.container_substrate[0][1][electrophile_index].push(metal_atom_free_electrons[1])
+            }
 
 
         } else {
@@ -528,30 +529,26 @@ class Reaction {
                 return false
             }
 
-//            const electrophile_free_electrons = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate).freeElectrons()
-            let electrophile_free_electrons = CAtom(this.container_reagent[0][1][electrophile_index], electrophile_index, this.container_reagent).freeElectrons()
+            let electrophile_free_slots = CAtom(this.container_reagent[0][1][electrophile_index], electrophile_index, this.container_reagent).freeSlots()
 
-            this.container_substrate[0][1][metal_atom_index].push(electrophile_free_electrons[0])
-            this.container_substrate[0][1][metal_atom_index].push(electrophile_free_electrons[1])
+            if (electrophile_free_slots > 0) {
 
-            this.container_reagent[0][1].map(
-                (atom)=>{
-                    this.container_substrate[0][1].push(atom)
-                    return atom
-                }
-            )
+                let metal_atom_free_electrons = CAtom(this.container_substrate[0][1][metal_atom_index], electrophile_index, this.container_substrate).freeElectrons()
+
+                this.container_reagent[0][1][electrophile_index].push(metal_atom_free_electrons[0])
+                this.container_reagent[0][1][electrophile_index].push(metal_atom_free_electrons[1])
+
+                this.container_reagent[0][1].map(
+                    (atom) => {
+                        this.container_substrate[0][1].push(atom)
+                        return atom
+                    }
+                )
+            }
 
 
         }
 
-
-        // electrophile has lost electrons so we give it a negative charge
-        // Hack for now
-        // @todo
-        if (this.container_substrate[0][1][electrophile_index][0]!=="Hg") {
-            this.container_substrate[0][1][electrophile_index][4] =
-                this.container_substrate[0][1][electrophile_index][4] === "+" ? "" : "-"
-        }
 
         this.setMoleculeAI()
         this.setReagentAI()

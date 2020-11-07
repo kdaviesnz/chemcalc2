@@ -412,8 +412,9 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
     const __freeElectrons = (test_number) => {
 
+
         const atom_electrons = atom.slice(5)
-        const electron_haystack = __electron_haystack(test_number)
+        const electron_haystack = atom[0] === "Hg"?__electron_haystack(test_number).slice(0,3):__electron_haystack(test_number)
 
         return atom_electrons.filter(
             (electron) => {

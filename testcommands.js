@@ -197,8 +197,9 @@ const oxymercuration_demercuration_step1 = CommandTest("BREAK double carbon bond
 console.log('oxymercuration_demercuration_step1 (BREAK double carbon bond)')
 console.log(VMolecule(oxymercuration_demercuration_step1[0]).compressed())
 
-const oxymercuration_demercuration_step2 = CommandTest("BOND metal", oxymercuration_demercuration_step1[0])
 console.log('oxymercuration_demercuration_step2 (BOND metal)')
+const oxymercuration_demercuration_step2 = CommandTest("BOND metal", oxymercuration_demercuration_step1[0])
+
 console.log(VMolecule(oxymercuration_demercuration_step2[0]).compressed())
 
 process.exit()
