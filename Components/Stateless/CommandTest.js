@@ -3,6 +3,7 @@ const _ = require('lodash');
 
 const AddProtonToHydroxylGroup = require('../../Commands/AddProtonToHydroxylGroup')
 const BreakBond = require('../../Commands/BreakBond')
+const BreakMetalBond = require('../../Commands/BreakMetalBond')
 const Protonate = require('../../Commands/Protonate')
 const Deprotonate = require('../../Commands/Deprotonate')
 const MoleculeFactory = require('../../Models/MoleculeFactory')
@@ -32,6 +33,7 @@ const CommandTest = (command, substrate, reagent, rule) => {
         "DEPROTONATE": Deprotonate,
         "BOND atoms": BondAtoms,
         "BREAK bond": BreakBond,
+        "BREAK metal bond": BreakMetalBond,
         "PROTONATE": Protonate,
         "PROTONATE double carbon bond": ProtonateDoubleCarbonBond,
         "REMOVE proton from water": RemoveProtonFromWater,

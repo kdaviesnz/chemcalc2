@@ -199,29 +199,28 @@ console.log(VMolecule(oxymercuration_demercuration_step1[0]).compressed())
 
 console.log('oxymercuration_demercuration_step2 (BOND metal)')
 const oxymercuration_demercuration_step2 = CommandTest("BOND metal", oxymercuration_demercuration_step1[0])
-
 console.log(VMolecule(oxymercuration_demercuration_step2[0]).compressed())
 
-process.exit()
-
-
-const oxymercuration_demercuration_step3 = CommandTest("HYDRATE most substituted carbon", oxymercuration_demercuration_step2[0], [water,1])
-console.log('oxymercuration_demercuration_step3 (HYDRATE most substituted carbon)')
+const oxymercuration_demercuration_step3 = CommandTest("BREAK metal bond", oxymercuration_demercuration_step1[0], [water,1])
+console.log('oxymercuration_demercuration_step3 (BREAK metal bond)')
 console.log(VMolecule(oxymercuration_demercuration_step3[0]).compressed())
 
 
+const oxymercuration_demercuration_step4 = CommandTest("HYDRATE most substituted carbon", oxymercuration_demercuration_step3[0], [water,1])
+console.log('oxymercuration_demercuration_step4 (HYDRATE most substituted carbon)')
+console.log(VMolecule(oxymercuration_demercuration_step4[0]).compressed())
 
 process.exit()
 
-const oxymercuration_demercuration_step4 = CommandTest("REMOVE proton from water", _.cloneDeep(oxymercuration_demercuration_step3[0]), _.cloneDeep([water,1]))
-console.log('oxymercuration_demercuration_step4 (REMOVE proton from water)')
-console.log(VMolecule(oxymercuration_demercuration_step4[0]).compressed())
-
-
-
-const oxymercuration_demercuration_step5 = CommandTest("DEMERCURIFY", _.cloneDeep(oxymercuration_demercuration_step4[0]))
-console.log('oxymercuration_demercuration_step5 (DEMERCURIFY)')
+const oxymercuration_demercuration_step5 = CommandTest("REMOVE proton from water", _.cloneDeep(oxymercuration_demercuration_step4[0]), _.cloneDeep([water,1]))
+console.log('oxymercuration_demercuration_step5 (REMOVE proton from water)')
 console.log(VMolecule(oxymercuration_demercuration_step5[0]).compressed())
+
+
+
+const oxymercuration_demercuration_step6 = CommandTest("DEMERCURIFY", _.cloneDeep(oxymercuration_demercuration_step5[0]))
+console.log('oxymercuration_demercuration_step6 (DEMERCURIFY)')
+console.log(VMolecule(oxymercuration_demercuration_step6[0]).compressed())
 
 
 // Reversal - remercurify

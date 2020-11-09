@@ -556,6 +556,49 @@ class Reaction {
 
     }
 
+    breakMetalBond() {
+
+
+        // Get index of metal atom
+        const metal_atom_index = this.MoleculeAI.findMetalAtomIndex()
+
+        if (metal_atom_index === -1) {
+            console.log("breakMetalBond() no metal atom found (1)")
+            return false
+        }
+
+        const metal_atom = CAtom(this.container_substrate[0][1][metal_atom_index], metal_atom_index, this.container_substrate)
+        const electrophile_index = metal_atom.indexedBonds("").filter((bond)=>{
+            return bond.atom[4] === "&+" || bond.atom[4] === "+"
+        }).pop().atom_index
+
+        if (electrophile_index === undefined) {
+            console.log("breakMetalBond() can't find electrophile")
+            return false
+        }
+
+        const source_atom = CAtom(this.container_substrate[0][1][metal_atom_index], metal_atom_index, this.container_substrate)
+        const target_atom = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
+
+        const shared_electrons = Set().intersection(this.container_substrate[0][1][metal_atom_index].slice(5), this.container_substrate[0][1][electrophile_index].slice(5))
+
+        // Remove shared electrons from metal atom
+        const electrons = _.cloneDeep(this.container_substrate[0][1][metal_atom_index]).slice(5)
+        _.remove(this.container_substrate[0][1][metal_atom_index], (v, i) => {
+            return shared_electrons[0] === v || shared_electrons[1] === v
+        })
+
+        this.container_substrate[0][1][metal_atom_index].slice(5).length.should.not.be.equal(electrons.length)
+        this.container_substrate[0][1][metal_atom_index][4] = ""
+        this.container_substrate[0][1][electrophile_index][4] = ""
+
+        Set().intersection(this.container_substrate[0][1][metal_atom_index].slice(5), this.container_substrate[0][1][electrophile_index].slice(5)).length.should.be.equal(0)
+
+
+        this.setMoleculeAI()
+
+    }
+
     bondAtoms() {
 
         const electrophile_index = this.MoleculeAI.findElectrophileIndex()
