@@ -199,6 +199,8 @@ class Reaction {
     hydrateMostSubstitutedCarbon() {
         const electrophile_index = this.MoleculeAI.findMostSubstitutedCarbonIndex()
         this.hydrate(electrophile_index)
+        this.container_substrate[0][1][electrophile_index][4] = "+"
+        this.setMoleculeAI()
     }
 
     hydrate(electrophile_index) {
@@ -510,6 +512,8 @@ class Reaction {
 
 
             let electrophile_free_slots = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate).freeSlots()
+
+            console.log(electrophile_index)
 
             if (electrophile_free_slots > 0) {
 
