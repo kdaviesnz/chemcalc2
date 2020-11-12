@@ -310,5 +310,8 @@ const saponification_step3 = CommandTest("HYDRATE", _.cloneDeep(saponification_s
 console.log('saponification_step3 HYDRATE')
 console.log(VMolecule(saponification_step3[0]).compressed())
 
+const saponification_step4 = CommandTest("TRANSFER oxygen proton to oxygen", _.cloneDeep(saponification_step3[0]))
+console.log('saponification_step4 TRANSFER oxygen proton to oxygen')
+console.log(VMolecule(saponification_step4[0]).compressed())
 
 process.exit()

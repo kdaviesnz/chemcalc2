@@ -334,10 +334,10 @@ VMolecule
 
         "findMostSubstitutedOxygenIndex": () => {
 
-            const oxygens = container_molecule[0][1].filter((atom) => {
-                return atom[0] === "O"
-            }).map((atom, index)=>{
+            const oxygens = container_molecule[0][1].map((atom, index) => {
                 return CAtom(atom, index, container_molecule)
+            }).filter((atom_object)=>{
+                return atom_object.symbol === "O"
             })
 
             // Sort by most substituted
@@ -355,7 +355,7 @@ VMolecule
                 return a_hydrogens.length < b_hydrogens.length ? -1 : 0
             })
 
-            return o_sorted[0]
+            return o_sorted[0].atomIndex
         },
 
         "findMostSubstitutedCarbon": (carbons) => {
@@ -400,10 +400,6 @@ VMolecule
                 }
 
                 const atom_object = CAtom(atom, index,container_molecule)
-
-                if (undefined !== mustBe && atom[0] !== mustBe) {
-                    return false
-                }
 
                 if (atom_object.isPositivelyCharged() || atom[4] === "&+") {
                         return true
@@ -483,7 +479,7 @@ VMolecule
         },
 
         "findProtonIndexOnAtom": (atom) => {
-            return atom.indexedBonds((bond)=>{
+            return atom.indexedBonds("").filter((bond)=>{
                 return bond.atom[0] === "H"
             }).pop().atom_index
         },

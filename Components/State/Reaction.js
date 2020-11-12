@@ -1234,7 +1234,7 @@ class Reaction {
         const substituted_oxygen_index = this.MoleculeAI.findMostSubstitutedOxygenIndex()
         const oxygen_electrophile_atom = CAtom(this.container_substrate[0][1][oxygen_index], oxygen_index, this.container_substrate)
 
-        const proton_index = this.MoleculeAI().findProtonIndexOnAtom(oxygen_electrophile_atom)
+        const proton_index = this.MoleculeAI.findProtonIndexOnAtom(oxygen_electrophile_atom)
         const shared_electrons =  Set().intersection(_.cloneDeep(this.container_substrate[0][1][oxygen_index]), _.cloneDeep(this.container_substrate[0][1][proton_index]))
         // Remove shared electrons from proton
         _.remove(this.container_substrate[0][1][proton_index] , (v)=>{
@@ -1247,6 +1247,7 @@ class Reaction {
         this.container_substrate[0][1][proton_index].push(freeElectrons[1])
 
         this.container_substrate[0][1][oxygen_index][4] = ""
+        console.log(substituted_oxygen_index)
         this.container_substrate[0][1][substituted_oxygen_index][4] = "+"
 
         this.setMoleculeAI()

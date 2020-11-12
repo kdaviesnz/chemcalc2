@@ -28,9 +28,9 @@ const BondMetal =  require('../../Commands/BondMetal')
 const RemoveMetal =  require('../../Commands/RemoveMetal')
 const ProtonateOxygenOnDoubleBond =  require('../../Commands/ProtonateOxygenOnDoubleBond')
 const BreakCarbonOxygenDoubleBond =  require('../../Commands/BreakCarbonOxygenDoubleBond')
+const OxygenToOxygenProtonTransfer = require('../../Commands/OxygenToOxygenProtonTransfer')
 
 const CommandTest = (command, substrate, reagent, rule) => {
-
 
     const commands_map = {
         "DEPROTONATE": Deprotonate,
@@ -57,7 +57,8 @@ const CommandTest = (command, substrate, reagent, rule) => {
         "BOND metal": BondMetal,
         "REMOVE metal": RemoveMetal,
         "PROTONATE oxygen on double bond": ProtonateOxygenOnDoubleBond,
-        "BREAK carbon oxygen double bond": BreakCarbonOxygenDoubleBond
+        "BREAK carbon oxygen double bond": BreakCarbonOxygenDoubleBond,
+        "TRANSFER oxygen proton to oxygen": OxygenToOxygenProtonTransfer
     }
 
 
