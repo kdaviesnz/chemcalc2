@@ -1232,7 +1232,7 @@ class Reaction {
 
         const oxygen_index = this.MoleculeAI.findOxygenOnDoubleBondIndex()
         const oxygen_atom = CAtom(this.container_substrate[0][1][oxygen_index], oxygen_index, this.container_substrate)
-        const double_bonds = oxygen_atom.indexedDoubleBonds()
+        const double_bonds = oxygen_atom.indexedDoubleBonds("")
 
         const shared_electrons = _.cloneDeep(double_bonds[0].shared_electrons).slice(0,2)
 
@@ -1243,6 +1243,7 @@ class Reaction {
         })
 
         this.container_substrate[0][1][double_bonds[0].atom_index][4] = "+"
+        this.container_substrate[0][1][oxygen_index][4] = this.container_substrate[0][1][oxygen_index][4] === "+" ? "":"-"
 
         this.setMoleculeAI()
 

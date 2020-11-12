@@ -264,7 +264,7 @@ console.log(VMolecule(oxymercuration_demercuration_step1_reversed[0]).compressed
     },
     "commands": [
     "PROTONATE oxygen on double bond" - protonate =O (nucleophile) using H from oxydanium  [OH3+]. =O should now have a positive charge. O on oxydanium should have no charge.
-    "BREAK carbon oxygen double bond" - C=O bond breaks. C atom should now have a + charge (electrophile)
+    "BREAK carbon oxygen double bond" - C=O bond breaks. C atom should now have a + charge (electrophile). =O atom should have no charge.
     "HYDRATE" O atom on water attacks the C atom on the former C=O bond. O atom from water should now have positive charge.
     "proton transfer" Proton on O atom from water transfers to other O, giving that O a positive charge
     "BREAK bond" - C-O+ breaks forming alcohol leaving group. C atom should now have positive charge (electrophile)
@@ -299,7 +299,11 @@ const carboxylic_ester = MoleculeFactory("CC(=O)OC")
 console.log('Carboxylic ester')
 console.log(VMolecule([carboxylic_ester,1]).compressed())
 const saponification_step1 = CommandTest("PROTONATE oxygen on double bond", _.cloneDeep([carboxylic_ester,1]), _.cloneDeep([oxydanium,1]))
-console.log('saponification_step1 ester')
+console.log('saponification_step1 PROTONATE oxygen on double bond')
 console.log(VMolecule(saponification_step1[0]).compressed())
+
+const saponification_step2 = CommandTest("BREAK carbon oxygen double bond", _.cloneDeep(saponification_step1[0]))
+console.log('saponification_step2 BREAK carbon oxygen double bond')
+console.log(VMolecule(saponification_step2[0]).compressed())
 
 process.exit()
