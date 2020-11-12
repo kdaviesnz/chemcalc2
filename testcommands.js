@@ -306,4 +306,9 @@ const saponification_step2 = CommandTest("BREAK carbon oxygen double bond", _.cl
 console.log('saponification_step2 BREAK carbon oxygen double bond')
 console.log(VMolecule(saponification_step2[0]).compressed())
 
+const saponification_step3 = CommandTest("HYDRATE", _.cloneDeep(saponification_step2[0]), _.cloneDeep([water,1]))
+console.log('saponification_step3 HYDRATE')
+console.log(VMolecule(saponification_step3[0]).compressed())
+
+
 process.exit()
