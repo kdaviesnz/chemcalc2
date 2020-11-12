@@ -1228,6 +1228,12 @@ class Reaction {
 
     }
 
+    oxygenToOxygenProtonTransfer() {
+
+        const oxygen_index = this.MoleculeAI.findOxygenElectrophileIndex()
+
+    }
+
     breakCarbonOxygenDoubleBond() {
 
         const oxygen_index = this.MoleculeAI.findOxygenOnDoubleBondIndex()
