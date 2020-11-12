@@ -249,8 +249,8 @@ console.log('oxymercuration_demercuration_step2_reversed (BREAK metal bond)')
 console.log(VMolecule(oxymercuration_demercuration_step2_reversed[0]).compressed())
 
 // Reversal - bond hg to carbon
-const oxymercuration_demercuration_step1_reversed = CommandTest("BREAK metal bond", _.cloneDeep(oxymercuration_demercuration_step4_reversed[0]))
-console.log('oxymercuration_demercuration_step2_reversed (BREAK metal bond)')
+const oxymercuration_demercuration_step1_reversed = CommandTest("REMOVE metal", _.cloneDeep(oxymercuration_demercuration_step2_reversed[0]))
+console.log('oxymercuration_demercuration_step2_reversed (REMOVE metal)')
 console.log(VMolecule(oxymercuration_demercuration_step1_reversed[0]).compressed())
 
 process.exit()

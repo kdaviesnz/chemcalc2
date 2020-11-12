@@ -560,6 +560,49 @@ class Reaction {
 
     }
 
+    removeMetal() {
+        // Get index of metal atom
+        const metal_atom_index = this.MoleculeAI.findMetalAtomIndex()
+
+        if (metal_atom_index === -1) {
+            console.log("removeBond() no metal atom")
+            return false
+        }
+
+        const metal_atom = CAtom(this.container_substrate[0][1][metal_atom_index], metal_atom_index, this.container_substrate)
+
+        metal_atom.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "C"
+        }).map((bond)=>{
+            const shared_electrons = _.cloneDeep(bond.shared_electrons)
+            shared_electrons.map((electron)=>{
+                _.remove(this.container_substrate[0][1][metal_atom_index], (v, i) => {
+                    return electron === v
+                })
+                return electron
+            })
+
+            // Check for C-C bond
+            const c_atom = CAtom(this.container_substrate[0][1][bond.atom_index], bond.atom_index, this.container_substrate)
+            const c_bonds = c_atom.indexedBonds("").filter((bond)=>{
+                return bond.atom[0] === "C"
+            })
+
+            if (c_bonds.length ===1) {
+                this.container_substrate[0][1][c_bonds[0].atom_index].push(shared_electrons[0])
+                this.container_substrate[0][1][c_bonds[0].atom_index].push(shared_electrons[1])
+            } else {
+                this.container_substrate[0][1][bond.atom_index][4] = "-"
+            }
+
+            return bond
+        })
+
+        this.container_substrate[0][1][metal_atom_index][4] = "+"
+
+        this.setMoleculeAI()
+    }
+
     breakMetalBond() {
 
 
@@ -572,6 +615,7 @@ class Reaction {
         }
 
         const metal_atom = CAtom(this.container_substrate[0][1][metal_atom_index], metal_atom_index, this.container_substrate)
+
         const electrophile_index = metal_atom.indexedBonds("").filter((bond)=>{
             return bond.atom[4] === "&+" || bond.atom[4] === "+"
         }).pop().atom_index
