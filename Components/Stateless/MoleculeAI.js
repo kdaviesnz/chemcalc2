@@ -330,6 +330,34 @@ VMolecule
 
         },
 
+
+
+        "findMostSubstitutedOxygenIndex": () => {
+
+            const oxygens = container_molecule[0][1].filter((atom) => {
+                return atom[0] === "O"
+            }).map((atom, index)=>{
+                return CAtom(atom, index, container_molecule)
+            })
+
+            // Sort by most substituted
+            const o_sorted = oxygens.sort((a_atom, b_atom) => {
+                const a_hydrogens = a_atom.indexedBonds("").filter(
+                    (bond) => {
+                        return bond.atom[0] === "H"
+                    }
+                )
+                const b_hydrogens = b_atom.indexedBonds("").filter(
+                    (bond) => {
+                        return bond.atom[0] === "H"
+                    }
+                )
+                return a_hydrogens.length < b_hydrogens.length ? -1 : 0
+            })
+
+            return o_sorted[0]
+        },
+
         "findMostSubstitutedCarbon": (carbons) => {
             return __findMostSubstitutedCarbon(carbons)
         },
@@ -360,6 +388,31 @@ VMolecule
             })
 
             return __findMostSubstitutedCarbon(carbons).atomIndex
+        },
+
+        "findOxygenElectrophileIndex": () => {
+
+            return _.findIndex(container_molecule[0][1], (atom, index)=>{
+
+                // Ignore non oxygens
+                if (atom[0]!=="O") {
+                    return false
+                }
+
+                const atom_object = CAtom(atom, index,container_molecule)
+
+                if (undefined !== mustBe && atom[0] !== mustBe) {
+                    return false
+                }
+
+                if (atom_object.isPositivelyCharged() || atom[4] === "&+") {
+                        return true
+                }
+                return false
+
+            })
+
+
         },
 
         "findElectrophileIndex": (filterBy, mustBe) => {
@@ -427,6 +480,12 @@ VMolecule
 
             return i
 
+        },
+
+        "findProtonIndexOnAtom": (atom) => {
+            return atom.indexedBonds((bond)=>{
+                return bond.atom[0] === "H"
+            }).pop().atom_index
         },
 
         "findProtonIndex": () => {
