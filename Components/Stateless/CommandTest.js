@@ -29,6 +29,7 @@ const RemoveMetal =  require('../../Commands/RemoveMetal')
 const ProtonateOxygenOnDoubleBond =  require('../../Commands/ProtonateOxygenOnDoubleBond')
 const BreakCarbonOxygenDoubleBond =  require('../../Commands/BreakCarbonOxygenDoubleBond')
 const OxygenToOxygenProtonTransfer = require('../../Commands/OxygenToOxygenProtonTransfer')
+const MakeOxygenCarbonDoubleBond  = require('../../Commands/MakeOxygenCarbonDoubleBond')
 
 const CommandTest = (command, substrate, reagent, rule) => {
 
@@ -58,7 +59,8 @@ const CommandTest = (command, substrate, reagent, rule) => {
         "REMOVE metal": RemoveMetal,
         "PROTONATE oxygen on double bond": ProtonateOxygenOnDoubleBond,
         "BREAK carbon oxygen double bond": BreakCarbonOxygenDoubleBond,
-        "TRANSFER oxygen proton to oxygen": OxygenToOxygenProtonTransfer
+        "TRANSFER oxygen proton to oxygen": OxygenToOxygenProtonTransfer,
+        "MAKE oxygen carbon double bond": MakeOxygenCarbonDoubleBond
     }
 
 

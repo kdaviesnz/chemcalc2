@@ -290,7 +290,14 @@ const VMolecule = (mmolecule) => {
                             return bond.atom_index + "  " + bond.atom[0]
                         }
                     )
-                    return [atom[0], index, "H " + h.length, 'Charge: '+ atom[4],  bonds]
+                    const double_bonds = c.indexedDoubleBonds("").filter((bond)=>{
+                        return bond.atom[0] !== 'H'
+                    }).map(
+                        (bond)=>{
+                            return bond.atom_index + "  " + bond.atom[0]
+                        }
+                    )
+                    return [atom[0], index, "H " + h.length, 'Charge: '+ atom[4],  bonds, double_bonds]
                 }
             ).filter(
                 (atom) => {

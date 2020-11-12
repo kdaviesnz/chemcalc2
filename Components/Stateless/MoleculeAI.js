@@ -5,6 +5,7 @@ const VMolecule = require('../../Components/Stateless/Views/Molecule')
 /*
 
 findHydroxylOxygenIndex()
+findOxygenAttachedToCarbonIndex()
 
  */
 
@@ -71,6 +72,20 @@ const MoleculeAI = (container_molecule) => {
     // All required parameters should be passed by MoleculeAI()
     // No method should change state of container_molecule
     return {
+
+        findOxygenAttachedToCarbonIndex: function() {
+            return _.findIndex(container_molecule[0][1], (atom, index) => {
+                if (atom[0] !== "O") {
+                    return false
+                }
+                const oxygen = CAtom(atom, index, container_molecule )
+                // Check for carbon bonds
+                const carbon_bonds = oxygen.indexedBonds("").filter((bond)=>{
+                    return bond.atom[0] === "C"
+                })
+                return carbon_bonds.length > 0
+            })
+        },
 
 
         "chains": function(previous_atom_index, root_atom_index, chains, chain_index, col, depth) {
@@ -257,7 +272,6 @@ VMolecule
                             return bonded_atom_object_bonds.atom[0] === "H"
                         }
                     )
-
                     if (bonded_atom_object_hydrogen_bonds.length >= hydrogen_count) {
                         hydrogen_count = bonded_atom_object_hydrogen_bonds.length
                         return true
@@ -340,6 +354,15 @@ VMolecule
                 return atom_object.symbol === "O"
             })
 
+            // Check for oxygens with no hydrogens
+            const oxygens_with_no_hydrogens = oxygens.filter((oxygen)=>{
+                return oxygen.hydrogens().length === 0
+            })
+
+            if (oxygens_with_no_hydrogens.length > 0) {
+                return oxygens_with_no_hydrogens[0].atomIndex
+            }
+
             // Sort by most substituted
             const o_sorted = oxygens.sort((a_atom, b_atom) => {
                 const a_hydrogens = a_atom.indexedBonds("").filter(
@@ -347,11 +370,14 @@ VMolecule
                         return bond.atom[0] === "H"
                     }
                 )
+
                 const b_hydrogens = b_atom.indexedBonds("").filter(
                     (bond) => {
                         return bond.atom[0] === "H"
                     }
                 )
+
+
                 return a_hydrogens.length < b_hydrogens.length ? -1 : 0
             })
 

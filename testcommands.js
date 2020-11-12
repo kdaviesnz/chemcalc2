@@ -295,7 +295,7 @@ console.log(VMolecule(oxymercuration_demercuration_step1_reversed[0]).compressed
 // carbon group connected to the single-bonded oxygen:
 // CC(=O)O (acetic acid)
 // CC(=O)OC
-const carboxylic_ester = MoleculeFactory("CC(=O)OC")
+const carboxylic_ester = MoleculeFactory("CC(=O)ON")
 console.log('Carboxylic ester')
 console.log(VMolecule([carboxylic_ester,1]).compressed())
 const saponification_step1 = CommandTest("PROTONATE oxygen on double bond", _.cloneDeep([carboxylic_ester,1]), _.cloneDeep([oxydanium,1]))
@@ -313,5 +313,14 @@ console.log(VMolecule(saponification_step3[0]).compressed())
 const saponification_step4 = CommandTest("TRANSFER oxygen proton to oxygen", _.cloneDeep(saponification_step3[0]))
 console.log('saponification_step4 TRANSFER oxygen proton to oxygen')
 console.log(VMolecule(saponification_step4[0]).compressed())
+
+const saponification_step5 = CommandTest("BREAK bond", _.cloneDeep(saponification_step4[0]))
+console.log('saponification_step5 BREAK bond')
+console.log(VMolecule(saponification_step5[0]).compressed())
+
+const saponification_step6 = CommandTest("MAKE oxygen carbon double bond", _.cloneDeep(saponification_step5[0]))
+console.log('saponification_step6 MAKE oxygen carbon double bond')
+console.log(VMolecule(saponification_step6[0]).compressed())
+
 
 process.exit()
