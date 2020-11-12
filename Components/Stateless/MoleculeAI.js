@@ -562,6 +562,22 @@ VMolecule
 
         },
 
+        "findOxygenOnDoubleBondIndex":() => {
+            return _.findIndex(container_molecule[0][1], (oxygen_atom, oxygen_atom_index)=>{
+
+                // Not an oxygen atom
+                if (oxygen_atom[0] !== "O") {
+                    return false
+                }
+
+                const oxygen_atom_object = CAtom(oxygen_atom, oxygen_atom_index, container_molecule)
+                if(oxygen_atom_object.doubleBondCount() === 0) {
+                    return false
+                }
+                return true
+            })
+        },
+
         "findNonWaterOxygenIndex":() => {
 
             return _.findIndex(container_molecule[0][1], (oxygen_atom, oxygen_atom_index)=>{

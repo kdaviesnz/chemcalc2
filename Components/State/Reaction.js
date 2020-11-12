@@ -560,6 +560,40 @@ class Reaction {
 
     }
 
+    protonateOxygenOnDoubleBond() {
+
+        // Find index of oxygen
+        const oxygen_index = this.MoleculeAI.findOxygenOnDoubleBondIndex()
+
+        const reagent_proton_index = this.ReagentAI.findProtonIndex()
+        const proton = _.cloneDeep(this.container_reagent[0][1][reagent_proton_index])
+
+        // Remove proton from reagent
+        const reagent_bonds = CAtom(this.container_reagent[0][1][reagent_proton_index], reagent_proton_index, this.container_reagent).indexedBonds("").filter(
+            (bond) => {
+                return bond.atom[0] !== "H"
+            }
+        )
+
+        let free_slots = CAtom(this.container_substrate[0][1][oxygen_index], oxygen_index, this.container_substrate).freeSlots()
+        if (free_slots > 0) {
+            // Add proton
+            this.container_substrate[0][1][oxygen_index].push(proton[proton.length-1])
+            this.container_substrate[0][1][oxygen_index].push(proton[proton.length-2])
+            this.container_substrate[0][1].push(proton)
+            this.container_substrate[0][1][oxygen_index][4] = "+"
+        }
+
+        this.container_reagent[0][1][reagent_bonds[0].atom_index][4] === "+"
+        ||  this.container_reagent[0][1][reagent_bonds[0].atom_index][4] < 0? 0: "-"
+        _.remove(this.container_reagent[0][1], (v, i) => {
+            return i === reagent_proton_index
+        })
+
+        this.setMoleculeAI()
+        this.setReagentAI()
+    }
+
     removeMetal() {
         // Get index of metal atom
         const metal_atom_index = this.MoleculeAI.findMetalAtomIndex()
@@ -1191,6 +1225,26 @@ class Reaction {
             this.setReagentAI()
         }
 
+
+    }
+
+    breakCarbonOxygenDoubleBond() {
+
+        const oxygen_index = this.MoleculeAI.findOxygenOnDoubleBondIndex()
+        const oxygen_atom = CAtom(this.container_substrate[0][1][oxygen_index], oxygen_index, this.container_substrate)
+        const double_bonds = oxygen_atom.indexedDoubleBonds()
+
+        const shared_electrons = _.cloneDeep(double_bonds[0].shared_electrons).slice(0,2)
+
+        // Remove double bond
+        // Remove electrons from C
+        _.remove(this.container_substrate[0][1][double_bonds[0].atom_index], (v)=>{
+            return v === shared_electrons[0] || v === shared_electrons[1]
+        })
+
+        this.container_substrate[0][1][double_bonds[0].atom_index][4] = "+"
+
+        this.setMoleculeAI()
 
     }
 

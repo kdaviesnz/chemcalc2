@@ -26,6 +26,7 @@ const Demercurify =  require('../../Commands/Demercurify')
 const Remercurify =  require('../../Commands/Remercurify')
 const BondMetal =  require('../../Commands/BondMetal')
 const RemoveMetal =  require('../../Commands/RemoveMetal')
+const ProtonateOxygenOnDoubleBond =  require('../../Commands/ProtonateOxygenOnDoubleBond')
 
 const CommandTest = (command, substrate, reagent, rule) => {
 
@@ -54,6 +55,7 @@ const CommandTest = (command, substrate, reagent, rule) => {
         "HYDRATE most substituted carbon": HydrateMostSubstitutedCarbon,
         "BOND metal": BondMetal,
         "REMOVE metal": RemoveMetal,
+        "PROTONATE oxygen on double bond": ProtonateOxygenOnDoubleBond
     }
 
 
