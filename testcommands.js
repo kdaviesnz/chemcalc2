@@ -253,79 +253,49 @@ const oxymercuration_demercuration_step1_reversed = CommandTest("REMOVE metal", 
 console.log('oxymercuration_demercuration_step2_reversed (REMOVE metal)')
 console.log(VMolecule(oxymercuration_demercuration_step1_reversed[0]).compressed())
 
-process.exit()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// ===========================================
-const isobutene_ai = require("./Components/Stateless/MoleculeAI")([isobutene,1])
-isobutene_ai.findElectrophileIndex().should.be.equal(11) // electrophile - substrate
-// Bond least substituted carbon (nucleophile in isobutene to mercury atom (electrophile)
-// In this step for the purposes of bondAtoms() isobutene (nucleophile) is treated as the reagent and mercuriacetate
-// as the substrate
-console.log('mercuriacetate')
-console.log(VMolecule([mercuriacetate,1]).compressed())
-const mercuriacetate_ai = require("./Components/Stateless/MoleculeAI")([mercuriacetate,1])
-mercuriacetate_ai.findNucleophileIndex().should.be.equal(0) // nucleophile - reagent - has lone pair
-VMolecule([isobutene,1]).canonicalSMILES().should.be.equal("CC(C)C=C")
-isobutene_ai.findNucleophileIndex().should.be.equal(14)
-mercuriacetate_ai.findElectrophileIndex().should.be.equal(0)
-const oxymercuration_demercuration_step1_old = CommandTest("BOND atoms", [mercuriacetate,1], [isobutene,1])
-console.log('oxymercuration_demercuration_step1')
-console.log(VMolecule(oxymercuration_demercuration_step1[0]).compressed())
-
-const oxymercuration_demercuration_step1_ai = require("./Components/Stateless/MoleculeAI")(oxymercuration_demercuration_step1[0])
-oxymercuration_demercuration_step1_ai.findNucleophileIndex().should.be.equal(0)
-oxymercuration_demercuration_step1_ai.findElectrophileIndex().should.be.equal(16)
-const oxymercuration_demercuration_step2_old = CommandTest("BOND atoms", oxymercuration_demercuration_step1[0])
-console.log("oxymercuration_demercuration_step2 substrate")
-console.log(VMolecule(oxymercuration_demercuration_step2[0]).compressed())
 //process.exit()
+
+
+// Saponification
 /*
-[ [ 'Hg', 1, 'H 1', 'C ', '-', [ '2  O', '5  O', '22  C' ] ],
-  [ 'O', 2, 'H 0', 'C ', 0, [ '1  Hg', '4  Ac' ] ],
-  [ 'Ac', 4, 'H 1', 'C ', 0, [ '2  O' ] ],
-  [ 'O', 5, 'H 0', 'C ', 0, [ '1  Hg', '7  Ac' ] ],
-  [ 'Ac', 7, 'H 1', 'C ', 0, [ '5  O' ] ],
-  [ 'C', 11, 'H 3', 'C ', 0, [ '13  C' ] ],
-  [ 'C', 13, 'H 1', 'C ', 0, [ '11  C', '17  C', '19  C' ] ],
-  [ 'C', 17, 'H 3', 'C ', 0, [ '13  C' ] ],
-  [ 'C', 19, 'H 1', 'C ', '+', [ '13  C', '22  C' ] ],
-  [ 'C', 22, 'H 2', 'C ', '', [ '1  Hg', '19  C' ] ] ]
+{
+    "_id": {
+        "$oid": "5dc78ffe5f099c87386137d9"
+    },
+    "commands": [
+    "BOND atoms" - protonate =O using H from oxydanium  [OH3+]. =O should now have a positive charge. O on oxydanium should have no charge.
+    "BREAK bond" - C=O bond breaks. C atom should now have a + charge (electrophile)
+    "BOND atoms" O atom on water attacks the C atom on the former C=O bond. O atom from water should now have positive charge.
+    "proton transfer" Proton on O atom from water transfers to other O, giving that O a positive charge
+    "BREAK bond" - C-O+ breaks forming alcohol leaving group. C atom should now have positive charge (electrophile)
+    "BOND atoms" - O atom on O-C+ bond attacks C+ atom, forming double bond and creating a carboxylic acid.
+    ],
+    "description": "",
+    "links": [
+    "https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Map%3A_Organic_Chemistry_(Smith)/Chapter_22%3A_Carboxylic_Acids_and_Their_Derivatives—_Nucleophilic_Acyl_Substitution/22.11%3A_Reactions_of_Esters",
+    "https://en.m.wikipedia.org/wiki/Carboxylate",
+    "https://www.sciencedirect.com/topics/chemistry/carboxylic-ester",
+    "https://www.angelo.edu/faculty/kboudrea/index_2353/Chapter_05_2SPP.pdf"],
+    "step": "",
+    "catalyst": "[Na][OH-]",
+    "parent mechanism": [""],
+    "mechanism": "Saponification",
+    "substrate": {
+        "functional group": "carboxylate ester"
+    },
+    "reagents": ["[OH3+]", "", "", "", "", "", ""],
+    "products": ["carboxylate acid", "alcohol"]
+}
  */
-// Break bond between mercury (nucleophile) and oxygen (electrophile)
-const oxymercuration_demercuration_step2_ai = require("./Components/Stateless/MoleculeAI")(oxymercuration_demercuration_step2[0])
-//oxymercuration_demercuration_step2_ai.findNucleophileIndex().should.be.equal(999)
-oxymercuration_demercuration_step2_ai.findElectrophileIndex().should.be.equal(0)
-
-
-const oxymercuration_demercuration_step3_old = CommandTest("BREAK bond", oxymercuration_demercuration_step2[0])
-
-console.log("oxymercuration_demercuration_step3 substrate")
-console.log(VMolecule(oxymercuration_demercuration_step3[0]).compressed())
-
-// Hg atom (nucleophile) from reagent bonds with most substituted substrate carbon (electrophile) on the double bond
-
-oxymercuration_demercuration_step3.should.not.be.equal(false)
-
-// Hydrate most substituted carbon
-const oxymercuration_demercuration_step4_OLD = CommandTest("HYDRATE", oxymercuration_demercuration_step3[0], [water,1])
-
-console.log("oxymercuration_demercuration_step4 substrate")
-console.log(VMolecule(oxymercuration_demercuration_step4[0]).compressed())
-
+//const hydroxide =  MoleculeFactory("[OH3+]")
+// oxydanium
+// Carboxylic acids are weak organic acids which contain the carboxyl group (RC(=O)OH):
+// Esters
+// • An ester (“carboxylic ester” in the textbook) is derivative of a carboxylic acid in which there is a
+// carbon group connected to the single-bonded oxygen:
+// CC(=O)O (acetic acid)
+// CC(=O)OC
+const carboxylic_ester = MoleculeFactory("CC(=O)OC")
 
 
 
