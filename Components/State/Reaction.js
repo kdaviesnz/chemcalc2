@@ -63,9 +63,35 @@ class Reaction {
         this.MoleculeAI = require("../Stateless/MoleculeAI")(this.container_substrate)
     }
 
+    makeOxygenCarbonDoubleBondReverse() {
+        const oxygen_index = this.MoleculeAI.findOxygenOnDoubleBondIndex()
+        const oxygen = CAtom(this.container_substrate[0][1][oxygen_index], oxygen_index, this.container_substrate)
+        const carbon_bonds = oxygen.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "C"
+        })
+        const shared_electrons = carbon_bonds[0].shared_electrons
+        // Remove electrons from carbon
+        _.remove(this.container_substrate[0][1][carbon_bonds[0].atom_index], (e)=>{
+            return e === shared_electrons[0] || e === shared_electrons[1]
+        })
+
+        // Create proton and add it to the oxygen
+        const proton = AtomFactory("H")
+        proton.pop()
+        proton.push(shared_electrons[0])
+        proton.push(shared_electrons[1])
+        this.container_substrate[0][1].push(proton)
+
+        // Charges
+        this.container_substrate[0][1][oxygen_index][4] = ""
+        this.container_substrate[0][1][carbon_bonds[0].atom_index][4] = "-"
+
+
+        this.setMoleculeAI()
+    }
+
     makeOxygenCarbonDoubleBond() {
         const oxygen_index = this.MoleculeAI.findOxygenAttachedToCarbonIndex()
-        console.log(oxygen_index)
         const oxygen = CAtom(this.container_substrate[0][1][oxygen_index], oxygen_index, this.container_substrate)
         const carbon_bonds = oxygen.indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "C"
@@ -711,8 +737,12 @@ class Reaction {
 
     bondAtoms() {
 
-        const electrophile_index = this.MoleculeAI.findElectrophileIndex()
+        let electrophile_index = this.MoleculeAI.findElectrophileIndex()
 
+
+        if (electrophile_index === -1) {
+            electrophile_index = this.MoleculeAI.findNonWaterOxygenIndex(true)
+        }
 
         if (electrophile_index === -1) {
             console.log("bondAtoms() no electrophile found (1)")
@@ -769,12 +799,14 @@ class Reaction {
 
             // Reagent
             const nucleophile_index = this.ReagentAI.findNucleophileIndex()
+            console.log("bondAtoms")
+            console.log("reagent nucleophile index")
+            console.log(nucleophile_index)
             if (nucleophile_index === -1) {
                 console.log("bondAtoms() no nucleophile found (2)")
                 return false
             }
 
-//            const electrophile_free_electrons = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate).freeElectrons()
             let nucleophile_free_electrons = CAtom(this.container_reagent[0][1][nucleophile_index], nucleophile_index, this.container_reagent).freeElectrons()
 
             if (nucleophile_free_electrons.length < 2) {

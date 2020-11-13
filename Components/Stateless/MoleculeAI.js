@@ -6,6 +6,8 @@ const VMolecule = require('../../Components/Stateless/Views/Molecule')
 
 findHydroxylOxygenIndex()
 findOxygenAttachedToCarbonIndex()
+findOxygenOnDoubleBondIndex()
+findNonWaterOxygenIndex()
 
  */
 
@@ -659,7 +661,7 @@ VMolecule
             })
         },
 
-        "findNonWaterOxygenIndex":() => {
+        "findNonWaterOxygenIndex":(override_charge) => {
 
             return _.findIndex(container_molecule[0][1], (oxygen_atom, oxygen_atom_index)=>{
 
@@ -669,11 +671,12 @@ VMolecule
                 }
 
                 const oxygen_atom_object = CAtom(oxygen_atom, oxygen_atom_index, container_molecule)
-                if(oxygen_atom_object.bondCount() < 3) {
+
+                if (override_charge) {
+                    // do nothing
+                } else if(oxygen_atom_object.bondCount() < 3) {
                     return false
                 }
-
-
 
                 return true
             })
