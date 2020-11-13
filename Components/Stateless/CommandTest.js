@@ -31,6 +31,7 @@ const BreakCarbonOxygenDoubleBond =  require('../../Commands/BreakCarbonOxygenDo
 const OxygenToOxygenProtonTransfer = require('../../Commands/OxygenToOxygenProtonTransfer')
 const MakeOxygenCarbonDoubleBond  = require('../../Commands/MakeOxygenCarbonDoubleBond')
 const MakeOxygenCarbonDoubleBondReverse  = require('../../Commands/MakeOxygenCarbonDoubleBondReverse')
+const BondReagentToSubstrate = require('../../Commands/BondReagentToSubstrate')
 
 const CommandTest = (command, substrate, reagent, rule) => {
 
@@ -62,7 +63,8 @@ const CommandTest = (command, substrate, reagent, rule) => {
         "BREAK carbon oxygen double bond": BreakCarbonOxygenDoubleBond,
         "TRANSFER oxygen proton to oxygen": OxygenToOxygenProtonTransfer,
         "MAKE oxygen carbon double bond": MakeOxygenCarbonDoubleBond,
-        "MAKE oxygen carbon double bond [reverse]": MakeOxygenCarbonDoubleBondReverse
+        "MAKE oxygen carbon double bond [reverse]": MakeOxygenCarbonDoubleBondReverse,
+        "BOND reagent to substrate": BondReagentToSubstrate
     }
 
 

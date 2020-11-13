@@ -327,12 +327,12 @@ console.log('carboxylic_acid_step6 MAKE oxygen carbon double bond [reverse]')
 console.log(VMolecule(carboxylic_acid_step6_reversed[0]).compressed())
 
 const alcohol = MoleculeFactory("NO")
-console.log("Alcohol:")
-console.log(VMolecule([alcohol,1]).compressed())
-const carboxylic_acid_step5_reversed = CommandTest("BOND atoms", [alcohol,1], _.cloneDeep(carboxylic_acid_step6_reversed[0]))
+const carboxylic_acid_step5_reversed = CommandTest("BOND reagent to substrate",_.cloneDeep(carboxylic_acid_step6_reversed[0]),  _.cloneDeep([alcohol,1]) )
 console.log('carboxylic_acid_step5 reversed bond alcohol with carbon')
-console.log(carboxylic_acid_step5_reversed)
 console.log(VMolecule(carboxylic_acid_step5_reversed[0]).compressed())
 
+const carboxylic_acid_step4_reversed = CommandTest("TRANSFER oxygen proton to oxygen", _.cloneDeep(carboxylic_acid_step5[0]))
+console.log('carboxylic_acid_step4 reversed TRANSFER oxygen proton to oxygen')
+console.log(VMolecule(carboxylic_acid_step4_reversed[0]).compressed())
 
 process.exit()

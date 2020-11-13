@@ -735,6 +735,51 @@ class Reaction {
 
     }
 
+    bondReagentToSubstrate() {
+
+        // Important:
+        // The substrate is the nucleophile and is attacking the reagent
+        // The reagent is the electrophile
+        let electrophile_index = this.ReagentAI.findElectrophileIndex()
+
+        if (electrophile_index === -1) {
+            electrophile_index = this.ReagentAI.findNonWaterOxygenIndex(true)
+        }
+
+        const nucleophile_index = this.MoleculeAI.findNucleophileIndex()
+
+        const nucleophile = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate)
+        let freeElectrons = nucleophile.freeElectrons()
+        if (freeElectrons.length === 0) {
+            const freeSlots = nucleophile.freeSlots()
+            if (freeSlots > 0) {
+                // Workaround
+                const uniqid = require('uniqid');
+                freeElectrons.push(uniqid())
+                freeElectrons.push(uniqid())
+                this.container_substrate[0][1][nucleophile_index].push(freeElectrons[0])
+                this.container_substrate[0][1][nucleophile_index].push(freeElectrons[1])
+            }
+        }
+        this.container_reagent[0][1][electrophile_index].push(freeElectrons[0])
+        this.container_reagent[0][1][electrophile_index].push(freeElectrons[1])
+
+        // Charges
+        this.container_reagent[0][1][electrophile_index][4] = "+"
+        this.container_substrate[0][1][nucleophile_index][4] = ""
+
+        // Add reagent atoms to substrate
+        this.container_reagent[0][1].map(
+            (atom)=>{
+                this.container_substrate[0][1].push(atom)
+                return atom
+            }
+        )
+
+        this.setMoleculeAI()
+        this.setReagentAI()
+    }
+
     bondAtoms() {
 
         let electrophile_index = this.MoleculeAI.findElectrophileIndex()
@@ -799,9 +844,6 @@ class Reaction {
 
             // Reagent
             const nucleophile_index = this.ReagentAI.findNucleophileIndex()
-            console.log("bondAtoms")
-            console.log("reagent nucleophile index")
-            console.log(nucleophile_index)
             if (nucleophile_index === -1) {
                 console.log("bondAtoms() no nucleophile found (2)")
                 return false

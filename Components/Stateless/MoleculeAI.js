@@ -249,6 +249,9 @@ VMolecule
 
             // Look for negatively charged atom
             const negative_atom_index = _.findIndex(container_molecule[0][1], (atom, index)=>{
+                if (atom[4]==="-") {
+                    return true
+                }
                 const atom_object = CAtom(atom, index,container_molecule)
                 return atom_object.isNegativelyCharged()
             })
