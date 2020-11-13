@@ -331,8 +331,13 @@ const carboxylic_acid_step5_reversed = CommandTest("BOND reagent to substrate",_
 console.log('carboxylic_acid_step5 reversed bond alcohol with carbon')
 console.log(VMolecule(carboxylic_acid_step5_reversed[0]).compressed())
 
-const carboxylic_acid_step4_reversed = CommandTest("TRANSFER oxygen proton to oxygen", _.cloneDeep(carboxylic_acid_step5[0]))
+const carboxylic_acid_step4_reversed = CommandTest("TRANSFER oxygen proton to oxygen", _.cloneDeep(carboxylic_acid_step5_reversed[0]))
 console.log('carboxylic_acid_step4 reversed TRANSFER oxygen proton to oxygen')
 console.log(VMolecule(carboxylic_acid_step4_reversed[0]).compressed())
+
+const carboxylic_acid_step3_reversed = CommandTest("DEHYDRATE", _.cloneDeep(carboxylic_acid_step4_reversed[0]))
+console.log('carboxylic_acid_step3 reversed DEHYDRATE')
+console.log(VMolecule(carboxylic_acid_step3_reversed[0]).compressed())
+
 
 process.exit()
