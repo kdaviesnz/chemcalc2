@@ -90,6 +90,33 @@ class Reaction {
         this.setMoleculeAI()
     }
 
+    breakCarbonOxygenDoubleBondReverse() {
+
+        // Make C=O bond
+        const oxygen_index = this.MoleculeAI.findOxygenAttachedToCarbonIndex()
+        const oxygen = CAtom(this.container_substrate[0][1][oxygen_index], oxygen_index, this.container_substrate)
+
+        const carbon_bonds = oxygen.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "C"
+        })
+
+        const carbon_index = carbon_bonds[0].atom_index
+
+        const freeElectrons = oxygen.freeElectrons()
+
+        // Add electrons to carbon
+        this.container_substrate[0][1][carbon_index].push(freeElectrons[0])
+        this.container_substrate[0][1][carbon_index].push(freeElectrons[1])
+
+        // Charges
+        this.container_substrate[0][1][carbon_index][4] = ""
+        this.container_substrate[0][1][oxygen_index][4] = "+"
+
+        this.setMoleculeAI()
+
+
+    }
+
     makeOxygenCarbonDoubleBond() {
         const oxygen_index = this.MoleculeAI.findOxygenAttachedToCarbonIndex()
         const oxygen = CAtom(this.container_substrate[0][1][oxygen_index], oxygen_index, this.container_substrate)
@@ -646,6 +673,28 @@ class Reaction {
         this.setReagentAI()
 
 
+    }
+
+    deprotonateOxygenOnDoubleBond() {
+
+        // Find index of oxygen
+        const oxygen_index = this.MoleculeAI.findOxygenOnDoubleBondIndex()
+        const oxygen_atom = CAtom(this.container_substrate[0][1][oxygen_index], oxygen_index, this.container_substrate)
+
+        // Find proton
+        const proton_bond = oxygen_atom.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "H"
+        }).pop()
+
+
+        // Remove bond from proton
+        _.remove(this.container_substrate[0][1][proton_bond.atom_index], (e)=>{
+            return e === proton_bond.shared_electrons[0] || e === proton_bond.shared_electrons[1]
+        })
+
+        this.container_substrate[0][1][oxygen_index][4] = ""
+
+        this.setMoleculeAI()
     }
 
     protonateOxygenOnDoubleBond() {

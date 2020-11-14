@@ -339,5 +339,13 @@ const carboxylic_acid_step3_reversed = CommandTest("DEHYDRATE", _.cloneDeep(carb
 console.log('carboxylic_acid_step3 reversed DEHYDRATE')
 console.log(VMolecule(carboxylic_acid_step3_reversed[0]).compressed())
 
+const carboxylic_acid_step2_reversed = CommandTest("BREAK carbon oxygen double bond [reverse]", _.cloneDeep(carboxylic_acid_step3_reversed[0]))
+console.log('carboxylic_acid_step2 reversed BREAK carbon oxygen double bond [reverse]')
+console.log(VMolecule(carboxylic_acid_step2_reversed[0]).compressed())
+
+const carboxylic_acid_step1_reversed = CommandTest("DEPROTONATE oxygen on double bond", _.cloneDeep(carboxylic_acid_step2_reversed[0]))
+console.log('carboxylic_acid_step1 reversed DEPROTONATE oxygen on double bond')
+console.log(VMolecule(carboxylic_acid_step1_reversed[0]).compressed())
+
 
 process.exit()

@@ -27,11 +27,13 @@ const Remercurify =  require('../../Commands/Remercurify')
 const BondMetal =  require('../../Commands/BondMetal')
 const RemoveMetal =  require('../../Commands/RemoveMetal')
 const ProtonateOxygenOnDoubleBond =  require('../../Commands/ProtonateOxygenOnDoubleBond')
+const DeprotonateOxygenOnDoubleBond =  require('../../Commands/DeprotonateOxygenOnDoubleBond')
 const BreakCarbonOxygenDoubleBond =  require('../../Commands/BreakCarbonOxygenDoubleBond')
 const OxygenToOxygenProtonTransfer = require('../../Commands/OxygenToOxygenProtonTransfer')
 const MakeOxygenCarbonDoubleBond  = require('../../Commands/MakeOxygenCarbonDoubleBond')
 const MakeOxygenCarbonDoubleBondReverse  = require('../../Commands/MakeOxygenCarbonDoubleBondReverse')
 const BondReagentToSubstrate = require('../../Commands/BondReagentToSubstrate')
+const BreakCarbonOxygenDoubleBondReverse = require('../../Commands/BreakCarbonOxygenDoubleBondReverse')
 
 const CommandTest = (command, substrate, reagent, rule) => {
 
@@ -60,11 +62,13 @@ const CommandTest = (command, substrate, reagent, rule) => {
         "BOND metal": BondMetal,
         "REMOVE metal": RemoveMetal,
         "PROTONATE oxygen on double bond": ProtonateOxygenOnDoubleBond,
+        "DEPROTONATE oxygen on double bond": DeprotonateOxygenOnDoubleBond,
         "BREAK carbon oxygen double bond": BreakCarbonOxygenDoubleBond,
         "TRANSFER oxygen proton to oxygen": OxygenToOxygenProtonTransfer,
         "MAKE oxygen carbon double bond": MakeOxygenCarbonDoubleBond,
         "MAKE oxygen carbon double bond [reverse]": MakeOxygenCarbonDoubleBondReverse,
-        "BOND reagent to substrate": BondReagentToSubstrate
+        "BOND reagent to substrate": BondReagentToSubstrate,
+        "BREAK carbon oxygen double bond [reverse]": BreakCarbonOxygenDoubleBondReverse
     }
 
 
