@@ -347,5 +347,58 @@ const carboxylic_acid_step1_reversed = CommandTest("DEPROTONATE oxygen on double
 console.log('carboxylic_acid_step1 reversed DEPROTONATE oxygen on double bond')
 console.log(VMolecule(carboxylic_acid_step1_reversed[0]).compressed())
 
+/*
+Saponification
+{
+    "_id": {
+    "$oid": "5dc78ffe5f099c87386137d9"
+},
+    "commands": [
+    "BREAK carbon oxygen double bond" - C=O bond breaks. C atom should now have a + charge (electrophile). =O atom should have negative charge.
+    "BOND atoms - O atom on reagent [OH-] (nucleophile) attacks C+ atom on substrate.
+    "MAKE oxygen carbon double bond" O- atom attacks the C atom on the former C=O bond. O atom should now have no charge. Carbon atom should have negative charge (nucleophile).
+    "BREAK bond" - C-OR breaks forming leaving group. O atom on OR should have negative charge.
+    "DEPRONTONATE" O- atom (nucleophile) on O-R attacks proton on O on substrate. O atom on substrate should now have a negative charge. O atom on
+    C-R  should now have now charge.
+
+
+],
+    "description": "",
+    "links": [
+    "https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Map%3A_Organic_Chemistry_(Smith)/Chapter_22%3A_Carboxylic_Acids_and_Their_Derivatives—_Nucleophilic_Acyl_Substitution/22.11%3A_Reactions_of_Esters",
+    "https://en.m.wikipedia.org/wiki/Carboxylate",
+    "https://www.sciencedirect.com/topics/chemistry/carboxylic-ester",
+    "https://www.angelo.edu/faculty/kboudrea/index_2353/Chapter_05_2SPP.pdf"],
+    "step": "",
+    "catalyst": "[Na][OH-]",
+    "parent mechanism": [""],
+    "mechanism": "Saponification",
+    "substrate": {
+    "functional group": "carboxylate ester"
+},
+    "reagents": ["[OH3+]", "", "", "", "", "", ""],
+    "products": ["carboxylate acid", "alcohol"]
+}
+*/
+
+
+const hydroxide_ion = MoleculeFactory("[OH-]")
+console.log(VMolecule([hydroxide_ion,1]).compressed())
+
+//const carboxylic_ester = MoleculeFactory("CC(=O)ON")
+console.log('Carboxylic ester')
+console.log(VMolecule([carboxylic_ester,1]).compressed())
+const saponification_step1 = CommandTest("BREAK carbon oxygen double bond", _.cloneDeep([carboxylic_ester,1]))
+console.log('saponification step 1 BREAK carbon oxygen double bond. C atom should now have a + charge (electrophile). =O atom should have negative charge.')
+console.log(VMolecule(saponification_step1[0]).compressed())
+
+
+const saponification_step2= CommandTest("BOND atoms", _.cloneDeep(saponification_step1[0]), _.cloneDeep([hydroxide_ion, 1]))
+console.log('saponification step 2 BOND atoms. O atom on reagent [OH-] (nucleophile) attacks C+ atom on substrate. O atom on former C=O double bond should still have negative charge.')
+console.log(VMolecule(saponification_step2[0]).compressed())
+
+const saponification_step3= CommandTest("MAKE oxygen carbon double bond", _.cloneDeep(saponification_step2[0]))
+console.log('saponification step 3 MAKE oxygen carbon double bond. O- atom attacks the C atom on the former C=O bond. O atom should now have no charge. Carbon atom should have negative charge (nucleophile)')
+console.log(VMolecule(saponification_step3[0]).compressed())
 
 process.exit()

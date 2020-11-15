@@ -273,7 +273,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         (carry, current, index, atoms) => {
             if (typeof current[0]==="string") {
                 if (undefined !== atoms[index+1] && atoms[index+1].type === "Charge") {
-                    current[4] =  atoms[index+1].value === 1 ? "+":-1
+                    current[4] =  atoms[index+1].value === 1 ? "+":"-"
                 }
                 carry.push(current)
             }
