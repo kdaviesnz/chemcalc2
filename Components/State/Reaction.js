@@ -451,6 +451,9 @@ class Reaction {
 
         let nucleophile_index = null
         let electrophile_index = null
+        let nucleophile_atom_object = null
+        let electrophile_atom_object = null
+
 
         if (overloaded_atoms.length > 0) {
 
@@ -491,15 +494,48 @@ class Reaction {
 
         } else {
 
+            // No overloaded atoms
             electrophile_index = this.MoleculeAI.findElectrophileIndex()
 
             if (electrophile_index === -1) {
-                console.log("Electrophile not found")
-                console.log("breakBond()")
-                return false
+                nucleophile_index = this.MoleculeAI.findNucleophileIndex()
+                if (nucleophile_index === -1) {
+                    console.log("Electrophile not found")
+                    console.log("breakBond()")
+                    return false
+                } else {
+                    nucleophile_atom_object = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate)
+                    const bonds_to_nucleophile = nucleophile_atom_object.indexedBonds("").filter((bond)=>{
+                        return bond.atom[0] !== "H"
+                    })
+                    if (bonds_to_nucleophile.length ===0) {
+                        return false
+                    }
+                    // Look for oxygen bonds
+                    const oxygen_bonds = bonds_to_nucleophile.filter((bond)=>{
+                        return bond.atom[0] === "O"
+                    })
+                    if (oxygen_bonds.length > 0) {
+                        // Sort by most substituted oxygen
+                        const oxygens_sorted = oxygen_bonds.map((oxygen_bond) => {
+                            return CAtom(this.container_substrate[0][1][oxygen_bond.atom_index], oxygen_bond, this.container_substrate)
+                        }).sort(
+                            (a, b) => {
+                                return a.hydrogens().length < b.hydrogens().length ? -1 : 0
+                            }
+                        )
+                        console.log(oxygens_sorted[0])
+                        electrophile_index = oxygens_sorted[0].atomIndex
+
+                    } else {
+                        electrophile_index = bonds_to_nucleophile[0].atom_index
+                    }
+                }
             }
 
-            //const atoms = this.container_substrate[0][1]
+        console.log('electrophile index:')
+            console.log(electrophile_index)
+
             const electrophile_atom_object = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
             const electrophile_atom_object_bonds = electrophile_atom_object.indexedBonds("").filter(
                 (bond) => {
@@ -507,7 +543,7 @@ class Reaction {
                 }
             )
 
-            if (electrophile_atom_object_bonds.length === 1) {
+            if (electrophile_atom_object_bonds.length === 1 && nucleophile_index === null) {
                 nucleophile_index = electrophile_atom_object_bonds[0].atom_index
             }
             const carbon_bonds = electrophile_atom_object_bonds.filter((bond) => {
@@ -515,7 +551,7 @@ class Reaction {
             })
             if (carbon_bonds.length !== electrophile_atom_object_bonds.length) {
                 // @todo
-            } else {
+            } else if (nucleophile_index === null) {
                 // Get the most substituted carbon
                 // @todo replace with this.MoleculeAI.findMostSubstitutedCarbon(carbons)
                 carbon_bonds.sort((bond_a, bond_b) => {
@@ -547,8 +583,11 @@ class Reaction {
 
         }
 
+        console.log("Reaction.js 582")
+        console.log("nucleophile index:")
         console.log(nucleophile_index)
-
+        console.log("electrophile index:")
+        console.log(electrophile_index)
         const source_atom = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate)
         const target_atom = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
 

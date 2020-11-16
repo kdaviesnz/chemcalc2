@@ -446,6 +446,9 @@ VMolecule
 
             let i= _.findIndex(container_molecule[0][1], (atom, index)=>{
 
+                if (atom[4]==="-") {
+                    return false
+                }
                 // Ignore metals
                 if (atom[0]==="Hg") {
                     return false
@@ -493,7 +496,7 @@ VMolecule
                 )
 
 
-                if (carbons.length > 0) {
+                if (carbons.length > 0 && container_molecule[0][1][carbons[0].atomIndex][4] !=="-") {
                     return carbons[0].atomIndex
                 }
 
