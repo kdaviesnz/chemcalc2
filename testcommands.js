@@ -401,4 +401,9 @@ const saponification_step3= CommandTest("MAKE oxygen carbon double bond", _.clon
 console.log('saponification step 3 MAKE oxygen carbon double bond. O- atom attacks the C atom on the former C=O bond. O atom should now have no charge. Carbon atom should have negative charge (nucleophile)')
 console.log(VMolecule(saponification_step3[0]).compressed())
 
+const saponification_step4= CommandTest("BREAK bond", _.cloneDeep(saponification_step3[0]))
+console.log('saponification step 4 BREAK bond" - C-OR breaks forming leaving group. O atom on OR should have negative charge (nucleophile).')
+console.log(VMolecule(saponification_step4[0]).compressed())
+
+
 process.exit()

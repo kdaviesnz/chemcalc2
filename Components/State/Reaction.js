@@ -118,27 +118,38 @@ class Reaction {
     }
 
     makeOxygenCarbonDoubleBond() {
+
         const oxygen_index = this.MoleculeAI.findOxygenAttachedToCarbonIndex()
         const oxygen = CAtom(this.container_substrate[0][1][oxygen_index], oxygen_index, this.container_substrate)
         const carbon_bonds = oxygen.indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "C"
         })
         const carbon_index = carbon_bonds[0].atom_index
+
+        // Proton if applicable
         const proton_oxygen_bond = oxygen.indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "H"
         }).pop()
-        const proton_shared_electrons = proton_oxygen_bond.shared_electrons
-        const proton_index = proton_oxygen_bond.atom_index
-        // Remove electrons from proton
-        _.remove(this.container_substrate[0][1][proton_index], (e)=>{
-            return e === proton_shared_electrons[0] || e === proton_shared_electrons[1]
-        })
-        // Add electrons to carbon
-        this.container_substrate[0][1][carbon_index].push(proton_shared_electrons[0])
-        this.container_substrate[0][1][carbon_index].push(proton_shared_electrons[1])
+        if (proton_oxygen_bond !== undefined) {
+            const proton_shared_electrons = proton_oxygen_bond.shared_electrons
+            const proton_index = proton_oxygen_bond.atom_index
+            // Remove electrons from proton
+            _.remove(this.container_substrate[0][1][proton_index], (e) => {
+                return e === proton_shared_electrons[0] || e === proton_shared_electrons[1]
+            })
+            // Add electrons to carbon
+            this.container_substrate[0][1][carbon_index].push(proton_shared_electrons[0])
+            this.container_substrate[0][1][carbon_index].push(proton_shared_electrons[1])
+        } else {
+            const freeElectrons = oxygen.freeElectrons()
+            // Add electrons to carbon
+            this.container_substrate[0][1][carbon_index].push(freeElectrons[0])
+            this.container_substrate[0][1][carbon_index].push(freeElectrons[1])
+        }
 
         // Charges
-        this.container_substrate[0][1][carbon_index][4] = ""
+        this.container_substrate[0][1][carbon_index][4] = this.container_substrate[0][1][carbon_index][4] === "+" ? "": "-"
+        this.container_substrate[0][1][oxygen_index][4] = this.container_substrate[0][1][oxygen_index][4] === "-"?"":"+"
 
         this.setMoleculeAI()
 
@@ -536,6 +547,7 @@ class Reaction {
 
         }
 
+        console.log(nucleophile_index)
 
         const source_atom = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate)
         const target_atom = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
