@@ -518,13 +518,12 @@ class Reaction {
                     if (oxygen_bonds.length > 0) {
                         // Sort by most substituted oxygen
                         const oxygens_sorted = oxygen_bonds.map((oxygen_bond) => {
-                            return CAtom(this.container_substrate[0][1][oxygen_bond.atom_index], oxygen_bond, this.container_substrate)
+                            return CAtom(this.container_substrate[0][1][oxygen_bond.atom_index], oxygen_bond.atom_index, this.container_substrate)
                         }).sort(
                             (a, b) => {
-                                return a.hydrogens().length < b.hydrogens().length ? -1 : 0
+                                return a.hydrogens().length + a.doubleBondCount() < b.hydrogens().length + b.doubleBondCount() ? -1 : 0
                             }
                         )
-                        console.log(oxygens_sorted[0])
                         electrophile_index = oxygens_sorted[0].atomIndex
 
                     } else {
