@@ -532,9 +532,6 @@ class Reaction {
                 }
             }
 
-        console.log('electrophile index:')
-            console.log(electrophile_index)
-
             const electrophile_atom_object = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
             const electrophile_atom_object_bonds = electrophile_atom_object.indexedBonds("").filter(
                 (bond) => {
