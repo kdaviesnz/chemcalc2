@@ -75,6 +75,29 @@ const MoleculeAI = (container_molecule) => {
     // No method should change state of container_molecule
     return {
 
+        extractGroups: function() {
+            // Extract groups from molecule
+            const groups = container_molecule[0][1].reduce((groups, atom, index)=>{
+                if (groups.length ===0) {
+                    groups.push([atom])
+                    return groups
+                }
+                // Find atom from groups that current atom is bonded to
+                const i = _.findIndex(groups, (atoms)=> {
+                    const k = _.findIndex(atoms, (group_atom)=>{
+                        return atom.isBondedTo(group_atom)
+                    })
+                    return k !==-1
+                })
+                if (i !== -1) {
+                    groups[i].push(atom)
+                } else {
+                    groups.push([atom])
+                }
+                return groups
+            }, [])
+        },
+
         findOxygenAttachedToCarbonIndex: function() {
             return _.findIndex(container_molecule[0][1], (atom, index) => {
                 if (atom[0] !== "O") {
