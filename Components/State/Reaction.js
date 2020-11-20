@@ -30,6 +30,7 @@ class Reaction {
 
         this.container_substrate = container_substrate
         this.container_reagent = container_reagent
+        this.leaving_groups = null
 
         this.rule = rule
 
@@ -643,6 +644,11 @@ class Reaction {
 
 
         this.setMoleculeAI()
+
+        console.log('Groups:')
+        console.log(this.MoleculeAI.extractGroups())
+
+        // molecule, index
 
 
         // @todo work out if we now have two molecules

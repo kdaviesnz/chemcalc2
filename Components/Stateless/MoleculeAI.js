@@ -1,7 +1,7 @@
 const CAtom = require('../../Controllers/Atom')
 const _ = require('lodash');
 const VMolecule = require('../../Components/Stateless/Views/Molecule')
-
+const Set = require('../../Models/Set')
 /*
 
 findHydroxylOxygenIndex()
@@ -77,15 +77,16 @@ const MoleculeAI = (container_molecule) => {
 
         extractGroups: function() {
             // Extract groups from molecule
-            const groups = container_molecule[0][1].reduce((groups, atom, index)=>{
+            const groups = _.cloneDeep(container_molecule[0][1]).reduce((groups, atom, index)=>{
                 if (groups.length ===0) {
                     groups.push([atom])
                     return groups
                 }
+                const atom_object = CAtom(atom, index, container_molecule)
                 // Find atom from groups that current atom is bonded to
-                const i = _.findIndex(groups, (atoms)=> {
-                    const k = _.findIndex(atoms, (group_atom)=>{
-                        return atom.isBondedTo(group_atom)
+                const i = _.findIndex(groups, (group_atoms, group_atom_index)=> {
+                    const k = _.findIndex(group_atoms, (group_atom, group_atom_index)=>{
+                        return atom_object.isBondedTo(group_atom)
                     })
                     return k !==-1
                 })
@@ -96,6 +97,40 @@ const MoleculeAI = (container_molecule) => {
                 }
                 return groups
             }, [])
+
+            // fix hydrogens
+            const groups_saved = _.cloneDeep(groups)
+            const hydrogens = _.cloneDeep(groups).filter((group)=> {
+                return group.length === 1 && group[0][0] === 'H'
+            }).map((group)=>{
+                return group.pop()
+            })
+            _.cloneDeep(groups).map((group, index)=> {
+                const i = _.findIndex(hydrogens, (hydrogen) => {
+                    const k = _.findIndex(group, (atom) => {
+                        if (atom[0]==="H") {
+                            return false
+                        }
+                        return Set().intersection(hydrogen.slice(5), atom.slice(5)).length > 0
+                    })
+                    //console.log(k)
+                    if (k > -1) {
+                        //console.log(index)
+                        groups_saved[index].push(hydrogen)
+                        //console.log('hydrogen')
+                        //console.log(hydrogen)
+                        //console.log(groups_saved[index])
+                        //process.exit()
+                    }
+                })
+                return group
+            })
+ // molecule, units
+
+
+            return groups_saved.filter((group)=>{
+                return group.length === 1 && group[0][0] === "H" ? false: true
+            })
         },
 
         findOxygenAttachedToCarbonIndex: function() {

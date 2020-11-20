@@ -494,11 +494,8 @@ We then return the total number of free slots minus the number of slots already 
 
     return {
         isBondedTo: (sibling_atom) => {
-            const bonds = this.indexedBonds("")
-            const i = _.findIndex(bonds, ((bond)=>{
-                return bond.atom_index = sibling_atom.atom_index
-            }))
-            return i !== -1
+            const shared_electrons = Set().intersection(atom.slice(5), sibling_atom.slice(5))
+            return shared_electrons.length > 0
         },
         isCarbocation: __isCarbocation,
         isNegativelyCharged: __isNegativelyCharged,
