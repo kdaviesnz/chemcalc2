@@ -12,7 +12,8 @@ const BreakBond = (container_substrate, reagent, rule) => {
 
     return [
         reaction.container_substrate,
-        reaction.reagent
+        reaction.reagent,
+        reaction.leaving_groups
     ]
 }
 

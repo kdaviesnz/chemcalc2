@@ -504,6 +504,8 @@ VMolecule
 
             let i= _.findIndex(container_molecule[0][1], (atom, index)=>{
 
+                let electrophile_index = null
+
                 if (atom[4]==="-") {
                     return false
                 }
@@ -519,21 +521,27 @@ VMolecule
                 }
 
                 if (atom_object.isPositivelyCharged() || atom[4] === "&+") {
-                    if (undefined === filterBy || atom[0] !== filterBy)
-                        return true
+                    electrophile_index = atom_object.atomIndex
                 }
 
                 if (atom_object.freeSlots().length > 0) {
-                    return true
+                    electrophile_index = atom_object.atomIndex
                 }
 
 
                 if (atom[0]==="H" && atom_object.indexedBonds("").filter((bond)=>{
                     return bond.atom !== "C"
                 }).length === 0) {
-                    return true
+                    electrophile_index = atom_object.atomIndex
                 }
 
+                if (electrophile_index !== null) {
+                    console.log(typeof filterBy)
+                    if (filterBy !== undefined && typeof filterBy === 'function') {
+                        return filterBy(electrophile_index) ? electrophile_index : false
+                    }
+                    return true
+                }
 
                 return false
 
@@ -542,6 +550,7 @@ VMolecule
 
             if (i === -1) {
 
+                console.log('Checking for double carbon')
                 // check for carbon double bond and return most substituted carbon
                 const carbons = container_molecule[0][1].map((atom, index) => {
                     return CAtom(atom, index, container_molecule)

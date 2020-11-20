@@ -580,11 +580,6 @@ class Reaction {
 
         }
 
-        console.log("Reaction.js 582")
-        console.log("nucleophile index:")
-        console.log(nucleophile_index)
-        console.log("electrophile index:")
-        console.log(electrophile_index)
         const source_atom = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate)
         const target_atom = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
 
@@ -641,18 +636,16 @@ class Reaction {
         }
 
 
+        const groups = this.MoleculeAI.extractGroups()
 
-
-        this.setMoleculeAI()
-
-        console.log('Groups:')
-        console.log(this.MoleculeAI.extractGroups())
-
-        // molecule, index
-
-
-        // @todo work out if we now have two molecules
-
+        if (groups.length > 1) {
+            this.container_substrate = [[-1, _.cloneDeep(groups[0])], 1]
+            this.setMoleculeAI()
+            groups.shift()
+            this.leaving_groups = groups.map((group)=>{
+                return [[-1, group], 1]
+            })
+        }
 
 
     }
@@ -1058,11 +1051,13 @@ class Reaction {
 
         // [C+]CH3
         // We remove the proton from the second carbon
-        const electrophile_index = this.MoleculeAI.findElectrophileIndex()
+        const electrophile_index = this.MoleculeAI.findElectrophileIndex((electrophile_index)=>{
+            const atom = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
+            return atom.hydrogens().length > 0
+        })
 
-        //console.log('reaction.js deprotonate electrophile index')
-        //console.log(electrophile_index)
-
+        console.log('reaction.js deprotonate electrophile index')
+        console.log(electrophile_index)
 
         if (electrophile_index === -1) {
             console.log("Electrophile not found")

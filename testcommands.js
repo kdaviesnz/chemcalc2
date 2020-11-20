@@ -359,7 +359,7 @@ Saponification
     "MAKE oxygen carbon double bond" O- atom attacks the C atom on the former C=O bond. O atom should now have no charge. Carbon atom should have negative charge (nucleophile).
     "BREAK bond" - C-OR breaks forming leaving group. O atom on OR should have negative charge.
     "DEPRONTONATE" O- atom (nucleophile) on O-R attacks proton on O on substrate. O atom on substrate should now have a negative charge. O atom on
-    C-R  should now have now charge.
+    C-R  should now have no charge.
 
 
 ],
@@ -404,6 +404,11 @@ console.log(VMolecule(saponification_step3[0]).compressed())
 const saponification_step4= CommandTest("BREAK bond", _.cloneDeep(saponification_step3[0]))
 console.log('saponification step 4 BREAK bond" - C-OR breaks forming leaving group. O atom on OR should have negative charge (nucleophile).')
 console.log(VMolecule(saponification_step4[0]).compressed())
+console.log(VMolecule(saponification_step4[2][0]).compressed()) // LEAVING GROUPS
+
+const saponification_step5= CommandTest("DEPROTONATE", _.cloneDeep(saponification_step4[0]), _.cloneDeep(saponification_step4[2][0]))
+console.log('saponification step 5 DEPROTONATE" - O- atom (nucleophile) on O-R attacks proton on O on substrate. O atom on substrate should now have a negative charge. O atom on C-R  should now have no charge.')
+console.log(VMolecule(saponification_step5[0]).compressed())
 
 
 process.exit()
