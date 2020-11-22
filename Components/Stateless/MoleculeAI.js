@@ -559,11 +559,8 @@ VMolecule
                         return false
                     }
 
-                    console.log('oxygen atom found')
-                    console.log(index)
-
                     const atom_object = CAtom(atom, index,container_molecule)
-                    console.log(atom_object.hydrogens())
+
                     if (atom_object.hydrogens().length === 0) {
                         return false
                     }
@@ -573,9 +570,9 @@ VMolecule
 
                 })
 
-                console.log('Looking for oxygen')
-                console.log(i)
             }
+
+            return i
 
         },
 
@@ -586,7 +583,6 @@ VMolecule
 
             if (i === -1) {
 
-                console.log('Checking for double carbon')
                 // check for carbon double bond and return most substituted carbon
                 const carbons = container_molecule[0][1].map((atom, index) => {
                     return CAtom(atom, index, container_molecule)

@@ -334,8 +334,8 @@ class Reaction {
     dehydrate() {
 
         const oxygen_atom_index = this.MoleculeAI.findWaterOxygenIndex()
-        console.log("(dehydrate() water oxygen index")
-        console.log(oxygen_atom_index)
+//        console.log("(dehydrate() water oxygen index")
+  //      console.log(oxygen_atom_index)
 
         const oxygen_atom = CAtom(this.container_substrate[0][1][oxygen_atom_index], oxygen_atom_index, this.container_substrate)
 
@@ -1056,8 +1056,8 @@ class Reaction {
             return atom.hydrogens().length > 0
         })
 
-        console.log('reaction.js deprotonate electrophile index')
-        console.log(electrophile_index)
+        //console.log('reaction.js deprotonate electrophile index')
+        //console.log(electrophile_index)
 
         if (electrophile_index === -1) {
             console.log("Electrophile not found")
@@ -1081,7 +1081,7 @@ class Reaction {
         if (this.container_substrate[0][1][electrophile_index][0]!== "C"){
 
             this.addProtonToReagent()
-            this.container_substrate[0][1][electrophile_index][4] = 0
+            this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4] === "+"? 0 : "-"
             this.container_substrate[0][1].splice(hydrogen_bond.atom_index, 1)
 
         } else {
