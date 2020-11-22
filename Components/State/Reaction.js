@@ -1051,7 +1051,7 @@ class Reaction {
 
         // [C+]CH3
         // We remove the proton from the second carbon
-        const electrophile_index = this.MoleculeAI.findElectrophileIndex((electrophile_index)=>{
+        const electrophile_index = this.MoleculeAI.findIndexOfAtomToDeprotonate((electrophile_index)=>{
             const atom = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
             return atom.hydrogens().length > 0
         })

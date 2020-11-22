@@ -22,6 +22,52 @@ const MoleculeAI = (container_molecule) => {
         container_molecule[0][1][0][0].should.be.an.String()
     }
 
+    const __findElectrophileIndex = (filterBy, mustBe) => {
+        return _.findIndex(container_molecule[0][1], (atom, index)=>{
+
+            let electrophile_index = null
+
+            if (atom[4]==="-") {
+                return false
+            }
+            // Ignore metals
+            if (atom[0]==="Hg") {
+                return false
+            }
+
+            const atom_object = CAtom(atom, index,container_molecule)
+
+            if (undefined !== mustBe && atom[0] !== mustBe) {
+                return false
+            }
+
+            if (atom_object.isPositivelyCharged() || atom[4] === "&+") {
+                electrophile_index = atom_object.atomIndex
+            }
+
+            if (atom_object.freeSlots().length > 0) {
+                electrophile_index = atom_object.atomIndex
+            }
+
+
+            if (atom[0]==="H" && atom_object.indexedBonds("").filter((bond)=>{
+                return bond.atom !== "C"
+            }).length === 0) {
+                electrophile_index = atom_object.atomIndex
+            }
+
+            if (electrophile_index !== null) {
+                if (filterBy !== undefined && typeof filterBy === 'function') {
+                    return filterBy(electrophile_index) ? electrophile_index : false
+                }
+                return true
+            }
+
+            return false
+
+        })
+    }
+
     const __findLeastSubstitutedCarbon = (carbons) => {
 
         const c_sorted = carbons.sort((a_atom, b_atom) => {
@@ -500,53 +546,43 @@ VMolecule
 
         },
 
+        "findIndexOfAtomToDeprotonate": (filterBy, mustBe) => {
+
+            let i = __findElectrophileIndex(filterBy, mustBe)
+
+            // Look for oxygen with proton
+            if (i === -1) {
+
+                i = _.findIndex(container_molecule[0][1], (atom, index)=> {
+
+                    if (atom[0] !== 'O') {
+                        return false
+                    }
+
+                    console.log('oxygen atom found')
+                    console.log(index)
+
+                    const atom_object = CAtom(atom, index,container_molecule)
+                    console.log(atom_object.hydrogens())
+                    if (atom_object.hydrogens().length === 0) {
+                        return false
+                    }
+
+                    return true
+
+
+                })
+
+                console.log('Looking for oxygen')
+                console.log(i)
+            }
+
+        },
+
+
         "findElectrophileIndex": (filterBy, mustBe) => {
 
-            let i= _.findIndex(container_molecule[0][1], (atom, index)=>{
-
-                let electrophile_index = null
-
-                if (atom[4]==="-") {
-                    return false
-                }
-                // Ignore metals
-                if (atom[0]==="Hg") {
-                    return false
-                }
-
-                const atom_object = CAtom(atom, index,container_molecule)
-
-                if (undefined !== mustBe && atom[0] !== mustBe) {
-                    return false
-                }
-
-                if (atom_object.isPositivelyCharged() || atom[4] === "&+") {
-                    electrophile_index = atom_object.atomIndex
-                }
-
-                if (atom_object.freeSlots().length > 0) {
-                    electrophile_index = atom_object.atomIndex
-                }
-
-
-                if (atom[0]==="H" && atom_object.indexedBonds("").filter((bond)=>{
-                    return bond.atom !== "C"
-                }).length === 0) {
-                    electrophile_index = atom_object.atomIndex
-                }
-
-                if (electrophile_index !== null) {
-                    console.log(typeof filterBy)
-                    if (filterBy !== undefined && typeof filterBy === 'function') {
-                        return filterBy(electrophile_index) ? electrophile_index : false
-                    }
-                    return true
-                }
-
-                return false
-
-            })
-
+            let i= __findElectrophileIndex(filterBy, mustBe)
 
             if (i === -1) {
 
