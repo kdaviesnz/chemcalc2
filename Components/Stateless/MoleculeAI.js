@@ -607,6 +607,10 @@ VMolecule
 
             }
 
+            if (i===-1) {
+                // Check for epoxide ring and return index of least substituted carbon
+            }
+
             return i
 
         },

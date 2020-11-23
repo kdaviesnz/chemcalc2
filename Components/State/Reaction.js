@@ -947,6 +947,17 @@ class Reaction {
         this.setReagentAI()
     }
 
+    bondSubstrateToReagent() {
+        // Important:
+        // The reagent is the nucleophile and is attacking the substrate
+        // The substrate is the electrophile
+        console.log('reaction.js bondSubstrateToReagent')
+        let electrophile_index = this.MoleculeAI.findElectrophileIndex()
+        console.log('electrophile_index:' + electrophile_index)
+        process.exit()
+
+    }
+
     bondAtoms() {
 
         let electrophile_index = this.MoleculeAI.findElectrophileIndex()

@@ -433,7 +433,7 @@ console.log('saponification step 1 reversed REMOVE hydroxyl group" - Break CO bo
 console.log(VMolecule(saponification_step1_reversed[0]).compressed())
 console.log(VMolecule(saponification_step1_reversed[2][0]).compressed()) // OH
 
-// Expoxide ring opening via alcohol
+// Expoxide ring opening via methoxide
 // https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Map%3A_Organic_Chemistry_(McMurry)/Chapter_18%3A_Ethers_and_Epoxides%3B_Thiols_and_Sulfides/18.06_Reactions_of_Epoxides%3A_Ring-opening
 // substrate = isobutene_oxide
 // reagent [O-]CH3 (NaOCH3)
@@ -443,8 +443,8 @@ console.log(VMolecule(saponification_step1_reversed[2][0]).compressed()) // OH
 const methoxide = MoleculeFactory("[O-]C")
 console.log("isobutene oxide (substrate")
 console.log(VMolecule([isobutene_oxide,1]).compressed())
-console.log("expoxide ring opening via methoxide step 1 - BOND atoms - O- (nucleophile) of reagent attacks the least substituted carbon of the substrate.")
-const expoxide_ring_opening_via_methoxide_step1 = CommandTest("BOND atoms", _.cloneDeep([isobutene_oxide,1]), _.clone([methoxide,1]))
+console.log("expoxide ring opening via methoxide step 1 - BOND substrate to reagent - O- (nucleophile) of reagent attacks the least substituted carbon of the substrate.")
+const expoxide_ring_opening_via_methoxide_step1 = CommandTest("BOND substrate to reagent", _.cloneDeep([isobutene_oxide,1]), _.clone([methoxide,1]))
 console.log(VMolecule(expoxide_ring_opening_via_methoxide_step1[0]).compressed())
 console.log("expoxide ring opening via methoxide step 2 - BREAK bond - C-O bond of the attacked carbon breaks. Oxygen atom should now have a negative charge.")
 const expoxide_ring_opening_via_methoxide_step2 = CommandTest("BREAK bond", _.cloneDeep(expoxide_ring_opening_via_methoxide_step1[0]))
