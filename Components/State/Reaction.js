@@ -1201,8 +1201,10 @@ class Reaction {
                     return bond.atom[0] !== "H"
                 }
             )
-            this.container_reagent[0][1][reagent_bonds[0].atom_index][4] === "+"
-            ||  this.container_reagent[0][1][reagent_bonds[0].atom_index][4] < 0? 0: "-"
+
+            this.container_reagent[0][1][reagent_bonds[0].atom_index][4] = this.container_reagent[0][1][reagent_bonds[0].atom_index][4] === "+"
+            ||  (this.container_reagent[0][1][reagent_bonds[0].atom_index][4]) * 1 < 0? 0: "-"
+
             _.remove(this.container_reagent[0][1], (v, i) => {
                 return i === reagent_proton_index
             })

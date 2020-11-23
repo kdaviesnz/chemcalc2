@@ -410,5 +410,10 @@ const saponification_step5= CommandTest("DEPROTONATE", _.cloneDeep(saponificatio
 console.log('saponification step 5 DEPROTONATE" - O- atom (nucleophile) on O-R attacks proton on O on substrate. O atom on substrate should now have a negative charge. O atom on C-R  should now have no charge.')
 console.log(VMolecule(saponification_step5[0]).compressed())
 
+//console.log(VMolecule([MoleculeFactory("ON"), 1]).compressed())
+const saponification_step5_reversed = CommandTest("PROTONATE", _.cloneDeep(saponification_step5[0]), _.cloneDeep([MoleculeFactory("[OH]N"),1]))
+console.log('saponification step 5 reverse PROTONATE" - Protonate [O-] atom on substrate. O atom on [OR] should now have a negative charge.')
+console.log(VMolecule(saponification_step5_reversed[0]).compressed())
+console.log(VMolecule(saponification_step5_reversed[1]).compressed())
 
 process.exit()
