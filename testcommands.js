@@ -437,15 +437,20 @@ console.log(VMolecule(saponification_step1_reversed[2][0]).compressed()) // OH
 // https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Map%3A_Organic_Chemistry_(McMurry)/Chapter_18%3A_Ethers_and_Epoxides%3B_Thiols_and_Sulfides/18.06_Reactions_of_Epoxides%3A_Ring-opening
 // substrate = isobutene_oxide
 // reagent [O-]CH3 (NaOCH3)
-// BOND atoms: O- (nuclephile) of reagent attacks the least substituted carbon of the substrate.
+// BOND atoms: O- (nucleophile) of reagent attacks the least substituted carbon of the substrate.
 // BREAK bond: C-O bond of the attacked carbon breaks. Oxygen atom should now have a negative charge.
 // PROTONATE: O- of substrate attacks proton on reagent (OCH3)
 const methoxide = MoleculeFactory("[O-]C")
-const expoxide_ring_opening_via_methoxide_step1 = CommandTest("BOND atoms", _.cloneDeep([isobutene_oxide,1]), methoxide)
+console.log("isobutene oxide (substrate")
+console.log(VMolecule([isobutene_oxide,1]).compressed())
+console.log("expoxide ring opening via methoxide step 1 - BOND atoms - O- (nucleophile) of reagent attacks the least substituted carbon of the substrate.")
+const expoxide_ring_opening_via_methoxide_step1 = CommandTest("BOND atoms", _.cloneDeep([isobutene_oxide,1]), _.clone([methoxide,1]))
 console.log(VMolecule(expoxide_ring_opening_via_methoxide_step1[0]).compressed())
+console.log("expoxide ring opening via methoxide step 2 - BREAK bond - C-O bond of the attacked carbon breaks. Oxygen atom should now have a negative charge.")
 const expoxide_ring_opening_via_methoxide_step2 = CommandTest("BREAK bond", _.cloneDeep(expoxide_ring_opening_via_methoxide_step1[0]))
 console.log(VMolecule(expoxide_ring_opening_via_methoxide_step2[0]).compressed())
-const expoxide_ring_opening_via_methoxide_step3 = CommandTest("PROTONATE", _.cloneDeep(expoxide_ring_opening_via_methoxide_step2[0]), methanol)
+console.log("expoxide ring opening via methoxide step 3 - PROTONATE - O- of substrate attacks proton on reagent (OCH3)")
+const expoxide_ring_opening_via_methoxide_step3 = CommandTest("PROTONATE", _.cloneDeep(expoxide_ring_opening_via_methoxide_step2[0]), _.cloneDeep([methanol,1]))
 console.log(VMolecule(expoxide_ring_opening_via_methoxide_step3[0]).compressed())
 
 
