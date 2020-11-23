@@ -445,7 +445,7 @@ const expoxide_ring_opening_via_methoxide_step1 = CommandTest("BOND atoms", _.cl
 console.log(VMolecule(expoxide_ring_opening_via_methoxide_step1[0]).compressed())
 const expoxide_ring_opening_via_methoxide_step2 = CommandTest("BREAK bond", _.cloneDeep(expoxide_ring_opening_via_methoxide_step1[0]))
 console.log(VMolecule(expoxide_ring_opening_via_methoxide_step2[0]).compressed())
-const expoxide_ring_opening_via_methoxide_step3 = CommandTest("BOND atoms", _.cloneDeep(expoxide_ring_opening_via_methoxide_step2[0]), methanol)
+const expoxide_ring_opening_via_methoxide_step3 = CommandTest("PROTONATE", _.cloneDeep(expoxide_ring_opening_via_methoxide_step2[0]), methanol)
 console.log(VMolecule(expoxide_ring_opening_via_methoxide_step3[0]).compressed())
 
 
