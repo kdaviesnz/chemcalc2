@@ -443,6 +443,44 @@ class Reaction {
 
     }
 
+    removeHydroxylGroup() {
+        console.log('reaction.js removeHydroxylGroup')
+        const nucleophile_index = this.MoleculeAI.findNucleophileIndex()
+        console.log(nucleophile_index)
+        // Find index of O atom bonded to nucleophile with exactly one hydrogen
+        const nucleophile_atom_object = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate)
+        const electrophile_index = nucleophile_atom_object.indexedBonds("").filter((bond)=>{
+            if (bond.atom[0] !== 'O') {
+                return false
+            }
+            const oxygen_atom_object = CAtom(this.container_substrate[0][1][bond.atom_index], bond.atom_index, this.container_substrate)
+            return oxygen_atom_object.hydrogens().length === 1
+        }).pop().atom_index
+        console.log(electrophile_index)
+
+        const shared_electrons = Set().intersection(this.container_substrate[0][1][nucleophile_index].slice(5), this.container_substrate[0][1][electrophile_index].slice(5))
+        const electrons = _.cloneDeep(this.container_substrate[0][1][nucleophile_index]).slice(5)
+        _.remove(this.container_substrate[0][1][nucleophile_index], (v, i) => {
+            return shared_electrons[0] === v || shared_electrons[1] === v
+        })
+
+        this.container_substrate[0][1][nucleophile_index][4] = ''
+        this.container_substrate[0][1][electrophile_index][4] = '-'
+
+        this.setMoleculeAI()
+
+        const groups = this.MoleculeAI.extractGroups()
+
+        if (groups.length > 1) {
+            this.container_substrate = [[-1, _.cloneDeep(groups[0])], 1]
+            this.setMoleculeAI()
+            groups.shift()
+            this.leaving_groups = groups.map((group)=>{
+                return [[-1, group], 1]
+            })
+        }
+    }
+
     breakBond(break_type="heterolysis") {
 
 
@@ -1504,7 +1542,7 @@ class Reaction {
             return v === shared_electrons[0] || v === shared_electrons[1]
         })
 
-        this.container_substrate[0][1][double_bonds[0].atom_index][4] = "+"
+        this.container_substrate[0][1][double_bonds[0].atom_index][4] =  this.container_substrate[0][1][double_bonds[0].atom_index][4] === "-"? '': '+'
         this.container_substrate[0][1][oxygen_index][4] = this.container_substrate[0][1][oxygen_index][4] === "+" ? "":"-"
 
         this.setMoleculeAI()

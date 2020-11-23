@@ -416,4 +416,21 @@ console.log('saponification step 5 reverse PROTONATE" - Protonate [O-] atom on s
 console.log(VMolecule(saponification_step5_reversed[0]).compressed())
 console.log(VMolecule(saponification_step5_reversed[1]).compressed())
 
+const saponification_step4_reversed = CommandTest("BOND atoms", _.cloneDeep(saponification_step5_reversed[0]), _.cloneDeep(saponification_step5_reversed[1]))
+console.log('saponification step 4 reversed BOND atoms to substrate" - Bond O- atom (nucleophile) to carbon atom on substrate (electrophile). Carbon  atom should have a - charge.')
+console.log(VMolecule(saponification_step4_reversed[0]).compressed())
+
+const saponification_step3_reversed = CommandTest("BREAK carbon oxygen double bond", _.cloneDeep(saponification_step4_reversed[0]))
+console.log('saponification step 3 reversed BREAK carbon oxygen double bond" - Break C=O bond')
+console.log(VMolecule(saponification_step3_reversed[0]).compressed())
+
+const saponification_step2_reversed = CommandTest("MAKE oxygen carbon double bond", _.cloneDeep(saponification_step3_reversed[0]))
+console.log('saponification step 2 reversed MAKE oxygen carbon double bond" - Break C=O bond')
+console.log(VMolecule(saponification_step2_reversed[0]).compressed())
+
+const saponification_step1_reversed = CommandTest("REMOVE hydroxyl group", _.cloneDeep(saponification_step2_reversed[0]))
+console.log('saponification step 1 reversed REMOVE hydroxyl group" - Break CO bond')
+console.log(VMolecule(saponification_step1_reversed[0]).compressed())
+console.log(VMolecule(saponification_step1_reversed[2][0]).compressed()) // OH
+
 process.exit()

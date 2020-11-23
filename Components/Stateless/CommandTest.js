@@ -34,6 +34,7 @@ const MakeOxygenCarbonDoubleBond  = require('../../Commands/MakeOxygenCarbonDoub
 const MakeOxygenCarbonDoubleBondReverse  = require('../../Commands/MakeOxygenCarbonDoubleBondReverse')
 const BondReagentToSubstrate = require('../../Commands/BondReagentToSubstrate')
 const BreakCarbonOxygenDoubleBondReverse = require('../../Commands/BreakCarbonOxygenDoubleBondReverse')
+const RemoveHydroxylGroup = require('../../Commands/RemoveHydroxylGroup')
 
 const CommandTest = (command, substrate, reagent, rule) => {
 
@@ -67,8 +68,11 @@ const CommandTest = (command, substrate, reagent, rule) => {
         "TRANSFER oxygen proton to oxygen": OxygenToOxygenProtonTransfer,
         "MAKE oxygen carbon double bond": MakeOxygenCarbonDoubleBond,
         "MAKE oxygen carbon double bond [reverse]": MakeOxygenCarbonDoubleBondReverse,
-        "BOND reagent to substrate": BondReagentToSubstrate,
-        "BREAK carbon oxygen double bond [reverse]": BreakCarbonOxygenDoubleBondReverse
+        "BOND reagent to substrate": BondReagentToSubstrate, // Important:
+        // The substrate is the nucleophile and is attacking the reagent
+        // The reagent is the electrophile
+        "BREAK carbon oxygen double bond [reverse]": BreakCarbonOxygenDoubleBondReverse,
+        "REMOVE hydroxyl group": RemoveHydroxylGroup
     }
 
 
