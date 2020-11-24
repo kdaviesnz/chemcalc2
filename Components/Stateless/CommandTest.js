@@ -36,6 +36,8 @@ const BondReagentToSubstrate = require('../../Commands/BondReagentToSubstrate')
 const BondSubstrateToReagent = require('../../Commands/BondSubstrateToReagent')
 const BreakCarbonOxygenDoubleBondReverse = require('../../Commands/BreakCarbonOxygenDoubleBondReverse')
 const RemoveHydroxylGroup = require('../../Commands/RemoveHydroxylGroup')
+const BreakBondReverse = require('../../Commands/BreakBondReverse')
+const RemoveMethanol = require('../../Commands/RemoveMethanol')
 
 const CommandTest = (command, substrate, reagent, rule) => {
 
@@ -76,7 +78,9 @@ const CommandTest = (command, substrate, reagent, rule) => {
         // The reagent is the nucleophile and is attacking the substrate
         // The substrate is the electrophile
         "BREAK carbon oxygen double bond [reverse]": BreakCarbonOxygenDoubleBondReverse,
-        "REMOVE hydroxyl group": RemoveHydroxylGroup
+        "REMOVE hydroxyl group": RemoveHydroxylGroup,
+        "BREAK bond reversed": BreakBondReverse,
+        "REMOVE methanol": RemoveMethanol
     }
 
 

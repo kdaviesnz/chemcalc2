@@ -445,7 +445,7 @@ VMolecule
                 atom_object.max_number_of_bonds = atom[3]
                 return atom_object
             }).filter((o, atom_index)=>{
-                if (o.symbol==='H') {
+                if (o.symbol==='H' || o.charge === "-") {
                     return false
                 }
                 return o.indexedBonds("").length > o.max_number_of_bonds
@@ -581,6 +581,11 @@ VMolecule
 
             let i= __findElectrophileIndex(filterBy, mustBe)
 
+            // electrophiles cannot have a positive charge
+            if (i !== -1 && container_molecule[0][1][i][4]==="-") {
+                i = -1
+            }
+
             if (i === -1) {
 
                 // check for carbon double bond and return most substituted carbon
@@ -606,6 +611,7 @@ VMolecule
                 })
 
             }
+
 
             if (i===-1) {
 
@@ -646,6 +652,8 @@ VMolecule
 
                 })
 
+
+
                 if (i !== -1) {
                     // i is the index of the oxygen atom on the epoxide ring
                     // we need to find index of the least substituted carbon attached to the oxygen atom
@@ -656,6 +664,10 @@ VMolecule
                     const c1_atom_object = CAtom(bonds[0].atom, bonds[0].atom_index, container_molecule)
                     const c2_atom_object = CAtom(bonds[1].atom, bonds[1].atom_index, container_molecule)
                     i = c1_atom_object.hydrogens().length > c2_atom_object.hydrogens().length ? bonds[0].atom_index: bonds[1].atom_index
+
+                    if (container_molecule[0][1][i][4]==="-") {
+                        return -1
+                    }
                 }
             }
 
@@ -823,7 +835,7 @@ VMolecule
             return _.findIndex(container_molecule[0][1], (oxygen_atom, oxygen_atom_index)=>{
 
                 // Not an oxygen atom
-                if (oxygen_atom[0] !== "O") {
+                if (oxygen_atom[0] !== "O" || oxygen_atom[4] === "-") {
                     return false
                 }
 

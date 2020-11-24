@@ -17,7 +17,7 @@ class Reaction {
         container_substrate[0][1][0].should.be.an.Array()
         container_substrate[0][1][0][0].should.be.an.String()
 
-        if (undefined !== container_reagent) {
+        if (undefined !== container_reagent && null !== container_reagent) {
             container_reagent.length.should.be.equal(2) // molecule, units
             container_reagent[0].length.should.be.equal(2) // pKa, atoms
             container_reagent[0][0].should.be.an.Number() // pka
@@ -443,21 +443,7 @@ class Reaction {
 
     }
 
-    removeHydroxylGroup() {
-        console.log('reaction.js removeHydroxylGroup')
-        const nucleophile_index = this.MoleculeAI.findNucleophileIndex()
-        console.log(nucleophile_index)
-        // Find index of O atom bonded to nucleophile with exactly one hydrogen
-        const nucleophile_atom_object = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate)
-        const electrophile_index = nucleophile_atom_object.indexedBonds("").filter((bond)=>{
-            if (bond.atom[0] !== 'O') {
-                return false
-            }
-            const oxygen_atom_object = CAtom(this.container_substrate[0][1][bond.atom_index], bond.atom_index, this.container_substrate)
-            return oxygen_atom_object.hydrogens().length === 1
-        }).pop().atom_index
-        console.log(electrophile_index)
-
+    __removeGroup(nucleophile_index, electrophile_index) {
         const shared_electrons = Set().intersection(this.container_substrate[0][1][nucleophile_index].slice(5), this.container_substrate[0][1][electrophile_index].slice(5))
         const electrons = _.cloneDeep(this.container_substrate[0][1][nucleophile_index]).slice(5)
         _.remove(this.container_substrate[0][1][nucleophile_index], (v, i) => {
@@ -479,6 +465,53 @@ class Reaction {
                 return [[-1, group], 1]
             })
         }
+    }
+    removeMethanol() {
+
+        const nucleophile_index = this.MoleculeAI.findNucleophileIndex()
+
+        // Find index of oxygen atom attached to two carbons where one of the carbons is a terminal carbon
+        const nucleophile_atom_object = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate)
+        const bonds = nucleophile_atom_object.indexedBonds("").filter((bond)=>{
+            if (bond.atom[0] !== "O") {
+                return false
+            }
+            const oxygen_atom_object = CAtom(bond.atom, bond.atom_index, this.container_substrate)
+            const c_bonds = oxygen_atom_object.indexedBonds("").filter((bond)=>{
+                if (bond.atom[0] !=='C') {
+                    return false
+                }
+                const c_a = CAtom(bond.atom, bond.atom_index, this.container_substrate)
+                // Look for terminal carbon
+                const c_a_b = c_a.indexedBonds("").filter((bond)=> {
+                    return bond.atom[0] !== 'H'
+                })
+                return c_a_b.length === 1
+            })
+            return c_bonds.length > 0
+        })
+
+        const electrophile_index = bonds[0].atom_index
+
+        this.__removeGroup(nucleophile_index, electrophile_index)
+
+    }
+
+    removeHydroxylGroup() {
+
+        const nucleophile_index = this.MoleculeAI.findNucleophileIndex()
+
+        // Find index of O atom bonded to nucleophile with exactly one hydrogen
+        const nucleophile_atom_object = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate)
+        const electrophile_index = nucleophile_atom_object.indexedBonds("").filter((bond)=>{
+            if (bond.atom[0] !== 'O') {
+                return false
+            }
+            const oxygen_atom_object = CAtom(this.container_substrate[0][1][bond.atom_index], bond.atom_index, this.container_substrate)
+            return oxygen_atom_object.hydrogens().length === 1
+        }).pop().atom_index
+
+        this.__removeGroup(nucleophile_index, electrophile_index)
     }
 
     breakBond(break_type="heterolysis") {
@@ -522,13 +555,6 @@ class Reaction {
                 nucleophile_index = bonds_sorted[0].atom_index
             }
 
-            /*
-            console.log('Reaction.js Break bond (overloaded atom)')
-            console.log('Nucleophile index') // 4 (most substituted carbon)
-            console.log(nucleophile_index)
-            console.log('Electrophile index') // 8 (O, positive charge)
-            console.log(electrophile_index)
-            */
 
 
         } else {
@@ -538,9 +564,11 @@ class Reaction {
 
             if (electrophile_index === -1) {
                 nucleophile_index = this.MoleculeAI.findNucleophileIndex()
+               // console.log('nucleophile index:')
+//                console.log(nucleophile_index)
                 if (nucleophile_index === -1) {
-                    console.log("Electrophile not found")
-                    console.log("breakBond()")
+                 //   console.log("Electrophile not found")
+                   // console.log("breakBond()")
                     return false
                 } else {
                     nucleophile_atom_object = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate)
@@ -568,6 +596,9 @@ class Reaction {
                     } else {
                         electrophile_index = bonds_to_nucleophile[0].atom_index
                     }
+                    //console.log('electrophile_index:')
+                  //  console.log(electrophile_index)
+
                 }
             }
 
@@ -992,6 +1023,58 @@ class Reaction {
 
     }
 
+    breakBondReverse() { // bond atoms
+        console.log('breakBondReverse()')
+        let nucleophile_index = this.MoleculeAI.findNucleophileIndex()
+        console.log('nucleophile index:'+nucleophile_index)
+        let electrophile_index = this.MoleculeAI.findElectrophileIndex()
+        console.log('electrophile index:' + electrophile_index)
+        if (electrophile_index === -1) {
+            // Check for epoxide ring
+            if (this.container_substrate[0][1][nucleophile_index][0] === 'O') {
+                const oxygen_atom_object = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate)
+                const bonds = oxygen_atom_object.indexedBonds("")
+                    if (bonds.length === 1 && bonds[0].atom[0]==="C") {
+                        const attached_carbon_object = CAtom(bonds[0].atom, bonds[0].atom_index, this.container_substrate)
+                        const attached_carbon_object_carbon_bonds = attached_carbon_object.indexedBonds("").filter((bond)=>{
+                            return bond.atom[0] === "C"
+                        })
+                        attached_carbon_object_carbon_bonds.map((bond)=>{
+                            return bond
+                        })
+                        if (this.rule !== undefined && this.rule.mechanism === 'Epoxide ring opening via methoxide') {
+                            // find carbon that is attached to OC group
+                            electrophile_index = attached_carbon_object_carbon_bonds.filter((bond)=>{
+                                const c = CAtom(bond.atom, bond.atom_index, this.container_substrate)
+                                const b_o = c.indexedBonds("").filter((bond)=>{
+                                    return bond.atom[0] === "O"
+                                })
+                                if (b_o.length === 0) {
+                                    return false
+                                }
+            // @todo check if b_o atom has two carbon bonds with one of the carbon bonds being a terminal carbon
+                                return true
+                            }).pop().atom_index
+                        } else {
+                            // least substituted carbon
+                            // @todo
+                            electrophile_index = attached_carbon_object_carbon_bonds[0].atom_index
+
+                        }
+                    }
+            }
+        }
+
+        let nucleophile_free_electrons = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate).freeElectrons()
+
+        this.container_substrate[0][1][electrophile_index].push(nucleophile_free_electrons[0])
+        this.container_substrate[0][1][electrophile_index].push(nucleophile_free_electrons[1])
+
+        this.container_substrate[0][1][nucleophile_index][4] = this.container_substrate[0][1][nucleophile_index][4] === "-"?0:"+"
+        this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4] === "+"?0:"-"
+
+    }
+
     bondAtoms() {
 
         let electrophile_index = this.MoleculeAI.findElectrophileIndex()
@@ -1005,6 +1088,10 @@ class Reaction {
             console.log("bondAtoms() no electrophile found (1)")
             return false
         }
+
+        console.log('break bond')
+        console.log('electrophile index:'+electrophile_index)
+
 
 
         if (undefined === this.container_reagent) {
@@ -1048,8 +1135,6 @@ class Reaction {
 
             this.container_substrate[0][1][nucleophile_index][4] = this.container_substrate[0][1][nucleophile_index][4] === "-"?0:"+"
 
-            Set().intersection(this.container_substrate[0][1][electrophile_index].slice(5),
-                this.container_substrate[0][1][nucleophile_index].slice(5)).length.should.be.equal(2)
 
 
         } else {
