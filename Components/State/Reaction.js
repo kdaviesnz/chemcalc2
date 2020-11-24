@@ -943,6 +943,7 @@ class Reaction {
             }
         )
 
+
         this.setMoleculeAI()
         this.setReagentAI()
     }
@@ -951,10 +952,43 @@ class Reaction {
         // Important:
         // The reagent is the nucleophile and is attacking the substrate
         // The substrate is the electrophile
-        console.log('reaction.js bondSubstrateToReagent')
-        let electrophile_index = this.MoleculeAI.findElectrophileIndex()
-        console.log('electrophile_index:' + electrophile_index)
-        process.exit()
+        //console.log('reaction.js bondSubstrateToReagent')
+        const electrophile_index = this.MoleculeAI.findElectrophileIndex()
+       // console.log('electrophile_index:' + electrophile_index)
+        const nucleophile_index = this.ReagentAI.findNucleophileIndex()
+       // console.log('nucleophile index:' + nucleophile_index)
+
+        const nucleophile = CAtom(this.container_reagent[0][1][nucleophile_index], nucleophile_index, this.container_reagent)
+
+        let freeElectrons = nucleophile.freeElectrons()
+        if (freeElectrons.length === 0) {
+            const freeSlots = nucleophile.freeSlots()
+            if (freeSlots > 0) {
+                // Workaround
+                const uniqid = require('uniqid');
+                freeElectrons.push(uniqid())
+                freeElectrons.push(uniqid())
+                this.container_reagent[0][1][nucleophile_index].push(freeElectrons[0])
+                this.container_reagent[0][1][nucleophile_index].push(freeElectrons[1])
+            }
+        }
+        this.container_substrate[0][1][electrophile_index].push(freeElectrons[0])
+        this.container_substrate[0][1][electrophile_index].push(freeElectrons[1])
+
+        // Charges
+        this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4] === "+"?"":"-"
+        this.container_reagent[0][1][nucleophile_index][4] = this.container_reagent[0][1][nucleophile_index][4] === "-"?"":"+"
+
+        // Add reagent atoms to substrate
+        this.container_reagent[0][1].map(
+            (atom)=>{
+                this.container_substrate[0][1].push(atom)
+                return atom
+            }
+        )
+
+        this.setMoleculeAI()
+        this.setReagentAI()
 
     }
 

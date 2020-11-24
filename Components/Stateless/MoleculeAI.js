@@ -610,7 +610,7 @@ VMolecule
             if (i===-1) {
 
                 // Check for epoxide ring and return index of least substituted carbon
-                i - _.findIndex(_.cloneDeep(container_molecule[0][1]), (atom, index)=> {
+                i = _.findIndex(_.cloneDeep(container_molecule[0][1]), (atom, index)=> {
 
                     if (atom[0] !== 'O') {
                         return false
@@ -637,12 +637,6 @@ VMolecule
                     const c1 = bonds[0].atom
                     const c2 = bonds[1].atom
 
-                    console.log('epoxide:' + index)
-                    console.log(bonds.filter((bond)=>{
-                        return bond.atom[0] === "C"
-                    }).length)
-                    console.log(Set().intersection(c1.slice(5), c2.slice(5)).length)
-
                     if (Set().intersection(c1.slice(5), c2.slice(5)).length === 0) {
                         return false
                     }
@@ -652,9 +646,6 @@ VMolecule
 
                 })
 
-                console.log('epoxide')
-                console.log(i)
-
                 if (i !== -1) {
                     // i is the index of the oxygen atom on the epoxide ring
                     // we need to find index of the least substituted carbon attached to the oxygen atom
@@ -662,8 +653,8 @@ VMolecule
                     const bonds = oxygen_atom_object.indexedBonds("")
                     // Have oxygen atom bonded to two carbons where the two carbons are bonded together
                     // Find least substituted carbon
-                    const c1_atom_object = CAtom(c1, bonds[0].atom_index, container_molecule)
-                    const c2_atom_object = CAtom(c2, bonds[1].atom_index, container_molecule)
+                    const c1_atom_object = CAtom(bonds[0].atom, bonds[0].atom_index, container_molecule)
+                    const c2_atom_object = CAtom(bonds[1].atom, bonds[1].atom_index, container_molecule)
                     i = c1_atom_object.hydrogens().length > c2_atom_object.hydrogens().length ? bonds[0].atom_index: bonds[1].atom_index
                 }
             }
