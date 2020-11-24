@@ -482,7 +482,7 @@ const propionaldehyde = MoleculeFactory("CCC=O") // aldehyde (substrate)
 // 1. N atom on ammonia (nucleophile) attacks carbonyl carbon (C=O) on substrate, attaching itself to the carbon
 // 2. C=O bond breaks and forms a CO bond. O atom should now be negatively charged.
 // 3. O atom (nucleophile) deprotonates N atom.
-// 4. O atom is protonated using OH hydrogen from formic acid. O should now have a positive charge.
+// 4. O atom is protonated using OH hydrogen from formic acid (reagent). O should now have a positive charge.
 // 5. OC bond breaks, creating a water leaving group. Carbon atom should now have a positive charge.
 // 6. Carbon deprotonates deprotonated formic acid.
 // 7. CO bond on deprotonated formic acid forms double bond to create carbon dioxide.
@@ -495,6 +495,45 @@ console.log("Leukart Wallach reaction - BOND substrate to reagent -N atom on amm
 const leukart_wallach_reaction_step1 = CommandTest("BOND substrate to reagent", _.cloneDeep([acetone,1]), [ammonia,1])
 console.log(VMolecule(leukart_wallach_reaction_step1[0]).compressed())
 
+process.exit()
+
+console.log("Leukart Wallach reaction - BREAK carbon oxygen double bond - C=O bond breaks and forms a CO bond. O atom should now be negatively charged.")
+const leukart_wallach_reaction_step2 = CommandTest("BREAK carbon oxygen double bond", _.cloneDeep(leukart_wallach_reaction_step1[0]))
+console.log(VMolecule(leukart_wallach_reaction_step2[0]).compressed())
+
+process.exit()
+
+console.log("Leukart Wallach reaction - DEPROTONATE - O atom (nucleophile) deprotonates N atom.")
+const leukart_wallach_reaction_step3 = CommandTest("DEPROTONATE", _.cloneDeep(leukart_wallach_reaction_step2[0]))
+console.log(VMolecule(leukart_wallach_reaction_step3[0]).compressed())
+
+
+process.exit()
+
+console.log("Leukart Wallach reaction - PROTONATE - O atom is protonated using OH hydrogen from formic acid (reagent). O should now have a positive charge.")
+const leukart_wallach_reaction_step4 = CommandTest("DEPROTONATE", _.cloneDeep(leukart_wallach_reaction_step3[0]), _.cloneDeep([formic_acid, 1]))
+console.log(VMolecule(leukart_wallach_reaction_step4[0]).compressed())
+const deprotonated_formic_acid = leukart_wallach_reaction_step4[1][0]
+
+process.exit()
+
+console.log("Leukart Wallach reaction - BREAK bond - OC bond breaks, creating a water leaving group. Carbon atom should now have a positive charge..")
+const leukart_wallach_reaction_step5 = CommandTest("BREAK bond", _.cloneDeep(leukart_wallach_reaction_step4[0]))
+console.log(VMolecule(leukart_wallach_reaction_step5[0]).compressed())
+
+
+process.exit()
+
+console.log("Leukart Wallach reaction - DEPROTONATE - Carbon deprotonates deprotonated formic acid.")
+const leukart_wallach_reaction_step6 = CommandTest("DEPROTONATE", _.cloneDeep(leukart_wallach_reaction_step5[0]), _.cloneDeep([deprotonated_formic_acid,1]))
+console.log(VMolecule(leukart_wallach_reaction_step6[0]).compressed())
+
+
+process.exit()
+
+console.log("Leukart Wallach reaction - MAKE oxygen carbon double bond - CO bond on deprotonated formic acid forms double bond to create carbon dioxide.")
+const leukart_wallach_reaction_step6 = CommandTest("MAKE oxygen carbon double bond ", _.cloneDeep(leukart_wallach_reaction_step5[1]))
+console.log(VMolecule(leukart_wallach_reaction_step6[0]).compressed())
 
 
 process.exit()
