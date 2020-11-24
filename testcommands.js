@@ -467,4 +467,34 @@ console.log("epoxide ring opening via methoxide step 1 reversed - REMOVE methano
 const epoxide_ring_opening_via_methoxide_step1_reversed = CommandTest("REMOVE methanol", _.cloneDeep(epoxide_ring_opening_via_methoxide_step2_reversed[0]), null, {'mechanism':'Epoxide ring opening via methoxide'})
 console.log(VMolecule(epoxide_ring_opening_via_methoxide_step1_reversed[0]).compressed())
 
+// AMINES
+// mechanism: Leukart Wallach reaction
+// https://en.wikipedia.org/wiki/Leuckart_reaction
+// Substrate is either aldehyde or ketone
+// Reagent is either ammonium formate or formamide
+const ammonium_formate = MoleculeFactory("C(=O)[O-].[NH4+]")
+// ammonium formate dissassociates into formic acid and ammonia
+const formic_acid = MoleculeFactory("C(=O)O")
+const ammonia = MoleculeFactory("N") // NH3
+const acetone = MoleculeFactory("CC(=O)C") // ketone (substrate)
+const propionaldehyde = MoleculeFactory("CCC=O") // aldehyde (substrate)
+
+// 1. N atom on ammonia (nucleophile) attacks carbonyl carbon (C=O) on substrate, attaching itself to the carbon
+// 2. C=O bond breaks and forms a CO bond. O atom should now be negatively charged.
+// 3. O atom (nucleophile) deprotonates N atom.
+// 4. O atom is protonated using OH hydrogen from formic acid. O should now have a positive charge.
+// 5. OC bond breaks, creating a water leaving group. Carbon atom should now have a positive charge.
+// 6. Carbon deprotonates deprotonated formic acid.
+// 7. CO bond on deprotonated formic acid forms double bond to create carbon dioxide.
+/*
+        "BOND substrate to reagent": BondSubstrateToReagent, // Important:
+        // The reagent is the nucleophile and is attacking the substrate
+        // The substrate is the electrophile
+ */
+console.log("Leukart Wallach reaction - BOND substrate to reagent -N atom on ammonia (nucleophile) attacks carbonyl carbon (C=O) on substrate, attaching itself to the carbon")
+const leukart_wallach_reaction_step1 = CommandTest("BOND substrate to reagent", _.cloneDeep([acetone,1]), [ammonia,1])
+console.log(VMolecule(leukart_wallach_reaction_step1[0]).compressed())
+
+
+
 process.exit()
