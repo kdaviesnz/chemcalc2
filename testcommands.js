@@ -556,7 +556,7 @@ console.log(VMolecule(leukart_wallach_reaction_step2_reversed[0]).compressed())
 process.exit()
 
 console.log("Leukart Wallach reaction step 1 reversed - BREAK bond - break N-C bond, creating ammonia leaving group")
-const leukart_wallach_reaction_step1_reversed = CommandTest("MAKE oxygen carbon double bond", _.cloneDeep(leukart_wallach_reaction_step3_reversed[0]))
+const leukart_wallach_reaction_step1_reversed = CommandTest("BREAK bond", _.cloneDeep(leukart_wallach_reaction_step3_reversed[0]))
 console.log(VMolecule(leukart_wallach_reaction_step2_reversed[0]).compressed())
 
 
