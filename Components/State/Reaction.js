@@ -721,7 +721,7 @@ class Reaction {
         const source_atom = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate)
         const target_atom = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
 
-        const shared_electrons = Set().intersection(this.container_substrate[0][1][nucleophile_index].slice(5), this.container_substrate[0][1][electrophile_index].slice(5))
+        const shared_electrons = Set().intersection(_.cloneDeep(this.container_substrate[0][1][nucleophile_index].slice(5)), _.cloneDeep(this.container_substrate[0][1][electrophile_index].slice(5)))
 
         /*
         https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Map%3A_Organic_Chemistry_(Smith)/Chapter_06%3A_Understanding_Organic_Reactions/6.03_Bond_Breaking_and_Bond_Making
@@ -736,9 +736,19 @@ class Reaction {
             //console.log(_.cloneDeep(this.container_substrate[0][1][nucleophile_index]).slice(0,5))
             //console.log(_.cloneDeep(this.container_substrate[0][1][electrophile_index]).slice(0,5))
 
+
+            console.log("Shared electrons:")
+            console.log(shared_electrons)
+
             // Remove shared electrons from nucleophile
+            console.log('Removing electrons:')
             const electrons = _.cloneDeep(this.container_substrate[0][1][nucleophile_index]).slice(5)
-            _.remove(this.container_substrate[0][1][nucleophile_index], (v, i) => {
+            // Added '.slice(5)'
+            _.remove(this.container_substrate[0][1][nucleophile_index].slice(5), (v, i) => {
+                console.log(v + ' ' + shared_electrons[0] + ' ' + shared_electrons[1])
+                if (shared_electrons[0] === v || shared_electrons[1] === v) {
+                    console.log('Removed electron ' + v)
+                }
                 return shared_electrons[0] === v || shared_electrons[1] === v
             })
             this.container_substrate[0][1][nucleophile_index].slice(5).length.should.not.be.equal(electrons.length)
@@ -756,8 +766,15 @@ class Reaction {
             } else {
                 this.container_substrate[0][1][electrophile_index][4] = "-"
             }
+            console.log(this.container_substrate[0][1][nucleophile_index].slice(5))
+            console.log(this.container_substrate[0][1][electrophile_index].slice(5))
+            console.log(this.container_substrate[0][1][electrophile_index][0])
+            console.log(this.container_substrate[0][1][nucleophile_index][0])
 
-            Set().intersection(this.container_substrate[0][1][nucleophile_index].slice(5), this.container_substrate[0][1][electrophile_index].slice(5)).length.should.be.equal(0)
+            console.log("------")
+            console.log(Set().intersection(_.cloneDeep(this.container_substrate[0][1][nucleophile_index].slice(5)), _.cloneDeep(this.container_substrate[0][1][electrophile_index].slice(5))))
+
+            Set().intersection(_.cloneDeep(this.container_substrate[0][1][nucleophile_index].slice(5)), _.cloneDeep(this.container_substrate[0][1][electrophile_index].slice(5))).length.should.be.equal(0)
 
 
         } else {
