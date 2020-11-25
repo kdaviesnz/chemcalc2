@@ -193,6 +193,24 @@ const MoleculeAI = (container_molecule) => {
             })
         },
 
+        findOxygenAttachedToCarbonIndexNoDoubleBonds: function() {
+            return _.findIndex(container_molecule[0][1], (atom, index) => {
+                if (atom[0] !== "O") {
+                    return false
+                }
+                const oxygen = CAtom(atom, index, container_molecule )
+
+                if (oxygen.indexedDoubleBonds("").length > 0) {
+                    return false
+                }
+
+                // Check for carbon bonds
+                const carbon_bonds = oxygen.indexedBonds("").filter((bond)=>{
+                    return bond.atom[0] === "C"
+                })
+                return carbon_bonds.length > 0
+            })
+        },
 
         "chains": function(previous_atom_index, root_atom_index, chains, chain_index, col, depth) {
 
@@ -704,6 +722,30 @@ VMolecule
             if (electrophile_index !== -1) {
                 const oxygen_atom_object = CAtom(container_molecule[0][1][electrophile_index], electrophile_index, container_molecule)
                 proton_bonds = oxygen_atom_object.indexedBonds("").filter((bond)=>{
+                    return bond.atom[0] === 'H'
+                })
+                if (proton_bonds.length > 0) {
+                    proton_index = proton_bonds[0].atom_index
+                }
+            } else {
+                // look for C
+                electrophile_index = _.findIndex(container_molecule[0][1], (atom, index)=>{
+                    if (atom[0] !== "C") {
+                        return false
+                    }
+                    const carbon_atom_object = CAtom(container_molecule[0][1][index], index, container_molecule)
+                    if (carbon_atom_object.indexedBonds("").filter((bond)=> {
+                        return bond.atom[0] === 'H'
+                    }).length === 1) {
+                        return true
+                    }
+                    return false
+                })
+            }
+
+            if (electrophile_index !== -1) {
+                const carbon_atom_object = CAtom(container_molecule[0][1][electrophile_index], electrophile_index, container_molecule)
+                proton_bonds = carbon_atom_object.indexedBonds("").filter((bond)=>{
                     return bond.atom[0] === 'H'
                 })
                 if (proton_bonds.length > 0) {

@@ -120,7 +120,8 @@ class Reaction {
 
     makeOxygenCarbonDoubleBond() {
 
-        const oxygen_index = this.MoleculeAI.findOxygenAttachedToCarbonIndex()
+        const oxygen_index = this.MoleculeAI.findOxygenAttachedToCarbonIndexNoDoubleBonds()
+
         const oxygen = CAtom(this.container_substrate[0][1][oxygen_index], oxygen_index, this.container_substrate)
         const carbon_bonds = oxygen.indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "C"
@@ -1323,6 +1324,13 @@ class Reaction {
         this.setReagentAI()
     }
 
+    removeProtonFromSubstrate(proton_index) {
+        proton_index.should.be.greaterThan(-1)
+        this.container_substrate[0][1].splice(proton_index, 1)
+        this.setMoleculeAI()
+    }
+
+
     protonate() {
 
         let atom_nucleophile_index = this.MoleculeAI.findNucleophileIndex()
@@ -1514,6 +1522,10 @@ class Reaction {
         const electrophile_index = this.MoleculeAI.findElectrophileIndex()
         const proton_index = this.ReagentAI.findProtonIndex()
         const proton = _.cloneDeep(this.container_reagent[0][1][proton_index])
+
+        const proton_atom_object = CAtom(this.container_reagent[0][1][proton_index], proton_index, this.container_reagent)
+        const atom_index = proton_atom_object.indexedBonds("").pop().atom_index
+        this.container_reagent[0][1][atom_index][4] = this.container_reagent[0][1][atom_index][4] === '-' ? "": "+"
         this.removeProtonFromReagent(proton_index)
 
         // Add proton to substrate
@@ -1521,7 +1533,30 @@ class Reaction {
         this.container_substrate[0][1][electrophile_index].push(electrons[0])
         this.container_substrate[0][1][electrophile_index].push(electrons[1])
         this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4] === '+' ? "": "-"
-            this.container_substrate[0][1].push(proton)
+        this.container_substrate[0][1].push(proton)
+
+        this.setMoleculeAI()
+        this.setReagentAI()
+
+    }
+
+    addProtonFromSubstrateToReagent() {
+
+        const electrophile_index = this.ReagentAI.findElectrophileIndex()
+        const proton_index = this.MoleculeAI.findProtonIndex()
+        const proton = _.cloneDeep(this.container_substrate[0][1][proton_index])
+
+        const proton_atom_object = CAtom(this.container_substrate[0][1][proton_index], proton_index, this.container_substrate)
+        const atom_index = proton_atom_object.indexedBonds("").pop().atom_index
+        this.container_substrate[0][1][atom_index][4] = this.container_substrate[0][1][atom_index][4] === '-' ? "": "+"
+        this.removeProtonFromSubstrate(proton_index)
+
+        // Add proton to substrate
+        const electrons = _.cloneDeep(proton).slice(5)
+        this.container_reagent[0][1][electrophile_index].push(electrons[0])
+        this.container_reagent[0][1][electrophile_index].push(electrons[1])
+        this.container_reagent[0][1][electrophile_index][4] = this.container_reagent[0][1][electrophile_index][4] === '+' ? "": "-"
+        this.container_reagent[0][1].push(proton)
 
         this.setMoleculeAI()
         this.setReagentAI()

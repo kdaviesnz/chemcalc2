@@ -517,40 +517,33 @@ console.log("Leukart Wallach reaction - DEHYDRATE - OC bond breaks, creating a w
 const leukart_wallach_reaction_step5 = CommandTest("DEHYDRATE", _.cloneDeep(leukart_wallach_reaction_step4[0]))
 console.log(VMolecule(leukart_wallach_reaction_step5[0]).compressed())
 
-console.log("Leukart Wallach reaction - ADD proton to substrate - Deprotonated formic acid protonates carbon atom.")
+console.log("Leukart Wallach reaction - ADD proton to substrate - Deprotonated formic acid protonates carbon atom. Carbon atom on formic acid should have positive charge.")
 const leukart_wallach_reaction_step6 = CommandTest("ADD proton to substrate", _.cloneDeep(leukart_wallach_reaction_step5[0]), _.cloneDeep([deprotonated_formic_acid,1]))
 console.log(VMolecule(leukart_wallach_reaction_step6[0]).compressed())
-
 console.log(VMolecule(leukart_wallach_reaction_step6[1]).compressed())
+
 console.log("Leukart Wallach reaction - MAKE oxygen carbon double bond - CO bond on deprotonated formic acid forms double bond to create carbon dioxide.")
 const leukart_wallach_reaction_step7 = CommandTest("MAKE oxygen carbon double bond", _.cloneDeep(leukart_wallach_reaction_step6[1]))
 console.log(VMolecule(leukart_wallach_reaction_step7[0]).compressed())
 
+const carbon_dioxide = leukart_wallach_reaction_step7[0][0]
 
-process.exit()
 
-console.log("Leukart Wallach reaction step 6 reversed - Deprotonate carbon atom")
-const leukart_wallach_reaction_step6_reversed = CommandTest("DEPROTONATE", _.cloneDeep(leukart_wallach_reaction_step6[0]), leukart_wallach_reaction_step7[0])
+console.log("Leukart Wallach reaction step 6 reversed - ADD proton to reagent - add proton from carbon atom on substrate to carbon atom on reagent")
+const leukart_wallach_reaction_step6_reversed = CommandTest("ADD proton to reagent", _.cloneDeep(leukart_wallach_reaction_step6[0]), [carbon_dioxide, 1])
 console.log(VMolecule(leukart_wallach_reaction_step6_reversed[0]).compressed())
-
-process.exit()
-
+console.log(VMolecule(leukart_wallach_reaction_step6_reversed[1]).compressed())
 
 console.log("Leukart Wallach reaction step 5 reversed - HYDRATE")
 const leukart_wallach_reaction_step5_reversed = CommandTest("HYDRATE", _.cloneDeep(leukart_wallach_reaction_step6_reversed[0]), _.cloneDeep([water,1]))
 console.log(VMolecule(leukart_wallach_reaction_step5_reversed[0]).compressed())
 
-process.exit()
-
-console.log("Leukart Wallach reaction step 4 reversed - DEPROTONATE")
-const leukart_wallach_reaction_step4_reversed = CommandTest("DEPROTONATE", _.cloneDeep(leukart_wallach_reaction_step5_reversed[0]), _.cloneDeep([deprotonated_formic_acid,1]))
+console.log("Leukart Wallach reaction step 4 reversed - REMOVE proton from water - remove hydrogen from water group")
+const leukart_wallach_reaction_step4_reversed = CommandTest("REMOVE proton from water", _.cloneDeep(leukart_wallach_reaction_step5_reversed[0]), _.cloneDeep([deprotonated_formic_acid,1]))
 console.log(VMolecule(leukart_wallach_reaction_step4_reversed[0]).compressed())
 
-process.exit()
-
-
-console.log("Leukart Wallach reaction step 3 reversed - PROTONATE - oxygen atom protonates N. N should now be + charged and O atom should be - charged.")
-const leukart_wallach_reaction_step3_reversed = CommandTest("PROTONATE", _.cloneDeep(leukart_wallach_reaction_step4_reversed[0]), _.cloneDeep([deprotonated_formic_acid,1]))
+console.log("Leukart Wallach reaction step 3 reversed - TRANSFER proton - oxygen atom protonates N. N should now be + charged and O atom should be - charged.")
+const leukart_wallach_reaction_step3_reversed = CommandTest("TRANSFER proton", _.cloneDeep(leukart_wallach_reaction_step4_reversed[0]), _.cloneDeep([deprotonated_formic_acid,1]))
 console.log(VMolecule(leukart_wallach_reaction_step4_reversed[0]).compressed())
 
 process.exit()

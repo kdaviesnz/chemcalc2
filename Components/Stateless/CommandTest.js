@@ -39,6 +39,7 @@ const RemoveHydroxylGroup = require('../../Commands/RemoveHydroxylGroup')
 const BreakBondReverse = require('../../Commands/BreakBondReverse')
 const RemoveMethanol = require('../../Commands/RemoveMethanol')
 const AddProtonToSubstrate = require('../../Commands/AddProtonToSubstrate')
+const AddProtonToReagent = require('../../Commands/AddProtonToReagent')
 
 const CommandTest = (command, substrate, reagent, rule) => {
 
@@ -82,7 +83,8 @@ const CommandTest = (command, substrate, reagent, rule) => {
         "REMOVE hydroxyl group": RemoveHydroxylGroup,
         "BREAK bond reversed": BreakBondReverse,
         "REMOVE methanol": RemoveMethanol,
-        "ADD proton to substrate": AddProtonToSubstrate
+        "ADD proton to substrate": AddProtonToSubstrate,
+        "ADD proton to reagent": AddProtonToReagent
     }
 
 
