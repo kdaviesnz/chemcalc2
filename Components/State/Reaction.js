@@ -278,7 +278,34 @@ class Reaction {
     }
 
     transferProton() {
-        return false
+        console.log('transferProton')
+        // Get nucleophile  - this is the atom that is getting the proton
+        const nucleophile_index = this.MoleculeAI.findNucleophileIndex()
+        console.log(nucleophile_index)
+
+        // Get electrophile - this is the atom we are getting the proton from
+        const electrophile_index = this.MoleculeAI.findElectrophileIndex()
+        console.log(electrophile_index)
+
+        // Get proton from electrophile
+        const electrophile_atom_object = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
+        const proton_bond = electrophile_atom_object.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === 'H'
+        }).pop()
+
+        // Remove electrons from electrophile
+        const shared_electrons = proton_bond.shared_electrons
+        _.remove(this.container_substrate[0][1][electrophile_index], (v, i)=> {
+            return shared_electrons[1] === v || shared_electrons[0] === v
+        })
+        this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4] === "+"?"":"-"
+
+        // Add proton to nucleophile
+        this.container_substrate[0][1][nucleophile_index].push(shared_electrons[0])
+        this.container_substrate[0][1][nucleophile_index].push(shared_electrons[1])
+        this.container_substrate[0][1][nucleophile_index][4] = this.container_substrate[0][1][nucleophile_index][4] === "-"?"":"+"
+
+        this.setMoleculeAI()
     }
 
     dereduce() {
@@ -436,6 +463,8 @@ class Reaction {
 */
         // Check we do not have a water molecule attached to main molecule
        // this.MoleculeAI.findWaterOxygenIndex().should.be.equal(-1)
+
+
 
         this.setMoleculeAI()
 
@@ -1477,6 +1506,25 @@ class Reaction {
         this.addProtonToReagent()
         this.setReagentAI()
 
+
+    }
+
+    addProtonFromReagentToSubstrate() {
+
+        const electrophile_index = this.MoleculeAI.findElectrophileIndex()
+        const proton_index = this.ReagentAI.findProtonIndex()
+        const proton = _.cloneDeep(this.container_reagent[0][1][proton_index])
+        this.removeProtonFromReagent(proton_index)
+
+        // Add proton to substrate
+        const electrons = _.cloneDeep(proton).slice(5)
+        this.container_substrate[0][1][electrophile_index].push(electrons[0])
+        this.container_substrate[0][1][electrophile_index].push(electrons[1])
+        this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4] === '+' ? "": "-"
+            this.container_substrate[0][1].push(proton)
+
+        this.setMoleculeAI()
+        this.setReagentAI()
 
     }
 

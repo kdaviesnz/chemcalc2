@@ -683,6 +683,38 @@ VMolecule
 
         "findProtonIndex": () => {
 
+            let electrophile_index = __findElectrophileIndex()
+            let proton_index = null
+            if (electrophile_index === -1) {
+                // look for OH
+                electrophile_index = _.findIndex(container_molecule[0][1], (atom, index)=>{
+                    if (atom[0] !== "O") {
+                        return false
+                    }
+                    const oxygen_atom_object = CAtom(container_molecule[0][1][index], index, container_molecule)
+                    if (oxygen_atom_object.indexedBonds("").filter((bond)=> {
+                        return bond.atom[0] === 'H'
+                    }).length === 0) {
+                        return false
+                    }
+                    return true
+                })
+            }
+
+            if (electrophile_index !== -1) {
+                const oxygen_atom_object = CAtom(container_molecule[0][1][electrophile_index], electrophile_index, container_molecule)
+                proton_bonds = oxygen_atom_object.indexedBonds("").filter((bond)=>{
+                    return bond.atom[0] === 'H'
+                })
+                if (proton_bonds.length > 0) {
+                    proton_index = proton_bonds[0].atom_index
+                }
+            }
+
+            if (proton_index !== null) {
+                return proton_index
+            }
+
             return _.findIndex(container_molecule[0][1], (atom, index)=>{
 
                 if (atom[0] !== "H") {

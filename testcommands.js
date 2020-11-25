@@ -491,48 +491,39 @@ const propionaldehyde = MoleculeFactory("CCC=O") // aldehyde (substrate)
         // The reagent is the nucleophile and is attacking the substrate
         // The substrate is the electrophile
  */
-console.log("Leukart Wallach reaction - BOND substrate to reagent -N atom on ammonia (nucleophile) attacks carbonyl carbon (C=O) on substrate, attaching itself to the carbon")
+console.log("Leukart Wallach reaction - BOND substrate to reagent - N atom on ammonia (nucleophile) attacks carbonyl carbon (C=O) on substrate, attaching itself to the carbon")
 const leukart_wallach_reaction_step1 = CommandTest("BOND substrate to reagent", _.cloneDeep([acetone,1]), [ammonia,1])
 console.log(VMolecule(leukart_wallach_reaction_step1[0]).compressed())
 
-process.exit()
 
-console.log("Leukart Wallach reaction - BREAK carbon oxygen double bond - C=O bond breaks and forms a CO bond. O atom should now be negatively charged.")
+console.log("Leukart Wallach reaction - BREAK carbon oxygen double bond - C=O bond breaks and forms a CO bond. O atom should now be negatively charged. N should be + charged.")
 const leukart_wallach_reaction_step2 = CommandTest("BREAK carbon oxygen double bond", _.cloneDeep(leukart_wallach_reaction_step1[0]))
 console.log(VMolecule(leukart_wallach_reaction_step2[0]).compressed())
 
-process.exit()
-
-console.log("Leukart Wallach reaction - DEPROTONATE - O atom (nucleophile) deprotonates N atom.")
-const leukart_wallach_reaction_step3 = CommandTest("DEPROTONATE", _.cloneDeep(leukart_wallach_reaction_step2[0]))
+console.log("Leukart Wallach reaction - TRANSFER proton - O atom (nucleophile) is deprotonated by N atom.")
+const leukart_wallach_reaction_step3 = CommandTest("TRANSFER proton", _.cloneDeep(leukart_wallach_reaction_step2[0]))
 console.log(VMolecule(leukart_wallach_reaction_step3[0]).compressed())
 
-
-process.exit()
-
-console.log("Leukart Wallach reaction - PROTONATE - O atom is protonated using OH hydrogen from formic acid (reagent). O should now have a positive charge.")
+console.log('Formic acid')
+console.log(VMolecule([formic_acid,1]).compressed())
+console.log("Leukart Wallach reaction - PROTONATE - O atom is protonated using OH hydrogen from formic acid (reagent). O should now have a positive charge. O atom on formic acid should have negative charge.")
 const leukart_wallach_reaction_step4 = CommandTest("PROTONATE", _.cloneDeep(leukart_wallach_reaction_step3[0]), _.cloneDeep([formic_acid, 1]))
 console.log(VMolecule(leukart_wallach_reaction_step4[0]).compressed())
+console.log('Deprotonated formic acid')
+console.log(VMolecule(leukart_wallach_reaction_step4[1]).compressed())
 const deprotonated_formic_acid = leukart_wallach_reaction_step4[1][0]
-
-process.exit()
 
 console.log("Leukart Wallach reaction - DEHYDRATE - OC bond breaks, creating a water leaving group. Carbon atom should now have a positive charge.")
 const leukart_wallach_reaction_step5 = CommandTest("DEHYDRATE", _.cloneDeep(leukart_wallach_reaction_step4[0]))
 console.log(VMolecule(leukart_wallach_reaction_step5[0]).compressed())
 
-
-process.exit()
-
-console.log("Leukart Wallach reaction - PROTONATE - Deprotonated formic acid protonates carbon atom.")
-const leukart_wallach_reaction_step6 = CommandTest("PROTONATE", _.cloneDeep(leukart_wallach_reaction_step5[0]), _.cloneDeep([deprotonated_formic_acid,1]))
+console.log("Leukart Wallach reaction - ADD proton to substrate - Deprotonated formic acid protonates carbon atom.")
+const leukart_wallach_reaction_step6 = CommandTest("ADD proton to substrate", _.cloneDeep(leukart_wallach_reaction_step5[0]), _.cloneDeep([deprotonated_formic_acid,1]))
 console.log(VMolecule(leukart_wallach_reaction_step6[0]).compressed())
 
-
-process.exit()
-
+console.log(VMolecule(leukart_wallach_reaction_step6[1]).compressed())
 console.log("Leukart Wallach reaction - MAKE oxygen carbon double bond - CO bond on deprotonated formic acid forms double bond to create carbon dioxide.")
-const leukart_wallach_reaction_step7 = CommandTest("MAKE oxygen carbon double bond ", _.cloneDeep(leukart_wallach_reaction_step5[1]))
+const leukart_wallach_reaction_step7 = CommandTest("MAKE oxygen carbon double bond", _.cloneDeep(leukart_wallach_reaction_step6[1]))
 console.log(VMolecule(leukart_wallach_reaction_step7[0]).compressed())
 
 
