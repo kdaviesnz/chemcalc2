@@ -545,19 +545,16 @@ console.log(VMolecule(leukart_wallach_reaction_step4_reversed[0]).compressed())
 // mechanism "Leukart Wallach reaction"
 console.log("Leukart Wallach reaction step 3 reversed - TRANSFER proton - oxygen atom protonates N. N should now be + charged and O atom should be - charged.")
 const leukart_wallach_reaction_step3_reversed = CommandTest("TRANSFER proton [reverse]", _.cloneDeep(leukart_wallach_reaction_step4_reversed[0]), null, {'mechanism':'Leukart Wallach reaction'})
-console.log(VMolecule(leukart_wallach_reaction_step4_reversed[0]).compressed())
+console.log(VMolecule(leukart_wallach_reaction_step3_reversed[0]).compressed())
 
-process.exit()
 
-console.log("Leukart Wallach reaction step 2 reversed - MAKE oxygen carbon double bond.")
+console.log("Leukart Wallach reaction step 2 reversed - MAKE oxygen carbon double bond. Carbon should have a negative charge.")
 const leukart_wallach_reaction_step2_reversed = CommandTest("MAKE oxygen carbon double bond", _.cloneDeep(leukart_wallach_reaction_step3_reversed[0]))
 console.log(VMolecule(leukart_wallach_reaction_step2_reversed[0]).compressed())
 
-process.exit()
-
 console.log("Leukart Wallach reaction step 1 reversed - BREAK bond - break N-C bond, creating ammonia leaving group")
-const leukart_wallach_reaction_step1_reversed = CommandTest("BREAK bond", _.cloneDeep(leukart_wallach_reaction_step3_reversed[0]))
-console.log(VMolecule(leukart_wallach_reaction_step2_reversed[0]).compressed())
+const leukart_wallach_reaction_step1_reversed = CommandTest("BREAK bond", _.cloneDeep(leukart_wallach_reaction_step2_reversed[0]))
+console.log(VMolecule(leukart_wallach_reaction_step1_reversed[0]).compressed())
 
 
 

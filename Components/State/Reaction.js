@@ -286,9 +286,10 @@ class Reaction {
         } else {
 
             // Get index of N
-            const nucleophile_index = _.find(this.container_reagent[0][1], (atom, index)=>{
+            const nucleophile_index = _.findIndex(this.container_substrate[0][1], (atom, index)=>{
                 return atom[0] === 'N'
             })
+
 
             // Get index of OH
             const electrophile_index = this.MoleculeAI.findHydroxylOxygenIndex()
@@ -737,40 +738,49 @@ class Reaction {
             //console.log(_.cloneDeep(this.container_substrate[0][1][electrophile_index]).slice(0,5))
 
 
-            console.log("Shared electrons:")
-            console.log(shared_electrons)
+            //console.log("Shared electrons:")
+            //console.log(shared_electrons)
 
             // Remove shared electrons from nucleophile
-            console.log('Removing electrons:')
+            //console.log('Removing electrons:')
             const electrons = _.cloneDeep(this.container_substrate[0][1][nucleophile_index]).slice(5)
-            // Added '.slice(5)'
-            _.remove(this.container_substrate[0][1][nucleophile_index].slice(5), (v, i) => {
-                console.log(v + ' ' + shared_electrons[0] + ' ' + shared_electrons[1])
+           // console.log(this.container_substrate[0][1][nucleophile_index])
+            _.remove(this.container_substrate[0][1][nucleophile_index], (v, i) => {
+              //  console.log(v + ' ' + shared_electrons[0] + ' ' + shared_electrons[1])
                 if (shared_electrons[0] === v || shared_electrons[1] === v) {
-                    console.log('Removed electron ' + v)
+                   // console.log('Removed electron ' + v)
                 }
                 return shared_electrons[0] === v || shared_electrons[1] === v
             })
+            //console.log(this.container_substrate[0][1][nucleophile_index])
             this.container_substrate[0][1][nucleophile_index].slice(5).length.should.not.be.equal(electrons.length)
 
             // nucleophile should now be positively charged
             // electrophile should be negatively charged
+            console.log(this.container_substrate[0][1][nucleophile_index][4])
+            console.log((this.container_substrate[0][1][nucleophile_index][4] === "-"))
             if (this.container_substrate[0][1][nucleophile_index][4] === "-") {
                 this.container_substrate[0][1][nucleophile_index][4] = ""
             } else {
                 this.container_substrate[0][1][nucleophile_index][4] = "+"
             }
 
+            console.log(nucleophile_index)
+            console.log(this.container_substrate[0][1][nucleophile_index][4])
+
+
             if (this.container_substrate[0][1][electrophile_index][4] === "+") {
                 this.container_substrate[0][1][electrophile_index][4] = ""
             } else {
                 this.container_substrate[0][1][electrophile_index][4] = "-"
             }
+
+            /*
             console.log(this.container_substrate[0][1][nucleophile_index].slice(5))
             console.log(this.container_substrate[0][1][electrophile_index].slice(5))
             console.log(this.container_substrate[0][1][electrophile_index][0])
             console.log(this.container_substrate[0][1][nucleophile_index][0])
-
+*/
             console.log("------")
             console.log(Set().intersection(_.cloneDeep(this.container_substrate[0][1][nucleophile_index].slice(5)), _.cloneDeep(this.container_substrate[0][1][electrophile_index].slice(5))))
 
