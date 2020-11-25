@@ -542,8 +542,9 @@ console.log("Leukart Wallach reaction step 4 reversed - REMOVE proton from water
 const leukart_wallach_reaction_step4_reversed = CommandTest("REMOVE proton from water", _.cloneDeep(leukart_wallach_reaction_step5_reversed[0]), _.cloneDeep([deprotonated_formic_acid,1]))
 console.log(VMolecule(leukart_wallach_reaction_step4_reversed[0]).compressed())
 
+// mechanism "Leukart Wallach reaction"
 console.log("Leukart Wallach reaction step 3 reversed - TRANSFER proton - oxygen atom protonates N. N should now be + charged and O atom should be - charged.")
-const leukart_wallach_reaction_step3_reversed = CommandTest("TRANSFER proton", _.cloneDeep(leukart_wallach_reaction_step4_reversed[0]), _.cloneDeep([deprotonated_formic_acid,1]))
+const leukart_wallach_reaction_step3_reversed = CommandTest("TRANSFER proton [reverse]", _.cloneDeep(leukart_wallach_reaction_step4_reversed[0]), null, {'mechanism':'Leukart Wallach reaction'})
 console.log(VMolecule(leukart_wallach_reaction_step4_reversed[0]).compressed())
 
 process.exit()

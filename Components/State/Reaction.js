@@ -278,8 +278,47 @@ class Reaction {
         return false
     }
 
+    transferProtonReverse() {
+
+        console.log('transferProtonReverse()')
+        if (this.rule.mechanism !== 'Leukart Wallach reaction') {
+            this.transferProton()
+        } else {
+
+            // Get index of N
+            const nucleophile_index = _.find(this.container_reagent[0][1], (atom, index)=>{
+                return atom[0] === 'N'
+            })
+
+            // Get index of OH
+            const electrophile_index = this.MoleculeAI.findHydroxylOxygenIndex()
+
+            // Get proton from electrophile
+            const electrophile_atom_object = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
+            const proton_bond = electrophile_atom_object.indexedBonds("").filter((bond)=>{
+                return bond.atom[0] === 'H'
+            }).pop()
+
+            // Remove electrons from electrophile atom
+            const shared_electrons = proton_bond.shared_electrons
+            _.remove(this.container_substrate[0][1][electrophile_index], (v, i)=> {
+                return shared_electrons[1] === v || shared_electrons[0] === v
+            })
+            this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4] === "+"?"":"-"
+
+            // Add proton to nucleophile atom
+            this.container_substrate[0][1][nucleophile_index].push(shared_electrons[0])
+            this.container_substrate[0][1][nucleophile_index].push(shared_electrons[1])
+            this.container_substrate[0][1][nucleophile_index][4] = this.container_substrate[0][1][nucleophile_index][4] === "-"?"":"+"
+
+            this.setMoleculeAI()
+
+        }
+
+    }
+
     transferProton() {
-        console.log('transferProton')
+
         // Get nucleophile  - this is the atom that is getting the proton
         const nucleophile_index = this.MoleculeAI.findNucleophileIndex()
         console.log(nucleophile_index)

@@ -17,6 +17,7 @@ const ProtonateNonHydroxylOxygen = require('../../Commands/ProtonateNonHydroxylO
 const Reduce = require('../../Commands/Reduce')
 const Dereduce = require('../../Commands/Dereduce')
 const TransferProton = require('../../Commands/TransferProton')
+const TransferProtonReverse = require('../../Commands/TransferProtonReverse')
 const DeprotonateCarbonyl = require('../../Commands/DeprotonateCarbonyl')
 const ProtonateCarbonyl = require('../../Commands/ProtonateCarbonyl')
 const ProtonateDoubleCarbonBond = require('../../Commands/ProtonateCarbonDoubleBond')
@@ -55,6 +56,7 @@ const CommandTest = (command, substrate, reagent, rule) => {
         "DEPROTONATE nonhydroxyl oxygen": DeprotonateNonHydroxylOxygen,
         "PROTONATE nonhydroxyl oxygen": ProtonateNonHydroxylOxygen,
         "TRANSFER proton": TransferProton,
+        "TRANSFER proton [reverse]": TransferProtonReverse,
         "PROTONATE carbonyl": ProtonateCarbonyl,
         "DEPROTONATE carbonyl": DeprotonateCarbonyl,
         "REDUCE": Reduce,
