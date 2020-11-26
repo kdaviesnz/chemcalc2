@@ -59,6 +59,10 @@ const MoleculeAI = (container_molecule) => {
                 return false
             }
 
+            if (atom_object.indexedDoubleBonds("").length > 0) {
+                return false
+            }
+
             if (atom_object.isPositivelyCharged() || atom[4] === "&+") {
                 electrophile_index = atom_object.atomIndex
             }
