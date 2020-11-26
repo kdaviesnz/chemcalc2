@@ -733,7 +733,7 @@ class Reaction {
         // console.log("Reaction.js")
         if (break_type === "heterolysis") {
 
-            //console.log("Reaction.js break bond")
+            console.log("Reaction.js break bond")
             //console.log(_.cloneDeep(this.container_substrate[0][1][nucleophile_index]).slice(0,5))
             //console.log(_.cloneDeep(this.container_substrate[0][1][electrophile_index]).slice(0,5))
 
@@ -745,6 +745,7 @@ class Reaction {
             //console.log('Removing electrons:')
             const electrons = _.cloneDeep(this.container_substrate[0][1][nucleophile_index]).slice(5)
            // console.log(this.container_substrate[0][1][nucleophile_index])
+            /*
             _.remove(this.container_substrate[0][1][nucleophile_index], (v, i) => {
               //  console.log(v + ' ' + shared_electrons[0] + ' ' + shared_electrons[1])
                 if (shared_electrons[0] === v || shared_electrons[1] === v) {
@@ -752,8 +753,13 @@ class Reaction {
                 }
                 return shared_electrons[0] === v || shared_electrons[1] === v
             })
+            */
+            console.log(_.cloneDeep(this.container_substrate[0][1][nucleophile_index].slice(5)))
+            this.container_substrate[0][1][nucleophile_index] = Set().removeFromArray(this.container_substrate[0][1][nucleophile_index], shared_electrons)
             //console.log(this.container_substrate[0][1][nucleophile_index])
             this.container_substrate[0][1][nucleophile_index].slice(5).length.should.not.be.equal(electrons.length)
+            console.log(_.cloneDeep(this.container_substrate[0][1][nucleophile_index]).slice(5))
+          //  process.exit()
 
             // nucleophile should now be positively charged
             // electrophile should be negatively charged
@@ -765,23 +771,12 @@ class Reaction {
                 this.container_substrate[0][1][nucleophile_index][4] = "+"
             }
 
-            console.log(nucleophile_index)
-            console.log(this.container_substrate[0][1][nucleophile_index][4])
-
-
             if (this.container_substrate[0][1][electrophile_index][4] === "+") {
                 this.container_substrate[0][1][electrophile_index][4] = ""
             } else {
                 this.container_substrate[0][1][electrophile_index][4] = "-"
             }
 
-            /*
-            console.log(this.container_substrate[0][1][nucleophile_index].slice(5))
-            console.log(this.container_substrate[0][1][electrophile_index].slice(5))
-            console.log(this.container_substrate[0][1][electrophile_index][0])
-            console.log(this.container_substrate[0][1][nucleophile_index][0])
-*/
-            console.log("------")
             console.log(Set().intersection(_.cloneDeep(this.container_substrate[0][1][nucleophile_index].slice(5)), _.cloneDeep(this.container_substrate[0][1][electrophile_index].slice(5))))
 
             Set().intersection(_.cloneDeep(this.container_substrate[0][1][nucleophile_index].slice(5)), _.cloneDeep(this.container_substrate[0][1][electrophile_index].slice(5))).length.should.be.equal(0)
@@ -1810,6 +1805,8 @@ class Reaction {
     breakCarbonOxygenDoubleBond() {
 
         const oxygen_index = this.MoleculeAI.findOxygenOnDoubleBondIndex()
+        console.log('breakCarbonOxygenDoubleBond')
+        console.log(oxygen_index)
         const oxygen_atom = CAtom(this.container_substrate[0][1][oxygen_index], oxygen_index, this.container_substrate)
         const double_bonds = oxygen_atom.indexedDoubleBonds("")
 

@@ -1,13 +1,19 @@
 const Set = () => {
-    
-    
-    
+
     return {
         intersection: (array1, array2) => {
             return array1.filter((value) => array2.includes(value))
         },
         difference: (array1, array2) => {
             return array1.filter((value) => !array2.includes(value))
+        },
+        removeFromArray: (array1, array2) => {
+            return array1.reduce((carry, current, index, arr)=>{
+                if (!array2.includes(current)) {
+                    carry.push(current)
+                }
+                return carry
+            }, [])
         },
         insertIntoArray: (array1, array2, insertion_point) => {
             return [...array1.slice(0, insertion_point), ...array2, ...array1.slice(insertion_point)]
