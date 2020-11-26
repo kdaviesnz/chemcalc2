@@ -320,6 +320,7 @@ class Reaction {
 
     transferProton() {
 
+        console.log('transferProton')
         // Get nucleophile  - this is the atom that is getting the proton
         const nucleophile_index = this.MoleculeAI.findNucleophileIndex()
         console.log(nucleophile_index)
@@ -1074,11 +1075,11 @@ class Reaction {
         // Important:
         // The reagent is the nucleophile and is attacking the substrate
         // The substrate is the electrophile
-        //console.log('reaction.js bondSubstrateToReagent')
+      //  console.log('reaction.js bondSubstrateToReagent')
         const electrophile_index = this.MoleculeAI.findElectrophileIndex()
-       // console.log('electrophile_index:' + electrophile_index)
+        //console.log('electrophile_index (substrate):' + electrophile_index)
         const nucleophile_index = this.ReagentAI.findNucleophileIndex()
-       // console.log('nucleophile index:' + nucleophile_index)
+        //console.log('nucleophile index (reagent):' + nucleophile_index)
 
         const nucleophile = CAtom(this.container_reagent[0][1][nucleophile_index], nucleophile_index, this.container_reagent)
 
@@ -1180,7 +1181,7 @@ class Reaction {
             return false
         }
 
-        console.log('break bond')
+        console.log('bondAtoms')
         console.log('electrophile index:'+electrophile_index)
 
 
@@ -1818,8 +1819,28 @@ class Reaction {
             return v === shared_electrons[0] || v === shared_electrons[1]
         })
 
+        // carbon atom
         this.container_substrate[0][1][double_bonds[0].atom_index][4] =  this.container_substrate[0][1][double_bonds[0].atom_index][4] === "-"? '': '+'
         this.container_substrate[0][1][oxygen_index][4] = this.container_substrate[0][1][oxygen_index][4] === "+" ? "":"-"
+
+        // Look for atom attached to carbon atom that is not oxygen and is negatively charged
+        // If atom exists create double bond between carbon atom and that atom.
+        const carbon_atom_object = CAtom(this.container_substrate[0][1][double_bonds[0].atom_index], double_bonds[0].atom_index, this.container_substrate)
+        const carbon_atom_negative_bonds = carbon_atom_object.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] !== 'H' && bond.atom[0] !== 'O' && bond.atom[4] === '-'
+        })
+
+        if (carbon_atom_negative_bonds.length > 0) {
+            // Add and readd electrons
+            this.container_substrate[0][1][carbon_atom_negative_bonds[0].atom_index].push(shared_electrons[0])
+            this.container_substrate[0][1][carbon_atom_negative_bonds[0].atom_index].push(shared_electrons[1])
+            this.container_substrate[0][1][double_bonds[0].atom_index].push(shared_electrons[0])
+            this.container_substrate[0][1][double_bonds[0].atom_index].push(shared_electrons[1])
+            this.container_substrate[0][1][double_bonds[0].atom_index][4] =  this.container_substrate[0][1][double_bonds[0].atom_index][4] === "+"? '': '-'
+            this.container_substrate[0][1][carbon_atom_negative_bonds[0].atom_index][4] =  this.container_substrate[0][1][carbon_atom_negative_bonds[0].atom_index][4] === "-"? '': '+'
+            this.container_substrate[0][1][oxygen_index] = Set().removeFromArray(this.container_substrate[0][1][oxygen_index], shared_electrons)
+        }
+
 
         this.setMoleculeAI()
 

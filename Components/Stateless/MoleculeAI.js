@@ -23,6 +23,24 @@ const MoleculeAI = (container_molecule) => {
     }
 
     const __findElectrophileIndex = (filterBy, mustBe) => {
+
+        // Look for N atom with no charge
+        // @see https://en.wikipedia.org/wiki/Leuckart_reaction (formamide, step 1)
+        const nitrogen_index = _.findIndex((container_molecule[0][1]), (atom, index)=>{
+            return atom[0] === 'N' && atom[4] === ""
+        })
+        if (nitrogen_index > -1) {
+            return nitrogen_index
+        }
+
+        const i = _.findIndex((container_molecule[0][1]), (atom, index)=>{
+            return atom[4] === '+'
+        })
+
+        if (i > -1) {
+            return i
+        }
+
         return _.findIndex(container_molecule[0][1], (atom, index)=>{
 
             let electrophile_index = null
@@ -381,6 +399,15 @@ VMolecule
 
             if (negative_atom_index > -1) {
                 return negative_atom_index
+            }
+
+            // Look for N atom
+            // @see https://en.wikipedia.org/wiki/Leuckart_reaction (formamide, step 1)
+            const nitrogen_index = _.findIndex((container_molecule[0][1]), (atom, index)=>{
+                return atom[0] === 'N'
+            })
+            if (nitrogen_index > -1) {
+                return nitrogen_index
             }
 
             // Look for double bond with most hydrogens

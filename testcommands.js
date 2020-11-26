@@ -558,37 +558,37 @@ console.log(VMolecule(leukart_wallach_reaction_step1_reversed[0]).compressed())
 
 
 const formamide = MoleculeFactory("C(=O)N")
-console.log('formamide')
-console.log(formamide)
+console.log('acetone (substrate)')
+console.log(VMolecule([acetone,1]).compressed())
+console.log('formamide (reagent)')
+console.log(VMolecule([formamide,1]).compressed())
 
-console.log("Leukart Wallach reaction (formamide) - BOND substrate to reagent - N atom on formamide (nucleophile) attacks carbonyl carbon (C=O) on substrate, attaching itself to the carbon. N atom should be positively charged.")
+console.log("Leukart Wallach reaction (formamide) - BOND substrate to reagent - N atom on formamide (nucleophile) attacks carbonyl carbon (C=O) on substrate, attaching itself to the carbon. N atom should be positively charged. C should have negative charge.")
 const leukart_wallach_reaction_formamide_step1 = CommandTest("BOND substrate to reagent", _.cloneDeep([acetone,1]), [formamide,1])
 console.log(VMolecule(leukart_wallach_reaction_formamide_step1[0]).compressed())
 
-
-console.log("Leukart Wallach reaction (formamide) - BREAK carbon oxygen double bond - C=O bond on acetone breaks. O atom should be negatively charged. Note: Make sure correct C=O bond breaks.")
+console.log("Leukart Wallach reaction (formamide) - BREAK carbon oxygen double bond - C=O bond on acetone breaks. O atom should be negatively charged. C atom should now have no charge. Note: Make sure correct C=O bond breaks.")
 const leukart_wallach_reaction_formamide_step2 = CommandTest("BREAK carbon oxygen double bond", _.cloneDeep(leukart_wallach_reaction_formamide_step1[0]))
 console.log(VMolecule(leukart_wallach_reaction_formamide_step2[0]).compressed())
 
-console.log("Leukart Wallach reaction (formamide) - TRANSFER proton - Proton transfers from N to O-. N atom should have no charge.")
+console.log("Leukart Wallach reaction (formamide) - TRANSFER proton - Proton transfers from N to O-. N atom should have no charge. O atom should have no charge.")
 const leukart_wallach_reaction_formamide_step3 = CommandTest("TRANSFER proton", _.cloneDeep(leukart_wallach_reaction_formamide_step2[0]))
 console.log(VMolecule(leukart_wallach_reaction_formamide_step3[0]).compressed())
 
-console.log("Leukart Wallach reaction (formamide) - TRANSFER proton - Proton transfers from N to OH. N atom should be negatively charged.")
+console.log("Leukart Wallach reaction (formamide) - TRANSFER proton - Proton transfers from N to OH. N atom should be negatively charged. O atom should be positively charged.")
 const leukart_wallach_reaction_formamide_step4 = CommandTest("TRANSFER proton", _.cloneDeep(leukart_wallach_reaction_formamide_step3[0]))
 console.log(VMolecule(leukart_wallach_reaction_formamide_step4[0]).compressed())
 
-console.log("Leukart Wallach reaction (formamide) - DEHYDRATE - water group leaves.")
+console.log("Leukart Wallach reaction (formamide) - DEHYDRATE - water group leaves. C atom should have a positive charge.")
 const leukart_wallach_reaction_formamide_step5 = CommandTest("DEHYDRATE", _.cloneDeep(leukart_wallach_reaction_formamide_step4[0]))
 console.log(VMolecule(leukart_wallach_reaction_formamide_step5[0]).compressed())
 
 console.log("Leukart Wallach reaction (formamide) -BREAK carbon oxygen double bond. C atom should have + charge. O atom should have negative charge.")
 const leukart_wallach_reaction_formamide_step6 = CommandTest("BREAK carbon oxygen double bond", _.cloneDeep(leukart_wallach_reaction_formamide_step5[0]))
 console.log(VMolecule(leukart_wallach_reaction_formamide_step6[0]).compressed())
+process.exit()
 
-console.log("Leukart Wallach reaction (formamide) -BOND atoms - N- bonds with C+ to form N=C bond.")
-const leukart_wallach_reaction_formamide_step7 = CommandTest("BOND atoms", _.cloneDeep(leukart_wallach_reaction_formamide_step6[0]))
-console.log(VMolecule(leukart_wallach_reaction_formamide_step7[0]).compressed())
+
 
 
 process.exit()
