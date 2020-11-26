@@ -24,10 +24,16 @@ const MoleculeAI = (container_molecule) => {
 
     const __findElectrophileIndex = (filterBy, mustBe) => {
 
-        // Look for N atom with no charge
+
+
+        // Look for N atom with no charge and two hydrogens
         // @see https://en.wikipedia.org/wiki/Leuckart_reaction (formamide, step 1)
         const nitrogen_index = _.findIndex((container_molecule[0][1]), (atom, index)=>{
-            return atom[0] === 'N' && atom[4] === ""
+            if (atom[0] !== 'N' || atom[4] !== "") {
+                return false
+            }
+            const nitrogen_atom_object = CAtom(container_molecule[0][1][index], index, container_molecule)
+            return nitrogen_atom_object.hydrogens().length === 2
         })
         if (nitrogen_index > -1) {
             return nitrogen_index
@@ -36,7 +42,6 @@ const MoleculeAI = (container_molecule) => {
         const i = _.findIndex((container_molecule[0][1]), (atom, index)=>{
             return atom[4] === '+'
         })
-
         if (i > -1) {
             return i
         }

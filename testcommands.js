@@ -586,9 +586,18 @@ console.log(VMolecule(leukart_wallach_reaction_formamide_step5[0]).compressed())
 console.log("Leukart Wallach reaction (formamide) -BREAK carbon oxygen double bond. C atom should have + charge. O atom should have negative charge.")
 const leukart_wallach_reaction_formamide_step6 = CommandTest("BREAK carbon oxygen double bond", _.cloneDeep(leukart_wallach_reaction_formamide_step5[0]))
 console.log(VMolecule(leukart_wallach_reaction_formamide_step6[0]).compressed())
+
+const formate = MoleculeFactory("C(=O)[O-]")
+console.log('formate')
+console.log(VMolecule([formate, 1]).compressed())
+console.log("Leukart Wallach reaction (formamide) - BOND substrate to reagent - Bond O (nucleophile) on reagent to C+ (electrophile) on substrate. C atom and O atom should now have no charge")
+const leukart_wallach_reaction_formamide_step7 = CommandTest("BOND substrate to reagent", _.cloneDeep(leukart_wallach_reaction_formamide_step6[0]), _.cloneDeep([formate,1]))
+console.log(VMolecule(leukart_wallach_reaction_formamide_step7[0]).compressed())
+
+console.log("Leukart Wallach reaction (formamide) - HYDRIDE shift")
+const leukart_wallach_reaction_formamide_step8 = CommandTest("HYDRIDE shift", _.cloneDeep(leukart_wallach_reaction_formamide_step7[0]))
+console.log(VMolecule(leukart_wallach_reaction_formamide_step8[0]).compressed())
 process.exit()
-
-
 
 
 process.exit()

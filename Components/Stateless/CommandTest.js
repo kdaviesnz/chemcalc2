@@ -41,6 +41,7 @@ const BreakBondReverse = require('../../Commands/BreakBondReverse')
 const RemoveMethanol = require('../../Commands/RemoveMethanol')
 const AddProtonToSubstrate = require('../../Commands/AddProtonToSubstrate')
 const AddProtonToReagent = require('../../Commands/AddProtonToReagent')
+const HydrideShift = require('../../Commands/HydrideShift')
 
 const CommandTest = (command, substrate, reagent, rule) => {
 
@@ -86,7 +87,8 @@ const CommandTest = (command, substrate, reagent, rule) => {
         "BREAK bond reversed": BreakBondReverse,
         "REMOVE methanol": RemoveMethanol,
         "ADD proton to substrate": AddProtonToSubstrate,
-        "ADD proton to reagent": AddProtonToReagent
+        "ADD proton to reagent": AddProtonToReagent,
+        "HYDRIDE shift": HydrideShift
     }
 
 

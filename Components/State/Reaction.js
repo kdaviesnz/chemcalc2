@@ -294,6 +294,11 @@ class Reaction {
             // Get index of OH
             const electrophile_index = this.MoleculeAI.findHydroxylOxygenIndex()
 
+            if (electrophile_index === -1) {
+                console.log('electrophile index is -1, exiting')
+                process.exit()
+            }
+
             // Get proton from electrophile
             const electrophile_atom_object = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
             const proton_bond = electrophile_atom_object.indexedBonds("").filter((bond)=>{
@@ -1079,14 +1084,16 @@ class Reaction {
     }
 
     bondSubstrateToReagent() {
+
+        console.log('bondSubstrateToReagent()')
         // Important:
         // The reagent is the nucleophile and is attacking the substrate
         // The substrate is the electrophile
       //  console.log('reaction.js bondSubstrateToReagent')
         const electrophile_index = this.MoleculeAI.findElectrophileIndex()
-        //console.log('electrophile_index (substrate):' + electrophile_index)
+        console.log('electrophile_index (substrate):' + electrophile_index)
         const nucleophile_index = this.ReagentAI.findNucleophileIndex()
-        //console.log('nucleophile index (reagent):' + nucleophile_index)
+        console.log('nucleophile index (reagent):' + nucleophile_index)
 
         const nucleophile = CAtom(this.container_reagent[0][1][nucleophile_index], nucleophile_index, this.container_reagent)
 
@@ -1927,6 +1934,18 @@ class Reaction {
 
     }
 
+    hydrideShift() {
+        // carbon dioxide
+        // Look for carbon atom with O double bond, O single bond, and proton.
+        // const nucleophile_index = index of the proton
+        // Check single bonded O for carbon bond (not C atom above)
+        // const electrophile_index = carbon bond atom
+        // bond nucleophile to electrophile (protonate)
+        // break single bonded O, carbon bond
+        // make C=O bond using single bonded O, carbon atom (carbon with double bond and proton)
+        // should now have a carbon dioxide (C=O(=O)) leaving group.
+
+    }
 
 
 }
