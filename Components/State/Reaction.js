@@ -2046,6 +2046,25 @@ class Reaction {
 
     }
 
+    hydrolysis() {
+        // @see https://en.wikipedia.org/wiki/Leuckart_reaction/
+        // if imine (N=C bond)
+        if(true) {
+            // protonate =N atom.
+            // Hydrate carbon atom on N=C bond
+            // break N=C bond
+            // deprotonate water group
+            // protonate nitrogen
+            // break former N=C bond, creating a leaving group
+            // Substrate is the amine
+            // Leaving group:
+            // - create OH=C bond
+            // - deprotonate O on O=C bond
+
+
+        }
+    }
+
 
 }
 

@@ -42,6 +42,7 @@ const RemoveMethanol = require('../../Commands/RemoveMethanol')
 const AddProtonToSubstrate = require('../../Commands/AddProtonToSubstrate')
 const AddProtonToReagent = require('../../Commands/AddProtonToReagent')
 const HydrideShift = require('../../Commands/HydrideShift')
+const Hyrolysis = require('../../Commands/Hydrolysis')
 
 const CommandTest = (command, substrate, reagent, rule) => {
 
@@ -88,7 +89,8 @@ const CommandTest = (command, substrate, reagent, rule) => {
         "REMOVE methanol": RemoveMethanol,
         "ADD proton to substrate": AddProtonToSubstrate,
         "ADD proton to reagent": AddProtonToReagent,
-        "HYDRIDE shift": HydrideShift
+        "HYDRIDE shift": HydrideShift,
+        "HYDROLYSISE": Hyrolysis
     }
 
 
