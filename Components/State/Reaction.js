@@ -30,7 +30,7 @@ class Reaction {
 
         this.container_substrate = container_substrate
         this.container_reagent = container_reagent
-        this.leaving_groups = null
+        this.leaving_groups = []
 
         this.rule = rule
 
@@ -1935,15 +1935,114 @@ class Reaction {
     }
 
     hydrideShift() {
+
+        console.log('hyrideShift()')
+        let carbon_atom_object = null
         // carbon dioxide
         // Look for carbon atom with O double bond, O single bond, and proton.
-        // const nucleophile_index = index of the proton
+        const carbons = this.container_substrate[0][1].filter((atom, index)=>{
+            if (atom[0] !== "C") {
+                return false
+            }
+            carbon_atom_object = CAtom(atom, index, this.container_substrate)
+            if (carbon_atom_object.hydrogens().length !== 1) {
+                return false
+            }
+            const oxygen_double_bonds = carbon_atom_object.indexedDoubleBonds("").filter((bond)=>{
+                return bond.atom[0] === "O"
+            })
+            if (oxygen_double_bonds.length !==1) {
+                return false
+            }
+            const oxygen_single_bonds = carbon_atom_object.indexedBonds("").filter((bond)=>{
+                return bond.atom[0] === 'O' && bond.bond_type === ''
+            })
+            return oxygen_single_bonds.length === 1
+        })
+
+
+        if (carbons.length === 0) {
+            return false
+        }
+
+
+        const electrophile_carbon_atom_object = CAtom(carbons[0], carbon_atom_object.atomIndex, this.container_substrate)
+        const nucleophile_proton_index = electrophile_carbon_atom_object.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "H"
+        }).pop().atom_index
+
         // Check single bonded O for carbon bond (not C atom above)
-        // const electrophile_index = carbon bond atom
-        // bond nucleophile to electrophile (protonate)
+        const oxygen_single_bond_index = electrophile_carbon_atom_object.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === 'O' && bond.bond_type === ''
+        }).pop().atom_index
+        const oxygen_single_bond_atom_object = CAtom(this.container_substrate[0][1][oxygen_single_bond_index], oxygen_single_bond_index, this.container_substrate)
+        const oxygen_carbon_single_bonds = oxygen_single_bond_atom_object.indexedBonds("").filter((bond, index)=>{
+            return bond.atom[0] === "C" && bond.bond_type === "" && index !== carbon_atom_object.atomIndex
+        })
+
+        if (oxygen_carbon_single_bonds.length === 0) {
+            return false
+        }
+
+        const electrophile_index = oxygen_carbon_single_bonds[0].atom_index
+
+
+        // bond nucleophile (proton) to electrophile (protonate)
+        const shared_electrons = Set().intersection(
+            _.cloneDeep(this.container_substrate[0][1][nucleophile_proton_index].slice(5)),
+            _.cloneDeep(this.container_substrate[0][1][carbon_atom_object.atomIndex].slice(5))
+        )
+
+        this.container_substrate[0][1][carbon_atom_object.atomIndex] = Set().removeFromArray(
+            _.cloneDeep(this.container_substrate[0][1][carbon_atom_object.atomIndex]),
+            _.cloneDeep(shared_electrons)
+        )
+
+        // electrophile is the 'central' carbon atom attached to the carbon dioxide group
+        // add proton
+        this.container_substrate[0][1][electrophile_index].push(shared_electrons[0])
+        this.container_substrate[0][1][electrophile_index].push(shared_electrons[1])
+
         // break single bonded O, carbon bond
+        const o_c_shared_electrons = Set().intersection(
+            _.cloneDeep(this.container_substrate[0][1][electrophile_index].slice(5)),
+            _.cloneDeep(this.container_substrate[0][1][oxygen_single_bond_index].slice(5))
+        )
+        this.container_substrate[0][1][electrophile_index] = Set().removeFromArray(
+            _.cloneDeep(this.container_substrate[0][1][electrophile_index]),
+            _.cloneDeep(o_c_shared_electrons)
+        )
+
+
         // make C=O bond using single bonded O, carbon atom (carbon with double bond and proton)
-        // should now have a carbon dioxide (C=O(=O)) leaving group.
+        this.container_substrate[0][1][carbon_atom_object.atomIndex].push(o_c_shared_electrons[0])
+        this.container_substrate[0][1][carbon_atom_object.atomIndex].push(o_c_shared_electrons[1])
+
+       // console.log('electrophile index:' + electrophile_index)
+       // console.log('oxygen single bond index:' + oxygen_single_bond_index)
+       // console.log(VMolecule(this.container_substrate).compressed())
+
+        // Remove carbon dioxide
+        const oxygen_double_bond_index = electrophile_carbon_atom_object.indexedDoubleBonds("").filter((bond)=>{
+            return bond.atom[0] === 'O'
+        }).pop().atom_index
+        const atoms = []
+        atoms.push(_.cloneDeep(this.container_substrate[0][1][carbon_atom_object.atomIndex]))
+        atoms.push(_.cloneDeep(this.container_substrate[0][1][oxygen_single_bond_index]))
+        atoms.push(_.cloneDeep(this.container_substrate[0][1][oxygen_double_bond_index]))
+        this.leaving_groups.push([[6.1, atoms],1])
+
+        _.remove(this.container_substrate[0][1], (atom, index)=>{
+            return index === carbon_atom_object.atomIndex || index === oxygen_single_bond_index || index === oxygen_double_bond_index
+        })
+
+        this.setMoleculeAI()
+
+       // console.log(VMolecule(this.container_substrate).compressed())
+       // process.exit()
+
+
+
 
     }
 

@@ -33,7 +33,7 @@ const MoleculeAI = (container_molecule) => {
                 return false
             }
             const nitrogen_atom_object = CAtom(container_molecule[0][1][index], index, container_molecule)
-            return nitrogen_atom_object.hydrogens().length === 2
+            return nitrogen_atom_object.hydrogens().length > 0
         })
         if (nitrogen_index > -1) {
             return nitrogen_index

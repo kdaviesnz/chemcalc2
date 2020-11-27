@@ -579,13 +579,16 @@ console.log("Leukart Wallach reaction (formamide) - TRANSFER proton - Proton tra
 const leukart_wallach_reaction_formamide_step4 = CommandTest("TRANSFER proton", _.cloneDeep(leukart_wallach_reaction_formamide_step3[0]))
 console.log(VMolecule(leukart_wallach_reaction_formamide_step4[0]).compressed())
 
+
 console.log("Leukart Wallach reaction (formamide) - DEHYDRATE - water group leaves. C atom should have a positive charge.")
 const leukart_wallach_reaction_formamide_step5 = CommandTest("DEHYDRATE", _.cloneDeep(leukart_wallach_reaction_formamide_step4[0]))
 console.log(VMolecule(leukart_wallach_reaction_formamide_step5[0]).compressed())
 
-console.log("Leukart Wallach reaction (formamide) -BREAK carbon oxygen double bond. C atom should have + charge. O atom should have negative charge.")
+
+console.log("Leukart Wallach reaction (formamide) -BREAK carbon oxygen double bond. C atom should have + charge. O atom should have negative charge. N should have double bond")
 const leukart_wallach_reaction_formamide_step6 = CommandTest("BREAK carbon oxygen double bond", _.cloneDeep(leukart_wallach_reaction_formamide_step5[0]))
 console.log(VMolecule(leukart_wallach_reaction_formamide_step6[0]).compressed())
+
 
 const formate = MoleculeFactory("C(=O)[O-]")
 console.log('formate')
@@ -597,7 +600,14 @@ console.log(VMolecule(leukart_wallach_reaction_formamide_step7[0]).compressed())
 console.log("Leukart Wallach reaction (formamide) - HYDRIDE shift")
 const leukart_wallach_reaction_formamide_step8 = CommandTest("HYDRIDE shift", _.cloneDeep(leukart_wallach_reaction_formamide_step7[0]))
 console.log(VMolecule(leukart_wallach_reaction_formamide_step8[0]).compressed())
+console.log(VMolecule(leukart_wallach_reaction_formamide_step8[2][0]).compressed()) // carbon dioxide
+
+// const protonated_ether_products_methylated_deprotonated = CommandTest("PROTONATE nonhydroxyl oxygen", _.cloneDeep(protonated_ether_products_methylated[0]),
+//     _.cloneDeep([methanol,1]))
+// const result = reaction.addProtonFromReagentToNonHydroxylGroup()
+const ammonium = MoleculeFactory("[NH4+]")
+console.log("Leukart Wallach reaction (formamide) - PROTONATE nonhydroxyl oxygen. All atoms should now have no charge")
+const leukart_wallach_reaction_formamide_step9 = CommandTest("PROTONATE nonhydroxyl oxygen", _.cloneDeep(leukart_wallach_reaction_formamide_step8[0]), _.cloneDeep([ammonium,1]))
+console.log(VMolecule(leukart_wallach_reaction_formamide_step9[0]).compressed())
 process.exit()
 
-
-process.exit()
