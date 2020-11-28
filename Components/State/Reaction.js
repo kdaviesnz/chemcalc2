@@ -5,6 +5,7 @@ const VMolecule = require('../../Components/Stateless/Views/Molecule')
 const MoleculeFactory = require('../../Models/MoleculeFactory')
 const AtomFactory = require('../../Models/AtomFactory')
 const Set = require('../../Models/Set')
+const Families = require('../../Models/Families')
 
 class Reaction {
 
@@ -2046,22 +2047,58 @@ class Reaction {
 
     }
 
+    deprotonateWater() {
+
+    }
+
     hydrolysis() {
         // @see https://en.wikipedia.org/wiki/Leuckart_reaction/
         // if imine (N=C bond)
-        if(true) {
-            // protonate =N atom.
+        if(Families(this.container_substrate).families.imine()) {
+
+            this.container_reagent = MoleculeFactory("[OH3]")
+
+            // protonate =N atom using reagent
+            const nitrogen_index = _.findIndex(this.container_substrate, (atom)=>{
+                if (atom[0] !== "N") {
+                    return false
+                }
+            })
+            const oxygen_index = this.ReagentAI.findHydroxylOxygenIndex()
+            const oxygen_object = CAtom(this.container_reagent[0][1][oxygen_index], oxygen_index, this.container_reagent)
+            const proton_bond = oxygen_object.indexedBonds("").filter((bond)=>{
+                return atom[0] === 'H'
+            }).pop()
+            Set().removeFromArray(this.container_reagent[0][1][proton_bond.atom_index], proton_bond.shared_electrons)
+            const proton = _.cloneDeep(this.container_reagent[0][1][proton_bond.atom_index])
+            _.remove(this.container_reagent[0][1], (atom, index)=>{
+                return index === proton_bond.atom_index
+            })
+            this.container_substrate[0][1][nitrogen_index].push(proton_bond.shared_electrons[0])
+            this.container_substrate[0][1][nitrogen_index].push(proton_bond.shared_electrons[1])
+            this.container_substrate[0][1].push(proton)
+
             // Hydrate carbon atom on N=C bond
+            const nitrogen_atom_object = CAtom(this.container_substrate[0][1][nitrogen_index], nitrogen_index, this.container_substrate)
+            const nitrogen_carbon_bond = nitrogen_atom_object("").filter((bond)=>{
+                return bond.atom[0] === 'C' && bond.bond_type === '='
+            }).pop()
+            this.hydrate(nitrogen_carbon_bond.atom_index)
+
+
             // break N=C bond
+            Set().removeFromArray(this.container_substrate[0][1][nitrogen_index], nitrogen_carbon_bond.shared_electrons.slice(2))
+
             // deprotonate water group
+            this.deprotonateWater()
+
+
             // protonate nitrogen
             // break former N=C bond, creating a leaving group
             // Substrate is the amine
             // Leaving group:
             // - create OH=C bond
             // - deprotonate O on O=C bond
-
-
         }
     }
 

@@ -185,6 +185,21 @@ const Families = (mmolecule) => {
 
     }
 
+    const imine = () => {
+
+        // If no nitrogen atom with double bond
+        return mmolecule[0][1].filter(
+            (atom, atom_index) => {
+                if (atom[0] === "N" && CAtom(atom, atom_index, mmolecule).doubleBondCount().length === 1){
+                    return true
+                }
+                return false
+            }
+        ).length > 0
+
+
+    }
+
 
 
     const amine = () => {
@@ -338,7 +353,8 @@ const Families = (mmolecule) => {
         "double_bonds": __doubleCarbonBonds,
         "alkene": alkene,
         "alcohol": alcohol,
-        "amine": amine
+        "amine": amine,
+        "imine": imine
     }
 
     const families_as_array = () => {
@@ -352,6 +368,10 @@ const Families = (mmolecule) => {
         if (amine()) {
             arr.push("amine")
         }
+        if (imine()) {
+            arr.push("imine")
+        }
+
 
         return arr
 
