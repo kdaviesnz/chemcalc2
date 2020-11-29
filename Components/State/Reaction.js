@@ -2047,7 +2047,29 @@ class Reaction {
 
     }
 
+
     deprotonateWater() {
+
+        const oxygen_index = this.MoleculeAI.findWaterOxygenIndex()
+        const oxygen_object = CAtom(this.container_substrate[0][1][oxygen_index], oxygen_index, this.container_substrate)
+        this.container_reagent = MoleculeFactory("O")
+        const reagent_oxygen_index = this.ReagentAI.findWaterOxygenIndex()
+        const reagent_oxygen_object = CAtom(this.container_reagent[0][1][reagent_oxygen_index], reagent_oxygen_index, this.container_reagent)
+
+        const proton_bond = oxygen_object.indexedBonds("").filter((bond)=>{
+            return atom[0] === 'H'
+        }).pop()
+        Set().removeFromArray(this.container_substrate[0][1][proton_bond.atom_index], proton_bond.shared_electrons)
+        const proton = _.cloneDeep(this.container_substrate[0][1][proton_bond.atom_index])
+        _.remove(this.container_substrate[0][1], (atom, index)=>{
+            return index === proton_bond.atom_index
+        })
+        this.container_reagent[0][1][reagent_oxygen_index].push(proton_bond.shared_electrons[0])
+        this.container_reagent[0][1][reagent_oxygen_index].push(proton_bond.shared_electrons[1])
+        this.container_reagent[0][1].push(proton)
+
+        this.setMoleculeAI()
+        this.setReagentAI()
 
     }
 
@@ -2094,11 +2116,62 @@ class Reaction {
 
 
             // protonate nitrogen
+            const oxidanium_index = this.ReagentAI.findHydroxylOxygenIndex()
+            const oxidanium_object = CAtom(this.container_reagent[0][1][oxidanium_index], oxidanium_index, this.container_reagent)
+            const oxidanium_proton_bond = oxidanium_object.indexedBonds("").filter((bond)=>{
+                return atom[0] === 'H'
+            }).pop()
+            const oxidanium_proton = _.cloneDeep(this.container_reagent[0][1][oxidanium_proton_bond.atom_index])
+            _.remove(this.container_reagent[0][1], (atom, index)=>{
+                return index === oxidanium_proton_bond.atom_index
+            })
+            this.container_substrate[0][1][nitrogen_index].push(oxidanium_proton_bond.shared_electrons[0])
+            this.container_substrate[0][1][nitrogen_index].push(oxidanium_proton_bond.shared_electrons[1])
+            this.container_substrate[0][1].push(oxidanium_proton)
+
+
             // break former N=C bond, creating a leaving group
+           /// Set().removeFromArray(this.container_substrate[0][1][nitrogen_carbon_bond.atom_index], this.container_substrate[0][1][nitrogen_index])
+            this.__removeGroup(nitrogen_carbon_bond.atom_index, nitrogen_index)
+
             // Substrate is the amine
             // Leaving group:
-            // - create OH=C bond
-            // - deprotonate O on O=C bond
+            const leaving_groupAI = require("../Stateless/MoleculeAI")(this.leaving_groups[0])
+            const hyroxyl_oxygen_index = leaving_groupAI.findHydroxylOxygenIndex()
+            if (hyroxyl_oxygen_index !== -1) {
+
+                // - create OH=C bond
+                const hydroxyl_oxygen_object = CAtom(this.leaving_groups[0][0][1][hyroxyl_oxygen_index], hyroxyl_oxygen_index, this.leaving_groups[0])
+                const c_bond =  hydroxyl_oxygen_object.indexedBonds("").filter((bond)=>{
+                    return bond.atom[0] === 'C'
+                }).pop()
+                const free_electrons = hydroxyl_oxygen_object.freeElectrons()
+                this.leaving_groups[0][0][1][c_bond.atom_index].push(free_electrons[0])
+                this.leaving_groups[0][0][1][c_bond.atom_index].push(free_electrons[1])
+
+                // - deprotonate O on O=C bond
+                this.container_reagent = MoleculeFactory("O")
+                const o_index = this.leaving_groupAI.findWaterOxygenIndex()
+                const o_atom = CAtom(this.container_reagent[0][1][o_index], o_index, this.container_reagent)
+
+                // Find proton on leaving group
+                const o_proton_bond = hydroxyl_oxygen_object.indexedBonds("").filter((bond)=>{
+                    return bond.atom[0] === "H"
+                }).pop()
+
+                this.container_reagent[0][1][o_index].push(o_proton_bond.shared_electrons[0])
+                this.container_reagent[0][1][o_index].push(o_proton_bond.shared_electrons[1])
+
+                const p = _cloneDeep(this.leaving_groups[0][0][1][o_proton_bond.atom_index])
+                Set().removeFromArray(this.leaving_groups[0][0][1][hyroxyl_oxygen_index], o_proton_bond.shared_electrons[1])
+
+                this.container_reagent[0][1].push(p)
+
+
+
+            }
+
+
         }
     }
 
