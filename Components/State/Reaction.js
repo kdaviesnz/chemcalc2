@@ -2050,17 +2050,24 @@ class Reaction {
 
     deprotonateWater() {
 
-        const oxygen_index = this.MoleculeAI.findWaterOxygenIndex()
-        const oxygen_object = CAtom(this.container_substrate[0][1][oxygen_index], oxygen_index, this.container_substrate)
-        this.container_reagent = MoleculeFactory("O")
+        console.log('deprotonateWater()')
+
+        const w_oxygen_index = this.MoleculeAI.findWaterOxygenIndex()
+        console.log('o i:' + w_oxygen_index)
+        const oxygen_object = CAtom(this.container_substrate[0][1][w_oxygen_index], w_oxygen_index, this.container_substrate)
+
+        this.container_reagent = [MoleculeFactory("O"),1]
         const reagent_oxygen_index = this.ReagentAI.findWaterOxygenIndex()
+
         const reagent_oxygen_object = CAtom(this.container_reagent[0][1][reagent_oxygen_index], reagent_oxygen_index, this.container_reagent)
 
         const proton_bond = oxygen_object.indexedBonds("").filter((bond)=>{
-            return atom[0] === 'H'
+            return bond.atom[0] === 'H'
         }).pop()
         Set().removeFromArray(this.container_substrate[0][1][proton_bond.atom_index], proton_bond.shared_electrons)
         const proton = _.cloneDeep(this.container_substrate[0][1][proton_bond.atom_index])
+        this.container_substrate[0][1][w_oxygen_index][4] = this.container_substrate[0][1][w_oxygen_index][4] === "+"?"":"-"
+
         _.remove(this.container_substrate[0][1], (atom, index)=>{
             return index === proton_bond.atom_index
         })
@@ -2076,20 +2083,33 @@ class Reaction {
     hydrolysis() {
         // @see https://en.wikipedia.org/wiki/Leuckart_reaction/
         // if imine (N=C bond)
+
+
+        console.log('hydrolysis')
+        console.log(VMolecule(this.container_substrate).compressed())
+        console.log(Families(this.container_substrate).families.imine())
+
         if(Families(this.container_substrate).families.imine()) {
 
-            this.container_reagent = MoleculeFactory("[OH3]")
+            this.container_reagent = [MoleculeFactory("[OH3]"),1]
+            console.log(VMolecule(this.container_reagent).compressed())
 
             // protonate =N atom using reagent
-            const nitrogen_index = _.findIndex(this.container_substrate, (atom)=>{
-                if (atom[0] !== "N") {
-                    return false
-                }
+            const nitrogen_index = _.findIndex(this.container_substrate[0][1], (atom, index)=>{
+                return atom[0] === "N"
             })
-            const oxygen_index = this.ReagentAI.findHydroxylOxygenIndex()
+
+            console.log('n_i:'+nitrogen_index)
+
+            const oxygen_index = _.findIndex(this.container_reagent[0][1], (atom, index)=>{
+                return atom[0] === "O"
+            })
+
+            console.log('o index (reagent):'+oxygen_index)
+
             const oxygen_object = CAtom(this.container_reagent[0][1][oxygen_index], oxygen_index, this.container_reagent)
             const proton_bond = oxygen_object.indexedBonds("").filter((bond)=>{
-                return atom[0] === 'H'
+                return bond.atom[0] === 'H'
             }).pop()
             Set().removeFromArray(this.container_reagent[0][1][proton_bond.atom_index], proton_bond.shared_electrons)
             const proton = _.cloneDeep(this.container_reagent[0][1][proton_bond.atom_index])
@@ -2100,20 +2120,35 @@ class Reaction {
             this.container_substrate[0][1][nitrogen_index].push(proton_bond.shared_electrons[1])
             this.container_substrate[0][1].push(proton)
 
+            console.log(VMolecule(this.container_substrate).compressed())
+            console.log(VMolecule(this.container_reagent).compressed())
+
+
+
             // Hydrate carbon atom on N=C bond
             const nitrogen_atom_object = CAtom(this.container_substrate[0][1][nitrogen_index], nitrogen_index, this.container_substrate)
-            const nitrogen_carbon_bond = nitrogen_atom_object("").filter((bond)=>{
+            const nitrogen_carbon_bond = nitrogen_atom_object.indexedBonds("").filter((bond)=>{
                 return bond.atom[0] === 'C' && bond.bond_type === '='
             }).pop()
             this.hydrate(nitrogen_carbon_bond.atom_index)
 
+            console.log(VMolecule(this.container_substrate).compressed())
+
 
             // break N=C bond
-            Set().removeFromArray(this.container_substrate[0][1][nitrogen_index], nitrogen_carbon_bond.shared_electrons.slice(2))
+            console.log(nitrogen_carbon_bond.shared_electrons)
+            this.container_substrate[0][1][nitrogen_index].pop()
+            this.container_substrate[0][1][nitrogen_index].pop()
+            this.container_substrate[0][1][nitrogen_index].pop()
+            this.container_substrate[0][1][nitrogen_index].pop()
+
+
+            console.log(VMolecule(this.container_substrate).compressed())
 
             // deprotonate water group
             this.deprotonateWater()
 
+            console.log(VMolecule(this.container_substrate).compressed())
 
             // protonate nitrogen
             const oxidanium_index = this.ReagentAI.findHydroxylOxygenIndex()
@@ -2129,6 +2164,8 @@ class Reaction {
             this.container_substrate[0][1][nitrogen_index].push(oxidanium_proton_bond.shared_electrons[1])
             this.container_substrate[0][1].push(oxidanium_proton)
 
+            console.log(VMolecule(this.container_substrate).compressed())
+            process.exit()
 
             // break former N=C bond, creating a leaving group
            /// Set().removeFromArray(this.container_substrate[0][1][nitrogen_carbon_bond.atom_index], this.container_substrate[0][1][nitrogen_index])

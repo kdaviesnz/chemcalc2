@@ -190,7 +190,7 @@ const Families = (mmolecule) => {
         // If no nitrogen atom with double bond
         return mmolecule[0][1].filter(
             (atom, atom_index) => {
-                if (atom[0] === "N" && CAtom(atom, atom_index, mmolecule).doubleBondCount().length === 1){
+                if (atom[0] === "N" && CAtom(atom, atom_index, mmolecule).doubleBondCount() === 1){
                     return true
                 }
                 return false

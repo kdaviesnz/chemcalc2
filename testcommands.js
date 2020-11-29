@@ -609,5 +609,9 @@ const ammonium = MoleculeFactory("[NH4+]")
 console.log("Leukart Wallach reaction (formamide) - PROTONATE nonhydroxyl oxygen. All atoms should now have no charge")
 const leukart_wallach_reaction_formamide_step9 = CommandTest("PROTONATE nonhydroxyl oxygen", _.cloneDeep(leukart_wallach_reaction_formamide_step8[0]), _.cloneDeep([ammonium,1]))
 console.log(VMolecule(leukart_wallach_reaction_formamide_step9[0]).compressed())
+
+
+const leukart_wallach_reaction_formamide_step10 = CommandTest("HYDROLYSISE", _.cloneDeep(leukart_wallach_reaction_formamide_step9[0]), _.cloneDeep([water,1]))
+console.log(VMolecule(leukart_wallach_reaction_formamide_step10[0]).compressed())
 process.exit()
 
