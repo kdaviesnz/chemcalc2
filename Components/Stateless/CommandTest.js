@@ -43,6 +43,7 @@ const AddProtonToSubstrate = require('../../Commands/AddProtonToSubstrate')
 const AddProtonToReagent = require('../../Commands/AddProtonToReagent')
 const HydrideShift = require('../../Commands/HydrideShift')
 const Hyrolysis = require('../../Commands/Hydrolysis')
+const HyrolysisReverse = require('../../Commands/HydrolysisReverse')
 
 const CommandTest = (command, substrate, reagent, rule) => {
 
@@ -90,7 +91,8 @@ const CommandTest = (command, substrate, reagent, rule) => {
         "ADD proton to substrate": AddProtonToSubstrate,
         "ADD proton to reagent": AddProtonToReagent,
         "HYDRIDE shift": HydrideShift,
-        "HYDROLYSISE": Hyrolysis
+        "HYDROLYSISE": Hyrolysis,
+        "HYDROLYSISE reversed": HyrolysisReverse
     }
 
 

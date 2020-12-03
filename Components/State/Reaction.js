@@ -2082,6 +2082,24 @@ class Reaction {
 
     }
 
+    hydrolysisReverse() {
+        // @see https://en.wikipedia.org/wiki/Leuckart_reaction/
+
+
+            // Reagent:
+            // Should have C-OH group attached to the main carbon
+            // Remove OH group
+
+            // Substrate
+            // Check for N atom bonded to a carbon. N should have a pair of free electrons.
+            // Remove protons from N
+
+        // Double bond C atom on C-OH group on reagent to N atom on substrate
+
+
+
+    }
+
     hydrolysis() {
         // @see https://en.wikipedia.org/wiki/Leuckart_reaction/
         // if imine (N=C bond)
