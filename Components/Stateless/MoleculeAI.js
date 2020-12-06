@@ -964,7 +964,6 @@ VMolecule
 
         },
 
-
         "findMetalAtomIndex":() => {
 
             return _.findIndex(container_molecule[0][1], (metal_atom, metal_atom_index)=>{

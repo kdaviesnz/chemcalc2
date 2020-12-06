@@ -92,7 +92,7 @@ const CommandTest = (command, substrate, reagent, rule) => {
         "ADD proton to reagent": AddProtonToReagent,
         "HYDRIDE shift": HydrideShift,
         "HYDROLYSISE": Hyrolysis,
-        "HYDROLYSISE reversed": HyrolysisReverse
+        "HYDROLYSISE reverse": HyrolysisReverse
     }
 
 

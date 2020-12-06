@@ -521,24 +521,24 @@ class Reaction {
 
     }
 
-    __removeGroup(nucleophile_index, electrophile_index) {
+    __removeGroup(nucleophile_index, electrophile_index, moleculeAI, substrate) {
 
-        const shared_electrons = Set().intersection(this.container_substrate[0][1][nucleophile_index].slice(5), this.container_substrate[0][1][electrophile_index].slice(5))
-        const electrons = _.cloneDeep(this.container_substrate[0][1][nucleophile_index]).slice(5)
-        _.remove(this.container_substrate[0][1][nucleophile_index], (v, i) => {
+        const shared_electrons = Set().intersection(substrate[0][1][nucleophile_index].slice(5), substrate[0][1][electrophile_index].slice(5))
+        const electrons = _.cloneDeep(substrate[0][1][nucleophile_index]).slice(5)
+        _.remove(substrate[0][1][nucleophile_index], (v, i) => {
             return shared_electrons[0] === v || shared_electrons[1] === v
         })
 
-        this.container_substrate[0][1][nucleophile_index][4] = this.container_substrate[0][1][nucleophile_index][4] === "-"?"":"+"
-        this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4] === "+"?"":"-"
+        substrate[0][1][nucleophile_index][4] = substrate[0][1][nucleophile_index][4] === "-"?"":"+"
+        substrate[0][1][electrophile_index][4] = substrate[0][1][electrophile_index][4] === "+"?"":"-"
 
-        this.setMoleculeAI()
+        //this.setMoleculeAI()
 
-        const groups = this.MoleculeAI.extractGroups()
+        const groups = moleculeAI.extractGroups()
 
         if (groups.length > 1) {
-            this.container_substrate = [[-1, _.cloneDeep(groups[0])], 1]
-            this.setMoleculeAI()
+            substrate = [[-1, _.cloneDeep(groups[0])], 1]
+          //  this.setMoleculeAI()
             groups.shift()
             this.leaving_groups = groups.map((group)=>{
                 return [[-1, group], 1]
@@ -572,25 +572,29 @@ class Reaction {
 
         const electrophile_index = bonds[0].atom_index
 
-        this.__removeGroup(nucleophile_index, electrophile_index)
+        this.__removeGroup(nucleophile_index, electrophile_index, this.MoleculeAI, this.container_substrate)
 
     }
 
-    removeHydroxylGroup() {
+    __removeHydroxylGroup(moleculeAI, substrate) {
+        const electrophile_index = moleculeAI.findHydroxylOxygenIndex()
+     //   console.log('__removeHydroxylGroup() electrophile index:' + electrophile_index)
 
-        const nucleophile_index = this.MoleculeAI.findNucleophileIndex()
-
-        // Find index of O atom bonded to nucleophile with exactly one hydrogen
-        const nucleophile_atom_object = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate)
-        const electrophile_index = nucleophile_atom_object.indexedBonds("").filter((bond)=>{
-            if (bond.atom[0] !== 'O') {
+        const electrophile_atom_object = CAtom(substrate[0][1][electrophile_index], electrophile_index, substrate)
+        const nucleophile_index = electrophile_atom_object.indexedBonds("").filter((bond)=>{
+            if (bond.atom[0] === 'H') {
                 return false
             }
-            const oxygen_atom_object = CAtom(this.container_substrate[0][1][bond.atom_index], bond.atom_index, this.container_substrate)
-            return oxygen_atom_object.hydrogens().length === 1
+            return true
         }).pop().atom_index
 
-        this.__removeGroup(nucleophile_index, electrophile_index)
+    //   console.log('__removeHydroxylGroup() nucleophile index:' + nucleophile_index)
+
+        this.__removeGroup(nucleophile_index, electrophile_index, moleculeAI, substrate)
+    }
+
+    removeHydroxylGroup() {
+        this.__removeHydroxylGroup(this.MoleculeAI, this.container_substrate)
     }
 
     breakBond(break_type="heterolysis") {
@@ -2086,17 +2090,56 @@ class Reaction {
         // @see https://en.wikipedia.org/wiki/Leuckart_reaction/
 
 
-            // Reagent:
-            // Should have C-OH group attached to the main carbon
-            // Remove OH group
+        // Reagent:
+        // Should have C-OH group attached to the main carbon
+        if (this.ReagentAI.findHydroxylOxygenIndex() === -1) {
+            console.log('HydrolysisReverse() OH group not found')
+            console.log('Reagent')
+            console.log(VMolecule(this.container_reagent).compressed())
+            process.exit()
+            return false
+        }
 
-            // Substrate
-            // Check for N atom bonded to a carbon. N should have a pair of free electrons.
-            // Remove protons from N
+        // Remove OH group from reagent
+     //   console.log(VMolecule(this.container_reagent).compressed())
+        this.__removeHydroxylGroup(this.ReagentAI, this.container_reagent)
+        this.setReagentAI()
+
+        // Substrate
+        // Check for N atom bonded to a carbon. N should have a pair of free electrons.
+        let nitrogen_object = null
+        const nitrogen_index = _.findIndex(this.container_substrate[0][1], (atom, index)=>{
+            if (atom[0] !== 'N') {
+                return false
+            }
+            nitrogen_object = CAtom(this.container_substrate[0][1][index], index, this.container_substrate)
+            if (nitrogen_object.freeElectrons() === 0) {
+                return false
+            }
+            return true
+        })
+
+        if (nitrogen_index === -1) {
+            console.log('HydrolysisReverse() Nitrogen atom not found')
+            process.exit()
+            return false
+        }
+
+        console.log('hydrolysisReverse()')
+        console.log('nitrogen index:' + nitrogen_index)
+        process.exit()
+
+        // Remove protons from N
+        this.removeProtonFromAtom(this.MoleculeAI, this.container_substrate, nitrogen_object)
 
         // Double bond C atom on C-OH group on reagent to N atom on substrate
 
 
+
+    }
+
+    removeProtonFromAtom(moleculeAI, substrate, atom) {
+        const proton_index = moleculeAI.findProtonIndexOnAtom()
 
     }
 
@@ -2202,7 +2245,7 @@ class Reaction {
 
             // break former N=C bond, creating a leaving group
            /// Set().removeFromArray(this.container_substrate[0][1][nitrogen_carbon_bond.atom_index], this.container_substrate[0][1][nitrogen_index])
-            this.__removeGroup(nitrogen_carbon_bond.atom_index, nitrogen_index)
+            this.__removeGroup(nitrogen_carbon_bond.atom_index, nitrogen_index, this.MoleculeAI, this.container_substrate)
 
             // console.log('Substrate')
             // console.log(VMolecule(this.container_substrate).compressed())
