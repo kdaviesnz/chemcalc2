@@ -8,7 +8,7 @@ findHydroxylOxygenIndex()
 findOxygenAttachedToCarbonIndex()
 findOxygenOnDoubleBondIndex()
 findNonWaterOxygenIndex()
-
+findIndexOfCarbonAtomDoubledBondedToNonCarbonBySymbol(symbol)
  */
 
 const MoleculeAI = (container_molecule) => {
@@ -195,6 +195,41 @@ const MoleculeAI = (container_molecule) => {
     // All required parameters should be passed by MoleculeAI()
     // No method should change state of container_molecule
     return {
+
+        findIndexOfCarbonAtomDoubledBondedToNonCarbonBySymbol: (symbol) => {
+            return _.findIndex(container_molecule[0][1], (atom, index)=>{
+                if (atom[0] !== 'C') {
+                    return false
+                }
+                const carbon_atom_object = CAtom(container_molecule[0][1][index], index, container_molecule)
+                const double_bonds = carbon_atom_object.indexedDoubleBonds("")
+
+                if (carbon_atom_object.doubleBondCount() !== 1) {
+                  //  console.log('Wrong number of double bonds')
+                   // console.log("Index: " + index)
+                   // console.log('Double bonds length:' + double_bonds.length)
+                    return false
+                }
+
+                if (double_bonds[0].atom[0] !== symbol) {
+                    return false
+                }
+                return true
+            })
+        },
+
+        findAtomWithFreeElectronsIndexBySymbol: (symbol) => {
+            return _.findIndex(container_molecule[0][1], (atom, index)=>{
+                if (atom[0] !== symbol) {
+                    return false
+                }
+                atom_object = CAtom(container_molecule[0][1][index], index, container_molecule)
+                if (atom_object.freeElectrons() === 0) {
+                    return false
+                }
+                return true
+            })
+        },
 
         extractGroups: function() {
             // Extract groups from molecule

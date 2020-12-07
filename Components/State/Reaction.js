@@ -2128,17 +2128,7 @@ class Reaction {
 
         // Substrate
         // Check for N atom bonded to a carbon. N should have a pair of free electrons.
-        let nitrogen_object = null
-        const nitrogen_index = _.findIndex(this.container_substrate[0][1], (atom, index)=>{
-            if (atom[0] !== 'N') {
-                return false
-            }
-            nitrogen_object = CAtom(this.container_substrate[0][1][index], index, this.container_substrate)
-            if (nitrogen_object.freeElectrons() === 0) {
-                return false
-            }
-            return true
-        })
+        const nitrogen_index = this.MoleculeAI.findAtomWithFreeElectronsIndexBySymbol('N')
 
         if (nitrogen_index === -1) {
             console.log('HydrolysisReverse() Nitrogen atom not found')
@@ -2147,24 +2137,62 @@ class Reaction {
             return false
         }
 
+        const nitrogen_object = CAtom(this.container_substrate[0][1][nitrogen_index], nitrogen_index, this.container_substrate)
+
         // Double bond C atom on C-OH group on reagent to N atom on substrate
         // This should be done first
         const carbon_atom_object = CAtom(this.container_reagent[0][1][carbon_atom_index], carbon_atom_index, this.container_reagent)
         const carbon_atom_free_electrons = _.cloneDeep(carbon_atom_object.freeElectrons())
         const nitrogen_atom_free_electrons = _.cloneDeep(nitrogen_object.freeElectrons())
 
+        console.log(this.container_substrate[0][1][nitrogen_index])
+        console.log(this.container_substrate[0][1][carbon_atom_index])
+
         this.container_reagent[0][1][carbon_atom_index].push(nitrogen_atom_free_electrons[0])
         this.container_reagent[0][1][carbon_atom_index].push(nitrogen_atom_free_electrons[1])
         this.container_reagent[0][1][carbon_atom_index].push(nitrogen_atom_free_electrons[2])
         this.container_reagent[0][1][carbon_atom_index].push(nitrogen_atom_free_electrons[3])
-        this.container_substrate[0][1][nitrogen_index].push(carbon_atom_free_electrons[0])
-        this.container_substrate[0][1][nitrogen_index].push(carbon_atom_free_electrons[1])
-        this.container_substrate[0][1][nitrogen_index].push(carbon_atom_free_electrons[2])
-        this.container_substrate[0][1][nitrogen_index].push(carbon_atom_free_electrons[3])
+        let e = null
+        if (undefined === carbon_atom_free_electrons[0]) {
+            e = uniqid()
+            this.container_substrate[0][1][nitrogen_index].push(e)
+           // this.container_reagent[0][1][carbon_atom_index].push(e)
+        } else {
+            this.container_substrate[0][1][nitrogen_index].push(carbon_atom_free_electrons[0])
+        }
+
+        if (undefined === carbon_atom_free_electrons[1]) {
+            e = uniqid()
+            this.container_substrate[0][1][nitrogen_index].push(e)
+           // this.container_reagent[0][1][carbon_atom_index].push(e)
+        } else {
+            this.container_substrate[0][1][nitrogen_index].push(carbon_atom_free_electrons[1])
+        }
+
+        if (undefined === carbon_atom_free_electrons[2]) {
+            e = uniqid()
+            this.container_substrate[0][1][nitrogen_index].push(e)
+           // this.container_reagent[0][1][carbon_atom_index].push(e)
+        } else {
+            this.container_substrate[0][1][nitrogen_index].push(carbon_atom_free_electrons[2])
+        }
+
+        if (undefined === carbon_atom_free_electrons[3]) {
+            e = uniqid()
+            this.container_substrate[0][1][nitrogen_index].push(e)
+          //  this.container_reagent[0][1][carbon_atom_index].push(e)
+        } else {
+            this.container_substrate[0][1][nitrogen_index].push(carbon_atom_free_electrons[3])
+        }
+
+
 
         this.container_reagent[0][1].map((atom)=>{
             this.container_substrate[0][1].push(atom)
         })
+
+       // console.log(this.container_substrate[0][1][nitrogen_index])
+     //   console.log(this.container_substrate[0][1][16])
 
 
         console.log("After creating double bond between N and C")
@@ -2191,20 +2219,28 @@ class Reaction {
 
 
         // Remove protons from N
-        console.log(this.container_substrate[0][1][nitrogen_index])
+        // This changes the index of the nitrogen atom
         this.container_substrate[0][1] = this.removeProtonFromAtom(this.MoleculeAI, this.container_substrate[0][1], nitrogen_object.atomIndex)
-        console.log(this.container_substrate[0][1][nitrogen_index])
-        this.container_substrate[0][1] = this.removeProtonFromAtom(this.MoleculeAI, this.container_substrate[0][1], nitrogen_object.atomIndex -1)
+        this.setMoleculeAI()
+        this.container_substrate[0][1] = this.removeProtonFromAtom(this.MoleculeAI, this.container_substrate[0][1], this.MoleculeAI.findAtomWithFreeElectronsIndexBySymbol('N'))
+
+        // Remove proton from C=N carbon
+        this.container_substrate[0][1] = this.removeProtonFromAtom(this.MoleculeAI, this.container_substrate[0][1], this.MoleculeAI.findIndexOfCarbonAtomDoubledBondedToNonCarbonBySymbol('N'))
+
+
+        // Remove charges
+        this.container_substrate[0][1].map((atom)=>{
+            atom[4] = ""
+            return atom
+        })
+
 
         console.log("After removing protons from substrate")
         console.log('Substrate')
         console.log(VMolecule(this.container_substrate).compressed())
 
-
-
-        process.exit()
-
         this.setMoleculeAI()
+        this.setReagentAI()
 
 
     }
