@@ -2110,7 +2110,10 @@ class Reaction {
 
     hydrolysisReverse() {
         // @see https://en.wikipedia.org/wiki/Leuckart_reaction/
-
+        console.log("hydrolysisReverse()")
+        console.log("Start")
+        console.log('Reagent')
+        console.log(VMolecule(this.container_reagent).compressed())
 
         // Reagent:
         // Should have C-OH group attached to the main carbon
@@ -2121,23 +2124,7 @@ class Reaction {
             process.exit()
             return false
         }
-
-
-        // Remove OH group from reagent
-     //   console.log(VMolecule(this.container_reagent).compressed())
         const carbon_atom_index = this.ReagentAI.findIndexOfCarbonAtomAttachedToHydroxylGroup()
-        const groups = this.__removeHydroxylGroup(this.ReagentAI, this.container_reagent)
-        if (groups.length > 1) {
-            this.container_reagent = [[-1, _.cloneDeep(groups[0])], 1]
-            this.setMoleculeAI()
-            this.setReagentAI()
-            groups.shift()
-            this.leaving_groups = groups.map((group)=>{
-                return [[-1, group], 1]
-            })
-        }
-        this.setReagentAI()
-
 
         // Substrate
         // Check for N atom bonded to a carbon. N should have a pair of free electrons.
@@ -2160,14 +2147,9 @@ class Reaction {
             return false
         }
 
-
-        // Remove protons from N
-        this.container_substrate[0][1] = this.removeProtonFromAtom(this.MoleculeAI, this.container_substrate[0][1], nitrogen_object)
-        this.container_substrate[0][1] = this.removeProtonFromAtom(this.MoleculeAI, this.container_substrate[0][1], nitrogen_object)
-
-
-        // Double bond C atom on C-OH group on reagent to N atom on substrate\
-        const carbon_atom_object = CAtom(this.container_substrate[0][1][carbon_atom_index], carbon_atom_index, this.container_reagent)
+        // Double bond C atom on C-OH group on reagent to N atom on substrate
+        // This should be done first
+        const carbon_atom_object = CAtom(this.container_reagent[0][1][carbon_atom_index], carbon_atom_index, this.container_reagent)
         const carbon_atom_free_electrons = _.cloneDeep(carbon_atom_object.freeElectrons())
         const nitrogen_atom_free_electrons = _.cloneDeep(nitrogen_object.freeElectrons())
 
@@ -2183,12 +2165,52 @@ class Reaction {
         this.container_reagent[0][1].map((atom)=>{
             this.container_substrate[0][1].push(atom)
         })
+
+
+        console.log("After creating double bond between N and C")
+        console.log('Substrate')
+        console.log(VMolecule(this.container_substrate).compressed())
+
+
+        // Remove OH group
+        const groups = this.__removeHydroxylGroup(this.MoleculeAI, this.container_substrate)
+        if (groups.length > 1) {
+            this.container_substrate = [[-1, _.cloneDeep(groups[0])], 1]
+            this.setMoleculeAI()
+            this.setReagentAI()
+            groups.shift()
+            this.leaving_groups = groups.map((group)=>{
+                return [[-1, group], 1]
+            })
+        }
+        this.setMoleculeAI()
+
+        console.log("After removing OH group")
+        console.log('Substrate')
+        console.log(VMolecule(this.container_substrate).compressed())
+
+
+        // Remove protons from N
+        console.log(this.container_substrate[0][1][nitrogen_index])
+        this.container_substrate[0][1] = this.removeProtonFromAtom(this.MoleculeAI, this.container_substrate[0][1], nitrogen_object.atomIndex)
+        console.log(this.container_substrate[0][1][nitrogen_index])
+        this.container_substrate[0][1] = this.removeProtonFromAtom(this.MoleculeAI, this.container_substrate[0][1], nitrogen_object.atomIndex -1)
+
+        console.log("After removing protons from substrate")
+        console.log('Substrate')
+        console.log(VMolecule(this.container_substrate).compressed())
+
+
+
+        process.exit()
+
         this.setMoleculeAI()
 
 
     }
 
-    removeProtonFromAtom(moleculeAI, molecule, atom) {
+    removeProtonFromAtom(moleculeAI, molecule, atom_index) {
+        const atom = CAtom(this.container_substrate[0][1][atom_index], atom_index, this.container_substrate)
         const proton_index = moleculeAI.findProtonIndexOnAtom(atom)
         if (proton_index !== -1) {
             const shared_electrons = Set().intersection(molecule[atom.atomIndex].slice(4), molecule[proton_index].slice(4))
