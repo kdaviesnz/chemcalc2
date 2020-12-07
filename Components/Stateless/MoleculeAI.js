@@ -22,6 +22,54 @@ const MoleculeAI = (container_molecule) => {
         container_molecule[0][1][0][0].should.be.an.String()
     }
 
+    const __findHydroxylOxygenIndex = () => {
+        return _.findIndex(container_molecule[0][1], (oxygen_atom, oxygen_atom_index)=>{
+
+
+            // @todo Famillies alcohol
+            // Not an oxygen atom
+            if (oxygen_atom[0] !== "O") {
+                return false
+            }
+
+            // Not -OH
+            const oxygen_atom_object = CAtom(oxygen_atom, oxygen_atom_index, container_molecule)
+
+            if(oxygen_atom_object.bondCount()!==2) { // 1 hydrogen bond plus 1 carbon atom
+                return false
+            }
+
+
+            const indexed_bonds = oxygen_atom_object.indexedBonds("")
+
+            // Check we have 1 hydrogen attached to the oxygen atom
+            if (indexed_bonds.filter((bond) => {
+                    if (bond.atom[0] !== "H") {
+                        return false
+                    }
+                    const hydrogen_atom = CAtom(bond.atom, bond.atom_index, container_molecule)
+                    if (hydrogen_atom.bondCount() !== 1) {
+                        return false
+                    }
+                    return true
+                }
+            ).length !== 1) {
+                return false
+            }
+
+
+            // Check we have 1 carbon attached to the oxygen atom
+            if (indexed_bonds.filter((bond) => {
+                    return bond.atom[0] === "C"
+                }
+            ).length !== 1) {
+                return false
+            }
+
+            return true
+        })
+    }
+
     const __findElectrophileIndex = (filterBy, mustBe) => {
 
 
@@ -730,9 +778,24 @@ VMolecule
         },
 
         "findProtonIndexOnAtom": (atom) => {
-            return atom.indexedBonds("").filter((bond)=>{
+            const protons =  atom.indexedBonds("").filter((bond)=>{
                 return bond.atom[0] === "H"
+            })
+
+            return protons.length > 0 ? protons.pop().atom_index: -1
+        },
+
+        findIndexOfCarbonAtomAttachedToHydroxylGroup: () => {
+            const electrophile_index = __findHydroxylOxygenIndex()
+            console.log(electrophile_index)
+            const electrophile_atom_object = CAtom(container_molecule[0][1][electrophile_index], electrophile_index, container_molecule)
+            const nucleophile_index = electrophile_atom_object.indexedBonds("").filter((bond)=>{
+                if (bond.atom[0] === 'H') {
+                    return false
+                }
+                return true
             }).pop().atom_index
+            return nucleophile_index
         },
 
         "findProtonIndex": () => {
@@ -837,51 +900,7 @@ VMolecule
 
         "findHydroxylOxygenIndex":() => {
 
-            return _.findIndex(container_molecule[0][1], (oxygen_atom, oxygen_atom_index)=>{
-
-
-                // @todo Famillies alcohol
-                // Not an oxygen atom
-                if (oxygen_atom[0] !== "O") {
-                    return false
-                }
-
-                // Not -OH
-                const oxygen_atom_object = CAtom(oxygen_atom, oxygen_atom_index, container_molecule)
-
-                if(oxygen_atom_object.bondCount()!==2) { // 1 hydrogen bond plus 1 carbon atom
-                    return false
-                }
-
-
-                const indexed_bonds = oxygen_atom_object.indexedBonds("")
-
-                // Check we have 1 hydrogen attached to the oxygen atom
-                if (indexed_bonds.filter((bond) => {
-                        if (bond.atom[0] !== "H") {
-                            return false
-                        }
-                        const hydrogen_atom = CAtom(bond.atom, bond.atom_index, container_molecule)
-                        if (hydrogen_atom.bondCount() !== 1) {
-                            return false
-                        }
-                        return true
-                    }
-                ).length !== 1) {
-                    return false
-                }
-
-
-                // Check we have 1 carbon attached to the oxygen atom
-                if (indexed_bonds.filter((bond) => {
-                        return bond.atom[0] === "C"
-                    }
-                ).length !== 1) {
-                    return false
-                }
-
-                return true
-            })
+            return __findHydroxylOxygenIndex()
 
         },
 

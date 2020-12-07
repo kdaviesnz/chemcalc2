@@ -614,6 +614,8 @@ console.log("Leukart Wallach reaction (formamide) - HYROLYSIS")
 const leukart_wallach_reaction_formamide_step10 = CommandTest("HYDROLYSISE", _.cloneDeep(leukart_wallach_reaction_formamide_step9[0]), _.cloneDeep([water,1]))
 console.log(VMolecule(leukart_wallach_reaction_formamide_step10[0]).compressed())
 
+process.exit()
+
 
 console.log("Leukart Wallach reaction (formamide) - HYDROLYSIS reverse")
 const leukart_wallach_reaction_formamide_step10_reverse = CommandTest("HYDROLYSISE reverse", _.cloneDeep(leukart_wallach_reaction_formamide_step10[0]), _.cloneDeep([methanol,1]))

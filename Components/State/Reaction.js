@@ -578,18 +578,7 @@ class Reaction {
 
     __removeHydroxylGroup(moleculeAI, substrate) {
         const electrophile_index = moleculeAI.findHydroxylOxygenIndex()
-     //   console.log('__removeHydroxylGroup() electrophile index:' + electrophile_index)
-
-        const electrophile_atom_object = CAtom(substrate[0][1][electrophile_index], electrophile_index, substrate)
-        const nucleophile_index = electrophile_atom_object.indexedBonds("").filter((bond)=>{
-            if (bond.atom[0] === 'H') {
-                return false
-            }
-            return true
-        }).pop().atom_index
-
-    //   console.log('__removeHydroxylGroup() nucleophile index:' + nucleophile_index)
-
+        const nucleophile_index = moleculeAI.findIndexOfCarbonAtomAttachedToHydroxylGroup()
         this.__removeGroup(nucleophile_index, electrophile_index, moleculeAI, substrate)
     }
 
@@ -2102,6 +2091,7 @@ class Reaction {
 
         // Remove OH group from reagent
      //   console.log(VMolecule(this.container_reagent).compressed())
+        const carbon_atom_index = this.ReagentAI.findIndexOfCarbonAtomAttachedToHydroxylGroup()
         this.__removeHydroxylGroup(this.ReagentAI, this.container_reagent)
         this.setReagentAI()
 
@@ -2127,20 +2117,47 @@ class Reaction {
 
         console.log('hydrolysisReverse()')
         console.log('nitrogen index:' + nitrogen_index)
-        process.exit()
 
         // Remove protons from N
-        this.removeProtonFromAtom(this.MoleculeAI, this.container_substrate, nitrogen_object)
+        this.container_substrate[0][1] = this.removeProtonFromAtom(this.MoleculeAI, this.container_substrate[0][1], nitrogen_object)
+        this.container_substrate[0][1] = this.removeProtonFromAtom(this.MoleculeAI, this.container_substrate[0][1], nitrogen_object)
 
-        // Double bond C atom on C-OH group on reagent to N atom on substrate
 
+        // Double bond C atom on C-OH group on reagent to N atom on substrate\
+        const carbon_atom_object = CAtom(this.container_substrate[0][1][carbon_atom_index], carbon_atom_index, this.container_reagent)
+        const carbon_atom_free_electrons = _.cloneDeep(carbon_atom_object.freeElectrons())
+        const nitrogen_atom_free_electrons = _.cloneDeep(nitrogen_object.freeElectrons())
+
+        this.container_reagent[0][1][carbon_atom_index].push(nitrogen_atom_free_electrons[0])
+        this.container_reagent[0][1][carbon_atom_index].push(nitrogen_atom_free_electrons[1])
+        this.container_reagent[0][1][carbon_atom_index].push(nitrogen_atom_free_electrons[2])
+        this.container_reagent[0][1][carbon_atom_index].push(nitrogen_atom_free_electrons[3])
+        this.container_substrate[0][1][nitrogen_index].push(carbon_atom_free_electrons[0])
+        this.container_substrate[0][1][nitrogen_index].push(carbon_atom_free_electrons[1])
+        this.container_substrate[0][1][nitrogen_index].push(carbon_atom_free_electrons[2])
+        this.container_substrate[0][1][nitrogen_index].push(carbon_atom_free_electrons[3])
+
+        this.container_reagent[0][1].map((atom)=>{
+            this.container_substrate[0][1].push(atom)
+        })
+        this.setMoleculeAI()
+
+        console.log(VMolecule(this.container_substrate).compressed())
+
+        console.log('hydrolysisReverse()')
+        process.exit()
 
 
     }
 
-    removeProtonFromAtom(moleculeAI, substrate, atom) {
-        const proton_index = moleculeAI.findProtonIndexOnAtom()
-
+    removeProtonFromAtom(moleculeAI, molecule, atom) {
+        const proton_index = moleculeAI.findProtonIndexOnAtom(atom)
+        if (proton_index !== -1) {
+            const shared_electrons = Set().intersection(molecule[atom.atomIndex].slice(4), molecule[proton_index].slice(4))
+            console.log(shared_electrons)
+            molecule[proton_index] = Set().removeFromArray(molecule[proton_index], shared_electrons)
+        }
+        return molecule
     }
 
     hydrolysis() {
