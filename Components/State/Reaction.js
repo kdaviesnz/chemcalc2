@@ -54,6 +54,12 @@ class Reaction {
         }
     }
 
+    setMoleculeAICallback() {
+        return () => {
+            this.setMoleculeAI()
+        }
+    }
+
     setMoleculeAI() {
 
         this.container_substrate.length.should.be.equal(2) // molecule, units
@@ -532,13 +538,19 @@ class Reaction {
         substrate[0][1][nucleophile_index][4] = substrate[0][1][nucleophile_index][4] === "-"?"":"+"
         substrate[0][1][electrophile_index][4] = substrate[0][1][electrophile_index][4] === "+"?"":"-"
 
-        //this.setMoleculeAI()
+        this.setMoleculeAI()
+        this.setReagentAI()
 
         const groups = moleculeAI.extractGroups()
 
+        console.log('groups:')
+        console.log(groups)
+
+
         if (groups.length > 1) {
             substrate = [[-1, _.cloneDeep(groups[0])], 1]
-          //  this.setMoleculeAI()
+            this.setMoleculeAI()
+            this.setReagentAI()
             groups.shift()
             this.leaving_groups = groups.map((group)=>{
                 return [[-1, group], 1]
@@ -572,7 +584,7 @@ class Reaction {
 
         const electrophile_index = bonds[0].atom_index
 
-        this.__removeGroup(nucleophile_index, electrophile_index, this.MoleculeAI, this.container_substrate)
+        this.__removeGroup(nucleophile_index, electrophile_index, this.MoleculeAI, this.container_substrate, this.setMoleculeAICallback())
 
     }
 
@@ -583,7 +595,7 @@ class Reaction {
     }
 
     removeHydroxylGroup() {
-        this.__removeHydroxylGroup(this.MoleculeAI, this.container_substrate)
+        this.__removeHydroxylGroup(this.MoleculeAI, this.container_substrate, this.setMoleculeAI)
     }
 
     breakBond(break_type="heterolysis") {
@@ -2200,9 +2212,8 @@ class Reaction {
             this.container_substrate[0][1][nitrogen_index].push(proton_bond.shared_electrons[1])
             this.container_substrate[0][1].push(proton)
 
-            // console.log(VMolecule(this.container_substrate).compressed())
-            // console.log(VMolecule(this.container_reagent).compressed())
-
+            console.log(VMolecule(this.container_substrate).compressed())
+            console.log(VMolecule(this.container_reagent).compressed())
 
 
             // Hydrate carbon atom on N=C bond
@@ -2212,24 +2223,23 @@ class Reaction {
             }).pop()
             this.hydrate(nitrogen_carbon_bond.atom_index)
 
-            // console.log(VMolecule(this.container_substrate).compressed())
+            console.log(VMolecule(this.container_substrate).compressed())
+            console.log(VMolecule(this.container_reagent).compressed())
 
 
             // break N=C bond
-            // console.log(nitrogen_carbon_bond.shared_electrons)
-            this.container_substrate[0][1][nitrogen_index].pop()
-            this.container_substrate[0][1][nitrogen_index].pop()
-            this.container_substrate[0][1][nitrogen_index].pop()
-            this.container_substrate[0][1][nitrogen_index].pop()
+            this.container_substrate[0][1][nitrogen_carbon_bond.atom_index] = Set().removeFromArray(this.container_substrate[0][1][nitrogen_carbon_bond.atom_index], [nitrogen_carbon_bond.shared_electrons[0], nitrogen_carbon_bond.shared_electrons[1]])
 
 
-            // console.log(VMolecule(this.container_substrate).compressed())
+            console.log(VMolecule(this.container_substrate).compressed())
+            console.log(VMolecule(this.container_reagent).compressed())
+          //  process.exit()
 
             // deprotonate water group
             this.deprotonateWater()
 
-            // console.log(VMolecule(this.container_substrate).compressed())
-            // console.log(VMolecule(this.container_reagent).compressed())
+            console.log(VMolecule(this.container_substrate).compressed())
+            console.log(VMolecule(this.container_reagent).compressed())
 
             // protonate nitrogen
             const oxidanium_index = this.ReagentAI.findNonWaterOxygenIndex()
@@ -2256,20 +2266,21 @@ class Reaction {
             this.container_substrate[0][1][nitrogen_index][4] = this.container_substrate[0][1][nitrogen_index][4] === "-"?"":"+"
             this.container_substrate[0][1].push(oxidanium_proton)
 
-            // console.log(VMolecule(this.container_substrate).compressed())
-            // console.log(VMolecule(this.container_reagent).compressed())
+            console.log(VMolecule(this.container_substrate).compressed())
+            console.log(VMolecule(this.container_reagent).compressed())
 
 
             // break former N=C bond, creating a leaving group
            /// Set().removeFromArray(this.container_substrate[0][1][nitrogen_carbon_bond.atom_index], this.container_substrate[0][1][nitrogen_index])
             this.__removeGroup(nitrogen_carbon_bond.atom_index, nitrogen_index, this.MoleculeAI, this.container_substrate)
 
-            // console.log('Substrate')
-            // console.log(VMolecule(this.container_substrate).compressed())
-            // console.log('Reagent')
-            // console.log(VMolecule(this.container_reagent).compressed())
-            // console.log('Leaving group')
-            // console.log(VMolecule(this.leaving_groups[0]).compressed())
+            console.log('Substrate')
+            console.log(VMolecule(this.container_substrate).compressed())
+            console.log('Reagent')
+            console.log(VMolecule(this.container_reagent).compressed())
+             console.log('Leaving group')
+            console.log(VMolecule(this.leaving_groups[0]).compressed())
+            process.exit()
 
             // Substrate is the amine
             // Leaving group:
@@ -2312,12 +2323,14 @@ class Reaction {
                     return index === o_proton_bond.atom_index
                 })
 
-                // console.log('Substrate')
-                // console.log(VMolecule(this.container_substrate).compressed())
-                // console.log('Reagent')
-                // console.log(VMolecule(this.container_reagent).compressed())
-                // console.log('Leaving group')
-                // console.log(VMolecule(this.leaving_groups[0]).compressed())
+                 console.log('Substrate')
+                 console.log(VMolecule(this.container_substrate).compressed())
+                 console.log('Reagent')
+                 console.log(VMolecule(this.container_reagent).compressed())
+                 console.log('Leaving group')
+                 console.log(VMolecule(this.leaving_groups[0]).compressed())
+
+                process.exit()
 
 
 
