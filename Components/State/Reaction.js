@@ -2108,6 +2108,10 @@ class Reaction {
 
     }
 
+    __bondReagentToSubstrate(substrate_atom_index, reagent_atom_index) {
+
+    }
+
     hydrolysisReverse() {
         // @see https://en.wikipedia.org/wiki/Leuckart_reaction/
         console.log("hydrolysisReverse()")
