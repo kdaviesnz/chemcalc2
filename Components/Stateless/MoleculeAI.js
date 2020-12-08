@@ -250,26 +250,29 @@ const MoleculeAI = (container_molecule) => {
 
         extractGroups: function() {
             // Extract groups from molecule
-            const groups = _.cloneDeep(container_molecule[0][1]).reduce((groups, atom, index)=>{
-                if (groups.length ===0) {
-                    groups.push([atom])
-                    return groups
+            const groups = _.cloneDeep(container_molecule[0][1]).reduce((carry, atom, index)=>{
+                if (carry.length ===0) {
+                    carry.push([atom])
+                    return carry
                 }
                 const atom_object = CAtom(atom, index, container_molecule)
                 // Find atom from groups that current atom is bonded to
-                const i = _.findIndex(groups, (group_atoms, group_atom_index)=> {
+                const i = _.findIndex(carry, (group_atoms, group_atom_index)=> {
                     const k = _.findIndex(group_atoms, (group_atom, group_atom_index)=>{
                         return atom_object.isBondedTo(group_atom)
                     })
                     return k !==-1
                 })
                 if (i !== -1) {
-                    groups[i].push(atom)
+                    carry[i].push(atom)
                 } else {
-                    groups.push([atom])
+                    carry.push([atom])
                 }
-                return groups
+                return carry
             }, [])
+
+            console.log('GROUPS')
+            console.log(groups)
 
             // fix hydrogens
             const groups_saved = _.cloneDeep(groups)
@@ -300,10 +303,13 @@ const MoleculeAI = (container_molecule) => {
             })
  // molecule, units
 
-
-            return groups_saved.filter((group)=>{
+            const groups_filtered = groups_saved.filter((group)=>{
                 return group.length === 1 && group[0][0] === "H" ? false: true
             })
+
+
+
+            return groups_filtered
         },
 
         findOxygenAttachedToCarbonIndex: function() {
