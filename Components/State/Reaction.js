@@ -792,6 +792,9 @@ class Reaction {
 
         }
 
+       // console.log('breakBond() nucleophile_index: ' + nucleophile_index)
+       // console.log('breakBond() electrophile_index: ' + electrophile_index)
+
         const source_atom = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate)
         const target_atom = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
 
@@ -869,15 +872,11 @@ class Reaction {
 
         const groups = this.MoleculeAI.extractGroups()
 
-        if (groups.length > 1) {
-            this.container_substrate = [[-1, _.cloneDeep(groups[0])], 1]
-            this.setMoleculeAI()
-            groups.shift()
-            this.leaving_groups = groups.map((group)=>{
-                return [[-1, group], 1]
-            })
-        }
+        console.log('breakBond() groups')
+        console.log(groups.length)
+       // console.log(groups)
 
+        this.__setSubstrateGroups(groups)
 
 
 

@@ -109,9 +109,13 @@ VMolecule(deprotonated_ether_products[0]).canonicalSMILES().should.be.equal("CC4
 // BREAK bond
 // Break bond between the oxygen (electrophile) and most substituted carbon (nucleophile)
 // Carbon will lose electrons and therefore will have a positive charge.
-//console.log(VMolecule(twoTwoDimethyloxoniacyclopropane).compressed())
+console.log('2,2,Dimethyloxoniacyclopropane:')
+console.log(VMolecule(twoTwoDimethyloxoniacyclopropane).compressed())
+console.log('Break bond between the oxygen (electrophile) and most substituted carbon (nucleophile)')
 const protonated_ether_products_bond_broken = CommandTest("BREAK bond", _.cloneDeep(twoTwoDimethyloxoniacyclopropane))
 const two_methylpropan_1_ol = protonated_ether_products_bond_broken[0]
+console.log('protonated_ether_products_bond_broken[0]')
+console.log(VMolecule(two_methylpropan_1_ol).compressed())
 VMolecule(two_methylpropan_1_ol).canonicalSMILES().should.be.equal("C[C+](C)CO")
 // console.log(VMolecule(two_methylpropan_1_ol).compressed()) // correct
 // BOND atoms
