@@ -586,15 +586,7 @@ class Reaction {
         const electrophile_index = bonds[0].atom_index
 
         const groups = this.__removeGroup(nucleophile_index, electrophile_index, this.MoleculeAI, this.container_substrate)
-        if (groups.length > 1) {
-            this.container_substrate = [[-1, _.cloneDeep(groups[0])], 1]
-            this.setMoleculeAI()
-            this.setReagentAI()
-            groups.shift()
-            this.leaving_groups = groups.map((group)=>{
-                return [[-1, group], 1]
-            })
-        }
+        this.__setSubstrateGroups(groups)
 
     }
 
