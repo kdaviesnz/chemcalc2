@@ -617,6 +617,20 @@ console.log(VMolecule(leukart_wallach_reaction_formamide_step10[0]).compressed()
 
 console.log("Leukart Wallach reaction (formamide) - HYDROLYSIS reverse")
 const leukart_wallach_reaction_formamide_step10_reverse = CommandTest("HYDROLYSISE reverse", _.cloneDeep(leukart_wallach_reaction_formamide_step10[0]), _.cloneDeep([methanol,1]))
-console.log('testcommands.js')
 console.log(VMolecule(leukart_wallach_reaction_formamide_step10_reverse[0]).compressed())
+
+console.log("Leukart Wallach reaction (formamide) - HYDROLYSIS step 9 (before reversal)")
+console.log(VMolecule(leukart_wallach_reaction_formamide_step9[0]).compressed())
+console.log("Leukart Wallach reaction (formamide) - HYDROLYSIS step 9 (reversed) DEPROTONATE hydroxyl oxygen")
+const leukart_wallach_reaction_formamide_step9_reverse = CommandTest("DEPROTONATE hydroxyl oxygen", _.cloneDeep(leukart_wallach_reaction_formamide_step9[0]), _.cloneDeep([ammonia,1]))
+console.log(VMolecule(leukart_wallach_reaction_formamide_step9_reverse[0]).compressed())
+
+console.log("Leukart Wallach reaction (formamide) - HYDROLYSIS step 8 (reversed) HYDRIDE shift on carbon nitrogen bond reverse")
+const leukart_wallach_reaction_formamide_step8_reverse = CommandTest("HYDRIDE shift on carbon nitrogen bond reverse", _.cloneDeep(leukart_wallach_reaction_formamide_step9_reverse[0]))
+console.log(VMolecule(leukart_wallach_reaction_formamide_step8_reverse[0]).compressed())
+
+console.log("Leukart Wallach reaction (formamide) - HYDROLYSIS step 7 (reversed) BOND substrate to reagent - Bond O (nucleophile) on reagent to C+ (electrophile) on substrate.")
+const leukart_wallach_reaction_formamide_step7_reverse = CommandTest("REMOVE formate group", _.cloneDeep(leukart_wallach_reaction_formamide_step8_reverse[0]))
+console.log(VMolecule(leukart_wallach_reaction_formamide_step7_reverse[0]).compressed())
+
 process.exit()

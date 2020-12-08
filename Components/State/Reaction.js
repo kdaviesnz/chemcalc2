@@ -598,6 +598,41 @@ class Reaction {
 
     }
 
+    removeFormateGroup() {
+        const formate_double_bond_oxygen_index = this.MoleculeAI.findOxygenOnDoubleBondIndex()
+        console.log(VMolecule(this.container_substrate).compressed())
+        console.log(formate_double_bond_oxygen_index)
+
+        const formate_double_bond_oxygen_atom_object = CAtom(this.container_substrate[0][1][formate_double_bond_oxygen_index], formate_double_bond_oxygen_index, this.container_substrate)
+        const carbon_atom_on_formate_double_bond_oxygen_index = formate_double_bond_oxygen_atom_object.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "C"
+        }).pop().atom_index
+
+        const carbon_atom_on_formate_double_bond_oxygen_atom_object = CAtom(this.container_substrate[0][1][carbon_atom_on_formate_double_bond_oxygen_index], carbon_atom_on_formate_double_bond_oxygen_index, this.container_substrate)
+
+        const electrophile_index = carbon_atom_on_formate_double_bond_oxygen_atom_object.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "O" && bond.atom_index !== formate_double_bond_oxygen_index
+        }).pop().atom_index
+
+        const electrophile_atom_object = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
+
+        const nucleophile_index = electrophile_atom_object.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "C" && bond.atom_index !== carbon_atom_on_formate_double_bond_oxygen_index
+        }).pop().atom_index
+
+        console.log(carbon_atom_on_formate_double_bond_oxygen_index)
+
+        console.log(electrophile_index)
+        console.log(nucleophile_index)
+        const groups = this.__removeGroup(nucleophile_index, electrophile_index, this.MoleculeAI, this.container_substrate)
+        this.__setSubstrateGroups(groups) // sets substrate and leaving groups
+
+        console.log(VMolecule(this.container_substrate).compressed())
+
+        process.exit()
+
+    }
+
     __removeHydroxylGroup(moleculeAI, substrate) {
         const electrophile_index = moleculeAI.findHydroxylOxygenIndex()
         const nucleophile_index = moleculeAI.findIndexOfCarbonAtomAttachedToHydroxylGroup()
@@ -606,8 +641,7 @@ class Reaction {
 
     }
 
-    removeHydroxylGroup() {
-        const groups = this.__removeHydroxylGroup(this.MoleculeAI, this.container_substrate, this.setMoleculeAI)
+    __setSubstrateGroups(groups){
         if (groups.length > 1) {
             this.container_substrate = [[-1, _.cloneDeep(groups[0])], 1]
             this.setMoleculeAI()
@@ -617,6 +651,11 @@ class Reaction {
                 return [[-1, group], 1]
             })
         }
+    }
+
+    removeHydroxylGroup() {
+        const groups = this.__removeHydroxylGroup(this.MoleculeAI, this.container_substrate, this.setMoleculeAI)
+        this.__setSubstrateGroups(groups)
     }
 
     breakBond(break_type="heterolysis") {
@@ -1574,6 +1613,10 @@ class Reaction {
         }
 
         this.container_substrate[0][1][oxygen_index][0].should.be.equal("O")
+
+        this.container_substrate[0][1] = this.removeProtonFromAtom(this.MoleculeAI, this.container_substrate[0][1], oxygen_index)
+
+        /*
         const oxygen_proton_bond = CAtom(this.container_substrate[0][1][oxygen_index],
             oxygen_index,
             this.container_substrate).indexedBonds("").filter((bond)=>{
@@ -1583,7 +1626,42 @@ class Reaction {
         this.container_substrate[0][1][oxygen_index][4] = 0
         this.container_substrate[0][1].splice(oxygen_proton_bond.atom_index, 1)
         // this.container_substrate[0][1].splice(hydrogen_bond.atom_index, 1)
+        */
 
+        this.addProtonToReagent()
+
+        this.setMoleculeAI()
+        this.setReagentAI()
+
+
+    }
+
+    deprotonateHydroxylOxygen() {
+
+
+        const oxygen_index = this.MoleculeAI.findHydroxylOxygenIndex()
+
+        oxygen_index.should.not.be.equal(-1)
+
+        if (oxygen_index === -1) {
+            return false
+        }
+
+        this.container_substrate[0][1][oxygen_index][0].should.be.equal("O")
+
+        this.container_substrate[0][1] = this.removeProtonFromAtom(this.MoleculeAI, this.container_substrate[0][1], oxygen_index)
+
+        /*
+        const oxygen_proton_bond = CAtom(this.container_substrate[0][1][oxygen_index],
+            oxygen_index,
+            this.container_substrate).indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "H"
+        }).pop()
+
+        this.container_substrate[0][1][oxygen_index][4] = ""
+        // Remove proton from container
+        this.container_substrate[0][1].splice(oxygen_proton_bond.atom_index, 1)
+        */
 
         this.addProtonToReagent()
 
@@ -1599,13 +1677,16 @@ class Reaction {
         water_oxygen_index.should.be.greaterThan(-1)
 
         this.container_substrate[0][1][water_oxygen_index][0].should.be.equal("O")
+
+        this.container_substrate[0][1] = this.removeProtonFromAtom(this.MoleculeAI, this.container_substrate[0][1], water_oxygen_index)
+        /*
         const oxygen_proton_bond = CAtom(this.container_substrate[0][1][water_oxygen_index],
             water_oxygen_index,
             this.container_substrate).indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "H"
         }).pop()
 
-        this.container_substrate[0][1][water_oxygen_index][4] = 0
+        this.container_substrate[0][1][water_oxygen_index][4] = ""
 
         const shared_electrons = oxygen_proton_bond.shared_electrons
 
@@ -1613,6 +1694,7 @@ class Reaction {
         _.remove(this.container_substrate[0][1], (v, i)=>{
             return i === oxygen_proton_bond.atom_index
         })
+         */
 
         this.setMoleculeAI()
 
@@ -1963,9 +2045,29 @@ class Reaction {
 
     }
 
+    hydrideShiftOnCarbonNitrogenBondReverse() {
+        // formate
+        this.container_reagent = [MoleculeFactory("C(=O)[O-]"),1]
+        this.setReagentAI()
+        const hydroxide_index = this.ReagentAI.findOxygenAttachedToCarbonIndexNoDoubleBonds()
+        console.log('hydrideShiftReverse()')
+        console.log('reagent')
+        console.log(VMolecule(this.container_reagent).compressed())
+        console.log('hydroxide index:' + hydroxide_index)
+
+        const carbon_index = this.MoleculeAI.findIndexOfCarbonAtomBondedToNonCarbonBySymbol('N')
+        console.log('substrate')
+        console.log(VMolecule(this.container_substrate).compressed())
+
+        console.log('carbon index:' + carbon_index)
+
+        this.__bondReagentToSubstrate(carbon_index, hydroxide_index)
+        //console.log('substrate')
+        //console.log(VMolecule(this.container_substrate).compressed())
+    }
+
     hydrideShift() {
 
-        console.log('hyrideShift()')
         let carbon_atom_object = null
         // carbon dioxide
         // Look for carbon atom with O double bond, O single bond, and proton.
@@ -2110,6 +2212,112 @@ class Reaction {
 
     __bondReagentToSubstrate(substrate_atom_index, reagent_atom_index) {
 
+        this.container_reagent[0][1][reagent_atom_index][4] = this.container_reagent[0][1][reagent_atom_index][4] === "-"? "" : "+"
+        const reagent_atom_object = CAtom(this.container_reagent[0][1][reagent_atom_index], reagent_atom_index, this.container_reagent)
+        const substrate_atom_object = CAtom(this.container_substrate[0][1][substrate_atom_index], substrate_atom_index, this.container_substrate)
+
+        const reagent_atom_free_electrons = _.cloneDeep(reagent_atom_object.freeElectrons())
+        const substrate_atom_free_electrons = _.cloneDeep(substrate_atom_object.freeElectrons())
+
+        this.container_reagent[0][1][reagent_atom_index].push(substrate_atom_free_electrons[0])
+        this.container_reagent[0][1][reagent_atom_index].push(substrate_atom_free_electrons[1])
+        this.container_reagent[0][1][reagent_atom_index].push(substrate_atom_free_electrons[2])
+        this.container_reagent[0][1][reagent_atom_index].push(substrate_atom_free_electrons[3])
+        let e = null
+        if (undefined === reagent_atom_free_electrons[0]) {
+            e = uniqid()
+            this.container_substrate[0][1][substrate_atom_index].push(e)
+            // this.container_reagent[0][1][reagent_atom_index].push(e)
+        } else {
+            this.container_substrate[0][1][substrate_atom_index].push(reagent_atom_free_electrons[0])
+        }
+
+        if (undefined === reagent_atom_free_electrons[1]) {
+            e = uniqid()
+            this.container_substrate[0][1][substrate_atom_index].push(e)
+            // this.container_reagent[0][1][reagent_atom_index].push(e)
+        } else {
+            this.container_substrate[0][1][substrate_atom_index].push(reagent_atom_free_electrons[1])
+        }
+
+        /*
+        if (undefined === reagent_atom_free_electrons[2]) {
+            e = uniqid()
+            this.container_substrate[0][1][substrate_atom_index].push(e)
+            // this.container_reagent[0][1][reagent_atom_index].push(e)
+        } else {
+            this.container_substrate[0][1][substrate_atom_index].push(reagent_atom_free_electrons[2])
+        }
+
+        if (undefined === reagent_atom_free_electrons[3]) {
+            e = uniqid()
+            this.container_substrate[0][1][substrate_atom_index].push(e)
+            //  this.container_reagent[0][1][reagent_atom_index].push(e)
+        } else {
+            this.container_substrate[0][1][substrate_atom_index].push(reagent_atom_free_electrons[3])
+        }
+        */
+
+
+        this.container_reagent[0][1].map((atom)=>{
+            this.container_substrate[0][1].push(atom)
+        })
+
+        this.setMoleculeAI()
+        this.setReagentAI()
+    }
+
+
+    __doubleBondReagentToSubstrate(substrate_atom_index, reagent_atom_index) {
+
+        const reagent_atom_object = CAtom(this.container_reagent[0][1][reagent_atom_index], reagent_atom_index, this.container_reagent)
+        const substrate_atom_object = CAtom(this.container_substrate[0][1][substrate_atom_index], substrate_atom_index, this.container_substrate)
+
+        const reagent_atom_free_electrons = _.cloneDeep(reagent_atom_object.freeElectrons())
+        const substrate_atom_free_electrons = _.cloneDeep(substrate_atom_object.freeElectrons())
+
+        this.container_reagent[0][1][reagent_atom_index].push(substrate_atom_free_electrons[0])
+        this.container_reagent[0][1][reagent_atom_index].push(substrate_atom_free_electrons[1])
+        this.container_reagent[0][1][reagent_atom_index].push(substrate_atom_free_electrons[2])
+        this.container_reagent[0][1][reagent_atom_index].push(substrate_atom_free_electrons[3])
+        let e = null
+        if (undefined === reagent_atom_free_electrons[0]) {
+            e = uniqid()
+            this.container_substrate[0][1][substrate_atom_index].push(e)
+            // this.container_reagent[0][1][reagent_atom_index].push(e)
+        } else {
+            this.container_substrate[0][1][substrate_atom_index].push(reagent_atom_free_electrons[0])
+        }
+
+        if (undefined === reagent_atom_free_electrons[1]) {
+            e = uniqid()
+            this.container_substrate[0][1][substrate_atom_index].push(e)
+            // this.container_reagent[0][1][reagent_atom_index].push(e)
+        } else {
+            this.container_substrate[0][1][substrate_atom_index].push(reagent_atom_free_electrons[1])
+        }
+
+        if (undefined === reagent_atom_free_electrons[2]) {
+            e = uniqid()
+            this.container_substrate[0][1][substrate_atom_index].push(e)
+            // this.container_reagent[0][1][reagent_atom_index].push(e)
+        } else {
+            this.container_substrate[0][1][substrate_atom_index].push(reagent_atom_free_electrons[2])
+        }
+
+        if (undefined === reagent_atom_free_electrons[3]) {
+            e = uniqid()
+            this.container_substrate[0][1][substrate_atom_index].push(e)
+            //  this.container_reagent[0][1][reagent_atom_index].push(e)
+        } else {
+            this.container_substrate[0][1][substrate_atom_index].push(reagent_atom_free_electrons[3])
+        }
+
+        this.container_reagent[0][1].map((atom)=>{
+            this.container_substrate[0][1].push(atom)
+        })
+
+        this.setMoleculeAI()
     }
 
     hydrolysisReverse() {
@@ -2145,55 +2353,7 @@ class Reaction {
 
         // Double bond C atom on C-OH group on reagent to N atom on substrate
         // This should be done first
-        const carbon_atom_object = CAtom(this.container_reagent[0][1][carbon_atom_index], carbon_atom_index, this.container_reagent)
-        const carbon_atom_free_electrons = _.cloneDeep(carbon_atom_object.freeElectrons())
-        const nitrogen_atom_free_electrons = _.cloneDeep(nitrogen_object.freeElectrons())
-
-        console.log(this.container_substrate[0][1][nitrogen_index])
-        console.log(this.container_substrate[0][1][carbon_atom_index])
-
-        this.container_reagent[0][1][carbon_atom_index].push(nitrogen_atom_free_electrons[0])
-        this.container_reagent[0][1][carbon_atom_index].push(nitrogen_atom_free_electrons[1])
-        this.container_reagent[0][1][carbon_atom_index].push(nitrogen_atom_free_electrons[2])
-        this.container_reagent[0][1][carbon_atom_index].push(nitrogen_atom_free_electrons[3])
-        let e = null
-        if (undefined === carbon_atom_free_electrons[0]) {
-            e = uniqid()
-            this.container_substrate[0][1][nitrogen_index].push(e)
-           // this.container_reagent[0][1][carbon_atom_index].push(e)
-        } else {
-            this.container_substrate[0][1][nitrogen_index].push(carbon_atom_free_electrons[0])
-        }
-
-        if (undefined === carbon_atom_free_electrons[1]) {
-            e = uniqid()
-            this.container_substrate[0][1][nitrogen_index].push(e)
-           // this.container_reagent[0][1][carbon_atom_index].push(e)
-        } else {
-            this.container_substrate[0][1][nitrogen_index].push(carbon_atom_free_electrons[1])
-        }
-
-        if (undefined === carbon_atom_free_electrons[2]) {
-            e = uniqid()
-            this.container_substrate[0][1][nitrogen_index].push(e)
-           // this.container_reagent[0][1][carbon_atom_index].push(e)
-        } else {
-            this.container_substrate[0][1][nitrogen_index].push(carbon_atom_free_electrons[2])
-        }
-
-        if (undefined === carbon_atom_free_electrons[3]) {
-            e = uniqid()
-            this.container_substrate[0][1][nitrogen_index].push(e)
-          //  this.container_reagent[0][1][carbon_atom_index].push(e)
-        } else {
-            this.container_substrate[0][1][nitrogen_index].push(carbon_atom_free_electrons[3])
-        }
-
-
-
-        this.container_reagent[0][1].map((atom)=>{
-            this.container_substrate[0][1].push(atom)
-        })
+        this.__doubleBondReagentToSubstrate(nitrogen_index, carbon_atom_index)
 
        // console.log(this.container_substrate[0][1][nitrogen_index])
      //   console.log(this.container_substrate[0][1][16])
@@ -2256,6 +2416,12 @@ class Reaction {
             const shared_electrons = Set().intersection(molecule[atom.atomIndex].slice(4), molecule[proton_index].slice(4))
             molecule[proton_index] = Set().removeFromArray(molecule[proton_index], shared_electrons)
         }
+
+        molecule[atom_index][4] = molecule[atom_index][4] === "+"?"":"-"
+
+        // Remove proton from container
+        molecule.splice(proton_index, 1)
+
         return molecule
     }
 

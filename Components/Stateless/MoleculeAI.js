@@ -196,6 +196,23 @@ const MoleculeAI = (container_molecule) => {
     // No method should change state of container_molecule
     return {
 
+        findIndexOfCarbonAtomBondedToNonCarbonBySymbol: (symbol) => {
+            return _.findIndex(container_molecule[0][1], (atom, index)=>{
+                if (atom[0] !== 'C') {
+                    return false
+                }
+                const carbon_atom_object = CAtom(container_molecule[0][1][index], index, container_molecule)
+                const bonds = carbon_atom_object.indexedBonds("").filter((bond)=>{
+                    return bond.atom[0] === symbol
+                })
+
+                if (bonds.length === 0) {
+                    return false
+                }
+                return true
+            })
+        },
+
         findIndexOfCarbonAtomDoubledBondedToNonCarbonBySymbol: (symbol) => {
             return _.findIndex(container_molecule[0][1], (atom, index)=>{
                 if (atom[0] !== 'C') {

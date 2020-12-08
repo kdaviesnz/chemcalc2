@@ -42,8 +42,12 @@ const RemoveMethanol = require('../../Commands/RemoveMethanol')
 const AddProtonToSubstrate = require('../../Commands/AddProtonToSubstrate')
 const AddProtonToReagent = require('../../Commands/AddProtonToReagent')
 const HydrideShift = require('../../Commands/HydrideShift')
+const HydrideShiftOnCarbonNitrogenBondReverse = require('../../Commands/HydrideShiftOnCarbonNitrogenBondReverse')
 const Hyrolysis = require('../../Commands/Hydrolysis')
 const HyrolysisReverse = require('../../Commands/HydrolysisReverse')
+const DeprotonateHydroxylOxygen = require('../../Commands/DeprotonateHydroxylOxygen')
+const RemoveFormateGroup = require('../../Commands/RemoveFormateGroup')
+
 
 const CommandTest = (command, substrate, reagent, rule) => {
 
@@ -91,8 +95,11 @@ const CommandTest = (command, substrate, reagent, rule) => {
         "ADD proton to substrate": AddProtonToSubstrate,
         "ADD proton to reagent": AddProtonToReagent,
         "HYDRIDE shift": HydrideShift,
+        "HYDRIDE shift on carbon nitrogen bond reverse": HydrideShiftOnCarbonNitrogenBondReverse,
         "HYDROLYSISE": Hyrolysis,
-        "HYDROLYSISE reverse": HyrolysisReverse
+        "HYDROLYSISE reverse": HyrolysisReverse,
+        "DEPROTONATE hydroxyl oxygen": DeprotonateHydroxylOxygen,
+        "REMOVE formate group": RemoveFormateGroup
     }
 
 
