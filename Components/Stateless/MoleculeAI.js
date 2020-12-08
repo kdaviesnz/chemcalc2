@@ -248,7 +248,36 @@ const MoleculeAI = (container_molecule) => {
             })
         },
 
+        extractGroupsRecursive: function(groups, group_index, atoms, atom_index) {
+            if (undefined === atoms[atom_index]) {
+                return groups
+            }
+            const atom = atoms[atom_index]
+            if (undefined === groups[group_index]) {
+                groups[group_index] = []
+            }
+            groups[group_index].push(atom)
+            const atom_object = CAtom(atom, atom_index, container_molecule)
+            const bonds = atom_object.indexedBonds("")
+            bonds.map((bond, index)=>{
+                groups[group_index].push(bond.atom)
+                _.remove(atoms, (atom, index)=>{
+                    return index === bond.atom_index
+                })
+                return bond
+            })
+            this.extractGroupsRecursive(groups, group_index +1, atoms, atom_index+1)
+
+        },
+
         extractGroups: function() {
+
+            const groups = []
+            const atoms = _.cloneDeep(container_molecule[0][1])
+            this.extractGroupsRecursive(groups, 0, atoms, 0)
+
+            /*
+
             // Extract groups from molecule
             const groups = _.cloneDeep(container_molecule[0][1]).reduce((carry, atom, index)=>{
                 if (carry.length ===0) {
@@ -302,12 +331,11 @@ const MoleculeAI = (container_molecule) => {
                 return group
             })
  // molecule, units
+ */
 
-            const groups_filtered = groups_saved.filter((group)=>{
+            const groups_filtered = groups.filter((group)=>{
                 return group.length === 1 && group[0][0] === "H" ? false: true
             })
-
-
 
             return groups_filtered
         },
