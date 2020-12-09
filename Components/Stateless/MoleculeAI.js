@@ -272,14 +272,20 @@ const MoleculeAI = (container_molecule) => {
                 return groups
             }
 
-            console.log('extractGroupsRecursive()')
-
             if (undefined === atoms[current_atom_index]) {
                 return groups
             }
 
+            /*
+            if (group_index === 1) {
+                console.log(current_atom_index)
+                console.log(atom_indexes_added)
+                console.log(_.indexOf(atom_indexes_added, current_atom_index) ===-1)
+                process.exit()
+            }
+            */
 
-            if (_.indexOf(atoms, current_atom_index) ===-1) { // Don't process atom twice
+            if (_.indexOf(atom_indexes_added, current_atom_index) ===-1) { // Don't process atom twice
 
                 if (undefined === groups[group_index]) {
                     groups[group_index] = []
@@ -297,26 +303,32 @@ const MoleculeAI = (container_molecule) => {
                 //console.log(VMolecule([[-1,groups[group_index]],1]).compressed())
 
 //                process.exit()
+                return this.extractGroupsRecursive(groups, group_index +1, _.cloneDeep(atoms), atom_indexes_added, current_atom_index +1)
 
+            } else {
+                return this.extractGroupsRecursive(groups, group_index, _.cloneDeep(atoms), atom_indexes_added, current_atom_index +1)
             }
 
 
-
-            return this.extractGroupsRecursive(groups, group_index +1, _.cloneDeep(atoms), atom_indexes_added, current_atom_index +1)
 
         },
 
         extractGroups: function() {
 
+            console.log(VMolecule(container_molecule).compressed())
+
             const atom_indexes_added = []
             let atoms = _.cloneDeep(container_molecule[0][1])
             // Temporary
+            /*
             atoms = atoms.filter((atom)=>{
                 return atom[0] !== "H"
             })
+            */
             const groups = this.extractGroupsRecursive([], 0, _.cloneDeep(atoms), atom_indexes_added, 0)
             console.log('extractGroups()')
-            //console.log(groups[0])
+            console.log(VMolecule([[-1,groups[0]],1]).compressed())
+            console.log(VMolecule([[-1,groups[1]],1]).compressed())
             console.log(groups.length)
             process.exit()
 
