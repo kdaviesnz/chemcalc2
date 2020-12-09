@@ -248,7 +248,7 @@ const MoleculeAI = (container_molecule) => {
             })
         },
 
-        checkForBondedAtomsRecursive: function(carry, current_atom_index, atom_object, atoms, atom_indexes_added) {
+        checkForBondedAtomsRecursive: function(groups, group_index, current_atom_index, atom_object, atoms, atom_indexes_added) {
             /*
             const atoms_to_check = _.cloneDeep(atoms).slice(current_atom_index+1)
             if (atoms_to_check.length ===0) {
@@ -257,13 +257,10 @@ const MoleculeAI = (container_molecule) => {
              */
             _.cloneDeep(atoms).map((a, i)=>{
                 if (i !== current_atom_index && _.indexOf(atom_indexes_added, i) ===-1 && atom_object.isBondedTo(a)) {
-                    carry.push(a)
+                    groups[group_index].push(a)
                     atom_indexes_added.push(i)
-                    console.log('Current atom index:' + current_atom_index)
-                    console.log(a[0] + " " + i)
-                    console.log(atom_indexes_added)
                     bonded_atom_object = CAtom(a, i, container_molecule)
-                    this.checkForBondedAtomsRecursive(carry, i, bonded_atom_object, atoms, atom_indexes_added)
+                    this.checkForBondedAtomsRecursive(groups, group_index, i, bonded_atom_object, _.cloneDeep(atoms), atom_indexes_added)
                 }
                 return a
             })
@@ -276,55 +273,50 @@ const MoleculeAI = (container_molecule) => {
             }
 
             console.log('extractGroupsRecursive()')
-            console.log(VMolecule(container_molecule).compressed())
-
-            // Temporary
-            atoms = atoms.filter((atom)=>{
-                return atom[0] !== "H"
-            })
-
-            console.log(VMolecule([[-1,atoms] ,1]).compressed())
 
             if (undefined === atoms[current_atom_index]) {
                 return groups
             }
 
-            const group = []
 
             if (_.indexOf(atoms, current_atom_index) ===-1) { // Don't process atom twice
+
+                if (undefined === groups[group_index]) {
+                    groups[group_index] = []
+                }
+
                 const atom = atoms[current_atom_index]
-                group.push(atom)
+                groups[group_index].push(atom)
                 // Check for bonded atoms
                 atom_object = CAtom(atom, current_atom_index, container_molecule)
-                console.log('atom_indexes_added before checkForBondedAtomsRecursive()')
-                console.log(atom_indexes_added.length)
-                console.log(atom_indexes_added)
                 // Modifies group, atom_indexes_added
-                this.checkForBondedAtomsRecursive(group, current_atom_index, atom_object, atoms, atom_indexes_added)
-                console.log('atom_indexes_added after checkForBondedAtomsRecursive()')
-                console.log(atom_indexes_added.length)
-                console.log(atom_indexes_added)
+                this.checkForBondedAtomsRecursive(groups, group_index, current_atom_index, atom_object, _.cloneDeep(atoms), atom_indexes_added)
+                //console.log(atom_indexes_added)
+                //console.log(groups[group_index])
+
+                //console.log(VMolecule([[-1,groups[group_index]],1]).compressed())
+
+//                process.exit()
+
             }
 
-            console.log(group)
-            console.log(VMolecule([[-1,group] ,1]).compressed())
 
-            if (undefined === groups[group_index]) {
-                groups[group_index] = []
-            }
-            groups[group_index].push(group)
 
-            return this.extractGroupsRecursive(groups, group_index +1, atoms, atom_indexes_added, current_atom_index +1)
+            return this.extractGroupsRecursive(groups, group_index +1, _.cloneDeep(atoms), atom_indexes_added, current_atom_index +1)
 
         },
 
         extractGroups: function() {
 
             const atom_indexes_added = []
-            const atoms = _.cloneDeep(container_molecule[0][1])
-            const groups = this.extractGroupsRecursive([], 0, atoms, atom_indexes_added, 0)
+            let atoms = _.cloneDeep(container_molecule[0][1])
+            // Temporary
+            atoms = atoms.filter((atom)=>{
+                return atom[0] !== "H"
+            })
+            const groups = this.extractGroupsRecursive([], 0, _.cloneDeep(atoms), atom_indexes_added, 0)
             console.log('extractGroups()')
-            console.log(groups[1])
+            //console.log(groups[0])
             console.log(groups.length)
             process.exit()
 
