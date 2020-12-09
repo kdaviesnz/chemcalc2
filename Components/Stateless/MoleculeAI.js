@@ -9,6 +9,7 @@ findOxygenAttachedToCarbonIndex()
 findOxygenOnDoubleBondIndex()
 findNonWaterOxygenIndex()
 findIndexOfCarbonAtomDoubledBondedToNonCarbonBySymbol(symbol)
+findNitrogenAttachedToCarbonAttachedToOxygenDoubleBondIndex
  */
 
 const MoleculeAI = (container_molecule) => {
@@ -196,7 +197,7 @@ const MoleculeAI = (container_molecule) => {
     // No method should change state of container_molecule
     return {
 
-        findIndexOfCarbonAtomBondedToNonCarbonBySymbol: (symbol) => {
+        findIndexOfCarbonAtomBondedToNonCarbonBySymbol: function(symbol) {
             return _.findIndex(container_molecule[0][1], (atom, index)=>{
                 if (atom[0] !== 'C') {
                     return false
@@ -212,6 +213,25 @@ const MoleculeAI = (container_molecule) => {
                 return true
             })
         },
+
+
+        findNitrogenAttachedToCarbonAttachedToOxygenDoubleBondIndex: function() {
+            const c_index = this.findIndexOfCarbonAtomBondedToNonCarbonBySymbol('N')
+            const carbon_atom_object = CAtom(container_molecule[0][1][c_index], c_index, container_molecule)
+            const c_o_double_bonds = carbon_atom_object.indexedDoubleBonds("").filter((bond)=>{
+                return bond.atom[0] === "O"
+            })
+            if (c_o_double_bonds.length === 0) {
+                return -1
+            }
+
+            return carbon_atom_object.indexedBonds("").filter((bond)=>{
+                return bond.atom[0] === "N"
+            }).pop().atom_index
+
+
+        },
+
 
         findIndexOfCarbonAtomDoubledBondedToNonCarbonBySymbol: (symbol) => {
             return _.findIndex(container_molecule[0][1], (atom, index)=>{
@@ -476,16 +496,7 @@ const MoleculeAI = (container_molecule) => {
                             //console.log(chains)
                         }
 
-                        if (chain_index === 55555555) {
-                            console.log("IN LOOP Index= " + index + " Col=" + col + " depth= " + depth + ' chain index=' + chain_index)
-                            console.log("Bonds (root atom index = " + root_atom_index + ")")
-                            console.log(bonds.map((bond) => {
-                                return bond.atom_index
-                            }))
-                            console.log("Chains: ")
-                            console.log(chains)
-                            console.log("Adding atom " + bond.atom_index)
-                        }
+
 
 
                         if (undefined === chains[chain_index]) {
@@ -929,7 +940,6 @@ VMolecule
 
         findIndexOfCarbonAtomAttachedToHydroxylGroup: () => {
             const electrophile_index = __findHydroxylOxygenIndex()
-            console.log(electrophile_index)
             const electrophile_atom_object = CAtom(container_molecule[0][1][electrophile_index], electrophile_index, container_molecule)
             const nucleophile_index = electrophile_atom_object.indexedBonds("").filter((bond)=>{
                 if (bond.atom[0] === 'H') {

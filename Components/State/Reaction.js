@@ -126,6 +126,17 @@ class Reaction {
 
     }
 
+    __changeDoubleBondToSingleBond(nucleophile_index, electrophile_index) {
+
+        const shared_electrons = Set().intersection(this.container_substrate[0][1][nucleophile_index], this.container_substrate[0][1][electrophile_index]).slice(2)
+        this.container_substrate[0][1][electrophile_index] = Set().removeFromArray( this.container_substrate[0][1][electrophile_index], shared_electrons)
+
+        // Charges
+        this.container_substrate[0][1][nucleophile_index][4] = this.container_substrate[0][1][nucleophile_index][4] === "+"? "":"-"
+        this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4] === "-"? "":"+"
+        this.setMoleculeAI()
+    }
+
     makeOxygenCarbonDoubleBond() {
 
         const oxygen_index = this.MoleculeAI.findOxygenAttachedToCarbonIndexNoDoubleBonds()
@@ -136,10 +147,20 @@ class Reaction {
         })
         const carbon_index = carbon_bonds[0].atom_index
 
+        // Check for C=X bonds and change to single bond (not O)
+        const c_atom = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, this.container_substrate)
+        const double_bond = c_atom.indexedDoubleBonds("").filter((bond)=>{
+            return bond.atom[0] !== 'O'
+        }).pop()
+        if (double_bond !== undefined) {
+            this.__changeDoubleBondToSingleBond(double_bond.atom_index, carbon_index)
+        }
+
         // Proton if applicable
         const proton_oxygen_bond = oxygen.indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "H"
         }).pop()
+
         if (proton_oxygen_bond !== undefined) {
             const proton_shared_electrons = proton_oxygen_bond.shared_electrons
             const proton_index = proton_oxygen_bond.atom_index
@@ -288,7 +309,7 @@ class Reaction {
 
     transferProtonReverse() {
 
-        console.log('transferProtonReverse()')
+        //console.log('transferProtonReverse()')
         if (this.rule.mechanism !== 'Leukart Wallach reaction') {
             this.transferProton()
         } else {
@@ -300,10 +321,14 @@ class Reaction {
 
 
             // Get index of OH
-            const electrophile_index = this.MoleculeAI.findHydroxylOxygenIndex()
+            let electrophile_index = this.MoleculeAI.findHydroxylOxygenIndex()
+            if (electrophile_index === -1) {
+                electrophile_index = this.MoleculeAI.findWaterOxygenIndex()
+            }
 
             if (electrophile_index === -1) {
-                console.log('electrophile index is -1, exiting')
+                console.log('nucleophile index:'+nucleophile_index)
+                console.log('transferProtonReverse() electrophile index is -1, exiting')
                 process.exit()
             }
 
@@ -333,14 +358,11 @@ class Reaction {
 
     transferProton() {
 
-        console.log('transferProton')
         // Get nucleophile  - this is the atom that is getting the proton
         const nucleophile_index = this.MoleculeAI.findNucleophileIndex()
-        console.log(nucleophile_index)
 
         // Get electrophile - this is the atom we are getting the proton from
         const electrophile_index = this.MoleculeAI.findElectrophileIndex()
-        console.log(electrophile_index)
 
         // Get proton from electrophile
         const electrophile_atom_object = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
@@ -590,10 +612,20 @@ class Reaction {
 
     }
 
+    removeFormamideGroup() {
+
+        console.log("removeFormamideGroup")
+        const nitrogen_index = this.MoleculeAI.findNitrogenAttachedToCarbonAttachedToOxygenDoubleBondIndex()
+        console.log('nitrogen index:' + nitrogen_index)
+        process.exit()
+
+    }
+
+
     removeFormateGroup() {
         const formate_double_bond_oxygen_index = this.MoleculeAI.findOxygenOnDoubleBondIndex()
-        console.log(VMolecule(this.container_substrate).compressed())
-        console.log(formate_double_bond_oxygen_index)
+        //console.log(VMolecule(this.container_substrate).compressed())
+        //console.log(formate_double_bond_oxygen_index)
 
         const formate_double_bond_oxygen_atom_object = CAtom(this.container_substrate[0][1][formate_double_bond_oxygen_index], formate_double_bond_oxygen_index, this.container_substrate)
         const carbon_atom_on_formate_double_bond_oxygen_index = formate_double_bond_oxygen_atom_object.indexedBonds("").filter((bond)=>{
@@ -612,16 +644,16 @@ class Reaction {
             return bond.atom[0] === "C" && bond.atom_index !== carbon_atom_on_formate_double_bond_oxygen_index
         }).pop().atom_index
 
-        console.log(carbon_atom_on_formate_double_bond_oxygen_index)
+//        console.log(carbon_atom_on_formate_double_bond_oxygen_index)
 
-        console.log(electrophile_index)
-        console.log(nucleophile_index)
+  //      console.log(electrophile_index)
+    //    console.log(nucleophile_index)
         const groups = this.__removeGroup(nucleophile_index, electrophile_index, this.MoleculeAI, this.container_substrate)
         this.__setSubstrateGroups(groups) // sets substrate and leaving groups
 
-        console.log(VMolecule(this.container_substrate).compressed())
+      //  console.log(VMolecule(this.container_substrate).compressed())
 
-        process.exit()
+        //process.exit()
 
     }
 
@@ -697,9 +729,9 @@ class Reaction {
         } else {
 
             // No overloaded atoms
-            console.log('No overloaded atoms')
+           // console.log('No overloaded atoms')
             electrophile_index = this.MoleculeAI.findElectrophileIndex()
-            console.log('electrophile_index:' + electrophile_index)
+            //console.log('electrophile_index:' + electrophile_index)
 
             if (electrophile_index === -1) {
                 nucleophile_index = this.MoleculeAI.findNucleophileIndex()
@@ -872,10 +904,10 @@ class Reaction {
 
         const groups = this.MoleculeAI.extractGroups()
 
-        console.log('breakBond() groups')
-        console.log(VMolecule([[-1,groups[0]],1]).compressed())
-        console.log(VMolecule([[-1,groups[1]],1]).compressed())
-        process.exit()
+        //console.log('breakBond() groups')
+        //console.log(VMolecule([[-1,groups[0]],1]).compressed())
+        //console.log(VMolecule([[-1,groups[1]],1]).compressed())
+        //process.exit()
        // console.log(groups)
 
         this.__setSubstrateGroups(groups)
@@ -908,7 +940,7 @@ class Reaction {
 
             let electrophile_free_slots = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate).freeSlots()
 
-            console.log(electrophile_index)
+           // console.log(electrophile_index)
 
             if (electrophile_free_slots > 0) {
 
@@ -1146,15 +1178,15 @@ class Reaction {
 
     bondSubstrateToReagent() {
 
-        console.log('bondSubstrateToReagent()')
+      //  console.log('bondSubstrateToReagent()')
         // Important:
         // The reagent is the nucleophile and is attacking the substrate
         // The substrate is the electrophile
       //  console.log('reaction.js bondSubstrateToReagent')
         const electrophile_index = this.MoleculeAI.findElectrophileIndex()
-        console.log('electrophile_index (substrate):' + electrophile_index)
+        //console.log('electrophile_index (substrate):' + electrophile_index)
         const nucleophile_index = this.ReagentAI.findNucleophileIndex()
-        console.log('nucleophile index (reagent):' + nucleophile_index)
+        //console.log('nucleophile index (reagent):' + nucleophile_index)
 
         const nucleophile = CAtom(this.container_reagent[0][1][nucleophile_index], nucleophile_index, this.container_reagent)
 
@@ -1191,11 +1223,11 @@ class Reaction {
     }
 
     breakBondReverse() { // bond atoms
-        console.log('breakBondReverse()')
+        //console.log('breakBondReverse()')
         let nucleophile_index = this.MoleculeAI.findNucleophileIndex()
-        console.log('nucleophile index:'+nucleophile_index)
+        //console.log('nucleophile index:'+nucleophile_index)
         let electrophile_index = this.MoleculeAI.findElectrophileIndex()
-        console.log('electrophile index:' + electrophile_index)
+        //console.log('electrophile index:' + electrophile_index)
         if (electrophile_index === -1) {
             // Check for epoxide ring
             if (this.container_substrate[0][1][nucleophile_index][0] === 'O') {
@@ -1256,8 +1288,8 @@ class Reaction {
             return false
         }
 
-        console.log('bondAtoms')
-        console.log('electrophile index:'+electrophile_index)
+       // console.log('bondAtoms')
+        //console.log('electrophile index:'+electrophile_index)
 
 
 
@@ -1924,8 +1956,8 @@ class Reaction {
     breakCarbonOxygenDoubleBond() {
 
         const oxygen_index = this.MoleculeAI.findOxygenOnDoubleBondIndex()
-        console.log('breakCarbonOxygenDoubleBond')
-        console.log(oxygen_index)
+        //console.log('breakCarbonOxygenDoubleBond')
+        //console.log(oxygen_index)
         if (oxygen_index === -1) {
             console.log('breakCarbonOxygenDoubleBond() oxygen index is -1, exiting')
             process.exit()
@@ -2043,16 +2075,16 @@ class Reaction {
         this.container_reagent = [MoleculeFactory("C(=O)[O-]"),1]
         this.setReagentAI()
         const hydroxide_index = this.ReagentAI.findOxygenAttachedToCarbonIndexNoDoubleBonds()
-        console.log('hydrideShiftReverse()')
-        console.log('reagent')
-        console.log(VMolecule(this.container_reagent).compressed())
-        console.log('hydroxide index:' + hydroxide_index)
+       // console.log('hydrideShiftReverse()')
+       // console.log('reagent')
+       // console.log(VMolecule(this.container_reagent).compressed())
+       // console.log('hydroxide index:' + hydroxide_index)
 
         const carbon_index = this.MoleculeAI.findIndexOfCarbonAtomBondedToNonCarbonBySymbol('N')
-        console.log('substrate')
-        console.log(VMolecule(this.container_substrate).compressed())
+        //console.log('substrate')
+        //console.log(VMolecule(this.container_substrate).compressed())
 
-        console.log('carbon index:' + carbon_index)
+        //console.log('carbon index:' + carbon_index)
 
         this.__bondReagentToSubstrate(carbon_index, hydroxide_index)
         //console.log('substrate')
@@ -2315,10 +2347,10 @@ class Reaction {
 
     hydrolysisReverse() {
         // @see https://en.wikipedia.org/wiki/Leuckart_reaction/
-        console.log("hydrolysisReverse()")
-        console.log("Start")
-        console.log('Reagent')
-        console.log(VMolecule(this.container_reagent).compressed())
+       // console.log("hydrolysisReverse()")
+       // console.log("Start")
+       // console.log('Reagent')
+       // console.log(VMolecule(this.container_reagent).compressed())
 
         // Reagent:
         // Should have C-OH group attached to the main carbon
@@ -2352,9 +2384,9 @@ class Reaction {
      //   console.log(this.container_substrate[0][1][16])
 
 
-        console.log("After creating double bond between N and C")
-        console.log('Substrate')
-        console.log(VMolecule(this.container_substrate).compressed())
+      //  console.log("After creating double bond between N and C")
+      //  console.log('Substrate')
+      //  console.log(VMolecule(this.container_substrate).compressed())
 
 
         // Remove OH group
@@ -2370,9 +2402,9 @@ class Reaction {
         }
         this.setMoleculeAI()
 
-        console.log("After removing OH group")
-        console.log('Substrate')
-        console.log(VMolecule(this.container_substrate).compressed())
+      //  console.log("After removing OH group")
+      //  console.log('Substrate')
+        //console.log(VMolecule(this.container_substrate).compressed())
 
 
         // Remove protons from N
@@ -2392,9 +2424,9 @@ class Reaction {
         })
 
 
-        console.log("After removing protons from substrate")
-        console.log('Substrate')
-        console.log(VMolecule(this.container_substrate).compressed())
+       // console.log("After removing protons from substrate")
+       // console.log('Substrate')
+       // console.log(VMolecule(this.container_substrate).compressed())
 
         this.setMoleculeAI()
         this.setReagentAI()
@@ -2458,8 +2490,8 @@ class Reaction {
             this.container_substrate[0][1][nitrogen_index].push(proton_bond.shared_electrons[1])
             this.container_substrate[0][1].push(proton)
 
-            console.log(VMolecule(this.container_substrate).compressed())
-            console.log(VMolecule(this.container_reagent).compressed())
+           // console.log(VMolecule(this.container_substrate).compressed())
+           // console.log(VMolecule(this.container_reagent).compressed())
 
 
             // Hydrate carbon atom on N=C bond
@@ -2469,16 +2501,16 @@ class Reaction {
             }).pop()
             this.hydrate(nitrogen_carbon_bond.atom_index)
 
-            console.log(VMolecule(this.container_substrate).compressed())
-            console.log(VMolecule(this.container_reagent).compressed())
+           // console.log(VMolecule(this.container_substrate).compressed())
+           // console.log(VMolecule(this.container_reagent).compressed())
 
 
             // break N=C bond
             this.container_substrate[0][1][nitrogen_carbon_bond.atom_index] = Set().removeFromArray(this.container_substrate[0][1][nitrogen_carbon_bond.atom_index], [nitrogen_carbon_bond.shared_electrons[0], nitrogen_carbon_bond.shared_electrons[1]])
 
 
-            console.log(VMolecule(this.container_substrate).compressed())
-            console.log(VMolecule(this.container_reagent).compressed())
+         //   console.log(VMolecule(this.container_substrate).compressed())
+          //  console.log(VMolecule(this.container_reagent).compressed())
           //  process.exit()
 
             // deprotonate water group
@@ -2512,8 +2544,8 @@ class Reaction {
             this.container_substrate[0][1][nitrogen_index][4] = this.container_substrate[0][1][nitrogen_index][4] === "-"?"":"+"
             this.container_substrate[0][1].push(oxidanium_proton)
 
-            console.log(VMolecule(this.container_substrate).compressed())
-            console.log(VMolecule(this.container_reagent).compressed())
+         //   console.log(VMolecule(this.container_substrate).compressed())
+         //   console.log(VMolecule(this.container_reagent).compressed())
 
 
             // break former N=C bond, creating a leaving group
@@ -2531,12 +2563,14 @@ class Reaction {
                 })
             }
 
+        /*
             console.log('Substrate')
             console.log(VMolecule(this.container_substrate).compressed())
             console.log('Reagent')
             console.log(VMolecule(this.container_reagent).compressed())
              console.log('Leaving group')
             console.log(VMolecule(this.leaving_groups[0]).compressed())
+            */
 
             // Substrate is the amine
             // Leaving group:
@@ -2579,12 +2613,14 @@ class Reaction {
                     return index === o_proton_bond.atom_index
                 })
 
+                /*
                  console.log('Substrate')
                  console.log(VMolecule(this.container_substrate).compressed())
                  console.log('Reagent')
                  console.log(VMolecule(this.container_reagent).compressed())
                  console.log('Leaving group')
                  console.log(VMolecule(this.leaving_groups[0]).compressed())
+                 */
 
 
 

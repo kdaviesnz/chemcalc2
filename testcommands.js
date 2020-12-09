@@ -625,18 +625,42 @@ console.log("Leukart Wallach reaction (formamide) - HYDROLYSIS reverse")
 const leukart_wallach_reaction_formamide_step10_reverse = CommandTest("HYDROLYSISE reverse", _.cloneDeep(leukart_wallach_reaction_formamide_step10[0]), _.cloneDeep([methanol,1]))
 console.log(VMolecule(leukart_wallach_reaction_formamide_step10_reverse[0]).compressed())
 
-console.log("Leukart Wallach reaction (formamide) - HYDROLYSIS step 9 (before reversal)")
+console.log("Leukart Wallach reaction (formamide) -  step 9 (before reversal)")
 console.log(VMolecule(leukart_wallach_reaction_formamide_step9[0]).compressed())
-console.log("Leukart Wallach reaction (formamide) - HYDROLYSIS step 9 (reversed) DEPROTONATE hydroxyl oxygen")
+console.log("Leukart Wallach reaction (formamide) -  step 9 (reversed) DEPROTONATE hydroxyl oxygen")
 const leukart_wallach_reaction_formamide_step9_reverse = CommandTest("DEPROTONATE hydroxyl oxygen", _.cloneDeep(leukart_wallach_reaction_formamide_step9[0]), _.cloneDeep([ammonia,1]))
 console.log(VMolecule(leukart_wallach_reaction_formamide_step9_reverse[0]).compressed())
 
-console.log("Leukart Wallach reaction (formamide) - HYDROLYSIS step 8 (reversed) HYDRIDE shift on carbon nitrogen bond reverse")
+console.log("Leukart Wallach reaction (formamide) -  step 8 (reversed) HYDRIDE shift on carbon nitrogen bond reverse")
 const leukart_wallach_reaction_formamide_step8_reverse = CommandTest("HYDRIDE shift on carbon nitrogen bond reverse", _.cloneDeep(leukart_wallach_reaction_formamide_step9_reverse[0]))
 console.log(VMolecule(leukart_wallach_reaction_formamide_step8_reverse[0]).compressed())
 
-console.log("Leukart Wallach reaction (formamide) - HYDROLYSIS step 7 (reversed) BOND substrate to reagent - Bond O (nucleophile) on reagent to C+ (electrophile) on substrate.")
+console.log("Leukart Wallach reaction (formamide) -  step 7 (reversed) REMOVE formate group")
 const leukart_wallach_reaction_formamide_step7_reverse = CommandTest("REMOVE formate group", _.cloneDeep(leukart_wallach_reaction_formamide_step8_reverse[0]))
 console.log(VMolecule(leukart_wallach_reaction_formamide_step7_reverse[0]).compressed())
+
+console.log("Leukart Wallach reaction (formamide) -  step 6 (reversed) MAKE carbon oxygen double bond. C atom should have no charge. O atom should have no charge. N should have negative bond")
+const leukart_wallach_reaction_formamide_step6_reverse = CommandTest("MAKE oxygen carbon double bond", _.cloneDeep(leukart_wallach_reaction_formamide_step7_reverse[0]))
+console.log(VMolecule(leukart_wallach_reaction_formamide_step6_reverse[0]).compressed())
+
+console.log("Leukart Wallach reaction (formamide) -  step 5 (reversed) HYDRATE - add water group to C+")
+const leukart_wallach_reaction_formamide_step5_reverse = CommandTest("HYDRATE", _.cloneDeep(leukart_wallach_reaction_formamide_step6_reverse[0]), _.cloneDeep([water,1]))
+console.log(VMolecule(leukart_wallach_reaction_formamide_step5_reverse[0]).compressed())
+
+console.log("Leukart Wallach reaction (formamide) -  step 4 (reversed) TRANSFER proton - Proton transfers from OH to N. N atom should have no charge. O atom should have no charge.")
+const leukart_wallach_reaction_formamide_step4_reverse = CommandTest("TRANSFER proton [reverse]", _.cloneDeep(leukart_wallach_reaction_formamide_step5_reverse[0]), null, {'mechanism':'Leukart Wallach reaction'})
+console.log(VMolecule(leukart_wallach_reaction_formamide_step4_reverse[0]).compressed())
+
+console.log("Leukart Wallach reaction (formamide) -  step 3 (reversed)  TRANSFER proton - Proton transfers from O to N. N atom should have positive charge. O atom should have negative charge.")
+const leukart_wallach_reaction_formamide_step3_reverse = CommandTest("TRANSFER proton [reverse]", _.cloneDeep(leukart_wallach_reaction_formamide_step4_reverse[0]), null, {'mechanism':'Leukart Wallach reaction'})
+console.log(VMolecule(leukart_wallach_reaction_formamide_step3_reverse[0]).compressed())
+
+console.log("Leukart Wallach reaction (formamide) -  step 2 (reversed) MAKE oxygen carbon double bond. Note: Make sure correct C=O bond breaks.")
+const leukart_wallach_reaction_formamide_step2_reverse = CommandTest("MAKE oxygen carbon double bond", _.cloneDeep(leukart_wallach_reaction_formamide_step3_reverse[0]), null, {'mechanism':'Leukart Wallach reaction'})
+console.log(VMolecule(leukart_wallach_reaction_formamide_step2_reverse[0]).compressed())
+
+console.log("Leukart Wallach reaction (formamide) -  step 1 (reversed) BOND substrate to reagent - N atom on formamide (nucleophile) attacks carbonyl carbon (C=O) on substrate, attaching itself to the carbon. N atom should be positively charged. C should have negative charge.")
+const leukart_wallach_reaction_formamide_step1_reverse = CommandTest("REMOVE formamide group", _.cloneDeep(leukart_wallach_reaction_formamide_step2_reverse[0]), null, {'mechanism':'Leukart Wallach reaction'})
+console.log(VMolecule(leukart_wallach_reaction_formamide_step1_reverse[0]).compressed())
 
 process.exit()
