@@ -873,7 +873,9 @@ class Reaction {
         const groups = this.MoleculeAI.extractGroups()
 
         console.log('breakBond() groups')
-        console.log(groups.length)
+        console.log(VMolecule([[-1,groups[0]],1]).compressed())
+        console.log(VMolecule([[-1,groups[1]],1]).compressed())
+        process.exit()
        // console.log(groups)
 
         this.__setSubstrateGroups(groups)

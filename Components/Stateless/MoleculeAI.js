@@ -249,14 +249,10 @@ const MoleculeAI = (container_molecule) => {
         },
 
         checkForBondedAtomsRecursive: function(groups, group_index, current_atom_index, atom_object, atoms, atom_indexes_added) {
-            /*
-            const atoms_to_check = _.cloneDeep(atoms).slice(current_atom_index+1)
-            if (atoms_to_check.length ===0) {
-                return
-            }
-             */
+
             _.cloneDeep(atoms).map((a, i)=>{
                 if (i !== current_atom_index && _.indexOf(atom_indexes_added, i) ===-1 && atom_object.isBondedTo(a)) {
+                   // console.log('Added atom')
                     groups[group_index].push(a)
                     atom_indexes_added.push(i)
                     bonded_atom_object = CAtom(a, i, container_molecule)
@@ -276,14 +272,6 @@ const MoleculeAI = (container_molecule) => {
                 return groups
             }
 
-            /*
-            if (group_index === 1) {
-                console.log(current_atom_index)
-                console.log(atom_indexes_added)
-                console.log(_.indexOf(atom_indexes_added, current_atom_index) ===-1)
-                process.exit()
-            }
-            */
 
             if (_.indexOf(atom_indexes_added, current_atom_index) ===-1) { // Don't process atom twice
 
@@ -292,20 +280,30 @@ const MoleculeAI = (container_molecule) => {
                 }
 
                 const atom = atoms[current_atom_index]
-                groups[group_index].push(atom)
                 // Check for bonded atoms
                 atom_object = CAtom(atom, current_atom_index, container_molecule)
                 // Modifies group, atom_indexes_added
-                this.checkForBondedAtomsRecursive(groups, group_index, current_atom_index, atom_object, _.cloneDeep(atoms), atom_indexes_added)
-                //console.log(atom_indexes_added)
+                // groups, group_index, current_atom_index, atom_object, atoms, atom_indexes_added
+                const bonds = atom_object.indexedBonds("")
+                if (bonds.length === 0) {
+                      // console.log('adddded atom')
+                      groups[group_index].push(atom)
+                } else {
+                    this.checkForBondedAtomsRecursive(groups, group_index, current_atom_index, atom_object, _.cloneDeep(atoms), atom_indexes_added)
+                }
+               // console.log(atom_indexes_added)
                 //console.log(groups[group_index])
 
-                //console.log(VMolecule([[-1,groups[group_index]],1]).compressed())
+               // console.log(VMolecule([[-1,groups[group_index]],1]).compressed())
 
-//                process.exit()
+                // process.exit()
+               // console.log(group_index)
+               // console.log(atom_indexes_added)
                 return this.extractGroupsRecursive(groups, group_index +1, _.cloneDeep(atoms), atom_indexes_added, current_atom_index +1)
 
             } else {
+               // console.log(group_index)
+               // console.log(atom_indexes_added)
                 return this.extractGroupsRecursive(groups, group_index, _.cloneDeep(atoms), atom_indexes_added, current_atom_index +1)
             }
 
@@ -315,7 +313,7 @@ const MoleculeAI = (container_molecule) => {
 
         extractGroups: function() {
 
-            console.log(VMolecule(container_molecule).compressed())
+            // console.log(VMolecule(container_molecule).compressed())
 
             const atom_indexes_added = []
             let atoms = _.cloneDeep(container_molecule[0][1])
@@ -325,12 +323,14 @@ const MoleculeAI = (container_molecule) => {
                 return atom[0] !== "H"
             })
             */
+//            console.log(atoms.length)
+  //          process.exit()
             const groups = this.extractGroupsRecursive([], 0, _.cloneDeep(atoms), atom_indexes_added, 0)
-            console.log('extractGroups()')
-            console.log(VMolecule([[-1,groups[0]],1]).compressed())
-            console.log(VMolecule([[-1,groups[1]],1]).compressed())
-            console.log(groups.length)
-            process.exit()
+           // console.log('extractGroups()')
+           // console.log(VMolecule([[-1,groups[0]],1]).compressed())
+         //   console.log(VMolecule([[-1,groups[1]],1]).compressed())
+           // console.log(groups.length)
+         //   process.exit()
 
             /*
 
