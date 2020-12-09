@@ -16,7 +16,56 @@ const methanol = MoleculeFactory("CO")
 VMolecule([methanol,1]).canonicalSMILES().should.be.equal("CO")
 const methanol_ai = require("./Components/Stateless/MoleculeAI")([methanol,1])
 
+const carboxylic_ester = MoleculeFactory("CC(=O)ON")
+const hydroxide_ion = MoleculeFactory("[OH-]")
 
+//const carboxylic_ester = MoleculeFactory("CC(=O)ON")
+console.log('Carboxylic ester')
+console.log(VMolecule([carboxylic_ester,1]).compressed())
+const saponification_step1 = CommandTest("BREAK carbon oxygen double bond", _.cloneDeep([carboxylic_ester,1]))
+console.log('saponification step 1 BREAK carbon oxygen double bond. C atom should now have a + charge (electrophile). =O atom should have negative charge.')
+console.log(VMolecule(saponification_step1[0]).compressed())
+
+
+const saponification_step2= CommandTest("BOND atoms", _.cloneDeep(saponification_step1[0]), _.cloneDeep([hydroxide_ion, 1]))
+console.log('saponification step 2 BOND atoms. O atom on reagent [OH-] (nucleophile) attacks C+ atom on substrate. O atom on former C=O double bond should still have negative charge.')
+console.log(VMolecule(saponification_step2[0]).compressed())
+
+const saponification_step3= CommandTest("MAKE oxygen carbon double bond", _.cloneDeep(saponification_step2[0]))
+console.log('saponification step 3 MAKE oxygen carbon double bond. O- atom attacks the C atom on the former C=O bond. O atom should now have no charge. Carbon atom should have negative charge (nucleophile)')
+console.log(VMolecule(saponification_step3[0]).compressed())
+
+const saponification_step4= CommandTest("BREAK bond", _.cloneDeep(saponification_step3[0]))
+console.log('saponification step 4 BREAK bond" - C-OR breaks forming leaving group. O atom on OR should have negative charge (nucleophile).')
+console.log(VMolecule(saponification_step4[0]).compressed())
+console.log(VMolecule(saponification_step4[2][0]).compressed()) // LEAVING GROUPS
+
+const saponification_step5= CommandTest("DEPROTONATE", _.cloneDeep(saponification_step4[0]), _.cloneDeep(saponification_step4[2][0]))
+console.log('saponification step 5 DEPROTONATE" - O- atom (nucleophile) on O-R attacks proton on O on substrate. O atom on substrate should now have a negative charge. O atom on C-R  should now have no charge.')
+console.log(VMolecule(saponification_step5[0]).compressed())
+
+//console.log(VMolecule([MoleculeFactory("ON"), 1]).compressed())
+const saponification_step5_reversed = CommandTest("PROTONATE", _.cloneDeep(saponification_step5[0]), _.cloneDeep([MoleculeFactory("[OH]N"),1]))
+console.log('saponification step 5 reverse PROTONATE" - Protonate [O-] atom on substrate. O atom on [OR] should now have a negative charge.')
+console.log(VMolecule(saponification_step5_reversed[0]).compressed())
+console.log(VMolecule(saponification_step5_reversed[1]).compressed())
+
+const saponification_step4_reversed = CommandTest("BOND atoms", _.cloneDeep(saponification_step5_reversed[0]), _.cloneDeep(saponification_step5_reversed[1]))
+console.log('saponification step 4 reversed BOND atoms to substrate" - Bond O- atom (nucleophile) to carbon atom on substrate (electrophile). Carbon  atom should have a - charge.')
+console.log(VMolecule(saponification_step4_reversed[0]).compressed())
+
+const saponification_step3_reversed = CommandTest("BREAK carbon oxygen double bond", _.cloneDeep(saponification_step4_reversed[0]))
+console.log('saponification step 3 reversed BREAK carbon oxygen double bond" - Break C=O bond')
+console.log(VMolecule(saponification_step3_reversed[0]).compressed())
+
+const saponification_step2_reversed = CommandTest("MAKE oxygen carbon double bond", _.cloneDeep(saponification_step3_reversed[0]))
+console.log('saponification step 2 reversed MAKE oxygen carbon double bond" - Break C=O bond')
+console.log(VMolecule(saponification_step2_reversed[0]).compressed())
+
+const saponification_step1_reversed = CommandTest("REMOVE hydroxyl group", _.cloneDeep(saponification_step2_reversed[0]))
+console.log('saponification step 1 reversed REMOVE hydroxyl group" - Break CO bond')
+console.log(VMolecule(saponification_step1_reversed[0]).compressed())
+console.log(VMolecule(saponification_step1_reversed[2][0]).compressed()) // OH
 
 
 
@@ -299,7 +348,7 @@ console.log(VMolecule(oxymercuration_demercuration_step1_reversed[0]).compressed
 // carbon group connected to the single-bonded oxygen:
 // CC(=O)O (acetic acid)
 // CC(=O)OC
-const carboxylic_ester = MoleculeFactory("CC(=O)ON")
+
 console.log('Carboxylic ester')
 console.log(VMolecule([carboxylic_ester,1]).compressed())
 const carboxylic_acid_step1 = CommandTest("PROTONATE oxygen on double bond", _.cloneDeep([carboxylic_ester,1]), _.cloneDeep([oxydanium,1]))
@@ -386,56 +435,9 @@ Saponification
 */
 
 
-const hydroxide_ion = MoleculeFactory("[OH-]")
+
 console.log(VMolecule([hydroxide_ion,1]).compressed())
 
-//const carboxylic_ester = MoleculeFactory("CC(=O)ON")
-console.log('Carboxylic ester')
-console.log(VMolecule([carboxylic_ester,1]).compressed())
-const saponification_step1 = CommandTest("BREAK carbon oxygen double bond", _.cloneDeep([carboxylic_ester,1]))
-console.log('saponification step 1 BREAK carbon oxygen double bond. C atom should now have a + charge (electrophile). =O atom should have negative charge.')
-console.log(VMolecule(saponification_step1[0]).compressed())
-
-
-const saponification_step2= CommandTest("BOND atoms", _.cloneDeep(saponification_step1[0]), _.cloneDeep([hydroxide_ion, 1]))
-console.log('saponification step 2 BOND atoms. O atom on reagent [OH-] (nucleophile) attacks C+ atom on substrate. O atom on former C=O double bond should still have negative charge.')
-console.log(VMolecule(saponification_step2[0]).compressed())
-
-const saponification_step3= CommandTest("MAKE oxygen carbon double bond", _.cloneDeep(saponification_step2[0]))
-console.log('saponification step 3 MAKE oxygen carbon double bond. O- atom attacks the C atom on the former C=O bond. O atom should now have no charge. Carbon atom should have negative charge (nucleophile)')
-console.log(VMolecule(saponification_step3[0]).compressed())
-
-const saponification_step4= CommandTest("BREAK bond", _.cloneDeep(saponification_step3[0]))
-console.log('saponification step 4 BREAK bond" - C-OR breaks forming leaving group. O atom on OR should have negative charge (nucleophile).')
-console.log(VMolecule(saponification_step4[0]).compressed())
-console.log(VMolecule(saponification_step4[2][0]).compressed()) // LEAVING GROUPS
-
-const saponification_step5= CommandTest("DEPROTONATE", _.cloneDeep(saponification_step4[0]), _.cloneDeep(saponification_step4[2][0]))
-console.log('saponification step 5 DEPROTONATE" - O- atom (nucleophile) on O-R attacks proton on O on substrate. O atom on substrate should now have a negative charge. O atom on C-R  should now have no charge.')
-console.log(VMolecule(saponification_step5[0]).compressed())
-
-//console.log(VMolecule([MoleculeFactory("ON"), 1]).compressed())
-const saponification_step5_reversed = CommandTest("PROTONATE", _.cloneDeep(saponification_step5[0]), _.cloneDeep([MoleculeFactory("[OH]N"),1]))
-console.log('saponification step 5 reverse PROTONATE" - Protonate [O-] atom on substrate. O atom on [OR] should now have a negative charge.')
-console.log(VMolecule(saponification_step5_reversed[0]).compressed())
-console.log(VMolecule(saponification_step5_reversed[1]).compressed())
-
-const saponification_step4_reversed = CommandTest("BOND atoms", _.cloneDeep(saponification_step5_reversed[0]), _.cloneDeep(saponification_step5_reversed[1]))
-console.log('saponification step 4 reversed BOND atoms to substrate" - Bond O- atom (nucleophile) to carbon atom on substrate (electrophile). Carbon  atom should have a - charge.')
-console.log(VMolecule(saponification_step4_reversed[0]).compressed())
-
-const saponification_step3_reversed = CommandTest("BREAK carbon oxygen double bond", _.cloneDeep(saponification_step4_reversed[0]))
-console.log('saponification step 3 reversed BREAK carbon oxygen double bond" - Break C=O bond')
-console.log(VMolecule(saponification_step3_reversed[0]).compressed())
-
-const saponification_step2_reversed = CommandTest("MAKE oxygen carbon double bond", _.cloneDeep(saponification_step3_reversed[0]))
-console.log('saponification step 2 reversed MAKE oxygen carbon double bond" - Break C=O bond')
-console.log(VMolecule(saponification_step2_reversed[0]).compressed())
-
-const saponification_step1_reversed = CommandTest("REMOVE hydroxyl group", _.cloneDeep(saponification_step2_reversed[0]))
-console.log('saponification step 1 reversed REMOVE hydroxyl group" - Break CO bond')
-console.log(VMolecule(saponification_step1_reversed[0]).compressed())
-console.log(VMolecule(saponification_step1_reversed[2][0]).compressed()) // OH
 
 // Expoxide ring opening via methoxide
 // https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Map%3A_Organic_Chemistry_(McMurry)/Chapter_18%3A_Ethers_and_Epoxides%3B_Thiols_and_Sulfides/18.06_Reactions_of_Epoxides%3A_Ring-opening
