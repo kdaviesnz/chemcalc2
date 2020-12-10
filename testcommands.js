@@ -655,7 +655,7 @@ console.log("Leukart Wallach reaction (formamide) -  step 3 (reversed)  TRANSFER
 const leukart_wallach_reaction_formamide_step3_reverse = CommandTest("TRANSFER proton [reverse]", _.cloneDeep(leukart_wallach_reaction_formamide_step4_reverse[0]), null, {'mechanism':'Leukart Wallach reaction'})
 console.log(VMolecule(leukart_wallach_reaction_formamide_step3_reverse[0]).compressed())
 
-console.log("Leukart Wallach reaction (formamide) -  step 2 (reversed) MAKE oxygen carbon double bond. Note: Make sure correct C=O bond breaks.")
+console.log("Leukart Wallach reaction (formamide) -  step 2 (reversed) MAKE oxygen carbon double bond. N should be positively charged.  Note: Make sure correct C=O bond breaks.")
 const leukart_wallach_reaction_formamide_step2_reverse = CommandTest("MAKE oxygen carbon double bond", _.cloneDeep(leukart_wallach_reaction_formamide_step3_reverse[0]), null, {'mechanism':'Leukart Wallach reaction'})
 console.log(VMolecule(leukart_wallach_reaction_formamide_step2_reverse[0]).compressed())
 
