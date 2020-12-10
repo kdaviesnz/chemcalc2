@@ -616,9 +616,14 @@ class Reaction {
 
         console.log("removeFormamideGroup")
         const nitrogen_index = this.MoleculeAI.findNitrogenAttachedToCarbonAttachedToOxygenDoubleBondIndex()
-        const nitrogen_atom = CAtom()
+        const nitrogen_atom = CAtom(this.container_substrate[0][1][nitrogen_index], nitrogen_index, this.container_substrate)
+        const nitrogen_atom_carbon_bonds = nitrogen_atom.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] ===  "C"
+        })
 
-        const formide_carbon_index = _.findIndex()
+        const formide_carbon_index = _.findIndex(nitrogen_atom_carbon_bonds, (bond, i)=>{
+
+        })
         console.log('nitrogen index:' + nitrogen_index)
         process.exit()
 
