@@ -621,11 +621,42 @@ class Reaction {
             return bond.atom[0] ===  "C"
         })
 
-        const formide_carbon_index = _.findIndex(nitrogen_atom_carbon_bonds, (bond, i)=>{
+        const formide_carbon_index = nitrogen_atom_carbon_bonds.filter((bond)=>{
+            const c_atom = CAtom(this.container_substrate[0][1][bond.atom_index], bond.atom_index, this.container_substrate)
+            const d_bonds = c_atom.indexedDoubleBonds("").filter((bond)=>{
+                return bond.atom[0] === "O"
+            })
+            if (d_bonds.length !== 1) {
+                return false
+            }
+            const h_bonds = c_atom.indexedBonds("").filter((bond)=>{
+                return bond.atom[0] === "H"
+            })
+            if (h_bonds.length !== 1) {
+                return false
+            }
+            return true
+        }).pop().atom_index
 
-        })
-        console.log('nitrogen index:' + nitrogen_index)
-        process.exit()
+       // console.log(formide_carbon_index)
+       // process.exit()
+
+        if (formide_carbon_index === undefined) {
+            return false
+        }
+
+        const carbon_index = nitrogen_atom_carbon_bonds.filter((bond)=>{
+            return bond.atom[0] === "C" && bond.atom_index !== formide_carbon_index
+        }).pop().atom_index
+
+
+        if (carbon_index === undefined) {
+            return false
+        }
+
+        const groups = this.__removeGroup(carbon_index, nitrogen_index, this.MoleculeAI, this.container_substrate)
+        this.__setSubstrateGroups(groups) // sets substrate and leaving groups
+
 
     }
 

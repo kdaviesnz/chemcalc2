@@ -662,5 +662,6 @@ console.log(VMolecule(leukart_wallach_reaction_formamide_step2_reverse[0]).compr
 console.log("Leukart Wallach reaction (formamide) -  step 1 (reversed) BOND substrate to reagent - N atom on formamide (nucleophile) attacks carbonyl carbon (C=O) on substrate, attaching itself to the carbon. N atom should be positively charged. C should have negative charge.")
 const leukart_wallach_reaction_formamide_step1_reverse = CommandTest("REMOVE formamide group", _.cloneDeep(leukart_wallach_reaction_formamide_step2_reverse[0]), null, {'mechanism':'Leukart Wallach reaction'})
 console.log(VMolecule(leukart_wallach_reaction_formamide_step1_reverse[0]).compressed())
+console.log(VMolecule(leukart_wallach_reaction_formamide_step1_reverse[2][0]).compressed())
 
 process.exit()
