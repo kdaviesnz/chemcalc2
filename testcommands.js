@@ -664,4 +664,11 @@ const leukart_wallach_reaction_formamide_step1_reverse = CommandTest("REMOVE for
 console.log(VMolecule(leukart_wallach_reaction_formamide_step1_reverse[0]).compressed())
 console.log(VMolecule(leukart_wallach_reaction_formamide_step1_reverse[2][0]).compressed())
 
+
+// Pinacol rearrangement
+// substrate 1,2 Diol
+// https://en.wikipedia.org/wiki/Pinacol_rearrangement
+// reagents: strong acid
+const substrate = MoleculeFactory("CC(C)(C(C)(C)O)O")
+const stong_acid = MoleculeFactory("OS(=O)(=O)O")
 process.exit()
