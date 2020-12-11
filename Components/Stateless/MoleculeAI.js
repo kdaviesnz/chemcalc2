@@ -197,6 +197,19 @@ const MoleculeAI = (container_molecule) => {
     // No method should change state of container_molecule
     return {
 
+        findIndexOfCarbocationAttachedtoCarbon: ()=>{
+            return _.findIndex(container_molecule[0][1], (atom, index)=>{
+                if (atom[0] !== "C" || atom[4] !== "+") {
+                    return false
+                }
+                const carbocation = CAtom(container_molecule[0][1][index], index, container_molecule)
+                const bonds = carbocation.indexedBonds("").filter((bond)=>{
+                    return bond.atom[0] === "C"
+                })
+                return bonds.length > 0
+            })
+        },
+
         findIndexOfCarbonAtomBondedToNonCarbonBySymbol: function(symbol) {
             return _.findIndex(container_molecule[0][1], (atom, index)=>{
                 if (atom[0] !== 'C') {

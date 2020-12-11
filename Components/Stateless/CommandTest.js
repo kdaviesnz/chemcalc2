@@ -48,6 +48,7 @@ const HyrolysisReverse = require('../../Commands/HydrolysisReverse')
 const DeprotonateHydroxylOxygen = require('../../Commands/DeprotonateHydroxylOxygen')
 const RemoveFormateGroup = require('../../Commands/RemoveFormateGroup')
 const RemoveFormamideGroup = require('../../Commands/RemoveFormamideGroup')
+const CarbocationShift = require('../../Commands/CarbocationShift')
 
 const CommandTest = (command, substrate, reagent, rule) => {
 
@@ -101,7 +102,8 @@ const CommandTest = (command, substrate, reagent, rule) => {
         "HYDROLYSISE reverse": HyrolysisReverse,
         "DEPROTONATE hydroxyl oxygen": DeprotonateHydroxylOxygen,
         "REMOVE formate group": RemoveFormateGroup,
-        "REMOVE formamide group": RemoveFormamideGroup
+        "REMOVE formamide group": RemoveFormamideGroup,
+        "CARBOCATION shift": CarbocationShift
     }
 
 

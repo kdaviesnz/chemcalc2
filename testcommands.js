@@ -696,10 +696,10 @@ console.log("Pinacol rearrangement -  step 2 Protonated OH group (water) leaves.
 const pinacol_rearrangement_step2 = CommandTest("DEHYDRATE", _.cloneDeep(pinacol_rearrangement_step1[0]))
 console.log(VMolecule(pinacol_rearrangement_step2[0]).compressed())
 
-process.exit()
+//process.exit()
 
 console.log("Pinacol rearrangement -  step 3  Methyl group attached to C atom attached to C+ atom shifts to C+ atom. C atom that was attached to methyl group should now have a positive charge. C+ atom should now have positive charge.")
-const pinacol_rearrangement_step3 = CommandTest("CARBON shift", _.cloneDeep(pinacol_rearrangement_step2[0]))
+const pinacol_rearrangement_step3 = CommandTest("CARBOCATION shift", _.cloneDeep(pinacol_rearrangement_step2[0]))
 console.log(VMolecule(pinacol_rearrangement_step3[0]).compressed())
 
 process.exit()
