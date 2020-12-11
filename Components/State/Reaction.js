@@ -182,6 +182,10 @@ class Reaction {
         this.container_substrate[0][1][carbon_index][4] = this.container_substrate[0][1][carbon_index][4] === "+" ? "": "-"
         this.container_substrate[0][1][oxygen_index][4] = this.container_substrate[0][1][oxygen_index][4] === "-"?"":"+"
 
+        if (oxygen.hydrogens().length ===0) {
+            this.container_substrate[0][1][oxygen_index][4] = ""
+        }
+
         this.setMoleculeAI()
 
 
@@ -2132,8 +2136,13 @@ class Reaction {
 
     carbocationShift() {
 
+      //  console.log('carbocationShift()')
+
         // Get carbocation
         const carbocation_index = this.MoleculeAI.findIndexOfCarbocationAttachedtoCarbon()
+
+      //  console.log('carbocation index:'+carbocation_index)
+
         const carbocation = CAtom(this.container_substrate[0][1][carbocation_index], carbocation_index, this.container_substrate)
 
         const carbon_index = carbocation.indexedBonds("").filter((bond)=>{
@@ -2141,8 +2150,12 @@ class Reaction {
                 return false
             }
             const c = CAtom(this.container_substrate[0][1][bond.atom_index], bond.atom_index, this.container_substrate)
-            return c.hydrogens.length === 0 // @todo
+            return c.hydrogens().length === 0 // @todo
         }).pop().atom_index
+
+     //   console.log('carbon index:'+carbon_index)
+       // process.exit()
+
         const carbon = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, this.container_substrate)
 
         // Get methyl group
@@ -2151,14 +2164,22 @@ class Reaction {
                 return false
             }
             const c = CAtom(this.container_substrate[0][1][bond.atom_index], bond.atom_index, this.container_substrate)
-            console.log(c.hydrogens())
             return c.hydrogens().length ===3
         }).pop().atom_index
 
-        const carbon_methyl_shared_electrons = Set().intersection(this.container_substrate[0][1][carbon_index].slice(4), this.container_substrate[0][1][methyl_group_index].slice(4))
+     //   console.log('methyl_group_index:'+methyl_group_index)
+
+
+        const carbon_methyl_shared_electrons = Set().intersection(this.container_substrate[0][1][carbon_index].slice(5), this.container_substrate[0][1][methyl_group_index].slice(5))
+
+
+       // console.log(carbon_methyl_shared_electrons)
+      //  process.exit()
+
 
         // Break C - methyl bond
-        Set().removeFromArray(this.container_substrate[0][1][carbon_index].slice(4), carbon_methyl_shared_electrons)
+        this.container_substrate[0][1][carbon_index] = Set().removeFromArray(this.container_substrate[0][1][carbon_index], carbon_methyl_shared_electrons)
+       // this.container_substrate[0][1][methyl_group_index] = Set().removeFromArray(this.container_substrate[0][1][methyl_group_index], carbon_methyl_shared_electrons)
 
         // Make carbocation - methyl bond
         this.container_substrate[0][1][carbocation_index].push(carbon_methyl_shared_electrons[0])
