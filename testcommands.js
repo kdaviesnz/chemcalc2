@@ -669,6 +669,45 @@ console.log(VMolecule(leukart_wallach_reaction_formamide_step1_reverse[2][0]).co
 // substrate 1,2 Diol
 // https://en.wikipedia.org/wiki/Pinacol_rearrangement
 // reagents: strong acid
-const substrate = MoleculeFactory("CC(C)(C(C)(C)O)O")
-const stong_acid = MoleculeFactory("OS(=O)(=O)O")
+const pinacol = MoleculeFactory("CC(C)(C(C)(C)O)O")
+const strong_acid = MoleculeFactory("OS(=O)(=O)O") // sulphuric acid
+
+// Steps
+// 1. Protonation of one of the OH groups (this will be the group that creates the most stable carbocation (@todo))
+// 2. Protonated OH group (water) leaves. Carbon that was attached to the protonated OH group should now have a positive charge.
+// 3. Methyl group attached to C atom attached to C+ atom shifts to C+ atom. C atom that was attached to methyl group should now have a positive charge. C+ atom should now have positive charge.
+// 4. O atom on positively charged C forms double bond.
+// Reversal
+// 4. Change C=O bond to CO bond. C atom should have positive charge.
+// 3. Methyl group attached to C atom attached to C+ atom shifts to C+ atom. C atom that was attached to methyl group should now have a positive charge. C+ atom should now have positive charge.
+// 2. Hydrate C+ atom.
+// 1. Deprotonate water group.
+
+console.log('Pinacol:')
+console.log(VMolecule([pinacol,1]).compressed())
+
+console.log("Pinacol rearrangement -  step 1 Protonation of one of the OH groups (this will be the group that creates the most stable carbocation). O atom should now have positive charge.")
+const pinacol_rearrangement_step1 = CommandTest("PROTONATE hydroxyl group", _.cloneDeep([pinacol,1]), _.cloneDeep([strong_acid,1]))
+console.log(VMolecule(pinacol_rearrangement_step1[0]).compressed())
+
+//process.exit()
+
+console.log("Pinacol rearrangement -  step 2 Protonated OH group (water) leaves. Carbon that was attached to the protonated OH group should now have a positive charge.")
+const pinacol_rearrangement_step2 = CommandTest("DEHYDRATE", _.cloneDeep(pinacol_rearrangement_step1[0]))
+console.log(VMolecule(pinacol_rearrangement_step2[0]).compressed())
+
 process.exit()
+
+console.log("Pinacol rearrangement -  step 3  Methyl group attached to C atom attached to C+ atom shifts to C+ atom. C atom that was attached to methyl group should now have a positive charge. C+ atom should now have positive charge.")
+const pinacol_rearrangement_step3 = CommandTest("CARBON shift", _.cloneDeep(pinacol_rearrangement_step2[0]))
+console.log(VMolecule(pinacol_rearrangement_step3[0]).compressed())
+
+process.exit()
+
+console.log("Pinacol rearrangement -  step 4  O atom on positively charged C forms double bond.")
+const pinacol_rearrangement_step4 = CommandTest("MAKE oxygen carbon double bond", _.cloneDeep(pinacol_rearrangement_step2[0]))
+console.log(VMolecule(pinacol_rearrangement_step4[0]).compressed())
+
+
+
+

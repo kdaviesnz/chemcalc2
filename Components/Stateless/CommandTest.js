@@ -72,6 +72,7 @@ const CommandTest = (command, substrate, reagent, rule) => {
         "DEMERCURIFY": Demercurify,
         "REMERCURIFY": Remercurify,
         "ADD proton to hydroxyl group": AddProtonToHydroxylGroup,
+        "PROTONATE hydroxyl group": AddProtonToHydroxylGroup,
         "BREAK double carbon bond": BreakDoubleCarbonBond,
         "HYDRATE most substituted carbon": HydrateMostSubstitutedCarbon,
         "BOND metal": BondMetal,
