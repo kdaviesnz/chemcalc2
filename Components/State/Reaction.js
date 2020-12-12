@@ -2143,7 +2143,7 @@ class Reaction {
 
       //  console.log('carbocationShift()')
 
-        // Get carbocation
+        // Get carbocation (C+)
         const carbocation_index = this.MoleculeAI.findIndexOfCarbocationAttachedtoCarbon()
 
       //  console.log('carbocation index:'+carbocation_index)
@@ -2163,40 +2163,54 @@ class Reaction {
 
         const carbon = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, this.container_substrate)
 
-        // Get methyl group
-        const methyl_group_index = carbon.indexedBonds("").filter((bond)=>{
-            if (bond.atom[0] !=="C") {
-                return false
-            }
-            const c = CAtom(this.container_substrate[0][1][bond.atom_index], bond.atom_index, this.container_substrate)
-            return c.hydrogens().length ===3
-        }).pop().atom_index
+        let atom_to_shift_index = null
 
-     //   console.log('methyl_group_index:'+methyl_group_index)
+        // Check for hydrogens
+        if (carbon.hydrogens().length > 0) {
+             atom_to_shift_index = carbon.indexedBonds("").filter((bond) => {
+                if (bond.atom[0] !== "C") {
+                    return false
+                }
+                const c = CAtom(this.container_substrate[0][1][bond.atom_index], bond.atom_index, this.container_substrate)
+                return c.hydrogens().length === 3
+            }).pop().atom_index
+        } else {
+            // Get methyl group
+            atom_to_shift_index = carbon.indexedBonds("").filter((bond) => {
+                if (bond.atom[0] !== "C") {
+                    return false
+                }
+                const c = CAtom(this.container_substrate[0][1][bond.atom_index], bond.atom_index, this.container_substrate)
+                return c.hydrogens().length === 3
+            }).pop().atom_index
+        }
+
+            //   console.log('atom_to_shift_index:'+atom_to_shift_index)
 
 
-        const carbon_methyl_shared_electrons = Set().intersection(this.container_substrate[0][1][carbon_index].slice(5), this.container_substrate[0][1][methyl_group_index].slice(5))
+            const carbon_methyl_shared_electrons = Set().intersection(this.container_substrate[0][1][carbon_index].slice(5), this.container_substrate[0][1][atom_to_shift_index].slice(5))
 
 
-       // console.log(carbon_methyl_shared_electrons)
-      //  process.exit()
+            // console.log(carbon_methyl_shared_electrons)
+            //  process.exit()
 
 
-        // Break C - methyl bond
-        this.container_substrate[0][1][carbon_index] = Set().removeFromArray(this.container_substrate[0][1][carbon_index], carbon_methyl_shared_electrons)
-       // this.container_substrate[0][1][methyl_group_index] = Set().removeFromArray(this.container_substrate[0][1][methyl_group_index], carbon_methyl_shared_electrons)
+            // Break C - methyl bond
+            this.container_substrate[0][1][carbon_index] = Set().removeFromArray(this.container_substrate[0][1][carbon_index], carbon_methyl_shared_electrons)
+            // this.container_substrate[0][1][atom_to_shift_index] = Set().removeFromArray(this.container_substrate[0][1][atom_to_shift_index], carbon_methyl_shared_electrons)
 
-        // Make carbocation - methyl bond
-        this.container_substrate[0][1][carbocation_index].push(carbon_methyl_shared_electrons[0])
-        this.container_substrate[0][1][carbocation_index].push(carbon_methyl_shared_electrons[1])
+            // Make carbocation - methyl bond
+            this.container_substrate[0][1][carbocation_index].push(carbon_methyl_shared_electrons[0])
+            this.container_substrate[0][1][carbocation_index].push(carbon_methyl_shared_electrons[1])
 
-        this.container_substrate[0][1][carbocation_index][4] = this.container_substrate[0][1][carbocation_index][4]==="+"?"":"-"
-        this.container_substrate[0][1][carbon_index][4] = this.container_substrate[0][1][carbon_index][4]==="-"?"":"+"
+            this.container_substrate[0][1][carbocation_index][4] = this.container_substrate[0][1][carbocation_index][4] === "+" ? "" : "-"
+            this.container_substrate[0][1][carbon_index][4] = this.container_substrate[0][1][carbon_index][4] === "-" ? "" : "+"
 
-        this.setMoleculeAI()
+            this.setMoleculeAI()
+
+
 
     }
-
 
 
     hydrideShift() {
