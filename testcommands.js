@@ -1,5 +1,6 @@
 const should = require('should')
 const _ = require('lodash');
+const Set = require('./Models/Set')
 
 const VMolecule = require('./Components/Stateless/Views/Molecule')
 const MoleculeFactory = require('./Models/MoleculeFactory')
@@ -728,5 +729,21 @@ const pinacol_rearrangement_step1_reversed = CommandTest("DEPROTONATE", _.cloneD
 console.log(VMolecule(pinacol_rearrangement_step1_reversed[0]).compressed())
 
 
-
+// Ritter Reaction
+//https://en.wikipedia.org/wiki/Ritter_reaction
+const carbenium_ion = MoleculeFactory("C[C+](C)(C)")
+const nitrile = MoleculeFactory("N#CC")
+// Bond N (nucleophile, reagent) to C+ (electrophile, substrate). C should have no charge. N should have positive charge.
+// Hydrate C atom on N#C bond. O atom should have positive charge.
+// Change N#C triple bond to double bond.
+// Change OC bond to O=C bond.
+// Change N=C bond to NC bond.
+// Break OH bond.
+console.log("Carbenium ion")
+console.log(VMolecule([carbenium_ion,1]).compressed())
+console.log("Nitrile")
+console.log(nitrile[1][2])// N
+console.log(nitrile[1][5]) // C
+console.log(Set().intersection(nitrile[1][2].slice(5),nitrile[1][5].slice(5) ))
+console.log(VMolecule([nitrile,1]).compressed())
 

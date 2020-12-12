@@ -11,6 +11,45 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     atom.length.should.be.greaterThan(3)
     current_atom_index.should.be.Number()
 
+    const __indexedTripleBonds = (filter_by) => {
+
+        const atoms = mmolecule[0][1]
+        const atom_electrons = atom.slice(5)
+
+        filter_by.should.be.an.String()
+
+        const r =  _.cloneDeep(atoms).reduce(
+
+            (bonds, _atom, _atom_index) => {
+
+                if ((_.isEqual(_.cloneDeep(atom).sort(), _.cloneDeep(_atom).sort())) || _atom[0]=== filter_by) {
+                    return bonds
+                }
+
+                const shared_electrons = Set().intersection(atom_electrons, _atom.slice(5))
+
+                if (shared_electrons.length !==6) {
+                    return bonds
+                }
+
+                bonds.push({
+                    'atom': _atom,
+                    'atom_index': _atom_index,
+                    'shared_electrons': shared_electrons
+                })
+
+                return bonds
+
+            },
+            []
+        )
+
+        return r
+
+
+
+    }
+
 
     const __indexedDoubleBonds = (filter_by) => {
 
@@ -552,6 +591,7 @@ We then return the total number of free slots minus the number of slots already 
         numberOfElectrons:__numberOfElectrons,
         indexedBonds: __indexedBonds,
         indexedDoubleBonds: __indexedDoubleBonds,
+        indexedTripleBonds: __indexedTripleBonds,
         symbol:  atom[0],
         atomIndex: current_atom_index,
         charge: atom[4]
