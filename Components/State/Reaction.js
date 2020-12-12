@@ -1495,6 +1495,7 @@ class Reaction {
         if (this.container_substrate[0][1][electrophile_index][0]!== "C"){
 
             this.addProtonToReagent()
+
             this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4] === "+"? 0 : "-"
             this.container_substrate[0][1].splice(hydrogen_bond.atom_index, 1)
 

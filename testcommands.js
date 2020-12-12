@@ -671,6 +671,7 @@ console.log(VMolecule(leukart_wallach_reaction_formamide_step1_reverse[2][0]).co
 // reagents: strong acid
 const pinacol = MoleculeFactory("CC(C)(C(C)(C)O)O")
 const strong_acid = MoleculeFactory("OS(=O)(=O)O") // sulphuric acid
+const deprotonated_strong_acid = MoleculeFactory("[O-]S(=O)(=O)O")
 
 // Steps
 // 1. Protonation of one of the OH groups (this will be the group that creates the most stable carbocation (@todo))
@@ -711,6 +712,20 @@ console.log(VMolecule(pinacol_rearrangement_step4[0]).compressed())
 console.log("Pinacol rearrangement -  step 4 reversed. Reverse C=O bond. C atom attached to O should have positive charge.")
 const pinacol_rearrangement_step4_reversed = CommandTest("MAKE oxygen carbon double bond [reverse]", _.cloneDeep(pinacol_rearrangement_step4[0]), null, {"mechanism":"pinacol rearrangement"})
 console.log(VMolecule(pinacol_rearrangement_step4_reversed[0]).compressed())
+
+
+console.log("Pinacol rearrangement -  step 3 reversed. Methyl group attached to C atom attached to C+ atom shifts to C+ atom. C atom that was attached to methyl group should now have a positive charge. C+ atom should now have positive charge.")
+const pinacol_rearrangement_step3_reversed = CommandTest("CARBOCATION shift", _.cloneDeep(pinacol_rearrangement_step4_reversed[0]))
+console.log(VMolecule(pinacol_rearrangement_step3_reversed[0]).compressed())
+
+
+console.log("Pinacol rearrangement -  step 2 reversed. Hydrate C+ atom.")
+const pinacol_rearrangement_step2_reversed = CommandTest("HYDRATE", _.cloneDeep(pinacol_rearrangement_step3_reversed[0]), [_.cloneDeep(water),1])
+console.log(VMolecule(pinacol_rearrangement_step2_reversed[0]).compressed())
+
+console.log("Pinacol rearrangement -  step 1 reversed. Deprotonate water group.")
+const pinacol_rearrangement_step1_reversed = CommandTest("DEPROTONATE", _.cloneDeep(pinacol_rearrangement_step2_reversed[0]), [_.cloneDeep(deprotonated_strong_acid), 1])
+console.log(VMolecule(pinacol_rearrangement_step1_reversed[0]).compressed())
 
 
 
