@@ -698,7 +698,7 @@ console.log(VMolecule(pinacol_rearrangement_step2[0]).compressed())
 
 //process.exit()
 
-console.log("Pinacol rearrangement -  step 3  Methyl group attached to C atom attached to C+ atom shifts to C+ atom. C atom that was attached to methyl group should now have a positive charge. C+ atom should now have positive charge.")
+console.log("Pinacol rearrangement -  step 3  Methyl group attached to C atom attached to C+ atom shifts to C+ atom. C atom that was attached to methyl group should now have a positive charge. C+ atom should now have no charge.")
 const pinacol_rearrangement_step3 = CommandTest("CARBOCATION shift", _.cloneDeep(pinacol_rearrangement_step2[0]))
 console.log(VMolecule(pinacol_rearrangement_step3[0]).compressed())
 
@@ -706,6 +706,11 @@ console.log(VMolecule(pinacol_rearrangement_step3[0]).compressed())
 console.log("Pinacol rearrangement -  step 4  O atom on positively charged C forms double bond. There should be no charges on any of the atoms.")
 const pinacol_rearrangement_step4 = CommandTest("MAKE oxygen carbon double bond", _.cloneDeep(pinacol_rearrangement_step3[0]))
 console.log(VMolecule(pinacol_rearrangement_step4[0]).compressed())
+
+
+console.log("Pinacol rearrangement -  step 4 reversed. Reverse C=O bond. C atom attached to O should have positive charge.")
+const pinacol_rearrangement_step4_reversed = CommandTest("MAKE oxygen carbon double bond [reverse]", _.cloneDeep(pinacol_rearrangement_step4[0]), null, {"mechanism":"pinacol rearrangement"})
+console.log(VMolecule(pinacol_rearrangement_step4_reversed[0]).compressed())
 
 
 

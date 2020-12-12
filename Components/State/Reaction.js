@@ -93,7 +93,11 @@ class Reaction {
 
         // Charges
         this.container_substrate[0][1][oxygen_index][4] = ""
-        this.container_substrate[0][1][carbon_bonds[0].atom_index][4] = "-"
+        if (undefined !== this.rule && this.rule.mechanism === "pinacol rearrangement") {
+            this.container_substrate[0][1][carbon_bonds[0].atom_index][4] = "+"
+        } else {
+            this.container_substrate[0][1][carbon_bonds[0].atom_index][4] = "-"
+        }
 
 
         this.setMoleculeAI()
