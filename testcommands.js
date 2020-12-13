@@ -736,8 +736,8 @@ const carbenium_ion = MoleculeFactory("C[C+](C)(C)")
 const nitrile = MoleculeFactory("N#CC")
 
 // Bond N (nucleophile, reagent) to C+ (electrophile, substrate). C should have no charge. N should have positive charge.
-// Hydrate C atom on N#C bond. O atom should have positive charge.
 // Change N#C triple bond to double bond.
+// Hydrate C atom on N#C bond. O atom should have positive charge.
 // Change OC bond to O=C bond.
 // Change N=C bond to NC bond.
 // Break OH bond.
@@ -749,3 +749,7 @@ console.log(VMolecule([nitrile,1]).compressed())
 console.log("Ritter Reaction -  step 1  Bond nitrogen (nucleophile, reagent) to carbocation C+ (electrophile, substrate). C should have no charge. N should have positive charge.")
 const ritter_reaction_step1 = CommandTest("BOND substrate to reagent", [_.cloneDeep(carbenium_ion),1], [_.cloneDeep(nitrile),1])
 console.log(VMolecule(ritter_reaction_step1[0]).compressed())
+
+console.log("Ritter Reaction -  step 2 Change N#C triple bond to double bond.")
+const ritter_reaction_step2 = CommandTest("BREAK bond", _.cloneDeep(ritter_reaction_step1[0]))
+console.log(VMolecule(ritter_reaction_step2[0]).compressed())
