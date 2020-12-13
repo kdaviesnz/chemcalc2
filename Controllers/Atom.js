@@ -22,11 +22,20 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
             (bonds, _atom, _atom_index) => {
 
+
                 if ((_.isEqual(_.cloneDeep(atom).sort(), _.cloneDeep(_atom).sort())) || _atom[0]=== filter_by) {
                     return bonds
                 }
 
                 const shared_electrons = Set().intersection(atom_electrons, _atom.slice(5))
+
+
+                if (atom[0]==="N" && _atom[0]==="C") {
+                   // console.log('shared_electrons')
+                    // console.log(shared_electrons)
+                    // console.log('Atom.js')
+                }
+
 
                 if (shared_electrons.length !==6) {
                     return bonds
@@ -37,6 +46,13 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                     'atom_index': _atom_index,
                     'shared_electrons': shared_electrons
                 })
+
+
+                if (atom[0]==="N" && _atom[0]==="C") {
+                   // console.log(bonds)
+                 //   console.log('Atom.js')
+                   // process.exit()
+                }
 
                 return bonds
 
@@ -67,6 +83,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                 }
 
                 const shared_electrons = Set().intersection(atom_electrons, _atom.slice(5))
+
 
                 if (shared_electrons.length !==4) {
                     return bonds

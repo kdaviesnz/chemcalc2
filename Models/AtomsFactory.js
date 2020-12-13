@@ -12,14 +12,14 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     // https://www.npmjs.com/package/smiles
     const smiles = require('smiles')
 
-    const getFreeElectron = (used_electrons, atom, atom_index ) => {
+    const getFreeElectron = (used_electrons, atom, atom_index, electron_index ) => {
         const electrons = atom.slice(5).filter(
             (electron) => {
                 return used_electrons.indexOf(electron) === -1
             }
         )
 
-        return electrons.pop()
+        return electron_index === undefined ? electrons.pop(): electrons[electrons.length - 1 - electron_index]
     }
 
     // parse a SMILES string, returns an array of SMILES tokens [{type: '...', value: '...'}, ...]
@@ -110,7 +110,8 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                 }
 
                 const bond_type = processed_atoms[index -1].type === "Bond"
-                && processed_atoms[index -1].value === "="? "=":""
+                && processed_atoms[index -1].value === "="? "=":(processed_atoms[index -1].type === "Bond"
+                    && processed_atoms[index -1].value === "#"?"#":"")
                 // Shared electrons
                 const current_atom_electrons_to_share = []
                 current_atom_electrons_to_share.push(getFreeElectron(used_electrons, row, index )) // row[row.length-1]
@@ -118,11 +119,34 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                 const  parent_electrons_to_share = []
                 parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index ))
                 used_electrons.push(parent_electrons_to_share[0])
+
+
                 if ( bond_type === "=" ) {
                     current_atom_electrons_to_share.push(getFreeElectron(used_electrons, row, index ))
                     used_electrons.push(current_atom_electrons_to_share[1])
                     parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index ))
                     used_electrons.push(parent_electrons_to_share[1])
+                }
+
+                if ( bond_type === "#") {
+
+
+                    current_atom_electrons_to_share.push(getFreeElectron(used_electrons, row, index ))
+                    current_atom_electrons_to_share.push(getFreeElectron(used_electrons, row, index, 1 ))
+                    //  current_atom_electrons_to_share.push(getFreeElectron(used_electrons, row, index, 2 ))
+
+                    used_electrons.push(current_atom_electrons_to_share[1])
+                    used_electrons.push(current_atom_electrons_to_share[2])
+
+                    parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index ))
+                    parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index, 1 ))
+
+
+                    used_electrons.push(parent_electrons_to_share[1])
+                    used_electrons.push(parent_electrons_to_share[2])
+
+
+
                 }
                 processed_atoms[parent_atom_index].indexOf(parent_electrons_to_share[0]).should.not.be.equal(-1)
                 // Push electrons to current atom
@@ -132,11 +156,26 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                 if ( bond_type === "=" ) {
                     row.push(parent_electrons_to_share[1])
                 }
+
+                if ( bond_type === "#" ) {
+                    row.push(parent_electrons_to_share[1])
+                    row.push(parent_electrons_to_share[2])
+                }
+
                 // Push electrons to parent atom
                 processed_atoms[parent_atom_index].push(current_atom_electrons_to_share[0])
+
                 if ( bond_type === "=" ) {
                     processed_atoms[parent_atom_index].push(current_atom_electrons_to_share[1])
                 }
+
+                if ( bond_type === "#" ) {
+                    processed_atoms[parent_atom_index].push(current_atom_electrons_to_share[1])
+                    processed_atoms[parent_atom_index].push(current_atom_electrons_to_share[2])
+                }
+
+
+
                 if (undefined === branch_tracker[branch_number]) {
                     branch_tracker[branch_number] = []
                 }

@@ -9,6 +9,7 @@ const CAtom = require('./Controllers/Atom')
 
 const CommandTest = require('./Components/Stateless/CommandTest')
 
+
 const sulphuric_acid = MoleculeFactory("OS(=O)(=O)O")
 VMolecule([sulphuric_acid,1]).canonicalSMILES().should.be.oneOf(["OS(O)(=O)=O", "OS(=O)(=O)O"])
 const sulphuric_acid_ai = require("./Components/Stateless/MoleculeAI")([sulphuric_acid,1])
@@ -733,6 +734,7 @@ console.log(VMolecule(pinacol_rearrangement_step1_reversed[0]).compressed())
 //https://en.wikipedia.org/wiki/Ritter_reaction
 const carbenium_ion = MoleculeFactory("C[C+](C)(C)")
 const nitrile = MoleculeFactory("N#CC")
+
 // Bond N (nucleophile, reagent) to C+ (electrophile, substrate). C should have no charge. N should have positive charge.
 // Hydrate C atom on N#C bond. O atom should have positive charge.
 // Change N#C triple bond to double bond.
@@ -742,8 +744,8 @@ const nitrile = MoleculeFactory("N#CC")
 console.log("Carbenium ion")
 console.log(VMolecule([carbenium_ion,1]).compressed())
 console.log("Nitrile")
-console.log(nitrile[1][2])// N
-console.log(nitrile[1][5]) // C
-console.log(Set().intersection(nitrile[1][2].slice(5),nitrile[1][5].slice(5) ))
 console.log(VMolecule([nitrile,1]).compressed())
 
+console.log("Ritter Reaction -  step 1  Bond nitrogen (nucleophile, reagent) to carbocation C+ (electrophile, substrate). C should have no charge. N should have positive charge.")
+const ritter_reaction_step1 = CommandTest("BOND substrate to reagent", [_.cloneDeep(carbenium_ion),1], [_.cloneDeep(nitrile),1])
+console.log(VMolecule(ritter_reaction_step1[0]).compressed())
