@@ -751,5 +751,21 @@ const ritter_reaction_step1 = CommandTest("BOND substrate to reagent", [_.cloneD
 console.log(VMolecule(ritter_reaction_step1[0]).compressed())
 
 console.log("Ritter Reaction -  step 2 Change N#C triple bond to double bond.")
-const ritter_reaction_step2 = CommandTest("BREAK bond", _.cloneDeep(ritter_reaction_step1[0]))
+const ritter_reaction_step2 = CommandTest("BREAK carbon nitrogen triple bond", _.cloneDeep(ritter_reaction_step1[0]))
 console.log(VMolecule(ritter_reaction_step2[0]).compressed())
+
+console.log("Ritter Reaction -  step 3 Hydrate C atom on N#C bond. O atom should have positive charge.")
+const ritter_reaction_step3 = CommandTest("HYDRATE", _.cloneDeep(ritter_reaction_step2[0]), [_.cloneDeep(water), 1])
+console.log(VMolecule(ritter_reaction_step3[0]).compressed())
+
+console.log("Ritter Reaction -  step 4 Change OC bond to O=C bond. This will also change N=C bond to NC bond. O should have positive charge. Nitrogen atom should have no charge.")
+const ritter_reaction_step4 = CommandTest("MAKE oxygen carbon double bond", _.cloneDeep(ritter_reaction_step3[0]))
+console.log(VMolecule(ritter_reaction_step4[0]).compressed())
+
+console.log("Ritter Reaction -  step 5 DEPROTONATE")
+const ritter_reaction_step5 = CommandTest("DEPROTONATE hydroxyl oxygen", _.cloneDeep(ritter_reaction_step4[0]), [water, 1])
+console.log(VMolecule(ritter_reaction_step5[0]).compressed())
+
+console.log("Ritter Reaction -  step 6 PROTONATE")
+const ritter_reaction_step6 = CommandTest("PROTONATE", _.cloneDeep(ritter_reaction_step5[0]), )
+console.log(VMolecule(ritter_reaction_step6[0]).compressed())

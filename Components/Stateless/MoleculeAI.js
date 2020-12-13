@@ -1127,6 +1127,38 @@ VMolecule
             })
         },
 
+        "findNitrogenOnTripleBondIndex":() => {
+            return _.findIndex(container_molecule[0][1], (nitrogen_atom, nitrogen_atom_index)=>{
+
+                // Not a nitrogen atom
+                if (nitrogen_atom[0] !== "N") {
+                    return false
+                }
+
+                const nitrogen_atom_object = CAtom(nitrogen_atom, nitrogen_atom_index, container_molecule)
+                if(nitrogen_atom_object.tripleBondCount() === 0) {
+                    return false
+                }
+                return true
+            })
+        },
+
+        "findNitrogenOnDoubleBondIndex":() => {
+            return _.findIndex(container_molecule[0][1], (nitrogen_atom, nitrogen_atom_index)=>{
+
+                // Not a nitrogen atom
+                if (nitrogen_atom[0] !== "N") {
+                    return false
+                }
+
+                const nitrogen_atom_object = CAtom(nitrogen_atom, nitrogen_atom_index, container_molecule)
+                if(nitrogen_atom_object.doubleBondCount() === 0) {
+                    return false
+                }
+                return true
+            })
+        },
+
         "findNonWaterOxygenIndex":(override_charge) => {
 
             return _.findIndex(container_molecule[0][1], (oxygen_atom, oxygen_atom_index)=>{

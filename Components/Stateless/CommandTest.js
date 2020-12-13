@@ -49,6 +49,8 @@ const DeprotonateHydroxylOxygen = require('../../Commands/DeprotonateHydroxylOxy
 const RemoveFormateGroup = require('../../Commands/RemoveFormateGroup')
 const RemoveFormamideGroup = require('../../Commands/RemoveFormamideGroup')
 const CarbocationShift = require('../../Commands/CarbocationShift')
+const BreakCarbonNitrogenTripleBond =  require('../../Commands/BreakCarbonNitrogenTripleBond')
+const BreakCarbonNitrogenDoubleBond =  require('../../Commands/BreakCarbonNitrogenDoubleBond')
 
 const CommandTest = (command, substrate, reagent, rule) => {
 
@@ -103,7 +105,9 @@ const CommandTest = (command, substrate, reagent, rule) => {
         "DEPROTONATE hydroxyl oxygen": DeprotonateHydroxylOxygen,
         "REMOVE formate group": RemoveFormateGroup,
         "REMOVE formamide group": RemoveFormamideGroup,
-        "CARBOCATION shift": CarbocationShift
+        "CARBOCATION shift": CarbocationShift,
+        "BREAK carbon nitrogen triple bond": BreakCarbonNitrogenTripleBond,
+        "BREAK carbon nitrogen double bond": BreakCarbonNitrogenDoubleBond
     }
 
 

@@ -183,8 +183,10 @@ class Reaction {
         }
 
         // Charges
+//        console.log(oxygen_index)
         this.container_substrate[0][1][carbon_index][4] = this.container_substrate[0][1][carbon_index][4] === "+" ? "": "-"
         this.container_substrate[0][1][oxygen_index][4] = this.container_substrate[0][1][oxygen_index][4] === "-"?"":"+"
+    //    this.container_substrate[0][1][oxygen_index][4] = this.container_substrate[0][1][oxygen_index][4] === "+"?"":"-"
 
         if (oxygen.hydrogens().length ===0) {
             this.container_substrate[0][1][oxygen_index][4] = ""
@@ -1552,6 +1554,8 @@ class Reaction {
 
         let atom_nucleophile_index = this.MoleculeAI.findNucleophileIndex()
 
+        console.log('protonate()')
+
         if (atom_nucleophile_index === -1 && !this.MoleculeAI.isWater()) {
             // try carbon atom
             atom_nucleophile_index = _.findIndex(_.cloneDeep(this.container_substrate[0][1]), (atom)=>{
@@ -1568,6 +1572,8 @@ class Reaction {
 
         proton.length.should.be.equal(5)
         proton[0].should.be.equal('H')
+
+        console.log('atom nucleophile index = ' + atom_nucleophile_index)
 
         let free_electrons = CAtom(this.container_substrate[0][1][atom_nucleophile_index], atom_nucleophile_index, this.container_substrate).freeElectrons()
 
@@ -1996,6 +2002,72 @@ class Reaction {
 
         this.container_substrate[0][1][oxygen_index][4] = ""
         this.container_substrate[0][1][substituted_oxygen_index][4] = "+"
+
+        this.setMoleculeAI()
+
+    }
+
+    breakCarbonNitrogenTripleBond() {
+
+        const nitrogen_index = this.MoleculeAI.findNitrogenOnTripleBondIndex()
+       // console.log('breakCarbonNitrogenTripleBond')
+       // console.log(nitrogen_index)
+
+        if (nitrogen_index === -1) {
+            console.log('breakCarbonNitrogenTripleBond() oxygen index is -1, exiting')
+            process.exit()
+        }
+
+        const nitrogen_atom = CAtom(this.container_substrate[0][1][nitrogen_index], nitrogen_index, this.container_substrate)
+        const triple_bonds = nitrogen_atom.indexedTripleBonds("")
+
+        const shared_electrons = _.cloneDeep(triple_bonds[0].shared_electrons).slice(0,2)
+
+        // Remove bond
+        // Remove electrons from C
+        _.remove(this.container_substrate[0][1][triple_bonds[0].atom_index], (v)=>{
+            return v === shared_electrons[0] || v === shared_electrons[1]
+        })
+
+        // carbon atom charge
+        this.container_substrate[0][1][triple_bonds[0].atom_index][4] =  this.container_substrate[0][1][triple_bonds[0].atom_index][4] === "-"? '': '+'
+
+        // Nitrogen atom charge
+        this.container_substrate[0][1][nitrogen_index][4] = this.container_substrate[0][1][nitrogen_index][4] === "+" ? "":"-"
+
+
+        this.setMoleculeAI()
+
+    }
+
+    breakCarbonNitrogenDoubleBond() {
+
+        const nitrogen_index = this.MoleculeAI.findNitrogenOnDoubleBondIndex()
+        console.log('breakCarbonNitrogenDoubleBond')
+        console.log(nitrogen_index)
+
+        if (nitrogen_index === -1) {
+            console.log('breakCarbonNitrogenDoubleBond() nitrogen index is -1, exiting')
+            process.exit()
+        }
+
+        const nitrogen_atom = CAtom(this.container_substrate[0][1][nitrogen_index], nitrogen_index, this.container_substrate)
+        const double_bonds = nitrogen_atom.indexedDoubleBonds("")
+
+        const shared_electrons = _.cloneDeep(double_bonds[0].shared_electrons).slice(0,2)
+
+        // Remove bond
+        // Remove electrons from C
+        _.remove(this.container_substrate[0][1][double_bonds[0].atom_index], (v)=>{
+            return v === shared_electrons[0] || v === shared_electrons[1]
+        })
+
+        // carbon atom charge
+        this.container_substrate[0][1][double_bonds[0].atom_index][4] =  this.container_substrate[0][1][double_bonds[0].atom_index][4] === "-"? '': '+'
+
+        // Nitrogen atom charge
+        this.container_substrate[0][1][nitrogen_index][4] = this.container_substrate[0][1][nitrogen_index][4] === "+" ? "":"-"
+
 
         this.setMoleculeAI()
 

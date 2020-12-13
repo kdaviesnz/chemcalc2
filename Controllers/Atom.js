@@ -322,14 +322,26 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
     const __isNegativelyCharged = (test_number) => {
 
-        if (atom[4] === -1) {
+        if (atom[4] === -1 || atom[4] === "-") {
             return true
         }
+
+        return false
 
         const double_bonds = __doubleBond(test_number)
         const number_of_double_bonds = double_bonds.length > 3 ? double_bonds.length / 4 : 0
 
         // Get total number of electrons and if greater than the number of protons return true
+        console.log(current_atom_index)
+        console.log('Bond count' +__bondCount())
+        console.log('number_of_double_bonds' +number_of_double_bonds)
+        console.log('__neutralAtomMaxBondCount' + __neutralAtomMaxBondCount())
+        console.log('__numberOfProtons' + __numberOfProtons())
+        console.log('__numberOfHydrogens' + __hydrogens().length)
+        console.log('__numberOfElectrons' + __numberOfElectrons())
+
+       // return __bondCount(test_number) + (number_of_double_bonds) < __neutralAtomMaxBondCount()
+
         if ((__bondCount(test_number) + (number_of_double_bonds)) > __neutralAtomMaxBondCount() ) {
             return false
         }
