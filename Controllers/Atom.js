@@ -422,11 +422,49 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
     }
 
+    const __tripleBond = () => {
+
+        const atoms = mmolecule[0][1]
+        const atom_electrons = atom.slice(5)
+        const r =  atoms.map(
+            (__atom, __atom_index) => {
+
+                if (current_atom_index === __atom_index) {
+                    return false
+                }
+
+                const shared_electrons = Set().intersection(atom_electrons, __atom.slice(5))
+
+                if (shared_electrons.length !== 6) {
+                    return false
+                }
+
+                return shared_electrons
+
+            }
+        ).filter(
+            (item) => {
+                return item !== false
+            }
+        )
+
+        return r.length > 0?r[0]:false
+
+    }
+
+
     const __doubleBondCount = (test_number) => {
         const double_bonds = __doubleBond(test_number)
 
         return double_bonds === false ? 0 : double_bonds.length / 4
     }
+
+
+    const __tripleBondCount = (test_number) => {
+        const triple_bonds = __tripleBond(test_number)
+        return triple_bonds === false ? 0 : triple_bonds.length / 4
+    }
+
 
     const __hydrogens = () => {
         if (typeof atom !== 'object') {
@@ -598,12 +636,14 @@ We then return the total number of free slots minus the number of slots already 
 
         },
         doubleBond: __doubleBond,
+        tripleBond: __tripleBond,
         removeDoubleBond: __removeDoubleBond,
         hydrogens: __hydrogens,
         carbons: __carbons,
         freeSlots: __freeSlots,
         bondCount:__bondCount,
         doubleBondCount:__doubleBondCount,
+        tripleBondCount:__tripleBondCount,
         numberOfProtons:__numberOfProtons,
         numberOfElectrons:__numberOfElectrons,
         indexedBonds: __indexedBonds,

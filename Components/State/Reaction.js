@@ -1225,7 +1225,7 @@ class Reaction {
 
     bondSubstrateToReagent() {
 
-      //  console.log('bondSubstrateToReagent()')
+        console.log('bondSubstrateToReagent()')
         // Important:
         // The reagent is the nucleophile and is attacking the substrate
         // The substrate is the electrophile
@@ -1233,7 +1233,7 @@ class Reaction {
         const electrophile_index = this.MoleculeAI.findElectrophileIndex()
         //console.log('electrophile_index (substrate):' + electrophile_index)
         const nucleophile_index = this.ReagentAI.findNucleophileIndex()
-        //console.log('nucleophile index (reagent):' + nucleophile_index)
+        console.log('nucleophile index (reagent):' + nucleophile_index)
 
         const nucleophile = CAtom(this.container_reagent[0][1][nucleophile_index], nucleophile_index, this.container_reagent)
 

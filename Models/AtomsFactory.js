@@ -343,7 +343,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                         // Check each valence electron to see if it is being shared
                         const catom = CAtom(_.cloneDeep(current), index, molecule)
 
-                        const actual_number_of_bonds = catom.bondCount() - catom.doubleBondCount() + (catom.doubleBondCount() * 2)
+                        const actual_number_of_bonds = catom.bondCount() - catom.doubleBondCount() + (catom.doubleBondCount() * 2)  - catom.tripleBondCount() + (catom.tripleBond() * 3)
 
                         // current[3] is the number of electrons the atom has when it is neutrally charged
                         number_of_hydrogens_required = current[3] - actual_number_of_bonds + (current[4]) // current[4] is the charge

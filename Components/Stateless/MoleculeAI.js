@@ -619,6 +619,7 @@ VMolecule
                 return atom_object.isNegativelyCharged()
             })
 
+            console.log('negative atom index:'+negative_atom_index)
 
             if (negative_atom_index > -1) {
                 return negative_atom_index
@@ -626,9 +627,11 @@ VMolecule
 
             // Look for N atom
             // @see https://en.wikipedia.org/wiki/Leuckart_reaction (formamide, step 1)
+            // @see https://en.wikipedia.org/wiki/Ritter_reaction
             const nitrogen_index = _.findIndex((container_molecule[0][1]), (atom, index)=>{
                 return atom[0] === 'N'
             })
+            console.log('nitrogen_index:'+nitrogen_index)
             if (nitrogen_index > -1) {
                 return nitrogen_index
             }
