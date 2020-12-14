@@ -370,9 +370,11 @@ class Reaction {
 
         // Get nucleophile  - this is the atom that is getting the proton
         const nucleophile_index = this.MoleculeAI.findNucleophileIndex()
+        console.log('transferProton() nucleophile index: ' + nucleophile_index)
 
         // Get electrophile - this is the atom we are getting the proton from
         const electrophile_index = this.MoleculeAI.findElectrophileIndex()
+        console.log('transferProton() electrophile_index index: ' + electrophile_index)
 
         // Get proton from electrophile
         const electrophile_atom_object = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
@@ -448,8 +450,8 @@ class Reaction {
     dehydrate() {
 
         const oxygen_atom_index = this.MoleculeAI.findWaterOxygenIndex()
-//        console.log("(dehydrate() water oxygen index")
-  //      console.log(oxygen_atom_index)
+      //  console.log("(dehydrate() water oxygen index")
+      // console.log(oxygen_atom_index)
 
         const oxygen_atom = CAtom(this.container_substrate[0][1][oxygen_atom_index], oxygen_atom_index, this.container_substrate)
 
@@ -1833,11 +1835,22 @@ class Reaction {
 
         const proton_index = this.ReagentAI.findProtonIndex()
 
+
+
         proton_index.should.be.greaterThan(-1)
+
+
+
+
         const reagent_atoms = _.cloneDeep(this.container_reagent[0][1])
+
+        const proton = CAtom(this.container_reagent[0][1][proton_index], proton_index, this.container_reagent)
+        const reagent_atom_index = proton.indexedBonds("").pop().atom_index
+        this.container_reagent[0][1][reagent_atom_index][4] = this.container_reagent[0][1][reagent_atom_index][4] === "+"?"":"-"
         this.removeProtonFromReagent(proton_index)
         this.container_reagent[0][1].length.should.not.equal(reagent_atoms.length)
         const hydroxylOxygenIndex = this.MoleculeAI.findHydroxylOxygenIndex()
+
 
         this.container_substrate[0][1][hydroxylOxygenIndex][0].should.be.equal("O")
         const substrate_atoms = _.cloneDeep(this.container_substrate[0][1])
@@ -1846,6 +1859,7 @@ class Reaction {
         this.container_substrate[0][1].length.should.not.equal(substrate_atoms.length)
 
         this.setMoleculeAI()
+        this.setReagentAI()
 
     }
 
@@ -2710,8 +2724,8 @@ class Reaction {
             // deprotonate water group
             this.deprotonateWater()
 
-            console.log(VMolecule(this.container_substrate).compressed())
-            console.log(VMolecule(this.container_reagent).compressed())
+            //console.log(VMolecule(this.container_substrate).compressed())
+            //console.log(VMolecule(this.container_reagent).compressed())
 
             // protonate nitrogen
             const oxidanium_index = this.ReagentAI.findNonWaterOxygenIndex()

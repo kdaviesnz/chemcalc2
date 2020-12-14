@@ -607,8 +607,9 @@ VMolecule
 
 
 
-        "findNucleophileIndex": () => {
+        "findNucleophileIndex": function() {
 
+            //console.log(VMolecule(container_molecule).compressed())
 
             // Look for negatively charged atom
             const negative_atom_index = _.findIndex(container_molecule[0][1], (atom, index)=>{
@@ -619,10 +620,17 @@ VMolecule
                 return atom_object.isNegativelyCharged()
             })
 
-            console.log('negative atom index:'+negative_atom_index)
+          //  console.log('negative atom index:'+negative_atom_index)
 
             if (negative_atom_index > -1) {
                 return negative_atom_index
+            }
+
+            // Look for OH
+            const hyroxyl_oxygen_index = this.findHydroxylOxygenIndex()
+          //  console.log('hyroxyl_oxygen_index:'+hyroxyl_oxygen_index)
+            if (hyroxyl_oxygen_index > -1) {
+                return hyroxyl_oxygen_index
             }
 
             // Look for N atom
@@ -631,7 +639,7 @@ VMolecule
             const nitrogen_index = _.findIndex((container_molecule[0][1]), (atom, index)=>{
                 return atom[0] === 'N'
             })
-            console.log('nitrogen_index:'+nitrogen_index)
+         //   console.log('nitrogen_index:'+nitrogen_index)
             if (nitrogen_index > -1) {
                 return nitrogen_index
             }
@@ -1072,7 +1080,7 @@ VMolecule
 
         },
 
-        "findWaterOxygenIndex":() => {
+        "findWaterOxygenIndex": function() {
 
             return _.findIndex(container_molecule[0][1], (oxygen_atom, oxygen_atom_index)=>{
 

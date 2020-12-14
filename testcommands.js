@@ -508,14 +508,14 @@ console.log("Leukart Wallach reaction - BREAK carbon oxygen double bond - C=O bo
 const leukart_wallach_reaction_step2 = CommandTest("BREAK carbon oxygen double bond", _.cloneDeep(leukart_wallach_reaction_step1[0]))
 console.log(VMolecule(leukart_wallach_reaction_step2[0]).compressed())
 
-console.log("Leukart Wallach reaction - TRANSFER proton - O atom (nucleophile) is deprotonated by N atom.")
+console.log("Leukart Wallach reaction - TRANSFER proton - O atom (nucleophile) is protonated by N atom.")
 const leukart_wallach_reaction_step3 = CommandTest("TRANSFER proton", _.cloneDeep(leukart_wallach_reaction_step2[0]))
 console.log(VMolecule(leukart_wallach_reaction_step3[0]).compressed())
 
 console.log('Formic acid')
 console.log(VMolecule([formic_acid,1]).compressed())
 console.log("Leukart Wallach reaction - PROTONATE - O atom is protonated using OH hydrogen from formic acid (reagent). O should now have a positive charge. O atom on formic acid should have negative charge.")
-const leukart_wallach_reaction_step4 = CommandTest("PROTONATE", _.cloneDeep(leukart_wallach_reaction_step3[0]), _.cloneDeep([formic_acid, 1]))
+const leukart_wallach_reaction_step4 = CommandTest("ADD proton to hydroxyl group", _.cloneDeep(leukart_wallach_reaction_step3[0]), _.cloneDeep([formic_acid, 1]))
 console.log(VMolecule(leukart_wallach_reaction_step4[0]).compressed())
 console.log('Deprotonated formic acid')
 console.log(VMolecule(leukart_wallach_reaction_step4[1]).compressed())
@@ -545,6 +545,8 @@ console.log(VMolecule(leukart_wallach_reaction_step6_reversed[1]).compressed())
 console.log("Leukart Wallach reaction step 5 reversed - HYDRATE")
 const leukart_wallach_reaction_step5_reversed = CommandTest("HYDRATE", _.cloneDeep(leukart_wallach_reaction_step6_reversed[0]), _.cloneDeep([water,1]))
 console.log(VMolecule(leukart_wallach_reaction_step5_reversed[0]).compressed())
+console.log(VMolecule([deprotonated_formic_acid, 1]).compressed())
+
 
 console.log("Leukart Wallach reaction step 4 reversed - REMOVE proton from water - remove hydrogen from water group")
 const leukart_wallach_reaction_step4_reversed = CommandTest("REMOVE proton from water", _.cloneDeep(leukart_wallach_reaction_step5_reversed[0]), _.cloneDeep([deprotonated_formic_acid,1]))
@@ -766,6 +768,3 @@ console.log("Ritter Reaction -  step 5 DEPROTONATE")
 const ritter_reaction_step5 = CommandTest("DEPROTONATE hydroxyl oxygen", _.cloneDeep(ritter_reaction_step4[0]), [water, 1])
 console.log(VMolecule(ritter_reaction_step5[0]).compressed())
 
-console.log("Ritter Reaction -  step 6 PROTONATE")
-const ritter_reaction_step6 = CommandTest("PROTONATE", _.cloneDeep(ritter_reaction_step5[0]), )
-console.log(VMolecule(ritter_reaction_step6[0]).compressed())
