@@ -62,15 +62,32 @@ class ReactionAI {
         
         // if target cannot be deprotonated then we fall to the next line
         // in synthesiseCallback() after this.protonateReversal()
-        
-
-        
+                
         
         if (moleculeAI.findCarbocationIndex()) {
             reaction.makeCarbonCarbonDoubleBond()
             this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent)
         }
 
+        if (moleculeAI.findOxideOnEpoxideRingIndex()) { // O+
+            reaction.deorotonateWater()
+            this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent)
+        }
+        
+        if (moleculeAI.findWaterOxygenIndex()) { // O+
+            reaction.deorotonateWater()
+            this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent)
+        }
+        
+        if (moleculeAI.findHydroxylOxygenIndex()) { // OH
+            reaction.deprotonateHydroxylOxygen()
+            this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent)
+        }
+        
+        if (moleculeAI.findNitrogenWithHydrogen()) { // OH
+            reaction.deprotonateNitrogen()
+            this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent)
+        }
 
     }
 }
