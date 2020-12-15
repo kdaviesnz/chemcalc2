@@ -2087,6 +2087,17 @@ class Reaction {
 
     }
 
+    addProtonToAtom(atom_index, proton) {
+
+        this.container_substrate[0][1][atom_index].push(proton[5]) // add electron
+
+        // Charges
+        proton[4] = proton[4]==="+"?"":"-"
+        this.container_substrate[0][1][atom_index][4] = this.container_substrate[0][1][atom_index][4] === "-"?"":"+"
+        this.container_substrate[0][1].push(proton)
+
+    }
+
     breakCarbonOxygenDoubleBond() {
 
         const oxygen_index = this.MoleculeAI.findOxygenOnDoubleBondIndex()
@@ -2110,25 +2121,35 @@ class Reaction {
         // carbon atom
         this.container_substrate[0][1][double_bonds[0].atom_index][4] =  this.container_substrate[0][1][double_bonds[0].atom_index][4] === "-"? '': '+'
         this.container_substrate[0][1][oxygen_index][4] = this.container_substrate[0][1][oxygen_index][4] === "+" ? "":"-"
+        this.setMoleculeAI()
 
-        // Look for atom attached to carbon atom that is not oxygen and is negatively charged
-        // If atom exists create double bond between carbon atom and that atom.
-        const carbon_atom_object = CAtom(this.container_substrate[0][1][double_bonds[0].atom_index], double_bonds[0].atom_index, this.container_substrate)
-        const carbon_atom_negative_bonds = carbon_atom_object.indexedBonds("").filter((bond)=>{
-            return bond.atom[0] !== 'H' && bond.atom[0] !== 'O' && bond.atom[4] === '-'
-        })
+        // Check for proton
+        if (undefined !== this.container_reagent && this.container_reagent[0][1][0][0] === "H" && this.container_reagent[0][1][0][4]==="+") {
+            // Add proton to oxygen
+            this.addProtonToAtom(oxygen_index, this.container_reagent[0][1][0])
+            this.setMoleculeAI()
 
-        if (carbon_atom_negative_bonds.length > 0) {
-            // Add and readd electrons
-            this.container_substrate[0][1][carbon_atom_negative_bonds[0].atom_index].push(shared_electrons[0])
-            this.container_substrate[0][1][carbon_atom_negative_bonds[0].atom_index].push(shared_electrons[1])
-            this.container_substrate[0][1][double_bonds[0].atom_index].push(shared_electrons[0])
-            this.container_substrate[0][1][double_bonds[0].atom_index].push(shared_electrons[1])
-            this.container_substrate[0][1][double_bonds[0].atom_index][4] =  this.container_substrate[0][1][double_bonds[0].atom_index][4] === "+"? '': '-'
-            this.container_substrate[0][1][carbon_atom_negative_bonds[0].atom_index][4] =  this.container_substrate[0][1][carbon_atom_negative_bonds[0].atom_index][4] === "-"? '': '+'
-            this.container_substrate[0][1][oxygen_index] = Set().removeFromArray(this.container_substrate[0][1][oxygen_index], shared_electrons)
+        } else {
+
+            // Look for atom attached to carbon atom that is not oxygen and is negatively charged
+            // If atom exists create double bond between carbon atom and that atom.
+            const carbon_atom_object = CAtom(this.container_substrate[0][1][double_bonds[0].atom_index], double_bonds[0].atom_index, this.container_substrate)
+            const carbon_atom_negative_bonds = carbon_atom_object.indexedBonds("").filter((bond) => {
+                return bond.atom[0] !== 'H' && bond.atom[0] !== 'O' && bond.atom[4] === '-'
+            })
+
+            if (carbon_atom_negative_bonds.length > 0) {
+                // Add and readd electrons
+                this.container_substrate[0][1][carbon_atom_negative_bonds[0].atom_index].push(shared_electrons[0])
+                this.container_substrate[0][1][carbon_atom_negative_bonds[0].atom_index].push(shared_electrons[1])
+                this.container_substrate[0][1][double_bonds[0].atom_index].push(shared_electrons[0])
+                this.container_substrate[0][1][double_bonds[0].atom_index].push(shared_electrons[1])
+                this.container_substrate[0][1][double_bonds[0].atom_index][4] = this.container_substrate[0][1][double_bonds[0].atom_index][4] === "+" ? '' : '-'
+                this.container_substrate[0][1][carbon_atom_negative_bonds[0].atom_index][4] = this.container_substrate[0][1][carbon_atom_negative_bonds[0].atom_index][4] === "-" ? '' : '+'
+                this.container_substrate[0][1][oxygen_index] = Set().removeFromArray(this.container_substrate[0][1][oxygen_index], shared_electrons)
+            }
+
         }
-
 
         this.setMoleculeAI()
 

@@ -8,6 +8,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     mmolecule.length.should.be.equal(2) // molecule, units
     mmolecule[0].length.should.be.equal(2) // pKa, atoms
     atom.should.be.an.Array()
+
     atom.length.should.be.greaterThan(3)
     current_atom_index.should.be.Number()
 
