@@ -43,19 +43,23 @@ const Reaction = require("../Components/State/Reaction")
 class ReactionAI {
 
     constructor() {
-
+        this.render = (substrate, reagent) => {
+            console.log(VMolecule(substrate).compressed())
+            console.log(VMolecule(reagent).compressed())
+        }
     }
 
     synthesise(target) {
         const moleculeAI = require("../Stateless/MoleculeAI")(target)
         const conjugate_base_hydroxide = MoleculeFactory("[O-]")
         const reaction = new Reaction(target, [conjugate_base_hydroxide, 1], {})
-        this.protonateReversal(target, [conjugate_base_hydroxide,1], moleculeAI, this.synthesise)
+        this.protonateReversal(target, [conjugate_base_hydroxide,1], moleculeAI)
     }
     
-    synthesiseCallback(target, reagent) {
+    synthesiseCallback(substrate, reagent) {
+        this.render(substrate, reagent)
         const moleculeAI = require("../Stateless/MoleculeAI")(target)
-        this.protonateReversal(target, reagent, moleculeAI, this.synthesise)
+        this.protonateReversal(substrate, reagent, moleculeAI)
     }
 
     protonateReversal(target, reagent, moleculeAI) {
