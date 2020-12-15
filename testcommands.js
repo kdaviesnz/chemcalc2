@@ -771,6 +771,6 @@ console.log("Ritter Reaction -  step 5 DEPROTONATE")
 const ritter_reaction_step5 = CommandTest("DEPROTONATE hydroxyl oxygen", _.cloneDeep(ritter_reaction_step4[0]), [water, 1])
 console.log(VMolecule(ritter_reaction_step5[0]).compressed())
 
-console.log("Ritter Reaction -  step 5 reversed BREAK carbon oxygen double bond")
-const ritter_reaction_step5_reversed = CommandTest("BREAK carbon oxygen double bond", _.cloneDeep(ritter_reaction_step5[0]), [MoleculeFactory("[H+]"),1])
+console.log("Ritter Reaction -  step 5 reversed PROTONATE")
+const ritter_reaction_step5_reversed = CommandTest("PROTONATE", _.cloneDeep(ritter_reaction_step5[0]), [water,1])
 console.log(VMolecule(ritter_reaction_step5_reversed[0]).compressed())
