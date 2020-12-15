@@ -48,13 +48,28 @@ class ReactionAI {
 
     synthesise(target) {
         const moleculeAI = require("../Stateless/MoleculeAI")(target)
-        this.deprotonate(target, moleculeAI, this.synthesise)
-    }
-
-    deprotonate(target, moleculeAI, callback) {
-
         const conjugate_base_hydroxide = MoleculeFactory("[O-]")
         const reaction = new Reaction(target, [conjugate_base_hydroxide, 1], {})
+        this.protonateReversal(target, [conjugate_base_hydroxide,1], moleculeAI, this.synthesise)
+    }
+    
+    synthesiseCallback(target, reagent) {
+        const moleculeAI = require("../Stateless/MoleculeAI")(target)
+        this.protonateReversal(target, reagent, moleculeAI, this.synthesise)
+    }
+
+    protonateReversal(target, reagent, moleculeAI) {
+        
+        // if target cannot be deprotonated then we fall to the next line
+        // in synthesiseCallback() after this.protonateReversal()
+        
+
+        
+        
+        if (moleculeAI.findCarbocationIndex()) {
+            reaction.makeCarbonCarbonDoubleBond()
+            this.synthesise(reaction.container_substrate, reaction.container_substrate)
+        }
 
 
     }
