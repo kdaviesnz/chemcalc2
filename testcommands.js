@@ -743,8 +743,15 @@ const nitrile = MoleculeFactory("N#CC")
 // Change OC bond to O=C bond.
 // Change N=C bond to NC bond.
 // Break OH bond.
+// Protonate nitrogen
 // Reversal
+// Deprotonate nitrogen
+// Protonate oxygen
 // Break O=C bond
+// Protonate hydroxyl oxygen
+// Dehydrate
+// Change N=C bond to N#C bond
+// Break NC bond.
 
 console.log("Carbenium ion")
 console.log(VMolecule([carbenium_ion,1]).compressed())
@@ -755,22 +762,56 @@ console.log("Ritter Reaction -  step 1  Bond nitrogen (nucleophile, reagent) to 
 const ritter_reaction_step1 = CommandTest("BOND substrate to reagent", [_.cloneDeep(carbenium_ion),1], [_.cloneDeep(nitrile),1])
 console.log(VMolecule(ritter_reaction_step1[0]).compressed())
 
+
 console.log("Ritter Reaction -  step 2 Change N#C triple bond to double bond.")
 const ritter_reaction_step2 = CommandTest("BREAK carbon nitrogen triple bond", _.cloneDeep(ritter_reaction_step1[0]))
 console.log(VMolecule(ritter_reaction_step2[0]).compressed())
+
 
 console.log("Ritter Reaction -  step 3 Hydrate C atom on N#C bond. O atom should have positive charge.")
 const ritter_reaction_step3 = CommandTest("HYDRATE", _.cloneDeep(ritter_reaction_step2[0]), [_.cloneDeep(water), 1])
 console.log(VMolecule(ritter_reaction_step3[0]).compressed())
 
+
 console.log("Ritter Reaction -  step 4 Change OC bond to O=C bond. This will also change N=C bond to NC bond. O should have positive charge. Nitrogen atom should have no charge.")
 const ritter_reaction_step4 = CommandTest("MAKE oxygen carbon double bond", _.cloneDeep(ritter_reaction_step3[0]))
 console.log(VMolecule(ritter_reaction_step4[0]).compressed())
+
 
 console.log("Ritter Reaction -  step 5 DEPROTONATE")
 const ritter_reaction_step5 = CommandTest("DEPROTONATE hydroxyl oxygen", _.cloneDeep(ritter_reaction_step4[0]), [water, 1])
 console.log(VMolecule(ritter_reaction_step5[0]).compressed())
 
-console.log("Ritter Reaction -  step 5 reversed PROTONATE")
-const ritter_reaction_step5_reversed = CommandTest("PROTONATE", _.cloneDeep(ritter_reaction_step5[0]), [water,1])
+console.log("Ritter Reaction -  step 6 PROTONATE nitrogen")
+const ritter_reaction_step6 = CommandTest("PROTONATE", _.cloneDeep(ritter_reaction_step5[0]), [water, 1])
+console.log(VMolecule(ritter_reaction_step6[0]).compressed())
+
+console.log("Ritter Reaction -  step 6 reversed DEPROTONATE nitrogen")
+const ritter_reaction_step6_reversed = CommandTest("DEPROTONATE", _.cloneDeep(ritter_reaction_step6[0]), [water,1], {"mechanism":"ritter reaction"})
+console.log(VMolecule(ritter_reaction_step6_reversed[0]).compressed())
+
+console.log("Ritter Reaction -  step 5 reversed PROTONATE oxygen on double bond")
+const ritter_reaction_step5_reversed = CommandTest("PROTONATE oxygen on double bond", _.cloneDeep(ritter_reaction_step6_reversed[0]), [water,1], {"mechanism":"ritter reaction"})
 console.log(VMolecule(ritter_reaction_step5_reversed[0]).compressed())
+
+console.log("Ritter Reaction -  step 4 reversed BREAK carbon oxygen double bond")
+// This will also recreate the N=C bond
+const ritter_reaction_step4_reversed = CommandTest("BREAK carbon oxygen double bond", _.cloneDeep(ritter_reaction_step5_reversed[0]), null, {"mechanism":"ritter reaction"})
+console.log(VMolecule(ritter_reaction_step4_reversed[0]).compressed())
+
+console.log("Ritter Reaction -  step 3 reversed PROTONATE")
+const ritter_reaction_step3_reversed = CommandTest("PROTONATE", _.cloneDeep(ritter_reaction_step4_reversed[0]), null, {"mechanism":"ritter reaction"})
+console.log(VMolecule(ritter_reaction_step3_reversed[0]).compressed())
+
+console.log("Ritter Reaction -  step 2 reversed DEHYDRATE")
+const ritter_reaction_step2_reversed = CommandTest("DEHYDRATE", _.cloneDeep(ritter_reaction_step3_reversed[0]), null, {"mechanism":"ritter reaction"})
+console.log(VMolecule(ritter_reaction_step2_reversed[0]).compressed())
+
+console.log("Ritter Reaction -  step 1 reversed MAKE nitrogen oxygen triple bond")
+const ritter_reaction_step1_reversed = CommandTest("MAKE nitrogen carbon triple bond", _.cloneDeep(ritter_reaction_step2_reversed[0]), null, {"mechanism":"ritter reaction"})
+console.log(VMolecule(ritter_reaction_step1_reversed[0]).compressed())
+
+console.log("Ritter Reaction -  step 0 reversed BREAK NC bond")
+const ritter_reaction_step0_reversed = CommandTest("BREAK bond", _.cloneDeep(ritter_reaction_step1_reversed[0]), null, {"mechanism":"ritter reaction"})
+console.log(VMolecule(ritter_reaction_step0_reversed[0]).compressed())
+console.log(VMolecule(ritter_reaction_step0_reversed[2][0]).compressed())

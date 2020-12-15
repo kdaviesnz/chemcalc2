@@ -829,6 +829,26 @@ VMolecule
 
             let i = __findElectrophileIndex(filterBy, mustBe)
 
+            // Check for nitrogen atom with H (@see Ritter reaction)
+            if (i===-1){
+                i = _.findIndex(_.cloneDeep(container_molecule[0][1]), (atom, index)=> {
+                    if (atom[0] !== "N") {
+                        return false
+                    }
+                    const nitrogen_atom_object = CAtom(atom, index, container_molecule)
+                    const bonds = nitrogen_atom_object.indexedBonds("").filter((bond)=>{
+                        return bond.atom[0] === "H"
+                    })
+
+                    if (bonds.length !== 1) {
+                        return false
+                    }
+
+                    return true
+
+                })
+            }
+
             // Look for oxygen with proton
             if (i === -1) {
 
@@ -949,6 +969,7 @@ VMolecule
                     }
                 }
             }
+
 
             return i
 

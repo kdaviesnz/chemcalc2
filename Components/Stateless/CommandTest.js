@@ -51,6 +51,7 @@ const RemoveFormamideGroup = require('../../Commands/RemoveFormamideGroup')
 const CarbocationShift = require('../../Commands/CarbocationShift')
 const BreakCarbonNitrogenTripleBond =  require('../../Commands/BreakCarbonNitrogenTripleBond')
 const BreakCarbonNitrogenDoubleBond =  require('../../Commands/BreakCarbonNitrogenDoubleBond')
+const MakeNitrogenCarbonTripleBond = require('../../Commands/MakeNitrogenCarbonTripleBond')
 
 const CommandTest = (command, substrate, reagent, rule) => {
 
@@ -107,7 +108,8 @@ const CommandTest = (command, substrate, reagent, rule) => {
         "REMOVE formamide group": RemoveFormamideGroup,
         "CARBOCATION shift": CarbocationShift,
         "BREAK carbon nitrogen triple bond": BreakCarbonNitrogenTripleBond,
-        "BREAK carbon nitrogen double bond": BreakCarbonNitrogenDoubleBond
+        "BREAK carbon nitrogen double bond": BreakCarbonNitrogenDoubleBond,
+        "MAKE nitrogen carbon triple bond": MakeNitrogenCarbonTripleBond
     }
 
 

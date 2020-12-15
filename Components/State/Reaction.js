@@ -132,14 +132,43 @@ class Reaction {
 
     __changeDoubleBondToSingleBond(nucleophile_index, electrophile_index) {
 
+
         const shared_electrons = Set().intersection(this.container_substrate[0][1][nucleophile_index], this.container_substrate[0][1][electrophile_index]).slice(2)
         this.container_substrate[0][1][electrophile_index] = Set().removeFromArray( this.container_substrate[0][1][electrophile_index], shared_electrons)
 
         // Charges
         this.container_substrate[0][1][nucleophile_index][4] = this.container_substrate[0][1][nucleophile_index][4] === "+"? "":"-"
         this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4] === "-"? "":"+"
+
+
         this.setMoleculeAI()
     }
+
+    makeNitrogenCarbonTripleBond() {
+
+        const nitrogen_index = this.MoleculeAI.findNitrogenOnDoubleBondIndex()
+
+        const nitrogen = CAtom(this.container_substrate[0][1][nitrogen_index], nitrogen_index, this.container_substrate)
+        const carbon_bonds = nitrogen.indexedDoubleBonds("").filter((bond)=>{
+            return bond.atom[0] === "C"
+        })
+        const carbon_index = carbon_bonds[0].atom_index
+
+        const freeElectrons = nitrogen.freeElectrons()
+        // Add electrons to carbon
+        this.container_substrate[0][1][carbon_index].push(freeElectrons[0])
+        this.container_substrate[0][1][carbon_index].push(freeElectrons[1])
+
+        // Charges
+        this.container_substrate[0][1][carbon_index][4] = this.container_substrate[0][1][carbon_index][4] === "+" ? "": "-"
+        this.container_substrate[0][1][nitrogen_index][4] = this.container_substrate[0][1][nitrogen_index][4] === "-"?"":"+"
+
+
+        this.setMoleculeAI()
+
+
+    }
+
 
     makeOxygenCarbonDoubleBond() {
 
@@ -875,8 +904,8 @@ class Reaction {
 
         }
 
-       // console.log('breakBond() nucleophile_index: ' + nucleophile_index)
-       // console.log('breakBond() electrophile_index: ' + electrophile_index)
+       console.log('breakBond() nucleophile_index: ' + nucleophile_index)
+       console.log('breakBond() electrophile_index: ' + electrophile_index)
 
         const source_atom = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate)
         const target_atom = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
@@ -1474,8 +1503,9 @@ class Reaction {
             return atom.hydrogens().length > 0
         })
 
-        //console.log('reaction.js deprotonate electrophile index')
-        //console.log(electrophile_index)
+        console.log('reaction.js deprotonate electrophile index')
+        console.log(electrophile_index)
+
 
         if (electrophile_index === -1) {
             console.log("Electrophile not found")
@@ -2124,7 +2154,7 @@ class Reaction {
         this.setMoleculeAI()
 
         // Check for proton
-        if (undefined !== this.container_reagent && this.container_reagent[0][1][0][0] === "H" && this.container_reagent[0][1][0][4]==="+") {
+        if (undefined !== this.container_reagent && null !== this.container_reagent && this.container_reagent[0][1][0][0] === "H" && this.container_reagent[0][1][0][4]==="+") {
             // Add proton to oxygen
             this.addProtonToAtom(oxygen_index, this.container_reagent[0][1][0])
             this.setMoleculeAI()
