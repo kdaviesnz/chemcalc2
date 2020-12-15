@@ -68,7 +68,7 @@ class ReactionAI {
         
         if (moleculeAI.findCarbocationIndex()) {
             reaction.makeCarbonCarbonDoubleBond()
-            this.synthesise(reaction.container_substrate, reaction.container_substrate)
+            this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent)
         }
 
 
