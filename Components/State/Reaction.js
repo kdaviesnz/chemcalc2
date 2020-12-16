@@ -73,6 +73,8 @@ class Reaction {
     }
 
     makeOxygenCarbonDoubleBondReverse() {
+
+
         const oxygen_index = this.MoleculeAI.findOxygenOnDoubleBondIndex()
         const oxygen = CAtom(this.container_substrate[0][1][oxygen_index], oxygen_index, this.container_substrate)
         const carbon_bonds = oxygen.indexedBonds("").filter((bond)=>{
@@ -171,6 +173,10 @@ class Reaction {
 
 
     makeOxygenCarbonDoubleBond() {
+
+        // This should NOT remove H from the oxygen
+        console.log('makeOxygenCarbonDoubleBond()')
+        process.exit()
 
         const oxygen_index = this.MoleculeAI.findOxygenAttachedToCarbonIndexNoDoubleBonds()
 
@@ -479,8 +485,8 @@ class Reaction {
     dehydrate() {
 
         const oxygen_atom_index = this.MoleculeAI.findWaterOxygenIndex()
-      //  console.log("(dehydrate() water oxygen index")
-      // console.log(oxygen_atom_index)
+        console.log("(dehydrate() water oxygen index")
+        console.log("oxygen atom index:" + oxygen_atom_index)
 
         const oxygen_atom = CAtom(this.container_substrate[0][1][oxygen_atom_index], oxygen_atom_index, this.container_substrate)
 
@@ -1655,6 +1661,8 @@ class Reaction {
 
             const reagent_proton_index = this.ReagentAI.findProtonIndex()
 
+            console.log(reagent_proton_index)
+
             // Set charge
             const reagent_bonds = CAtom(this.container_reagent[0][1][reagent_proton_index], reagent_proton_index, this.container_reagent).indexedBonds("").filter(
                 (bond) => {
@@ -1752,9 +1760,10 @@ class Reaction {
 
         const oxygen_index = this.MoleculeAI.findHydroxylOxygenIndex()
 
-        oxygen_index.should.not.be.equal(-1)
-
         if (oxygen_index === -1) {
+            console.log('deprotonateHydroxylOxygen()')
+            console.log(VMolecule(this.container_substrate).compressed())
+            process.exit()
             return false
         }
 

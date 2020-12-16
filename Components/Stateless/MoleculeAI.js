@@ -626,6 +626,20 @@ VMolecule
                 return negative_atom_index
             }
 
+            // Look for =N atom
+            // @see https://www.name-reaction.com/ritter-reaction
+            const nitrogen_on_double_bond_index = _.findIndex((container_molecule[0][1]), (atom, index)=>{
+                if (atom[0] !=="N") {
+                    return false
+                }
+                const a = CAtom(container_molecule[0][1][index], index, container_molecule)
+                return a.doubleBondCount() === 1
+            })
+            console.log('nitrogen_on_double_bond_index:'+nitrogen_on_double_bond_index)
+            if (nitrogen_on_double_bond_index > -1) {
+                return nitrogen_on_double_bond_index
+            }
+
             // Look for OH
             const hyroxyl_oxygen_index = this.findHydroxylOxygenIndex()
           //  console.log('hyroxyl_oxygen_index:'+hyroxyl_oxygen_index)
