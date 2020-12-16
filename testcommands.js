@@ -722,7 +722,6 @@ console.log("Pinacol rearrangement -  step 3 reversed. Methyl group attached to 
 const pinacol_rearrangement_step3_reversed = CommandTest("CARBOCATION shift", _.cloneDeep(pinacol_rearrangement_step4_reversed[0]))
 console.log(VMolecule(pinacol_rearrangement_step3_reversed[0]).compressed())
 
-
 console.log("Pinacol rearrangement -  step 2 reversed. Hydrate C+ atom.")
 const pinacol_rearrangement_step2_reversed = CommandTest("HYDRATE", _.cloneDeep(pinacol_rearrangement_step3_reversed[0]), [_.cloneDeep(water),1])
 console.log(VMolecule(pinacol_rearrangement_step2_reversed[0]).compressed())

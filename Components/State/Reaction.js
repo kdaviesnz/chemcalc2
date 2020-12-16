@@ -76,10 +76,20 @@ class Reaction {
 
 
         const oxygen_index = this.MoleculeAI.findOxygenOnDoubleBondIndex()
+
+        if(oxygen_index === -1) {
+            return false
+        }
+
         const oxygen = CAtom(this.container_substrate[0][1][oxygen_index], oxygen_index, this.container_substrate)
         const carbon_bonds = oxygen.indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "C"
         })
+
+        if (carbon_bonds.length === 0) {
+            return false
+        }
+
         const shared_electrons = carbon_bonds[0].shared_electrons
         // Remove electrons from carbon
         _.remove(this.container_substrate[0][1][carbon_bonds[0].atom_index], (e)=>{
@@ -95,14 +105,19 @@ class Reaction {
 
         // Charges
         this.container_substrate[0][1][oxygen_index][4] = ""
+        /*
         if (undefined !== this.rule && this.rule.mechanism === "pinacol rearrangement") {
             this.container_substrate[0][1][carbon_bonds[0].atom_index][4] = "+"
         } else {
             this.container_substrate[0][1][carbon_bonds[0].atom_index][4] = "-"
         }
-
+         */
+        this.container_substrate[0][1][carbon_bonds[0].atom_index][4] = "+"
 
         this.setMoleculeAI()
+
+        return true
+
     }
 
     breakCarbonOxygenDoubleBondReverse() {
@@ -462,10 +477,9 @@ class Reaction {
             electrophile_index = this.MoleculeAI.findElectrophileIndex("O", "C")
         }
 
-        //console.log('Reaction.js hydrate()')
-        //console.log(electrophile_index)
-
-        electrophile_index.should.not.be.equal(-1)
+        if (electrophile_index === -1) {
+            return false
+        }
 
         this.container_substrate[0][1][electrophile_index].push(electrons[0])
         this.container_substrate[0][1][electrophile_index].push(electrons[1])
@@ -479,6 +493,8 @@ class Reaction {
 
         // Check we have a water molecule attached to main molecule
         this.MoleculeAI.findWaterOxygenIndex().should.be.greaterThan(-1)
+
+        return true
 
     }
 
@@ -2210,12 +2226,10 @@ class Reaction {
 
     carbocationShift() {
 
-      //  console.log('carbocationShift()')
-
-        // Get carbocation (C+)
         const carbocation_index = this.MoleculeAI.findIndexOfCarbocationAttachedtoCarbon()
-
-      //  console.log('carbocation index:'+carbocation_index)
+        if (carbocation_index === -1) {
+            return false
+        }
 
         const carbocation = CAtom(this.container_substrate[0][1][carbocation_index], carbocation_index, this.container_substrate)
 
@@ -2227,8 +2241,9 @@ class Reaction {
             return c.hydrogens().length === 0 // @todo
         }).pop().atom_index
 
-     //   console.log('carbon index:'+carbon_index)
-       // process.exit()
+        if (carbon_index === undefined) {
+            return false
+        }
 
         const carbon = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, this.container_substrate)
 
@@ -2254,30 +2269,25 @@ class Reaction {
             }).pop().atom_index
         }
 
-            //   console.log('atom_to_shift_index:'+atom_to_shift_index)
+        if (atom_to_shift_index === undefined) {
+            return false
+        }
 
+        const carbon_methyl_shared_electrons = Set().intersection(this.container_substrate[0][1][carbon_index].slice(5), this.container_substrate[0][1][atom_to_shift_index].slice(5))
 
-            const carbon_methyl_shared_electrons = Set().intersection(this.container_substrate[0][1][carbon_index].slice(5), this.container_substrate[0][1][atom_to_shift_index].slice(5))
+        // console.log(carbon_methyl_shared_electrons)
+        //  process.exit()
+        // Break C - methyl bond
+        this.container_substrate[0][1][carbon_index] = Set().removeFromArray(this.container_substrate[0][1][carbon_index], carbon_methyl_shared_electrons)
+        // this.container_substrate[0][1][atom_to_shift_index] = Set().removeFromArray(this.container_substrate[0][1][atom_to_shift_index], carbon_methyl_shared_electrons)
+        // Make carbocation - methyl bond
+        this.container_substrate[0][1][carbocation_index].push(carbon_methyl_shared_electrons[0])
+        this.container_substrate[0][1][carbocation_index].push(carbon_methyl_shared_electrons[1])
+        this.container_substrate[0][1][carbocation_index][4] = this.container_substrate[0][1][carbocation_index][4] === "+" ? "" : "-"
+        this.container_substrate[0][1][carbon_index][4] = this.container_substrate[0][1][carbon_index][4] === "-" ? "" : "+"
+        this.setMoleculeAI()
 
-
-            // console.log(carbon_methyl_shared_electrons)
-            //  process.exit()
-
-
-            // Break C - methyl bond
-            this.container_substrate[0][1][carbon_index] = Set().removeFromArray(this.container_substrate[0][1][carbon_index], carbon_methyl_shared_electrons)
-            // this.container_substrate[0][1][atom_to_shift_index] = Set().removeFromArray(this.container_substrate[0][1][atom_to_shift_index], carbon_methyl_shared_electrons)
-
-            // Make carbocation - methyl bond
-            this.container_substrate[0][1][carbocation_index].push(carbon_methyl_shared_electrons[0])
-            this.container_substrate[0][1][carbocation_index].push(carbon_methyl_shared_electrons[1])
-
-            this.container_substrate[0][1][carbocation_index][4] = this.container_substrate[0][1][carbocation_index][4] === "+" ? "" : "-"
-            this.container_substrate[0][1][carbon_index][4] = this.container_substrate[0][1][carbon_index][4] === "-" ? "" : "+"
-
-            this.setMoleculeAI()
-
-
+        return true
 
     }
 
