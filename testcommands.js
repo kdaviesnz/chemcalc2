@@ -390,8 +390,8 @@ const carboxylic_acid_step4_reversed = CommandTest("TRANSFER oxygen proton to ox
 console.log('carboxylic_acid_step4 reversed TRANSFER oxygen proton to oxygen')
 console.log(VMolecule(carboxylic_acid_step4_reversed[0]).compressed())
 
-const carboxylic_acid_step3_reversed = CommandTest("DEHYDRATE", _.cloneDeep(carboxylic_acid_step4_reversed[0]))
 console.log('carboxylic_acid_step3 reversed DEHYDRATE')
+const carboxylic_acid_step3_reversed = CommandTest("DEHYDRATE", _.cloneDeep(carboxylic_acid_step4_reversed[0]))
 console.log(VMolecule(carboxylic_acid_step3_reversed[0]).compressed())
 
 const carboxylic_acid_step2_reversed = CommandTest("BREAK carbon oxygen double bond [reverse]", _.cloneDeep(carboxylic_acid_step3_reversed[0]))
@@ -786,9 +786,6 @@ console.log("Ritter Reaction -  step 6 Change OC bond to O=C bond. This will als
 const ritter_reaction_step6 = CommandTest("MAKE oxygen carbon double bond", _.cloneDeep(ritter_reaction_step5[0]))
 console.log(VMolecule(ritter_reaction_step6[0]).compressed())
 
-console.log("Ritter Reaction -  step 7 DEPROTONATE hyroxyl oxgen")
-const ritter_reaction_step7 = CommandTest("DEPROTONATE hydroxyl oxygen", _.cloneDeep(ritter_reaction_step6[0]), [water, 1])
-console.log(VMolecule(ritter_reaction_step7[0]).compressed())
 
 process.exit()
 

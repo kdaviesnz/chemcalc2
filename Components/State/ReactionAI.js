@@ -38,7 +38,9 @@
 // Reversal
 // if N with H then deprotonate N (reagent = conjugate base)
 
-const Reaction = require("../Components/State/Reaction")
+const Reaction = require("../State/Reaction")
+const MoleculeFactory = require('../../Models/MoleculeFactory')
+const VMolecule = require('../Stateless/Views/Molecule')
 
 class ReactionAI {
 
@@ -50,49 +52,58 @@ class ReactionAI {
     }
 
     synthesise(target) {
-        const moleculeAI = require("../Stateless/MoleculeAI")(target)
-        const conjugate_base_hydroxide = MoleculeFactory("[O-]")
-        const reaction = new Reaction(target, [conjugate_base_hydroxide, 1], {})
-        this.protonateReversal(target, [conjugate_base_hydroxide,1], moleculeAI)
+        const conjugate_base_hydroxide = MoleculeFactory("[OH1-]")
+        //this.protonateReversal(target, [conjugate_base_hydroxide,1], moleculeAI)
+        this.synthesiseCallback([target,1], [conjugate_base_hydroxide,1])
+        console.log('synthesise')
     }
     
     synthesiseCallback(substrate, reagent) {
         this.render(substrate, reagent)
-        const moleculeAI = require("../Stateless/MoleculeAI")(target)
-        this.protonateReversal(substrate, reagent, moleculeAI)
+        const reaction = new Reaction(substrate, reagent, {})
+        const moleculeAI = require("../Stateless/MoleculeAI")(substrate)
+        this.protonateReversal(reaction, substrate, reagent, moleculeAI)
+        console.log('synthesiseCallback')
     }
 
-    protonateReversal(target, reagent, moleculeAI) {
+    protonateReversal(reaction, target, reagent, moleculeAI) {
         
         // if target cannot be deprotonated then we fall to the next line
         // in synthesiseCallback() after this.protonateReversal()
-                
-        
-        if (moleculeAI.findCarbocationIndex()) {
+        console.log(moleculeAI.findNitrogenWithHydrogenIndex())
+        console.log(moleculeAI.findNitrogenWithHydrogenIndex() !== -1)
+        if (moleculeAI.findNitrogenWithHydrogenIndex() !== -1) { // NH
+            console.log('got here')
+            reaction.deprotonate()
+            this.render(reaction.container_substrate, reaction.container_reagent)
+            this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent)
+        }
+        /*
+        if (moleculeAI.findIndexOfCarbocationAttachedtoCarbon() !== -1) {
+            console.log(moleculeAI.findIndexOfCarbocationAttachedtoCarbon() !== -1)
             reaction.makeCarbonCarbonDoubleBond()
             this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent)
         }
 
-        if (moleculeAI.findOxideOnEpoxideRingIndex()) { // O+
+        if (moleculeAI.find() !== -1) { // O+
             reaction.deorotonateWater()
             this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent)
         }
         
-        if (moleculeAI.findWaterOxygenIndex()) { // O+
+        if (moleculeAI.findWaterOxygenIndex() !== -1) { // O+
             reaction.deorotonateWater()
             this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent)
         }
         
-        if (moleculeAI.findHydroxylOxygenIndex()) { // OH
+        if (moleculeAI.findHydroxylOxygenIndex() !== -1) { // OH
             reaction.deprotonateHydroxylOxygen()
             this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent)
         }
-        
-        if (moleculeAI.findNitrogenWithHydrogen()) { // OH
-            reaction.deprotonateNitrogen()
-            this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent)
-        }
+        */
+        console.log('protonateReversal()')
+
 
     }
 }
 
+module.exports = ReactionAI

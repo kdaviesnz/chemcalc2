@@ -176,7 +176,7 @@ class Reaction {
 
         // This should NOT remove H from the oxygen
         console.log('makeOxygenCarbonDoubleBond()')
-        process.exit()
+      //  process.exit()
 
         const oxygen_index = this.MoleculeAI.findOxygenAttachedToCarbonIndexNoDoubleBonds()
 
@@ -488,6 +488,9 @@ class Reaction {
         console.log("(dehydrate() water oxygen index")
         console.log("oxygen atom index:" + oxygen_atom_index)
 
+        console.log("With water")
+        console.log(VMolecule(this.container_substrate).compressed())
+
         const oxygen_atom = CAtom(this.container_substrate[0][1][oxygen_atom_index], oxygen_atom_index, this.container_substrate)
 
         const hydrogen_bonds = oxygen_atom.indexedBonds("").filter((bond) => {
@@ -516,78 +519,8 @@ class Reaction {
         // Charges
         this.container_substrate[0][1][non_hydrogen_bond.atom_index][4] = '+'
 
-        /*
-
-        const atoms = this.container_substrate[0][1]
-
-        atoms.map((oxygen_atom, oxygen_atom_index)=>{
-
-            if (oxygen_atom[0] !== "O") {
-                return false
-            }
-            const catom = CAtom(oxygen_atom, oxygen_atom_index, this.container_substrate)
-            if(catom.bondCount()!==3) { // 2 hydrogens plus atom oxygen is bonded to
-                return false
-            }
-
-            const indexed_bonds = catom.indexedBonds("")
-
-            // Check we have two hydrogens and each hydrogen is only bonded to the oxygen atom
-            const hydrogen_bonds = indexed_bonds.filter((bond) => {
-                    if (bond.atom[0] !== "H") {
-                        return false
-                    }
-                    const hydrogen_atom = CAtom(bond.atom, bond.atom_index, this.container_substrate)
-                    if (hydrogen_atom.bondCount() !== 1) {
-                        return false
-                    }
-                    return true
-                }
-            )
-
-            const hydrogens = hydrogen_bonds.map((hydrogen_bond)=>{
-                return hydrogen_bond.atom
-            })
-
-            if (hydrogens.length !== 2) {
-                return false
-            }
-
-            // Get the bond that is NOT and oxygen - hydrogen bond
-            const non_hydrogen_bond = indexed_bonds.filter((bond) => {
-                    return bond.atom[0] !== "H"
-                }
-            ).pop()
-
-            // Break the non_hydrogen bond
-            const shared_electrons = non_hydrogen_bond.shared_electrons
-            if (shared_electrons.length !==2 ) {
-                return false
-            }
-
-            // Remove electrons from non hydrogen atom
-            const number_of_electrons_at_start = _.cloneDeep(this.container_substrate[0][1][non_hydrogen_bond.atom_index]).slice(5).length
-            _.remove(this.container_substrate[0][1][non_hydrogen_bond.atom_index], (v, i)=> {
-                return shared_electrons[1] === v || shared_electrons[0] === v
-            })
-            _.cloneDeep(this.container_substrate[0][1][non_hydrogen_bond.atom_index]).slice(5).length.should.be.equal(number_of_electrons_at_start - 2)
-
-            const number_of_atoms_at_start = _.cloneDeep(this.container_substrate[0][1]).length
-            _.remove(this.container_substrate[0][1], (v,i) => {
-                return i === oxygen_atom_index || i === hydrogen_bonds[0].atom_index || i === hydrogen_bonds[1].atom_index
-            })
-            _.cloneDeep(this.container_substrate[0][1]).length.should.be.equal(number_of_atoms_at_start - 3)
-
-            this.container_substrate[0][1][non_hydrogen_bond.atom_index][4] = '+'
-
-
-
-        })
-
-*/
-        // Check we do not have a water molecule attached to main molecule
-       // this.MoleculeAI.findWaterOxygenIndex().should.be.equal(-1)
-
+        console.log("Without water")
+        console.log(VMolecule(this.container_substrate).compressed())
 
 
         this.setMoleculeAI()
@@ -1771,17 +1704,7 @@ class Reaction {
 
         this.container_substrate[0][1] = this.removeProtonFromAtom(this.MoleculeAI, this.container_substrate[0][1], oxygen_index)
 
-        /*
-        const oxygen_proton_bond = CAtom(this.container_substrate[0][1][oxygen_index],
-            oxygen_index,
-            this.container_substrate).indexedBonds("").filter((bond)=>{
-            return bond.atom[0] === "H"
-        }).pop()
 
-        this.container_substrate[0][1][oxygen_index][4] = ""
-        // Remove proton from container
-        this.container_substrate[0][1].splice(oxygen_proton_bond.atom_index, 1)
-        */
 
         this.addProtonToReagent()
 

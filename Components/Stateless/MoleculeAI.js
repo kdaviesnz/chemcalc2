@@ -605,6 +605,17 @@ VMolecule
             }).length === 2
         },
 
+        "findNitrogenWithHydrogenIndex": () => {
+            return _.findIndex(container_molecule[0][1], (atom, index)=>{
+                if (atom[0]!=="N") {
+                    return false
+                }
+                const atom_object = CAtom(atom, index,container_molecule)
+                return atom_object.indexedBonds("").filter((bond)=>{
+                    return bond.atom[0] === "H"
+                }).length === 1
+            })
+        },
 
 
         "findNucleophileIndex": function() {
