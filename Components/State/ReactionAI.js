@@ -67,51 +67,67 @@
 const Reaction = require("../State/Reaction")
 const MoleculeFactory = require('../../Models/MoleculeFactory')
 const VMolecule = require('../Stateless/Views/Molecule')
+const _ = require('lodash');
 
 class ReactionAI {
 
     constructor() {
         this.render = (substrate, reagent) => {
             console.log(VMolecule(substrate).compressed())
+            if (reagent === null) {
+                console.log('No reagent')
+            } else {
+                console.log('Reagent:')
+                console.log(VMolecule(reagent).compressed())
+            }
+       }
+        this.result = (substrate, reagent) => {
+            console.log('Result:')
+            console.log('Substrate:')
+            console.log(VMolecule(substrate).compressed())
+            if (reagent === null) {
+                console.log('No reagent')
+            } else {
+                console.log('Reagent:')
+                console.log(VMolecule(reagent).compressed())
+            }
+
             console.log(VMolecule(reagent).compressed())
         }
     }
 
+    hasCharge(substrate) {
+        return _.findIndex(substrate[0][1], (atom)=>{
+            return atom[0] !== "H" && atom[4] !== "" && atom[4] !== 0
+        })
+    }
+
     synthesise(target) {
-        const conjugate_base_hydroxide = MoleculeFactory("[OH1-]")
-        this.synthesiseCallback([target,1], [conjugate_base_hydroxide,1])
+        this.synthesiseCallback([_.cloneDeep(target),1], null, null, 'synthesise')
         console.log('synthesise')
     }
     
-    synthesiseCallback(substrate, reagent) {
+    synthesiseCallback(substrate, reagent, lastcommand, caller) {
 //        this.render(substrate, reagent)
-        const reaction = new Reaction(substrate, reagent, {})
-        const moleculeAI = require("../Stateless/MoleculeAI")(substrate)
-        this.carbocationShiftReversal(reaction, substrate, reagent, moleculeAI)
-        this.oxygenCarbonDoubleBondReversal(reaction, substrate, reagent, moleculeAI)
-        this.dehydrationReversal(reaction, substrate, reagent, moleculeAI)
-        this.protonateReversal(reaction, substrate, reagent, moleculeAI)
-        console.log('synthesiseCallback')
-    }
 
-    dehydrationReversal(reaction, target, reagent, moleculeAI) {
-
-        // https://en.wikipedia.org/wiki/Pinacol_rearrangement
-        let r = null
-        if (moleculeAI.findIndexOfCarbocationAttachedtoCarbon() !== -1) {
-            r = reaction.hydrate()
-            if (r) {
-                console.log('Pinacol rearrangement reversed - dehydrate reversed (hydrate)')
-                // this.render(reaction.container_substrate, reaction.container_reagent)
-                this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent)
-            }
+        console.log('Last command:'+lastcommand)
+        console.log('charge:'+this.hasCharge(substrate))
+        // Proceed only if first step or there is a charge on the substrate.
+        if (lastcommand === null || this.hasCharge(substrate) !== -1) {
+            const moleculeAI = require("../Stateless/MoleculeAI")(_.cloneDeep(substrate))
+            this.carbocationShiftReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, lastcommand)
+            this.oxygenCarbonDoubleBondReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, lastcommand)
+            this.dehydrationReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, lastcommand)
+            this.protonateReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, lastcommand, caller)
+         } else {
+            console.log('synthesiseCallback()')
+            this.result(substrate, reagent)
         }
-
-        console.log('dehydrationReversal()')
-
     }
 
-    oxygenCarbonDoubleBondReversal(reaction, target, reagent, moleculeAI) {
+    oxygenCarbonDoubleBondReversal(target, reagent, moleculeAI, lastcommand) {
+
+        const reaction = new Reaction(target, reagent, {})
 
         // https://en.wikipedia.org/wiki/Pinacol_rearrangement
         let r = null
@@ -119,14 +135,40 @@ class ReactionAI {
         if (r) {
             console.log('Pinacol rearrangement reversed - make oxygen carbon double bond reversed:')
             this.render(reaction.container_substrate, reaction.container_reagent)
-            this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent)
+            this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent, 'oxygenCarbonDoubleBondReversal')
         }
 
-        console.log('oxygenCarbonDoubleBondReversal()')
+        //  console.log('oxygenCarbonDoubleBondReversal()')
 
     }
 
-    carbocationShiftReversal(reaction, target, reagent, moleculeAI) {
+    dehydrationReversal(target, reagent, moleculeAI, lastcommand) {
+
+        const reaction = new Reaction(target, reagent, {})
+
+        // https://en.wikipedia.org/wiki/Pinacol_rearrangement
+        let r = null
+        if (moleculeAI.findIndexOfCarbocationAttachedtoCarbon() !== -1) {
+            r = reaction.hydrate()
+            if (r) {
+                console.log('Pinacol rearrangement reversed - dehydrate reversed (hydrate)')
+                this.render(reaction.container_substrate, reaction.container_reagent)
+                this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent, 'dehydrationReversal')
+            }
+        }
+
+        //console.log('dehydrationReversal()')
+
+    }
+
+
+    carbocationShiftReversal(target, reagent, moleculeAI, lastcommand) {
+
+        if (lastcommand === 'carbocationShiftReversal') {
+            return false
+        }
+
+        const reaction = new Reaction(target, reagent, {})
 
         // Carbocation shift
         // https://en.wikipedia.org/wiki/Pinacol_rearrangement
@@ -134,24 +176,50 @@ class ReactionAI {
         r = reaction.carbocationShift()
         if (r) {
             console.log('Pinacol rearrangement reversed - carbocation shift')
-           // this.render(reaction.container_substrate, reaction.container_reagent)
-            this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent)
+            this.render(reaction.container_substrate, reaction.container_reagent)
+            this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent, 'carbocationShiftReversal')
         }
 
-        console.log('carbocationShiftReversal()')
+       // console.log('carbocationShiftReversal()')
 
     }
 
-    protonateReversal(reaction, target, reagent, moleculeAI) {
+    protonateReversal(target, reagent, moleculeAI, lastcommand, caller) {
+
+        //console.log('Calling protonateReversal()')
+        //console.log(VMolecule(target).compressed())
+        //console.log("protonateReversal()" + lastcommand)
+        //console.log("protonateReversal() caller " + caller)
+
+        if (lastcommand === null) {
+
+        }
+
+        if (lastcommand === null || this.hasCharge(target) !== -1) {
+
+            const reaction = new Reaction(target, reagent, {})
+
+            let r = null
+            r = reaction.deprotonate()
+            if (r) {
+                console.log('Pinacol rearrangement reversed - deprotonate')
+                this.render(reaction.container_substrate, reaction.container_reagent)
+                this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent, 'protonateReversal')
+            }
+        } else {
+            console.log('Molecule stable, skipping protonateReversal()')
+        }
         
         // if target cannot be deprotonated then we fall to the next line
         // in synthesiseCallback() after this.protonateReversal()
+        /*
         if (moleculeAI.findNitrogenWithHydrogenIndex() !== -1) { // NH
             console.log('Ritter reaction reversed - deprotonating nitrogen')
             reaction.deprotonate()
           //  this.render(reaction.container_substrate, reaction.container_reagent)
             this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent)
         }
+        */
 
         /*
         if (moleculeAI.findIndexOfCarbocationAttachedtoCarbon() !== -1) {
@@ -167,7 +235,7 @@ class ReactionAI {
             this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent)
         }
         */
-        console.log('protonateReversal()')
+       // console.log('protonateReversal()')
 
 
     }

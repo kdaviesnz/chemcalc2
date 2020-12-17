@@ -1458,36 +1458,40 @@ class Reaction {
             return atom.hydrogens().length > 0
         })
 
-        console.log('reaction.js deprotonate electrophile index')
-        console.log(electrophile_index)
 
+        console.log('Reaction.js deprotonate() electrophile index:' + electrophile_index)
+        if (electrophile_index !== -1) {
+          //  console.log(this.container_substrate[0][1][electrophile_index])
+        }
 
         if (electrophile_index === -1) {
-            console.log("Electrophile not found")
-            console.log("deprotonate")
-            console.log(this.rule.mechanism)
             return false
         }
 
+        if (this.container_substrate[0][1][electrophile_index][0] == "O" && this.container_substrate[0][1][electrophile_index][4] === "") {
+         //   return false
+        }
+
         const electrophile = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
-
         const electrophile_bonds  = electrophile.indexedBonds("")
-
-        //  console.log('electrophile_bonds')
-        // console.log(electrophile_bonds)
 
         const hydrogen_bond = electrophile_bonds.filter((bond)=>{
             return bond.atom[0] === 'H'
         }).pop()
 
+        if (hydrogen_bond === undefined) {
+            return false
 
+        }
+
+       // console.log('deprotonate electrophile index: ' + electrophile_index)
+       // console.log(this.container_substrate[0][1][electrophile_index][0])
         if (this.container_substrate[0][1][electrophile_index][0]!== "C"){
-
+            console.log('Charge:' + this.container_substrate[0][1][electrophile_index][4])
+            // Charge should be set before calling this.addProtonToReagent()
+            this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4] === "+"? "" : "-"
             this.addProtonToReagent()
-
-            this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4] === "+"? 0 : "-"
             this.container_substrate[0][1].splice(hydrogen_bond.atom_index, 1)
-
         } else {
 
             // Check for carbons bonds
@@ -1495,31 +1499,24 @@ class Reaction {
                 return bond.atom[0] === "C"
             }).pop()
 
-
             if (undefined === carbon_bond) {
-
                 this.addProtonToReagent()
                 this.container_substrate[0][1][electrophile_index][4] = 0
                 this.container_substrate[0][1].splice(hydrogen_bond.atom_index, 1)
-
             } else {
-
-
                 // Change bond to double bond
                 const shared_electrons = hydrogen_bond.shared_electrons // electrons shared between electrophile and hydrogen
                 this.container_substrate[0][1][carbon_bond.atom_index].push(shared_electrons[0])
                 this.container_substrate[0][1][carbon_bond.atom_index].push(shared_electrons[1])
-
-
                 this.addProtonToReagent()
                 this.container_substrate[0][1][electrophile_index][4] = 0
-
-
             }
         }
 
         this.setReagentAI()
         this.setMoleculeAI()
+
+        return true
 
 
     }
@@ -1636,6 +1633,9 @@ class Reaction {
 
         const atom_nucleophile_index = this.ReagentAI.findNucleophileIndex()
 
+        if (atom_nucleophile_index  === -1) {
+            console.log(VMolecule(this.container_reagent).compressed())
+        }
         atom_nucleophile_index.should.not.be.equal(-1)
 
         const reagent_atoms = _.cloneDeep(this.container_reagent[0][1])
