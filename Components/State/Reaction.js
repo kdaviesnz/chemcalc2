@@ -1524,8 +1524,6 @@ class Reaction {
 
         let atom_nucleophile_index = this.MoleculeAI.findNucleophileIndex()
 
-        console.log('protonate()')
-
         if (atom_nucleophile_index === -1 && !this.MoleculeAI.isWater()) {
             // try carbon atom
             atom_nucleophile_index = _.findIndex(_.cloneDeep(this.container_substrate[0][1]), (atom)=>{

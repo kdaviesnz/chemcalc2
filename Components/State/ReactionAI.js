@@ -133,9 +133,11 @@ class ReactionAI {
             this.dehydrationReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller)
             this.protonateReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller)
          } else {
-           console.log('synthesiseCallback()')
-            this.result(substrate, reagent, commands, 'synthesiseCallback()')
+
         }
+
+        console.log('synthesiseCallback()')
+        this.result(substrate, reagent, commands, 'synthesiseCallback()')
     }
 
     oxygenCarbonDoubleBondReversal(target, reagent, moleculeAI, commands, caller) {
@@ -163,20 +165,24 @@ class ReactionAI {
 
     dehydrationReversal(target, reagent, moleculeAI, commands, caller) {
 
-        const reaction = new Reaction(target, reagent, {})
+        const reverse_reaction = new Reaction(target, reagent, {})
 
         // https://en.wikipedia.org/wiki/Pinacol_rearrangement
         let r = null
         if (moleculeAI.findIndexOfCarbocationAttachedtoCarbon() !== -1) {
-            r = reaction.hydrate()
+            r = reverse_reaction.hydrate()
             if (r) {
                // console.log('Pinacol rearrangement reversed - dehydrate reversed (hydrate) (caller=' + caller + '):')
                 //this.render(reaction.container_substrate, reaction.container_reagent)
+                const reaction = new Reaction(reverse_reaction.container_substrate, reverse_reaction.container_reagent, {})
                 commands.push({
                     'name':'dehydrate',
                     'starting substrate': target,
                     'starting reagent': reagent,
                     'function':()=>{
+                        console.log('Command: dehydrate')
+                        console.log('Substrate')
+                        console.log(VMolecule(target).compressed())
                         reaction.dehydrate()
                         return reaction
                     }})
