@@ -132,7 +132,7 @@ class ReactionAI {
         if (r) {
             console.log('Pinacol rearrangement reversed - make oxygen carbon double bond reversed (caller=' + caller + '):')
             //this.render(reaction.container_substrate, reaction.container_reagent)
-            commands.push('oxygenCarbonDoubleBondReversal')
+            commands.push({'name':'oxygenCarbonDoubleBond', 'function':reaction.makeOxygenCarbonDoubleBond})
             this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent, _.cloneDeep(commands), 'oxygenCarbonDoubleBondReversal()')
         }
 
@@ -149,7 +149,7 @@ class ReactionAI {
             if (r) {
                 console.log('Pinacol rearrangement reversed - dehydrate reversed (hydrate) (caller=' + caller + '):')
                 //this.render(reaction.container_substrate, reaction.container_reagent)
-                commands.push('dehydrationReversal')
+                commands.push({'name':'dehydrate', 'function':reaction.dehydrate})
                 this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent,_.cloneDeep(commands), 'dehydrationReversal()')
             }
         }
@@ -160,7 +160,7 @@ class ReactionAI {
 
     carbocationShiftReversal(target, reagent, moleculeAI, commands, caller) {
 
-        if (commands.length > 0 && commands[commands.length-1] === 'carbocationShiftReversal') {
+        if (commands.length > 0 && commands[commands.length-1].name === 'carbocationShift') {
             return false
         }
 
@@ -173,7 +173,7 @@ class ReactionAI {
         if (r) {
             console.log('Pinacol rearrangement reversed - carbocation shift (caller=' + caller + '):')
             //this.render(reaction.container_substrate, reaction.container_reagent)
-            commands.push('carbocationShiftReversal')
+            commands.push({'name':'carbocationShift', 'function':reaction.carbocationShift})
             this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent, _.cloneDeep(commands), 'carbocationSiftReversal()')
         }
 
@@ -191,7 +191,7 @@ class ReactionAI {
             if (r) {
                 console.log('Pinacol rearrangement reversed - deprotonate (caller=' + caller + '):')
                 //this.render(reaction.container_substrate, reaction.container_reagent)
-                commands.push('protonateReversal')
+                commands.push({'name':'protonate', 'function':reaction.protonate})
                 this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent, _.cloneDeep(commands), 'protonateReversal()')
             }
        // }
