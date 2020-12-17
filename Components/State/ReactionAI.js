@@ -84,7 +84,7 @@ class ReactionAI {
         this.result = (substrate, reagent, commands, caller) => {
             console.log('RESULT')
             console.log('Substrate:')
-            console.log(VMolecule(substrate).compressed())
+            console.log(VMolecule(substrate).canonicalSMILES())
             if (reagent === null) {
                 console.log('No reagent')
             } else {
