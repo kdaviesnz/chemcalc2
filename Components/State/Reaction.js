@@ -1459,17 +1459,12 @@ class Reaction {
         })
 
 
-        console.log('Reaction.js deprotonate() electrophile index:' + electrophile_index)
         if (electrophile_index !== -1) {
           //  console.log(this.container_substrate[0][1][electrophile_index])
         }
 
         if (electrophile_index === -1) {
             return false
-        }
-
-        if (this.container_substrate[0][1][electrophile_index][0] == "O" && this.container_substrate[0][1][electrophile_index][4] === "") {
-         //   return false
         }
 
         const electrophile = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
@@ -1487,7 +1482,6 @@ class Reaction {
        // console.log('deprotonate electrophile index: ' + electrophile_index)
        // console.log(this.container_substrate[0][1][electrophile_index][0])
         if (this.container_substrate[0][1][electrophile_index][0]!== "C"){
-            console.log('Charge:' + this.container_substrate[0][1][electrophile_index][4])
             // Charge should be set before calling this.addProtonToReagent()
             this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4] === "+"? "" : "-"
             this.addProtonToReagent()

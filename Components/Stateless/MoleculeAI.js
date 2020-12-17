@@ -646,7 +646,7 @@ VMolecule
                 const a = CAtom(container_molecule[0][1][index], index, container_molecule)
                 return a.doubleBondCount() === 1
             })
-            console.log('nitrogen_on_double_bond_index:'+nitrogen_on_double_bond_index)
+
             if (nitrogen_on_double_bond_index > -1) {
                 return nitrogen_on_double_bond_index
             }
