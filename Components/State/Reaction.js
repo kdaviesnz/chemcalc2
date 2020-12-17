@@ -190,7 +190,7 @@ class Reaction {
     makeOxygenCarbonDoubleBond() {
 
         // This should NOT remove H from the oxygen
-        console.log('makeOxygenCarbonDoubleBond()')
+      //  console.log('makeOxygenCarbonDoubleBond()')
       //  process.exit()
 
         const oxygen_index = this.MoleculeAI.findOxygenAttachedToCarbonIndexNoDoubleBonds()

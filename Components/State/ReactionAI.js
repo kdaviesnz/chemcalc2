@@ -73,7 +73,8 @@ class ReactionAI {
 
     constructor() {
         this.render = (substrate, reagent) => {
-            console.log(VMolecule(substrate).compressed())
+            console.log('Rendering')
+            console.log(VMolecule(substrate).canonicalSMILES())
             if (reagent === null) {
                 console.log('No reagent')
             } else {
@@ -82,18 +83,30 @@ class ReactionAI {
             }
        }
         this.result = (substrate, reagent, commands, caller) => {
-            console.log('RESULT')
-            console.log('Substrate:')
-            console.log(VMolecule(substrate).canonicalSMILES())
+          //  console.log('RESULT')
+           // console.log('Substrate:')
+          //  console.log(VMolecule(substrate).canonicalSMILES())
             if (reagent === null) {
-                console.log('No reagent')
+            //    console.log('No reagent')
             } else {
-                console.log('Reagent:')
-                console.log(VMolecule(reagent).compressed())
+              //  console.log('Reagent:')
+               // console.log(VMolecule(reagent).compressed())
             }
-            console.log("Commands:")
-            console.log(commands)
-            console.log("Caller:" + caller)
+            //console.log("Commands:")
+            //console.log(commands)
+            this.run(_.cloneDeep(commands).reverse(), 0, null)
+            //console.log("Caller:" + caller)
+        }
+    }
+
+    run(commands, command_index, reaction) {
+        console.log('Calling run()')
+        if (commands[command_index] === undefined) {
+            console.log('Run')
+            this.render(reaction.container_substrate, reaction.container_reagent)
+        } else {
+            const r = commands[command_index]['function']()
+            this.run(_.cloneDeep(commands), _.cloneDeep(command_index+1), _.cloneDeep(r))
         }
     }
 
@@ -132,7 +145,10 @@ class ReactionAI {
         if (r) {
             console.log('Pinacol rearrangement reversed - make oxygen carbon double bond reversed (caller=' + caller + '):')
             //this.render(reaction.container_substrate, reaction.container_reagent)
-            commands.push({'name':'oxygenCarbonDoubleBond', 'function':reaction.makeOxygenCarbonDoubleBond})
+            commands.push({'name':'makeOxygenCarbonDoubleBond', 'function':()=>{
+                    reaction.makeOxygenCarbonDoubleBond()
+                    return reaction
+            }})
             this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent, _.cloneDeep(commands), 'oxygenCarbonDoubleBondReversal()')
         }
 
@@ -149,7 +165,10 @@ class ReactionAI {
             if (r) {
                 console.log('Pinacol rearrangement reversed - dehydrate reversed (hydrate) (caller=' + caller + '):')
                 //this.render(reaction.container_substrate, reaction.container_reagent)
-                commands.push({'name':'dehydrate', 'function':reaction.dehydrate})
+                commands.push({'name':'dehydrate', 'function':()=>{
+                        reaction.dehydrate()
+                        return reaction
+                    }})
                 this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent,_.cloneDeep(commands), 'dehydrationReversal()')
             }
         }
@@ -173,7 +192,10 @@ class ReactionAI {
         if (r) {
             console.log('Pinacol rearrangement reversed - carbocation shift (caller=' + caller + '):')
             //this.render(reaction.container_substrate, reaction.container_reagent)
-            commands.push({'name':'carbocationShift', 'function':reaction.carbocationShift})
+            commands.push({'name':'carbocationShift', 'function':()=>{
+                    reaction.carbocationShift()
+                    return reaction
+                }})
             this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent, _.cloneDeep(commands), 'carbocationSiftReversal()')
         }
 
@@ -191,7 +213,10 @@ class ReactionAI {
             if (r) {
                 console.log('Pinacol rearrangement reversed - deprotonate (caller=' + caller + '):')
                 //this.render(reaction.container_substrate, reaction.container_reagent)
-                commands.push({'name':'protonate', 'function':reaction.protonate})
+                commands.push({'name':'protonate', 'function':()=>{
+                        reaction.protonate()
+                        return reaction
+                    }})
                 this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent, _.cloneDeep(commands), 'protonateReversal()')
             }
        // }
