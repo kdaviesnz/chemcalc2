@@ -94,18 +94,22 @@ class ReactionAI {
             }
             //console.log("Commands:")
             //console.log(commands)
-            this.run(_.cloneDeep(commands).reverse(), 0, null)
+            console.log('Calling run()')
+            this.run(_.cloneDeep(commands).reverse(), 0, null, substrate, reagent)
             //console.log("Caller:" + caller)
         }
     }
 
-    run(commands, command_index, reaction) {
+    run(commands, command_index, reaction, starting_substrate, starting_reagent) {
         if (commands[command_index] === undefined) {
             console.log('Run (result)')
+            console.log("Start")
+            this.render(commands[command_index -1]['starting substrate'], starting_reagent)
+            console.log("Finish")
             this.render(reaction.container_substrate, reaction.container_reagent)
         } else {
             const r = commands[command_index]['function']()
-            this.run(_.cloneDeep(commands), _.cloneDeep(command_index+1), _.cloneDeep(r))
+            this.run(_.cloneDeep(commands), _.cloneDeep(command_index+1), _.cloneDeep(r), _.cloneDeep(starting_substrate), _.cloneDeep(starting_reagent))
         }
     }
 
@@ -129,7 +133,7 @@ class ReactionAI {
             this.dehydrationReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller)
             this.protonateReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller)
          } else {
-          //  console.log('synthesiseCallback()')
+           console.log('synthesiseCallback()')
             this.result(substrate, reagent, commands, 'synthesiseCallback()')
         }
     }
@@ -144,7 +148,11 @@ class ReactionAI {
         if (r) {
            // console.log('Pinacol rearrangement reversed - make oxygen carbon double bond reversed (caller=' + caller + '):')
             //this.render(reaction.container_substrate, reaction.container_reagent)
-            commands.push({'name':'makeOxygenCarbonDoubleBond', 'function':()=>{
+            commands.push({
+                'name':'makeOxygenCarbonDoubleBond',
+                'starting substrate': target,
+                'starting reagent': reagent,
+                'function':()=>{
                     reaction.makeOxygenCarbonDoubleBond()
                     return reaction
             }})
@@ -164,7 +172,11 @@ class ReactionAI {
             if (r) {
                // console.log('Pinacol rearrangement reversed - dehydrate reversed (hydrate) (caller=' + caller + '):')
                 //this.render(reaction.container_substrate, reaction.container_reagent)
-                commands.push({'name':'dehydrate', 'function':()=>{
+                commands.push({
+                    'name':'dehydrate',
+                    'starting substrate': target,
+                    'starting reagent': reagent,
+                    'function':()=>{
                         reaction.dehydrate()
                         return reaction
                     }})
@@ -191,7 +203,11 @@ class ReactionAI {
         if (r) {
            // console.log('Pinacol rearrangement reversed - carbocation shift (caller=' + caller + '):')
             //this.render(reaction.container_substrate, reaction.container_reagent)
-            commands.push({'name':'carbocationShift', 'function':()=>{
+            commands.push({
+                'name':'carbocationShift',
+                'starting substrate': target,
+                'starting reagent': reagent,
+                'function':()=>{
                     reaction.carbocationShift()
                     return reaction
                 }})
@@ -212,10 +228,17 @@ class ReactionAI {
             if (r) {
                // console.log('Pinacol rearrangement reversed - deprotonate (caller=' + caller + '):')
                 //this.render(reaction.container_substrate, reaction.container_reagent)
-                commands.push({'name':'protonate', 'function':()=>{
-                        reaction.protonate()
-                        return reaction
-                    }})
+                commands.push(
+                    {
+                        'name':'protonate',
+                        'starting substrate': target,
+                        'starting reagent': reagent,
+                        'function':()=>{
+                            reaction.protonate()
+                            return reaction
+                        }
+                    }
+                )
                 this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent, _.cloneDeep(commands), 'protonateReversal()')
             }
        // }
