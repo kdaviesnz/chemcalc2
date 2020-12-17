@@ -100,9 +100,8 @@ class ReactionAI {
     }
 
     run(commands, command_index, reaction) {
-        console.log('Calling run()')
         if (commands[command_index] === undefined) {
-            console.log('Run')
+            console.log('Run (result)')
             this.render(reaction.container_substrate, reaction.container_reagent)
         } else {
             const r = commands[command_index]['function']()
@@ -130,7 +129,7 @@ class ReactionAI {
             this.dehydrationReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller)
             this.protonateReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller)
          } else {
-            console.log('synthesiseCallback()')
+          //  console.log('synthesiseCallback()')
             this.result(substrate, reagent, commands, 'synthesiseCallback()')
         }
     }
@@ -143,7 +142,7 @@ class ReactionAI {
         let r = null
         r = reaction.makeOxygenCarbonDoubleBondReverse()
         if (r) {
-            console.log('Pinacol rearrangement reversed - make oxygen carbon double bond reversed (caller=' + caller + '):')
+           // console.log('Pinacol rearrangement reversed - make oxygen carbon double bond reversed (caller=' + caller + '):')
             //this.render(reaction.container_substrate, reaction.container_reagent)
             commands.push({'name':'makeOxygenCarbonDoubleBond', 'function':()=>{
                     reaction.makeOxygenCarbonDoubleBond()
@@ -163,7 +162,7 @@ class ReactionAI {
         if (moleculeAI.findIndexOfCarbocationAttachedtoCarbon() !== -1) {
             r = reaction.hydrate()
             if (r) {
-                console.log('Pinacol rearrangement reversed - dehydrate reversed (hydrate) (caller=' + caller + '):')
+               // console.log('Pinacol rearrangement reversed - dehydrate reversed (hydrate) (caller=' + caller + '):')
                 //this.render(reaction.container_substrate, reaction.container_reagent)
                 commands.push({'name':'dehydrate', 'function':()=>{
                         reaction.dehydrate()
@@ -190,7 +189,7 @@ class ReactionAI {
         let r = null
         r = reaction.carbocationShift()
         if (r) {
-            console.log('Pinacol rearrangement reversed - carbocation shift (caller=' + caller + '):')
+           // console.log('Pinacol rearrangement reversed - carbocation shift (caller=' + caller + '):')
             //this.render(reaction.container_substrate, reaction.container_reagent)
             commands.push({'name':'carbocationShift', 'function':()=>{
                     reaction.carbocationShift()
@@ -211,7 +210,7 @@ class ReactionAI {
             let r = null
             r = reaction.deprotonate()
             if (r) {
-                console.log('Pinacol rearrangement reversed - deprotonate (caller=' + caller + '):')
+               // console.log('Pinacol rearrangement reversed - deprotonate (caller=' + caller + '):')
                 //this.render(reaction.container_substrate, reaction.container_reagent)
                 commands.push({'name':'protonate', 'function':()=>{
                         reaction.protonate()

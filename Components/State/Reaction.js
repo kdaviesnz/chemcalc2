@@ -501,11 +501,6 @@ class Reaction {
     dehydrate() {
 
         const oxygen_atom_index = this.MoleculeAI.findWaterOxygenIndex()
-        console.log("(dehydrate() water oxygen index")
-        console.log("oxygen atom index:" + oxygen_atom_index)
-
-        console.log("With water")
-        console.log(VMolecule(this.container_substrate).compressed())
 
         const oxygen_atom = CAtom(this.container_substrate[0][1][oxygen_atom_index], oxygen_atom_index, this.container_substrate)
 
@@ -534,9 +529,6 @@ class Reaction {
 
         // Charges
         this.container_substrate[0][1][non_hydrogen_bond.atom_index][4] = '+'
-
-        console.log("Without water")
-        console.log(VMolecule(this.container_substrate).compressed())
 
 
         this.setMoleculeAI()
@@ -1551,7 +1543,6 @@ class Reaction {
         proton.length.should.be.equal(5)
         proton[0].should.be.equal('H')
 
-        console.log('atom nucleophile index = ' + atom_nucleophile_index)
 
         let free_electrons = CAtom(this.container_substrate[0][1][atom_nucleophile_index], atom_nucleophile_index, this.container_substrate).freeElectrons()
 
