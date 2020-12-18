@@ -94,9 +94,9 @@ class ReactionAI {
             console.log('commands:')
             console.log(commands)
           //  process.exit()
-            console.log('starting substrate:')
-            console.log(VMolecule(commands[commands.length-1]['starting substrate']).canonicalSMILES())
-            this.run(_.cloneDeep(commands).reverse(), 0, null, substrate, reagent)
+           // console.log('starting substrate:')
+           // console.log(VMolecule(commands[commands.length-1]['starting substrate']).canonicalSMILES())
+           // this.run(_.cloneDeep(commands).reverse(), 0, null, substrate, reagent)
             //console.log("Caller:" + caller)
         }
     }
@@ -122,26 +122,40 @@ class ReactionAI {
 
     synthesise(target) {
         const water = MoleculeFactory("O")
-        this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(water),1], [], 'synthesise')
+        this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(water),1], [], 'synthesise', 0)
     }
     
-    synthesiseCallback(substrate, reagent, commands, caller) {
+    synthesiseCallback(substrate, reagent, commands, caller, depth) {
          console.log('synthesiseCallback()')
         console.log("---------------------------")
         console.log(VMolecule(substrate).compressed())
         console.log(commands)
         console.log("---------------------------")
+        console.log('depth=' + depth)
+        if (depth === 1) {
+            console.log('Starting substrate:')
+            //console.log(commands[0]['starting substrate'])
+            console.log(VMolecule(commands[0]['starting substrate']).compressed())
+            commands[0]['function']()
+            process.exit()
+        }
 //        this.render(substrate, reagent)
         // Proceed only if first step or there is a charge on the substrate.
         if (commands.length === 0 || this.hasCharge(_.cloneDeep(substrate)) !== -1) {
             const moleculeAI = require("../Stateless/MoleculeAI")(_.cloneDeep(substrate))
-            this.carbocationShiftReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller)
-            this.oxygenCarbonDoubleBondReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller)
-            this.dehydrationReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller)
-            this.protonateReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller)
-            this.transferProtonReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller)
-            this.breakOxygenCarbonDoubleBondReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller)
-            this.bondSubstrateToReagentReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller)
+            this.carbocationShiftReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+
+            this.oxygenCarbonDoubleBondReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+
+            this.dehydrationReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+
+            this.protonateReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+            this.transferProtonReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+
+            this.breakOxygenCarbonDoubleBondReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+
+            this.bondSubstrateToReagentReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+
          } else {
             this.result(substrate, reagent, commands, 'synthesiseCallback()')
         }
@@ -149,7 +163,7 @@ class ReactionAI {
 
     }
 
-    oxygenCarbonDoubleBondReversal(target, reagent, moleculeAI, commands, caller) {
+    oxygenCarbonDoubleBondReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
         const reverse_reaction = new Reaction(target, reagent, {})
 
@@ -170,12 +184,12 @@ class ReactionAI {
                     reaction.makeOxygenCarbonDoubleBond()
                     return reaction
             }})
-            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'oxygenCarbonDoubleBondReversal()')
+            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'oxygenCarbonDoubleBondReversal()', depth+1)
         }
 
     }
 
-    dehydrationReversal(target, reagent, moleculeAI, commands, caller) {
+    dehydrationReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
         const reverse_reaction = new Reaction(target, reagent, {})
 
@@ -202,7 +216,7 @@ class ReactionAI {
                         reaction.dehydrate()
                         return reaction
                     }})
-                this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent),_.cloneDeep(commands), 'dehydrationReversal()')
+                this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent),_.cloneDeep(commands), 'dehydrationReversal()', depth+1)
             }
         }
 
@@ -210,7 +224,7 @@ class ReactionAI {
     }
 
 
-    carbocationShiftReversal(target, reagent, moleculeAI, commands, caller) {
+    carbocationShiftReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
         if (commands.length > 0 && commands[commands.length-1].name === 'carbocationShift') {
             return false
@@ -236,12 +250,12 @@ class ReactionAI {
                     reaction.carbocationShift()
                     return reaction
                 }})
-            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'carbocationSiftReversal()')
+            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'carbocationSiftReversal()', depth+1)
         }
 
     }
 
-    transferProtonReversal(target, reagent, moleculeAI, commands, caller) {
+    transferProtonReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
         const reverse_reaction = new Reaction(target, reagent, {})
 
@@ -266,12 +280,12 @@ class ReactionAI {
                     }
                 }
             )
-            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'transferProtonReversal()')
+            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'transferProtonReversal()', depth+1)
         }
 
     }
 
-    breakOxygenCarbonDoubleBondReversal(target, reagent, moleculeAI, commands, caller) {
+    breakOxygenCarbonDoubleBondReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
         const reverse_reaction = new Reaction(target, reagent, {})
 
@@ -291,12 +305,12 @@ class ReactionAI {
                     reaction.makeOxygenCarbonDoubleBondReverse()
                     return reaction
                 }})
-            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'breakOxygenCarbonDoubleBondReversal()')
+            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'breakOxygenCarbonDoubleBondReversal()', depth+1)
         }
 
     }
 
-    bondSubstrateToReagentReversal(target, reagent, moleculeAI, commands, caller) {
+    bondSubstrateToReagentReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
         const reverse_reaction = new Reaction(target, reagent, {})
 
@@ -316,12 +330,12 @@ class ReactionAI {
                     reaction.bondSubstrateToReagent()
                     return reaction
                 }})
-            this.synthesiseCallback(reverse_reaction.container_substrate, reverse_reaction.container_reagent, _.cloneDeep(commands), 'bondSubstrateToReagentReversal()')
+            this.synthesiseCallback(reverse_reaction.container_substrate, reverse_reaction.container_reagent, _.cloneDeep(commands), 'bondSubstrateToReagentReversal()', depth+1)
         }
 
     }
 
-    protonateReversal(target, reagent, moleculeAI, commands, caller) {
+    protonateReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
 
             const reverse_reaction = new Reaction(target, reagent, {})
@@ -346,12 +360,16 @@ class ReactionAI {
                         'starting reagent': protonated_reagent,
                         'function':()=>{
                             const reaction = new Reaction(deprotonated_substrate, protonated_reagent, {})
+                            console.log('Command - substrate')
+                            console.log(VMolecule(reaction.container_substrate).compressed())
                             reaction.protonate()
+                            console.log(VMolecule(reaction.container_substrate).compressed())
+                           // process.exit()
                             return reaction
                         }
                     }
                 )
-                this.synthesiseCallback(reverse_reaction.container_substrate, reverse_reaction.container_reagent, _.cloneDeep(commands), 'protonateReversal()')
+                this.synthesiseCallback(reverse_reaction.container_substrate, reverse_reaction.container_reagent, _.cloneDeep(commands), 'protonateReversal()', depth+1)
             }
        // }
         
