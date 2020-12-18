@@ -151,23 +151,26 @@ class ReactionAI {
 
     oxygenCarbonDoubleBondReversal(target, reagent, moleculeAI, commands, caller) {
 
-        const reaction = new Reaction(target, reagent, {})
+        const reverse_reaction = new Reaction(target, reagent, {})
 
         // https://en.wikipedia.org/wiki/Pinacol_rearrangement
         let r = null
-        r = reaction.makeOxygenCarbonDoubleBondReverse()
+        r = reverse_reaction.makeOxygenCarbonDoubleBondReverse()
         if (r) {
            // console.log('Pinacol rearrangement reversed - make oxygen carbon double bond reversed (caller=' + caller + '):')
             //this.render(reaction.container_substrate, reaction.container_reagent)
+            const substrate_with_oxygen_carbon_double_bond_removed = _.cloneDeep(reverse_reaction.container_substrate)
+            const reagent_with_oxygen_carbon_double_bond_removed = _.cloneDeep(reverse_reaction.container_reagent)
             commands.push({
                 'name':'makeOxygenCarbonDoubleBond',
-                'starting substrate': target,
-                'starting reagent': reagent,
+                'starting substrate': substrate_with_oxygen_carbon_double_bond_removed,
+                'starting reagent': reagent_with_oxygen_carbon_double_bond_removed,
                 'function':()=>{
+                    const reaction = new Reaction(substrate_with_oxygen_carbon_double_bond_removed, reagent_with_oxygen_carbon_double_bond_removed, {})
                     reaction.makeOxygenCarbonDoubleBond()
                     return reaction
             }})
-            this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent, _.cloneDeep(commands), 'oxygenCarbonDoubleBondReversal()')
+            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'oxygenCarbonDoubleBondReversal()')
         }
 
     }
@@ -183,14 +186,21 @@ class ReactionAI {
         let r = null
         if (moleculeAI.findIndexOfCarbocationAttachedtoCarbon() !== -1) {
             r = reverse_reaction.hydrate()
+            const hydrated_substrate = _.cloneDeep(reverse_reaction.container_substrate)
+            const hydrated_reagent = _.cloneDeep(reverse_reaction.container_reagent)
+            console.log('R -> dehydrate()')
+            console.log(VMolecule(hydrated_substrate).compressed())
             if (r) {
                 commands.push({
                     'name':'dehydrate',
-                    'starting substrate': target,
-                    'starting reagent': reagent,
+                    'starting substrate': hydrated_substrate,
+                    'starting reagent': hydrated_reagent,
                     'function':()=>{
-                        reverse_reaction.dehydrate()
-                        return reverse_reaction
+                        console.log('Command -> dehydrate()')
+                        console.log(VMolecule(hydrated_substrate).compressed())
+                        const reaction = new Reaction(hydrated_substrate, hydrated_reagent, {})
+                        reaction.dehydrate()
+                        return reaction
                     }})
                 this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent),_.cloneDeep(commands), 'dehydrationReversal()')
             }
@@ -206,95 +216,107 @@ class ReactionAI {
             return false
         }
 
-        const reaction = new Reaction(target, reagent, {})
+        const reverse_reaction = new Reaction(target, reagent, {})
 
         // Carbocation shift
         // https://en.wikipedia.org/wiki/Pinacol_rearrangement
         let r = null
-        r = reaction.carbocationShift()
+        r = reverse_reaction.carbocationShift()
         if (r) {
            // console.log('Pinacol rearrangement reversed - carbocation shift (caller=' + caller + '):')
             //this.render(reaction.container_substrate, reaction.container_reagent)
+            const substrate_after_carbon_shift = _.cloneDeep(reverse_reaction.container_substrate)
+            const reagent_after_carbon_shift = _.cloneDeep(reverse_reaction.container_reagent)
             commands.push({
                 'name':'carbocationShift',
-                'starting substrate': target,
-                'starting reagent': reagent,
+                'starting substrate': substrate_after_carbon_shift,
+                'starting reagent': reagent_after_carbon_shift,
                 'function':()=>{
+                    const reaction = new Reaction(substrate_after_carbon_shift, reagent_after_carbon_shift, {})
                     reaction.carbocationShift()
                     return reaction
                 }})
-            this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent, _.cloneDeep(commands), 'carbocationSiftReversal()')
+            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'carbocationSiftReversal()')
         }
 
     }
 
     transferProtonReversal(target, reagent, moleculeAI, commands, caller) {
 
-        const reaction = new Reaction(target, reagent, {})
+        const reverse_reaction = new Reaction(target, reagent, {})
 
         let r = null
-        r = reaction.transferProtonReverse()
+        r = reverse_reaction.transferProtonReverse()
 
         if (r) {
             // console.log('Pinacol rearrangement reversed - deprotonate (caller=' + caller + '):')
             // https://en.wikipedia.org/wiki/Leuckart_reaction (4)
             //this.render(reaction.container_substrate, reaction.container_reagent)
+            const substrate_with_proton_transferred = _.cloneDeep(reverse_reaction.container_substrate)
+            const reagent_with_proton_transferred = _.cloneDeep(reverse_reaction.container_reagent)
             commands.push(
                 {
                     'name':'transferProton',
-                    'starting substrate': reaction.container_substrate,
-                    'starting reagent': reaction.container_reagent,
+                    'starting substrate': substrate_with_proton_transferred,
+                    'starting reagent': reagent_with_proton_transferred,
                     'function':()=>{
+                        const reaction = new Reaction(substrate_with_proton_transferred, reagent_with_proton_transferred, {})
                         reaction.transferProton()
                         return reaction
                     }
                 }
             )
-            this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent, _.cloneDeep(commands), 'transferProtonReversal()')
+            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'transferProtonReversal()')
         }
 
     }
 
     breakOxygenCarbonDoubleBondReversal(target, reagent, moleculeAI, commands, caller) {
 
-        const reaction = new Reaction(target, reagent, {})
+        const reverse_reaction = new Reaction(target, reagent, {})
 
         let r = null
-        r = reaction.makeOxygenCarbonDoubleBond()
+        r = reverse_reaction.makeOxygenCarbonDoubleBond()
         if (r) {
             // // https://en.wikipedia.org/wiki/Leuckart_reaction (5)
             //this.render(reaction.container_substrate, reaction.container_reagent)
+            const substrate_with_oxygen_carbon_double_bond = _.cloneDeep(reverse_reaction.container_substrate)
+            const reagent_with_oxygen_carbon_double_bond = _.cloneDeep(reverse_reaction.container_reagent)
             commands.push({
                 'name':'makeOxygenCarbonDoubleBondReverse',
-                'starting substrate': target,
-                'starting reagent': reagent,
+                'starting substrate': substrate_with_oxygen_carbon_double_bond,
+                'starting reagent': reagent_with_oxygen_carbon_double_bond,
                 'function':()=>{
+                    const reaction = new Reaction(substrate_with_oxygen_carbon_double_bond, reagent_with_oxygen_carbon_double_bond, {})
                     reaction.makeOxygenCarbonDoubleBondReverse()
                     return reaction
                 }})
-            this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent, _.cloneDeep(commands), 'breakOxygenCarbonDoubleBondReversal()')
+            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'breakOxygenCarbonDoubleBondReversal()')
         }
 
     }
 
     bondSubstrateToReagentReversal(target, reagent, moleculeAI, commands, caller) {
 
-        const reaction = new Reaction(target, reagent, {})
+        const reverse_reaction = new Reaction(target, reagent, {})
 
         let r = null
-        r = reaction.breakBond()
+        r = reverse_reaction.breakBond()
         if (r) {
             // // https://en.wikipedia.org/wiki/Leuckart_reaction (6)
             //this.render(reaction.container_substrate, reaction.container_reagent)
+            const break_bond_substrate = _.cloneDeep(reverse_reaction.container_substrate)
+            const break_bond_reagent = _.cloneDeep(reverse_reaction.container_reagent)
             commands.push({
                 'name':'bondSubstrateToReagent',
-                'starting substrate': reaction.container_substrate,
-                'starting reagent': reaction.container_reagent,
+                'starting substrate': break_bond_substrate,
+                'starting reagent': break_bond_reagent,
                 'function':()=>{
+                    const reaction = new Reaction(break_bond_substrate, break_bond_reagent, {})
                     reaction.bondSubstrateToReagent()
                     return reaction
                 }})
-            this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent, _.cloneDeep(commands), 'bondSubstrateToReagentReversal()')
+            this.synthesiseCallback(reverse_reaction.container_substrate, reverse_reaction.container_reagent, _.cloneDeep(commands), 'bondSubstrateToReagentReversal()')
         }
 
     }
@@ -302,31 +324,34 @@ class ReactionAI {
     protonateReversal(target, reagent, moleculeAI, commands, caller) {
 
 
-            const reaction = new Reaction(target, reagent, {})
+            const reverse_reaction = new Reaction(target, reagent, {})
 
         // https://en.wikipedia.org/wiki/Leuckart_reaction (3)
 
             let r = null
-            r = reaction.deprotonate()
-        console.log('Pinacol rearrangement reversed - deprotonate (caller=' + caller + '):')
-        console.log('Leuckart reaction reversed - deprotonate (caller=' + caller + '):')
+            r = reverse_reaction.deprotonate()
+//        console.log('Pinacol rearrangement reversed - deprotonate (caller=' + caller + '):')
+  //      console.log('Leuckart reaction reversed - deprotonate (caller=' + caller + '):')
 
             if (r) {
 
                 // https://en.wikipedia.org/wiki/Leuckart_reaction (1)
                 //this.render(reaction.container_substrate, reaction.container_reagent)
+                const deprotonated_substrate = _.cloneDeep(reverse_reaction.container_substrate)
+                const protonated_reagent = _.cloneDeep(reverse_reaction.container_reagent)
                 commands.push(
                     {
                         'name':'protonate',
-                        'starting substrate': target,
-                        'starting reagent': reagent,
+                        'starting substrate': deprotonated_substrate,
+                        'starting reagent': protonated_reagent,
                         'function':()=>{
+                            const reaction = new Reaction(deprotonated_substrate, protonated_reagent, {})
                             reaction.protonate()
                             return reaction
                         }
                     }
                 )
-                this.synthesiseCallback(reaction.container_substrate, reaction.container_reagent, _.cloneDeep(commands), 'protonateReversal()')
+                this.synthesiseCallback(reverse_reaction.container_substrate, reverse_reaction.container_reagent, _.cloneDeep(commands), 'protonateReversal()')
             }
        // }
         

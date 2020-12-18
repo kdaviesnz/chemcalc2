@@ -516,7 +516,15 @@ class Reaction {
 
     dehydrate() {
 
+        console.log('Reaction.js dehydrate()')
+        console.log('Substrate:')
+        console.log(VMolecule(this.container_substrate).compressed())
         const oxygen_atom_index = this.MoleculeAI.findWaterOxygenIndex()
+        console.log('Oxygen water atom index: ' + oxygen_atom_index)
+
+        if (oxygen_atom_index === -1) {
+            return false
+        }
 
         const oxygen_atom = CAtom(this.container_substrate[0][1][oxygen_atom_index], oxygen_atom_index, this.container_substrate)
 
@@ -548,6 +556,8 @@ class Reaction {
 
 
         this.setMoleculeAI()
+
+        return true
 
 
 
@@ -1480,7 +1490,10 @@ class Reaction {
         if (this.container_substrate[0][1][electrophile_index][0]!== "C"){
             // Charge should be set before calling this.addProtonToReagent()
             this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4] === "+"? "" : "-"
-            this.addProtonToReagent()
+            const r = this.addProtonToReagent()
+            if (r === false) {
+                return false
+            }
             this.container_substrate[0][1].splice(hydrogen_bond.atom_index, 1)
         } else {
 
@@ -1585,7 +1598,14 @@ class Reaction {
                     this.container_substrate[0][1][double_bonds[0].atom_index][4] === "-"
                     || this.container_substrate[0][1][double_bonds[0].atom_index][4] < 0? 0: "+"
 
+
+                proton.push(free_electrons[0])
+                proton.push(free_electrons[1])
+
             }
+
+
+
 
         } else {
             this.container_substrate[0][1][atom_nucleophile_index][4] =
@@ -1596,8 +1616,6 @@ class Reaction {
 
         free_electrons.length.should.be.greaterThan(1)
 
-        proton.push(free_electrons[0])
-        proton.push(free_electrons[1])
 
         this.container_substrate[0][1].push(proton)
 
@@ -1637,10 +1655,8 @@ class Reaction {
         const atom_nucleophile_index = this.ReagentAI.findNucleophileIndex()
 
         if (atom_nucleophile_index  === -1) {
-            console.log(VMolecule(this.container_reagent).compressed())
+           return false
         }
-        atom_nucleophile_index.should.not.be.equal(-1)
-
         const reagent_atoms = _.cloneDeep(this.container_reagent[0][1])
 
         const proton = AtomFactory("H", 0)
@@ -1668,6 +1684,7 @@ class Reaction {
 
         this.setReagentAI()
 
+        return true
 
     }
 
@@ -2230,17 +2247,19 @@ class Reaction {
 
         const carbocation = CAtom(this.container_substrate[0][1][carbocation_index], carbocation_index, this.container_substrate)
 
-        const carbon_index = carbocation.indexedBonds("").filter((bond)=>{
+        const carbon_bond = carbocation.indexedBonds("").filter((bond)=>{
             if (bond.atom[0] !=="C") {
                 return false
             }
             const c = CAtom(this.container_substrate[0][1][bond.atom_index], bond.atom_index, this.container_substrate)
             return c.hydrogens().length === 0 // @todo
-        }).pop().atom_index
+        }).pop()
 
-        if (carbon_index === undefined) {
+        if (carbon_bond === undefined) {
             return false
         }
+
+        const carbon_index = carbon_bond.atom_index
 
         const carbon = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, this.container_substrate)
 
