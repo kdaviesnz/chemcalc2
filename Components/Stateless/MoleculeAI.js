@@ -854,6 +854,7 @@ VMolecule
 
             let i = __findElectrophileIndex(filterBy, mustBe)
 
+
             // Check for nitrogen atom with H (@see Ritter reaction)
             if (i===-1){
                 i = _.findIndex(_.cloneDeep(container_molecule[0][1]), (atom, index)=> {
@@ -886,6 +887,28 @@ VMolecule
                     const atom_object = CAtom(atom, index,container_molecule)
 
                     if (atom_object.hydrogens().length === 0) {
+                        return false
+                    }
+
+                    return true
+
+
+                })
+
+            }
+
+            // Look for carbon with 1 hydrogen - see Leuckart reaction
+            if (i === -1) {
+
+                i = _.findIndex(container_molecule[0][1], (atom, index)=> {
+
+                    if (atom[0] !== 'C') {
+                        return false
+                    }
+
+                    const atom_object = CAtom(atom, index,container_molecule)
+
+                    if (atom_object.hydrogens().length !== 1) {
                         return false
                     }
 
