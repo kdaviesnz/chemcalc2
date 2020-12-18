@@ -145,6 +145,8 @@ class ReactionAI {
             const moleculeAI = require("../Stateless/MoleculeAI")(_.cloneDeep(substrate))
             this.carbocationShiftReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
 
+            this.addProtonFromReagentToSubstrateReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+
             this.oxygenCarbonDoubleBondReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
 
             this.dehydrationReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
@@ -360,7 +362,7 @@ class ReactionAI {
                         'starting reagent': protonated_reagent,
                         'function':()=>{
                             const reaction = new Reaction(deprotonated_substrate, protonated_reagent, {})
-                            console.log('Command - substrate')
+                            console.log('Command - substrate (protonate)')
                             console.log(VMolecule(reaction.container_substrate).compressed())
                             reaction.protonate()
                             console.log(VMolecule(reaction.container_substrate).compressed())
@@ -373,6 +375,47 @@ class ReactionAI {
             }
        // }
         
+
+    }
+
+    addProtonFromReagentToSubstrateReversal(target, reagent, moleculeAI, commands, caller, depth) {
+
+
+        const reverse_reaction = new Reaction(target, reagent, {})
+
+        // https://en.wikipedia.org/wiki/Leuckart_reaction (3)
+
+        let r = null
+        r = reverse_reaction.addProtonFromSubstrateToReagent()
+//        console.log('Pinacol rearrangement reversed - deprotonate (caller=' + caller + '):')
+        //      console.log('Leuckart reaction reversed - deprotonate (caller=' + caller + '):')
+
+        if (r) {
+
+            // https://en.wikipedia.org/wiki/Leuckart_reaction (1)
+            //this.render(reaction.container_substrate, reaction.container_reagent)
+            const deprotonated_substrate = _.cloneDeep(reverse_reaction.container_substrate)
+            const protonated_reagent = _.cloneDeep(reverse_reaction.container_reagent)
+            commands.push(
+                {
+                    'name':'protonate',
+                    'starting substrate': deprotonated_substrate,
+                    'starting reagent': protonated_reagent,
+                    'function':()=>{
+                        const reaction = new Reaction(deprotonated_substrate, protonated_reagent, {})
+                        console.log('Command - substrate (addProtonFromReagentToSubstrate)')
+                        console.log(VMolecule(reaction.container_substrate).compressed())
+                        reaction.addProtonFromReagentToSubstrate()
+                        console.log(VMolecule(reaction.container_substrate).compressed())
+                        // process.exit()
+                        return reaction
+                    }
+                }
+            )
+            this.synthesiseCallback(reverse_reaction.container_substrate, reverse_reaction.container_reagent, _.cloneDeep(commands), 'addProtonFromReagentToSubstrateReversal()', depth+1)
+        }
+        // }
+
 
     }
 }

@@ -1555,7 +1555,10 @@ class Reaction {
 
     protonate() {
 
+        console.log('Reaction.js protonate()')
         let atom_nucleophile_index = this.MoleculeAI.findNucleophileIndex()
+
+        console.log('atom_nucleophile_index:'+atom_nucleophile_index)
 
         if (atom_nucleophile_index === -1 && !this.MoleculeAI.isWater()) {
             // try carbon atom
@@ -1755,32 +1758,21 @@ class Reaction {
         this.container_substrate[0][1][water_oxygen_index][0].should.be.equal("O")
 
         this.container_substrate[0][1] = this.removeProtonFromAtom(this.MoleculeAI, this.container_substrate[0][1], water_oxygen_index)
-        /*
-        const oxygen_proton_bond = CAtom(this.container_substrate[0][1][water_oxygen_index],
-            water_oxygen_index,
-            this.container_substrate).indexedBonds("").filter((bond)=>{
-            return bond.atom[0] === "H"
-        }).pop()
 
-        this.container_substrate[0][1][water_oxygen_index][4] = ""
-
-        const shared_electrons = oxygen_proton_bond.shared_electrons
-
-        // Remove proton from substrate
-        _.remove(this.container_substrate[0][1], (v, i)=>{
-            return i === oxygen_proton_bond.atom_index
-        })
-         */
 
         this.setMoleculeAI()
 
         this.addProtonToReagent()
         this.setReagentAI()
 
+        return true
+
 
     }
 
     addProtonFromReagentToSubstrate() {
+
+        console.log('Reaction.js addProtonFromReagentToSubstrate()')
 
         const electrophile_index = this.MoleculeAI.findElectrophileIndex()
         const proton_index = this.ReagentAI.findProtonIndex()
@@ -1805,7 +1797,17 @@ class Reaction {
 
     addProtonFromSubstrateToReagent() {
 
+        console.log('Reaction.js addProtonFromSubstrateToReagent()')
+
         const electrophile_index = this.ReagentAI.findElectrophileIndex()
+
+        if (electrophile_index === -1) {
+            console.log('Electrophile not found')
+            console.log(VMolecule(this.container_reagent).compressed())
+            process.exit()
+            return false
+        }
+
         const proton_index = this.MoleculeAI.findProtonIndex()
         const proton = _.cloneDeep(this.container_substrate[0][1][proton_index])
 
@@ -1823,6 +1825,8 @@ class Reaction {
 
         this.setMoleculeAI()
         this.setReagentAI()
+
+        return true
 
     }
 
