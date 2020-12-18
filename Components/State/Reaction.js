@@ -1485,22 +1485,38 @@ class Reaction {
         } else {
 
             // Check for carbons bonds
-            const carbon_bond = electrophile_bonds.filter((bond)=>{
-                return bond.atom[0] === "C"
+
+            const non_carbon_bond = electrophile_bonds.filter((bond) => {
+                return bond.atom[0] !== "C" && bond.atom[0] !== "H"
             }).pop()
 
-            if (undefined === carbon_bond) {
+            if (non_carbon_bond !== undefined) {
+
                 this.addProtonToReagent()
-                this.container_substrate[0][1][electrophile_index][4] = 0
+                this.container_substrate[0][1][electrophile_index][4] = "+"
                 this.container_substrate[0][1].splice(hydrogen_bond.atom_index, 1)
+
             } else {
-                // Change bond to double bond
-                const shared_electrons = hydrogen_bond.shared_electrons // electrons shared between electrophile and hydrogen
-                this.container_substrate[0][1][carbon_bond.atom_index].push(shared_electrons[0])
-                this.container_substrate[0][1][carbon_bond.atom_index].push(shared_electrons[1])
-                this.addProtonToReagent()
-                this.container_substrate[0][1][electrophile_index][4] = 0
+
+                const carbon_bond = electrophile_bonds.filter((bond) => {
+                    return bond.atom[0] === "C"
+                }).pop()
+
+                if (undefined === carbon_bond) {
+                    this.addProtonToReagent()
+                    this.container_substrate[0][1][electrophile_index][4] = 0
+                    this.container_substrate[0][1].splice(hydrogen_bond.atom_index, 1)
+                } else {
+                    // Change bond to double bond
+                    const shared_electrons = hydrogen_bond.shared_electrons // electrons shared between electrophile and hydrogen
+                    this.container_substrate[0][1][carbon_bond.atom_index].push(shared_electrons[0])
+                    this.container_substrate[0][1][carbon_bond.atom_index].push(shared_electrons[1])
+                    this.addProtonToReagent()
+                    this.container_substrate[0][1][electrophile_index][4] = 0
+                }
+
             }
+
         }
 
         this.setReagentAI()

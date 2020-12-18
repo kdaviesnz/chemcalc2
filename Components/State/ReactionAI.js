@@ -128,7 +128,7 @@ class ReactionAI {
     synthesiseCallback(substrate, reagent, commands, caller) {
          console.log('synthesiseCallback()')
         console.log("---------------------------")
-        console.log()
+        console.log(VMolecule(substrate).compressed())
         console.log(commands)
         console.log("---------------------------")
 //        this.render(substrate, reagent)
