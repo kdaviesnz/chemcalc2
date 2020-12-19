@@ -1772,8 +1772,6 @@ class Reaction {
 
     addProtonFromReagentToSubstrate() {
 
-        console.log('Reaction.js addProtonFromReagentToSubstrate()')
-
         const electrophile_index = this.MoleculeAI.findElectrophileIndex()
         const proton_index = this.ReagentAI.findProtonIndex()
         const proton = _.cloneDeep(this.container_reagent[0][1][proton_index])
@@ -1797,18 +1795,18 @@ class Reaction {
 
     addProtonFromSubstrateToReagent() {
 
-        console.log('Reaction.js addProtonFromSubstrateToReagent()')
-
         const electrophile_index = this.ReagentAI.findElectrophileIndex()
 
         if (electrophile_index === -1) {
-            console.log('Electrophile not found')
-            console.log(VMolecule(this.container_reagent).compressed())
-            process.exit()
             return false
         }
 
         const proton_index = this.MoleculeAI.findProtonIndex()
+
+        if (proton_index === -1) {
+            return false
+        }
+
         const proton = _.cloneDeep(this.container_substrate[0][1][proton_index])
 
         const proton_atom_object = CAtom(this.container_substrate[0][1][proton_index], proton_index, this.container_substrate)
