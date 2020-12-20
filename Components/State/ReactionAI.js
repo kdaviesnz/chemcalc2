@@ -134,12 +134,23 @@ class ReactionAI {
         console.log(commands)
         console.log("---------------------------")
         console.log('depth=' + depth)
-        if (depth === 4) {
+        if (depth === 3) {
             console.log('Starting substrate:')
             //console.log(commands[0]['starting substrate'])
-            console.log(VMolecule(commands[3]['starting substrate']).compressed())
-            console.log(commands[3]['name'])
-            commands[3]['function']()
+            console.log(VMolecule(commands[0]['starting substrate']).compressed())
+            console.log(commands[0]['name'])
+            commands[0]['function']()
+
+            console.log('Starting substrate:')
+            console.log(VMolecule(commands[1]['starting substrate']).compressed())
+            console.log(commands[1]['name'])
+            commands[1]['function']()
+
+            console.log('Starting substrate:')
+            console.log(VMolecule(commands[1]['starting substrate']).compressed())
+            console.log(commands[1]['name'])
+            commands[1]['function']()
+
             process.exit()
         }
 //        this.render(substrate, reagent)
@@ -223,10 +234,14 @@ class ReactionAI {
                         console.log('Command -> dehydrate()')
                         console.log('hydrated substrate:')
                         console.log(VMolecule(hydrated_substrate).compressed())
+                        console.log('hydrated reagent:')
+                        console.log(VMolecule(hydrated_reagent).compressed())
                         const reaction = new Reaction(hydrated_substrate, hydrated_reagent, {})
                         reaction.dehydrate()
                         console.log('dehydrated substrate:')
                         console.log(VMolecule(reaction.container_substrate).compressed())
+                        console.log('dehydrated reagent:')
+                        console.log(VMolecule(reaction.container_reagent).compressed())
                         return reaction
                     }})
                 this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent),_.cloneDeep(commands), 'dehydrationReversal()', depth+1)
@@ -435,12 +450,14 @@ class ReactionAI {
                     'starting substrate': deprotonated_substrate,
                     'starting reagent': protonated_reagent,
                     'function':()=>{
-                        const reaction = new Reaction(deprotonated_substrate, protonated_reagent, {})
+                        const reaction = new Reaction(_.cloneDeep(deprotonated_substrate), _.cloneDeep(protonated_reagent), {})
                         console.log('Command - substrate (addProtonFromReagentToSubstrate)')
                         console.log(VMolecule(reaction.container_substrate).compressed())
                         reaction.addProtonFromReagentToSubstrate()
                         console.log('protonated substrate:')
                         console.log(VMolecule(reaction.container_substrate).compressed())
+                        console.log('protonated reagent')
+                        console.log(VMolecule(protonated_reagent).compressed())
                         console.log('deprotonated reagent:')
                         console.log(VMolecule(reaction.container_reagent).compressed())
                         // process.exit()
