@@ -554,9 +554,9 @@ class Reaction {
         // Charges
         this.container_substrate[0][1][non_hydrogen_bond.atom_index][4] = '+'
 
-        this.container_reagent = [MoleculeFactory("O"),1]
+   //     this.container_reagent = [MoleculeFactory("O"),1]
 
-        this.setMoleculeAI()
+      //  this.setMoleculeAI()
         this.setReagentAI()
 
         return true
