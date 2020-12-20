@@ -378,8 +378,7 @@ class Reaction {
     }
 
     transferProtonReverse() {
-
-        //console.log('transferProtonReverse()')
+            console.log('transferProtonReverse()')
             // Get index of N
             const nucleophile_index = _.findIndex(this.container_substrate[0][1], (atom, index)=>{
                 return atom[0] === 'N'
@@ -391,9 +390,14 @@ class Reaction {
 
             // Get index of OH
             let electrophile_index = this.MoleculeAI.findHydroxylOxygenIndex()
+
+            console.log('Reaction.js transferProtonReverse() electrophile index:'+electrophile_index)
+
+        /*
             if (electrophile_index === -1) {
                 electrophile_index = this.MoleculeAI.findWaterOxygenIndex()
             }
+            */
 
             if (electrophile_index === -1) {
                 return false

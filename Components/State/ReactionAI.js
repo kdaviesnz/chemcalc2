@@ -314,18 +314,39 @@ class ReactionAI {
         let r = null
         r = reverse_reaction.transferProtonReverse()
 
+        //console.log(r)
+        //process.exit()
+
         if (r) {
             // console.log('Pinacol rearrangement reversed - deprotonate (caller=' + caller + '):')
             // https://en.wikipedia.org/wiki/Leuckart_reaction (4)
             //this.render(reaction.container_substrate, reaction.container_reagent)
             const substrate_with_proton_transferred = _.cloneDeep(reverse_reaction.container_substrate)
             const reagent_with_proton_transferred = _.cloneDeep(reverse_reaction.container_reagent)
+
+
+            console.log('target (substrate after reverse reaction) transferProtonReversal()')
+            console.log(VMolecule(substrate_with_proton_transferred).compressed())
+            console.log('reagent  after reverse reaction) transferProtonReversal()')
+            console.log(VMolecule(reagent_with_proton_transferred).compressed())
+
+            process.exit()
+
             commands.push(
                 {
                     'name':'transferProton',
                     'starting substrate': substrate_with_proton_transferred,
                     'starting reagent': reagent_with_proton_transferred,
                     'function':()=>{
+
+                        console.log('Substrate before command (transferProton())')
+                        console.log(VMolecule(substrate_with_proton_transferred).compressed())
+
+                        console.log('Reagent before command (transferProton())')
+                        console.log(VMolecule(reagent_with_proton_transferred).compressed())
+
+                        process.exit()
+
                         const reaction = new Reaction(substrate_with_proton_transferred, reagent_with_proton_transferred, {})
                         reaction.transferProton()
                         return reaction
@@ -335,6 +356,7 @@ class ReactionAI {
             this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'transferProtonReversal()', depth+1)
         } else {
             console.log('transferProtonReversal() reaction failed')
+            //process.exit()
         }
 
     }
