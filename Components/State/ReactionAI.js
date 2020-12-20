@@ -220,10 +220,10 @@ class ReactionAI {
             r = reverse_reaction.hydrate()
             const hydrated_substrate = _.cloneDeep(reverse_reaction.container_substrate)
             const hydrated_reagent = _.cloneDeep(reverse_reaction.container_reagent)
-            console.log('R -> dehydrate()')
-            console.log('hydrated substrate')
+            console.log('Reverse -> dehydrate() (run hydrate())')
+            console.log('hydrated substrate (substrate after reverse reaction')
             console.log(VMolecule(hydrated_substrate).compressed())
-            console.log('Reagent:')
+            console.log('Reagent: (reagent after reverse reaction')
             console.log(VMolecule(hydrated_reagent).compressed())
             if (r) {
                 commands.push({
@@ -232,15 +232,15 @@ class ReactionAI {
                     'starting reagent': hydrated_reagent,
                     'function':()=>{
                         console.log('Command -> dehydrate()')
-                        console.log('hydrated substrate:')
+                        console.log('hydrated substrate (substrate before running command):')
                         console.log(VMolecule(hydrated_substrate).compressed())
-                        console.log('hydrated reagent:')
+                        console.log('hydrated reagent (reagent before running command):')
                         console.log(VMolecule(hydrated_reagent).compressed())
                         const reaction = new Reaction(hydrated_substrate, hydrated_reagent, {})
                         reaction.dehydrate()
-                        console.log('dehydrated substrate:')
+                        console.log('dehydrated substrate (substrate after running command:')
                         console.log(VMolecule(reaction.container_substrate).compressed())
-                        console.log('dehydrated reagent:')
+                        console.log('dehydrated reagent (reagent after running command):')
                         console.log(VMolecule(reaction.container_reagent).compressed())
 
                         return reaction

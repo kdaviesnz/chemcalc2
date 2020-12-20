@@ -1799,6 +1799,9 @@ class Reaction {
 
         const electrophile_index = this.ReagentAI.findElectrophileIndex()
 
+        console.log("reaction.js addProtonFromSubstrateToReagent() electrophile_index: " + electrophile_index)
+
+
         if (electrophile_index === -1) {
             return false
         }

@@ -898,6 +898,7 @@ VMolecule
             }
 
             // Look for carbon with 1 hydrogen - see Leuckart reaction
+            /*
             if (i === -1) {
 
                 i = _.findIndex(container_molecule[0][1], (atom, index)=> {
@@ -918,6 +919,7 @@ VMolecule
                 })
 
             }
+            */
 
             return i
 
@@ -927,6 +929,7 @@ VMolecule
         "findElectrophileIndex": (filterBy, mustBe) => {
 
             let i= __findElectrophileIndex(filterBy, mustBe)
+
 
             // electrophiles cannot have a positive charge
             if (i !== -1 && container_molecule[0][1][i][4]==="-") {
@@ -939,13 +942,18 @@ VMolecule
                 const carbons = container_molecule[0][1].map((atom, index) => {
                     return CAtom(atom, index, container_molecule)
                 }).filter((atom_object, index) => {
-                    return atom_object.symbol === "C" && atom_object.doubleBondCount() > 0
+                    return atom_object.symbol === "C" && atom_object.indexedDoubleBonds("").filter((bond)=>{
+                        return bond.atom[0] === "C"
+                    }).length > 0
                 }).sort(
                     (a, b) => {
                         return a.hydrogens().length < b.hydrogens().length ? -1 : 0
                     }
                 )
 
+              //  console.log('2MoleculeAI.js electrophile index: ' + i)
+              //  console.log(carbons.length)
+               // process.exit()
 
                 if (carbons.length > 0 && container_molecule[0][1][carbons[0].atomIndex][4] !=="-") {
                     return carbons[0].atomIndex
@@ -958,6 +966,9 @@ VMolecule
                 })
 
             }
+
+
+
 
 
             if (i===-1) {
@@ -998,7 +1009,6 @@ VMolecule
 
 
                 })
-
 
 
                 if (i !== -1) {
