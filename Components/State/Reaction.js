@@ -481,8 +481,8 @@ class Reaction {
     hydrate(electrophile_index) {
         const water_molecule = MoleculeFactory("O")
         water_molecule[1][2][4]="+"
-        this.container_reagent = [water_molecule,1]
-        this.setReagentAI()
+        //this.container_reagent = [water_molecule,1]
+        //this.setReagentAI()
         const water_ai = require("../Stateless/MoleculeAI")([water_molecule,1])
         const water_oxygen_index = water_ai.findWaterOxygenIndex()
         const electrons = CAtom(water_molecule[1][water_oxygen_index],
@@ -554,7 +554,7 @@ class Reaction {
         // Charges
         this.container_substrate[0][1][non_hydrogen_bond.atom_index][4] = '+'
 
-   //     this.container_reagent = [MoleculeFactory("O"),1]
+        this.leaving_groups.push([MoleculeFactory("O"),1])
 
       //  this.setMoleculeAI()
         this.setReagentAI()
