@@ -82,18 +82,12 @@ class ReactionAI {
             }
        }
         this.result = (substrate, reagent, commands, caller) => {
-            console.log('RESULT')
-            console.log('Substrate:')
-            console.log(VMolecule(substrate).canonicalSMILES())
             if (reagent === null) {
             //    console.log('No reagent')
             } else {
               //  console.log('Reagent:')
                // console.log(VMolecule(reagent).compressed())
             }
-            console.log('commands:')
-            console.log(commands)
-
            // console.log('starting substrate:')
            // console.log(VMolecule(commands[commands.length-1]['starting substrate']).canonicalSMILES())
             this.run(_.cloneDeep(commands).reverse(), 0, null, substrate, reagent)
@@ -104,6 +98,7 @@ class ReactionAI {
     run(commands, command_index, reaction, starting_substrate, starting_reagent) {
         if (commands[command_index] === undefined) {
             console.log('Run (result)')
+            console.log(commands)
             console.log("Start")
             this.render(starting_substrate, starting_reagent)
             console.log("Finish")
@@ -261,6 +256,9 @@ class ReactionAI {
                         return reaction
                     }})
                 this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent),_.cloneDeep(commands), 'dehydrationReversal()', depth+1)
+            } else {
+                console.log("dehydrationReversal() reverse reaction failed")
+                process.exit()
             }
         }
 
@@ -363,6 +361,16 @@ class ReactionAI {
 
     breakOxygenCarbonDoubleBondReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
+        console.log('breakOxygenCarbonDoubleBondReversal()')
+
+        console.log('Caller: '+caller)
+        console.log('target (substrate before reverse reaction) breakOxygenCarbonDoubleBondReversal()')
+        console.log(VMolecule(target).compressed())
+        console.log('reagent  before reverse reaction) breakOxygenCarbonDoubleBondReversal()')
+        console.log(VMolecule(reagent).compressed())
+
+        process.exit()
+
         const reverse_reaction = new Reaction(target, reagent, {})
 
         let r = null
@@ -377,11 +385,31 @@ class ReactionAI {
                 'starting substrate': substrate_with_oxygen_carbon_double_bond,
                 'starting reagent': reagent_with_oxygen_carbon_double_bond,
                 'function':()=>{
+
+                    console.log("*Caller: " + caller)
+                    console.log('*target (substrate before reverse reaction) breakOxygenCarbonDoubleBondReversal()')
+                    console.log(VMolecule(target).compressed())
+                    console.log('reagent  before reverse reaction) breakOxygenCarbonDoubleBondReversal()')
+                    console.log(VMolecule(reagent).compressed())
+
+                    const deprotonated_substrate = _.cloneDeep(reverse_reaction.container_substrate)
+                    const protonated_reagent = _.cloneDeep(reverse_reaction.container_reagent)
+
+                    console.log('substrate after reverse reaction (makeOxygenCarbonDoubleBondReverse) substrate_with_oxygen_carbon_double_bond')
+                    console.log(VMolecule(substrate_with_oxygen_carbon_double_bond).compressed())
+                    console.log('reagent after reverse reaction (makeOxygenCarbonDoubleBondReverse)')
+                    console.log(VMolecule(reagent_with_oxygen_carbon_double_bond).compressed())
+
+                    process.exit()
+
                     const reaction = new Reaction(substrate_with_oxygen_carbon_double_bond, reagent_with_oxygen_carbon_double_bond, {})
                     reaction.makeOxygenCarbonDoubleBondReverse()
                     return reaction
                 }})
             this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'breakOxygenCarbonDoubleBondReversal()', depth+1)
+        } else {
+            console.log('breakOxygenCarbonDoubleBondReversal() reverse reaction failed')
+            process.exit()
         }
 
     }
