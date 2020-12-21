@@ -73,38 +73,40 @@ class ReactionAI {
 
     constructor() {
         this.render = (substrate, reagent) => {
-            console.log(VMolecule(substrate).canonicalSMILES())
+              console.log(VMolecule(substrate).canonicalSMILES())
             if (reagent === null) {
-                console.log('No reagent')
+                  console.log('No reagent')
             } else {
-                console.log('Reagent:')
-                console.log(VMolecule(reagent).canonicalSMILES())
+                  //console.log('Reagent:')
+                  //console.log(VMolecule(reagent).canonicalSMILES())
             }
        }
+
         this.result = (substrate, reagent, commands, caller) => {
             if (reagent === null) {
-            //    console.log('No reagent')
+             // console.log'No reagent')
             } else {
-              //  console.log('Reagent:')
-               // console.log(VMolecule(reagent).compressed())
+               // console.log('Reagent:')
+                // console.log(VMolecule(reagent).compressed())
             }
-           // console.log('starting substrate:')
-           // console.log(VMolecule(commands[commands.length-1]['starting substrate']).canonicalSMILES())
+            // console.log('starting substrate:')
+            // console.log(VMolecule(commands[commands.length-1]['starting substrate']).canonicalSMILES())
             this.run(_.cloneDeep(commands).reverse(), 0, null, substrate, reagent)
-            //console.log("Caller:" + caller)
+              // console.log("Caller:" + caller)
         }
     }
 
     run(commands, command_index, reaction, starting_substrate, starting_reagent) {
         if (commands[command_index] === undefined) {
-            console.log('Run (result)')
-            console.log(commands)
-            console.log("Start")
+               console.log('Run (result)' + commands.map((command)=>{
+                   return command['name']
+               }))
+               console.log("Start: substrate=" + VMolecule(starting_substrate).canonicalSMILES() + ', reagent=' + VMolecule(starting_reagent).canonicalSMILES())
             this.render(starting_substrate, starting_reagent)
-            console.log("Finish")
+              console.log("Finish")
             this.render(reaction.container_substrate, reaction.container_reagent)
-        //    console.log('exiting')
-         //   process.exit()
+          //console.log('exiting')
+           //process.exit()
         } else {
             const r = commands[command_index]['function']()
             this.run(_.cloneDeep(commands), _.cloneDeep(command_index+1), _.cloneDeep(r), _.cloneDeep(starting_substrate), _.cloneDeep(starting_reagent))
@@ -124,37 +126,37 @@ class ReactionAI {
     }
     
     synthesiseCallback(substrate, reagent, commands, caller, depth) {
-         console.log('synthesiseCallback()')
-        console.log("---------------------------")
-        console.log(VMolecule(substrate).compressed())
-        console.log('Commands:')
-        console.log(commands)
-        console.log("---------------------------")
-        console.log('depth=' + depth)
+           // console.log('synthesiseCallback()')
+          // console.log("---------------------------")
+          // console.log(VMolecule(substrate).compressed())
+          // console.log('Commands:')
+          // console.log(commands)
+          // console.log("---------------------------")
+          // console.log('depth=' + depth)
         if (depth === 400000) {
-            console.log('Starting substrate:')
-            //console.log(commands[0]['starting substrate'])
-            console.log(VMolecule(commands[0]['starting substrate']).compressed())
-            console.log(commands[0]['name'])
+              // console.log('Starting substrate:')
+              // console.log(commands[0]['starting substrate'])
+              // console.log(VMolecule(commands[0]['starting substrate']).compressed())
+              // console.log(commands[0]['name'])
             commands[0]['function']()
 
 
-            console.log('Starting substrate:')
-            console.log(VMolecule(commands[1]['starting substrate']).compressed())
-            console.log(commands[1]['name'])
+              // console.log('Starting substrate:')
+              // console.log(VMolecule(commands[1]['starting substrate']).compressed())
+              // console.log(commands[1]['name'])
             commands[1]['function']()
 
-            console.log('Starting substrate:')
-            console.log(VMolecule(commands[2]['starting substrate']).compressed())
-            console.log(commands[2]['name'])
+              // console.log('Starting substrate:')
+              // console.log(VMolecule(commands[2]['starting substrate']).compressed())
+              // console.log(commands[2]['name'])
             commands[2]['function']()
 
-            console.log('Starting substrate:')
-            console.log(VMolecule(commands[3]['starting substrate']).compressed())
-            console.log('Starting reagent:')
-            console.log(VMolecule(commands[3]['starting reagent']).compressed())
+              // console.log('Starting substrate:')
+              // console.log(VMolecule(commands[3]['starting substrate']).compressed())
+              // console.log('Starting reagent:')
+              // console.log(VMolecule(commands[3]['starting reagent']).compressed())
 
-            console.log(commands[3]['name'])
+              // console.log(commands[3]['name'])
            // commands[3]['function']()
 
 
@@ -187,13 +189,13 @@ class ReactionAI {
 
     oxygenCarbonDoubleBondReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-        const reverse_reaction = new Reaction(target, reagent, {})
+        const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
 
         // https://en.wikipedia.org/wiki/Pinacol_rearrangement
         let r = null
         r = reverse_reaction.makeOxygenCarbonDoubleBondReverse()
         if (r) {
-           // console.log('Pinacol rearrangement reversed - make oxygen carbon double bond reversed (caller=' + caller + '):')
+            // console.log('Pinacol rearrangement reversed - make oxygen carbon double bond reversed (caller=' + caller + '):')
             //this.render(reaction.container_substrate, reaction.container_reagent)
             const substrate_with_oxygen_carbon_double_bond_removed = _.cloneDeep(reverse_reaction.container_substrate)
             const reagent_with_oxygen_carbon_double_bond_removed = _.cloneDeep(reverse_reaction.container_reagent)
@@ -202,8 +204,27 @@ class ReactionAI {
                 'starting substrate': substrate_with_oxygen_carbon_double_bond_removed,
                 'starting reagent': reagent_with_oxygen_carbon_double_bond_removed,
                 'function':()=>{
+
+
+                     // console.log("*Caller: " + caller)
+                     // console.log('*target (substrate before reverse reaction) oxygenCarbonDoubleBondReversal()')
+                     // console.log(VMolecule(target).compressed())
+                     // console.log('reagent  before reverse reaction) oxygenCarbonDoubleBondReversal()')
+                     // console.log(VMolecule(reagent).compressed())
+
+                     // console.log('substrate after reverse reaction (makeOxygenCarbonDoubleBondReverse()) substrate_with_oxygen_carbon_double_bond_removed')
+                     // console.log(VMolecule(substrate_with_oxygen_carbon_double_bond_removed).compressed())
+                     // console.log('reagent after reverse reaction (makeOxygenCarbonDoubleBondReverse) reagent_with_oxygen_carbon_double_bond_removed')
+                     // console.log(VMolecule(reagent_with_oxygen_carbon_double_bond_removed).compressed())
+
+                    process.exit()
+
                     const reaction = new Reaction(substrate_with_oxygen_carbon_double_bond_removed, reagent_with_oxygen_carbon_double_bond_removed, {})
                     reaction.makeOxygenCarbonDoubleBond()
+
+
+
+
                     return reaction
             }})
             this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'oxygenCarbonDoubleBondReversal()', depth+1)
@@ -213,13 +234,13 @@ class ReactionAI {
 
     dehydrationReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-        console.log('dehydrationReversal()')
-        console.log('substrate')
-        console.log(VMolecule(target).compressed())
-        console.log('reagent')
-        console.log(VMolecule(reagent).compressed())
+          // console.log('dehydrationReversal()')
+          // console.log('substrate')
+          // console.log(VMolecule(target).compressed())
+          // console.log('reagent')
+          // console.log(VMolecule(reagent).compressed())
 
-        const reverse_reaction = new Reaction(target, reagent, {})
+        const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
 
 
         // https://en.wikipedia.org/wiki/Pinacol_rearrangement
@@ -230,35 +251,34 @@ class ReactionAI {
             r = reverse_reaction.hydrate()
             const hydrated_substrate = _.cloneDeep(reverse_reaction.container_substrate)
             const hydrated_reagent = _.cloneDeep(reverse_reaction.container_reagent)
-            console.log('Reverse -> dehydrate() (run hydrate())')
-            console.log('hydrated substrate (substrate after reverse reaction')
-            console.log(VMolecule(hydrated_substrate).compressed())
-            console.log('Reagent: (reagent after reverse reaction')
-            console.log(VMolecule(hydrated_reagent).compressed())
+              // console.log('Reverse -> dehydrate() (run hydrate())')
+              // console.log('hydrated substrate (substrate after reverse reaction')
+              // console.log(VMolecule(hydrated_substrate).compressed())
+              // console.log('Reagent: (reagent after reverse reaction')
+              // console.log(VMolecule(hydrated_reagent).compressed())
             if (r) {
                 commands.push({
                     'name':'dehydrate',
                     'starting substrate': hydrated_substrate,
                     'starting reagent': hydrated_reagent,
                     'function':()=>{
-                        console.log('Command -> dehydrate()')
-                        console.log('hydrated substrate (substrate before running command):')
-                        console.log(VMolecule(hydrated_substrate).compressed())
-                        console.log('hydrated reagent (reagent before running command):')
-                        console.log(VMolecule(hydrated_reagent).compressed())
+                          // console.log('Command -> dehydrate()')
+                          // console.log('hydrated substrate (substrate before running command):')
+                          // console.log(VMolecule(hydrated_substrate).compressed())
+                          // console.log('hydrated reagent (reagent before running command):')
+                          // console.log(VMolecule(hydrated_reagent).compressed())
                         const reaction = new Reaction(hydrated_substrate, hydrated_reagent, {})
                         reaction.dehydrate()
-                        console.log('dehydrated substrate (substrate after running command:')
-                        console.log(VMolecule(reaction.container_substrate).compressed())
-                        console.log('dehydrated reagent (reagent after running command):')
-                        console.log(VMolecule(reaction.container_reagent).compressed())
+                          // console.log('dehydrated substrate (substrate after running command:')
+                          // console.log(VMolecule(reaction.container_substrate).compressed())
+                          // console.log('dehydrated reagent (reagent after running command):')
+                          // console.log(VMolecule(reaction.container_reagent).compressed())
 
                         return reaction
                     }})
                 this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent),_.cloneDeep(commands), 'dehydrationReversal()', depth+1)
             } else {
-                console.log("dehydrationReversal() reverse reaction failed")
-                process.exit()
+                  // console.log("dehydrationReversal() reverse reaction failed")
             }
         }
 
@@ -272,14 +292,14 @@ class ReactionAI {
             return false
         }
 
-        const reverse_reaction = new Reaction(target, reagent, {})
+        const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
 
         // Carbocation shift
         // https://en.wikipedia.org/wiki/Pinacol_rearrangement
         let r = null
         r = reverse_reaction.carbocationShift()
         if (r) {
-           // console.log('Pinacol rearrangement reversed - carbocation shift (caller=' + caller + '):')
+            // console.log('Pinacol rearrangement reversed - carbocation shift (caller=' + caller + '):')
             //this.render(reaction.container_substrate, reaction.container_reagent)
             const substrate_after_carbon_shift = _.cloneDeep(reverse_reaction.container_substrate)
             const reagent_after_carbon_shift = _.cloneDeep(reverse_reaction.container_reagent)
@@ -299,36 +319,34 @@ class ReactionAI {
 
     transferProtonReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-        console.log('transferProtonReversal()')
+          // console.log('transferProtonReversal()')
 
-        console.log('Caller: '+caller)
-        console.log('target (substrate before reverse reaction) transferProtonReversal()')
-        console.log(VMolecule(target).compressed())
-        console.log('reagent  before reverse reaction) transferProtonReversal()')
-        console.log(VMolecule(reagent).compressed())
+          // console.log('Caller: '+caller)
+          // console.log('target (substrate before reverse reaction) transferProtonReversal()')
+          // console.log(VMolecule(target).compressed())
+          // console.log('reagent  before reverse reaction) transferProtonReversal()')
+          // console.log(VMolecule(reagent).compressed())
 
-        const reverse_reaction = new Reaction(target, reagent, {})
+        const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
 
         let r = null
         r = reverse_reaction.transferProtonReverse()
 
-        //console.log(r)
-        //process.exit()
+          // console.log(r)
 
         if (r) {
-            // console.log('Pinacol rearrangement reversed - deprotonate (caller=' + caller + '):')
+             // console.log('Pinacol rearrangement reversed - deprotonate (caller=' + caller + '):')
             // https://en.wikipedia.org/wiki/Leuckart_reaction (4)
             //this.render(reaction.container_substrate, reaction.container_reagent)
             const substrate_with_proton_transferred = _.cloneDeep(reverse_reaction.container_substrate)
             const reagent_with_proton_transferred = _.cloneDeep(reverse_reaction.container_reagent)
 
 
-            console.log('target (substrate after reverse reaction) transferProtonReversal()')
-            console.log(VMolecule(substrate_with_proton_transferred).compressed())
-            console.log('reagent  after reverse reaction) transferProtonReversal()')
-            console.log(VMolecule(reagent_with_proton_transferred).compressed())
+              // console.log('target (substrate after reverse reaction) transferProtonReversal()')
+              // console.log(VMolecule(substrate_with_proton_transferred).compressed())
+              // console.log('reagent  after reverse reaction) transferProtonReversal()')
+              // console.log(VMolecule(reagent_with_proton_transferred).compressed())
 
-            process.exit()
 
             commands.push(
                 {
@@ -337,13 +355,12 @@ class ReactionAI {
                     'starting reagent': reagent_with_proton_transferred,
                     'function':()=>{
 
-                        console.log('Substrate before command (transferProton())')
-                        console.log(VMolecule(substrate_with_proton_transferred).compressed())
+                          // console.log('Substrate before command (transferProton())')
+                          // console.log(VMolecule(substrate_with_proton_transferred).compressed())
 
-                        console.log('Reagent before command (transferProton())')
-                        console.log(VMolecule(reagent_with_proton_transferred).compressed())
+                          // console.log('Reagent before command (transferProton())')
+                          // console.log(VMolecule(reagent_with_proton_transferred).compressed())
 
-                        process.exit()
 
                         const reaction = new Reaction(substrate_with_proton_transferred, reagent_with_proton_transferred, {})
                         reaction.transferProton()
@@ -353,28 +370,32 @@ class ReactionAI {
             )
             this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'transferProtonReversal()', depth+1)
         } else {
-            console.log('transferProtonReversal() reaction failed')
-            //process.exit()
+              // console.log('transferProtonReversal() reaction failed')
         }
 
     }
 
     breakOxygenCarbonDoubleBondReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-        console.log('breakOxygenCarbonDoubleBondReversal()')
+          // console.log('breakOxygenCarbonDoubleBondReversal()')
 
-        console.log('Caller: '+caller)
-        console.log('target (substrate before reverse reaction) breakOxygenCarbonDoubleBondReversal()')
-        console.log(VMolecule(target).compressed())
-        console.log('reagent  before reverse reaction) breakOxygenCarbonDoubleBondReversal()')
-        console.log(VMolecule(reagent).compressed())
+         const substrate = _.cloneDeep(target)
+          // console.log('Caller: '+caller)
+          // console.log('substrate (substrate before reverse reaction) breakOxygenCarbonDoubleBondReversal()')
+          // console.log(VMolecule(substrate).compressed())
+          // console.log('reagent  before reverse reaction) breakOxygenCarbonDoubleBondReversal()')
+          // console.log(VMolecule(reagent).compressed())
 
-        process.exit()
-
-        const reverse_reaction = new Reaction(target, reagent, {})
+        const reverse_reaction = new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {})
 
         let r = null
         r = reverse_reaction.makeOxygenCarbonDoubleBond()
+
+        // // console.log(r)
+
+        //process.exit()
+
+
         if (r) {
             // // https://en.wikipedia.org/wiki/Leuckart_reaction (5)
             //this.render(reaction.container_substrate, reaction.container_reagent)
@@ -386,40 +407,46 @@ class ReactionAI {
                 'starting reagent': reagent_with_oxygen_carbon_double_bond,
                 'function':()=>{
 
-                    console.log("*Caller: " + caller)
-                    console.log('*target (substrate before reverse reaction) breakOxygenCarbonDoubleBondReversal()')
-                    console.log(VMolecule(target).compressed())
-                    console.log('reagent  before reverse reaction) breakOxygenCarbonDoubleBondReversal()')
-                    console.log(VMolecule(reagent).compressed())
+                   // console.log("*Caller: " + caller)
+                    // console.log('*substrate (substrate before reverse reaction) breakOxygenCarbonDoubleBondReversal()')
+                      // console.log(VMolecule(substrate).compressed())
+                      // console.log('reagent  before reverse reaction) breakOxygenCarbonDoubleBondReversal()')
+                      // console.log(VMolecule(reagent).compressed())
 
-                    const deprotonated_substrate = _.cloneDeep(reverse_reaction.container_substrate)
-                    const protonated_reagent = _.cloneDeep(reverse_reaction.container_reagent)
-
-                    console.log('substrate after reverse reaction (makeOxygenCarbonDoubleBondReverse) substrate_with_oxygen_carbon_double_bond')
-                    console.log(VMolecule(substrate_with_oxygen_carbon_double_bond).compressed())
-                    console.log('reagent after reverse reaction (makeOxygenCarbonDoubleBondReverse)')
-                    console.log(VMolecule(reagent_with_oxygen_carbon_double_bond).compressed())
-
-                    process.exit()
+                    // // console.log('substrate after reverse reaction (makeOxygenCarbonDoubleBondReverse()) substrate_with_oxygen_carbon_double_bond')
+                    // console.log(VMolecule(substrate_with_oxygen_carbon_double_bond).compressed())
+                    // console.log('reagent after reverse reaction (makeOxygenCarbonDoubleBondReverse)')
+                    // console.log(VMolecule(reagent_with_oxygen_carbon_double_bond).compressed())
 
                     const reaction = new Reaction(substrate_with_oxygen_carbon_double_bond, reagent_with_oxygen_carbon_double_bond, {})
                     reaction.makeOxygenCarbonDoubleBondReverse()
+
+                     // console.log('substrate after command makeOxygenCarbonDoubleBondReverse()) substrate_with_oxygen_carbon_double_bond')
+                     // console.log(VMolecule(reaction.container_substrate).compressed())
+                     // console.log('reagent after command makeOxygenCarbonDoubleBondReverse()')
+                     // console.log(VMolecule(reaction.container_reagent).compressed())
+
+
+
                     return reaction
                 }})
             this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'breakOxygenCarbonDoubleBondReversal()', depth+1)
         } else {
-            console.log('breakOxygenCarbonDoubleBondReversal() reverse reaction failed')
-            process.exit()
+              // console.log('breakOxygenCarbonDoubleBondReversal() reverse reaction failed')
+            //process.exit()
         }
 
     }
 
     bondSubstrateToReagentReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-        const reverse_reaction = new Reaction(target, reagent, {})
+        const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
 
         let r = null
         r = reverse_reaction.breakBond()
+
+         // console.log(r)
+
         if (r) {
             // // https://en.wikipedia.org/wiki/Leuckart_reaction (6)
             //this.render(reaction.container_substrate, reaction.container_reagent)
@@ -435,6 +462,8 @@ class ReactionAI {
                     return reaction
                 }})
             this.synthesiseCallback(reverse_reaction.container_substrate, reverse_reaction.container_reagent, _.cloneDeep(commands), 'bondSubstrateToReagentReversal()', depth+1)
+        } else{
+             // console.log("Failed breakBond() reverse reaction")
         }
 
     }
@@ -442,21 +471,21 @@ class ReactionAI {
     protonateReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
 
-        console.log('protonateReversal()')
-        console.log('Caller: '+caller)
-        console.log('substrate before reaction (protonateReversal())')
-        console.log(VMolecule(target).compressed())
-        console.log('reagent before reaction (protonateReversal()')
-        console.log(VMolecule(reagent).compressed())
+          // console.log('protonateReversal()')
+          // console.log('Caller: '+caller)
+          // console.log('substrate before reaction (protonateReversal())')
+          // console.log(VMolecule(target).compressed())
+          // console.log('reagent before reaction (protonateReversal()')
+          // console.log(VMolecule(reagent).compressed())
 
-        const reverse_reaction = new Reaction(target, reagent, {})
+        const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
 
         // https://en.wikipedia.org/wiki/Leuckart_reaction (3)
 
             let r = null
             r = reverse_reaction.deprotonate()
-//        console.log('Pinacol rearrangement reversed - deprotonate (caller=' + caller + '):')
-  //      console.log('Leuckart reaction reversed - deprotonate (caller=' + caller + '):')
+//          // console.log('Pinacol rearrangement reversed - deprotonate (caller=' + caller + '):')
+  //        // console.log('Leuckart reaction reversed - deprotonate (caller=' + caller + '):')
 
             if (r) {
 
@@ -465,10 +494,10 @@ class ReactionAI {
                 const deprotonated_substrate = _.cloneDeep(reverse_reaction.container_substrate)
                 const protonated_reagent = _.cloneDeep(reverse_reaction.container_reagent)
 
-                console.log('substrate after reverse reaction (deprotonate) deprotonated_substrate')
-                console.log(VMolecule(deprotonated_substrate).compressed())
-                console.log('reagent after reverse reaction (deprotonate) protonated_reagent')
-                console.log(VMolecule(protonated_reagent).compressed())
+                  // console.log('substrate after reverse reaction (deprotonate) deprotonated_substrate')
+                  // console.log(VMolecule(deprotonated_substrate).compressed())
+                  // console.log('reagent after reverse reaction (deprotonate) protonated_reagent')
+                  // console.log(VMolecule(protonated_reagent).compressed())
 
                 commands.push(
                     {
@@ -476,24 +505,24 @@ class ReactionAI {
                         'starting substrate': deprotonated_substrate,
                         'starting reagent': protonated_reagent,
                         'function':()=>{
-                            console.log('Command - substrate (protonate)')
-                            console.log('deprotonated substrate (substrate before command protonate())')
-                            console.log(VMolecule(deprotonated_substrate).compressed())
-                            console.log('protonated reagent (reagent before command protonate())')
-                            console.log(VMolecule(protonated_reagent).compressed())
+                              // console.log('Command - substrate (protonate)')
+                              // console.log('deprotonated substrate (substrate before command protonate())')
+                              // console.log(VMolecule(deprotonated_substrate).compressed())
+                              // console.log('protonated reagent (reagent before command protonate())')
+                              // console.log(VMolecule(protonated_reagent).compressed())
                             const reaction = new Reaction(deprotonated_substrate, protonated_reagent, {})
                             reaction.protonate()
-                            console.log('protonated substrate (substrate after running protonate() command')
-                            console.log(VMolecule(reaction.container_substrate).compressed())
-                            console.log('deprotonated reagent (reagent after runnnig protonate() command')
-                            console.log(VMolecule(reaction.container_reagent).compressed())
+                              // console.log('protonated substrate (substrate after running protonate() command')
+                              // console.log(VMolecule(reaction.container_substrate).compressed())
+                              // console.log('deprotonated reagent (reagent after runnnig protonate() command')
+                              // console.log(VMolecule(reaction.container_reagent).compressed())
                             return reaction
                         }
                     }
                 )
                 this.synthesiseCallback(reverse_reaction.container_substrate, reverse_reaction.container_reagent, _.cloneDeep(commands), 'protonateReversal()', depth+1)
             } else {
-                console.log('protonateReversal() reaction returned false')
+                  // console.log('protonateReversal() reaction returned false')
             }
        // }
         
@@ -503,33 +532,33 @@ class ReactionAI {
     addProtonFromReagentToSubstrateReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
 
-        console.log('addProtonFromReagentToSubstrateReversal()')
-        console.log('Caller: '+caller)
-        console.log('target (substrate before reaction)')
-        console.log(VMolecule(target).compressed())
-        console.log('reagent  before reaction)')
-        console.log(VMolecule(reagent).compressed())
+          // console.log('addProtonFromReagentToSubstrateReversal()')
+          // console.log('Caller: '+caller)
+          // console.log('target (substrate before reaction)')
+          // console.log(VMolecule(target).compressed())
+          // console.log('reagent  before reaction)')
+          // console.log(VMolecule(reagent).compressed())
 
 
-        const reverse_reaction = new Reaction(target, reagent, {})
+        const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
 
         // https://en.wikipedia.org/wiki/Leuckart_reaction (3)
 
         let r = null
         r = reverse_reaction.addProtonFromSubstrateToReagent()
-//        console.log('Pinacol rearrangement reversed - deprotonate (caller=' + caller + '):')
-        //      console.log('Leuckart reaction reversed - deprotonate (caller=' + caller + '):')
+//          // console.log('Pinacol rearrangement reversed - deprotonate (caller=' + caller + '):')
+        //        // console.log('Leuckart reaction reversed - deprotonate (caller=' + caller + '):')
 
         if (r) {
 
             // https://en.wikipedia.org/wiki/Leuckart_reaction (1)
             //this.render(reaction.container_substrate, reaction.container_reagent)
-            console.log('deprotonated substrate (substrate after reverse reaction')
+              // console.log('deprotonated substrate (substrate after reverse reaction')
             const deprotonated_substrate = _.cloneDeep(reverse_reaction.container_substrate)
-            console.log(VMolecule(deprotonated_substrate).compressed())
-            console.log('protonated reagent (reagent after reverse reaction')
+              // console.log(VMolecule(deprotonated_substrate).compressed())
+              // console.log('protonated reagent (reagent after reverse reaction')
             const protonated_reagent = _.cloneDeep(reverse_reaction.container_reagent)
-            console.log(VMolecule(protonated_reagent).compressed())
+              // console.log(VMolecule(protonated_reagent).compressed())
 
             commands.push(
                 {
@@ -538,17 +567,17 @@ class ReactionAI {
                     'starting reagent': protonated_reagent,
                     'function':()=>{
                         const reaction = new Reaction(_.cloneDeep(deprotonated_substrate), _.cloneDeep(protonated_reagent), {})
-                        console.log('Command - substrate (addProtonFromReagentToSubstrate substrate before running command)')
-                        console.log(VMolecule(deprotonated_substrate).compressed())
-                        console.log('Command - reagent (addProtonFromReagentToSubstrate reagent before running command)')
-                        console.log(VMolecule(protonated_reagent).compressed())
+                          // console.log('Command - substrate (addProtonFromReagentToSubstrate substrate before running command)')
+                          // console.log(VMolecule(deprotonated_substrate).compressed())
+                          // console.log('Command - reagent (addProtonFromReagentToSubstrate reagent before running command)')
+                          // console.log(VMolecule(protonated_reagent).compressed())
 
                         reaction.addProtonFromReagentToSubstrate()
 
-                        console.log('protonated substrate (substrate after running command (addProtonFromReagentToSubstrate):')
-                        console.log(VMolecule(reaction.container_substrate).compressed())
-                        console.log('protonated reagent (reagent after running command addProtonFromReagentToSubstrate)')
-                        console.log(VMolecule(reaction.container_reagent).compressed())
+                          // console.log('protonated substrate (substrate after running command (addProtonFromReagentToSubstrate):')
+                          // console.log(VMolecule(reaction.container_substrate).compressed())
+                          // console.log('protonated reagent (reagent after running command addProtonFromReagentToSubstrate)')
+                          // console.log(VMolecule(reaction.container_reagent).compressed())
 
                         return reaction
                     }
