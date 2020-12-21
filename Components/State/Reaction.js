@@ -882,6 +882,11 @@ class Reaction {
         if (nucleophile_index === null || nucleophile_index === -1) {
             return false
         }
+
+        if (electrophile_index === null || electrophile_index === -1 || this.container_substrate[0][1][electrophile_index][4] === "" || this.container_substrate[0][1][electrophile_index][4]=== 0) {
+            return false
+        }
+
            // console.log(VMolecule(this.container_substrate).compressed())
           // console.log('breakBond() nucleophile_index: ' + nucleophile_index)
           // console.log('breakBond() electrophile_index: ' + electrophile_index)
