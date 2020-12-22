@@ -343,19 +343,17 @@ class ReactionAI {
         let r = null
         r = reverse_reaction.transferProtonReverse()
 
-        if (depth === 10000) {
 
-            console.log("Commands:")
-            console.log(commands.map((command)=>{
-                return command['name']
-            }))
-            console.log('target (substrate before reverse reaction) transferProtonReversal()')
-            console.log(VMolecule(target).compressed())
-            console.log('reagent  before reverse reaction) transferProtonReversal()')
-            console.log(VMolecule(reagent).compressed())
-            console.log(r)
-            process.exit()
-        }
+        console.log("Commands:")
+        console.log(commands.map((command)=>{
+            return command['name']
+        }))
+        console.log('target (substrate before reverse reaction) transferProtonReversal()')
+        console.log(VMolecule(target).compressed())
+        console.log('reagent  before reverse reaction) transferProtonReversal()')
+        console.log(VMolecule(reagent).compressed())
+        console.log(r)
+
 
         if (r) {
              // console.log('Pinacol rearrangement reversed - deprotonate (caller=' + caller + '):')
@@ -543,7 +541,7 @@ class ReactionAI {
                 const deprotonated_substrate = _.cloneDeep(reverse_reaction.container_substrate)
                 const protonated_reagent = _.cloneDeep(reverse_reaction.container_reagent)
 
-
+/*
                 console.log('protonateReversal()')
 
                 console.log('substrate before reverse reaction')
@@ -556,8 +554,8 @@ class ReactionAI {
                 console.log('reagent after reverse reaction (deprotonate) protonated_reagent')
                 console.log(VMolecule(protonated_reagent).compressed())
                 console.log('protonateReversal() Exiting')
-
-                process.exit()
+*/
+              //  process.exit()
 
 
                 commands.push(

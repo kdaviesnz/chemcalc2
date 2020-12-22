@@ -1490,9 +1490,9 @@ class Reaction {
 
     protonateReverse() {
 
-        console.log("protonateReverse()")
-        console.log(VMolecule(this.container_substrate).compressed())
-        console.log(VMolecule(this.container_reagent).compressed())
+      //  console.log("protonateReverse()")
+      //  console.log(VMolecule(this.container_substrate).compressed())
+      //  console.log(VMolecule(this.container_reagent).compressed())
 
         // 1. Reverse protonation of OH group on substrate by OH group on reagent
         // https://en.wikipedia.org/wiki/Leuckart_reaction
