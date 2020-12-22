@@ -532,7 +532,7 @@ class ReactionAI {
         // https://en.wikipedia.org/wiki/Leuckart_reaction (3)
 
             let r = null
-            r = reverse_reaction.deprotonate()
+            r = reverse_reaction.protonateReverse()
 //          // console.log('Pinacol rearrangement reversed - deprotonate (caller=' + caller + '):')
   //        // console.log('Leuckart reaction reversed - deprotonate (caller=' + caller + '):')
 
@@ -555,8 +555,9 @@ class ReactionAI {
                 console.log(VMolecule(deprotonated_substrate).compressed())
                 console.log('reagent after reverse reaction (deprotonate) protonated_reagent')
                 console.log(VMolecule(protonated_reagent).compressed())
+                console.log('protonateReversal() Exiting')
 
-              //  process.exit()
+                process.exit()
 
 
                 commands.push(

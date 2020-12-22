@@ -1488,6 +1488,34 @@ class Reaction {
         this.setMoleculeAI()
     }
 
+    protonateReverse() {
+
+        console.log("protonateReverse()")
+        console.log(VMolecule(this.container_substrate).compressed())
+        console.log(VMolecule(this.container_reagent).compressed())
+
+        // 1. Reverse protonation of OH group on substrate by OH group on reagent
+        // https://en.wikipedia.org/wiki/Leuckart_reaction
+        // Look for water group on substrate
+        const water_oxygen_index = this.MoleculeAI.findWaterOxygenIndex()
+
+        if (water_oxygen_index !== -1) {
+            // Look for O- atom on reagent
+            const o_index = _.findIndex(this.container_reagent[0][1], (atom, index)=> {
+                return atom[0] === "O" && atom[4] === "-"
+            })
+
+
+            if (o_index !== -1) {
+                // Move proton from water group on subtrate to O- atom on reagent
+                this.container_substrate[0][1] = this.removeProtonFromAtom(this.MoleculeAI, this.container_substrate[0][1], water_oxygen_index)
+                this.addProtonToReagent(o_index)
+                return true
+            }
+        }
+        return false
+    }
+
     deprotonate() {
 
         // [C+]CH3
@@ -1677,9 +1705,9 @@ class Reaction {
     }
 
 
-    addProtonToReagent( ) {
+    addProtonToReagent(index_of_reagent_atom_to_protonate ) {
 
-        const atom_nucleophile_index = this.ReagentAI.findNucleophileIndex()
+        const atom_nucleophile_index = index_of_reagent_atom_to_protonate === undefined? this.ReagentAI.findNucleophileIndex() : index_of_reagent_atom_to_protonate
 
         if (atom_nucleophile_index  === -1) {
            return false
