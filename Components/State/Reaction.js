@@ -124,11 +124,18 @@ class Reaction {
 
         // Make C=O bond
         const oxygen_index = this.MoleculeAI.findOxygenAttachedToCarbonIndex()
+
+        if (oxygen_index === -1) {
+            return false
+        }
         const oxygen = CAtom(this.container_substrate[0][1][oxygen_index], oxygen_index, this.container_substrate)
 
         const carbon_bonds = oxygen.indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "C"
         })
+        if (carbon_bonds.length === 0) {
+            return false
+        }
 
         const carbon_index = carbon_bonds[0].atom_index
 
@@ -140,9 +147,11 @@ class Reaction {
 
         // Charges
         this.container_substrate[0][1][carbon_index][4] = ""
-        this.container_substrate[0][1][oxygen_index][4] = "+"
+        this.container_substrate[0][1][oxygen_index][4] = this.container_substrate[0][1][oxygen_index][4]== -1? "": "+"
 
         this.setMoleculeAI()
+
+        return true
 
 
     }
