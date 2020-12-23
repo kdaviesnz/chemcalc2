@@ -197,6 +197,35 @@ const MoleculeAI = (container_molecule) => {
     // No method should change state of container_molecule
     return {
 
+
+        validateMolecule: () => {
+            return _.findIndex(container_molecule[0][1], (atom, index)=> {
+                const a_obj = CAtom(container_molecule[0][1][index], index, container_molecule)
+                // Charges
+                if (atom[0]=== "O" && (a_obj.bondCount()) === 2 && (atom[4] !== "" && atom[4] !== 0)) {
+                    console.log("validateMolecule O")
+                    console.log(index)
+                    console.log(a_obj.bondCount())
+                    return true
+                }
+
+                if (atom[0]=== "N" && (a_obj.bondCount()) === 3 && (atom[4] !== "" && atom[4] !== 0)) {
+                    console.log("validateMolecule N")
+                    console.log(index)
+                    console.log(a_obj.bondCount())
+                    return true
+                }
+
+                if (atom[0]=== "C" && (a_obj.bondCount()) === 4 && (atom[4] !== "" && atom[4] !== 0)) {
+                    console.log("validateMolecule C")
+                    console.log(index)
+                    console.log(a_obj.bondCount())
+                    return true
+                }
+                return false
+            }) === -1
+        },
+
         findIndexOfCarbocationAttachedtoCarbon: ()=>{
             return _.findIndex(container_molecule[0][1], (atom, index)=>{
                 if (atom[0] !== "C" || atom[4] !== "+") {

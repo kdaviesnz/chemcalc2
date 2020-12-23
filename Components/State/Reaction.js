@@ -120,6 +120,38 @@ class Reaction {
 
     }
 
+    setChargeOnSubstrateAtom(index) {
+        const a_obj = CAtom(this.container_substrate[0][1][index], index, this.container_substrate)
+        const b_count = a_obj.bondCount()
+        if (this.container_substrate[0][1][index][0] === "O") {
+            if (b_count > 2) {
+                this.container_substrate[0][1][index][4] = "+"
+            } else if (b_count < 2) {
+                this.container_substrate[0][1][index][4] = "-"
+            } else {
+                this.container_substrate[0][1][index][4] = ""
+            }
+        }
+        if (this.container_substrate[0][1][index][0] === "N") {
+            if (b_count > 3) {
+                this.container_substrate[0][1][index][4] = "+"
+            } else if (b_count < 3) {
+                this.container_substrate[0][1][index][4] = "-"
+            } else {
+                this.container_substrate[0][1][index][4] = ""
+            }
+        }
+        if (this.container_substrate[0][1][index][0] === "C") {
+            if (b_count > 4) {
+                this.container_substrate[0][1][index][4] = "+"
+            } else if (b_count < 4) {
+                this.container_substrate[0][1][index][4] = "-"
+            } else {
+                this.container_substrate[0][1][index][4] = ""
+            }
+        }
+    }
+
     breakCarbonOxygenDoubleBondReverse() {
 
         // Make C=O bond
@@ -146,10 +178,19 @@ class Reaction {
         this.container_substrate[0][1][carbon_index].push(freeElectrons[1])
 
         // Charges
-        this.container_substrate[0][1][carbon_index][4] = ""
-        this.container_substrate[0][1][oxygen_index][4] = this.container_substrate[0][1][oxygen_index][4]== -1? "": "+"
+       // this.container_substrate[0][1][carbon_index][4] = ""
+        this.setChargeOnSubstrateAtom(carbon_index)
+        //this.container_substrate[0][1][oxygen_index][4] = this.container_substrate[0][1][oxygen_index][4]=== "-"? "": "+"
+        this.setChargeOnSubstrateAtom(oxygen_index)
 
         this.setMoleculeAI()
+
+        if (this.MoleculeAI.validateMolecule() === false) {
+            console.log('Reaction.js molecule is not valid')
+            console.log('Method: breakCarbonOxygenDoubleBondReverse()')
+            console.log(VMolecule(this.container_substrate).compressed())
+            process.exit()
+        }
 
         return true
 
