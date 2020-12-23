@@ -515,6 +515,11 @@ class Reaction {
             return false
         }
 
+        // Leuckact Wallach reaction
+        if (this.container_substrate[0][1][electrophile_index][4] !== "+") {
+            return false
+        }
+
         this.container_substrate[0][1][electrophile_index].push(electrons[0])
         this.container_substrate[0][1][electrophile_index].push(electrons[1])
         this.container_substrate[0][1][electrophile_index][4] = 0

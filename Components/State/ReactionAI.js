@@ -234,12 +234,13 @@ class ReactionAI {
     dehydrationReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
         if (caller === "dehydrationReversal()") {
+            console.log('Duplicate call - dehydrationReversal()')
             return
         }
 
-        // console.log('dehydrationReversal()')
-          // console.log('substrate')
-          // console.log(VMolecule(target).compressed())
+         console.log('dehydrationReversal()')
+          console.log('substrate')
+          console.log(VMolecule(target).compressed())
           // console.log('reagent')
           // console.log(VMolecule(reagent).compressed())
 
@@ -252,6 +253,8 @@ class ReactionAI {
         let r = null
         if (moleculeAI.findIndexOfCarbocationAttachedtoCarbon() !== -1) {
             r = reverse_reaction.hydrate()
+
+            console.log(r)
             const hydrated_substrate = _.cloneDeep(reverse_reaction.container_substrate)
             const hydrated_reagent = _.cloneDeep(reverse_reaction.container_reagent)
 
@@ -352,6 +355,7 @@ class ReactionAI {
 
 
         if (caller === 'transferProtonReversal()') {
+            console.log("Duplicate call - transferProtonReversal()")
             return
         }
 
@@ -366,7 +370,8 @@ class ReactionAI {
         let r = null
         r = reverse_reaction.transferProtonReverse()
 
-
+        console.log(VMolecule(target).compressed())
+        console.log(r)
 
 
 
@@ -506,6 +511,8 @@ class ReactionAI {
 
     bondSubstrateToReagentReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
+        console.log("bondSubstrateToReagentReversal()")
+
         if (caller === "bondSubstrateToReagentReversal()") {
             console.log('Duplicate call - bondSubstrateToReagentReversal()')
             process.exit()
@@ -518,10 +525,9 @@ class ReactionAI {
         let r = null
         r = reverse_reaction.breakBond()
 
+        console.log(VMolecule(target).compressed())
 
-
-
-        // console.log(r)
+        console.log(r)
 
         if (r) {
             // // https://en.wikipedia.org/wiki/Leuckart_reaction (6)
