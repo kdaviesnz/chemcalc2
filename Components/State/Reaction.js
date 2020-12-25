@@ -104,7 +104,8 @@ class Reaction {
         this.container_substrate[0][1].push(proton)
 
         // Charges
-        this.container_substrate[0][1][oxygen_index][4] = ""
+        //this.container_substrate[0][1][oxygen_index][4] = ""
+        this.setChargeOnSubstrateAtom(oxygen_index)
         /*
         if (undefined !== this.rule && this.rule.mechanism === "pinacol rearrangement") {
             this.container_substrate[0][1][carbon_bonds[0].atom_index][4] = "+"
@@ -112,7 +113,8 @@ class Reaction {
             this.container_substrate[0][1][carbon_bonds[0].atom_index][4] = "-"
         }
          */
-        this.container_substrate[0][1][carbon_bonds[0].atom_index][4] = "+"
+        //this.container_substrate[0][1][carbon_bonds[0].atom_index][4] = "+"
+        this.setChargeOnSubstrateAtom(carbon_bonds[0].atom_index)
 
         this.setMoleculeAI()
 
@@ -122,7 +124,7 @@ class Reaction {
 
     setChargeOnSubstrateAtom(index) {
         const a_obj = CAtom(this.container_substrate[0][1][index], index, this.container_substrate)
-        const b_count = a_obj.bondCount()
+        const b_count = a_obj.bondCount() + a_obj.doubleBondCount()
         if (this.container_substrate[0][1][index][0] === "O") {
             if (b_count > 2) {
                 this.container_substrate[0][1][index][4] = "+"
@@ -573,6 +575,13 @@ class Reaction {
 
         // Check we have a water molecule attached to main molecule
         this.MoleculeAI.findWaterOxygenIndex().should.be.greaterThan(-1)
+
+        if (this.MoleculeAI.validateMolecule() === false) {
+            console.log('Reaction.js molecule is not valid (hydrate())')
+            console.log('Method: hydrate()')
+            console.log(VMolecule(this.container_substrate).compressed())
+            process.exit()
+        }
 
         return true
 

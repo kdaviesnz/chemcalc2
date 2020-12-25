@@ -196,6 +196,17 @@ class ReactionAI {
             //this.render(reaction.container_substrate, reaction.container_reagent)
             const substrate_with_oxygen_carbon_double_bond_removed = _.cloneDeep(reverse_reaction.container_substrate)
             const reagent_with_oxygen_carbon_double_bond_removed = _.cloneDeep(reverse_reaction.container_reagent)
+
+            const substrate_with_oxygen_carbon_double_bond_removedAI = require("../Stateless/MoleculeAI")(_.cloneDeep(substrate_with_oxygen_carbon_double_bond_removed))
+
+            console.log("Validating molecule (makeOxygenCarbonDoubleBondReverse()")
+            if (substrate_with_oxygen_carbon_double_bond_removedAI.validateMolecule() === false) {
+                console.log('makeOxygenCarbonDoubleBondReverse.js substrate_with_oxygen_carbon_double_bond_removed is not valid')
+                console.log('Method: makeOxygenCarbonDoubleBondReverse()')
+                console.log(VMolecule(substrate_with_oxygen_carbon_double_bond_removed).compressed())
+                process.exit()
+            }
+
             commands.push({
                 'name':'makeOxygenCarbonDoubleBond',
                 'starting substrate': substrate_with_oxygen_carbon_double_bond_removed,
@@ -271,6 +282,17 @@ class ReactionAI {
   //              console.log(VMolecule(hydrated_reagent).compressed())
 
 
+                const hydrated_substrateAI = require("../Stateless/MoleculeAI")(_.cloneDeep(hydrated_substrate))
+
+                console.log("Validating molecule (hydrate()")
+                if (hydrated_substrateAI.validateMolecule() === false) {
+                    console.log('ReactioinAI.js hydrated substrate is not valid')
+                    console.log('Method: hydrate()')
+                    console.log(VMolecule(hydrated_substrate).compressed())
+                    process.exit()
+                }
+
+
 
                 commands.push({
                     'name':'dehydrate',
@@ -295,7 +317,7 @@ class ReactionAI {
                     }})
                 this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent),_.cloneDeep(commands), 'dehydrationReversal()', depth+1)
             } else {
-                  // console.log("dehydrationReversal() reverse reaction failed")
+                   console.log("dehydrationReversal() reverse reaction failed")
             }
         }
 
@@ -409,7 +431,7 @@ class ReactionAI {
             )
             this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), (caller==='result'?'result':'transferProtonReversal()'), depth+1)
         } else {
-              // console.log('transferProtonReversal() reaction failed')
+               console.log('transferProtonReversal() reaction failed')
         }
 
     }

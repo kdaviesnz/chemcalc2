@@ -202,10 +202,10 @@ const MoleculeAI = (container_molecule) => {
             return _.findIndex(container_molecule[0][1], (atom, index)=> {
                 const a_obj = CAtom(container_molecule[0][1][index], index, container_molecule)
                 // Charges
-                if (atom[0]=== "O" && (a_obj.bondCount()) === 2 && (atom[4] !== "" && atom[4] !== 0)) {
-                    console.log("validateMolecule O")
-                    console.log(index)
-                    console.log(a_obj.bondCount())
+                if (atom[0]=== "O" && (a_obj.bondCount() + a_obj.doubleBondCount()) === 2 && (atom[4] !== "" && atom[4] !== 0)) {
+                    console.log("validateMolecule() O")
+                    console.log("Index:" + index)
+                    console.log(a_obj.bondCount() + a_obj.doubleBondCount())
                     return true
                 }
 
@@ -216,7 +216,7 @@ const MoleculeAI = (container_molecule) => {
                     return true
                 }
 
-                if (atom[0]=== "C" && (a_obj.bondCount()) === 4 && (atom[4] !== "" && atom[4] !== 0)) {
+                if (atom[0]=== "C" && (a_obj.bondCount() + a_obj.doubleBondCount()) === 4 && (atom[4] !== "" && atom[4] !== 0)) {
                     console.log("validateMolecule C")
                     console.log(index)
                     console.log(a_obj.bondCount())
