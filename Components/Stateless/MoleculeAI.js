@@ -202,19 +202,43 @@ const MoleculeAI = (container_molecule) => {
             return _.findIndex(container_molecule[0][1], (atom, index)=> {
                 const a_obj = CAtom(container_molecule[0][1][index], index, container_molecule)
                 // Charges
-                if (atom[0]=== "O" && (a_obj.bondCount() + a_obj.doubleBondCount()) === 2 && (atom[4] !== "" && atom[4] !== 0)) {
-                    console.log("validateMolecule() O")
-                    console.log("Index:" + index)
-                    console.log(a_obj.bondCount() + a_obj.doubleBondCount())
-                    return true
+                if (atom[0] == "O") {
+
+                    if ((a_obj.bondCount() + a_obj.doubleBondCount()) > 3) {
+                        console.log("validateMolecule O")
+                        console.log(index)
+                        console.log('Too many bonds: ' + (a_obj.bondCount() + a_obj.doubleBondCount()))
+                        process.exit()
+                        return true
+                    }
+
+                    if ((a_obj.bondCount() + a_obj.doubleBondCount()) === 2 && (atom[4] !== "" && atom[4] !== 0)) {
+                        console.log("validateMolecule() O")
+                        console.log("Index:" + index)
+                        console.log(a_obj.bondCount() + a_obj.doubleBondCount())
+                        return true
+                    }
+
                 }
 
-                if (atom[0]=== "N" && (a_obj.bondCount()) === 3 && (atom[4] !== "" && atom[4] !== 0)) {
-                    console.log("validateMolecule N")
-                    console.log(index)
-                    console.log(a_obj.bondCount())
-                    return true
+                if (atom[0]=== "N") {
+
+                    if ((a_obj.bondCount() + a_obj.doubleBondCount()) > 4) {
+                        console.log("validateMolecule N")
+                        console.log(index)
+                        console.log('Too many bonds: ' + a_obj.bondCount())
+                        return true
+                    }
+
+                    if ((a_obj.bondCount() + a_obj.doubleBondCount()) === 3 && (atom[4] !== "" && atom[4] !== 0)) {
+                        console.log("validateMolecule N")
+                        console.log(index)
+                        console.log(a_obj.bondCount())
+                        return true
+                    }
+
                 }
+
 
                 if (atom[0]=== "C" && (a_obj.bondCount() + a_obj.doubleBondCount()) === 4 && (atom[4] !== "" && atom[4] !== 0)) {
                     console.log("validateMolecule C")

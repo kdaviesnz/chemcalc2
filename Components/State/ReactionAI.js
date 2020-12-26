@@ -405,6 +405,15 @@ class ReactionAI {
                // console.log(VMolecule(reagent_with_proton_transferred).compressed())
                 console.log(r)
 
+            const substrate_with_proton_transferredAI = require("../Stateless/MoleculeAI")(_.cloneDeep(substrate_with_proton_transferred))
+
+            console.log("Validating molecule (transferProtonReversal()")
+            if (substrate_with_proton_transferredAI.validateMolecule() === false) {
+                console.log('transferProtonReversal.js substrate_with_proton_transferred is not valid')
+                console.log('Method: transferProtonReverse()')
+                console.log(VMolecule(substrate_with_proton_transferred).compressed())
+                process.exit()
+            }
 
 
             commands.push(
@@ -514,7 +523,7 @@ class ReactionAI {
 
     bondSubstrateToReagentReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-        console.log("bondSubstrateToReagentReversal()")
+        console.log("bondSubstrateToReagentReversal() caller=" + caller + " depth=" + depth)
 
         if (caller === "bondSubstrateToReagentReversal()") {
             console.log('Duplicate call - bondSubstrateToReagentReversal()')
@@ -532,23 +541,24 @@ class ReactionAI {
 
         console.log(r)
 
+
         if (r) {
             // // https://en.wikipedia.org/wiki/Leuckart_reaction (6)
             //this.render(reaction.container_substrate, reaction.container_reagent)
             const break_bond_substrate = _.cloneDeep(reverse_reaction.container_substrate)
-            const break_bond_reagent = _.cloneDeep(reverse_reaction.container_reagent)
+            const break_bond_reagent = _.cloneDeep(reverse_reaction.leaving_groups[0])
 
             console.log('bondSubstrateToReagentReversal() depth=' + depth)
 
-            console.log('target (substrate before reverse reaction')
+            console.log('target (substrate before reverse reaction bondSubstrateToReagentReversal')
             console.log(VMolecule(target).compressed())
-            console.log('reagent (reagent before reverse reaction')
+            console.log('reagent (reagent before reverse reaction bondSubstrateToReagentReversal')
             console.log(VMolecule(reagent).compressed())
 
 
-            console.log('subtrate (substrate after reverse reaction')
+            console.log('subtrate (substrate after reverse reaction bondSubstrateToReagentReversal')
             console.log(VMolecule(break_bond_substrate).compressed())
-            console.log('reagent (reagent after reverse reaction')
+            console.log('reagent (reagent after reverse reaction bondSubstrateToReagentReversal')
             console.log(VMolecule(break_bond_reagent).compressed())
 
             process.exit()

@@ -437,14 +437,17 @@ class Reaction {
 
     transferProtonReverse() {
 
+        console.log('Reaction.js transferProtonReverse()')
+        console.log(VMolecule(this.container_substrate).compressed())
             // Get index of N
             const nucleophile_index = _.findIndex(this.container_substrate[0][1], (atom, index)=>{
-                return atom[0] === 'N'
+                return atom[0] === 'N' && atom[4] !== "+"
             })
 
             if (nucleophile_index === -1) {
                 return false
             }
+
 
             // Get index of OH
             let electrophile_index = this.MoleculeAI.findHydroxylOxygenIndex()
@@ -487,7 +490,16 @@ class Reaction {
 
             this.setMoleculeAI()
 
-            return true
+
+        if (this.MoleculeAI.validateMolecule() === false) {
+            console.log('Reaction.js molecule is not valid')
+            console.log('Method: transferProtonReverse()')
+            console.log(VMolecule(this.container_substrate).compressed())
+            process.exit()
+        }
+
+
+        return true
 
 
     }
