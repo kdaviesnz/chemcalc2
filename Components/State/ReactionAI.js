@@ -181,9 +181,16 @@ class ReactionAI {
 
     oxygenCarbonDoubleBondReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
+        console.log("ReactionAI.js Calling oxygenCarbonDoubleBondReversal()")
+
         if (caller === "oxygenCarbonDoubleBondReversal()") {
             return
         }
+
+        console.log('target (substrate before reverse reaction) oxygenCarbonDoubleBondReversal()')
+        console.log(VMolecule(target).compressed())
+       // console.log('reagent  before reverse reaction) oxygenCarbonDoubleBondReversal()')
+       // console.log(VMolecule(reagent).compressed())
 
 
         const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
@@ -191,11 +198,22 @@ class ReactionAI {
         // https://en.wikipedia.org/wiki/Pinacol_rearrangement
         let r = null
         r = reverse_reaction.makeOxygenCarbonDoubleBondReverse()
+
+        console.log(r)
         if (r) {
+
+
+
+            // console.log(VMolecule(reagent_with_oxygen_carbon_double_bond_removed).compressed())
             // console.log('Pinacol rearrangement reversed - make oxygen carbon double bond reversed (caller=' + caller + '):')
             //this.render(reaction.container_substrate, reaction.container_reagent)
             const substrate_with_oxygen_carbon_double_bond_removed = _.cloneDeep(reverse_reaction.container_substrate)
             const reagent_with_oxygen_carbon_double_bond_removed = _.cloneDeep(reverse_reaction.container_reagent)
+
+
+            console.log('substrate after reverse reaction (makeOxygenCarbonDoubleBondReverse()) substrate_with_oxygen_carbon_double_bond_removed')
+            console.log(VMolecule(substrate_with_oxygen_carbon_double_bond_removed).compressed())
+            // console.log('reagent after reverse reaction (makeOxygenCarbonDoubleBondReverse) reagent_with_oxygen_carbon_double_bond_removed')
 
             const substrate_with_oxygen_carbon_double_bond_removedAI = require("../Stateless/MoleculeAI")(_.cloneDeep(substrate_with_oxygen_carbon_double_bond_removed))
 
@@ -204,7 +222,7 @@ class ReactionAI {
                 console.log('makeOxygenCarbonDoubleBondReverse.js substrate_with_oxygen_carbon_double_bond_removed is not valid')
                 console.log('Method: makeOxygenCarbonDoubleBondReverse()')
                 console.log(VMolecule(substrate_with_oxygen_carbon_double_bond_removed).compressed())
-                process.exit()
+                console.log(i)
             }
 
             commands.push({
@@ -217,15 +235,7 @@ class ReactionAI {
 
 
                      // console.log("*Caller: " + caller)
-                     // console.log('*target (substrate before reverse reaction) oxygenCarbonDoubleBondReversal()')
-                     // console.log(VMolecule(target).compressed())
-                     // console.log('reagent  before reverse reaction) oxygenCarbonDoubleBondReversal()')
-                     // console.log(VMolecule(reagent).compressed())
 
-                     // console.log('substrate after reverse reaction (makeOxygenCarbonDoubleBondReverse()) substrate_with_oxygen_carbon_double_bond_removed')
-                     // console.log(VMolecule(substrate_with_oxygen_carbon_double_bond_removed).compressed())
-                     // console.log('reagent after reverse reaction (makeOxygenCarbonDoubleBondReverse) reagent_with_oxygen_carbon_double_bond_removed')
-                     // console.log(VMolecule(reagent_with_oxygen_carbon_double_bond_removed).compressed())
 
                     // process.exit()
 
@@ -412,7 +422,7 @@ class ReactionAI {
                 console.log('transferProtonReversal.js substrate_with_proton_transferred is not valid')
                 console.log('Method: transferProtonReverse()')
                 console.log(VMolecule(substrate_with_proton_transferred).compressed())
-                process.exit()
+                console.log(i)
             }
 
 
@@ -543,7 +553,7 @@ class ReactionAI {
 
 
         if (r) {
-            // // https://en.wikipedia.org/wiki/Leuckart_reaction (6)
+            // https://en.wikipedia.org/wiki/Leuckart_reaction (6)
             //this.render(reaction.container_substrate, reaction.container_reagent)
             const break_bond_substrate = _.cloneDeep(reverse_reaction.container_substrate)
             const break_bond_reagent = _.cloneDeep(reverse_reaction.leaving_groups[0])

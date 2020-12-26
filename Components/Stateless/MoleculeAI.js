@@ -208,7 +208,8 @@ const MoleculeAI = (container_molecule) => {
                         console.log("validateMolecule O")
                         console.log(index)
                         console.log('Too many bonds: ' + (a_obj.bondCount() + a_obj.doubleBondCount()))
-                        process.exit()
+                        console.log(VMolecule(container_molecule).compressed())
+                        console.log(i)
                         return true
                     }
 
