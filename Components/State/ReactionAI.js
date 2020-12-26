@@ -538,23 +538,21 @@ class ReactionAI {
             const break_bond_substrate = _.cloneDeep(reverse_reaction.container_substrate)
             const break_bond_reagent = _.cloneDeep(reverse_reaction.container_reagent)
 
-            if (caller === 'resultxxx') {
-                console.log('bondSubstrateToReagentReversal() depth=' + depth)
+            console.log('bondSubstrateToReagentReversal() depth=' + depth)
 
-                console.log('target (substrate before reverse reaction')
-                console.log(VMolecule(target).compressed())
-                console.log('reagent (reagent before reverse reaction')
-                console.log(VMolecule(reagent).compressed())
-
-
-                console.log('subtrate (substrate after reverse reaction')
-                console.log(VMolecule(break_bond_substrate).compressed())
-                console.log('reagent (reagent after reverse reaction')
-                console.log(VMolecule(break_bond_reagent).compressed())
+            console.log('target (substrate before reverse reaction')
+            console.log(VMolecule(target).compressed())
+            console.log('reagent (reagent before reverse reaction')
+            console.log(VMolecule(reagent).compressed())
 
 
-                 process.exit()
-            }
+            console.log('subtrate (substrate after reverse reaction')
+            console.log(VMolecule(break_bond_substrate).compressed())
+            console.log('reagent (reagent after reverse reaction')
+            console.log(VMolecule(break_bond_reagent).compressed())
+
+            process.exit()
+
 
             commands.push({
                 'name':'bondSubstrateToReagent',
