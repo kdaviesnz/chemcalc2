@@ -96,7 +96,7 @@ class ReactionAI {
                 return command['name']
             }))
 
-            //console.log(n)
+            console.log(n)
 
 
             if (true) {
@@ -220,9 +220,10 @@ class ReactionAI {
     synthesise(target) {
         const water = MoleculeFactory("O")
         const formate = MoleculeFactory("[C+](=O)[O-]")
+        const methylamine = MoleculeFactory("CN")
        // console.log(VMolecule([formate,1]).compressed())
        // console.log(VMolecule([formate,1]).canonicalSMILES())
-        this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(formate),1], [], 'synthesise', 0)
+        this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(methylamine),1], [], 'synthesise', 0)
     }
     
     synthesiseCallback(substrate, reagent, commands, caller, depth) {
