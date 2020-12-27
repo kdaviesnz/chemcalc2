@@ -205,18 +205,18 @@ const MoleculeAI = (container_molecule) => {
                 if (atom[0] == "O") {
 
                     if ((a_obj.bondCount() + a_obj.doubleBondCount()) > 3) {
-                        console.log("validateMolecule O")
-                        console.log(index)
-                        console.log('Too many bonds: ' + (a_obj.bondCount() + a_obj.doubleBondCount()))
-                        console.log(VMolecule(container_molecule).compressed())
-                        console.log(i)
+                        // console.log(("validateMolecule O")
+                        // console.log((index)
+                        // console.log(('Too many bonds: ' + (a_obj.bondCount() + a_obj.doubleBondCount()))
+                        // console.log((VMolecule(container_molecule).compressed())
+                        // console.log((i)
                         return true
                     }
 
                     if ((a_obj.bondCount() + a_obj.doubleBondCount()) === 2 && (atom[4] !== "" && atom[4] !== 0)) {
-                        console.log("validateMolecule() O")
-                        console.log("Index:" + index)
-                        console.log(a_obj.bondCount() + a_obj.doubleBondCount())
+                        // console.log(("validateMolecule() O")
+                        // console.log(("Index:" + index)
+                        // console.log((a_obj.bondCount() + a_obj.doubleBondCount())
                         return true
                     }
 
@@ -225,16 +225,16 @@ const MoleculeAI = (container_molecule) => {
                 if (atom[0]=== "N") {
 
                     if ((a_obj.bondCount() + a_obj.doubleBondCount()) > 4) {
-                        console.log("validateMolecule N")
-                        console.log(index)
-                        console.log('Too many bonds: ' + a_obj.bondCount())
+                        // console.log(("validateMolecule N")
+                        // console.log((index)
+                        // console.log(('Too many bonds: ' + a_obj.bondCount())
                         return true
                     }
 
                     if ((a_obj.bondCount() + a_obj.doubleBondCount()) === 3 && (atom[4] !== "" && atom[4] !== 0)) {
-                        console.log("validateMolecule N")
-                        console.log(index)
-                        console.log(a_obj.bondCount())
+                        // console.log(("validateMolecule N")
+                        // console.log((index)
+                        // console.log((a_obj.bondCount())
                         return true
                     }
 
@@ -242,9 +242,9 @@ const MoleculeAI = (container_molecule) => {
 
 
                 if (atom[0]=== "C" && (a_obj.bondCount() + a_obj.doubleBondCount()) === 4 && (atom[4] !== "" && atom[4] !== 0)) {
-                    console.log("validateMolecule C")
-                    console.log(index)
-                    console.log(a_obj.bondCount())
+                    // console.log(("validateMolecule C")
+                    // console.log((index)
+                    // console.log((a_obj.bondCount())
                     return true
                 }
                 return false
@@ -309,9 +309,9 @@ const MoleculeAI = (container_molecule) => {
                 const double_bonds = carbon_atom_object.indexedDoubleBonds("")
 
                 if (carbon_atom_object.doubleBondCount() !== 1) {
-                  //  console.log('Wrong number of double bonds')
-                   // console.log("Index: " + index)
-                   // console.log('Double bonds length:' + double_bonds.length)
+                  // console.log(('Wrong number of double bonds')
+                   // console.log(("Index: " + index)
+                   // console.log(('Double bonds length:' + double_bonds.length)
                     return false
                 }
 
@@ -339,7 +339,7 @@ const MoleculeAI = (container_molecule) => {
 
             _.cloneDeep(atoms).map((a, i)=>{
                 if (i !== current_atom_index && _.indexOf(atom_indexes_added, i) ===-1 && atom_object.isBondedTo(a)) {
-                   // console.log('Added atom')
+                   // console.log(('Added atom')
                     groups[group_index].push(a)
                     atom_indexes_added.push(i)
                     bonded_atom_object = CAtom(a, i, container_molecule)
@@ -373,24 +373,24 @@ const MoleculeAI = (container_molecule) => {
                 // groups, group_index, current_atom_index, atom_object, atoms, atom_indexes_added
                 const bonds = atom_object.indexedBonds("")
                 if (bonds.length === 0) {
-                      // console.log('adddded atom')
+                      // console.log(('adddded atom')
                       groups[group_index].push(atom)
                 } else {
                     this.checkForBondedAtomsRecursive(groups, group_index, current_atom_index, atom_object, _.cloneDeep(atoms), atom_indexes_added)
                 }
-               // console.log(atom_indexes_added)
-                //console.log(groups[group_index])
+               // console.log((atom_indexes_added)
+                //// console.log((groups[group_index])
 
-               // console.log(VMolecule([[-1,groups[group_index]],1]).compressed())
+               // console.log((VMolecule([[-1,groups[group_index]],1]).compressed())
 
                 // process.exit()
-               // console.log(group_index)
-               // console.log(atom_indexes_added)
+               // console.log((group_index)
+               // console.log((atom_indexes_added)
                 return this.extractGroupsRecursive(groups, group_index +1, _.cloneDeep(atoms), atom_indexes_added, current_atom_index +1)
 
             } else {
-               // console.log(group_index)
-               // console.log(atom_indexes_added)
+               // console.log((group_index)
+               // console.log((atom_indexes_added)
                 return this.extractGroupsRecursive(groups, group_index, _.cloneDeep(atoms), atom_indexes_added, current_atom_index +1)
             }
 
@@ -400,7 +400,7 @@ const MoleculeAI = (container_molecule) => {
 
         extractGroups: function() {
 
-            // console.log(VMolecule(container_molecule).compressed())
+            // console.log((VMolecule(container_molecule).compressed())
 
             const atom_indexes_added = []
             let atoms = _.cloneDeep(container_molecule[0][1])
@@ -410,13 +410,13 @@ const MoleculeAI = (container_molecule) => {
                 return atom[0] !== "H"
             })
             */
-//            console.log(atoms.length)
+//            // console.log((atoms.length)
   //          process.exit()
             const groups = this.extractGroupsRecursive([], 0, _.cloneDeep(atoms), atom_indexes_added, 0)
-           // console.log('extractGroups()')
-           // console.log(VMolecule([[-1,groups[0]],1]).compressed())
-         //   console.log(VMolecule([[-1,groups[1]],1]).compressed())
-           // console.log(groups.length)
+           // console.log(('extractGroups()')
+           // console.log((VMolecule([[-1,groups[0]],1]).compressed())
+         //   // console.log((VMolecule([[-1,groups[1]],1]).compressed())
+           // console.log((groups.length)
          //   process.exit()
 
             /*
@@ -443,8 +443,8 @@ const MoleculeAI = (container_molecule) => {
                 return carry
             }, [])
 
-            console.log('GROUPS')
-            console.log(groups)
+            // console.log(('GROUPS')
+            // console.log((groups)
 
             // fix hydrogens
             const groups_saved = _.cloneDeep(groups)
@@ -461,13 +461,13 @@ const MoleculeAI = (container_molecule) => {
                         }
                         return Set().intersection(hydrogen.slice(5), atom.slice(5)).length > 0
                     })
-                    //console.log(k)
+                    //// console.log((k)
                     if (k > -1) {
-                        //console.log(index)
+                        //// console.log((index)
                         groups_saved[index].push(hydrogen)
-                        //console.log('hydrogen')
-                        //console.log(hydrogen)
-                        //console.log(groups_saved[index])
+                        //// console.log(('hydrogen')
+                        //// console.log((hydrogen)
+                        //// console.log((groups_saved[index])
                         //process.exit()
                     }
                 })
@@ -518,11 +518,11 @@ const MoleculeAI = (container_molecule) => {
 
         "chains": function(previous_atom_index, root_atom_index, chains, chain_index, col, depth) {
 
-            //  console.log("Start chains from this.chains() depth=" + depth + '  chain index=' + chain_index)
-            //  console.log(chains)
+            // console.log(("Start chains from this.chains() depth=" + depth + '  chain index=' + chain_index)
+            // console.log((chains)
             if (depth > 20) {
-                console.log(chains)
-                console.log(depth)
+                // console.log((chains)
+                // console.log((depth)
                 process.exit()
             }
 
@@ -544,23 +544,23 @@ const MoleculeAI = (container_molecule) => {
 
                         //const chain_index = chains.length  - 1 < 0 ? chains.length  : chains.length - 1
 
-                        // console.log("Entering loop depth = " + depth + " chain index=" + chain_index + " index=" + index)
+                        // console.log(("Entering loop depth = " + depth + " chain index=" + chain_index + " index=" + index)
 
                         if (undefined === chains[chain_index]) {
-                            // console.log("Adding new branch col=" + col + ' loop index=' + index + ' depth= ' + depth)
-                            //console.log(chains)
+                            // console.log(("Adding new branch col=" + col + ' loop index=' + index + ' depth= ' + depth)
+                            //// console.log((chains)
                             // chains[chain_index] = chains[chain_index - 1].slice(0, col)
                             if (undefined === chains[chain_index - 1] ) {
                                 // "C  O   C  (C) (C)   C   O")
                                 //  3  4   5  (9) (13)  16  18
                                 chain_index = chain_index - 1
-                                //console.log(chain_index)
-                                //console.log(chains)
-                                //console.log(bond.atom_index)
+                                //// console.log((chain_index)
+                                //// console.log((chains)
+                                //// console.log((bond.atom_index)
                             }
                             chains[chain_index] = _.cloneDeep(chains[chain_index - 1]).slice(0, depth)
-                            //console.log("Added new branch col=" + col )
-                            //console.log(chains)
+                            //// console.log(("Added new branch col=" + col )
+                            //// console.log((chains)
                         }
 
 
@@ -570,9 +570,9 @@ const MoleculeAI = (container_molecule) => {
                             // "C  O   C  (C) (C)   C   O")
                             //  3  4   5  (9) (13)  16  18
                             // [ [ 3, 4, 5, 9 ], [ 3, 4, 5, 13 ], [ 3, 4, 5, 16, 18 ] ]
-                            //  console.log(chain_index)
-                            // console.log(chains)
-                            // console.log(bond.atom_index)
+                            // console.log((chain_index)
+                            // console.log((chains)
+                            // console.log((bond.atom_index)
                         }
                         chains[chain_index].push(bond.atom_index)
 
@@ -591,7 +591,7 @@ const MoleculeAI = (container_molecule) => {
             /*
                         // "C  O   C  (C) (C)   C   O")
             //  3  4   5  (9) (13)  16  18
-            //console.log(this.compressed())
+            //// console.log((this.compressed())
             /*
    [ [ 'C', 3, [ '4  O' ] ],
   [ 'O', 4, [ '3  C', '5  C' ] ],
@@ -631,8 +631,8 @@ VMolecule
 
 
              */
-            //  console.log("Returning chains from this.chains() depth=" + depth + '  chain index=' + chain_index)
-            // console.log(chains)
+            // console.log(("Returning chains from this.chains() depth=" + depth + '  chain index=' + chain_index)
+            // console.log((chains)
             return chains
 
 
@@ -674,7 +674,7 @@ VMolecule
 
         "findNucleophileIndex": function() {
 
-            //console.log(VMolecule(container_molecule).compressed())
+            //// console.log((VMolecule(container_molecule).compressed())
 
             // Look for negatively charged atom
             const negative_atom_index = _.findIndex(container_molecule[0][1], (atom, index)=>{
@@ -685,7 +685,7 @@ VMolecule
                 return atom_object.isNegativelyCharged()
             })
 
-          //  console.log('negative atom index:'+negative_atom_index)
+          // console.log(('negative atom index:'+negative_atom_index)
 
             if (negative_atom_index > -1) {
                 return negative_atom_index
@@ -707,7 +707,7 @@ VMolecule
 
             // Look for OH
             const hyroxyl_oxygen_index = this.findHydroxylOxygenIndex()
-          //  console.log('hyroxyl_oxygen_index:'+hyroxyl_oxygen_index)
+          // console.log(('hyroxyl_oxygen_index:'+hyroxyl_oxygen_index)
             if (hyroxyl_oxygen_index > -1) {
                 return hyroxyl_oxygen_index
             }
@@ -718,7 +718,7 @@ VMolecule
             const nitrogen_index = _.findIndex((container_molecule[0][1]), (atom, index)=>{
                 return atom[0] === 'N'
             })
-         //   console.log('nitrogen_index:'+nitrogen_index)
+         //   // console.log(('nitrogen_index:'+nitrogen_index)
             if (nitrogen_index > -1) {
                 return nitrogen_index
             }
@@ -1005,8 +1005,8 @@ VMolecule
                     }
                 )
 
-              //  console.log('2MoleculeAI.js electrophile index: ' + i)
-              //  console.log(carbons.length)
+              // console.log(('2MoleculeAI.js electrophile index: ' + i)
+              // console.log((carbons.length)
                // process.exit()
 
                 if (carbons.length > 0 && container_molecule[0][1][carbons[0].atomIndex][4] !=="-") {

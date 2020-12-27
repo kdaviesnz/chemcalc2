@@ -72,9 +72,9 @@ class Reaction {
         this.MoleculeAI = require("../Stateless/MoleculeAI")(this.container_substrate)
 
         if (this.MoleculeAI.validateMolecule() === false) {
-            console.log('Reaction.js molecule is not valid')
-            console.log(VMolecule(this.container_substrate).compressed())
-            console.log(i)
+            // console.log('Reaction.js molecule is not valid')
+            // console.log(VMolecule(this.container_substrate).compressed())
+            // console.log(i)
         }
     }
 
@@ -125,14 +125,14 @@ class Reaction {
         this.setMoleculeAI()
 
         if (this.container_substrate[0][1][oxygen_index][4] !=="") {
-            console.log("Reaction.js makeOxygenCarbonDoubleBoneReverse() Oxygen atom has a charge")
-            console.log(VMolecule(this.container_substrate).compressed())
-            console.log(i)
+            // console.log("Reaction.js makeOxygenCarbonDoubleBoneReverse() Oxygen atom has a charge")
+            // console.log(VMolecule(this.container_substrate).compressed())
+            // console.log(i)
         }
 
         if (this.container_substrate[0][1][carbon_bonds[0].atom_index][4]!=="") {
-            console.log("Reaction.js makeOxygenCarbonDoubleBoneReverse() Carbon atom has a charge")
-            console.log(i)
+            // console.log("Reaction.js makeOxygenCarbonDoubleBoneReverse() Carbon atom has a charge")
+            // console.log(i)
         }
 
         return true
@@ -173,8 +173,8 @@ class Reaction {
 
     breakCarbonOxygenDoubleBondReverse() {
 
-        console.log('Reaction.js breakCarbonOxygenDoubleBondReverse()')
-        console.log(VMolecule(this.container_substrate).compressed())
+        // console.log('Reaction.js breakCarbonOxygenDoubleBondReverse()')
+        // console.log(VMolecule(this.container_substrate).compressed())
 
         // Make C=O bond
         const oxygen_index = this.MoleculeAI.findOxygenAttachedToCarbonIndex()
@@ -224,9 +224,9 @@ class Reaction {
 
         // Check
         if (this.container_substrate[0][1][oxygen_index][4]!=="") {
-            console.log("Reaction.js breakCarbonOxygenDoubleBondReverse() oxygen atom should not have a positive charge")
-            console.log(VMolecule(this.container_substrate).compressed())
-            console.log(i)
+            // console.log("Reaction.js breakCarbonOxygenDoubleBondReverse() oxygen atom should not have a positive charge")
+            // console.log(VMolecule(this.container_substrate).compressed())
+            // console.log(i)
         }
 
         return true
@@ -472,8 +472,8 @@ class Reaction {
 
     transferProtonReverse() {
 
-        console.log('Reaction.js transferProtonReverse()')
-        console.log(VMolecule(this.container_substrate).compressed())
+        // console.log('Reaction.js transferProtonReverse()')
+        // console.log(VMolecule(this.container_substrate).compressed())
             // Get index of N
             const nucleophile_index = _.findIndex(this.container_substrate[0][1], (atom, index)=>{
                 return atom[0] === 'N' && atom[4] !== "+"
@@ -527,9 +527,9 @@ class Reaction {
 
 
         if (this.MoleculeAI.validateMolecule() === false) {
-            console.log('Reaction.js molecule is not valid')
-            console.log('Method: transferProtonReverse()')
-            console.log(VMolecule(this.container_substrate).compressed())
+            // console.log('Reaction.js molecule is not valid')
+            // console.log('Method: transferProtonReverse()')
+            // console.log(VMolecule(this.container_substrate).compressed())
             process.exit()
         }
 
@@ -624,9 +624,9 @@ class Reaction {
         this.MoleculeAI.findWaterOxygenIndex().should.be.greaterThan(-1)
 
         if (this.MoleculeAI.validateMolecule() === false) {
-            console.log('Reaction.js molecule is not valid (hydrate())')
-            console.log('Method: hydrate()')
-            console.log(VMolecule(this.container_substrate).compressed())
+            // console.log('Reaction.js molecule is not valid (hydrate())')
+            // console.log('Method: hydrate()')
+            // console.log(VMolecule(this.container_substrate).compressed())
             process.exit()
         }
 
@@ -1601,9 +1601,9 @@ class Reaction {
 
     protonateReverse() {
 
-      //  console.log("protonateReverse()")
-      //  console.log(VMolecule(this.container_substrate).compressed())
-      //  console.log(VMolecule(this.container_reagent).compressed())
+      //  // console.log("protonateReverse()")
+      //  // console.log(VMolecule(this.container_substrate).compressed())
+      //  // console.log(VMolecule(this.container_reagent).compressed())
 
         // 1. Reverse protonation of OH group on substrate by OH group on reagent
         // https://en.wikipedia.org/wiki/Leuckart_reaction
@@ -1762,11 +1762,7 @@ class Reaction {
 
                 free_electrons = shared_electrons
                 // Set charge on the former double bonded carbon
-                this.container_substrate[0][1][double_bonds[0].atom_index][4] =
-                    this.container_substrate[0][1][double_bonds[0].atom_index][4] === "-"
-                    || this.container_substrate[0][1][double_bonds[0].atom_index][4] < 0? 0: "+"
-
-
+                this.setChargeOnSubstrateAtom(double_bonds[0].atom_index)
                 proton.push(free_electrons[0])
                 proton.push(free_electrons[1])
 
@@ -1776,10 +1772,7 @@ class Reaction {
 
 
         } else {
-            this.container_substrate[0][1][atom_nucleophile_index][4] =
-                this.container_substrate[0][1][atom_nucleophile_index][4] === "-"
-                || this.container_substrate[0][1][atom_nucleophile_index][4] < 0? 0: "+"
-
+            this.setChargeOnSubstrateAtom(atom_nucleophile_index)
         }
 
         free_electrons.length.should.be.greaterThan(1)
