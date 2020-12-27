@@ -227,7 +227,6 @@ class ReactionAI {
     }
     
     synthesiseCallback(substrate, reagent, commands, caller, depth) {
-           // console.log('synthesiseCallback()')
           // console.log("---------------------------")
           // console.log(VMolecule(substrate).compressed())
           // console.log('Commands:')
@@ -243,7 +242,6 @@ class ReactionAI {
 
         // Proceed only if first step or there is a charge on the substrate.
         if (commands.length === 0 || this.hasCharge(_.cloneDeep(substrate)) !== -1) {
-
 
             this.carbocationShiftReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
 
@@ -360,8 +358,8 @@ class ReactionAI {
         // https://en.wikipedia.org/wiki/Leuckart_reaction (2)
 
         let r = null
-        if (moleculeAI.findIndexOfCarbocationAttachedtoCarbon() !== -1) {
-            r = reverse_reaction.hydrate()
+
+            r = reverse_reaction.dehydrateReverse()
 
             const hydrated_substrate = _.cloneDeep(reverse_reaction.container_substrate)
             const hydrated_reagent = _.cloneDeep(reverse_reaction.container_reagent)
@@ -421,7 +419,7 @@ class ReactionAI {
             } else {
                    // console.log("dehydrationReversal() reverse reaction failed")
             }
-        }
+
 
 
     }

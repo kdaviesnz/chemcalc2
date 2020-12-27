@@ -588,58 +588,18 @@ class Reaction {
     }
 
     hydrate(electrophile_index) {
-        const water_molecule = MoleculeFactory("O")
-        water_molecule[1][2][4]="+"
-        //this.container_reagent = [water_molecule,1]
-        //this.setReagentAI()
-        const water_ai = require("../Stateless/MoleculeAI")([water_molecule,1])
-        const water_oxygen_index = water_ai.findWaterOxygenIndex()
-        const electrons = CAtom(water_molecule[1][water_oxygen_index],
-            water_oxygen_index,
-            [water_molecule,1]).freeElectrons()
-        electrons.length.should.be.greaterThan(1)
-        if (undefined === electrophile_index) {
-            electrophile_index = this.MoleculeAI.findElectrophileIndex("O", "C")
-        }
-
-        if (electrophile_index === -1) {
-            return false
-        }
-
-        // Leuckact Wallach reaction
-        if (this.container_substrate[0][1][electrophile_index][4] !== "+") {
-            return false
-        }
-
-        this.container_substrate[0][1][electrophile_index].push(electrons[0])
-        this.container_substrate[0][1][electrophile_index].push(electrons[1])
-        this.container_substrate[0][1][electrophile_index][4] = 0
-
-        this.container_substrate[0][1].push(water_molecule[1][0])
-        this.container_substrate[0][1].push(water_molecule[1][1])
-        this.container_substrate[0][1].push(water_molecule[1][2])
-
-        this.setMoleculeAI()
-
-        // Check we have a water molecule attached to main molecule
-        this.MoleculeAI.findWaterOxygenIndex().should.be.greaterThan(-1)
-
-        if (this.MoleculeAI.validateMolecule() === false) {
-            // console.log('Reaction.js molecule is not valid (hydrate())')
-            // console.log('Method: hydrate()')
-            // console.log(VMolecule(this.container_substrate).compressed())
-            process.exit()
-        }
-
-        return true
-
+        const hydrationAI = new HydrationAI(this)
+        hydrationAI.hydrate(electrophile_index)
     }
 
     dehydrate() {
-
         const hydrationAI = new HydrationAI(this)
         hydrationAI.dehydrate()
+    }
 
+    dehydrateReverse() {
+        const hydrationAI = new HydrationAI(this)
+        hydrationAI.dehydrateReverse()
     }
 
     __removeGroup(nucleophile_index, electrophile_index, moleculeAI, substrate) {

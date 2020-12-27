@@ -197,12 +197,24 @@ const MoleculeAI = (container_molecule) => {
     // No method should change state of container_molecule
     return {
 
+        findImineCarbonIndex: () =>{
+            return _.findIndex(container_molecule[0][1], (atom, index)=>{
+                if (atom[0]==="C") {
+                    const c_obj = CAtom(container_molecule[0][1][index], index, container_molecule)
+                    const n_double_bonds = c_obj.indexedDoubleBonds("").filter((bond)=>{
+                        return bond.atom[0] === "N"
+                    })
+                    return n_double_bonds.length === 1
+                }
+                return false
+            })
+        },
 
         validateMolecule: () => {
             return _.findIndex(container_molecule[0][1], (atom, index)=> {
                 const a_obj = CAtom(container_molecule[0][1][index], index, container_molecule)
                 // Charges
-                if (atom[0] == "O") {
+                if (atom[0] === "O") {
 
                     if ((a_obj.bondCount() + a_obj.doubleBondCount()) > 3) {
                         // console.log(("validateMolecule O")
