@@ -1722,7 +1722,14 @@ class Reaction {
 
     protonate() {
 
+       // console.log("Reaction.js protonate()")
+       // console.log(VMolecule(this.container_substrate).compressed())
+       // console.log(y)
+
+
         let atom_nucleophile_index = this.MoleculeAI.findNucleophileIndex()
+
+
 
 
         if (atom_nucleophile_index === -1 && !this.MoleculeAI.isWater()) {
@@ -1743,7 +1750,10 @@ class Reaction {
         proton[0].should.be.equal('H')
 
 
+        // console.log("Nucleophile index:" + atom_nucleophile_index)
+
         let free_electrons = CAtom(this.container_substrate[0][1][atom_nucleophile_index], atom_nucleophile_index, this.container_substrate).freeElectrons()
+
 
         if (free_electrons.length === 0) {
 
@@ -1778,9 +1788,15 @@ class Reaction {
         free_electrons.length.should.be.greaterThan(1)
 
 
+        proton.push(free_electrons[0])
+        proton.push(free_electrons[1])
         this.container_substrate[0][1].push(proton)
 
         this.container_substrate[0][1].length.should.not.equal(atoms.length)
+
+        // console.log("Reaction.js PROTONATE")
+        // console.log(VMolecule(this.container_substrate).compressed())
+        // console.log(x)
 
         this.setMoleculeAI()
 

@@ -96,13 +96,96 @@ class ReactionAI {
                 return command['name']
             }))
 
-            console.log("Starting substrate (first command)")
-            console.log(VMolecule(commands[commands.length-1]['starting substrate']).compressed())
+            //console.log(n)
 
-            console.log("Starting reagent (first command)")
-            console.log(VMolecule(commands[commands.length-1]['starting reagent']).compressed())
 
-            console.log(i)
+            if (true) {
+                console.log("Starting substrate (first command)")
+                console.log(VMolecule(commands[commands.length - 1]['starting substrate']).compressed())
+                console.log(VMolecule(commands[commands.length - 1]['starting substrate']).canonicalSMILES())
+
+                console.log("Starting reagent (first command)")
+                console.log(VMolecule(commands[commands.length - 1]['starting reagent']).compressed())
+
+                const reaction_object = commands[commands.length - 1]['function']()
+                console.log("Calculated substrate " + commands[commands.length - 1]["name"])
+                console.log(VMolecule(reaction_object.container_substrate).compressed())
+
+                console.log("----------------------------------")
+
+
+                console.log("Starting substrate (second command)")
+                console.log(VMolecule(commands[commands.length - 2]['starting substrate']).compressed())
+
+                console.log("Starting reagent (second command)")
+                console.log(VMolecule(commands[commands.length - 2]['starting reagent']).compressed())
+
+                const reaction_object2 = commands[commands.length - 2]['function']()
+                console.log("Calculated substrate " + commands[commands.length - 2]["name"])
+                console.log(VMolecule(reaction_object2.container_substrate).compressed())
+
+                console.log("----------------------------------")
+
+
+                console.log("Starting substrate (third command)")
+                console.log(VMolecule(commands[commands.length - 3]['starting substrate']).compressed())
+
+                console.log("Starting reagent (third command)")
+                console.log(VMolecule(commands[commands.length - 3]['starting reagent']).compressed())
+
+                const reaction_object3 = commands[commands.length - 3]['function']()
+                console.log("Calculated substrate " + commands[commands.length - 3]["name"])
+                console.log(VMolecule(reaction_object3.container_substrate).compressed())
+
+                console.log("----------------------------------")
+
+                console.log("Starting substrate (fourth command)")
+                console.log(VMolecule(commands[commands.length - 4]['starting substrate']).compressed())
+
+                console.log("Starting reagent (fourth command)")
+                console.log(VMolecule(commands[commands.length - 4]['starting reagent']).compressed())
+
+                const reaction_object4 = commands[commands.length - 4]['function']()
+                console.log("Calculated substrate " + commands[commands.length - 4]["name"])
+                console.log(VMolecule(reaction_object4.container_substrate).compressed())
+                console.log("Calculated reagent " + commands[commands.length - 4]["name"])
+                console.log(VMolecule(reaction_object4.container_reagent).compressed())
+
+                console.log("----------------------------------")
+
+                console.log("Starting substrate (fifth command)")
+                console.log(VMolecule(commands[commands.length - 5]['starting substrate']).compressed())
+
+                console.log("Starting reagent (fifth command)")
+                console.log(VMolecule(commands[commands.length - 5]['starting reagent']).compressed())
+
+                const reaction_object5 = commands[commands.length - 5]['function']()
+                console.log("Calculated substrate " + commands[commands.length - 5]["name"])
+                console.log(VMolecule(reaction_object5.container_substrate).compressed())
+                console.log("Calculated reagent " + commands[commands.length - 5]["name"])
+                console.log(VMolecule(reaction_object5.container_reagent).compressed())
+
+                console.log("----------------------------------")
+
+                console.log("Starting substrate (last command)")
+                console.log(VMolecule(commands[commands.length - 6]['starting substrate']).compressed())
+
+                console.log("Starting reagent (last command)")
+                console.log(VMolecule(commands[commands.length - 6]['starting reagent']).compressed())
+
+                const reaction_object6 = commands[commands.length - 6]['function']()
+                console.log("Calculated substrate " + commands[commands.length - 6]["name"])
+                console.log(VMolecule(reaction_object6.container_substrate).compressed())
+                console.log(VMolecule(reaction_object6.container_substrate).canonicalSMILES())
+                console.log("Calculated reagent " + commands[commands.length - 6]["name"])
+                console.log(VMolecule(reaction_object6.container_reagent).compressed())
+
+                console.log("----------------------------------")
+
+
+                console.log(i)
+
+            }
 
             // console.log('starting substrate:')
             // console.log(VMolecule(commands[commands.length-1]['starting substrate']).canonicalSMILES())
