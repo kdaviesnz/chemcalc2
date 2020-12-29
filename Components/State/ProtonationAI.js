@@ -5,7 +5,7 @@ const _ = require('lodash');
 const CAtom = require('../../Controllers/Atom')
 
 // deprotonateCarbonyl()
-// protponateCarbonyl()
+// protonateCarbonyl()
 // deprotonateOxygenOnDoubleBond()
 // protonateOxygenOnDoubleBond()
 // protonateReverse()

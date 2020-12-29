@@ -81,65 +81,14 @@ class Reaction {
         }
     }
 
+    makeCarbonNitrogenDoubleBondReverse() {
+        const bondsAI = new BondsAI(this)
+        return bondsAI.makeCarbonNitrogenDoubleBondReverse()
+    }
+
     makeOxygenCarbonDoubleBondReverse() {
-
-
-        const oxygen_index = this.MoleculeAI.findOxygenOnDoubleBondIndex()
-
-        if(oxygen_index === -1) {
-            return false
-        }
-
-        const oxygen = CAtom(this.container_substrate[0][1][oxygen_index], oxygen_index, this.container_substrate)
-        const carbon_bonds = oxygen.indexedBonds("").filter((bond)=>{
-            return bond.atom[0] === "C"
-        })
-
-        if (carbon_bonds.length === 0) {
-            return false
-        }
-
-        const shared_electrons = carbon_bonds[0].shared_electrons
-        // Remove electrons from carbon
-        _.remove(this.container_substrate[0][1][carbon_bonds[0].atom_index], (e)=>{
-            return e === shared_electrons[0] || e === shared_electrons[1]
-        })
-
-        // Create proton and add it to the oxygen
-        const proton = AtomFactory("H")
-        proton.pop()
-        proton.push(shared_electrons[0])
-        proton.push(shared_electrons[1])
-        this.container_substrate[0][1].push(proton)
-
-        // Charges
-        //this.container_substrate[0][1][oxygen_index][4] = ""
-        this.setChargeOnSubstrateAtom(oxygen_index)
-        /*
-        if (undefined !== this.rule && this.rule.mechanism === "pinacol rearrangement") {
-            this.container_substrate[0][1][carbon_bonds[0].atom_index][4] = "+"
-        } else {
-            this.container_substrate[0][1][carbon_bonds[0].atom_index][4] = "-"
-        }
-         */
-        //this.container_substrate[0][1][carbon_bonds[0].atom_index][4] = "+"
-        this.setChargeOnSubstrateAtom(carbon_bonds[0].atom_index)
-
-        this.setMoleculeAI()
-
-        if (this.container_substrate[0][1][oxygen_index][4] !=="") {
-            // console.log("Reaction.js makeOxygenCarbonDoubleBoneReverse() Oxygen atom has a charge")
-            // console.log(VMolecule(this.container_substrate).compressed())
-            // console.log(i)
-        }
-
-        if (this.container_substrate[0][1][carbon_bonds[0].atom_index][4]!=="") {
-            // console.log("Reaction.js makeOxygenCarbonDoubleBoneReverse() Carbon atom has a charge")
-            // console.log(i)
-        }
-
-        return true
-
+        const bondsAI = new BondsAI(this)
+        return bondsAI.makeCarbonNitrogenDoubleBondReverse()
     }
 
     setChargeOnSubstrateAtom(index) {

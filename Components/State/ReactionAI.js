@@ -260,6 +260,9 @@ class ReactionAI {
 
             this.addProtonFromReagentToHydroxylGroupReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
 
+            this.makeCarbonNitrogenDoubleBondReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+
+
          } else {
 
 
@@ -284,7 +287,58 @@ class ReactionAI {
 
         let r = null
         r = reverse_reaction.addProtonFromReagentToHydroxylGroupReverse()
+
+        if (r) {
+            const substrate_proton_removed = _.cloneDeep(reverse_reaction.container_substrate)
+            const reagent_with_proton_added = _.cloneDeep(reverse_reaction.container_reagent)
+
+            commands.push({
+                'name':'addProtonFromReagentToHydroxylGroup',
+                'starting substrate': substrate_proton_removed,
+                'starting reagent': reagent_with_proton_added,
+                'finish substrate': target,
+                'finish reagent': reagent,
+                'function':()=>{
+                    const reaction = new Reaction(substrate_proton_removed, reagent_with_proton_added, {})
+                    reaction.addProtonFromReagentToHydroxylGroup()
+                    return reaction
+                }})
+            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'addProtonFromReagentToHydroxylGroupReversal()', depth+1)
+        }
     }
+
+    makeCarbonNitrogenDoubleBondReversal(target, reagent, moleculeAI, commands, caller, depth) {
+
+        console.log("ReactionAI.js Calling makeCarbonNitrogenDoubleBondReversal() caller=" + caller)
+
+        if (caller === "makeCarbonNitrogenDoubleBondReversal()") {
+            return
+        }
+
+        const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
+
+        let r = null
+        r = reverse_reaction.makeCarbonNitrogenDoubleBondRevere()
+
+        if (false) {
+            const substrate_carbon_nitrogen_double_bond_removed = _.cloneDeep(reverse_reaction.container_substrate)
+            const reagent_after_reverse_reaction = _.cloneDeep(reverse_reaction.container_reagent)
+
+            commands.push({
+                'name':'makeCarbonNitrogenDoubleBond',
+                'starting substrate': substrate_carbon_nitrogen_double_bond_removed,
+                'starting reagent': reagent_after_reverse_reaction,
+                'finish substrate': target,
+                'finish reagent': reagent,
+                'function':()=>{
+                    const reaction = new Reaction(substrate_carbon_nitrogen_double_bond_removed, reagent_after_reverse_reaction, {})
+                    reaction.makeCarbonNitrogenDoubleBond()
+                    return reaction
+                }})
+            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'addProtonFromReagentToHydroxylGroupReversal()', depth+1)
+        }
+    }
+
 
     oxygenCarbonDoubleBondReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
