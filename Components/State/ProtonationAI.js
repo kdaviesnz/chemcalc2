@@ -338,6 +338,14 @@ class ProtonationAI {
         this.reaction.addProtonToReagent()
         this.reaction.setReagentAI()
 
+        if (this.reaction.MoleculeAI.validateMolecule() === false) {
+            console.log('ProtonationAI.js molecule is not valid (addProtonFromReagentToHydroxylGroupReverse())')
+            console.log('Method: addProtonFromReagentToHydroxylGroupReverse()')
+            console.log(VMolecule(this.container_substrate).compressed())
+            console.log(i)
+        }
+
+
         console.log(VMolecule(this.reaction.container_substrate).compressed())
 
         console.log("ProtonationAI addProtonFromReagentToHydroxylGroupReverse() fin")
