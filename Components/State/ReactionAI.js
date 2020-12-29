@@ -258,6 +258,8 @@ class ReactionAI {
 
             this.bondSubstrateToReagentReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
 
+            this.addProtonFromReagentToHydroxylGroupReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+
          } else {
 
 
@@ -268,6 +270,20 @@ class ReactionAI {
         }
 
 
+    }
+
+    addProtonFromReagentToHydroxylGroupReversal(target, reagent, moleculeAI, commands, caller, depth) {
+
+        console.log("ReactionAI.js Calling addProtonFromReagentToHydroxylGroupReversal() caller=" + caller)
+
+        if (caller === "addProtonFromReagentToHydroxylGroupReversal()") {
+            return
+        }
+
+        const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
+
+        let r = null
+        r = reverse_reaction.addProtonFromReagentToHydroxylGroupReverse()
     }
 
     oxygenCarbonDoubleBondReversal(target, reagent, moleculeAI, commands, caller, depth) {
@@ -363,7 +379,6 @@ class ReactionAI {
 
             const hydrated_substrate = _.cloneDeep(reverse_reaction.container_substrate)
             const hydrated_reagent = _.cloneDeep(reverse_reaction.container_reagent)
-
 
 
 

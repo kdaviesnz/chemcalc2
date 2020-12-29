@@ -8,6 +8,7 @@ const Set = require('../../Models/Set')
 const Families = require('../../Models/Families')
 const uniqid = require('uniqid');
 const HydrationAI = require('../../Components/State/HydrationAI')
+const ProtonationAI = require('../../Components/State/ProtonationAI')
 
 class Reaction {
 
@@ -583,17 +584,17 @@ class Reaction {
 
     hydrate(electrophile_index) {
         const hydrationAI = new HydrationAI(this)
-        hydrationAI.hydrate(electrophile_index)
+        return hydrationAI.hydrate(electrophile_index)
     }
 
     dehydrate() {
         const hydrationAI = new HydrationAI(this)
-        hydrationAI.dehydrate()
+        return hydrationAI.dehydrate()
     }
 
     dehydrateReverse() {
         const hydrationAI = new HydrationAI(this)
-        hydrationAI.dehydrateReverse()
+        return hydrationAI.dehydrateReverse()
     }
 
     __removeGroup(nucleophile_index, electrophile_index, moleculeAI, substrate) {
@@ -1081,13 +1082,13 @@ class Reaction {
     }
 
     deprotonateOxygenOnDoubleBond() {
-        const protationAI = new ProtatationAI(this)
-        protationAI.deprotonateOxygenOnDoubleBond()
+        const protationAI = new ProtonationAI(this)
+        return protationAI.deprotonateOxygenOnDoubleBond()
     }
 
     protonateOxygenOnDoubleBond() {
-        const protationAI = new ProtatationAI(this)
-        protationAI.protonateOxygenOnDoubleBond()
+        const protationAI = new ProtonationAI(this)
+        return protationAI.protonateOxygenOnDoubleBond()
     }
 
     removeMetal() {
@@ -1469,12 +1470,12 @@ class Reaction {
     }
 
     protonateReverse() {
-        const protationAI = new ProtatationAI(this)
+        const protationAI = new ProtonationAI(this)
         return protationAI.protonateReverse()
     }
 
     deprotonate() {
-        const protationAI = new ProtatationAI(this)
+        const protationAI = new ProtonationAI(this)
         return protationAI.deprotonate()
     }
 
@@ -1492,107 +1493,8 @@ class Reaction {
 
 
     protonate() {
-
-       // console.log("Reaction.js protonate()")
-       // console.log(VMolecule(this.container_substrate).compressed())
-       // console.log(y)
-
-
-        let atom_nucleophile_index = this.MoleculeAI.findNucleophileIndex()
-
-
-
-
-        if (atom_nucleophile_index === -1 && !this.MoleculeAI.isWater()) {
-            // try carbon atom
-            atom_nucleophile_index = _.findIndex(_.cloneDeep(this.container_substrate[0][1]), (atom)=>{
-                return atom[0] === "C"
-            })
-        }
-        atom_nucleophile_index.should.be.an.Number()
-        atom_nucleophile_index.should.be.greaterThan(-1)
-
-        const atoms = _.cloneDeep(this.container_substrate[0][1])
-
-        const proton = AtomFactory("H", 0)
-        proton.pop()
-
-        proton.length.should.be.equal(5)
-        proton[0].should.be.equal('H')
-
-
-        // console.log("Nucleophile index:" + atom_nucleophile_index)
-
-        let free_electrons = CAtom(this.container_substrate[0][1][atom_nucleophile_index], atom_nucleophile_index, this.container_substrate).freeElectrons()
-
-
-        if (free_electrons.length === 0) {
-
-            // Check for double bond and if there is one break it and get shared electrons from that.
-            const double_bonds = CAtom(this.container_substrate[0][1][atom_nucleophile_index], atom_nucleophile_index, this.container_substrate).indexedDoubleBonds("")
-
-            if (double_bonds.length > 0) {
-                const db_atom = CAtom(this.container_substrate[0][1][double_bonds[0].atom_index], double_bonds[0].atom_index, this.container_substrate)
-
-                const shared_electrons = _.cloneDeep(double_bonds[0].shared_electrons).slice(0,2)
-
-                // Remove double bond
-                _.remove(this.container_substrate[0][1][double_bonds[0].atom_index], (v)=>{
-                    return v === shared_electrons[0] || v === shared_electrons[1]
-                })
-
-                free_electrons = shared_electrons
-                // Set charge on the former double bonded carbon
-                this.setChargeOnSubstrateAtom(double_bonds[0].atom_index)
-                proton.push(free_electrons[0])
-                proton.push(free_electrons[1])
-
-            }
-
-
-
-
-        } else {
-            this.setChargeOnSubstrateAtom(atom_nucleophile_index)
-        }
-
-        free_electrons.length.should.be.greaterThan(1)
-
-
-        proton.push(free_electrons[0])
-        proton.push(free_electrons[1])
-        this.container_substrate[0][1].push(proton)
-
-        this.container_substrate[0][1].length.should.not.equal(atoms.length)
-
-        // console.log("Reaction.js PROTONATE")
-        // console.log(VMolecule(this.container_substrate).compressed())
-        // console.log(x)
-
-        this.setMoleculeAI()
-
-        // Remove proton from the reagent
-        if (null !== this.container_reagent) {
-
-            const reagent_proton_index = this.ReagentAI.findProtonIndex()
-
-            // Set charge
-            const reagent_bonds = CAtom(this.container_reagent[0][1][reagent_proton_index], reagent_proton_index, this.container_reagent).indexedBonds("").filter(
-                (bond) => {
-                    return bond.atom[0] !== "H"
-                }
-            )
-
-            this.container_reagent[0][1][reagent_bonds[0].atom_index][4] = this.container_reagent[0][1][reagent_bonds[0].atom_index][4] === "+"
-            ||  (this.container_reagent[0][1][reagent_bonds[0].atom_index][4]) * 1 < 0? 0: "-"
-
-            _.remove(this.container_reagent[0][1], (v, i) => {
-                return i === reagent_proton_index
-            })
-            this.setReagentAI()
-        }
-
-
+        const protationAI = new ProtonationAI(this)
+        return protationAI.protonate()
     }
 
 
@@ -1694,24 +1596,15 @@ class Reaction {
     }
 
     removeProtonFromWater() {
-
-        const water_oxygen_index = this.MoleculeAI.findWaterOxygenIndex()
-        water_oxygen_index.should.be.greaterThan(-1)
-
-        this.container_substrate[0][1][water_oxygen_index][0].should.be.equal("O")
-
-        this.container_substrate[0][1] = this.removeProtonFromAtom(this.MoleculeAI, this.container_substrate[0][1], water_oxygen_index)
-
-
-        this.setMoleculeAI()
-
-        this.addProtonToReagent()
-        this.setReagentAI()
-
-        return true
-
-
+        const protationAI = new ProtonationAI(this)
+        return protationAI.removeProtonFromWater()
     }
+
+    addProtonFromReagentToHydroxylGroupReverse() {
+        const protationAI = new ProtonationAI(this)
+        return protationAI.addProtonFromReagentToHydroxylGroupReverse()
+    }
+
 
     addProtonFromReagentToSubstrate() {
 
@@ -1785,35 +1678,8 @@ class Reaction {
     }
 
     addProtonFromReagentToHydroxylGroup() {
-
-        const proton_index = this.ReagentAI.findProtonIndex()
-
-
-
-        proton_index.should.be.greaterThan(-1)
-
-
-
-
-        const reagent_atoms = _.cloneDeep(this.container_reagent[0][1])
-
-        const proton = CAtom(this.container_reagent[0][1][proton_index], proton_index, this.container_reagent)
-        const reagent_atom_index = proton.indexedBonds("").pop().atom_index
-        this.container_reagent[0][1][reagent_atom_index][4] = this.container_reagent[0][1][reagent_atom_index][4] === "+"?"":"-"
-        this.removeProtonFromReagent(proton_index)
-        this.container_reagent[0][1].length.should.not.equal(reagent_atoms.length)
-        const hydroxylOxygenIndex = this.MoleculeAI.findHydroxylOxygenIndex()
-
-
-        this.container_substrate[0][1][hydroxylOxygenIndex][0].should.be.equal("O")
-        const substrate_atoms = _.cloneDeep(this.container_substrate[0][1])
-        this.addProtonToSubstrate(this.container_substrate[0][1][hydroxylOxygenIndex], hydroxylOxygenIndex) // changes this.container_substrate
-
-        this.container_substrate[0][1].length.should.not.equal(substrate_atoms.length)
-
-        this.setMoleculeAI()
-        this.setReagentAI()
-
+        const protationAI = new ProtonationAI(this)
+        return protationAI.addProtonFromReagentToHydroxylGroup()
     }
 
     addProtonFromReagentToNonHydroxylGroup() {

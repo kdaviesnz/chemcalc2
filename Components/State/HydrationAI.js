@@ -104,7 +104,7 @@ class HydrationAI {
 
 
         console.log(VMolecule(this.reaction.container_substrate).compressed())
-        console.log(nnnnno)
+        console.log("HydrationAI() dehydrateReverse() fin.")
         return true
     }
 
