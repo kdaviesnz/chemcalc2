@@ -3,6 +3,7 @@ const MoleculeFactory = require('../../Models/MoleculeFactory')
 const VMolecule = require('../Stateless/Views/Molecule')
 const _ = require('lodash');
 const CAtom = require('../../Controllers/Atom')
+const AtomFactory = require('../../Models/AtomFactory')
 
 // makeNitrogenCarbonTripleBond()
 // makeOxygenCarbonDoubleBond()
@@ -12,6 +13,7 @@ const CAtom = require('../../Controllers/Atom')
 // breakCarbonDoubleBond()
 // makeCarbonNitrogenDoubleBondReverse()
 // makeOxygenCarbonDoubleBondReverse()
+// breakCarbonOxygenDoubleBondReverse()
 
 class BondsAI {
 
@@ -473,6 +475,86 @@ class BondsAI {
         //console.log(opo)
 
         return true
+
+    }
+
+    breakCarbonOxygenDoubleBondReverse() {
+
+        // console.log('Reaction.js breakCarbonOxygenDoubleBondReverse()')
+        // console.log(VMolecule(this.reaction.container_substrate).compressed())
+
+        // Make C=O bond
+        const oxygen_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=> {
+            if ( atom[0] !== "O") {
+                return false
+            }
+            if ( atom[4] !== "-") {
+                return false
+            }
+            const o = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate)
+            const c_bonds = o.indexedBonds("").filter((bond)=>{
+                return bond.atom[0] === "C"
+            })
+            return c_bonds.length > 0
+        })
+
+
+        if (oxygen_index === -1 || this.reaction.container_substrate[0][1][oxygen_index][4]=== "+") {
+            return false
+        }
+
+
+        const oxygen = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
+
+
+        const carbon_bonds = oxygen.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "C" && bond.atom[4] !== "" && bond.atom[4] !== 0
+        })
+        if (carbon_bonds.length === 0) {
+            return false
+        }
+
+        const carbon_index = carbon_bonds[0].atom_index
+
+        const freeElectrons = oxygen.freeElectrons()
+
+        // Add electrons to carbon
+        this.reaction.container_substrate[0][1][carbon_index].push(freeElectrons[0])
+        this.reaction.container_substrate[0][1][carbon_index].push(freeElectrons[1])
+
+        // Remove a hydrogen from the oxygen atom
+        const h = oxygen.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "H"
+        })
+        if (h.length > 0) {
+            // this.reaction.container_substrate[0][1][oxygen_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][oxygen_index], this.reaction.container_substrate[0][1][h[0].atom_index])
+            // Remove hydrogen atom
+            _.remove(this.reaction.container_substrate[0][1], (v, i) => {
+                    return i === h[0].atom_index
+                }
+            )
+        }
+
+
+        // Charges
+        // this.reaction.container_substrate[0][1][carbon_index][4] = ""
+        this.reaction.setChargeOnSubstrateAtom(carbon_index)
+        //this.reaction.container_substrate[0][1][oxygen_index][4] = this.reaction.container_substrate[0][1][oxygen_index][4]=== "-"? "": "+"
+        this.reaction.setChargeOnSubstrateAtom(oxygen_index)
+
+
+        this.reaction.setMoleculeAI()
+
+
+        if (this.reaction.MoleculeAI.validateMolecule() === false) {
+            console.log('BondsAI.js molecule is not valid (breakCarbonOxygenDoubleBondReverse())')
+            console.log('Method: breakCarbonOxygenDoubleBondReverse()')
+            console.log(VMolecule(this.reaction.container_substrate).compressed())
+            console.log(uittt)
+        }
+
+        return true
+
 
     }
 
