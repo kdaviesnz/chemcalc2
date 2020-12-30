@@ -368,6 +368,7 @@ class BondsAI {
 
         const oxygen_index = this.reaction.MoleculeAI.findOxygenOnDoubleBondIndex()
 
+
         if(oxygen_index === -1) {
             return false
         }
@@ -435,8 +436,9 @@ class BondsAI {
     makeCarbonNitrogenDoubleBondReverse() {
 
         const nitrogen_index = this.reaction.MoleculeAI.findNitrogenOnDoubleBondIndex()
-        // console.log('makeCarbonNitrogenDoubleBondReverse()')
-        // console.log(nitrogen_index)
+      //  console.log('makeCarbonNitrogenDoubleBondReverse()')
+      //  console.log(VMolecule(this.reaction.container_substrate).compressed())
+      //  console.log(nitrogen_index)
 
         if (nitrogen_index === -1) {
             return false

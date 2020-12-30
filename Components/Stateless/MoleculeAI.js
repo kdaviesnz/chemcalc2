@@ -199,7 +199,7 @@ const MoleculeAI = (container_molecule) => {
 
         findImineCarbonIndex: () =>{
             return _.findIndex(container_molecule[0][1], (atom, index)=>{
-                if (atom[0]==="C") {
+                if (atom[0]==="C" && atom[4] !== "+") {
                     const c_obj = CAtom(container_molecule[0][1][index], index, container_molecule)
                     const n_double_bonds = c_obj.indexedDoubleBonds("").filter((bond)=>{
                         return bond.atom[0] === "N"
@@ -251,11 +251,21 @@ const MoleculeAI = (container_molecule) => {
                 }
 
 
-                if (atom[0]=== "C" && (a_obj.bondCount() + a_obj.doubleBondCount()) === 4 && (atom[4] !== "" && atom[4] !== 0)) {
-                    // console.log(("validateMolecule C")
-                    // console.log((index)
-                    // console.log((a_obj.bondCount())
-                    return true
+                if (atom[0]=== "O") {
+
+                    if ((a_obj.bondCount() + a_obj.doubleBondCount()) > 5) {
+                        console.log("validateMolecule O")
+                        console.log(index)
+                        console.log('Too many bonds: ' + a_obj.bondCount())
+                        return true
+                    }
+
+                    if ((a_obj.bondCount() + a_obj.doubleBondCount()) === 4 && (atom[4] !== "" && atom[4] !== 0)) {
+                        console.log("validateMolecule C")
+                        console.log(index)
+                        console.log(a_obj.bondCount() + a_obj.doubleBondCount())
+                        return true
+                    }
                 }
                 return false
             }) === -1

@@ -96,8 +96,6 @@ class ReactionAI {
                 return command['name']
             }))
 
-            console.log(n)
-
 
             if (true) {
                 console.log("Starting substrate (first command)")
@@ -112,6 +110,7 @@ class ReactionAI {
                 console.log(VMolecule(reaction_object.container_substrate).compressed())
 
                 console.log("----------------------------------")
+                console.log(aaaa)
 
 
                 console.log("Starting substrate (second command)")
@@ -279,7 +278,7 @@ class ReactionAI {
 
     addProtonFromReagentToHydroxylGroupReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-        console.log("ReactionAI.js Calling addProtonFromReagentToHydroxylGroupReversal() caller=" + caller)
+       // console.log("ReactionAI.js Calling addProtonFromReagentToHydroxylGroupReversal() caller=" + caller)
 
         if (caller === "addProtonFromReagentToHydroxylGroupReversal()") {
             return
@@ -311,9 +310,9 @@ class ReactionAI {
 
     makeCarbonNitrogenDoubleBondReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-        console.log("ReactionAI.js Calling makeCarbonNitrogenDoubleBondReversal() caller=" + caller)
+        // console.log("ReactionAI.js Calling makeCarbonNitrogenDoubleBondReversal() caller=" + caller)
 
-        if (caller === "makeCarbonNitrogenDoubleBondReversal()") {
+        if (caller === "makeCarbonNitrogenDoubleBondReversal") {
             return
         }
 
@@ -338,12 +337,14 @@ class ReactionAI {
                     return reaction
                 }})
             this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'addProtonFromReagentToHydroxylGroupReversal()', depth+1)
+        } else {
+            console.log("ReactionAI.js makeCarbonNitrogenDoubleBondReversal() reaction failed")
         }
     }
 
     deprotonateReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-        console.log("ReactionAI.js Calling deprotonateReversal() caller=" + caller)
+        // console.log("ReactionAI.js Calling deprotonateReversal() caller=" + caller)
 
         if (caller === "deprotonateReversal()") {
             return
@@ -354,12 +355,16 @@ class ReactionAI {
         let r = null
         r = reverse_reaction.deprotonateReverse()
 
-        if (false) {
+//        console.log(VMolecule(target).compressed())
+  //      console.log(r)
+    //    console.log(VMolecule(reverse_reaction.container_substrate).compressed())
+
+        if (r) {
             const substrate_protonated = _.cloneDeep(reverse_reaction.container_substrate)
             const reagent_deprotonated = _.cloneDeep(reverse_reaction.container_reagent)
 
             commands.push({
-                'name':'makeCarbonNitrogenDoubleBond',
+                'name':'protonate',
                 'starting substrate': substrate_protonated,
                 'starting reagent': reagent_deprotonated,
                 'finish substrate': target,
@@ -375,7 +380,6 @@ class ReactionAI {
 
     oxygenCarbonDoubleBondReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-        // console.log("ReactionAI.js Calling oxygenCarbonDoubleBondReversal()")
 
         if (caller === "oxygenCarbonDoubleBondReversal()") {
             return
@@ -391,11 +395,10 @@ class ReactionAI {
 
         // https://en.wikipedia.org/wiki/Pinacol_rearrangement
         let r = null
+
         r = reverse_reaction.makeOxygenCarbonDoubleBondReverse()
 
-        // console.log(r)
         if (r) {
-
 
 
             // console.log(VMolecule(reagent_with_oxygen_carbon_double_bond_removed).compressed())
@@ -925,6 +928,8 @@ class ReactionAI {
                 }
             )
             this.synthesiseCallback(reverse_reaction.container_substrate, reverse_reaction.container_reagent, _.cloneDeep(commands), 'addProtonFromReagentToSubstrateReversal()', depth+1)
+        } else {
+            console.log("addProtonFromReagentToSubstrateReversal() reverse reaction failed")
         }
         // }
 

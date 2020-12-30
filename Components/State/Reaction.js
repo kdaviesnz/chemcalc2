@@ -75,9 +75,9 @@ class Reaction {
         this.MoleculeAI = require("../Stateless/MoleculeAI")(this.container_substrate)
 
         if (this.MoleculeAI.validateMolecule() === false) {
-            // console.log('Reaction.js molecule is not valid')
-            // console.log(VMolecule(this.container_substrate).compressed())
-            // console.log(i)
+            console.log('Reaction.js molecule is not valid')
+            console.log(VMolecule(this.container_substrate).compressed())
+            console.log(i)
         }
     }
 
@@ -88,7 +88,7 @@ class Reaction {
 
     makeOxygenCarbonDoubleBondReverse() {
         const bondsAI = new BondsAI(this)
-        return bondsAI.makeCarbonNitrogenDoubleBondReverse()
+        return bondsAI.makeOxygenCarbonDoubleBondReverse()
     }
 
     setChargeOnSubstrateAtom(index) {

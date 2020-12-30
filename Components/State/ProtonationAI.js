@@ -378,7 +378,6 @@ class ProtonationAI {
         // console.log(VMolecule(this.reaction.container_substrate).compressed())
         // console.log(x)
 
-        this.reaction.setMoleculeAI()
 
         // Remove proton from the reagent
         if (null !== this.reaction.container_reagent) {
