@@ -97,7 +97,7 @@ class ReactionAI {
             }))
 
 
-            if (true) {
+            if (false) {
                 console.log("Starting substrate (first command)")
                 console.log(VMolecule(commands[commands.length - 1]['starting substrate']).compressed())
                 console.log(VMolecule(commands[commands.length - 1]['starting substrate']).canonicalSMILES())
@@ -188,7 +188,7 @@ class ReactionAI {
 
             // console.log('starting substrate:')
             // console.log(VMolecule(commands[commands.length-1]['starting substrate']).canonicalSMILES())
-            this.run(_.cloneDeep(commands).reverse(), 0, null, substrate, reagent)
+         //   this.run(_.cloneDeep(commands).reverse(), 0, null, substrate, reagent)
               // console.log("Caller:" + caller)
         }
     }
@@ -278,7 +278,10 @@ class ReactionAI {
 
     addProtonFromReagentToHydroxylGroupReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-       // console.log("ReactionAI.js Calling addProtonFromReagentToHydroxylGroupReversal() caller=" + caller)
+        if (depth === 1 && caller==="dehydrationReversal") {
+            console.log("ReactionAI.js Calling addProtonFromReagentToHydroxylGroupReversal() caller=" + caller + " depth=" + depth)
+        }
+
 
         if (caller === "addProtonFromReagentToHydroxylGroupReversal()") {
             return
@@ -304,13 +307,18 @@ class ReactionAI {
                     reaction.addProtonFromReagentToHydroxylGroup()
                     return reaction
                 }})
-            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'addProtonFromReagentToHydroxylGroupReversal()', depth+1)
+            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'addProtonFromReagentToHydroxylGroupReversal', depth+1)
         }
     }
 
     makeCarbonNitrogenDoubleBondReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
         // console.log("ReactionAI.js Calling makeCarbonNitrogenDoubleBondReversal() caller=" + caller)
+
+        if (depth === 2 && caller==="addProtonFromReagentToHydroxylGroupReversal") {
+            console.log("ReactionAI.js Calling makeCarbonNitrogenDoubleBondReversal() caller=" + caller + " depth=" + depth)
+        }
+
 
         if (caller === "makeCarbonNitrogenDoubleBondReversal") {
             return
@@ -320,6 +328,12 @@ class ReactionAI {
 
         let r = null
         r = reverse_reaction.makeCarbonNitrogenDoubleBondReverse()
+
+        if (depth === 2 && caller==="addProtonFromReagentToHydroxylGroupReversal") {
+           // console.log(r)
+           // console.log(VMolecule(reverse_reaction.container_substrate).compressed())
+           // console.log(h)
+        }
 
         if (r) {
             const substrate_carbon_nitrogen_double_bond_removed = _.cloneDeep(reverse_reaction.container_substrate)
@@ -336,7 +350,7 @@ class ReactionAI {
                     reaction.makeCarbonNitrogenDoubleBond()
                     return reaction
                 }})
-            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'addProtonFromReagentToHydroxylGroupReversal()', depth+1)
+            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'makeCarbonNitrogenDoubleBondReversal', depth+1)
         } else {
             console.log("ReactionAI.js makeCarbonNitrogenDoubleBondReversal() reaction failed")
         }
@@ -344,9 +358,15 @@ class ReactionAI {
 
     deprotonateReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-        // console.log("ReactionAI.js Calling deprotonateReversal() caller=" + caller)
+/*
+        if (depth === 1 && caller==="dehydrationReversal") {
+            console.log("ReactionAI.js Calling deprotonateReversal() caller=" + caller + " depth=" + depth)
+        }
+        */
 
-        if (caller === "deprotonateReversal()") {
+
+
+        if (caller === "deprotonateReversal") {
             return
         }
 
@@ -355,9 +375,15 @@ class ReactionAI {
         let r = null
         r = reverse_reaction.deprotonateReverse()
 
+        if (depth === 3 && caller==="makeCarbonNitrogenDoubleBondReversal") {
+            console.log("ReactionAI.js Calling deprotonateReversal() caller=" + caller + " depth=" + depth)
+            console.log(VMolecule(reverse_reaction.container_substrate).compressed())
+            console.log(jjj)
+        }
+
 //        console.log(VMolecule(target).compressed())
   //      console.log(r)
-    //    console.log(VMolecule(reverse_reaction.container_substrate).compressed())
+    //
 
         if (r) {
             const substrate_protonated = _.cloneDeep(reverse_reaction.container_substrate)
@@ -374,7 +400,7 @@ class ReactionAI {
                     reaction.protonate
                     return reaction
                 }})
-            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'deprotonateReversal()', depth+1)
+            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'deprotonateReversal', depth+1)
         }
     }
 
@@ -450,8 +476,11 @@ class ReactionAI {
 
     dehydrationReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
+        console.log("dehydrationReversal() caller="+caller + " depth=" +depth )
+//        console.log(e)
+
         if (caller === "dehydrationReversal()") {
-            // console.log('Duplicate call - dehydrationReversal()')
+            console.log('Duplicate call - dehydrationReversal()')
             return
         }
 
@@ -520,7 +549,7 @@ class ReactionAI {
 
                         return reaction
                     }})
-                this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent),_.cloneDeep(commands), 'dehydrationReversal()', depth+1)
+                this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent),_.cloneDeep(commands), 'dehydrationReversal', depth+1)
             } else {
                    // console.log("dehydrationReversal() reverse reaction failed")
             }
@@ -785,6 +814,10 @@ class ReactionAI {
 
     protonateReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
+        if (depth === 1 && caller==="dehydrationReversal") {
+            console.log("ReactionAI.js Calling protonateReversal() caller=" + caller + " depth=" + depth)
+        }
+
         if (caller==="protonateReversal()") {
             return
         }
@@ -856,7 +889,7 @@ class ReactionAI {
                         }
                     }
                 )
-                this.synthesiseCallback(reverse_reaction.container_substrate, reverse_reaction.container_reagent, _.cloneDeep(commands), 'protonateReversal()', depth+1)
+                this.synthesiseCallback(reverse_reaction.container_substrate, reverse_reaction.container_reagent, _.cloneDeep(commands), 'protonateReversal', depth+1)
             } else {
                   // console.log('protonateReversal() reaction returned false')
             }
