@@ -378,7 +378,6 @@ class ReactionAI {
         if (depth === 3 && caller==="makeCarbonNitrogenDoubleBondReversal") {
             console.log("ReactionAI.js Calling deprotonateReversal() caller=" + caller + " depth=" + depth)
             console.log(VMolecule(reverse_reaction.container_substrate).compressed())
-            console.log(jjj)
         }
 
 //        console.log(VMolecule(target).compressed())
@@ -838,7 +837,16 @@ class ReactionAI {
 //          // console.log('Pinacol rearrangement reversed - deprotonate (caller=' + caller + '):')
   //        // console.log('Leuckart reaction reversed - deprotonate (caller=' + caller + '):')
 
-            if (r) {
+        if (depth === 4 && caller==="deprotonateReversal") {
+            console.log("ReactionAI.js Calling protonateReversal() caller=" + caller + " depth=" + depth)
+            console.log(r)
+            console.log(VMolecule(reverse_reaction.container_substrate).compressed())
+            console.log(kkkk)
+        }
+
+
+
+        if (r) {
 
 
                 // https://en.wikipedia.org/wiki/Leuckart_reaction (1)
