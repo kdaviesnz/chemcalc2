@@ -1338,6 +1338,12 @@ class Reaction {
         return protationAI.deprotonate()
     }
 
+    deprotonateReverse() {
+        const protationAI = new ProtonationAI(this)
+        return protationAI.deprotonateReverse()
+    }
+
+
     removeProtonFromReagent(proton_index) {
         proton_index.should.be.greaterThan(-1)
         this.container_reagent[0][1].splice(proton_index, 1)
@@ -1373,7 +1379,10 @@ class Reaction {
         proton[0].should.be.equal('H')
 
         const free_electrons = CAtom(this.container_reagent[0][1][atom_nucleophile_index], atom_nucleophile_index, this.container_reagent).freeElectrons()
-        free_electrons.length.should.be.greaterThan(1)
+
+        if (free_electrons.length === 0) {
+            return false
+        }
 
         proton.push(free_electrons[0])
         proton.push(free_electrons[1])

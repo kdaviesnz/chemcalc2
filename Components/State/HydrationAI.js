@@ -57,6 +57,15 @@ class HydrationAI {
 
     dehydrateReverse() {
 
+        console.log("HydrationAI.js calling dehydrateReverse:")
+        console.log(VMolecule(this.reaction.container_substrate).compressed())
+
+        if (this.reaction.MoleculeAI.validateMolecule() === false) {
+            console.log('HydrationAI.js molecule is not valid (dehydrateReverse())')
+            console.log('Method: dehydrateReverse()')
+            console.log(VMolecule(this.reaction.container_substrate).compressed())
+            console.log(l)
+        }
 
         const water_molecule = MoleculeFactory("O")
         water_molecule[1][2][4]="+"
@@ -67,14 +76,13 @@ class HydrationAI {
             water_oxygen_index,
             [water_molecule,1]).freeElectrons()
         electrons.length.should.be.greaterThan(1)
-        let electrophile_index = this.reaction.MoleculeAI.findElectrophileIndex("O", "C")
 
-        if (electrophile_index === -1) {
-            return false
-        }
+        let electrophile_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
+            return atom[0] === "C" && atom[4] === "+"
+        })
 
         // Leuckact Wallach reaction
-        if (this.reaction.container_substrate[0][1][electrophile_index][4] !== "+") {
+        if (electrophile_index === -1) {
             // Imine
             electrophile_index = this.reaction.MoleculeAI.findImineCarbonIndex()
             if (electrophile_index === -1) {
@@ -84,7 +92,6 @@ class HydrationAI {
 
         this.reaction.container_substrate[0][1][electrophile_index].push(electrons[0])
         this.reaction.container_substrate[0][1][electrophile_index].push(electrons[1])
-        this.reaction.setChargeOnSubstrateAtom(electrophile_index)
 
         this.reaction.container_substrate[0][1].push(water_molecule[1][0])
         this.reaction.container_substrate[0][1].push(water_molecule[1][1])
@@ -95,10 +102,13 @@ class HydrationAI {
         // Check we have a water molecule attached to main molecule
         this.reaction.MoleculeAI.findWaterOxygenIndex().should.be.greaterThan(-1)
 
+        this.reaction.setChargeOnSubstrateAtom(electrophile_index)
+
+
         if (this.reaction.MoleculeAI.validateMolecule() === false) {
-            console.log('HydrationAI.js molecule is not valid (hydrate())')
-            console.log('Method: hydrate()')
-            console.log(VMolecule(this.container_substrate).compressed())
+            console.log('HydrationAI.js molecule is not valid (dehydrateReverse())')
+            console.log('Method: dehydrateReverse()')
+            console.log(VMolecule(this.reaction.container_substrate).compressed())
             console.log(i)
         }
 

@@ -262,6 +262,8 @@ class ReactionAI {
 
             this.makeCarbonNitrogenDoubleBondReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
 
+            this.deprotonateReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+
 
          } else {
 
@@ -318,9 +320,9 @@ class ReactionAI {
         const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
 
         let r = null
-        r = reverse_reaction.makeCarbonNitrogenDoubleBondRevere()
+        r = reverse_reaction.makeCarbonNitrogenDoubleBondReverse()
 
-        if (false) {
+        if (r) {
             const substrate_carbon_nitrogen_double_bond_removed = _.cloneDeep(reverse_reaction.container_substrate)
             const reagent_after_reverse_reaction = _.cloneDeep(reverse_reaction.container_reagent)
 
@@ -339,6 +341,37 @@ class ReactionAI {
         }
     }
 
+    deprotonateReversal(target, reagent, moleculeAI, commands, caller, depth) {
+
+        console.log("ReactionAI.js Calling deprotonateReversal() caller=" + caller)
+
+        if (caller === "deprotonateReversal()") {
+            return
+        }
+
+        const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
+
+        let r = null
+        r = reverse_reaction.deprotonateReverse()
+
+        if (false) {
+            const substrate_protonated = _.cloneDeep(reverse_reaction.container_substrate)
+            const reagent_deprotonated = _.cloneDeep(reverse_reaction.container_reagent)
+
+            commands.push({
+                'name':'makeCarbonNitrogenDoubleBond',
+                'starting substrate': substrate_protonated,
+                'starting reagent': reagent_deprotonated,
+                'finish substrate': target,
+                'finish reagent': reagent,
+                'function':()=>{
+                    const reaction = new Reaction(substrate_protonated, reagent_deprotonated, {})
+                    reaction.protonate
+                    return reaction
+                }})
+            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'deprotonateReversal()', depth+1)
+        }
+    }
 
     oxygenCarbonDoubleBondReversal(target, reagent, moleculeAI, commands, caller, depth) {
 

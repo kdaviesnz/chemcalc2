@@ -467,8 +467,8 @@ class BondsAI {
             console.log(i)
         }
 
-        console.log(VMolecule(this.reaction.container_substrate).compressed())
-        console.log(opo)
+        //console.log(VMolecule(this.reaction.container_substrate).compressed())
+        //console.log(opo)
 
         return true
 

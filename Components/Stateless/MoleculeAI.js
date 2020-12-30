@@ -217,18 +217,16 @@ const MoleculeAI = (container_molecule) => {
                 if (atom[0] === "O") {
 
                     if ((a_obj.bondCount() + a_obj.doubleBondCount()) > 3) {
-                        // console.log(("validateMolecule O")
-                        // console.log((index)
-                        // console.log(('Too many bonds: ' + (a_obj.bondCount() + a_obj.doubleBondCount()))
-                        // console.log((VMolecule(container_molecule).compressed())
-                        // console.log((i)
+                        console.log("validateMolecule O")
+                        console.log(index)
+                        console.log('Too many bonds: ' + (a_obj.bondCount() + a_obj.doubleBondCount()))
                         return true
                     }
 
                     if ((a_obj.bondCount() + a_obj.doubleBondCount()) === 2 && (atom[4] !== "" && atom[4] !== 0)) {
-                        // console.log(("validateMolecule() O")
-                        // console.log(("Index:" + index)
-                        // console.log((a_obj.bondCount() + a_obj.doubleBondCount())
+                        console.log("validateMolecule() O")
+                        console.log("Index:" + index)
+                        console.log(a_obj.bondCount() + a_obj.doubleBondCount())
                         return true
                     }
 
