@@ -581,6 +581,16 @@ class Reaction {
         this.__setSubstrateGroups(groups)
     }
 
+    bondSubstrateToReagentReverse() {
+        // Important (orginal reaction):
+        // The reagent is the nucleophile and is attacking the substrate
+        // The substrate is the electrophile
+        const bondsAI = new BondsAI(this)
+        return bondsAI.bondSubstrateToReagentReverse()
+
+    }
+
+
     breakBond(break_type="heterolysis") {
 
         // Look for overloaded atoms

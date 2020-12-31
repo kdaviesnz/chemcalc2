@@ -14,12 +14,14 @@ const AtomFactory = require('../../Models/AtomFactory')
 // makeCarbonNitrogenDoubleBondReverse()
 // makeOxygenCarbonDoubleBondReverse()
 // breakCarbonOxygenDoubleBondReverse()
+// bondSubstrateToReagentReverse()
 
 class BondsAI {
 
     constructor(reaction) {
         this.reaction = reaction
     }
+
 
     makeNitrogenCarbonTripleBond() {
 
@@ -558,6 +560,46 @@ class BondsAI {
         return true
 
 
+    }
+
+    bondSubstrateToReagentReverse() {
+        // Important (orginal reaction):
+        // The reagent is the nucleophile and is attacking the substrate
+        // The substrate is the electrophile
+        // Look for N+=C+ bond
+        const n_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
+            return atom[0] === "N" && atom[4] === "+"
+        })
+
+
+        if (n_index !== -1) {
+            console.log(n_index)
+            console.log(nnjjn)
+
+            const source_atom = CAtom(this.reaction.container_substrate[0][1][n_index], n_index, this.reaction.container_substrate[0][1])
+            const c_bonds = source_atom.indexedBonds("").filter((bond)=>{
+                return bond.atom[0] === "C" && bond.atom[4] === "+"
+            })
+            if (c_bonds.length > 0) {
+                const c_index = c_bonds[0].atom_index
+                const target_atom = CAtom(this.reaction.container_substrate[0][1][c_index], c_bonds, this.reaction.container_substrate)
+                // Use dehydrate() instead
+                if (target_atom.symbol === "O" && target_atom.hydrogens().length ===2 && this.reaction.container_substrate[0][1][electrophile_index][4] === "+") {
+                    return false
+                }
+                const shared_electrons = Set().intersection(_.cloneDeep(this.reaction.container_substrate[0][1][n_index].slice(5)), _.cloneDeep(this.reaction.container_substrate[0][1][c_index].slice(5)))
+                const electrons = _.cloneDeep(this.reaction.container_substrate[0][1][n_index]).slice(5)
+                this.reaction.container_substrate[0][1][n_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][n_index], shared_electrons)
+                this.reaction.setChargeOnSubstrateAtom(n_index)
+                this.reaction.setChargeOnSubstrateAtom(c_index)
+                this.reaction.setMoleculeAI()
+                const groups = this.reaction.MoleculeAI.extractGroups()
+                this.reaction.__setSubstrateGroups(groups)
+                return true
+
+            }
+        }
+        return false
     }
 
 
