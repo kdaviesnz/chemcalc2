@@ -508,8 +508,10 @@ class BondsAI {
 
 
         const carbon_bonds = oxygen.indexedBonds("").filter((bond)=>{
-            return bond.atom[0] === "C" && bond.atom[4] !== "" && bond.atom[4] !== 0
+            //return bond.atom[0] === "C" && bond.atom[4] !== "" && bond.atom[4] !== 0
+            return bond.atom[0] === "C"
         })
+
         if (carbon_bonds.length === 0) {
             return false
         }
