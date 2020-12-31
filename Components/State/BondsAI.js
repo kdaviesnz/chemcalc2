@@ -4,6 +4,7 @@ const VMolecule = require('../Stateless/Views/Molecule')
 const _ = require('lodash');
 const CAtom = require('../../Controllers/Atom')
 const AtomFactory = require('../../Models/AtomFactory')
+const Set = require('../../Models/Set')
 
 // makeNitrogenCarbonTripleBond()
 // makeOxygenCarbonDoubleBond()
@@ -571,18 +572,15 @@ class BondsAI {
             return atom[0] === "N" && atom[4] === "+"
         })
 
-
         if (n_index !== -1) {
-            console.log(n_index)
-            console.log(nnjjn)
-
-            const source_atom = CAtom(this.reaction.container_substrate[0][1][n_index], n_index, this.reaction.container_substrate[0][1])
+            const source_atom = CAtom(this.reaction.container_substrate[0][1][n_index], n_index, this.reaction.container_substrate)
             const c_bonds = source_atom.indexedBonds("").filter((bond)=>{
                 return bond.atom[0] === "C" && bond.atom[4] === "+"
             })
+
             if (c_bonds.length > 0) {
                 const c_index = c_bonds[0].atom_index
-                const target_atom = CAtom(this.reaction.container_substrate[0][1][c_index], c_bonds, this.reaction.container_substrate)
+                const target_atom = CAtom(this.reaction.container_substrate[0][1][c_index], c_index, this.reaction.container_substrate)
                 // Use dehydrate() instead
                 if (target_atom.symbol === "O" && target_atom.hydrogens().length ===2 && this.reaction.container_substrate[0][1][electrophile_index][4] === "+") {
                     return false
@@ -595,8 +593,13 @@ class BondsAI {
                 this.reaction.setMoleculeAI()
                 const groups = this.reaction.MoleculeAI.extractGroups()
                 this.reaction.__setSubstrateGroups(groups)
-                return true
-
+                if(this.reaction.leaving_groups.length > 0) {
+                    this.reaction.container_reagent = this.reaction.leaving_groups[0]
+//                    console.log(VMolecule(this.reaction.container_reagent).canonicalSMILES())
+  //                  console.log(VMolecule(this.reaction.container_substrate).compressed())
+    //                console.log(nnjjn)
+                    return true
+                }
             }
         }
         return false
