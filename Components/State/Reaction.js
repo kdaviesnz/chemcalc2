@@ -279,6 +279,9 @@ class Reaction {
                 if (atom[4] === '+') {
                     return false
                 }
+                if (atom[4] === '-') {
+                    return false
+                }
                 const n = CAtom(this.container_substrate[0][1][index], index, this.container_substrate)
                 const c_b = n.indexedDoubleBonds("").filter((bond)=>{
                     return bond.atom[0] === "C"

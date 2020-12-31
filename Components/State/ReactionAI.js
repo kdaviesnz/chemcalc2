@@ -278,20 +278,13 @@ class ReactionAI {
 
     addProtonFromReagentToHydroxylGroupReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-        const command_names = commands.map((command)=>{
-            return command['name']
-        })
-        if (command_names.length === 1) {
-            console.log(command_names)
-            console.log(aaaa)
-        }
 
         if (depth === 1 && caller==="dehydrationReversal") {
             console.log("ReactionAI.js Calling addProtonFromReagentToHydroxylGroupReversal() caller=" + caller + " depth=" + depth)
         }
 
 
-        if (caller === "addProtonFromReagentToHydroxylGroupReversal()") {
+        if (caller === "addProtonFromReagentToHydroxylGroupReversal") {
             return
         }
 
@@ -299,6 +292,7 @@ class ReactionAI {
 
         let r = null
         r = reverse_reaction.addProtonFromReagentToHydroxylGroupReverse()
+
 
         if (r) {
             const substrate_proton_removed = _.cloneDeep(reverse_reaction.container_substrate)
@@ -315,23 +309,21 @@ class ReactionAI {
                     reaction.addProtonFromReagentToHydroxylGroup()
                     return reaction
                 }})
+
+
+
             this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'addProtonFromReagentToHydroxylGroupReversal', depth+1)
         }
     }
 
     makeCarbonNitrogenDoubleBondReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
+
+
+
         // console.log("ReactionAI.js Calling makeCarbonNitrogenDoubleBondReversal() caller=" + caller)
         if (caller === "makeCarbonNitrogenDoubleBondReversal") {
             return
-        }
-
-        const command_names = commands.map((command)=>{
-            return command['name']
-        })
-        if (command_names.length === 1) {
-            console.log(command_names)
-            console.log(a)
         }
 
 
@@ -367,6 +359,9 @@ class ReactionAI {
                     reaction.makeCarbonNitrogenDoubleBond()
                     return reaction
                 }})
+
+
+
             this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'makeCarbonNitrogenDoubleBondReversal', depth+1)
         } else {
             console.log("ReactionAI.js makeCarbonNitrogenDoubleBondReversal() reaction failed")
@@ -374,6 +369,16 @@ class ReactionAI {
     }
 
     deprotonateReversal(target, reagent, moleculeAI, commands, caller, depth) {
+
+        // [ 'dehydrate', 'addProtonFromReagentToHydroxylGroup', 'makeCarbonNitrogenDoubleBond' ]
+        const command_names = commands.map((command)=>{
+            return command['name']
+        })
+        console.log(command_names)
+        if (command_names.length === 3) {
+            console.log(command_names)
+            console.log(abcd)
+        }
 
 /*
         if (depth === 1 && caller==="dehydrationReversal") {
@@ -628,6 +633,7 @@ class ReactionAI {
 
 
 
+
         if (caller === 'transferProtonReversal') {
             // console.log("Duplicate call - transferProtonReversal()")
             return
@@ -652,31 +658,19 @@ class ReactionAI {
         let r = null
         r = reverse_reaction.transferProtonReverse()
 
-        if (commands.length === 4) {
-            const command_names = commands.map((command)=>{
-                return command['name']
-            })
-            if (command_names[2]==="makeCarbonNitrogenDoubleBond"){
-                console.log("ReactionAI.js Calling transferProtonReversal() caller=" + caller + " depth=" + depth)
-            //    console.log(VMolecule(target).compressed())
-                console.log(command_names)
-                console.log(r)
-                console.log(VMolecule(reverse_reaction.container_substrate).compressed())
-               // console.log(hjk)
-            }
+        /*
+        const command_names = commands.map((command)=>{
+            return command['name']
+        })
+        if (command_names.length === 3) {
+            console.log(command_names)
+            console.log(VMolecule(target).compressed())
+            console.log(r)
+            console.log(abcdef)
         }
-
-
-        if (depth === 6 && caller==="deprotonateReversal") {
-            console.log('transferProtonReversal() depth=' + depth + ' caller ' + caller)
-           // console.log(VMolecule(reverse_reaction.container_substrate).compressed())
-           // console.log(r)
-        }
+        */
 
         // console.log(r)
-
-
-
         if (r) {
              // console.log('Pinacol rearrangement reversed - deprotonate (caller=' + caller + '):')
             // https://en.wikipedia.org/wiki/Leuckart_reaction (4)
