@@ -97,12 +97,12 @@ class HydrationAI {
         this.reaction.container_substrate[0][1].push(water_molecule[1][1])
         this.reaction.container_substrate[0][1].push(water_molecule[1][2])
 
+        this.reaction.setChargeOnSubstrateAtom(electrophile_index)
+
         this.reaction.setMoleculeAI()
 
         // Check we have a water molecule attached to main molecule
         this.reaction.MoleculeAI.findWaterOxygenIndex().should.be.greaterThan(-1)
-
-        this.reaction.setChargeOnSubstrateAtom(electrophile_index)
 
 
         if (this.reaction.MoleculeAI.validateMolecule() === false) {
