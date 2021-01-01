@@ -102,6 +102,14 @@ class ReactionAI {
                 return command['name']
             })
 
+            if (command_names.length === 4) {
+                console.log(caller)
+                console.log(command_names)
+                console.log(VMolecule(substrate).compressed())
+                console.log(klj)
+            }
+
+
 
             // Leukart Wallach
             if (false) {
@@ -320,8 +328,8 @@ class ReactionAI {
         if (r) {
 
             if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
-                console.log(eeeee)
-                return
+                //console.log(eeeee)
+                this.result(target, reagent, commands, 'addProtonFromReagentToHydroxylGroupReversal')
             }
 
 
@@ -427,7 +435,8 @@ class ReactionAI {
         if (r) {
 
             if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
-                console.log(ggggg)
+               // console.log(ggggg)
+                this.result(target, reagent, commands, 'deprotonateReversal')
                 return
             }
 
@@ -537,29 +546,16 @@ class ReactionAI {
     }
 
     _substrate_already_synthesised(substrate, commands) {
-        const substrate_compressed = VMolecule(substrate).compressed()
-        if (_.indexOf(commands, (command, index)=>{
-            const substrate_to_compare_compressed = VMolecule(command['finish substrate']).compressed()
-            return _.isEqual(substrate_to_compare_compressed, substrate_compressed)
-        }) !== -1) {
-            console.log(abcxyz)
-            return true
-        } else {
-            return false
-        }
-    }
-
-    _substrate_already_synthesisedtest(substrate, commands) {
-       // console.log(commands)
-      //  console.log(VMolecule(substrate).compressed())
-       // console.log("=======================================")
-       // console.log(VMolecule(commands[0]['finish substrate']).compressed())
-        console.log(_.isEqual(VMolecule(commands[0]['finish substrate']).compressed(), VMolecule(substrate).compressed() ))
+        // console.log(commands)
+        //  console.log(VMolecule(substrate).compressed())
+        // console.log("=======================================")
+        // console.log(VMolecule(commands[0]['finish substrate']).compressed())
         const substrate_compressed = VMolecule(substrate).compressed()
         const matching_commands = commands.filter((command)=>{
             return _.isEqual(VMolecule(command['finish substrate']).compressed(), VMolecule(substrate).compressed())
         })
         return matching_commands.length > 0
+
     }
 
     _checkDepth(depth, commands) {
@@ -661,14 +657,6 @@ class ReactionAI {
                         return reaction
                     }})
 
-
-
-                if (this._substrate_already_synthesisedtest(_.cloneDeep(target), _.cloneDeep(commands))) {
-                    console.log(iiiiiij)
-                    return
-                } else {
-                    console.log(iopppp)
-                }
 
                 const command_names = commands.map((command)=>{
                     return command['name']
