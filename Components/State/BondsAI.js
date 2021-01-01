@@ -7,15 +7,18 @@ const AtomFactory = require('../../Models/AtomFactory')
 const Set = require('../../Models/Set')
 
 // makeNitrogenCarbonTripleBond()
+// makeNitrogenCarbonDoubleBond()
 // makeOxygenCarbonDoubleBond()
 // breakCarbonNitrogenTripleBond()
 // breakCarbonNitrogenDoubleBond()
 // breakCarbonOxygenDoubleBond()
 // breakCarbonDoubleBond()
+// bondSubstrateToReagent()
 // makeCarbonNitrogenDoubleBondReverse()
 // makeOxygenCarbonDoubleBondReverse()
 // breakCarbonOxygenDoubleBondReverse()
 // bondSubstrateToReagentReverse()
+
 
 class BondsAI {
 
@@ -56,6 +59,84 @@ class BondsAI {
             console.log(VMolecule(this.reaction.container_substrate).compressed())
             console.log(i)
         }
+
+    }
+
+    makeNitrogenCarbonDoubleBond() {
+
+        const n_index = this.reaction.MoleculeAI.findNitrogenAttachedToCarbonIndexNoDoubleBonds()
+        if (n_index === -1) {
+            return false
+        }
+
+        const n = CAtom(this.reaction.container_substrate[0][1][n_index], n_index, this.reaction.container_substrate)
+
+        const carbon_bonds = n.indexedBonds("").filter((bond)=>{
+            if (bond.atom[0] !== "C") {
+                return false
+            }
+            const c = CAtom(this.reaction.container_substrate[0][1][bond.atom_index], bond.atom_index, this.reaction.container_substrate)
+            return c.indexedBonds("").filter((bond)=>{
+                return bond.atom[0] === "O"
+            }).length > 0
+        })
+
+
+
+        if (carbon_bonds.length === 0) {
+            return false
+        }
+
+
+        const carbon_index = carbon_bonds[0].atom_index
+
+
+        // Check for C=X bonds and change to single bond (not N)
+        const c_atom = CAtom(this.reaction.container_substrate[0][1][carbon_index], carbon_index, this.reaction.container_substrate)
+        const double_bond = c_atom.indexedDoubleBonds("").filter((bond)=>{
+            return bond.atom[0] !== 'N'
+        }).pop()
+
+        if (double_bond !== undefined) {
+            this.reaction.__changeDoubleBondToSingleBond(double_bond.atom_index, carbon_index)
+        }
+
+        // Proton if applicable
+        const proton_n_bond = n.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "H"
+        }).pop()
+
+        if (proton_n_bond !== undefined) {
+            const proton_shared_electrons = proton_n_bond.shared_electrons
+            const proton_index = proton_n_bond.atom_index
+            // Remove electrons from proton
+            _.remove(this.reaction.container_substrate[0][1][proton_index], (e) => {
+                return e === proton_shared_electrons[0] || e === proton_shared_electrons[1]
+            })
+            // Add electrons to carbon
+            this.reaction.container_substrate[0][1][carbon_index].push(proton_shared_electrons[0])
+            this.reaction.container_substrate[0][1][carbon_index].push(proton_shared_electrons[1])
+        } else {
+            const freeElectrons = n.freeElectrons()
+            // Add electrons to carbon
+            this.reaction.container_substrate[0][1][carbon_index].push(freeElectrons[0])
+            this.reaction.container_substrate[0][1][carbon_index].push(freeElectrons[1])
+        }
+
+        // Charges
+        this.reaction.setChargeOnSubstrateAtom(carbon_index)
+        this.reaction.setChargeOnSubstrateAtom(n_index)
+
+        this.reaction.setMoleculeAI()
+
+        if (this.reaction.MoleculeAI.validateMolecule() === false) {
+            console.log('BondsAI.js molecule is not valid (makeNitrogenCarbonDoubleBond())')
+            console.log('Method: makeNitrogenCarbonDoubleBond()')
+            console.log(VMolecule(this.reaction.container_substrate).compressed())
+            console.log(i)
+        }
+
+        return true
 
     }
 
@@ -243,9 +324,13 @@ class BondsAI {
             return v === shared_electrons[0] || v === shared_electrons[1]
         })
 
+        this.reaction.setChargeOnSubstrateAtom(double_bonds[0].atom_index)
+        this.reaction.setChargeOnSubstrateAtom(oxygen_index)
+
+
+        this.reaction.setMoleculeAI()
         // carbon atom
-        this.reaction.container_substrate[0][1][double_bonds[0].atom_index][4] =  this.reaction.container_substrate[0][1][double_bonds[0].atom_index][4] === "-"? '': '+'
-        this.reaction.container_substrate[0][1][oxygen_index][4] = this.reaction.container_substrate[0][1][oxygen_index][4] === "+" ? "":"-"
+
         this.reaction.setMoleculeAI()
 
         // Check for proton
@@ -269,9 +354,17 @@ class BondsAI {
                 this.reaction.container_substrate[0][1][carbon_atom_negative_bonds[0].atom_index].push(shared_electrons[1])
                 this.reaction.container_substrate[0][1][double_bonds[0].atom_index].push(shared_electrons[0])
                 this.reaction.container_substrate[0][1][double_bonds[0].atom_index].push(shared_electrons[1])
-                this.reaction.container_substrate[0][1][double_bonds[0].atom_index][4] = this.reaction.container_substrate[0][1][double_bonds[0].atom_index][4] === "+" ? '' : '-'
-                this.reaction.container_substrate[0][1][carbon_atom_negative_bonds[0].atom_index][4] = this.reaction.container_substrate[0][1][carbon_atom_negative_bonds[0].atom_index][4] === "-" ? '' : '+'
-                this.reaction.container_substrate[0][1][oxygen_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][oxygen_index], shared_electrons)
+
+                this.reaction.setMoleculeAI()
+
+                // this.reaction.container_substrate[0][1][double_bonds[0].atom_index][4] = this.reaction.container_substrate[0][1][double_bonds[0].atom_index][4] === "+" ? '' : '-'
+                this.reaction.setChargeOnSubstrateAtom(double_bonds[0].atom_index)
+
+                // this.reaction.container_substrate[0][1][carbon_atom_negative_bonds[0].atom_index][4] = this.reaction.container_substrate[0][1][carbon_atom_negative_bonds[0].atom_index][4] === "-" ? '' : '+'
+                this.reaction.setChargeOnSubstrateAtom(carbon_atom_negative_bonds[0].atom_index)
+
+                //  this.reaction.container_substrate[0][1][oxygen_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][oxygen_index], shared_electrons)
+                this.reaction.setChargeOnSubstrateAtom(oxygen_index)
             }
 
         }
@@ -563,6 +656,106 @@ class BondsAI {
 
     }
 
+    bondSubstrateToReagent() {
+
+        // Important:
+        // The reagent is the nucleophile and is attacking the substrate
+        // The substrate is the electrophile
+        console.log('BondsAI.js bondSubstrateToReagent')
+        // Check for Nitrogen atom  on reagent and C=O bond on substrate
+        let nucleophile_index = null
+        let electrophile_index = null
+        nucleophile_index = _.findIndex(this.reaction.container_reagent[0][1], (atom, index)=>{
+            if (atom[0]!=="N") {
+                return false
+            }
+            const n = CAtom(this.reaction.container_reagent[0][1][index], index, this.reaction.container_reagent)
+            return n.indexedDoubleBonds("").length === 0
+        })
+
+
+        if (nucleophile_index !== -1) { // Nitrogen atom on reagent
+            // Check for C=O carbon on substrate
+            electrophile_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
+                if (atom[0]!=="C") {
+                    return false
+                }
+                if (atom[4]==="+") {
+                    return false
+                }
+                const c = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate)
+                return c.indexedDoubleBonds("").filter((bond)=>{
+                    return bond.atom[0] === "O"
+                }).length !== 0
+            })
+        }
+
+
+        if (electrophile_index === -1) {
+            electrophile_index = this.reaction.MoleculeAI.findElectrophileIndex()
+        }
+
+        if (electrophile_index === -1) {
+            return false
+        }
+
+        if (nucleophile_index === -1) {
+            nucleophile_index = this.reaction.ReagentAI.findNucleophileIndex()
+        }
+
+        if (nucleophile_index === -1) {
+            return false
+        }
+
+        const nucleophile = CAtom(this.reaction.container_reagent[0][1][nucleophile_index], nucleophile_index, this.reaction.container_reagent)
+
+        let freeElectrons = nucleophile.freeElectrons()
+        if (freeElectrons.length === 0) {
+            const freeSlots = nucleophile.freeSlots()
+            if (freeSlots > 0) {
+                // Workaround
+                const uniqid = require('uniqid');
+                freeElectrons.push(uniqid())
+                freeElectrons.push(uniqid())
+                this.reaction.container_reagent[0][1][nucleophile_index].push(freeElectrons[0])
+                this.reaction.container_reagent[0][1][nucleophile_index].push(freeElectrons[1])
+            }
+        }
+        this.reaction.container_substrate[0][1][electrophile_index].push(freeElectrons[0])
+        this.reaction.container_substrate[0][1][electrophile_index].push(freeElectrons[1])
+
+
+        // Add reagent atoms to substrate
+        this.reaction.container_reagent[0][1].map(
+            (atom)=>{
+                this.reaction.container_substrate[0][1].push(atom)
+                return atom
+            }
+        )
+
+        this.reaction.setMoleculeAI()
+        this.reaction.setReagentAI()
+
+        // Charges
+        // this.reaction.container_substrate[0][1][electrophile_index][4] = this.reaction.container_substrate[0][1][electrophile_index][4] === "+"?"":"-"
+        this.reaction.setChargeOnSubstrateAtom(electrophile_index)
+        this.reaction.container_reagent[0][1][nucleophile_index][4] = this.reaction.container_reagent[0][1][nucleophile_index][4] === "-"?"":"+"
+
+
+        this.reaction.setMoleculeAI()
+        this.reaction.setReagentAI()
+
+        if (this.reaction.MoleculeAI.validateMolecule() === false) {
+            console.log('BondsAI.js molecule is not valid (bondSubstrateToReagent())')
+            console.log('Method: bondSubstrateToReagent()')
+            console.log(VMolecule(this.reaction.container_substrate).compressed())
+            console.log(bbbbbbond)
+        }
+
+        return true
+
+    }
+    
     bondSubstrateToReagentReverse() {
         // Important (orginal reaction):
         // The reagent is the nucleophile and is attacking the substrate

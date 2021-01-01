@@ -18,7 +18,7 @@ class HydrationAI {
             return false
         }
 
-        const oxygen_atom = CAtom(this.reaction.container_substrate[0][1][oxygen_atom_index], oxygen_atom_index, this.container_substrate)
+        const oxygen_atom = CAtom(this.reaction.container_substrate[0][1][oxygen_atom_index], oxygen_atom_index, this.reaction.container_substrate)
 
         const hydrogen_bonds = oxygen_atom.indexedBonds("").filter((bond) => {
                 return bond.atom[0] === "H"

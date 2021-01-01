@@ -90,101 +90,114 @@ class ReactionAI {
                 // console.log(VMolecule(reagent).compressed())
             }
 
-            console.log("Commands:")
+            // console.log("Commands:")
 
+            /*
             console.log(commands.map((command)=>{
                 return command['name']
             }))
+            */
 
             const command_names = commands.map((command)=>{
                 return command['name']
             })
 
 
-            if (command_names.length === 7 && command_names[0] === "dehydrate" && command_names[command_names.length-1] === "bondSubstrateToReagent") {
-                console.log("Starting substrate (first command): " + command_names[command_names.length-1])
-              //  console.log(VMolecule(commands[commands.length - 1]['starting substrate']).compressed())
-                console.log(VMolecule(commands[commands.length - 1]['starting substrate']).canonicalSMILES())
-                console.log("Starting reagent (first command)")
-                console.log(VMolecule(commands[commands.length - 1]['starting reagent']).compressed())
+            // Leukart Wallach
+            if (false) {
+            //if (command_names.length === 7 && command_names[0] === "dehydrate" && command_names[command_names.length-1] === "bondSubstrateToReagent") {
+                // console.log("Starting substrate (first command): " + command_names[command_names.length-1])
+              //  // console.log(VMolecule(commands[commands.length - 1]['starting substrate']).compressed())
+                // console.log(VMolecule(commands[commands.length - 1]['starting substrate']).canonicalSMILES())
+                // console.log("Starting reagent (first command)")
+                // console.log(VMolecule(commands[commands.length - 1]['starting reagent']).compressed())
                 const reaction_object = commands[commands.length - 1]['function']()
-                console.log("Calculated substrate " + commands[commands.length - 1]["name"])
-                console.log(VMolecule(reaction_object.container_substrate).compressed())
-                console.log("----------------------------------")
-                console.log("To do: N bonds to wrong C")
-                console.log(aaaa)
+                // console.log("Calculated substrate " + commands[commands.length - 1]["name"])
+                // console.log(VMolecule(reaction_object.container_substrate).compressed())
+                // console.log("----------------------------------")
 
 
-                console.log("Starting substrate (second command)")
-                console.log(VMolecule(commands[commands.length - 2]['starting substrate']).compressed())
-
-                console.log("Starting reagent (second command)")
-                console.log(VMolecule(commands[commands.length - 2]['starting reagent']).compressed())
-
+                // console.log("Starting substrate (second command) " + command_names[command_names.length-2])
+                // console.log(VMolecule(commands[commands.length - 2]['starting substrate']).compressed())
+                // console.log("Starting reagent (second command)")
+                // console.log(VMolecule(commands[commands.length - 2]['starting reagent']).compressed())
                 const reaction_object2 = commands[commands.length - 2]['function']()
-                console.log("Calculated substrate " + commands[commands.length - 2]["name"])
-                console.log(VMolecule(reaction_object2.container_substrate).compressed())
+                // console.log("Calculated substrate " + commands[commands.length - 2]["name"])
+                // console.log(VMolecule(reaction_object2.container_substrate).compressed())
+                // console.log("----------------------------------")
 
-                console.log("----------------------------------")
 
+                // console.log("Starting substrate (third command) "  + command_names[command_names.length-3])
+                // console.log(VMolecule(commands[commands.length - 3]['starting substrate']).compressed())
 
-                console.log("Starting substrate (third command)")
-                console.log(VMolecule(commands[commands.length - 3]['starting substrate']).compressed())
-
-                console.log("Starting reagent (third command)")
-                console.log(VMolecule(commands[commands.length - 3]['starting reagent']).compressed())
+                // console.log("Starting reagent (third command)")
+                // console.log(VMolecule(commands[commands.length - 3]['starting reagent']).compressed())
 
                 const reaction_object3 = commands[commands.length - 3]['function']()
-                console.log("Calculated substrate " + commands[commands.length - 3]["name"])
-                console.log(VMolecule(reaction_object3.container_substrate).compressed())
+                // console.log("Calculated substrate " + commands[commands.length - 3]["name"])
+                // console.log(VMolecule(reaction_object3.container_substrate).compressed())
 
-                console.log("----------------------------------")
+                // console.log("----------------------------------")
 
-                console.log("Starting substrate (fourth command)")
-                console.log(VMolecule(commands[commands.length - 4]['starting substrate']).compressed())
 
-                console.log("Starting reagent (fourth command)")
-                console.log(VMolecule(commands[commands.length - 4]['starting reagent']).compressed())
+                // console.log("Starting substrate (fourth command) "  + command_names[command_names.length-4])
+                // console.log(VMolecule(commands[commands.length - 4]['starting substrate']).compressed())
 
+                // console.log("Starting reagent (fourth command)")
+                // console.log(VMolecule(commands[commands.length - 4]['starting reagent']).compressed())
                 const reaction_object4 = commands[commands.length - 4]['function']()
-                console.log("Calculated substrate " + commands[commands.length - 4]["name"])
-                console.log(VMolecule(reaction_object4.container_substrate).compressed())
-                console.log("Calculated reagent " + commands[commands.length - 4]["name"])
-                console.log(VMolecule(reaction_object4.container_reagent).compressed())
+                // console.log("Calculated substrate " + commands[commands.length - 4]["name"])
+                // console.log(VMolecule(reaction_object4.container_substrate).compressed())
+                // console.log("Calculated reagent " + commands[commands.length - 4]["name"])
+                // console.log(VMolecule(reaction_object4.container_reagent).compressed())
+                // console.log("----------------------------------")
 
-                console.log("----------------------------------")
 
-                console.log("Starting substrate (fifth command)")
-                console.log(VMolecule(commands[commands.length - 5]['starting substrate']).compressed())
+                // console.log("Starting substrate (fifth command) "  + command_names[command_names.length-5])
+                // console.log(VMolecule(commands[commands.length - 5]['starting substrate']).compressed())
 
-                console.log("Starting reagent (fifth command)")
-                console.log(VMolecule(commands[commands.length - 5]['starting reagent']).compressed())
+                // console.log("Starting reagent (fifth command)")
+                // console.log(VMolecule(commands[commands.length - 5]['starting reagent']).compressed())
 
                 const reaction_object5 = commands[commands.length - 5]['function']()
-                console.log("Calculated substrate " + commands[commands.length - 5]["name"])
-                console.log(VMolecule(reaction_object5.container_substrate).compressed())
-                console.log("Calculated reagent " + commands[commands.length - 5]["name"])
-                console.log(VMolecule(reaction_object5.container_reagent).compressed())
+                // console.log("Calculated substrate " + commands[commands.length - 5]["name"])
+                // console.log(VMolecule(reaction_object5.container_substrate).compressed())
+                // console.log("Calculated reagent " + commands[commands.length - 5]["name"])
+                // console.log(VMolecule(reaction_object5.container_reagent).compressed())
+                // console.log("----------------------------------")
 
-                console.log("----------------------------------")
 
-                console.log("Starting substrate (last command)")
-                console.log(VMolecule(commands[commands.length - 6]['starting substrate']).compressed())
 
-                console.log("Starting reagent (last command)")
-                console.log(VMolecule(commands[commands.length - 6]['starting reagent']).compressed())
+                // console.log("Starting substrate (sixth command) " + command_names[command_names.length-6])
+                // console.log(VMolecule(commands[commands.length - 6]['starting substrate']).compressed())
+
+                // console.log("Starting reagent (sixth command)")
+                // console.log(VMolecule(commands[commands.length - 6]['starting reagent']).compressed())
 
                 const reaction_object6 = commands[commands.length - 6]['function']()
-                console.log("Calculated substrate " + commands[commands.length - 6]["name"])
-                console.log(VMolecule(reaction_object6.container_substrate).compressed())
-                console.log(VMolecule(reaction_object6.container_substrate).canonicalSMILES())
-                console.log("Calculated reagent " + commands[commands.length - 6]["name"])
-                console.log(VMolecule(reaction_object6.container_reagent).compressed())
+                // console.log("Calculated substrate " + commands[commands.length - 6]["name"])
+                // console.log(VMolecule(reaction_object6.container_substrate).compressed())
+                // console.log("Calculated reagent " + commands[commands.length - 6]["name"])
+                // console.log(VMolecule(reaction_object6.container_reagent).compressed())
 
-                console.log("----------------------------------")
+                // console.log("----------------------------------")
 
 
-                console.log(i)
+                // console.log("Starting substrate (last command) " + command_names[command_names.length-7])
+                // console.log(VMolecule(commands[commands.length - 7]['starting substrate']).compressed())
+
+                // console.log("Starting reagent (last command)")
+                // console.log(VMolecule(commands[commands.length - 7]['starting reagent']).compressed())
+
+                const reaction_object7 = commands[commands.length - 7]['function']()
+                // console.log("Calculated substrate " + commands[commands.length - 7]["name"])
+                // console.log(VMolecule(reaction_object7.container_substrate).compressed())
+                // console.log("Calculated reagent " + commands[commands.length - 7]["name"])
+                // console.log(VMolecule(reaction_object7.container_reagent).compressed())
+
+                // console.log("----------------------------------")
+
+
 
             }
 
@@ -197,13 +210,15 @@ class ReactionAI {
 
     run(commands, command_index, reaction, starting_substrate, starting_reagent) {
         if (commands[command_index] === undefined) {
-               console.log("\n\Run (result)" + commands.map((command)=>{
+            /*
+               // console.log("\n\Run (result)" + commands.map((command)=>{
                    return command['name']
                }))
-            console.log("Start: substrate:")
-            console.log(VMolecule(starting_substrate).compressed())
-            console.log("Start: reagent:")
-            console.log(VMolecule(starting_reagent).compressed())
+               */
+            // console.log("Start: substrate:")
+            // console.log(VMolecule(starting_substrate).compressed())
+            // console.log("Start: reagent:")
+            // console.log(VMolecule(starting_reagent).compressed())
             // console.log("Finish: substrate=" + VMolecule(reaction.container_substrate).canonicalSMILES())
             // console.log(VMolecule(reaction.container_reagent).compressed())
         } else {
@@ -290,7 +305,7 @@ class ReactionAI {
 
 
         if (depth === 1 && caller==="dehydrationReversal") {
-            console.log("ReactionAI.js Calling addProtonFromReagentToHydroxylGroupReversal() caller=" + caller + " depth=" + depth)
+            // console.log("ReactionAI.js Calling addProtonFromReagentToHydroxylGroupReversal() caller=" + caller + " depth=" + depth)
         }
 
 
@@ -344,13 +359,13 @@ class ReactionAI {
 
         /*
         if (depth === 2 && caller==="addProtonFromReagentToHydroxylGroupReversal") {
-           console.log(r)
-           console.log(VMolecule(reverse_reaction.container_substrate).compressed())
-            console.log("Commands:")
-            console.log(commands.map((command)=>{
+           // console.log(r)
+           // console.log(VMolecule(reverse_reaction.container_substrate).compressed())
+            // console.log("Commands:")
+            // console.log(commands.map((command)=>{
                 return command['name']
             }))
-           console.log(h)
+           // console.log(h)
         }
         */
 
@@ -366,7 +381,7 @@ class ReactionAI {
                 'finish reagent': reagent,
                 'function':()=>{
                     const reaction = new Reaction(substrate_carbon_nitrogen_double_bond_removed, reagent_after_reverse_reaction, {})
-                    reaction.makeCarbonNitrogenDoubleBond()
+                    reaction.makeNitrogenCarbonDoubleBond()
                     return reaction
                 }})
 
@@ -374,7 +389,7 @@ class ReactionAI {
 
             this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'makeCarbonNitrogenDoubleBondReversal', depth+1)
         } else {
-            console.log("ReactionAI.js makeCarbonNitrogenDoubleBondReversal() reaction failed")
+            // console.log("ReactionAI.js makeCarbonNitrogenDoubleBondReversal() reaction failed")
         }
     }
 
@@ -383,7 +398,7 @@ class ReactionAI {
 
 /*
         if (depth === 1 && caller==="dehydrationReversal") {
-            console.log("ReactionAI.js Calling deprotonateReversal() caller=" + caller + " depth=" + depth)
+            // console.log("ReactionAI.js Calling deprotonateReversal() caller=" + caller + " depth=" + depth)
         }
         */
 
@@ -399,8 +414,8 @@ class ReactionAI {
 
 
 
-//        console.log(VMolecule(target).compressed())
-  //      console.log(r)
+//        // console.log(VMolecule(target).compressed())
+  //      // console.log(r)
     //
 
         if (r) {
@@ -415,7 +430,7 @@ class ReactionAI {
                 'finish reagent': reagent,
                 'function':()=>{
                     const reaction = new Reaction(substrate_protonated, reagent_deprotonated, {})
-                    reaction.protonate
+                    reaction.protonate()
                     return reaction
                 }})
 
@@ -425,10 +440,10 @@ class ReactionAI {
                 return command['name']
             })
             if (command_names.length === 4) {
-                console.log(VMolecule(reverse_reaction.container_substrate).compressed())
-                console.log(command_names)
-                console.log(r)
-                console.log(abcd)
+                // console.log(VMolecule(reverse_reaction.container_substrate).compressed())
+                // console.log(command_names)
+                // console.log(r)
+                // console.log(abcd)
             }
 
 
@@ -506,11 +521,11 @@ class ReactionAI {
 
     dehydrationReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-        console.log("dehydrationReversal() caller="+caller + " depth=" +depth )
-//        console.log(e)
+        // console.log("dehydrationReversal() caller="+caller + " depth=" +depth )
+//        // console.log(e)
 
         if (caller === "dehydrationReversal()") {
-            console.log('Duplicate call - dehydrationReversal()')
+            // console.log('Duplicate call - dehydrationReversal()')
             return
         }
 
@@ -723,10 +738,10 @@ class ReactionAI {
                 return command['name']
             })
             if (command_names.length === 5) {
-                console.log(VMolecule(reverse_reaction.container_substrate).compressed())
-                console.log(command_names)
-                console.log(r)
-                console.log(bcde)
+                // console.log(VMolecule(reverse_reaction.container_substrate).compressed())
+                // console.log(command_names)
+                // console.log(r)
+                // console.log(bcde)
             }
             */
 
@@ -742,7 +757,7 @@ class ReactionAI {
 
 
         if (caller === "breakOxygenCarbonDoubleBondReversal" || caller === "oxygenCarbonDoubleBondReversal") {
-            console.log('Duplicate call - breakOxygenCarbonDoubleBondReversal()')
+            // console.log('Duplicate call - breakOxygenCarbonDoubleBondReversal()')
             return
         }
 
@@ -808,10 +823,10 @@ class ReactionAI {
                 return command['name']
             })
             if (command_names.length === 6) {
-                console.log(VMolecule(reverse_reaction.container_substrate).compressed())
-                console.log(command_names)
-                console.log(r)
-                console.log(bcdefg)
+                // console.log(VMolecule(reverse_reaction.container_substrate).compressed())
+                // console.log(command_names)
+                // console.log(r)
+                // console.log(bcdefg)
             }
             */
 
@@ -879,10 +894,10 @@ class ReactionAI {
                 return command['name']
             })
             if (command_names.length === 7) {
-                console.log(VMolecule(reverse_reaction.container_substrate).compressed())
-                console.log(command_names)
-                console.log(r)
-                console.log(bcdefghik)
+                // console.log(VMolecule(reverse_reaction.container_substrate).compressed())
+                // console.log(command_names)
+                // console.log(r)
+                // console.log(bcdefghik)
             }
             */
 
@@ -896,7 +911,7 @@ class ReactionAI {
     protonateReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
         if (depth === 1 && caller==="dehydrationReversal") {
-            console.log("ReactionAI.js Calling protonateReversal() caller=" + caller + " depth=" + depth)
+            // console.log("ReactionAI.js Calling protonateReversal() caller=" + caller + " depth=" + depth)
         }
 
 
@@ -922,9 +937,9 @@ class ReactionAI {
 
 
         if (depth === 4 && caller==="deprotonateReversal") {
-            console.log("ReactionAI.js Calling protonateReversal() caller=" + caller + " depth=" + depth)
-            console.log(r)
-            console.log(VMolecule(reverse_reaction.container_substrate).compressed())
+            // console.log("ReactionAI.js Calling protonateReversal() caller=" + caller + " depth=" + depth)
+            // console.log(r)
+            // console.log(VMolecule(reverse_reaction.container_substrate).compressed())
         }
 
 
@@ -1054,7 +1069,7 @@ class ReactionAI {
             )
             this.synthesiseCallback(reverse_reaction.container_substrate, reverse_reaction.container_reagent, _.cloneDeep(commands), 'addProtonFromReagentToSubstrateReversal()', depth+1)
         } else {
-            console.log("addProtonFromReagentToSubstrateReversal() reverse reaction failed")
+            // console.log("addProtonFromReagentToSubstrateReversal() reverse reaction failed")
         }
         // }
 

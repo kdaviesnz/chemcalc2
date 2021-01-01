@@ -213,6 +213,7 @@ const MoleculeAI = (container_molecule) => {
         validateMolecule: () => {
             return _.findIndex(container_molecule[0][1], (atom, index)=> {
                 const a_obj = CAtom(container_molecule[0][1][index], index, container_molecule)
+
                 // Charges
                 if (atom[0] === "O") {
 
@@ -245,6 +246,24 @@ const MoleculeAI = (container_molecule) => {
                         // console.log(("validateMolecule N")
                         // console.log((index)
                         // console.log((a_obj.bondCount())
+                        return true
+                    }
+
+                }
+
+                if (atom[0]=== "C") {
+
+                    if ((a_obj.bondCount() + a_obj.doubleBondCount()) > 5) {
+                        console.log("validateMolecule C")
+                        console.log(index)
+                        console.log('Too many bonds: ' + a_obj.bondCount())
+                        return true
+                    }
+
+                    if ((a_obj.bondCount() + a_obj.doubleBondCount()) === 4 && (atom[4] !== "" && atom[4] !== 0)) {
+                        console.log("validateMolecule C")
+                        console.log(index)
+                        console.log(a_obj.bondCount())
                         return true
                     }
 
@@ -530,6 +549,25 @@ const MoleculeAI = (container_molecule) => {
 
                 // Check for carbon bonds
                 const carbon_bonds = oxygen.indexedBonds("").filter((bond)=>{
+                    return bond.atom[0] === "C"
+                })
+                return carbon_bonds.length > 0
+            })
+        },
+
+        findNitrogenAttachedToCarbonIndexNoDoubleBonds: function() {
+            return _.findIndex(container_molecule[0][1], (atom, index) => {
+                if (atom[0] !== "N") {
+                    return false
+                }
+                const n = CAtom(atom, index, container_molecule )
+
+                if (n.indexedDoubleBonds("").length > 0) {
+                    return false
+                }
+
+                // Check for carbon bonds
+                const carbon_bonds = n.indexedBonds("").filter((bond)=>{
                     return bond.atom[0] === "C"
                 })
                 return carbon_bonds.length > 0

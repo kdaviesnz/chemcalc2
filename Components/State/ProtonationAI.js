@@ -201,12 +201,11 @@ class ProtonationAI {
 
     protonate() {
 
-        // console.log("Reaction.js protonate()")
         // console.log(VMolecule(this.container_substrate).compressed())
         // console.log(y)
 
         let atom_nucleophile_index = this.reaction.MoleculeAI.findNucleophileIndex()
-
+//        console.log("ProtonationAI.js protonate(): " + atom_nucleophile_index)
 
         if (atom_nucleophile_index === -1 && !this.reaction.MoleculeAI.isWater()) {
             // try carbon atom

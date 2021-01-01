@@ -77,7 +77,7 @@ class Reaction {
         if (this.MoleculeAI.validateMolecule() === false) {
             console.log('Reaction.js molecule is not valid')
             console.log(VMolecule(this.container_substrate).compressed())
-            console.log(i)
+            console.log(iiii)
         }
     }
 
@@ -151,6 +151,11 @@ class Reaction {
     makeOxygenCarbonDoubleBond() {
         const bondsAI = new BondsAI(this)
         return bondsAI.makeOxygenCarbonDoubleBond()
+    }
+
+    makeNitrogenCarbonDoubleBond() {
+        const bondsAI = new BondsAI(this)
+        return bondsAI.makeNitrogenCarbonDoubleBond()
     }
 
     remercurify() {
@@ -1049,56 +1054,11 @@ class Reaction {
     }
 
     bondSubstrateToReagent() {
-
         // Important:
         // The reagent is the nucleophile and is attacking the substrate
         // The substrate is the electrophile
-      //     // console.log('reaction.js bondSubstrateToReagent')
-        const electrophile_index = this.MoleculeAI.findElectrophileIndex()
-
-        if (electrophile_index === -1) {
-            return false
-        }
-
-        const nucleophile_index = this.ReagentAI.findNucleophileIndex()
-        if (nucleophile_index === -1) {
-            return false
-        }
-
-        const nucleophile = CAtom(this.container_reagent[0][1][nucleophile_index], nucleophile_index, this.container_reagent)
-
-        let freeElectrons = nucleophile.freeElectrons()
-        if (freeElectrons.length === 0) {
-            const freeSlots = nucleophile.freeSlots()
-            if (freeSlots > 0) {
-                // Workaround
-                const uniqid = require('uniqid');
-                freeElectrons.push(uniqid())
-                freeElectrons.push(uniqid())
-                this.container_reagent[0][1][nucleophile_index].push(freeElectrons[0])
-                this.container_reagent[0][1][nucleophile_index].push(freeElectrons[1])
-            }
-        }
-        this.container_substrate[0][1][electrophile_index].push(freeElectrons[0])
-        this.container_substrate[0][1][electrophile_index].push(freeElectrons[1])
-
-        // Charges
-        this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4] === "+"?"":"-"
-        this.container_reagent[0][1][nucleophile_index][4] = this.container_reagent[0][1][nucleophile_index][4] === "-"?"":"+"
-
-        // Add reagent atoms to substrate
-        this.container_reagent[0][1].map(
-            (atom)=>{
-                this.container_substrate[0][1].push(atom)
-                return atom
-            }
-        )
-
-        this.setMoleculeAI()
-        this.setReagentAI()
-
-        return true
-
+        const bondsAI = new BondsAI(this)
+        return bondsAI.bondSubstrateToReagent()
     }
 
     breakBondReverse() { // bond atoms
