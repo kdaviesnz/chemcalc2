@@ -236,16 +236,16 @@ const MoleculeAI = (container_molecule) => {
                 if (atom[0]=== "N") {
 
                     if ((a_obj.bondCount() + a_obj.doubleBondCount()) > 4) {
-                        // console.log(("validateMolecule N")
-                        // console.log((index)
-                        // console.log(('Too many bonds: ' + a_obj.bondCount())
+                        console.log("validateMolecule N")
+                        console.log(index)
+                        console.log('Too many bonds: ' + a_obj.bondCount())
                         return true
                     }
 
                     if ((a_obj.bondCount() + a_obj.doubleBondCount()) === 3 && (atom[4] !== "" && atom[4] !== 0)) {
-                        // console.log(("validateMolecule N")
-                        // console.log((index)
-                        // console.log((a_obj.bondCount())
+                        console.log("validateMolecule N")
+                        console.log(index)
+                        console.log(a_obj.bondCount())
                         return true
                     }
 
@@ -774,7 +774,7 @@ VMolecule
             // @see https://en.wikipedia.org/wiki/Leuckart_reaction (formamide, step 1)
             // @see https://en.wikipedia.org/wiki/Ritter_reaction
             const nitrogen_index = _.findIndex((container_molecule[0][1]), (atom, index)=>{
-                return atom[0] === 'N'
+                return atom[0] === 'N' && atom[4] !== "+"
             })
          //   // console.log(('nitrogen_index:'+nitrogen_index)
             if (nitrogen_index > -1) {

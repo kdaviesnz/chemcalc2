@@ -302,6 +302,13 @@ class ProtonationAI {
 
     deprotonateReverse() {
 
+        if (this.reaction.MoleculeAI.validateMolecule() === false) {
+            console.log('ProtonationAI.js molecule is not valid (deprotonateReverse()) start')
+            console.log('Method: deprotonateReverse() start')
+            console.log(VMolecule(this.reaction.container_substrate).compressed())
+            console.log(kii)
+        }
+
         // console.log("Reaction.js deprotonateReverse()")
         // console.log(VMolecule(this.container_substrate).compressed())
         // console.log(y)

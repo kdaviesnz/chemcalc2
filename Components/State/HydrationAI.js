@@ -57,6 +57,13 @@ class HydrationAI {
 
     dehydrateReverse() {
 
+        if (this.reaction.MoleculeAI.validateMolecule() === false) {
+            console.log('HydrationAI.js molecule is not valid (dehydrateReverse()) start')
+            console.log('Method: dehydrateReverse() start')
+            console.log(VMolecule(this.reaction.container_substrate).compressed())
+            console.log(ijk)
+        }
+
         //console.log("HydrationAI() molecule before:")
         //console.log(VMolecule(this.reaction.container_substrate).compressed())
 
