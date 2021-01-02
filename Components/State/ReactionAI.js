@@ -67,6 +67,7 @@
 const Reaction = require("../State/Reaction")
 const MoleculeFactory = require('../../Models/MoleculeFactory')
 const VMolecule = require('../Stateless/Views/Molecule')
+const ReactionsList = require('../Stateless/ReactionsList')
 const _ = require('lodash');
 
 class ReactionAI {
@@ -255,6 +256,7 @@ class ReactionAI {
             //console.log("Finish: substrate=" + VMolecule(reaction.container_substrate).canonicalSMILES())
              //console.log(VMolecule(reaction.container_reagent).compressed())
             //process.exit()
+            console.log(jgd)
         } else {
             const r = commands[command_index]['function']()
             this.run(_.cloneDeep(commands), _.cloneDeep(command_index+1), _.cloneDeep(r), _.cloneDeep(starting_substrate), _.cloneDeep(starting_reagent))
