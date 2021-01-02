@@ -101,6 +101,11 @@ class ReactionAI {
             }))
             */
 
+            // Check if starting substate rate has no charges
+            if (commands.length ===0 || this.hasCharge(_.cloneDeep(commands[commands.length-1]["starting substrate"])) !== -1) {
+                return
+            }
+
             const command_names = commands.map((command)=>{
                 return command['name']
             })
