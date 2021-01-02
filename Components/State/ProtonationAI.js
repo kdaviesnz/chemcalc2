@@ -132,7 +132,7 @@ class ProtonationAI {
             return false
         }
 
-        const electrophile = CAtom(this.reaction.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
+        const electrophile = CAtom(this.reaction.container_substrate[0][1][electrophile_index], electrophile_index, this.reaction.container_substrate)
         const electrophile_bonds  = electrophile.indexedBonds("")
 
         const hydrogen_bond = electrophile_bonds.filter((bond)=>{
@@ -445,6 +445,9 @@ class ProtonationAI {
 
         const water_oxygen_index = this.reaction.MoleculeAI.findWaterOxygenIndex()
 
+        console.log(VMolecule(this.reaction.container_substrate).compressed())
+        console.log("ProtonationAI addProtonFromReagentToHydroxylGroupReverse() water oxygen index:" + water_oxygen_index)
+
         if (water_oxygen_index === -1) {
             return false
         }
@@ -465,9 +468,9 @@ class ProtonationAI {
         }
 
 
-//        console.log(VMolecule(this.reaction.container_substrate).compressed())
-  //      console.log("ProtonationAI addProtonFromReagentToHydroxylGroupReverse() fin")
-    //    console.log(abc)
+       console.log(VMolecule(this.reaction.container_substrate).compressed())
+        console.log("ProtonationAI addProtonFromReagentToHydroxylGroupReverse() fin")
+       //console.log(abc)
 
 
         return true
@@ -475,6 +478,13 @@ class ProtonationAI {
     }
 
     addProtonFromReagentToHydroxylGroup() {
+
+        console.log("ProtonationAI addProtonFromReagentToHydroxylGroup (start)")
+        if (this.reaction.MoleculeAI.findHydroxylOxygenIndex() === -1) {
+            console.log(VMolecule(this.reaction.container_substrate).compressed())
+            console.log(jkl)
+        }
+
 
         const proton_index = this.reaction.ReagentAI.findProtonIndex()
 
@@ -489,6 +499,11 @@ class ProtonationAI {
         this.reaction.container_reagent[0][1].length.should.not.equal(reagent_atoms.length)
         const hydroxylOxygenIndex = this.reaction.MoleculeAI.findHydroxylOxygenIndex()
 
+        if (this.reaction.container_substrate[0][1][hydroxylOxygenIndex]===undefined) {
+            console.log(hydroxylOxygenIndex)
+            console.log(VMolecule(this.reaction.container_substrate).compressed())
+            console.log(jjjg)
+        }
 
         this.reaction.container_substrate[0][1][hydroxylOxygenIndex][0].should.be.equal("O")
         const substrate_atoms = _.cloneDeep(this.reaction.container_substrate[0][1])

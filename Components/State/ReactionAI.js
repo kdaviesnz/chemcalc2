@@ -346,6 +346,7 @@ class ReactionAI {
         r = reverse_reaction.addProtonFromReagentToHydroxylGroupReverse()
 
 
+
         if (r) {
 
             if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
@@ -357,6 +358,13 @@ class ReactionAI {
             const substrate_proton_removed = _.cloneDeep(reverse_reaction.container_substrate)
             const reagent_with_proton_added = _.cloneDeep(reverse_reaction.container_reagent)
 
+
+            if(reverse_reaction.MoleculeAI.findHydroxylOxygenIndex() === -1) {
+                console.log("Hydroxyl oxgyen not oufnd")
+                console.log(VMolecule(target).compressed())
+                console.log(safgh)
+            }
+
             commands.push({
                 'name':'addProtonFromReagentToHydroxylGroup',
                 'starting substrate': substrate_proton_removed,
@@ -364,6 +372,9 @@ class ReactionAI {
                 'finish substrate': target,
                 'finish reagent': reagent,
                 'function':()=>{
+                    console.log("Function:")
+                    console.log("substrate_proton_removed (should have hydroxyl group)")
+                    console.log(VMolecule(substrate_proton_removed).compressed())
                     const reaction = new Reaction(substrate_proton_removed, reagent_with_proton_added, {})
                     reaction.addProtonFromReagentToHydroxylGroup()
                     return reaction
@@ -465,14 +476,14 @@ class ReactionAI {
             const reagent_deprotonated = _.cloneDeep(reverse_reaction.container_reagent)
 
             commands.push({
-                'name':'protonate',
+                'name':'deprotonate',
                 'starting substrate': substrate_protonated,
                 'starting reagent': reagent_deprotonated,
                 'finish substrate': target,
                 'finish reagent': reagent,
                 'function':()=>{
                     const reaction = new Reaction(substrate_protonated, reagent_deprotonated, {})
-                    reaction.protonate()
+                    reaction.deprotonate()
                     return reaction
                 }})
 
