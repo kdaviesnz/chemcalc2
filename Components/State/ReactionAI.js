@@ -135,6 +135,23 @@ class ReactionAI {
             if (true) {
 
                 // Last commmand
+                console.log("n -> dehydrate")
+                // n=C[C-](O)C(C)(C)C
+                console.log("n=" + VMolecule(commands[1]["starting substrate"]).canonicalSMILES())
+                console.log("Starting substrate")
+                console.log(VMolecule(commands[1]["starting substrate"]).compressed())
+                console.log("dehydrate (finish substrate)=" + VMolecule(commands[1]["finish substrate"]).canonicalSMILES())
+                console.log(commands[1]['name']) // makeOxygenCarbonDoubleBond
+                const reaction_object2 = commands[0]['function']()
+                console.log("Calculated substrate " + commands[1]["name"])
+                console.log(VMolecule(reaction_object2.container_substrate).canonicalSMILES())
+                console.log(VMolecule(reaction_object2.container_substrate).compressed())
+
+                console.log(command_names)
+                console.log(jklllk)
+
+
+                // Last commmand
                 console.log("n -> pinacolone")
                 // n=C[C-](O)C(C)(C)C
                 console.log("n=" + VMolecule(commands[0]["starting substrate"]).canonicalSMILES())
