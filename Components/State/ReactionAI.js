@@ -104,7 +104,7 @@ class ReactionAI {
 
             // Check if starting substate rate has no charges
             if (commands.length ===0 || this.hasCharge(_.cloneDeep(commands[commands.length-1]["starting substrate"])) !== -1) {
-                return
+               // return
             }
 
             const command_names = commands.map((command)=>{
@@ -130,6 +130,15 @@ class ReactionAI {
                 console.log(kljjj)
             }
             */
+
+            // Pinacol Rearrangement
+            if (true) {
+                console.log("n -> pinacolone")
+                console.log("n=" + VMolecule(commands[commands.length-1]["starting substrate"]).compressed())
+                console.log(commands[commands.length-1])
+                console.log(command_names)
+                console.log(jklll)
+            }
 
             // Leukart Wallach
             if (false) {
@@ -273,6 +282,7 @@ class ReactionAI {
         const water = MoleculeFactory("O")
         const formate = MoleculeFactory("[C+](=O)[O-]")
         const methylamine = MoleculeFactory("CN")
+        console.log("Synthesising " + VMolecule([target,1]).canonicalSMILES() + " reagent: " + VMolecule([methylamine,1]).canonicalSMILES())
        // console.log(VMolecule([formate,1]).compressed())
        // console.log(VMolecule([formate,1]).canonicalSMILES())
         this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(methylamine),1], [], 'synthesise', 0)
