@@ -445,8 +445,8 @@ class ProtonationAI {
 
         const water_oxygen_index = this.reaction.MoleculeAI.findWaterOxygenIndex()
 
-        console.log(VMolecule(this.reaction.container_substrate).compressed())
-        console.log("ProtonationAI addProtonFromReagentToHydroxylGroupReverse() water oxygen index:" + water_oxygen_index)
+        //console.log(VMolecule(this.reaction.container_substrate).compressed())
+        //console.log("ProtonationAI addProtonFromReagentToHydroxylGroupReverse() water oxygen index:" + water_oxygen_index)
 
         if (water_oxygen_index === -1) {
             return false
@@ -468,8 +468,8 @@ class ProtonationAI {
         }
 
 
-       console.log(VMolecule(this.reaction.container_substrate).compressed())
-        console.log("ProtonationAI addProtonFromReagentToHydroxylGroupReverse() fin")
+     //  console.log(VMolecule(this.reaction.container_substrate).compressed())
+       // console.log("ProtonationAI addProtonFromReagentToHydroxylGroupReverse() fin")
        //console.log(abc)
 
 
@@ -478,12 +478,6 @@ class ProtonationAI {
     }
 
     addProtonFromReagentToHydroxylGroup() {
-
-        console.log("ProtonationAI addProtonFromReagentToHydroxylGroup (start)")
-        if (this.reaction.MoleculeAI.findHydroxylOxygenIndex() === -1) {
-            console.log(VMolecule(this.reaction.container_substrate).compressed())
-            console.log(jkl)
-        }
 
 
         const proton_index = this.reaction.ReagentAI.findProtonIndex()

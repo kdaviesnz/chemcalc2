@@ -355,29 +355,29 @@ class ReactionAI {
             }
 
 
+
             const substrate_proton_removed = _.cloneDeep(reverse_reaction.container_substrate)
             const reagent_with_proton_added = _.cloneDeep(reverse_reaction.container_reagent)
 
+            const addProtonFromReagentToHydroxylGroupReversal_substrate_ai = require("../Stateless/MoleculeAI")(_.cloneDeep(substrate_proton_removed))
 
-            if(reverse_reaction.MoleculeAI.findHydroxylOxygenIndex() === -1) {
+            if(addProtonFromReagentToHydroxylGroupReversal_substrate_ai.findHydroxylOxygenIndex() === -1) {
                 console.log("Hydroxyl oxgyen not oufnd")
                 console.log(VMolecule(target).compressed())
                 console.log(safgh)
             }
 
+
             commands.push({
                 'name':'addProtonFromReagentToHydroxylGroup',
-                'starting substrate': substrate_proton_removed,
-                'starting reagent': reagent_with_proton_added,
-                'finish substrate': target,
-                'finish reagent': reagent,
+                'starting substrate': _.cloneDeep(substrate_proton_removed),
+                'starting reagent': _.cloneDeep(reagent_with_proton_added),
+                'finish substrate': _.cloneDeep(target),
+                'finish reagent': _.cloneDeep(reagent),
                 'function':()=>{
-                    console.log("Function:")
-                    console.log("substrate_proton_removed (should have hydroxyl group)")
-                    console.log(VMolecule(substrate_proton_removed).compressed())
-                    const reaction = new Reaction(substrate_proton_removed, reagent_with_proton_added, {})
-                    reaction.addProtonFromReagentToHydroxylGroup()
-                    return reaction
+                    const addProtonFromReagentToHydroxylGroup_reaction = new Reaction(_.cloneDeep(substrate_proton_removed), _.cloneDeep(reagent_with_proton_added), {})
+                    addProtonFromReagentToHydroxylGroup_reaction.addProtonFromReagentToHydroxylGroup()
+                    return addProtonFromReagentToHydroxylGroup_reaction
                 }})
 
 
@@ -387,8 +387,6 @@ class ReactionAI {
     }
 
     makeCarbonNitrogenDoubleBondReversal(target, reagent, moleculeAI, commands, caller, depth) {
-
-
 
 
         // console.log("ReactionAI.js Calling makeCarbonNitrogenDoubleBondReversal() caller=" + caller)
@@ -431,9 +429,9 @@ class ReactionAI {
                 'finish substrate': target,
                 'finish reagent': reagent,
                 'function':()=>{
-                    const reaction = new Reaction(substrate_carbon_nitrogen_double_bond_removed, reagent_after_reverse_reaction, {})
-                    reaction.makeNitrogenCarbonDoubleBond()
-                    return reaction
+                    const makeCarbonNitrogenDoubleBond_reaction = new Reaction(_.cloneDeep(substrate_carbon_nitrogen_double_bond_removed), _.cloneDeep(reagent_after_reverse_reaction), {})
+                    makeCarbonNitrogenDoubleBond_reaction.makeNitrogenCarbonDoubleBond()
+                    return makeCarbonNitrogenDoubleBond_reaction
                 }})
 
 
@@ -482,9 +480,9 @@ class ReactionAI {
                 'finish substrate': target,
                 'finish reagent': reagent,
                 'function':()=>{
-                    const reaction = new Reaction(substrate_protonated, reagent_deprotonated, {})
-                    reaction.deprotonate()
-                    return reaction
+                    const deprotonate_reaction = new Reaction(_.cloneDeep(substrate_protonated), _.cloneDeep(reagent_deprotonated), {})
+                    deprotonate_reaction.deprotonate()
+                    return deprotonate_reaction
                 }})
 
             /*
@@ -558,19 +556,9 @@ class ReactionAI {
                 'finish substrate': target,
                 'finish reagent': reagent,
                 'function':()=>{
-
-
-                     // console.log("*Caller: " + caller)
-
-
-
-                    const reaction = new Reaction(substrate_with_oxygen_carbon_double_bond_removed, reagent_with_oxygen_carbon_double_bond_removed, {})
-                    reaction.makeOxygenCarbonDoubleBond()
-
-
-
-
-                    return reaction
+                    const makeOxygenCarbonDoubleBond_reaction = new Reaction(_.cloneDeep(substrate_with_oxygen_carbon_double_bond_removed), _.cloneDeep(reagent_with_oxygen_carbon_double_bond_removed), {})
+                    makeOxygenCarbonDoubleBond_reaction.makeOxygenCarbonDoubleBond()
+                    return makeOxygenCarbonDoubleBond_reaction
             }})
             this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'oxygenCarbonDoubleBondReversal', depth+1)
         }
@@ -674,19 +662,9 @@ class ReactionAI {
                     'finish substrate': target,
                     'finish reagent': reagent,
                     'function':()=>{
-                          // console.log('Command -> dehydrate()')
-                          // console.log('hydrated substrate (substrate before running command):')
-                          // console.log(VMolecule(hydrated_substrate).compressed())
-                          // console.log('hydrated reagent (reagent before running command):')
-                          // console.log(VMolecule(hydrated_reagent).compressed())
-                        const reaction = new Reaction(hydrated_substrate, hydrated_reagent, {})
-                        reaction.dehydrate()
-                          // console.log('dehydrated substrate (substrate after running command:')
-                          // console.log(VMolecule(reaction.container_substrate).compressed())
-                          // console.log('dehydrated reagent (reagent after running command):')
-                          // console.log(VMolecule(reaction.container_reagent).compressed())
-
-                        return reaction
+                        const dehydrate_reaction = new Reaction(_.cloneDeep(hydrated_substrate), _.cloneDeep(hydrated_reagent), {})
+                        dehydrate_reaction.dehydrate()
+                        return dehydrate_reaction
                     }})
 
 
@@ -737,9 +715,9 @@ class ReactionAI {
                 'finish substrate': target,
                 'finish reagent': reagent,
                 'function':()=>{
-                    const reaction = new Reaction(substrate_after_carbon_shift, reagent_after_carbon_shift, {})
-                    reaction.carbocationShift()
-                    return reaction
+                    const carbocationShift_reaction = new Reaction(_.cloneDeep(substrate_after_carbon_shift), _.cloneDeep(reagent_after_carbon_shift), {})
+                    carbocationShift_reaction.carbocationShift()
+                    return carbocationShift_reaction
                 }})
             this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'carbocationSiftReversal()', depth+1)
         }
@@ -824,17 +802,9 @@ class ReactionAI {
                     'finish substrate': target,
                     'finish reagent': reagent,
                     'function':()=>{
-
-                          // console.log('Substrate before command (transferProton())')
-                          // console.log(VMolecule(substrate_with_proton_transferred).compressed())
-
-                          // console.log('Reagent before command (transferProton())')
-                          // console.log(VMolecule(reagent_with_proton_transferred).compressed())
-
-
-                        const reaction = new Reaction(substrate_with_proton_transferred, reagent_with_proton_transferred, {})
-                        reaction.transferProton()
-                        return reaction
+                        const transferProton_reaction = new Reaction(_.cloneDeep(substrate_with_proton_transferred), _.cloneDeep(reagent_with_proton_transferred), {})
+                        transferProton_reaction.transferProton()
+                        return transferProton_reaction
                     }
                 }
             )
@@ -914,19 +884,9 @@ class ReactionAI {
                 'finish substrate': target,
                 'finish reagent': reagent,
                 'function':()=>{
-
-
-                    const reaction = new Reaction(substrate_with_oxygen_carbon_double_bond, reagent_with_oxygen_carbon_double_bond, {})
-                    reaction.breakCarbonOxygenDoubleBond()
-
-                     // console.log('substrate after command makeOxygenCarbonDoubleBondReverse()) substrate_with_oxygen_carbon_double_bond')
-                     // console.log(VMolecule(reaction.container_substrate).compressed())
-                     // console.log('reagent after command makeOxygenCarbonDoubleBondReverse()')
-                     // console.log(VMolecule(reaction.container_reagent).compressed())
-
-
-
-                    return reaction
+                    const breakOxygenCarbonDoubleBond_reaction = new Reaction(_.cloneDeep(substrate_with_oxygen_carbon_double_bond), _.cloneDeep(reagent_with_oxygen_carbon_double_bond), {})
+                    breakOxygenCarbonDoubleBond_reaction.breakCarbonOxygenDoubleBond()
+                    return breakOxygenCarbonDoubleBond_reaction
                 }})
 
             /*
@@ -1001,9 +961,9 @@ class ReactionAI {
                 'finish substrate': target,
                 'finish reagent': reagent,
                 'function':()=>{
-                    const reaction = new Reaction(break_bond_substrate, break_bond_reagent, {})
-                    reaction.bondSubstrateToReagent()
-                    return reaction
+                    const bondSubstrateToReagent_reaction = new Reaction(_.cloneDeep(break_bond_substrate), _.cloneDeep(break_bond_reagent), {})
+                    bondSubstrateToReagent_reaction.bondSubstrateToReagent()
+                    return bondSubstrateToReagent_reaction
                 }})
 
             // [ 'dehydrate', 'addProtonFromReagentToHydroxylGroup', 'makeCarbonNitrogenDoubleBond', 'protonate', 'transferProton', 'breakOxygenCarbonDoubleBond', 'bondSubstrateToReagent' ]
@@ -1104,18 +1064,9 @@ class ReactionAI {
                         'finish substrate': target,
                         'finish reagent': reagent,
                         'function':()=>{
-                              // console.log('Command - substrate (protonate)')
-                              // console.log('deprotonated substrate (substrate before command protonate())')
-                              // console.log(VMolecule(deprotonated_substrate).compressed())
-                              // console.log('protonated reagent (reagent before command protonate())')
-                              // console.log(VMolecule(protonated_reagent).compressed())
-                            const reaction = new Reaction(deprotonated_substrate, protonated_reagent, {})
-                            reaction.protonate()
-                              // console.log('protonated substrate (substrate after running protonate() command')
-                              // console.log(VMolecule(reaction.container_substrate).compressed())
-                              // console.log('deprotonated reagent (reagent after runnnig protonate() command')
-                              // console.log(VMolecule(reaction.container_reagent).compressed())
-                            return reaction
+                            const protonate_reaction = new Reaction(_.cloneDeep(deprotonated_substrate), _.cloneDeep(protonated_reagent), {})
+                            protonate_reaction.protonate()
+                            return protonate_reaction
                         }
                     }
                 )
@@ -1179,20 +1130,9 @@ class ReactionAI {
                     'finish substrate': target,
                     'finish reagent': reagent,
                     'function':()=>{
-                        const reaction = new Reaction(_.cloneDeep(deprotonated_substrate), _.cloneDeep(protonated_reagent), {})
-                          // console.log('Command - substrate (addProtonFromReagentToSubstrate substrate before running command)')
-                          // console.log(VMolecule(deprotonated_substrate).compressed())
-                          // console.log('Command - reagent (addProtonFromReagentToSubstrate reagent before running command)')
-                          // console.log(VMolecule(protonated_reagent).compressed())
-
-                        reaction.addProtonFromReagentToSubstrate()
-
-                          // console.log('protonated substrate (substrate after running command (addProtonFromReagentToSubstrate):')
-                          // console.log(VMolecule(reaction.container_substrate).compressed())
-                          // console.log('protonated reagent (reagent after running command addProtonFromReagentToSubstrate)')
-                          // console.log(VMolecule(reaction.container_reagent).compressed())
-
-                        return reaction
+                        const addProtonFromReagentToSubstrate_reaction = new Reaction(_.cloneDeep(deprotonated_substrate), _.cloneDeep(protonated_reagent), {})
+                        addProtonFromReagentToSubstrate_reaction.addProtonFromReagentToSubstrate()
+                        return addProtonFromReagentToSubstrate_reaction
                     }
                 }
             )

@@ -733,8 +733,8 @@ class BondsAI {
             }
         )
 
-        this.reaction.setMoleculeAI()
-        this.reaction.setReagentAI()
+//        this.reaction.setMoleculeAI()
+  //      this.reaction.setReagentAI()
 
         // Charges
         // this.reaction.container_substrate[0][1][electrophile_index][4] = this.reaction.container_substrate[0][1][electrophile_index][4] === "+"?"":"-"
