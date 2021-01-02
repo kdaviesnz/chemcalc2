@@ -72,6 +72,9 @@ const _ = require('lodash');
 class ReactionAI {
 
     constructor() {
+
+        this.command_sets = []
+
         this.render = (substrate, reagent) => {
               // console.log(VMolecule(substrate).canonicalSMILES())
             if (reagent === null) {
@@ -102,14 +105,25 @@ class ReactionAI {
                 return command['name']
             })
 
+
+
+            if( this._commmandSetExists(command_names)) {
+                console.log("Matching command set")
+                console.log(kioll)
+            }
+
+            this.command_sets.push(command_names)
+           // console.log(this.command_sets.length)
+
+            /*
             if (command_names.length === 4) {
                 console.log(caller)
                 console.log(command_names)
                 console.log(VMolecule(substrate).compressed())
-                console.log(klj)
+                console.log(this.command_sets.length)
+                console.log(kljjj)
             }
-
-
+            */
 
             // Leukart Wallach
             if (false) {
@@ -211,24 +225,31 @@ class ReactionAI {
 
             // console.log('starting substrate:')
             // console.log(VMolecule(commands[commands.length-1]['starting substrate']).canonicalSMILES())
-         //   this.run(_.cloneDeep(commands).reverse(), 0, null, substrate, reagent)
-              // console.log("Caller:" + caller)
+            this.run(_.cloneDeep(commands).reverse(), 0, null, substrate, reagent)
+            console.log("Caller:" + caller)
         }
+    }
+
+    _commmandSetExists(command_set_to_match) {
+        const matching_command_sets = this.command_sets.filter((command_set)=>{
+            return _.isEqual(command_set,command_set_to_match)
+        })
+        return matching_command_sets.length > 0
     }
 
     run(commands, command_index, reaction, starting_substrate, starting_reagent) {
         if (commands[command_index] === undefined) {
-            /*
-               // console.log("\n\Run (result)" + commands.map((command)=>{
+
+            console.log("\n\Run (result) " + commands.map((command)=>{
                    return command['name']
-               }))
-               */
-            // console.log("Start: substrate:")
-            // console.log(VMolecule(starting_substrate).compressed())
-            // console.log("Start: reagent:")
-            // console.log(VMolecule(starting_reagent).compressed())
-            // console.log("Finish: substrate=" + VMolecule(reaction.container_substrate).canonicalSMILES())
-            // console.log(VMolecule(reaction.container_reagent).compressed())
+            }))
+//            console.log("Start: substrate:")
+            console.log(VMolecule(starting_substrate).canonicalSMILES() + " --> " + VMolecule(reaction.container_substrate).canonicalSMILES() + " (reagent=" + VMolecule(starting_reagent).canonicalSMILES() + ")")
+            //console.log("Start: reagent:")
+            //console.log(VMolecule(starting_reagent).compressed())
+            //console.log("Finish: substrate=" + VMolecule(reaction.container_substrate).canonicalSMILES())
+             //console.log(VMolecule(reaction.container_reagent).compressed())
+            //process.exit()
         } else {
             const r = commands[command_index]['function']()
             this.run(_.cloneDeep(commands), _.cloneDeep(command_index+1), _.cloneDeep(r), _.cloneDeep(starting_substrate), _.cloneDeep(starting_reagent))
