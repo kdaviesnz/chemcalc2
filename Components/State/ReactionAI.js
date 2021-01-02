@@ -133,9 +133,20 @@ class ReactionAI {
 
             // Pinacol Rearrangement
             if (true) {
+
+                // Last commmand
                 console.log("n -> pinacolone")
-                console.log("n=" + VMolecule(commands[commands.length-1]["starting substrate"]).compressed())
-                console.log(commands[commands.length-1])
+                // n=C[C-](O)C(C)(C)C
+                console.log("n=" + VMolecule(commands[0]["starting substrate"]).canonicalSMILES())
+                console.log("Starting substrate")
+                console.log(VMolecule(commands[0]["starting substrate"]).compressed())
+                console.log("pinacolone (finish substrate)=" + VMolecule(commands[0]["finish substrate"]).canonicalSMILES())
+                console.log(commands[0]['name']) // makeOxygenCarbonDoubleBond
+
+                const reaction_object = commands[0]['function']()
+                console.log("Calculated substrate " + commands[0]["name"])
+                console.log(VMolecule(reaction_object.container_substrate).canonicalSMILES())
+
                 console.log(command_names)
                 console.log(jklll)
             }
