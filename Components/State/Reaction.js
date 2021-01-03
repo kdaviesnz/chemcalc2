@@ -1757,6 +1757,8 @@ class Reaction {
 
     carbocationShiftReverse() {
 
+        this.setMoleculeAI()
+
         const carbocation_index = this.MoleculeAI.findIndexOfCarbocationAttachedtoCarbon()
         if (carbocation_index === -1) {
             return false
@@ -1820,6 +1822,9 @@ class Reaction {
         this.setChargeOnSubstrateAtom(carbocation_index)
         //this.container_substrate[0][1][carbon_index][4] = this.container_substrate[0][1][carbon_index][4] === "-" ? "" : "+"
         this.setChargeOnSubstrateAtom(carbon_index)
+
+        // console.log("Reaction.js carbocation_index:" + carbocation_index)
+        // console.log(VMolecule(this.container_substrate).compressed())
         this.setMoleculeAI()
 
        // console.log("carbocationshiftreverse()")

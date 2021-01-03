@@ -313,9 +313,9 @@ class ProtonationAI {
 
         let atom_nucleophile_index = this.reaction.MoleculeAI.findNucleophileIndex()
 
-        console.log("Reaction.js deprotonateReverse() start:")
-        console.log(VMolecule(this.reaction.container_substrate).compressed())
-        console.log("Nu index:"+atom_nucleophile_index)
+       // console.log("Reaction.js deprotonateReverse() start:")
+       // console.log(VMolecule(this.reaction.container_substrate).compressed())
+       // console.log("Nu index:"+atom_nucleophile_index)
 
 
         if (atom_nucleophile_index === -1 && !this.reaction.MoleculeAI.isWater()) {

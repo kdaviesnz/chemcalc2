@@ -143,7 +143,7 @@ class BondsAI {
     makeOxygenCarbonDoubleBond() {
 
         // This should NOT remove H from the oxygen
-        console.log('makeOxygenCarbonDoubleBond()')
+        //console.log('makeOxygenCarbonDoubleBond()')
         const oxygen_index = this.reaction.MoleculeAI.findOxygenAttachedToCarbonIndexNoDoubleBonds()
 
         if (oxygen_index === -1) {
@@ -587,6 +587,8 @@ class BondsAI {
 
     breakCarbonOxygenDoubleBondReverse() {
 
+        this.reaction.setMoleculeAI()
+
         // console.log('Reaction.js breakCarbonOxygenDoubleBondReverse()')
         // console.log(VMolecule(this.reaction.container_substrate).compressed())
 
@@ -616,7 +618,17 @@ class BondsAI {
 
         const carbon_bonds = oxygen.indexedBonds("").filter((bond)=>{
             //return bond.atom[0] === "C" && bond.atom[4] !== "" && bond.atom[4] !== 0
-            return bond.atom[0] === "C"
+            if (bond.atom[0] !== "C") {
+                return false
+            }
+            const c = CAtom(this.reaction.container_substrate[0][1][bond.atom_index], bond.atom_index, this.reaction.container_substrate)
+            if (c.doubleBondCount() > 0 ) {
+                return false
+            }
+            if (c.bondCount() > 4) {
+                return false
+            }
+            return true
         })
 
         if (carbon_bonds.length === 0) {
@@ -624,6 +636,10 @@ class BondsAI {
         }
 
         const carbon_index = carbon_bonds[0].atom_index
+
+       // console.log("BondsAI carbon_index breakCarbonOxygenDoubleBondReverse():" + carbon_index)
+       // console.log(VMolecule(this.reaction.container_substrate).compressed())
+
 
         const freeElectrons = oxygen.freeElectrons()
 

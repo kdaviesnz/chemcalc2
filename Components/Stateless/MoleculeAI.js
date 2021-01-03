@@ -300,11 +300,19 @@ const MoleculeAI = (container_molecule) => {
         },
 
         findIndexOfCarbocationAttachedtoCarbon: ()=>{
+           // console.log("MoleculeAI findIndexOfCarbocationAttachedtoCarbon()")
+           // console.log(VMolecule(container_molecule).compressed())
             return _.findIndex(container_molecule[0][1], (atom, index)=>{
                 if (atom[0] !== "C" || atom[4] !== "+") {
                     return false
                 }
                 const carbocation = CAtom(container_molecule[0][1][index], index, container_molecule)
+                if (carbocation.doubleBondCount() > 0) {
+                    return false
+                }
+                if (carbocation.bondCount()  > 4) {
+                    return false
+                }
                 const bonds = carbocation.indexedBonds("").filter((bond)=>{
                     return bond.atom[0] === "C"
                 })
@@ -833,7 +841,7 @@ VMolecule
                 return nucleophile_index
             }
 
-            console.log('MoleculeAI nuuu:'+nucleophile_index)
+           // console.log('MoleculeAI nuuu:'+nucleophile_index)
 
             // Check for atom with free electrons
             const atoms_with_free_electrons = container_molecule[0][1].map(
@@ -855,7 +863,7 @@ VMolecule
 
             nucleophile_index = atoms_with_free_electrons.length === 0? -1: atoms_with_free_electrons[0].atomIndex
 
-            console.log('MoleculeAI nuuu:'+nucleophile_index)
+           // console.log('MoleculeAI nuuu:'+nucleophile_index)
 
             /*
             nucleophile_index = _.findIndex(container_molecule[0][1], (atom, atom_index) => {
