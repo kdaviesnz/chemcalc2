@@ -72,8 +72,10 @@ class HydrationAI {
             console.log(ijk)
         }
 
-        //console.log("HydrationAI() molecule before:")
-        //console.log(VMolecule(this.reaction.container_substrate).compressed())
+
+
+        console.log("HydrationAI() dehydrateReverse() molecule before:")
+        console.log(VMolecule(this.reaction.container_substrate).compressed())
 
         const water_molecule = MoleculeFactory("O")
         water_molecule[1][2][4]="+"
@@ -85,8 +87,24 @@ class HydrationAI {
             [water_molecule,1]).freeElectrons()
         electrons.length.should.be.greaterThan(1)
 
+        // Pinacol rearrangement -> c+ but < 4 bonds
+        // (Leuckact Wallach reaction c-)
         let electrophile_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
-            return atom[0] === "C" && atom[4] === "-"
+            if (atom[0]!=="C") {
+                return false
+            }
+            if (atom[4]==="" || atom[4]===0) {
+                return false
+            }
+            if(atom[4]==="-") {
+                return true
+            }
+            if (atom[4]==="+") {
+                return llll
+            }
+            return false
+
+
         })
 
         // Leuckact Wallach reaction

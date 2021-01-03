@@ -294,7 +294,7 @@ class ReactionAI {
             //console.log("Finish: substrate=" + VMolecule(reaction.container_substrate).canonicalSMILES())
              //console.log(VMolecule(reaction.container_reagent).compressed())
             //process.exit()
-           //console.log(jgd)
+           // console.log(jgd)
         } else {
             const r = commands[command_index]['function']()
             this.run(_.cloneDeep(commands), _.cloneDeep(command_index+1), _.cloneDeep(r), _.cloneDeep(starting_substrate), _.cloneDeep(starting_reagent))
@@ -633,7 +633,13 @@ class ReactionAI {
 
     dehydrationReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-       // console.log("dehydrationReversal() caller="+caller + " depth=" +depth )
+        console.log("dehydrationReversal() caller="+caller + " depth=" +depth )
+
+        const command_names = commands.map((command)=>{
+            return command['name']
+        })
+
+        console.log(command_names)
 //        // console.log(e)
 
         /*
@@ -649,6 +655,7 @@ class ReactionAI {
         */
 
 
+
         /*
         if (caller === "dehydrationReversal" || caller==="addProtonFromReagentToHydroxylGroupReversal") {
             console.log('Duplicate call or call from addProtonFromReagentToHydroxylGroupReversal- dehydrationReversal()')
@@ -661,6 +668,7 @@ class ReactionAI {
         const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
 
 
+
         // https://en.wikipedia.org/wiki/Pinacol_rearrangement
         // https://en.wikipedia.org/wiki/Leuckart_reaction (2)
 
@@ -668,6 +676,11 @@ class ReactionAI {
 
             r = reverse_reaction.dehydrateReverse()
 
+        // Pinacol rearrangement
+        if (_.isEqual(command_names,['makeOxygenCarbonDoubleBond', 'carbocationShift', 'deprotonate'])) {
+            console.log(r)
+            console.log(oooo)
+        }
 
 
 
@@ -714,9 +727,7 @@ class ReactionAI {
                     }})
 
 
-                const command_names = commands.map((command)=>{
-                    return command['name']
-                })
+
                 this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent),_.cloneDeep(commands), 'dehydrationReversal', depth+1)
             } else {
                    // console.log("dehydrationReversal() reverse reaction failed")
