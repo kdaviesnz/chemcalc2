@@ -74,8 +74,8 @@ class HydrationAI {
 
 
 
-        console.log("HydrationAI() dehydrateReverse() molecule before:")
-        console.log(VMolecule(this.reaction.container_substrate).compressed())
+      //  console.log("HydrationAI() dehydrateReverse() molecule before:")
+      //  console.log(VMolecule(this.reaction.container_substrate).compressed())
 
         const water_molecule = MoleculeFactory("O")
         water_molecule[1][2][4]="+"
@@ -100,11 +100,15 @@ class HydrationAI {
                 return true
             }
             if (atom[4]==="+") {
-                return llll
+                const c_atom = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate )
+                if (c_atom.doubleBondCount() > 0) {
+                    return false
+                }
+                if (c_atom.bondCount() === 3) {
+                    return true
+                }
             }
             return false
-
-
         })
 
         // Leuckact Wallach reaction

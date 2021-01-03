@@ -498,12 +498,15 @@ class BondsAI {
         })
 
         // Create proton and add it to the oxygen
+        // See Leuckart Wallach
+        // Pinacol Rearrangement doesn't add H
+        /*
         const proton = AtomFactory("H")
         proton.pop()
         proton.push(shared_electrons[0])
         proton.push(shared_electrons[1])
         this.reaction.container_substrate[0][1].push(proton)
-
+        */
         // Charges
         //this.reaction.container_substrate[0][1][oxygen_index][4] = ""
         this.reaction.setChargeOnSubstrateAtom(oxygen_index)
@@ -602,7 +605,9 @@ class BondsAI {
             }
             const o = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate)
             const c_bonds = o.indexedBonds("").filter((bond)=>{
-                return bond.atom[0] === "C"
+                // Pinacol Rearrangement - add && bond.atom[4] === "+
+                // otherwise get into C=O CO C=O loop
+                return bond.atom[0] === "C" && bond.atom[4] === "+"
             })
             return c_bonds.length > 0
         })

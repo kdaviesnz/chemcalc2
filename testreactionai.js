@@ -14,9 +14,9 @@ const imine = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)=NC")
 //console.log(VMolecule([imine,1]).canonicalSMILES())
 //console.log(mnb)
 const r = new ReactionAI()
-r.synthesise(pinacolone)
+//r.synthesise(pinacolone)
 //r.synthesise(isopropylamine)
 //r.synthesise(m)
-//r.synthesise(imine)
+r.synthesise(imine)
 
 
