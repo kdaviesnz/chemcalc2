@@ -131,8 +131,23 @@ class ReactionAI {
             }
             */
 
-            // console.log(command_names)
-            // console.log(ujkjh)
+            /*
+            const command_names_reversed = _.cloneDeep(command_names).reverse()
+            const commands_reversed = _.cloneDeep(commands).reverse()
+            console.log(command_names_reversed)
+*/
+
+            // Leuckart Wallach
+            /*
+            if (true) {
+                console.log("n=" + VMolecule(commands_reversed[0]["starting substrate"]).canonicalSMILES())
+                console.log("Starting substrate")
+                console.log(VMolecule(commands_reversed[0]["starting substrate"]).compressed())
+                console.log("LW (finish substrate)=" + VMolecule(commands_reversed[0]["finish substrate"]).canonicalSMILES())
+                console.log(commands_reversed[0]['name']) // makeOxygenCarbonDoubleBond
+            }
+            console.log(ujkjh)
+            */
 
             // Pinacol Rearrangement
             if (false) {
@@ -172,103 +187,7 @@ class ReactionAI {
                 console.log(jklll)
             }
 
-            // Leukart Wallach
-            if (false) {
-            //if (command_names.length === 7 && command_names[0] === "dehydrate" && command_names[command_names.length-1] === "bondSubstrateToReagent") {
-                // console.log("Starting substrate (first command): " + command_names[command_names.length-1])
-              //  // console.log(VMolecule(commands[commands.length - 1]['starting substrate']).compressed())
-                // console.log(VMolecule(commands[commands.length - 1]['starting substrate']).canonicalSMILES())
-                // console.log("Starting reagent (first command)")
-                // console.log(VMolecule(commands[commands.length - 1]['starting reagent']).compressed())
-                const reaction_object = commands[commands.length - 1]['function']()
-                // console.log("Calculated substrate " + commands[commands.length - 1]["name"])
-                // console.log(VMolecule(reaction_object.container_substrate).compressed())
-                // console.log("----------------------------------")
 
-
-                // console.log("Starting substrate (second command) " + command_names[command_names.length-2])
-                // console.log(VMolecule(commands[commands.length - 2]['starting substrate']).compressed())
-                // console.log("Starting reagent (second command)")
-                // console.log(VMolecule(commands[commands.length - 2]['starting reagent']).compressed())
-                const reaction_object2 = commands[commands.length - 2]['function']()
-                // console.log("Calculated substrate " + commands[commands.length - 2]["name"])
-                // console.log(VMolecule(reaction_object2.container_substrate).compressed())
-                // console.log("----------------------------------")
-
-
-                // console.log("Starting substrate (third command) "  + command_names[command_names.length-3])
-                // console.log(VMolecule(commands[commands.length - 3]['starting substrate']).compressed())
-
-                // console.log("Starting reagent (third command)")
-                // console.log(VMolecule(commands[commands.length - 3]['starting reagent']).compressed())
-
-                const reaction_object3 = commands[commands.length - 3]['function']()
-                // console.log("Calculated substrate " + commands[commands.length - 3]["name"])
-                // console.log(VMolecule(reaction_object3.container_substrate).compressed())
-
-                // console.log("----------------------------------")
-
-
-                // console.log("Starting substrate (fourth command) "  + command_names[command_names.length-4])
-                // console.log(VMolecule(commands[commands.length - 4]['starting substrate']).compressed())
-
-                // console.log("Starting reagent (fourth command)")
-                // console.log(VMolecule(commands[commands.length - 4]['starting reagent']).compressed())
-                const reaction_object4 = commands[commands.length - 4]['function']()
-                // console.log("Calculated substrate " + commands[commands.length - 4]["name"])
-                // console.log(VMolecule(reaction_object4.container_substrate).compressed())
-                // console.log("Calculated reagent " + commands[commands.length - 4]["name"])
-                // console.log(VMolecule(reaction_object4.container_reagent).compressed())
-                // console.log("----------------------------------")
-
-
-                // console.log("Starting substrate (fifth command) "  + command_names[command_names.length-5])
-                // console.log(VMolecule(commands[commands.length - 5]['starting substrate']).compressed())
-
-                // console.log("Starting reagent (fifth command)")
-                // console.log(VMolecule(commands[commands.length - 5]['starting reagent']).compressed())
-
-                const reaction_object5 = commands[commands.length - 5]['function']()
-                // console.log("Calculated substrate " + commands[commands.length - 5]["name"])
-                // console.log(VMolecule(reaction_object5.container_substrate).compressed())
-                // console.log("Calculated reagent " + commands[commands.length - 5]["name"])
-                // console.log(VMolecule(reaction_object5.container_reagent).compressed())
-                // console.log("----------------------------------")
-
-
-
-                // console.log("Starting substrate (sixth command) " + command_names[command_names.length-6])
-                // console.log(VMolecule(commands[commands.length - 6]['starting substrate']).compressed())
-
-                // console.log("Starting reagent (sixth command)")
-                // console.log(VMolecule(commands[commands.length - 6]['starting reagent']).compressed())
-
-                const reaction_object6 = commands[commands.length - 6]['function']()
-                // console.log("Calculated substrate " + commands[commands.length - 6]["name"])
-                // console.log(VMolecule(reaction_object6.container_substrate).compressed())
-                // console.log("Calculated reagent " + commands[commands.length - 6]["name"])
-                // console.log(VMolecule(reaction_object6.container_reagent).compressed())
-
-                // console.log("----------------------------------")
-
-
-                // console.log("Starting substrate (last command) " + command_names[command_names.length-7])
-                // console.log(VMolecule(commands[commands.length - 7]['starting substrate']).compressed())
-
-                // console.log("Starting reagent (last command)")
-                // console.log(VMolecule(commands[commands.length - 7]['starting reagent']).compressed())
-
-                const reaction_object7 = commands[commands.length - 7]['function']()
-                // console.log("Calculated substrate " + commands[commands.length - 7]["name"])
-                // console.log(VMolecule(reaction_object7.container_substrate).compressed())
-                // console.log("Calculated reagent " + commands[commands.length - 7]["name"])
-                // console.log(VMolecule(reaction_object7.container_reagent).compressed())
-
-                // console.log("----------------------------------")
-
-
-
-            }
 
             // console.log('starting substrate:')
             // console.log(VMolecule(commands[commands.length-1]['starting substrate']).canonicalSMILES())
@@ -298,7 +217,7 @@ class ReactionAI {
             //console.log("Finish: substrate=" + VMolecule(reaction.container_substrate).canonicalSMILES())
              //console.log(VMolecule(reaction.container_reagent).compressed())
             //process.exit()
-            console.log(jgd)
+            // console.log(jgd)
         } else {
             const r = commands[command_index]['function']()
             this.run(_.cloneDeep(commands), _.cloneDeep(command_index+1), _.cloneDeep(r), _.cloneDeep(starting_substrate), _.cloneDeep(starting_reagent))
