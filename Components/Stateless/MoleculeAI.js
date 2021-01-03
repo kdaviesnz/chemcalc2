@@ -774,7 +774,7 @@ VMolecule
 
             // Look for OH
             const hyroxyl_oxygen_index = this.findHydroxylOxygenIndex()
-          // console.log(('hyroxyl_oxygen_index:'+hyroxyl_oxygen_index)
+
             if (hyroxyl_oxygen_index > -1) {
                 return hyroxyl_oxygen_index
             }
@@ -792,6 +792,7 @@ VMolecule
 
             // Look for double bond with most hydrogens
             let hydrogen_count = 0
+
             let nucleophile_index = container_molecule[0][1].reduce((carry, atom, index)=> {
                 const atom_object = CAtom(atom, index,container_molecule)
                 const double_bonds = atom_object.indexedDoubleBonds("").filter((double_bond)=>{
@@ -821,6 +822,8 @@ VMolecule
 
             }, -1)
 
+
+
             // Verifications checks
             if (undefined === container_molecule[0][1][nucleophile_index]) {
                 nucleophile_index = -1
@@ -830,6 +833,8 @@ VMolecule
                 return nucleophile_index
             }
 
+            console.log('MoleculeAI nuuu:'+nucleophile_index)
+
             // Check for atom with free electrons
             const atoms_with_free_electrons = container_molecule[0][1].map(
                 (atom, atom_index) => {
@@ -837,6 +842,9 @@ VMolecule
                 }
             ).filter(
                 (atom_object, atom_index) => {
+                    if (atom_object.symbol === "O" && (atom_object.bondCount() + atom_object.doubleBondCount() > 2)) {
+                        return false
+                    }
                     return atom_object.symbol !== "H" && atom_object.freeElectrons().length > 0
                 }
             ).sort(
@@ -846,6 +854,8 @@ VMolecule
             )
 
             nucleophile_index = atoms_with_free_electrons.length === 0? -1: atoms_with_free_electrons[0].atomIndex
+
+            console.log('MoleculeAI nuuu:'+nucleophile_index)
 
             /*
             nucleophile_index = _.findIndex(container_molecule[0][1], (atom, atom_index) => {

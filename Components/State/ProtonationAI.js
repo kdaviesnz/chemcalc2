@@ -309,11 +309,13 @@ class ProtonationAI {
             console.log(kii)
         }
 
-        // console.log("Reaction.js deprotonateReverse()")
-        // console.log(VMolecule(this.container_substrate).compressed())
         // console.log(y)
 
         let atom_nucleophile_index = this.reaction.MoleculeAI.findNucleophileIndex()
+
+        console.log("Reaction.js deprotonateReverse() start:")
+        console.log(VMolecule(this.reaction.container_substrate).compressed())
+        console.log("Nu index:"+atom_nucleophile_index)
 
 
         if (atom_nucleophile_index === -1 && !this.reaction.MoleculeAI.isWater()) {
@@ -341,6 +343,9 @@ class ProtonationAI {
         let free_electrons = CAtom(this.reaction.container_substrate[0][1][atom_nucleophile_index], atom_nucleophile_index, this.reaction.container_substrate).freeElectrons()
 
 
+
+
+
         if (free_electrons.length === 0) {
 
             // Check for double bond and if there is one break it and get shared electrons from that.
@@ -366,6 +371,7 @@ class ProtonationAI {
 
 
         } else {
+
             this.reaction.setChargeOnSubstrateAtom(atom_nucleophile_index)
         }
 
@@ -377,6 +383,8 @@ class ProtonationAI {
         proton.push(free_electrons[0])
         proton.push(free_electrons[1])
         this.reaction.container_substrate[0][1].push(proton)
+
+
 
         this.reaction.container_substrate[0][1].length.should.not.equal(atoms.length)
 
