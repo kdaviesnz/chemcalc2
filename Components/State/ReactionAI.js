@@ -915,6 +915,7 @@ class ReactionAI {
 
 
 
+
         const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
 
         let r = null
@@ -936,6 +937,7 @@ class ReactionAI {
                 console.log(bbbbb)
                 return
             }
+
 
             // https://en.wikipedia.org/wiki/Leuckart_reaction (6)
             //this.render(reaction.container_substrate, reaction.container_reagent)
@@ -969,17 +971,19 @@ class ReactionAI {
                 }})
 
             // [ 'dehydrate', 'addProtonFromReagentToHydroxylGroup', 'makeCarbonNitrogenDoubleBond', 'protonate', 'transferProton', 'breakOxygenCarbonDoubleBond', 'bondSubstrateToReagent' ]
-            /*
+
             const command_names = commands.map((command)=>{
                 return command['name']
             })
-            if (command_names.length === 7) {
-                // console.log(VMolecule(reverse_reaction.container_substrate).compressed())
-                // console.log(command_names)
-                // console.log(r)
-                // console.log(bcdefghik)
+            if (command_names.length !== 900) {
+                console.log('bondSubstrateToReagentReversal caller=' + caller + " depth=" + depth)
+                console.log(VMolecule(target).compressed())
+                console.log(VMolecule(reverse_reaction.container_substrate).compressed())
+                console.log(command_names)
+                console.log(r)
+                console.log(bcdefghik)
             }
-            */
+
 
             this.synthesiseCallback(reverse_reaction.container_substrate, reverse_reaction.container_reagent, _.cloneDeep(commands), 'bondSubstrateToReagentReversal()', depth+1)
         } else{
