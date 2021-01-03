@@ -132,9 +132,10 @@ class ReactionAI {
             */
 
             // Pinacol Rearrangement
-            if (true) {
+            if (false) {
 
-                // Last commmand
+                // Dehydration command
+                /*
                 console.log("n -> dehydrate")
                 // n=C[C-](O)C(C)(C)C
                 console.log("n=" + VMolecule(commands[1]["starting substrate"]).canonicalSMILES())
@@ -142,13 +143,13 @@ class ReactionAI {
                 console.log(VMolecule(commands[1]["starting substrate"]).compressed())
                 console.log("dehydrate (finish substrate)=" + VMolecule(commands[1]["finish substrate"]).canonicalSMILES())
                 console.log(commands[1]['name']) // makeOxygenCarbonDoubleBond
-                const reaction_object2 = commands[0]['function']()
+                const reaction_object2 = commands[1]['function']()
                 console.log("Calculated substrate " + commands[1]["name"])
                 console.log(VMolecule(reaction_object2.container_substrate).canonicalSMILES())
                 console.log(VMolecule(reaction_object2.container_substrate).compressed())
-
                 console.log(command_names)
                 console.log(jklllk)
+                */
 
 
                 // Last commmand
@@ -741,11 +742,19 @@ class ReactionAI {
         // Carbocation shift
         // https://en.wikipedia.org/wiki/Pinacol_rearrangement
         let r = null
-        r = reverse_reaction.carbocationShift()
+        r = reverse_reaction.carbocationShiftReverse()
         if (r) {
 
             if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
+                /*
+                const command_names = commands.map((command)=>{
+                    return command['name']
+                })
+                console.log(command_names)
+                console.log("target substrate")
+                console.log(VMolecule(target).compressed())
                 console.log(jjjjj)
+              */
                 return
             }
 

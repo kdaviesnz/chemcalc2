@@ -143,23 +143,28 @@ class BondsAI {
     makeOxygenCarbonDoubleBond() {
 
         // This should NOT remove H from the oxygen
-        //     // console.log('makeOxygenCarbonDoubleBond()')
+        console.log('makeOxygenCarbonDoubleBond()')
         const oxygen_index = this.reaction.MoleculeAI.findOxygenAttachedToCarbonIndexNoDoubleBonds()
 
         if (oxygen_index === -1) {
             return false
         }
 
+
         // Should have positive charge - added
         if (this.reaction.container_substrate[0][1][oxygen_index] !== "+") {
-            return false
+//            return false
         }
+
+
         const oxygen = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
 
-        // Added check for negative charge
+        // Added check for positive charge
+        // https://en.wikipedia.org/wiki/Pinacol_rearrangement
         const carbon_bonds = oxygen.indexedBonds("").filter((bond)=>{
-            return bond.atom[0] === "C" && bond.atom[4] === "-"
+            return bond.atom[0] === "C" && bond.atom[4] === "+"
         })
+
 
         if (carbon_bonds.length === 0) {
             return false
@@ -210,6 +215,12 @@ class BondsAI {
         }
 
         this.reaction.setMoleculeAI()
+
+       // console.log("BondsAI makeOxygenCarbonDoubleBond() oxygen_index:" + oxygen_index)
+       // console.log(carbon_bonds.length)
+        // console.log(qju)
+
+
 
         if (this.reaction.MoleculeAI.validateMolecule() === false) {
             console.log('BondsAI.js molecule is not valid (makeOxygenCarbonDoubleBond())')

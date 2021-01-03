@@ -113,12 +113,16 @@ class Reaction {
             }
         }
         if (this.container_substrate[0][1][index][0] === "C") {
-            if (b_count > 4) {
+            if (_.cloneDeep(this.container_substrate[0][1][index].slice(5)).length === 6) {
                 this.container_substrate[0][1][index][4] = "+"
-            } else if (b_count < 4) {
-                this.container_substrate[0][1][index][4] = "-"
             } else {
-                this.container_substrate[0][1][index][4] = ""
+                if (b_count > 4) {
+                    this.container_substrate[0][1][index][4] = "+"
+                } else if (b_count < 4) {
+                    this.container_substrate[0][1][index][4] = "-"
+                } else {
+                    this.container_substrate[0][1][index][4] = ""
+                }
             }
         }
     }
@@ -1751,6 +1755,80 @@ class Reaction {
 
     }
 
+    carbocationShiftReverse() {
+
+        const carbocation_index = this.MoleculeAI.findIndexOfCarbocationAttachedtoCarbon()
+        if (carbocation_index === -1) {
+            return false
+        }
+
+        const carbocation = CAtom(this.container_substrate[0][1][carbocation_index], carbocation_index, this.container_substrate)
+
+        const carbon_bond = carbocation.indexedBonds("").filter((bond)=>{
+            if (bond.atom[0] !=="C") {
+                return false
+            }
+            const c = CAtom(this.container_substrate[0][1][bond.atom_index], bond.atom_index, this.container_substrate)
+            return c.hydrogens().length === 0 // @todo
+        }).pop()
+
+        if (carbon_bond === undefined) {
+            return false
+        }
+
+        const carbon_index = carbon_bond.atom_index
+
+        const carbon = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, this.container_substrate)
+
+        let atom_to_shift_index = null
+
+        // Check for hydrogens
+        if (carbon.hydrogens().length > 0) {
+            atom_to_shift_index = carbon.indexedBonds("").filter((bond) => {
+                if (bond.atom[0] !== "C") {
+                    return false
+                }
+                const c = CAtom(this.container_substrate[0][1][bond.atom_index], bond.atom_index, this.container_substrate)
+                return c.hydrogens().length === 3
+            }).pop().atom_index
+        } else {
+            // Get methyl group
+            atom_to_shift_index = carbon.indexedBonds("").filter((bond) => {
+                if (bond.atom[0] !== "C") {
+                    return false
+                }
+                const c = CAtom(this.container_substrate[0][1][bond.atom_index], bond.atom_index, this.container_substrate)
+                return c.hydrogens().length === 3
+            }).pop().atom_index
+        }
+
+        if (atom_to_shift_index === undefined) {
+            return false
+        }
+
+        const carbon_methyl_shared_electrons = Set().intersection(this.container_substrate[0][1][carbon_index].slice(5), this.container_substrate[0][1][atom_to_shift_index].slice(5))
+
+        this.container_substrate[0][1][carbon_index] = Set().removeFromArray(this.container_substrate[0][1][carbon_index], carbon_methyl_shared_electrons)
+        // this.container_substrate[0][1][atom_to_shift_index] = Set().removeFromArray(this.container_substrate[0][1][atom_to_shift_index], carbon_methyl_shared_electrons)
+        // Make carbocation - methyl bond
+        this.container_substrate[0][1][carbocation_index].push(carbon_methyl_shared_electrons[0])
+        this.container_substrate[0][1][carbocation_index].push(carbon_methyl_shared_electrons[1])
+
+
+
+        //this.container_substrate[0][1][carbocation_index][4] = this.container_substrate[0][1][carbocation_index][4] === "+" ? "" : "-"
+        this.setChargeOnSubstrateAtom(carbocation_index)
+        //this.container_substrate[0][1][carbon_index][4] = this.container_substrate[0][1][carbon_index][4] === "-" ? "" : "+"
+        this.setChargeOnSubstrateAtom(carbon_index)
+        this.setMoleculeAI()
+
+       // console.log("carbocationshiftreverse()")
+       // console.log(VMolecule(this.container_substrate).compressed())
+       // console.log(jkhooo)
+
+        return true
+
+    }
 
     hydrideShift() {
 

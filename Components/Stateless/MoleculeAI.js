@@ -253,18 +253,27 @@ const MoleculeAI = (container_molecule) => {
 
                 if (atom[0]=== "C") {
 
-                    if ((a_obj.bondCount() + a_obj.doubleBondCount()) > 5) {
+                    if (_.cloneDeep(atom.slice(5)).length === 6 && atom[4] !== "+") {
                         console.log("validateMolecule C")
                         console.log(index)
-                        console.log('Too many bonds: ' + a_obj.bondCount())
+                        console.log('Atom should have positive charge as it has lost electrons')
                         return true
-                    }
+                    } else {
 
-                    if ((a_obj.bondCount() + a_obj.doubleBondCount()) === 4 && (atom[4] !== "" && atom[4] !== 0)) {
-                        console.log("validateMolecule C")
-                        console.log(index)
-                        console.log(a_obj.bondCount())
-                        return true
+                        if ((a_obj.bondCount() + a_obj.doubleBondCount()) > 5) {
+                            console.log("validateMolecule C")
+                            console.log(index)
+                            console.log('Too many bonds: ' + a_obj.bondCount())
+                            return true
+                        }
+
+                        if ((a_obj.bondCount() + a_obj.doubleBondCount()) === 4 && (atom[4] !== "" && atom[4] !== 0)) {
+                            console.log("validateMolecule C")
+                            console.log(index)
+                            console.log(a_obj.bondCount())
+                            return true
+                        }
+
                     }
 
                 }

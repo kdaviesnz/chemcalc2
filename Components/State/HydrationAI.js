@@ -12,6 +12,8 @@ class HydrationAI {
 
     dehydrate() {
 
+        console.log("HydrationAI dehydrate()")
+
         const oxygen_atom_index = this.reaction.MoleculeAI.findWaterOxygenIndex()
 
         if (oxygen_atom_index === -1) {
@@ -34,9 +36,15 @@ class HydrationAI {
         // Break the non_hydrogen bond
         const shared_electrons = non_hydrogen_bond.shared_electrons
 
+       // console.log("HydrationAI dehydrate()")
+       // console.log(this.reaction.container_substrate[0][1][non_hydrogen_bond.atom_index])
+
         _.remove(this.reaction.container_substrate[0][1][non_hydrogen_bond.atom_index], (v, i)=> {
             return shared_electrons[1] === v || shared_electrons[0] === v
         })
+
+       // console.log(this.reaction.container_substrate[0][1][non_hydrogen_bond.atom_index])
+       // console.log(fgh)
 
         // Remove water atoms
         _.remove(this.reaction.container_substrate[0][1], (v,i) => {
