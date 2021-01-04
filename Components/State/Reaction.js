@@ -1065,6 +1065,11 @@ class Reaction {
         return bondsAI.bondSubstrateToReagent()
     }
 
+    removeHalide() {
+        const bondsAI = new BondsAI(this)
+        return bondsAI.removeHalide()
+    }
+
     breakBondReverse() { // bond atoms
         //   // console.log('breakBondReverse()')
         let nucleophile_index = this.MoleculeAI.findNucleophileIndex()

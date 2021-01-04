@@ -550,12 +550,18 @@ We then get the total number of free slots by subtracting number of electrons th
 in its outer shell * 2 from the maximum number of electrons the atom can have in its valence shell.
 We then return the total number of free slots minus the number of slots already taken
 */
-    const __freeSlots = (test_number) => {
+    const __freeSlots = function(test_number)  {
 
         // Basic checks
         atom.should.not.be.null()
         atom.length.should.not.be.equal(0)
         current_atom_index.should.not.be.null()
+
+        if (atom[0]==="N") {
+            if (this.indexedBonds("").length + this.indexedDoubleBonds("").length === 3) {
+                return 1
+            }
+        }
 
         // C, 2 - 4 , max 4 bonds 0 free slots
         // N, 2-5  max 3 bonds, 1 free slot

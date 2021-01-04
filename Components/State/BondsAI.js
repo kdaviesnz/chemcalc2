@@ -14,6 +14,7 @@ const Set = require('../../Models/Set')
 // breakCarbonOxygenDoubleBond()
 // breakCarbonDoubleBond()
 // bondSubstrateToReagent()
+// removeHalide()
 // makeCarbonNitrogenDoubleBondReverse()
 // makeOxygenCarbonDoubleBondReverse()
 // breakCarbonOxygenDoubleBondReverse()
@@ -693,7 +694,7 @@ class BondsAI {
         // Important:
         // The reagent is the nucleophile and is attacking the substrate
         // The substrate is the electrophile
-        console.log('BondsAI.js bondSubstrateToReagent')
+      //  console.log('BondsAI.js bondSubstrateToReagent')
         // Check for Nitrogen atom  on reagent and C=O bond on substrate
         let nucleophile_index = null
         let electrophile_index = null
@@ -707,6 +708,7 @@ class BondsAI {
 
 
         if (nucleophile_index !== -1) { // Nitrogen atom on reagent
+
             // Check for C=O carbon on substrate
             electrophile_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
                 if (atom[0]!=="C") {
@@ -720,12 +722,30 @@ class BondsAI {
                     return bond.atom[0] === "O"
                 }).length !== 0
             })
-        }
 
+            if (electrophile_index === -1) {
+                // Check for CX carbon on substrate
+                electrophile_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
+                    if (atom[0]!=="C") {
+                        return false
+                    }
+                    if (atom[4]==="+") {
+                        return false
+                    }
+                    const c = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate)
+                    return c.indexedBonds("").filter((bond)=>{
+                        return bond.atom[0] === "Br" && bond.bond_type === ""
+                    }).length !== 0
+                })
+            }
+        }
 
         if (electrophile_index === -1) {
             electrophile_index = this.reaction.MoleculeAI.findElectrophileIndex()
         }
+
+        // console.log("BondsAI el index:"+electrophile_index)
+        // console.log(kkkk)
 
         if (electrophile_index === -1) {
             return false
@@ -741,7 +761,9 @@ class BondsAI {
 
         const nucleophile = CAtom(this.reaction.container_reagent[0][1][nucleophile_index], nucleophile_index, this.reaction.container_reagent)
 
+
         let freeElectrons = nucleophile.freeElectrons()
+
         if (freeElectrons.length === 0) {
             const freeSlots = nucleophile.freeSlots()
             if (freeSlots > 0) {
@@ -833,6 +855,36 @@ class BondsAI {
             }
         }
         return false
+    }
+
+    removeHalide() {
+
+        const halide_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
+            return atom[0] === "Br"
+        })
+        if (halide_index === -1) {
+            return false
+        }
+
+        const halide_atom = CAtom(this.reaction.container_substrate[0][1][halide_index], halide_index, this.reaction.container_substrate)
+
+
+        _.remove(this.reaction.container_substrate[0][1], (v, i)=> {
+            return i === halide_index
+        })
+
+        const c_bonds  = halide_atom.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "C"
+        })
+        if (c_bonds.length > 0) {
+            this.reaction.setChargeOnSubstrateAtom(c_bonds[0].atom_index)
+        }
+
+        this.reaction.setMoleculeAI()
+        // console.log(VMolecule(this.reaction.container_substrate).compressed())
+        // console.log(uuu)
+        return true
+
     }
 
     removeHalideReverse() {
