@@ -1262,6 +1262,12 @@ class Reaction {
         return protationAI.protonateReverse()
     }
 
+    removeHalideReverse() {
+        const bondsAI = new BondsAI(this)
+        return bondsAI.removeHalideReverse()
+
+    }
+
     deprotonate() {
         const protationAI = new ProtonationAI(this)
         return protationAI.deprotonate()

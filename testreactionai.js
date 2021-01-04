@@ -9,6 +9,7 @@ const pinacolone = MoleculeFactory("CC(=O)C(C)(C)C")
 //https://en.wikipedia.org/wiki/Leuckart_reaction
 const isopropylamine = MoleculeFactory("CC(C)N")
 const m = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
+const m2 = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)N")
 //console.log(VMolecule([m,1]).canonicalSMILES())
 //console.log(hjkkkll)
 const imine = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)=NC")
@@ -19,9 +20,9 @@ const imine2 = MoleculeFactory("CC(CC1=CC=CC=C1)=NC") // phenylacetone
 const r = new ReactionAI()
 // r.synthesise(pinacolone)
 //r.synthesise(isopropylamine)
-r.synthesise(imine2)
+//r.synthesise(imine2)
 //r.synthesise(imine)
-
+r.synthesise(m2)
 
 // Epoxide acidic ring opening
 // https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Map%3A_Organic_Chemistry_(McMurry)/Chapter_18%3A_Ethers_and_Epoxides%3B_Thiols_and_Sulfides/18.06_Reactions_of_Epoxides%3A_Ring-opening
@@ -96,10 +97,11 @@ Notice that overall, the oxymercuration - demercuration mechanism follows Markov
 //https://en.wikipedia.org/wiki/Ritter_reaction
 
 
-// alkylation
+// alkylation ?
 //  5-(2-bromopropyl)-1,3-benzodioxole
 // CC(CC1=CC2=C(C=C1)OCO2)Br -> CC(CC1=CC2=C(C=C1)OCO2)N
-// (Reverse) protonate nitrogen -> add halide -> remove NH3
+// (Reverse) protonate nitrogen (deprotonateReverse)  -> add halide (removeHalideReverse)
+// -> remove NH3 bond (bondSubstrateToReagentReverse)
 // Reagent = NH3
 
 

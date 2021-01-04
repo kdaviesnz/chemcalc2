@@ -18,7 +18,7 @@ const Set = require('../../Models/Set')
 // makeOxygenCarbonDoubleBondReverse()
 // breakCarbonOxygenDoubleBondReverse()
 // bondSubstrateToReagentReverse()
-
+// removeHalideReverse()
 
 class BondsAI {
 
@@ -803,6 +803,11 @@ class BondsAI {
                 return bond.atom[0] === "C" && bond.atom[4] === "+"
             })
 
+          //  console.log(VMolecule(this.reaction.container_substrate).compressed())
+          //  console.log('Nitrogen n_index: ' + n_index)
+           // console.log(oooo)
+
+
             if (c_bonds.length > 0) {
                 const c_index = c_bonds[0].atom_index
                 const target_atom = CAtom(this.reaction.container_substrate[0][1][c_index], c_index, this.reaction.container_substrate)
@@ -828,6 +833,64 @@ class BondsAI {
             }
         }
         return false
+    }
+
+    removeHalideReverse() {
+        const halide_atom = AtomFactory("Br", "")
+        //console.log(halide_atom)
+        //console.log(ioj)
+
+        let c_index = null
+
+        // Try c attached to [N+]
+        c_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
+            if (atom[0] !== "C") {
+                return false
+            }
+            const c_atom = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate)
+            const n_bonds = c_atom.indexedBonds("").filter((bond)=>{
+                return bond.atom[0] === "N" && bond.atom[4] === "+"
+            })
+
+            return n_bonds.length > 0? n_bonds[0].atom_index: false
+        })
+
+        if (c_index !== -1) {
+
+            this.reaction.container_substrate[0][1][c_index][4] = "+"
+
+            const c_atom = CAtom(this.reaction.container_substrate[0][1][c_index], c_index, this.reaction.container_substrate)
+            const h_bonds = c_atom.indexedBonds("").filter((bond)=>{
+                return bond.atom[0] === "H"
+            })
+            if (h_bonds.length === 0) {
+                return false
+            }
+
+            // Remove the hydrogen
+            /*
+            const l = _.cloneDeep(this.reaction.container_substrate[0][1]).length
+            _.remove(this.reaction.container_substrate[0][1], (v, i)=> {
+                return i === h_bonds[0].atom_index
+            })
+            l.should.not.be.equal(this.reaction.container_substrate[0][1].length)
+            */
+
+            // Replace with halide
+            this.reaction.container_substrate[0][1][c_index].push(halide_atom[halide_atom.length-1])
+            this.reaction.container_substrate[0][1][c_index].push(halide_atom[halide_atom.length-2])
+            this.reaction.container_substrate[0][1].push(halide_atom)
+            //console.log(VMolecule(this.reaction.container_substrate).compressed())
+
+
+            //this.reaction.setChargeOnSubstrateAtom(c_index)
+            this.reaction.setMoleculeAI()
+
+            return true
+        }
+
+        return false
+
     }
 
 
