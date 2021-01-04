@@ -410,10 +410,10 @@ class ReactionAI {
 
             commands.push({
                 'name':'makeCarbonNitrogenDoubleBond',
-                'starting substrate': substrate_carbon_nitrogen_double_bond_removed,
-                'starting reagent': reagent_after_reverse_reaction,
-                'finish substrate': target,
-                'finish reagent': reagent,
+                'starting substrate': _.cloneDeep(substrate_carbon_nitrogen_double_bond_removed),
+                'starting reagent': _.cloneDeep(reagent_after_reverse_reaction),
+                'finish substrate': _.cloneDeep(target),
+                'finish reagent': _.cloneDeep(reagent),
                 'function':()=>{
                     const makeCarbonNitrogenDoubleBond_reaction = new Reaction(_.cloneDeep(substrate_carbon_nitrogen_double_bond_removed), _.cloneDeep(reagent_after_reverse_reaction), {})
                     makeCarbonNitrogenDoubleBond_reaction.makeNitrogenCarbonDoubleBond()
@@ -454,10 +454,10 @@ class ReactionAI {
 
             commands.push({
                 'name':'deprotonate',
-                'starting substrate': substrate_protonated,
-                'starting reagent': reagent_deprotonated,
-                'finish substrate': target,
-                'finish reagent': reagent,
+                'starting substrate': _.cloneDeep(substrate_protonated),
+                'starting reagent': _.cloneDeep(reagent_deprotonated),
+                'finish substrate': _.cloneDeep(target),
+                'finish reagent': _.cloneDeep(reagent),
                 'function':()=>{
                     const deprotonate_reaction = new Reaction(_.cloneDeep(substrate_protonated), _.cloneDeep(reagent_deprotonated), {})
                     const command_names = commands.map((command)=>{
@@ -517,10 +517,10 @@ class ReactionAI {
 
             commands.push({
                 'name':'removeHalide',
-                'starting substrate': substrate_with_halide,
-                'starting reagent': reagent_removeHalideReversal,
-                'finish substrate': target,
-                'finish reagent': reagent,
+                'starting substrate': _.cloneDeep(substrate_with_halide),
+                'starting reagent': _.cloneDeep(reagent_removeHalideReversal),
+                'finish substrate': _.cloneDeep(target),
+                'finish reagent': _.cloneDeep(reagent),
                 'function':()=>{
                     const remove_halide_reaction = new Reaction(_.cloneDeep(substrate_with_halide), _.cloneDeep(reagent_removeHalideReversal), {})
                     remove_halide_reaction.removeHalide()
@@ -591,10 +591,10 @@ class ReactionAI {
 
             commands.push({
                 'name':'makeOxygenCarbonDoubleBond',
-                'starting substrate': substrate_with_oxygen_carbon_double_bond_removed,
-                'starting reagent': reagent_with_oxygen_carbon_double_bond_removed,
-                'finish substrate': target,
-                'finish reagent': reagent,
+                'starting substrate': _.cloneDeep(substrate_with_oxygen_carbon_double_bond_removed),
+                'starting reagent': _.cloneDeep(reagent_with_oxygen_carbon_double_bond_removed),
+                'finish substrate': _.cloneDeep(target),
+                'finish reagent': _.cloneDeep(reagent),
                 'function':()=>{
                     const makeOxygenCarbonDoubleBond_reaction = new Reaction(_.cloneDeep(substrate_with_oxygen_carbon_double_bond_removed), _.cloneDeep(reagent_with_oxygen_carbon_double_bond_removed), {})
                     makeOxygenCarbonDoubleBond_reaction.makeOxygenCarbonDoubleBond()
@@ -704,10 +704,10 @@ class ReactionAI {
 
                 commands.push({
                     'name':'dehydrate',
-                    'starting substrate': hydrated_substrate,
-                    'starting reagent': hydrated_reagent,
-                    'finish substrate': target,
-                    'finish reagent': reagent,
+                    'starting substrate': _.cloneDeep(hydrated_substrate),
+                    'starting reagent': _.cloneDeep(hydrated_reagent),
+                    'finish substrate': _.cloneDeep(target),
+                    'finish reagent': _.cloneDeep(reagent),
                     'function':()=>{
                         const dehydrate_reaction = new Reaction(_.cloneDeep(hydrated_substrate), _.cloneDeep(hydrated_reagent), {})
                         dehydrate_reaction.dehydrate()
@@ -772,10 +772,10 @@ class ReactionAI {
             const reagent_after_carbon_shift = _.cloneDeep(reverse_reaction.container_reagent)
             commands.push({
                 'name':'carbocationShift',
-                'starting substrate': substrate_after_carbon_shift,
-                'starting reagent': reagent_after_carbon_shift,
-                'finish substrate': target,
-                'finish reagent': reagent,
+                'starting substrate': _.cloneDeep(substrate_after_carbon_shift),
+                'starting reagent': _.cloneDeep(reagent_after_carbon_shift),
+                'finish substrate': _.cloneDeep(target),
+                'finish reagent': _.cloneDeep(reagent),
                 'function':()=>{
                     const carbocationShift_reaction = new Reaction(_.cloneDeep(substrate_after_carbon_shift), _.cloneDeep(reagent_after_carbon_shift), {})
                     carbocationShift_reaction.carbocationShift()
@@ -859,10 +859,10 @@ class ReactionAI {
             commands.push(
                 {
                     'name':'transferProton',
-                    'starting substrate': substrate_with_proton_transferred,
-                    'starting reagent': reagent_with_proton_transferred,
-                    'finish substrate': target,
-                    'finish reagent': reagent,
+                    'starting substrate': _.cloneDeep(substrate_with_proton_transferred),
+                    'starting reagent': _.cloneDeep(reagent_with_proton_transferred),
+                    'finish substrate': _.cloneDeep(target),
+                    'finish reagent': _.cloneDeep(reagent),
                     'function':()=>{
                         const transferProton_reaction = new Reaction(_.cloneDeep(substrate_with_proton_transferred), _.cloneDeep(reagent_with_proton_transferred), {})
                         transferProton_reaction.transferProton()
@@ -949,10 +949,10 @@ class ReactionAI {
 
             commands.push({
                 'name':'breakOxygenCarbonDoubleBond',
-                'starting substrate': substrate_with_oxygen_carbon_double_bond,
-                'starting reagent': reagent_with_oxygen_carbon_double_bond,
-                'finish substrate': target,
-                'finish reagent': reagent,
+                'starting substrate': _.cloneDeep(substrate_with_oxygen_carbon_double_bond),
+                'starting reagent': _.cloneDeep(reagent_with_oxygen_carbon_double_bond),
+                'finish substrate': _.cloneDeep(target),
+                'finish reagent': _.cloneDeep(reagent),
                 'function':()=>{
                     const breakOxygenCarbonDoubleBond_reaction = new Reaction(_.cloneDeep(substrate_with_oxygen_carbon_double_bond), _.cloneDeep(reagent_with_oxygen_carbon_double_bond), {})
                     breakOxygenCarbonDoubleBond_reaction.breakCarbonOxygenDoubleBond()
@@ -1044,10 +1044,10 @@ class ReactionAI {
 
             commands.push({
                 'name':'bondSubstrateToReagent',
-                'starting substrate': break_bond_substrate,
-                'starting reagent': break_bond_reagent,
-                'finish substrate': target,
-                'finish reagent': reagent,
+                'starting substrate': _.cloneDeep(break_bond_substrate),
+                'starting reagent': _.cloneDeep(break_bond_reagent),
+                'finish substrate': _.cloneDeep(target),
+                'finish reagent': _.cloneDeep(reagent),
                 'function':()=>{
                     const bondSubstrateToReagent_reaction = new Reaction(_.cloneDeep(break_bond_substrate), _.cloneDeep(break_bond_reagent), {})
                     bondSubstrateToReagent_reaction.bondSubstrateToReagent()
@@ -1151,10 +1151,10 @@ class ReactionAI {
                 commands.push(
                     {
                         'name':'protonate',
-                        'starting substrate': deprotonated_substrate,
-                        'starting reagent': protonated_reagent,
-                        'finish substrate': target,
-                        'finish reagent': reagent,
+                        'starting substrate': _.cloneDeep(deprotonated_substrate),
+                        'starting reagent': _.cloneDeep(protonated_reagent),
+                        'finish substrate': _.cloneDeep(target),
+                        'finish reagent': _.cloneDeep(reagent),
                         'function':()=>{
                             const protonate_reaction = new Reaction(_.cloneDeep(deprotonated_substrate), _.cloneDeep(protonated_reagent), {})
                             protonate_reaction.protonate()
@@ -1218,10 +1218,10 @@ class ReactionAI {
             commands.push(
                 {
                     'name':'addProtonFromReagentToSubstrate',
-                    'starting substrate': deprotonated_substrate,
-                    'starting reagent': protonated_reagent,
-                    'finish substrate': target,
-                    'finish reagent': reagent,
+                    'starting substrate': _.cloneDeep(deprotonated_substrate),
+                    'starting reagent': _.cloneDeep(protonated_reagent),
+                    'finish substrate': _.cloneDeep(target),
+                    'finish reagent': _.cloneDeep(reagent),
                     'function':()=>{
                         const addProtonFromReagentToSubstrate_reaction = new Reaction(_.cloneDeep(deprotonated_substrate), _.cloneDeep(protonated_reagent), {})
                         addProtonFromReagentToSubstrate_reaction.addProtonFromReagentToSubstrate()
