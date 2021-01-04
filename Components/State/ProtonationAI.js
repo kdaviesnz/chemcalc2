@@ -313,6 +313,8 @@ class ProtonationAI {
 
         let atom_nucleophile_index = this.reaction.MoleculeAI.findNucleophileIndex()
 
+
+
        // console.log("Reaction.js deprotonateReverse() start:")
        // console.log(VMolecule(this.reaction.container_substrate).compressed())
        // console.log("Nu index:"+atom_nucleophile_index)
@@ -329,6 +331,8 @@ class ProtonationAI {
             return false
         }
 
+       // console.log("ProtonatiAI " + atom_nucleophile_index + " "+ this.reaction.container_substrate[0][1][atom_nucleophile_index][0])
+
         const atoms = _.cloneDeep(this.reaction.container_substrate[0][1])
 
         const proton = AtomFactory("H", 0)
@@ -341,9 +345,6 @@ class ProtonationAI {
         // console.log("Nucleophile index:" + atom_nucleophile_index)
 
         let free_electrons = CAtom(this.reaction.container_substrate[0][1][atom_nucleophile_index], atom_nucleophile_index, this.reaction.container_substrate).freeElectrons()
-
-
-
 
 
         if (free_electrons.length === 0) {

@@ -760,7 +760,6 @@ VMolecule
                 return atom_object.isNegativelyCharged()
             })
 
-          // console.log(('negative atom index:'+negative_atom_index)
 
             if (negative_atom_index > -1) {
                 return negative_atom_index
@@ -808,8 +807,6 @@ VMolecule
                     if (double_bond.atom[0]!=="C") {
                         return false
                     }
-
-
                     const bonded_atom_object_hydrogen_bonds = CAtom(double_bond.atom, double_bond.atom_index, container_molecule).indexedBonds("").filter(
                         (bonded_atom_object_bonds)=>{
                             return bonded_atom_object_bonds.atom[0] === "H"
@@ -830,6 +827,13 @@ VMolecule
 
             }, -1)
 
+            /*
+            if (nucleophile_index === 15) {
+                console.log('nucleophile_index:'+nucleophile_index)
+                console.log(nnnnniiioooppp)
+
+            }
+            */
 
 
             // Verifications checks

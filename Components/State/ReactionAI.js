@@ -141,19 +141,6 @@ class ReactionAI {
             const commands_reversed = _.cloneDeep(commands).reverse()
 
 
-            if (command_names_reversed.length === 3) {
-                console.log(command_names_reversed)
-                console.log("last command")
-                console.log(commands_reversed[2]["name"])
-                console.log(VMolecule(commands_reversed[2]["starting substrate"]).canonicalSMILES())
-                console.log(VMolecule(commands_reversed[2]["finish substrate"]).canonicalSMILES())
-
-                const reaction_object2222 = commands_reversed[2]['function']()
-                console.log("Calculated substrate " + commands_reversed[2]["name"])
-                console.log(VMolecule(reaction_object2222.container_substrate).canonicalSMILES())
-
-                console.log(opk)
-            }
 
 
 
@@ -169,6 +156,7 @@ class ReactionAI {
             console.log(ujkjh)
             */
 
+            /*
             // Pinacol Rearrangement
             if (false) {
 
@@ -191,6 +179,7 @@ class ReactionAI {
 
 
                 // Last commmand
+                /*
                 console.log("n -> pinacolone")
                 // n=C[C-](O)C(C)(C)C
                 console.log("n=" + VMolecule(commands[0]["starting substrate"]).canonicalSMILES())
@@ -206,6 +195,7 @@ class ReactionAI {
                 console.log(command_names)
                 console.log(jklll)
             }
+            */
 
 
 
@@ -241,7 +231,28 @@ class ReactionAI {
                 console.log(jgd)
             }
         } else {
-            const r = commands[command_index]['function']()
+            const command_names = commands.map((command)=>{
+                return command['name']
+            })
+            if (commands.length === 3) {
+                console.log("RUN command_names:")
+                console.log(command_names)
+            }
+
+            const r = _.cloneDeep(commands[command_index])['function'](command_index, command_names)
+            /*
+            if (commands.length === 3) {
+
+                console.log(command_index)
+                if (command_index === 0 || command_index === 1 || command_index === 2) {
+                    console.log(commands[command_index]['name'])
+                    console.log(VMolecule(r.container_substrate).canonicalSMILES())
+                    if (command_index === 2) {
+                        console.log(thirdcommand)
+                    }
+                }
+            }
+            */
             this.run(_.cloneDeep(commands), _.cloneDeep(command_index+1), _.cloneDeep(r), _.cloneDeep(starting_substrate), _.cloneDeep(starting_reagent))
         }
     }
@@ -473,12 +484,17 @@ class ReactionAI {
                 'starting reagent': _.cloneDeep(reagent_deprotonated),
                 'finish substrate': _.cloneDeep(target),
                 'finish reagent': _.cloneDeep(reagent),
-                'function':()=>{
+                'function':(command_index, command_names)=>{
+                    console.log("Fn command index:" + command_index)
                     const deprotonate_reaction = new Reaction(_.cloneDeep(substrate_protonated), _.cloneDeep(reagent_deprotonated), {})
+                    /*
                     const command_names = commands.map((command)=>{
                         return command['name']
                     })
-                    console.log(VMolecule(target).compressed())
+                    */
+                    console.log(VMolecule(target).canonicalSMILES())
+                    console.log(VMolecule(_.cloneDeep(substrate_protonated)).canonicalSMILES())
+                    console.log("Fn deprotonate command names:")
                     console.log(command_names)
                     deprotonate_reaction.deprotonate()
 

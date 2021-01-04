@@ -76,7 +76,7 @@ class Reaction {
 
         if (this.MoleculeAI.validateMolecule() === false) {
             console.log('Reaction.js molecule is not valid')
-            console.log(VMolecule(this.container_substrate).compressed())
+            console.log(VMolecule(this.container_substrate).canonicalSMILES())
             console.log(iiii)
         }
     }
