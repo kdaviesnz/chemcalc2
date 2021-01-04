@@ -430,18 +430,6 @@ class ReactionAI {
 
     deprotonateReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-        const command_names = commands.map((command)=>{
-            return command['name']
-        })
-        if (command_names.length === 2) {
-            console.log(command_names)
-            if (command_names[1] === "removeHalide") {
-                console.log("Should not have Br")
-                console.log(VMolecule(target).compressed())
-                console.log(wwwweee)
-            }
-            console.log(gfdwww)
-        }
 
         if (caller === "deprotonateReversal") {
             return
