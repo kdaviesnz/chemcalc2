@@ -96,4 +96,11 @@ Notice that overall, the oxymercuration - demercuration mechanism follows Markov
 //https://en.wikipedia.org/wiki/Ritter_reaction
 
 
+// alkylation
+//  5-(2-bromopropyl)-1,3-benzodioxole
+// CC(CC1=CC2=C(C=C1)OCO2)Br -> CC(CC1=CC2=C(C=C1)OCO2)N
+// (Reverse) protonate nitrogen -> add halide -> remove NH3
+// Reagent = NH3
+
+
 // https://www.thoughtco.com/types-of-chemical-reactions-604038
