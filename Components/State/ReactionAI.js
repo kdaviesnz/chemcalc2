@@ -136,11 +136,26 @@ class ReactionAI {
             }
             */
 
-            /*
+
             const command_names_reversed = _.cloneDeep(command_names).reverse()
             const commands_reversed = _.cloneDeep(commands).reverse()
-            console.log(command_names_reversed)
-*/
+
+
+            if (command_names_reversed.length === 3) {
+                console.log(command_names_reversed)
+                console.log("last command")
+                console.log(commands_reversed[2]["name"])
+                console.log(VMolecule(commands_reversed[2]["starting substrate"]).canonicalSMILES())
+                console.log(VMolecule(commands_reversed[2]["finish substrate"]).canonicalSMILES())
+
+                const reaction_object2222 = commands_reversed[2]['function']()
+                console.log("Calculated substrate " + commands_reversed[2]["name"])
+                console.log(VMolecule(reaction_object2222.container_substrate).canonicalSMILES())
+
+                console.log(opk)
+            }
+
+
 
             // Leuckart Wallach
             /*
