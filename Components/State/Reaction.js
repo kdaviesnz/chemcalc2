@@ -63,7 +63,7 @@ class Reaction {
         }
     }
 
-    setMoleculeAI() {
+    setMoleculeAI(command_names, command_index, electrophile_index) {
 
         this.container_substrate.length.should.be.equal(2) // molecule, units
         this.container_substrate[0].length.should.be.equal(2) // pKa, atoms
@@ -76,7 +76,13 @@ class Reaction {
 
         if (this.MoleculeAI.validateMolecule() === false) {
             console.log('Reaction.js molecule is not valid')
-            console.log(VMolecule(this.container_substrate).canonicalSMILES())
+            if (command_names !== undefined) {
+                console.log("Reaction.js setMoleculeAI command names:")
+                console.log(command_names)
+                console.log("Reaction.js setMoleculeAI command index:" + command_index)
+                console.log("Reaction.js setMoleculeAI electrophile index:" + electrophile_index)
+            }
+            console.log(VMolecule(this.container_substrate).compressed())
             console.log(iiii)
         }
     }
@@ -113,6 +119,8 @@ class Reaction {
             }
         }
         if (this.container_substrate[0][1][index][0] === "C") {
+            console.log("Reaction.js setChargeOnSubstrateAtom()")
+            console.log(this.container_substrate[0][1][index])
             if (_.cloneDeep(this.container_substrate[0][1][index].slice(5)).length === 6) {
                 this.container_substrate[0][1][index][4] = "+"
             } else {
@@ -1273,9 +1281,9 @@ class Reaction {
 
     }
 
-    deprotonate() {
+    deprotonate(command_names, command_index) {
         const protationAI = new ProtonationAI(this)
-        return protationAI.deprotonate()
+        return protationAI.deprotonate(command_names, command_index)
     }
 
     deprotonateReverse() {

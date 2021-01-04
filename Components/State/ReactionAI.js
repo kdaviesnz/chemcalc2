@@ -239,7 +239,7 @@ class ReactionAI {
                 console.log(command_names)
             }
 
-            const r = _.cloneDeep(commands[command_index])['function'](command_index, command_names)
+            const r = _.cloneDeep(commands[command_index])['function'](command_index, command_names, commands[command_index]['starting substrate'])
             /*
             if (commands.length === 3) {
 
@@ -484,8 +484,8 @@ class ReactionAI {
                 'starting reagent': _.cloneDeep(reagent_deprotonated),
                 'finish substrate': _.cloneDeep(target),
                 'finish reagent': _.cloneDeep(reagent),
-                'function':(command_index, command_names)=>{
-                    console.log("Fn command index:" + command_index)
+                'function':(command_index, command_names, substrate)=>{
+
                     const deprotonate_reaction = new Reaction(_.cloneDeep(substrate_protonated), _.cloneDeep(reagent_deprotonated), {})
                     /*
                     const command_names = commands.map((command)=>{
@@ -493,10 +493,13 @@ class ReactionAI {
                     })
                     */
                     console.log(VMolecule(target).canonicalSMILES())
+                    console.log("Substrate passed in:")
+                    console.log(VMolecule(substrate).canonicalSMILES())
                     console.log(VMolecule(_.cloneDeep(substrate_protonated)).canonicalSMILES())
+                    console.log("Fn command index:" + command_index)
                     console.log("Fn deprotonate command names:")
                     console.log(command_names)
-                    deprotonate_reaction.deprotonate()
+                    deprotonate_reaction.deprotonate(command_names, command_index )
 
                     return deprotonate_reaction
                 }})
