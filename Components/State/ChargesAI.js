@@ -4,7 +4,14 @@ const CAtom = require('../../Controllers/Atom')
 class ChargesAI {
 
     constructor(reaction) {
+        this.debugger_on = true
         this.reaction = reaction
+    }
+
+    debugger(o) {
+        if (this.debugger_on) {
+            console.log(o)
+        }
     }
 
     checkCharge(container_molecule, atom, index) {
@@ -12,9 +19,14 @@ class ChargesAI {
         const a_obj = CAtom(container_molecule[0][1][index], index, container_molecule)
         const b_count = a_obj.bondCount() + a_obj.doubleBondCount()
         const electrons = _.cloneDeep(container_molecule[0][1][index].slice(5))
+        const freeElectrons = a_obj.freeElectrons()
 
 
         if (atom[0] === "O") {
+            this.debugger("O Bond count:"+b_count)
+            this.debugger(_.cloneDeep(container_molecule[0][1][index]))
+            this.debugger(freeElectrons)
+            // 8 electrons, 2 bonds = neutral
             if (2 + b_count === electrons.length && container_molecule[0][1][index][4] !== "" && container_molecule[0][1][index][4] !== 0) {
                 console.log("validateMolecule O")
                 console.log(index)
