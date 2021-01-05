@@ -4,8 +4,15 @@ const VMolecule = require('./Components/Stateless/Views/Molecule')
 const ChargesAI = require('./Components/State/ChargesAI')
 const chargesAI = new ChargesAI(null)
 const _ = require('lodash');
+const CAtom = require('./Controllers/Atom')
+
+const m2 = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)N")
 
 
+const o = CAtom(m2[1][22], 22, [m2,1])
+
+console.log(o.bondCount())
+console.log(kljj)
 
 const cation = [MoleculeFactory("[CH5+]"),1]
 cation[0][1].length.should.be.equal(5)

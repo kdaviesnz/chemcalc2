@@ -26,8 +26,8 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     const smiles_tokens = smiles.parse(canonicalSMILES)
 
     // [O+]
-   // console.log(smiles_tokens)
-    //console.log(oplus)
+  // console.log(smiles_tokens)
+   // console.log(oplus)
     /*
     [ { type: 'BracketAtom', value: 'begin' },
   { type: 'ElementSymbol', value: 'O' },
@@ -266,8 +266,8 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
 
 
     // [O+]
-    // console.log(atoms_with_bonds)
-    // console.log(oplus)
+   //  console.log(atoms_with_bonds)
+   //  console.log(oplus)
     /*
     [ [ 'O',
     8,
@@ -363,8 +363,8 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
 
 
     // [O+]
-    // console.log(atoms_with_ring_bonds)
-    // console.log(oplus)
+   //  console.log(atoms_with_ring_bonds)
+   //  console.log(oplus)
     /*
     [ [ 'O',
     8,
@@ -409,8 +409,8 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     )
 
     // [CH5+]
-     //console.log(atoms_with_hydrogen_counts)
-     //console.log(oplus)
+   //  console.log(atoms_with_hydrogen_counts)
+    // console.log(oplus)
     /*
     [ [ 'C',
     6,
@@ -487,9 +487,12 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                      //   console.log("Index: " + index + " Bond count: " + actual_number_of_bonds + " Hydrogens req: " + number_of_hydrogens_required)
                     }
                 }
-               // console.log("Hydrogens required:" + number_of_hydrogens_required)
-               // console.log("Valence electrons:")
-               // console.log(valence_electrons)
+                if (current[0]==="O") {
+                    console.log(index)
+                    console.log("Hydrogens required:" + number_of_hydrogens_required)
+                    console.log("Valence electrons:")
+                    console.log(valence_electrons)
+                }
                 if (number_of_hydrogens_required > 0) {
                     range.range(0, number_of_hydrogens_required,1).map(
                         (e_index) => {
@@ -512,9 +515,13 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         []
     )
 
+    const molecule2 = [[12345,atoms_with_hydrogens],1]
+    console.log(VMolecule(molecule2).compressed())
+    console.log(oikk)
+
     // [CH5+]
-   //console.log(atoms_with_hydrogens)
-   // console.log(oplus)
+   console.log(atoms_with_hydrogens)
+   console.log(oplus)
     /*
     [ [ 'O',
     8,

@@ -101,26 +101,26 @@ class ChargesAI {
         const b_count = a_obj.bondCount() + a_obj.doubleBondCount()
         const electrons = _.cloneDeep(this.reaction.container_substrate[0][1][index].slice(5))
         if (this.reaction.container_substrate[0][1][index][0] === "O") {
-            if (2 + b_count === electrons.length) {
+            if (6 + b_count === electrons.length) {
                 this.reaction.container_substrate[0][1][index][4] = ""
             }
-            if (2 + b_count < electrons.length) {
+            if (6 + b_count < electrons.length) {
                 this.reaction.container_substrate[0][1][index][4] = "-"
             }
-            if (2 + b_count > electrons.length) {
+            if (6 + b_count > electrons.length) {
                 this.reaction.container_substrate[0][1][index][4] = "+"
             }
         }
         if (this.reaction.container_substrate[0][1][index][0] === "N") {
             //console.log("ChargesAI.js setChargeOnSubstrateAtom()")
             //console.log(this.reaction.container_substrate[0][1][index])
-            if (3 + b_count === electrons.length) {
+            if (5 + b_count === electrons.length) {
                 this.reaction.container_substrate[0][1][index][4] = ""
             }
-            if (3 + b_count < electrons.length) {
+            if (5 + b_count < electrons.length) {
                 this.reaction.container_substrate[0][1][index][4] = "-"
             }
-            if (3 + b_count > electrons.length) {
+            if (5 + b_count > electrons.length) {
                 this.reaction.container_substrate[0][1][index][4] = "+"
             }
         }
