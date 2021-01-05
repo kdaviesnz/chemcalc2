@@ -24,23 +24,19 @@ class ChargesAI {
 
         if (atom[0] === "O") {
             // 6 is the number of valence electrons when there are no bonds
-           // this.debugger("O Bond count:"+b_count)
-           // this.debugger(_.cloneDeep(container_molecule[0][1][index]))
-           // this.debugger(freeElectrons)
-            // 8 electrons, 2 bonds = neutral
             if (6 + b_count === electrons.length && container_molecule[0][1][index][4] !== "" && container_molecule[0][1][index][4] !== 0) {
                 console.log("validateMolecule O")
                 console.log(index)
                 console.log('Atom should have neutral charge')
                 return true
             }
-            if (6 + b_count < electrons.length && container_molecule[0][1][index][4] !== "-") {
+            if (electrons.length > (6 + b_count) && container_molecule[0][1][index][4] !== "-") {
                 console.log("validateMolecule O")
                 console.log(index)
                 console.log('Atom should have negative charge')
                 return true
             }
-            if (6 <  electrons.length && container_molecule[0][1][index][4] !== "+") {
+            if (electrons.length < (6 + b_count) && container_molecule[0][1][index][4] !== "+") {
                 console.log("validateMolecule O")
                 console.log(index)
                 console.log('Atom should have positive charge')
@@ -48,8 +44,7 @@ class ChargesAI {
             }
         }
 
-        if (atom[0]=== "N") {
-
+        if (atom[0] === "N") {
             // 5 is the number of valence electrons when there are no bonds
             if (5 + b_count === electrons.length && container_molecule[0][1][index][4] !== "" && container_molecule[0][1][index][4] !== 0) {
                 console.log("validateMolecule N")
@@ -57,73 +52,42 @@ class ChargesAI {
                 console.log('Atom should have neutral charge')
                 return true
             }
-            if (5 + b_count < electrons.length && container_molecule[0][1][index][4] !== "-") {
+            if (electrons.length > (5 + b_count) && container_molecule[0][1][index][4] !== "-") {
                 console.log("validateMolecule N")
                 console.log(index)
                 console.log('Atom should have negative charge')
                 return true
             }
-            if (5 + b_count > electrons.length && container_molecule[0][1][index][4] !== "+") {
+            if (electrons.length < (5 + b_count) && container_molecule[0][1][index][4] !== "+") {
                 console.log("validateMolecule N")
                 console.log(index)
-                console.log('Atom should have positive charge')
+                console.log('Atom should have positive charge!!!')
                 return true
             }
         }
 
-        if (atom[0]=== "C") {
-
-            //console.log("ChargesAI.js checkCharge()")
-            //console.log(container_molecule[0][1][index])
-            //console.log("Bond count:" + b_count)
-            // 9 electrons, 5 bonds = neutral charge
+        if (atom[0] === "C") {
+            // 4 is the number of valence electrons when there are no bonds
             if (4 + b_count === electrons.length && container_molecule[0][1][index][4] !== "" && container_molecule[0][1][index][4] !== 0) {
                 console.log("validateMolecule C")
                 console.log(index)
                 console.log('Atom should have neutral charge')
                 return true
             }
-            // 4 bonds, 9 electrons = negative charge
-            if (4 + b_count < electrons.length && container_molecule[0][1][index][4] !== "-") {
+            if (electrons.length > (4 + b_count) && container_molecule[0][1][index][4] !== "-") {
                 console.log("validateMolecule C")
                 console.log(index)
                 console.log('Atom should have negative charge')
                 return true
             }
-            // 5 bonds, 8 electrons = positive charge
-            if (4 + b_count > electrons.length && container_molecule[0][1][index][4] !== "+") {
+            if (electrons.length < (4 + b_count) && container_molecule[0][1][index][4] !== "+") {
                 console.log("validateMolecule C")
                 console.log(index)
-                console.log('Atom should have positive charge')
+                console.log('Atom should have positive charge!!!')
                 return true
             }
-
-            /*
-            if (_.cloneDeep(atom.slice(5)).length === 6 && atom[4] !== "+") {
-                console.log("validateMolecule C")
-                console.log(index)
-                console.log('Atom should have positive charge as it has lost electrons')
-                return true
-            } else {
-
-                if ((a_obj.bondCount() + a_obj.doubleBondCount()) > 5) {
-                    console.log("validateMolecule C")
-                    console.log(index)
-                    console.log('Too many bonds: ' + a_obj.bondCount())
-                    return true
-                }
-
-                if ((a_obj.bondCount() + a_obj.doubleBondCount()) === 4 && (atom[4] !== "" && atom[4] !== 0)) {
-                    console.log("validateMolecule C")
-                    console.log(index)
-                    console.log(a_obj.bondCount())
-                    return true
-                }
-
-            }
-            */
-
         }
+
 
 
         return false

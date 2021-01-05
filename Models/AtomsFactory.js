@@ -408,22 +408,22 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }, []
     )
 
-    // [O+]
-   //  console.log(atoms_with_hydrogen_counts)
-   //  console.log(oplus)
+    // [CH5+]
+     //console.log(atoms_with_hydrogen_counts)
+     //console.log(oplus)
     /*
-    [ [ 'O',
-    8,
+    [ [ 'C',
     6,
-    2,
+    4,
+    4,
     0,
-    '4r7b813e2kjjkbukd',
-    '4r7b813e2kjjkbuke',
-    '4r7b813e2kjjkbukf',
-    '4r7b813e2kjjkbukg',
-    '4r7b813e2kjjkbukh',
-    '4r7b813e2kjjkbuki' ],
+    '4r7b815ltkjkguxld',
+    '4r7b815ltkjkguxle',
+    '4r7b815ltkjkguxlf',
+    '4r7b815ltkjkguxlg',
+    5 ],
   { type: 'Charge', value: 1 } ]
+
 
      */
 
@@ -439,21 +439,21 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }, []
     )
 
-    // [O+]
+    // [CH5+]
     // console.log(atoms_with_charges)
     // console.log(oplus)
     /*
-    [ [ 'O',
-    8,
+    [ [ 'C',
     6,
-    2,
+    4,
+    4,
     '+',
-    '4r7b813egkjjkeoot',
-    '4r7b813egkjjkeoou',
-    '4r7b813egkjjkeoov',
-    '4r7b813egkjjkeoow',
-    '4r7b813egkjjkeoox',
-    '4r7b813egkjjkeooy' ] ]
+    '4r7b815m7kjkgw5in',
+    '4r7b815m7kjkgw5io',
+    '4r7b815m7kjkgw5ip',
+    '4r7b815m7kjkgw5iq',
+    5 ] ]
+
      */
 
     // Add hydrogens
@@ -484,10 +484,12 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                         // current[3] is the number of electrons the atom has when it is neutrally charged
                         number_of_hydrogens_required = current[3] - actual_number_of_bonds + (current[4]) // current[4] is the charge
 
-                        // console.log("Index: " + index + " Bond count: " + actual_number_of_bonds + " Hydrogens req: " + number_of_hydrogens_required)
+                     //   console.log("Index: " + index + " Bond count: " + actual_number_of_bonds + " Hydrogens req: " + number_of_hydrogens_required)
                     }
                 }
-             //   console.log(number_of_hydrogens_required)
+               // console.log("Hydrogens required:" + number_of_hydrogens_required)
+               // console.log("Valence electrons:")
+               // console.log(valence_electrons)
                 if (number_of_hydrogens_required > 0) {
                     range.range(0, number_of_hydrogens_required,1).map(
                         (e_index) => {
@@ -496,6 +498,9 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                                 hydrogen.push(valence_electrons[e_index])
                                 current.push(hydrogen[hydrogen.length - 2])
                                 carry.push(hydrogen)
+                            } else {
+                               // console.log(valence_electrons)
+                               // console.log('Valence electron not found:' + e_index)
                             }
                         }
                     )
@@ -507,9 +512,9 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         []
     )
 
-    // [[OH3+]]
-//    console.log(atoms_with_hydrogens)
-  //  console.log(oplus)
+    // [CH5+]
+   //console.log(atoms_with_hydrogens)
+   // console.log(oplus)
     /*
     [ [ 'O',
     8,
@@ -529,29 +534,63 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         const bond_count = o_atom.bondCount()
         const free_electrons = o_atom.freeElectrons()
         const electrons = atom.slice(5)
-        console.log(electrons)
         if (atom[4] === "+") {
-            console.log(free_electrons)
-            console.log(bond_count)
-            console.log(electrons.length)
-            console.log(6 + bond_count >= electrons.length)
             switch (atom[0]) {
                 case "O":
-                    if (6 + bond_count >= electrons.length) {
+                    if (6 + bond_count === electrons.length) {
                         _.remove(atom, (item)=>{
                             return item === free_electrons[0]
                         })
-                        console.log("item remvoed")
-                        console.log(atom)
-                        console.log(klio)
                     }
                     break
+                case "N":
+                    if (5 + bond_count === electrons.length) {
+                        _.remove(atom, (item)=>{
+                            return item === free_electrons[0]
+                        })
+                    }
+                    break
+                case "C":
+                    // @see https://socratic.org/questions/how-is-carbocation-formed
+                    /*
+                    A carbocation is an organic molecule, an intermediate, that forms as a result of the loss of two valence electrons, normally shared electrons, from a carbon atom that already has four bonds. This leads to the formation of a carbon atom bearing a positive charge and three bonds instead of four. The whole molecule holding the positively charged carbon atom is referred to as a carbocation intermediate.
+                     */
+                    if (bond_count === 4 && (4 + bond_count) === electrons.length) {
+                        _.remove(atom, (item)=>{
+                            return item === electrons[0]
+                        })
+                        _.remove(atom, (item)=>{
+                            return item === electrons[1]
+                        })
+                    }
+                    break
+
+            }
+        }
+        if (atom[4] === "-") {
+            switch (atom[0]) {
+                case "O":
+                    if (6 + bond_count === electrons.length) {
+                        atom.push(uniqid())
+                    }
+                    break
+                case "N":
+                    if (5 + bond_count === electrons.length) {
+                        atom.push(uniqid())
+                    }
+                    break
+                case "C":
+                    if (4 + bond_count === electrons.length) {
+                        atom.push(uniqid())
+                    }
+                    break
+
             }
         }
         return atom
     })
 
-    console.log(uhj)
+
 
     /*
     console.log(atoms_with_hydrogens.filter((atom)=>{
@@ -561,7 +600,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     process.exit()
 */
     //  atomic symbol, proton count, valence count, number of bonds, charge, velectron1, velectron2, velectron3
-    return atoms_with_hydrogens
+    return atoms_electrons_checked
 
 }
 
