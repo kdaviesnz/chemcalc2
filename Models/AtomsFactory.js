@@ -507,9 +507,9 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         []
     )
 
-    // [O+]
-   // console.log(atoms_with_hydrogens)
-   // console.log(oplus)
+    // [[OH3+]]
+//    console.log(atoms_with_hydrogens)
+  //  console.log(oplus)
     /*
     [ [ 'O',
     8,
@@ -524,7 +524,34 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     '4r7b813elkjjkg4q7' ] ]
 
      */
+    const atoms_electrons_checked = atoms_with_hydrogens.map((atom, index)=>{
+        const o_atom = CAtom(atom, index, [['12345', atoms_with_hydrogens], 1])
+        const bond_count = o_atom.bondCount()
+        const free_electrons = o_atom.freeElectrons()
+        const electrons = atom.slice(5)
+        console.log(electrons)
+        if (atom[4] === "+") {
+            console.log(free_electrons)
+            console.log(bond_count)
+            console.log(electrons.length)
+            console.log(6 + bond_count >= electrons.length)
+            switch (atom[0]) {
+                case "O":
+                    if (6 + bond_count >= electrons.length) {
+                        _.remove(atom, (item)=>{
+                            return item === free_electrons[0]
+                        })
+                        console.log("item remvoed")
+                        console.log(atom)
+                        console.log(klio)
+                    }
+                    break
+            }
+        }
+        return atom
+    })
 
+    console.log(uhj)
 
     /*
     console.log(atoms_with_hydrogens.filter((atom)=>{
