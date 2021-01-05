@@ -2,6 +2,7 @@ const CAtom = require('../../Controllers/Atom')
 const _ = require('lodash');
 const VMolecule = require('../../Components/Stateless/Views/Molecule')
 const Set = require('../../Models/Set')
+const ChargesAI = require('../../Components/State/ChargesAI')
 /*
 
 findHydroxylOxygenIndex()
@@ -212,90 +213,8 @@ const MoleculeAI = (container_molecule) => {
 
         validateMolecule: () => {
             return _.findIndex(container_molecule[0][1], (atom, index)=> {
-                const a_obj = CAtom(container_molecule[0][1][index], index, container_molecule)
-
-                // Charges
-                if (atom[0] === "O") {
-
-                    if ((a_obj.bondCount() + a_obj.doubleBondCount()) > 3) {
-                        console.log("validateMolecule O")
-                        console.log(index)
-                        console.log('Too many bonds: ' + (a_obj.bondCount() + a_obj.doubleBondCount()))
-                        return true
-                    }
-
-                    if ((a_obj.bondCount() + a_obj.doubleBondCount()) === 2 && (atom[4] !== "" && atom[4] !== 0)) {
-                        console.log("validateMolecule() O")
-                        console.log("Index:" + index)
-                        console.log(a_obj.bondCount() + a_obj.doubleBondCount())
-                        return true
-                    }
-
-                }
-
-                if (atom[0]=== "N") {
-
-                    if ((a_obj.bondCount() + a_obj.doubleBondCount()) > 4) {
-                        console.log("validateMolecule N")
-                        console.log(index)
-                        console.log('Too many bonds: ' + a_obj.bondCount())
-                        return true
-                    }
-
-                    if ((a_obj.bondCount() + a_obj.doubleBondCount()) === 3 && (atom[4] !== "" && atom[4] !== 0)) {
-                        console.log("validateMolecule N")
-                        console.log(index)
-                        console.log(a_obj.bondCount())
-                        return true
-                    }
-
-                }
-
-                if (atom[0]=== "C") {
-
-                    if (_.cloneDeep(atom.slice(5)).length === 6 && atom[4] !== "+") {
-                        console.log("validateMolecule C")
-                        console.log(index)
-                        console.log('Atom should have positive charge as it has lost electrons')
-                        return true
-                    } else {
-
-                        if ((a_obj.bondCount() + a_obj.doubleBondCount()) > 5) {
-                            console.log("validateMolecule C")
-                            console.log(index)
-                            console.log('Too many bonds: ' + a_obj.bondCount())
-                            return true
-                        }
-
-                        if ((a_obj.bondCount() + a_obj.doubleBondCount()) === 4 && (atom[4] !== "" && atom[4] !== 0)) {
-                            console.log("validateMolecule C")
-                            console.log(index)
-                            console.log(a_obj.bondCount())
-                            return true
-                        }
-
-                    }
-
-                }
-
-
-                if (atom[0]=== "O") {
-
-                    if ((a_obj.bondCount() + a_obj.doubleBondCount()) > 5) {
-                        console.log("validateMolecule O")
-                        console.log(index)
-                        console.log('Too many bonds: ' + a_obj.bondCount())
-                        return true
-                    }
-
-                    if ((a_obj.bondCount() + a_obj.doubleBondCount()) === 4 && (atom[4] !== "" && atom[4] !== 0)) {
-                        console.log("validateMolecule C")
-                        console.log(index)
-                        console.log(a_obj.bondCount() + a_obj.doubleBondCount())
-                        return true
-                    }
-                }
-                return false
+                const chargesAI = new ChargesAI(null)
+                return chargesAI.checkCharge(container_molecule, atom, index)
             }) === -1
         },
 

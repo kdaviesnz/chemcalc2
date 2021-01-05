@@ -934,8 +934,7 @@ class BondsAI {
             this.reaction.container_substrate[0][1].push(halide_atom)
             //console.log(VMolecule(this.reaction.container_substrate).compressed())
 
-
-            //this.reaction.setChargeOnSubstrateAtom(c_index)
+            this.reaction.setChargeOnSubstrateAtom(c_index)
             this.reaction.setMoleculeAI()
 
             return true

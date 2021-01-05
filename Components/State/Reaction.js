@@ -10,6 +10,7 @@ const uniqid = require('uniqid');
 const HydrationAI = require('../../Components/State/HydrationAI')
 const ProtonationAI = require('../../Components/State/ProtonationAI')
 const BondsAI = require('../../Components/State/BondsAI')
+const ChargesAI = require('../../Components/State/ChargesAI')
 
 class Reaction {
 
@@ -98,41 +99,8 @@ class Reaction {
     }
 
     setChargeOnSubstrateAtom(index) {
-        const a_obj = CAtom(this.container_substrate[0][1][index], index, this.container_substrate)
-        const b_count = a_obj.bondCount() + a_obj.doubleBondCount()
-        if (this.container_substrate[0][1][index][0] === "O") {
-            if (b_count > 2) {
-                this.container_substrate[0][1][index][4] = "+"
-            } else if (b_count < 2) {
-                this.container_substrate[0][1][index][4] = "-"
-            } else {
-                this.container_substrate[0][1][index][4] = ""
-            }
-        }
-        if (this.container_substrate[0][1][index][0] === "N") {
-            if (b_count > 3) {
-                this.container_substrate[0][1][index][4] = "+"
-            } else if (b_count < 3) {
-                this.container_substrate[0][1][index][4] = "-"
-            } else {
-                this.container_substrate[0][1][index][4] = ""
-            }
-        }
-        if (this.container_substrate[0][1][index][0] === "C") {
-            console.log("Reaction.js setChargeOnSubstrateAtom()")
-            console.log(this.container_substrate[0][1][index])
-            if (_.cloneDeep(this.container_substrate[0][1][index].slice(5)).length === 6) {
-                this.container_substrate[0][1][index][4] = "+"
-            } else {
-                if (b_count > 4) {
-                    this.container_substrate[0][1][index][4] = "+"
-                } else if (b_count < 4) {
-                    this.container_substrate[0][1][index][4] = "-"
-                } else {
-                    this.container_substrate[0][1][index][4] = ""
-                }
-            }
-        }
+        const chargesAI = new ChargesAI(this)
+        return chargesAI.setChargeOnSubstrateAtom(index)
     }
 
     breakCarbonOxygenDoubleBondReverse() {

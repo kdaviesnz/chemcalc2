@@ -155,7 +155,7 @@ class ProtonationAI {
         // console.log('deprotonate electrophile index: ' + electrophile_index)
         // console.log(this.container_substrate[0][1][electrophile_index][0])
         if (this.reaction.container_substrate[0][1][electrophile_index][0]!== "C"){
-            console.log("1111")
+            console.log("ProtatonAI 1111")
             // Charge should be set before calling this.addProtonToReagent()
             this.reaction.container_substrate[0][1][electrophile_index][4] = this.reaction.container_substrate[0][1][electrophile_index][4] === "+"? "" : "-"
             const r = this.reaction.addProtonToReagent()
@@ -166,14 +166,14 @@ class ProtonationAI {
         } else {
 
             // Check for carbons bonds
-            console.log("2222")
+            console.log("ProtonationAI 2222")
 
             const non_carbon_bond = electrophile_bonds.filter((bond) => {
                 return bond.atom[0] !== "C" && bond.atom[0] !== "H"
             }).pop()
 
             if (non_carbon_bond !== undefined) {
-                console.log("3333")
+                console.log("Protonation AI3333")
                 const c_atom = CAtom(this.reaction.container_substrate[0][1][electrophile_index], electrophile_index, this.reaction.container_substrate)
                 // 5 bonds, 10 electrons
                 this.reaction.addProtonToReagent()
@@ -193,7 +193,7 @@ class ProtonationAI {
                 console.log(rew)
 
             } else {
-                console.log("4444")
+                console.log("ProtonationAI 4444")
                 const carbon_bond = electrophile_bonds.filter((bond) => {
                     return bond.atom[0] === "C"
                 }).pop()
