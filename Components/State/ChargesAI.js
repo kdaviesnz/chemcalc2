@@ -24,9 +24,9 @@ class ChargesAI {
 
         if (atom[0] === "O") {
             // 6 is the number of valence electrons when there are no bonds
-            this.debugger("O Bond count:"+b_count)
-            this.debugger(_.cloneDeep(container_molecule[0][1][index]))
-            this.debugger(freeElectrons)
+           // this.debugger("O Bond count:"+b_count)
+           // this.debugger(_.cloneDeep(container_molecule[0][1][index]))
+           // this.debugger(freeElectrons)
             // 8 electrons, 2 bonds = neutral
             if (6 + b_count === electrons.length && container_molecule[0][1][index][4] !== "" && container_molecule[0][1][index][4] !== 0) {
                 console.log("validateMolecule O")
@@ -40,7 +40,7 @@ class ChargesAI {
                 console.log('Atom should have negative charge')
                 return true
             }
-            if (6 + b_count > electrons.length && container_molecule[0][1][index][4] !== "+") {
+            if (6 <  electrons.length && container_molecule[0][1][index][4] !== "+") {
                 console.log("validateMolecule O")
                 console.log(index)
                 console.log('Atom should have positive charge')
@@ -50,19 +50,20 @@ class ChargesAI {
 
         if (atom[0]=== "N") {
 
-            if (3 + b_count === electrons.length && container_molecule[0][1][index][4] !== "" && container_molecule[0][1][index][4] !== 0) {
+            // 5 is the number of valence electrons when there are no bonds
+            if (5 + b_count === electrons.length && container_molecule[0][1][index][4] !== "" && container_molecule[0][1][index][4] !== 0) {
                 console.log("validateMolecule N")
                 console.log(index)
                 console.log('Atom should have neutral charge')
                 return true
             }
-            if (3 + b_count < electrons.length && container_molecule[0][1][index][4] !== "-") {
+            if (5 + b_count < electrons.length && container_molecule[0][1][index][4] !== "-") {
                 console.log("validateMolecule N")
                 console.log(index)
                 console.log('Atom should have negative charge')
                 return true
             }
-            if (3 + b_count > electrons.length && container_molecule[0][1][index][4] !== "+") {
+            if (5 + b_count > electrons.length && container_molecule[0][1][index][4] !== "+") {
                 console.log("validateMolecule N")
                 console.log(index)
                 console.log('Atom should have positive charge')

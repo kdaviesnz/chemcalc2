@@ -24,7 +24,16 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
 
     // parse a SMILES string, returns an array of SMILES tokens [{type: '...', value: '...'}, ...]
     const smiles_tokens = smiles.parse(canonicalSMILES)
-    //const smiles_tokens = smiles.parse(canonicalSMILES)
+
+    // [O+]
+   // console.log(smiles_tokens)
+    //console.log(oplus)
+    /*
+    [ { type: 'BracketAtom', value: 'begin' },
+  { type: 'ElementSymbol', value: 'O' },
+  { type: 'Charge', value: 1 },
+  { type: 'BracketAtom', value: 'end' } ]
+     */
 
 
 
@@ -60,6 +69,26 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }
     )
 
+    // [O+]
+    // console.log(atoms_with_tokens)
+    // console.log(oplus)
+    /*
+[ { type: 'BracketAtom', value: 'begin' },
+  [ 'O',
+    8,
+    6,
+    2,
+    0,
+    '4r7b8138ukjjjyjat',
+    '4r7b8138ukjjjyjau',
+    '4r7b8138ukjjjyjav',
+    '4r7b8138ukjjjyjaw',
+    '4r7b8138ukjjjyjax',
+    '4r7b8138ukjjjyjay' ],
+  { type: 'Charge', value: 1 },
+  { type: 'BracketAtom', value: 'end' } ]
+
+     */
 
 
 
@@ -73,7 +102,24 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }
     )
 
+    // [O+]
+    // console.log(atoms_with_tokens_no_brackets)
+    // console.log(oplus)
+    /*
+    [ [ 'O',
+    8,
+    6,
+    2,
+    0,
+    '4r7b813b8kjjk13cs',
+    '4r7b813b8kjjk13ct',
+    '4r7b813b8kjjk13cu',
+    '4r7b813b8kjjk13cv',
+    '4r7b813b8kjjk13cw',
+    '4r7b813b8kjjk13cx' ],
+  { type: 'Charge', value: 1 } ]
 
+     */
 
 
     // Add the bonds and branches
@@ -218,6 +264,25 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     )
 
 
+
+    // [O+]
+    // console.log(atoms_with_bonds)
+    // console.log(oplus)
+    /*
+    [ [ 'O',
+    8,
+    6,
+    2,
+    0,
+    '4r7b813cxkjjk6d2p',
+    '4r7b813cxkjjk6d2q',
+    '4r7b813cxkjjk6d2r',
+    '4r7b813cxkjjk6d2s',
+    '4r7b813cxkjjk6d2t',
+    '4r7b813cxkjjk6d2u' ],
+  { type: 'Charge', value: 1 } ]
+     */
+
     // Remove bonds using filter
 // @todo
     const atoms = _.cloneDeep(atoms_with_bonds).filter(
@@ -227,6 +292,23 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     )
 
 
+    // [O+]
+    // console.log(atoms)
+    // console.log(oplus)
+    /*
+    [ [ 'O',
+    8,
+    6,
+    2,
+    0,
+    '4r7b813d9kjjk7r82',
+    '4r7b813d9kjjk7r83',
+    '4r7b813d9kjjk7r84',
+    '4r7b813d9kjjk7r85',
+    '4r7b813d9kjjk7r86',
+    '4r7b813d9kjjk7r87' ],
+  { type: 'Charge', value: 1 } ]
+     */
 
     let ring_bond_atom_index = null
 
@@ -280,6 +362,24 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     })
 
 
+    // [O+]
+    // console.log(atoms_with_ring_bonds)
+    // console.log(oplus)
+    /*
+    [ [ 'O',
+    8,
+    6,
+    2,
+    0,
+    '4r7b813dfkjjk9rlq',
+    '4r7b813dfkjjk9rlr',
+    '4r7b813dfkjjk9rls',
+    '4r7b813dfkjjk9rlt',
+    '4r7b813dfkjjk9rlu',
+    '4r7b813dfkjjk9rlv' ],
+  { type: 'Charge', value: 1 } ]
+     */
+
     //console.log(atoms_with_ring_bonds)
     //const mmolecule = [[12345,atoms_with_ring_bonds],1]
 
@@ -308,6 +408,25 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }, []
     )
 
+    // [O+]
+   //  console.log(atoms_with_hydrogen_counts)
+   //  console.log(oplus)
+    /*
+    [ [ 'O',
+    8,
+    6,
+    2,
+    0,
+    '4r7b813e2kjjkbukd',
+    '4r7b813e2kjjkbuke',
+    '4r7b813e2kjjkbukf',
+    '4r7b813e2kjjkbukg',
+    '4r7b813e2kjjkbukh',
+    '4r7b813e2kjjkbuki' ],
+  { type: 'Charge', value: 1 } ]
+
+     */
+
     const atoms_with_charges = _.cloneDeep(atoms_with_hydrogen_counts).reduce(
         (carry, current, index, atoms) => {
             if (typeof current[0]==="string") {
@@ -319,6 +438,23 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
             return carry
         }, []
     )
+
+    // [O+]
+    // console.log(atoms_with_charges)
+    // console.log(oplus)
+    /*
+    [ [ 'O',
+    8,
+    6,
+    2,
+    '+',
+    '4r7b813egkjjkeoot',
+    '4r7b813egkjjkeoou',
+    '4r7b813egkjjkeoov',
+    '4r7b813egkjjkeoow',
+    '4r7b813egkjjkeoox',
+    '4r7b813egkjjkeooy' ] ]
+     */
 
     // Add hydrogens
     const molecule = [[12345,atoms_with_charges],1]
@@ -370,6 +506,25 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         },
         []
     )
+
+    // [O+]
+   // console.log(atoms_with_hydrogens)
+   // console.log(oplus)
+    /*
+    [ [ 'O',
+    8,
+    6,
+    2,
+    '+',
+    '4r7b813elkjjkg4q2',
+    '4r7b813elkjjkg4q3',
+    '4r7b813elkjjkg4q4',
+    '4r7b813elkjjkg4q5',
+    '4r7b813elkjjkg4q6',
+    '4r7b813elkjjkg4q7' ] ]
+
+     */
+
 
     /*
     console.log(atoms_with_hydrogens.filter((atom)=>{
