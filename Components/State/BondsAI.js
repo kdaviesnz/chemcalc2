@@ -846,8 +846,6 @@ class BondsAI {
                     })
                     return x_bonds.length > 0
                 })
-                console.log("BONDS:")
-                console.log(c_bonds)
                 //console.log(hgf)
             }
 

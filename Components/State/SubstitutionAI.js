@@ -48,40 +48,50 @@ class SubstitutionAI {
 
             // Remove X Bond
             this.reaction.container_substrate[0][1][halide_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][halide_index], c_bonds[0].shared_electrons )
+            // Make sure X atom still has 8 electrons
+            range.range(0, c_bonds[0].shared_electrons.length).map((i)=>{
+                this.reaction.container_substrate[0][1][halide_index].push(uniqid())
+            })
+            // We do this as otherwise the carbon atom ends up with too many electrons
+            this.reaction.container_substrate[0][1][c_bonds[0].atom_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][c_bonds[0].atom_index], c_bonds[0].shared_electrons )
 
             const n_atom = CAtom(this.reaction.container_reagent[0][1][n_index], n_index, this.reaction.container_reagent)
-            const n_free_electrons = n_atom.freeElectrons()
-            console.log(n_free_electrons)
-            console.log(n_atom.bondCount())
-            console.log(this.reaction.container_reagent[0][1][n_index])
+            //console.log('Reagent')
+            //console.log(VMolecule(this.reaction.container_reagent).compressed())
+            //console.log(this.reaction.container_reagent[0][1][n_index])
 
-            console.log('Substrate:')
-            console.log(VMolecule(this.reaction.container_substrate).compressed())
-            console.log(kkkkk)
-
-            const c_atom = CAtom(this.reaction.container_substrate[0][1][c_bonds[0].atom_index], c_bonds[0].atom_index, this.reaction.container_substrate)
-            const free_electrons = c_atom.freeElectrons()
-            console.log(free_electrons)
-            console.log(c_atom.indexedBonds("").length)
+            // bond reagent to substrate
+            this.reaction.setChargeOnSubstrateAtom(halide_index) // Do this first.
+            this.reaction.bondSubstrateToReagent(n_index, c_bonds[0].atom_index)
 
 
-            console.log(frreelelectrons)
+           // console.log('Substrate:')
+           // console.log(VMolecule(this.reaction.container_substrate).compressed())
+           // console.log(kkkkk)
+
+           // const c_atom = CAtom(this.reaction.container_substrate[0][1][c_bonds[0].atom_index], c_bonds[0].atom_index, this.reaction.container_substrate)
+           // const free_electrons = c_atom.freeElectrons()
+           // console.log(free_electrons)
+           // console.log(c_atom.indexedBonds("").length)
 
 
+           // console.log(frreelelectrons)
 
-            this.reaction.leaving_groups.push([this.reaction.container_substrate[0][1][halide_index], 1])
+
+            // Remove halide from substrate and add to leaving group
+            //console.log(this.reaction.container_substrate[0][1][halide_index])
+            //console.log(ccccc)
+
+            this.reaction.leaving_groups.push([[-1, [this.reaction.container_substrate[0][1][halide_index]]], 1])
             _.remove(this.reaction.container_substrate[0][1], (i, v) =>{
                 return v === halide_index
             })
 
 
-            console.log(VMolecule(this.reaction.container_substrate).compressed())
-
-
-            console.log(halide_index)
-
-            console.log(n_index)
-            console.log(rrrrr)
+          //  console.log(VMolecule(this.reaction.container_substrate).compressed())
+//            console.log(VMolecule(this.reaction.leaving_groups[0]).compressed())
+            // console.log(rrrrr)
+            return true
 
         }
 
@@ -129,7 +139,8 @@ class SubstitutionAI {
                 this.reaction.container_substrate[0][1][n_index].push(uniqid())
             }
         )
-        this.reaction.container_substrate[0][1][n_index][4] = ""
+        this.reaction.setChargeOnSubstrateAtom(n_index)
+//        this.reaction.container_substrate[0][1][n_index][4] = ""
 
         const groups = this.reaction.MoleculeAI.extractGroupsReverse()
         this.reaction.setSubstrateGroupsReverse(groups)
@@ -150,7 +161,7 @@ class SubstitutionAI {
         }
 
     }
-    
+
 }
 
 module.exports = SubstitutionAI

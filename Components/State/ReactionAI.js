@@ -584,7 +584,7 @@ class ReactionAI {
             const reagent_substituteHalideReversal = _.cloneDeep(reverse_reaction.container_reagent)
 
             commands.push({
-                'name':'removeHalide',
+                'name':'substituteHalide',
                 'starting substrate': _.cloneDeep(substrate_with_halide),
                 'starting reagent': _.cloneDeep(reagent_substituteHalideReversal),
                 'finish substrate': _.cloneDeep(target),
@@ -1151,7 +1151,7 @@ class ReactionAI {
         }
 
         if (c_names.length === 1 && c_names[0]==="deprotonate") {
-            this.debugger(VMolecule(target).compressed())
+            // console.log(VMolecule(target).compressed())
             // console.log(breaksubstrate)
         }
 
