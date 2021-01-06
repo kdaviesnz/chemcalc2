@@ -209,8 +209,7 @@ class ReactionAI {
     }
 
     debugger(o) {
-        console.log(this.debugger_on)
-        console.log(kkkk)
+        //console.log(this.debugger_on)
         if (this.debugger_on) {
             console.log(o)
         }
@@ -724,7 +723,7 @@ class ReactionAI {
         const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
 
         this.debugger("dehydrationReversal() reverse reaction result")
-        this.debugger(r)
+
 
 
         // https://en.wikipedia.org/wiki/Pinacol_rearrangement
@@ -734,6 +733,7 @@ class ReactionAI {
 
             r = reverse_reaction.dehydrateReverse()
 
+        this.debugger(r)
 
 
             if (r) {

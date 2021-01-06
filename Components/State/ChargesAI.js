@@ -38,8 +38,10 @@ class ChargesAI {
             }
             if (electrons.length < (6 + b_count) && container_molecule[0][1][index][4] !== "+") {
                 console.log("validateMolecule O")
+                console.log(electrons.length)
+                console.log(b_count)
                 console.log(index)
-                console.log('Atom should have positive charge')
+                console.log('Atom should have positive charge!')
                 return true
             }
         }

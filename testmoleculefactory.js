@@ -8,10 +8,9 @@ const CAtom = require('./Controllers/Atom')
 
 const m2 = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)N")
 
-
-const o = CAtom(m2[1][22], 22, [m2,1])
-
-console.log(o.bondCount())
+//const o = CAtom(m2[1][22], 22, [m2,1])
+//console.log(o.bondCount())
+console.log(VMolecule([m2,1]).compressed())
 console.log(kljj)
 
 const cation = [MoleculeFactory("[CH5+]"),1]
