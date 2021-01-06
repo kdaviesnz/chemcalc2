@@ -571,6 +571,16 @@ class Reaction {
         }
     }
 
+    setSubstrateGroupsReverse(groups){
+        if (groups.length > 1) {
+            this.container_substrate = [[-1, _.cloneDeep(groups[0])], 1]
+            groups.shift()
+            this.leaving_groups = groups.map((group)=>{
+                return [[-1, group], 1]
+            })
+        }
+    }
+
     removeHydroxylGroup() {
         const groups = this.__removeHydroxylGroup(this.MoleculeAI, this.container_substrate, this.setMoleculeAI)
         this.__setSubstrateGroups(groups)

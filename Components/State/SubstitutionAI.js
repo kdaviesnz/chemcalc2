@@ -3,7 +3,8 @@ const CAtom = require('../../Controllers/Atom')
 const Set = require('../../Models/Set')
 const AtomFactory = require('../../Models/AtomFactory')
 const VMolecule = require('../Stateless/Views/Molecule')
-
+const uniqid = require('uniqid');
+const range = require("range");
 
 class SubstitutionAI {
 
@@ -120,17 +121,29 @@ class SubstitutionAI {
         const target_atom = CAtom(this.reaction.container_substrate[0][1][c_index], c_index, this.reaction.container_substrate)
         const shared_electrons = Set().intersection(_.cloneDeep(this.reaction.container_substrate[0][1][n_index].slice(5)), _.cloneDeep(this.reaction.container_substrate[0][1][c_index].slice(5)))
         const electrons = _.cloneDeep(this.reaction.container_substrate[0][1][n_index]).slice(5)
+
+        // Break NC bond but make sure nitrogen still has 8 electrons
         this.reaction.container_substrate[0][1][n_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][n_index], shared_electrons)
-        const groups = this.reaction.MoleculeAI.extractGroups()
-        this.reaction.__setSubstrateGroups(groups)
+        range.range(0, shared_electrons.length, 1).map(
+            (i) => {
+                this.reaction.container_substrate[0][1][n_index].push(uniqid())
+            }
+        )
+        this.reaction.container_substrate[0][1][n_index][4] = ""
+
+        const groups = this.reaction.MoleculeAI.extractGroupsReverse()
+        this.reaction.setSubstrateGroupsReverse(groups)
         if(this.reaction.leaving_groups.length > 0) {
             this.reaction.container_reagent = this.reaction.leaving_groups[0]
             const halide_atom = AtomFactory("Br", "")
+            halide_atom.pop() // we remove an electron before adding the shared electrons as otherwise we end up with 9 electrons.
             halide_atom.push(shared_electrons[0])
             halide_atom.push(shared_electrons[1])
             this.reaction.container_substrate[0][1].push(halide_atom)
-            console.log(VMolecule(this.reaction.container_reagent).compressed())
-            console.log(mmmm)
+            this.reaction.setReagentAI()
+            this.reaction.setMoleculeAI()
+            //console.log(VMolecule(this.reaction.container_substrate).compressed())
+            //console.log(mmmm)
             return true
         } else {
             return false
