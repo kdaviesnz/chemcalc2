@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const CAtom = require('../../Controllers/Atom')
+const VMolecule = require('../Stateless/Views/Molecule')
 
 class ChargesAI {
 
@@ -85,10 +86,10 @@ class ChargesAI {
                 return true
             }
             if (electrons.length < (5 + b_count) && container_molecule[0][1][index][4] !== "+") {
-                console.log("validateMolecule N")
-                console.log(index)
-                console.log('Atom should have positive charge!!!')
-                return true
+                console.log("DEBUG: Atom should have positive charge")
+                console.log("DEBUG: Atom " + atom[0])
+                console.log("DEBUG: Index " + index)
+                throw new Error("Atom should have positive charge")
             }
         }
 
@@ -107,10 +108,11 @@ class ChargesAI {
                 return true
             }
             if (electrons.length < (4 + b_count) && container_molecule[0][1][index][4] !== "+") {
-                console.log("validateMolecule C")
-                console.log(index)
-                console.log('Atom should have positive charge!!!')
-                return true
+                console.log("DEBUG: Atom should have positive charge")
+                console.log("DEBUG: Atom " + atom[0])
+                console.log("DEBUG: Index " + index)
+                console.log(VMolecule(container_molecule).compressed())
+                throw new Error("Atom should have positive charge")
             }
         }
 

@@ -74,7 +74,7 @@ class ReactionAI {
 
     constructor() {
 
-        this.debugger_on = false
+        this.debugger_on = true
 
         this.command_sets = []
 
@@ -280,9 +280,11 @@ class ReactionAI {
         console.log("Synthesising " + VMolecule([target,1]).canonicalSMILES() + " reagent: " + VMolecule([ammonia,1]).canonicalSMILES())
        // console.log(VMolecule([formate,1]).compressed())
        // console.log(VMolecule([formate,1]).canonicalSMILES())
-        //this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(methylamine),1], [], 'synthesise', 0)
-        // MDA
-        this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(ammonia),1], [], 'synthesise', 0)
+
+
+        this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(methylamine),1], [], 'synthesise', 0)
+
+        //this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(ammonia),1], [], 'synthesise', 0)
     }
     
     synthesiseCallback(substrate, reagent, commands, caller, depth) {
@@ -890,12 +892,13 @@ class ReactionAI {
             return false
         }
 
+        this.debugger("carbocationShiftReversal() reverse reaction result")
+
         const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
 
         // Carbocation shift
         // https://en.wikipedia.org/wiki/Pinacol_rearrangement
         let r = null
-        this.debugger("carbocationShiftReversal() reverse reaction result")
         r = reverse_reaction.carbocationShiftReverse()
         this.debugger(r)
 

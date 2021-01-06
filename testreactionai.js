@@ -23,9 +23,11 @@ const imine2 = MoleculeFactory("CC(CC1=CC=CC=C1)=NC") // phenylacetone
 const r = new ReactionAI()
 // r.synthesise(pinacolone)
 //r.synthesise(isopropylamine)
-//r.synthesise(imine2)
+
 //r.synthesise(imine)
-r.synthesise(m2)
+//r.synthesise(m2)
+r.synthesise(imine2)
+
 
 // Epoxide acidic ring opening
 // https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Map%3A_Organic_Chemistry_(McMurry)/Chapter_18%3A_Ethers_and_Epoxides%3B_Thiols_and_Sulfides/18.06_Reactions_of_Epoxides%3A_Ring-opening

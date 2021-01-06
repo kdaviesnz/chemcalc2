@@ -212,6 +212,55 @@ const MoleculeAI = (container_molecule) => {
         },
 
         validateMolecule: () => {
+
+            // Check atoms do not have more than 8 electrons and 2 electrons if H
+            container_molecule[0][1].map((atom, index)=>{
+                //const atom_object = CAtom(container_molecule[0][1][index], index, container_molecule)
+                const electrons = atom.slice(5)
+                switch(atom[0]) {
+                    case "H":
+                        if (electrons.length > 2) {
+                            console.log("DEBUG: Atom has more than allowed number of electrons")
+                            console.log("DEBUG: Atom " + atom[0])
+                            console.log("DEBUG: Index " + index)
+                            throw new Error("Max number of electrons exceeded")
+                        }
+                        break;
+                    case "O":
+                        if (electrons.length > 8) {
+                            console.log("DEBUG: Atom has more than allowed number of electrons")
+                            console.log("DEBUG: Atom " + atom[0])
+                            console.log("DEBUG: Index " + index)
+                            throw new Error("Max number of electrons exceeded")
+                        }
+                        break;
+                    case "N":
+                        if (electrons.length > 8) {
+                            console.log("DEBUG: Atom has more than allowed number of electrons")
+                            console.log("DEBUG: Atom " + atom[0])
+                            console.log("DEBUG: Index " + index)
+                            throw new Error("Max number of electrons exceeded")
+                        }
+                        break;
+                    case "C":
+                        if (electrons.length > 8) {
+                            console.log("DEBUG: Atom has more than allowed number of electrons")
+                            console.log("DEBUG: Atom " + atom[0])
+                            console.log("DEBUG: Index " + index)
+                            throw new Error("Max number of electrons exceeded")
+                        }
+                        break;
+                    case "Br":
+                        if (electrons.length > 8) {
+                            console.log("DEBUG: Atom has more than allowed number of electrons")
+                            console.log("DEBUG: Atom " + atom[0])
+                            console.log("DEBUG: Index " + index)
+                            throw new Error("Max number of electrons exceeded")
+                        }
+                        break;
+                }
+            })
+
             return _.findIndex(container_molecule[0][1], (atom, index)=> {
                 const chargesAI = new ChargesAI(null)
                 return chargesAI.checkCharge(container_molecule, atom, index)
