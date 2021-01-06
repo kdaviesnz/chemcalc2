@@ -11,6 +11,7 @@ const HydrationAI = require('../../Components/State/HydrationAI')
 const ProtonationAI = require('../../Components/State/ProtonationAI')
 const BondsAI = require('../../Components/State/BondsAI')
 const ChargesAI = require('../../Components/State/ChargesAI')
+const SubstitutionAI = require('../../Components/State/SubstitutionAI')
 
 class Reaction {
 
@@ -101,6 +102,11 @@ class Reaction {
     setChargeOnSubstrateAtom(index) {
         const chargesAI = new ChargesAI(this)
         return chargesAI.setChargeOnSubstrateAtom(index)
+    }
+
+    substituteHalideReverse(index) {
+        const substitutionAI = new SubstitutionAI(this)
+        return substitutionAI.substituteHalideReverse(index)
     }
 
     breakCarbonOxygenDoubleBondReverse() {
@@ -552,8 +558,6 @@ class Reaction {
     __setSubstrateGroups(groups){
         if (groups.length > 1) {
             this.container_substrate = [[-1, _.cloneDeep(groups[0])], 1]
-            this.setMoleculeAI()
-            this.setReagentAI()
             groups.shift()
             this.leaving_groups = groups.map((group)=>{
                 return [[-1, group], 1]

@@ -334,6 +334,9 @@ class ReactionAI {
 
                 this.removeHalideReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
 
+                this.substituteHalideReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+
+
 
             } else {
 
@@ -552,8 +555,57 @@ class ReactionAI {
         }
     }
 
+    substituteHalideReversal(target, reagent, moleculeAI, commands, caller, depth) {
+
+        if (caller === "substituteHalideReversal") {
+            return
+        }
+
+        const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
+
+        let r = null
+        r = reverse_reaction.substituteHalideReverse()
+
+        this.debugger("substituteHalideReversal() reverse reaction result")
+        this.debugger(r)
+
+        if (r) {
+
+            if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
+                // console.log(ggggg)
+                this.result(target, reagent, commands, 'substituteHalideReversal')
+                return
+            }
+
+            const substrate_with_halide = _.cloneDeep(reverse_reaction.container_substrate)
+            const reagent_substituteHalideReversal = _.cloneDeep(reverse_reaction.container_reagent)
+
+            commands.push({
+                'name':'removeHalide',
+                'starting substrate': _.cloneDeep(substrate_with_halide),
+                'starting reagent': _.cloneDeep(reagent_substituteHalideReversal),
+                'finish substrate': _.cloneDeep(target),
+                'finish reagent': _.cloneDeep(reagent),
+                'function':()=>{
+                    const substitute_halide_reaction = new Reaction(_.cloneDeep(substrate_with_halide), _.cloneDeep(reagent_substituteHalideReversal), {})
+                    substitute_halide_reaction.substituteHalide()
+                    return substitute_halide_reaction
+                }})
+
+            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'substituteHalideReversal', depth+1)
+
+
+        }
+
+        console.log(substhalidereversal)
+
+
+
+    }
 
     removeHalideReversal(target, reagent, moleculeAI, commands, caller, depth) {
+
+        return false
 
 
         if (caller === "removeHalideReversal") {
