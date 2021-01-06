@@ -130,6 +130,7 @@ class ChargesAI {
             //console.log("ChargesAI.js setChargeOnSubstrateAtom()")
             //console.log(this.reaction.container_substrate[0][1][index])
             // 9 electrons, 5 bonds = neutral charge
+            //console.log("bond c:"+b_count + " e " + electrons.length)
             if (4 + b_count === electrons.length) {
                 this.reaction.container_substrate[0][1][index][4] = ""
             }

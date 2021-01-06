@@ -815,20 +815,39 @@ class BondsAI {
         // The reagent is the nucleophile and is attacking the substrate
         // The substrate is the electrophile
         // Look for N+=C+ bond
-        const n_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
+        let n_index = null
+        let n_atom = null
+        let c_atom = null
+        n_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
             return atom[0] === "N" && atom[4] === "+"
         })
 
+
         if (n_index !== -1) {
+
             const source_atom = CAtom(this.reaction.container_substrate[0][1][n_index], n_index, this.reaction.container_substrate)
-            const c_bonds = source_atom.indexedBonds("").filter((bond)=>{
+            n_atom = CAtom(this.reaction.container_substrate[0][1][n_index], n_index, this.reaction.container_substrate)
+
+            let c_bonds = source_atom.indexedBonds("").filter((bond)=>{
                 return bond.atom[0] === "C" && bond.atom[4] === "+"
             })
 
-          //  console.log(VMolecule(this.reaction.container_substrate).compressed())
-          //  console.log('Nitrogen n_index: ' + n_index)
-           // console.log(oooo)
-
+            if (c_bonds.length === 0 ) {
+                // Look for N+(C-)X bond
+                c_bonds = n_atom.indexedBonds("").filter((bond)=>{
+                    if (bond.atom[0]!=="C") {
+                        return false
+                    }
+                    c_atom = CAtom(this.reaction.container_substrate[0][1][bond.atom_index], bond.atom_index, this.reaction.container_substrate)
+                    const x_bonds = c_atom.indexedBonds("").filter((bond)=>{
+                        return bond.atom[0] === "Br"
+                    })
+                    return x_bonds.length > 0
+                })
+                console.log("BONDS:")
+                console.log(c_bonds)
+                //console.log(hgf)
+            }
 
             if (c_bonds.length > 0) {
                 const c_index = c_bonds[0].atom_index
@@ -854,6 +873,7 @@ class BondsAI {
                 }
             }
         }
+
         return false
     }
 

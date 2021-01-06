@@ -351,6 +351,7 @@ class ReactionAI {
 
     addProtonFromReagentToHydroxylGroupReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
+        return false
 
         if (caller === "addProtonFromReagentToHydroxylGroupReversal") {
             return
@@ -411,6 +412,7 @@ class ReactionAI {
 
     makeCarbonNitrogenDoubleBondReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
+        return false
 
         // console.log("ReactionAI.js Calling makeCarbonNitrogenDoubleBondReversal() caller=" + caller)
         if (caller === "makeCarbonNitrogenDoubleBondReversal") {
@@ -485,8 +487,15 @@ class ReactionAI {
         this.debugger(r)
 
 
+       // this.debugger(VMolecule(reverse_reaction.container_substrate).compressed())
+
+      //  console.log(deprontttanatereversal)
+
+
+
 
         if (r) {
+
 
             if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
                // console.log(ggggg)
@@ -559,6 +568,11 @@ class ReactionAI {
         this.debugger("removeHalideReversal() reverse reaction result")
         this.debugger(r)
 
+        //console.log(commands)
+//        this.debugger(VMolecule(reverse_reaction.container_substrate).compressed())
+
+  //      console.log(removehliadreversal)
+
 
 
         if (r) {
@@ -607,6 +621,7 @@ class ReactionAI {
 
     oxygenCarbonDoubleBondReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
+        return false
 
         if (caller === "oxygenCarbonDoubleBondReversal" || caller === "breakOxygenCarbonDoubleBondReversal") {
             return
@@ -688,6 +703,7 @@ class ReactionAI {
 
     dehydrationReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
+        return false
         //console.log("dehydrationReversal() caller="+caller + " depth=" +depth )
 
         const command_names = commands.map((command)=>{
@@ -801,6 +817,8 @@ class ReactionAI {
 
     carbocationShiftReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
+        return false
+
         if (caller === "carbocationShiftReversal()") {
             return
         }
@@ -856,7 +874,7 @@ class ReactionAI {
 
     transferProtonReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-
+        return false
 
 
 
@@ -965,6 +983,7 @@ class ReactionAI {
 
     breakOxygenCarbonDoubleBondReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
+        return false
 
         if (caller === "breakOxygenCarbonDoubleBondReversal" || caller === "oxygenCarbonDoubleBondReversal") {
             // console.log('Duplicate call - breakOxygenCarbonDoubleBondReversal()')
@@ -1068,6 +1087,22 @@ class ReactionAI {
         this.debugger("bondSubstrateToReagentReversal() reverse reaction result")
         this.debugger(r)
 
+        const c_names = commands.map((command)=>{
+            return command['name']
+        })
+
+        if (c_names.length ===2 && r === true) {
+            this.debugger(c_names)
+            console.log(VMolecule(target).compressed())
+            console.log(VMolecule(reverse_reaction.container_substrate).compressed())
+            console.log(VMolecule(reverse_reaction.leaving_groups[0]).compressed())
+            console.log(breaksubstrate)
+        }
+
+        if (c_names.length === 1 && c_names[0]==="deprotonate") {
+            this.debugger(VMolecule(target).compressed())
+            // console.log(breaksubstrate)
+        }
 
         /*
         console.log("BondSubstrateToReagent caller=" + caller + " depth="+depth)
@@ -1160,6 +1195,8 @@ class ReactionAI {
     }
 
     protonateReversal(target, reagent, moleculeAI, commands, caller, depth) {
+
+        return false
 
         if (depth === 1 && caller==="dehydrationReversal") {
             // console.log("ReactionAI.js Calling protonateReversal() caller=" + caller + " depth=" + depth)
@@ -1255,6 +1292,8 @@ class ReactionAI {
     }
 
     addProtonFromReagentToSubstrateReversal(target, reagent, moleculeAI, commands, caller, depth) {
+
+        return false
 
         if (caller==="addProtonFromReagentToSubstrateReversal") {
             return
