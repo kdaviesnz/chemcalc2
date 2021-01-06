@@ -457,9 +457,9 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
 
      */
 
-   // const molecule3 = [[12345,atoms_with_charges],1]
-   // console.log(VMolecule(molecule3).compressed())
-    //console.log(qwe)
+   //const molecule3 = [[12345,atoms_with_charges],1]
+   //console.log(VMolecule(molecule3).compressed())
+   // console.log(qwe)
 
     // Add hydrogens
     const molecule = [[12345,atoms_with_charges],1]
@@ -518,9 +518,6 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         []
     )
 
-    //const molecule2 = [[12345,atoms_with_hydrogens],1]
-    //console.log(VMolecule(molecule2).compressed())
-    //console.log(oikk)
 
     // [CH5+]
   // console.log(atoms_with_hydrogens)
@@ -539,11 +536,18 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     '4r7b813elkjjkg4q7' ] ]
 
      */
+
+    // const molecule2 = [[12345,atoms_with_hydrogens],1]
+    // console.log(VMolecule(molecule2).compressed())
+    //console.log(oikk)
+
     const atoms_electrons_checked = atoms_with_hydrogens.map((atom, index)=>{
         const o_atom = CAtom(atom, index, [['12345', atoms_with_hydrogens], 1])
-        const bond_count = o_atom.bondCount()
+
+        const bond_count = o_atom.indexedBonds("").length + o_atom.indexedDoubleBonds("").length + o_atom.indexedTripleBonds("").length
         const free_electrons = o_atom.freeElectrons()
         const electrons = atom.slice(5)
+
         if (atom[4] === "" || atom[4] === 0) {
             switch(atom[0]) {
                 case "O":
@@ -575,6 +579,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                     }
                     break;
                 case "C":
+                    // console.log('Bond count on C:'+bond_count+" " + index)
                     if (bond_count ===5){
                         if (o_atom.hydrogens().length > 0) {
                             // Remove a hydrogen
@@ -646,8 +651,10 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         return atom
     })
 
+   // const molecule4 = [[12345,atoms_electrons_checked],1]
+   // console.log(VMolecule(molecule4).compressed())
 
-
+    //console.log(atomsfactoryyy)
     /*
     console.log(atoms_with_hydrogens.filter((atom)=>{
         return atom[0] === "H"

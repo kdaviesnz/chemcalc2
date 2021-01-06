@@ -3,6 +3,7 @@ const MoleculeFactory = require('../../Models/MoleculeFactory')
 const VMolecule = require('../Stateless/Views/Molecule')
 const _ = require('lodash');
 const CAtom = require('../../Controllers/Atom')
+const Set = require('../../Models/Set')
 
 class HydrationAI {
 
@@ -120,6 +121,23 @@ class HydrationAI {
             }
         }
 
+        // dehydrate reverse
+        const e_atom = CAtom(this.reaction.container_substrate[0][1][electrophile_index], electrophile_index, this.reaction.container_substrate)
+        const e_free_electrons = e_atom.freeElectrons()
+        if (e_free_electrons.length === 0) {
+            // Check for double bond eg C=N and change to single bond
+            // This will free up an electron pair that we can use to bond the O atom
+            console.log(this.reaction.container_substrate[0][1][electrophile_index]) // eg C=N carbon atom
+            console.log(e_atom.indexedBonds("").length)
+            console.log(e_atom.indexedDoubleBonds("").length)
+            console.log(TESTING)
+        }
+        console.log("HydrationAI electrophile free electrons:" + e_free_electrons.length)
+        // We do this so that the atom does not end up with more then 8 electrons
+        this.reaction.container_substrate[0][1][electrophile_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][electrophile_index], e_free_electrons)
+
+        // Create the C(O) bond
+        // electrons are the free electrons on the oxygen water atom
         this.reaction.container_substrate[0][1][electrophile_index].push(electrons[0])
         this.reaction.container_substrate[0][1][electrophile_index].push(electrons[1])
 

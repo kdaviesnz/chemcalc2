@@ -3,6 +3,13 @@ const MoleculeFactory = require('./Models/MoleculeFactory')
 const VMolecule = require('./Components/Stateless/Views/Molecule')
 
 // Chemicals to synthesise
+
+const imine2 = MoleculeFactory("CC(CC1=CC=CC=C1)=NC") // phenylacetone
+console.log(VMolecule([imine2,1]).compressed())
+console.log(VMolecule([imine2,1]).canonicalSMILES())
+//console.log(mnb)
+
+
 // https://en.wikipedia.org/wiki/Pinacol_rearrangement
 const pinacolone = MoleculeFactory("CC(=O)C(C)(C)C")
 
@@ -16,10 +23,6 @@ const m2 = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)N")
 //console.log(VMolecule([m,1]).canonicalSMILES())
 //console.log(hjkkkll)
 const imine = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)=NC")
-const imine2 = MoleculeFactory("CC(CC1=CC=CC=C1)=NC") // phenylacetone
-//console.log(VMolecule([imine,1]).compressed())
-//console.log(VMolecule([imine,1]).canonicalSMILES())
-//console.log(mnb)
 const r = new ReactionAI()
 // r.synthesise(pinacolone)
 //r.synthesise(isopropylamine)
