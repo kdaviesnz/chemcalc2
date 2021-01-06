@@ -109,6 +109,12 @@ class Reaction {
         return substitutionAI.substituteHalideReverse(index)
     }
 
+    substituteHalide(index) {
+        const substitutionAI = new SubstitutionAI(this)
+        return substitutionAI.substituteHalide(index)
+    }
+
+
     breakCarbonOxygenDoubleBondReverse() {
         const bondsAI = new BondsAI(this)
         return bondsAI.breakCarbonOxygenDoubleBondReverse()
@@ -1037,12 +1043,12 @@ class Reaction {
         this.setReagentAI()
     }
 
-    bondSubstrateToReagent() {
+    bondSubstrateToReagent(nucleophile_index = null, electrophile_index = null) {
         // Important:
         // The reagent is the nucleophile and is attacking the substrate
         // The substrate is the electrophile
         const bondsAI = new BondsAI(this)
-        return bondsAI.bondSubstrateToReagent()
+        return bondsAI.bondSubstrateToReagent(nucleophile_index, electrophile_index)
     }
 
     removeHalide() {

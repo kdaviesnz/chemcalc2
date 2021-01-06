@@ -23,6 +23,70 @@ class SubstitutionAI {
         const halide_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
             return atom[0] === "Br"
         })
+
+        if (halide_index === -1) {
+            return false
+        }
+
+        const x_atom = CAtom(this.reaction.container_substrate[0][1][halide_index], halide_index, this.reaction.container_substrate)
+
+        // Look for N
+        const n_index = _.findIndex(this.reaction.container_reagent[0][1], (atom, index)=>{
+            return atom[0] === "N" && (atom[4] === "" || atom[4] === 0)
+        })
+
+        if (n_index !== -1) {
+            // Replace halide with N-R
+            const c_bonds = x_atom.indexedBonds("").filter((bond)=>{
+                return bond.atom[0] === "C" && (bond.atom[4] === "" || bond.atom[4] === 0)
+            })
+
+            if (c_bonds.length === 0) {
+                return false
+            }
+
+            // Remove X Bond
+            this.reaction.container_substrate[0][1][halide_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][halide_index], c_bonds[0].shared_electrons )
+
+            const n_atom = CAtom(this.reaction.container_reagent[0][1][n_index], n_index, this.reaction.container_reagent)
+            const n_free_electrons = n_atom.freeElectrons()
+            console.log(n_free_electrons)
+            console.log(n_atom.bondCount())
+            console.log(this.reaction.container_reagent[0][1][n_index])
+
+            console.log('Substrate:')
+            console.log(VMolecule(this.reaction.container_substrate).compressed())
+            console.log(kkkkk)
+
+            const c_atom = CAtom(this.reaction.container_substrate[0][1][c_bonds[0].atom_index], c_bonds[0].atom_index, this.reaction.container_substrate)
+            const free_electrons = c_atom.freeElectrons()
+            console.log(free_electrons)
+            console.log(c_atom.indexedBonds("").length)
+
+
+            console.log(frreelelectrons)
+
+
+
+            this.reaction.leaving_groups.push([this.reaction.container_substrate[0][1][halide_index], 1])
+            _.remove(this.reaction.container_substrate[0][1], (i, v) =>{
+                return v === halide_index
+            })
+
+
+            console.log(VMolecule(this.reaction.container_substrate).compressed())
+
+
+            console.log(halide_index)
+
+            console.log(n_index)
+            console.log(rrrrr)
+
+        }
+
+        return false
+
+
     }
 
     substituteHalideReverse() {
@@ -65,8 +129,8 @@ class SubstitutionAI {
             halide_atom.push(shared_electrons[0])
             halide_atom.push(shared_electrons[1])
             this.reaction.container_substrate[0][1].push(halide_atom)
-            //console.log(VMolecule(this.reaction.container_substrate).compressed())
-            //console.log(mmmm)
+            console.log(VMolecule(this.reaction.container_reagent).compressed())
+            console.log(mmmm)
             return true
         } else {
             return false

@@ -689,39 +689,41 @@ class BondsAI {
 
     }
 
-    bondSubstrateToReagent() {
+    bondSubstrateToReagent(nucleophile_index = null, electrophile_index = null) {
 
         // Important:
         // The reagent is the nucleophile and is attacking the substrate
         // The substrate is the electrophile
       //  console.log('BondsAI.js bondSubstrateToReagent')
         // Check for Nitrogen atom  on reagent and C=O bond on substrate
-        let nucleophile_index = null
-        let electrophile_index = null
-        nucleophile_index = _.findIndex(this.reaction.container_reagent[0][1], (atom, index)=>{
-            if (atom[0]!=="N") {
-                return false
-            }
-            const n = CAtom(this.reaction.container_reagent[0][1][index], index, this.reaction.container_reagent)
-            return n.indexedDoubleBonds("").length === 0
-        })
+        if (nucleophile_index === null) {
+            nucleophile_index = _.findIndex(this.reaction.container_reagent[0][1], (atom, index) => {
+                if (atom[0] !== "N") {
+                    return false
+                }
+                const n = CAtom(this.reaction.container_reagent[0][1][index], index, this.reaction.container_reagent)
+                return n.indexedDoubleBonds("").length === 0
+            })
+        }
 
 
         if (nucleophile_index !== -1) { // Nitrogen atom on reagent
 
             // Check for C=O carbon on substrate
-            electrophile_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
-                if (atom[0]!=="C") {
-                    return false
-                }
-                if (atom[4]==="+") {
-                    return false
-                }
-                const c = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate)
-                return c.indexedDoubleBonds("").filter((bond)=>{
-                    return bond.atom[0] === "O"
-                }).length !== 0
-            })
+            if (electrophile_index === null) {
+                electrophile_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index) => {
+                    if (atom[0] !== "C") {
+                        return false
+                    }
+                    if (atom[4] === "+") {
+                        return false
+                    }
+                    const c = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate)
+                    return c.indexedDoubleBonds("").filter((bond) => {
+                        return bond.atom[0] === "O"
+                    }).length !== 0
+                })
+            }
 
             if (electrophile_index === -1) {
                 // Check for CX carbon on substrate
@@ -740,7 +742,7 @@ class BondsAI {
             }
         }
 
-        if (electrophile_index === -1) {
+        if (electrophile_index === -1 || electrophile_index === null) {
             electrophile_index = this.reaction.MoleculeAI.findElectrophileIndex()
         }
 

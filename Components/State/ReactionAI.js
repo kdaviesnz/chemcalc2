@@ -303,7 +303,7 @@ class ReactionAI {
             return command['name']
         })
 
-        if (command_names.length > 0 && command_names[command_names.length-1] === "bondSubstrateToReagent") {
+        if (command_names.length > 0 && command_names[command_names.length-1] === "bondSubstrateToReagent" ) {
             this.result(substrate, reagent, commands, 'synthesiseCallback()')
         } else {
 
@@ -344,6 +344,9 @@ class ReactionAI {
 
                 // We can have a reverse proton transfer on a neutral substrate
                 this.transferProtonReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth + 1)
+
+                this.substituteHalideReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth + 1)
+
                 this.result(substrate, reagent, commands, 'synthesiseCallback()')
             }
 
@@ -596,10 +599,6 @@ class ReactionAI {
 
 
         }
-
-        console.log(substhalidereversal)
-
-
 
     }
 
