@@ -74,7 +74,7 @@ class ReactionAI {
 
     constructor() {
 
-        this.debugger_on = true
+        this.debugger_on = false
 
         this.command_sets = []
 
@@ -357,7 +357,8 @@ class ReactionAI {
 
     addProtonFromReagentToHydroxylGroupReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-        return false
+        // Akylation ok
+       // return false
 
         if (caller === "addProtonFromReagentToHydroxylGroupReversal") {
             return
@@ -416,9 +417,12 @@ class ReactionAI {
         }
     }
 
+
+
     makeCarbonNitrogenDoubleBondReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-        return false
+        // Akylation ok
+        // return false
 
         // console.log("ReactionAI.js Calling makeCarbonNitrogenDoubleBondReversal() caller=" + caller)
         if (caller === "makeCarbonNitrogenDoubleBondReversal") {
@@ -477,6 +481,8 @@ class ReactionAI {
         }
     }
 
+
+
     deprotonateReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
 
@@ -526,6 +532,7 @@ class ReactionAI {
                         return command['name']
                     })
                     */
+                    /*
                     console.log(VMolecule(target).canonicalSMILES())
                     console.log("Substrate passed in:")
                     console.log(VMolecule(substrate).canonicalSMILES())
@@ -533,6 +540,7 @@ class ReactionAI {
                     console.log("Fn command index:" + command_index)
                     console.log("Fn deprotonate command names:")
                     console.log(command_names)
+                    */
                     deprotonate_reaction.deprotonate(command_names, command_index )
 
                     return deprotonate_reaction
@@ -604,6 +612,7 @@ class ReactionAI {
 
     removeHalideReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
+        // Not used
         return false
 
 
@@ -672,7 +681,8 @@ class ReactionAI {
 
     oxygenCarbonDoubleBondReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-        return false
+        // Akylation ok
+        // return false
 
         if (caller === "oxygenCarbonDoubleBondReversal" || caller === "breakOxygenCarbonDoubleBondReversal") {
             return
@@ -754,7 +764,8 @@ class ReactionAI {
 
     dehydrationReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-        return false
+        // Akylation ok
+        // return false
         //console.log("dehydrationReversal() caller="+caller + " depth=" +depth )
 
         const command_names = commands.map((command)=>{
@@ -868,7 +879,8 @@ class ReactionAI {
 
     carbocationShiftReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-        return false
+        // Akylation ok
+        // return false
 
         if (caller === "carbocationShiftReversal()") {
             return
@@ -925,10 +937,8 @@ class ReactionAI {
 
     transferProtonReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-        return false
-
-
-
+        // Akylation ok
+        // return false
 
         if (caller === 'transferProtonReversal') {
             // console.log("Duplicate call - transferProtonReversal()")
@@ -1034,7 +1044,8 @@ class ReactionAI {
 
     breakOxygenCarbonDoubleBondReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-        return false
+        // Akylation ok
+        // return false
 
         if (caller === "breakOxygenCarbonDoubleBondReversal" || caller === "oxygenCarbonDoubleBondReversal") {
             // console.log('Duplicate call - breakOxygenCarbonDoubleBondReversal()')
@@ -1125,9 +1136,7 @@ class ReactionAI {
 
     bondSubstrateToReagentReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-
-
-
+        // Akylation ok
         const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
 
         let r = null
@@ -1247,7 +1256,8 @@ class ReactionAI {
 
     protonateReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-        return false
+        // Akylation ok
+        // return false
 
         if (depth === 1 && caller==="dehydrationReversal") {
             // console.log("ReactionAI.js Calling protonateReversal() caller=" + caller + " depth=" + depth)
@@ -1344,7 +1354,8 @@ class ReactionAI {
 
     addProtonFromReagentToSubstrateReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-        return false
+        // Akylation ok
+        // return false
 
         if (caller==="addProtonFromReagentToSubstrateReversal") {
             return

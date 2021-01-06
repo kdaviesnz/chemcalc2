@@ -123,8 +123,8 @@ class ProtonationAI {
 
         this.reaction.setMoleculeAI(command_names, command_index, -1)
 
-        console.log("ProtonationAI deprotonate()")
-        console.log(VMolecule(this.reaction.container_substrate).compressed())
+        // console.log("ProtonationAI deprotonate()")
+        // console.log(VMolecule(this.reaction.container_substrate).compressed())
 
 
         // [C+]CH3
@@ -155,7 +155,7 @@ class ProtonationAI {
         // console.log('deprotonate electrophile index: ' + electrophile_index)
         // console.log(this.container_substrate[0][1][electrophile_index][0])
         if (this.reaction.container_substrate[0][1][electrophile_index][0]!== "C"){
-            console.log("ProtatonAI 1111")
+            //console.log("ProtatonAI 1111")
             // Charge should be set before calling this.addProtonToReagent()
             this.reaction.container_substrate[0][1][electrophile_index][4] = this.reaction.container_substrate[0][1][electrophile_index][4] === "+"? "" : "-"
             const r = this.reaction.addProtonToReagent()
@@ -166,24 +166,25 @@ class ProtonationAI {
         } else {
 
             // Check for carbons bonds
-            console.log("ProtonationAI 2222")
+            //console.log("ProtonationAI 2222")
 
             const non_carbon_bond = electrophile_bonds.filter((bond) => {
                 return bond.atom[0] !== "C" && bond.atom[0] !== "H"
             }).pop()
 
             if (non_carbon_bond !== undefined) {
-                console.log("Protonation AI3333")
+                //console.log("Protonation AI3333")
                 const c_atom = CAtom(this.reaction.container_substrate[0][1][electrophile_index], electrophile_index, this.reaction.container_substrate)
                 // 5 bonds, 10 electrons
                 this.reaction.addProtonToReagent()
                 this.reaction.container_substrate[0][1].splice(hydrogen_bond.atom_index, 1)
-                console.log("After splicing hydrogen")
+               // console.log("After splicing hydrogen")
                 if (hydrogen_bond.atom_index < electrophile_index) {
                     electrophile_index = electrophile_index - 1
                 }
                 //this.reaction.container_substrate[0][1][electrophile_index][4] = "+"
                 //this.reaction.setChargeOnSubstrateAtom(electrophile_index)
+                /*
                 console.log(VMolecule(this.reaction.container_substrate).compressed())
                 console.log(c_atom.indexedBonds("").length)
                 console.log(c_atom.bondCount())
@@ -191,9 +192,10 @@ class ProtonationAI {
                 console.log(this.reaction.container_substrate[0][1][electrophile_index])
                 console.log(protonremoved)
                 console.log(rew)
+                */
 
             } else {
-                console.log("ProtonationAI 4444")
+               // console.log("ProtonationAI 4444")
                 const carbon_bond = electrophile_bonds.filter((bond) => {
                     return bond.atom[0] === "C"
                 }).pop()
@@ -216,8 +218,8 @@ class ProtonationAI {
         }
 
        // this.reaction.setChargeOnSubstrateAtom()
-        console.log("ProtonationAI deprotonate() after")
-        console.log(VMolecule(this.reaction.container_substrate).compressed())
+        //console.log("ProtonationAI deprotonate() after")
+        //console.log(VMolecule(this.reaction.container_substrate).compressed())
 
 
         this.reaction.setReagentAI()

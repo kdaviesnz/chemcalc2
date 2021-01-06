@@ -28,6 +28,16 @@ const ReactionsList = [
             "acid",
             "CN"
         ]
+    },
+    {
+        "name": "Akylation",
+        "steps":     [
+            'substituteHalide',
+            'deprotonate'
+        ],
+        "reagents":[
+            "N"
+        ]
     }
 
 
