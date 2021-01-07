@@ -77,17 +77,17 @@ class ReactionAI {
         this.commands_filter = [
             "addProtonFromReagentToHydroxylGroupReversal",
             "makeCarbonNitrogenDoubleBondReversal",
-            "deprotonateReversal",
             "substituteHalideReversal",
             "oxygenCarbonDoubleBondReversal",
-            "dehydrationReversal",
             "carbocationShiftReversal",
             'transferProtonReversal',
             'breakOxygenCarbonDoubleBondReversal',
             'bondSubstrateToReagentReversal',
-            'protonateReversal',
             'addProtonFromReagentToSubstrateReversal'
         ]
+        // this.commands.push("dehydrationReversal")
+        // this.commands.push("protonateReversal")
+        // this.commands.push("deprotonateReversal")
 
 
         this.debugger_on = true
@@ -564,6 +564,11 @@ class ReactionAI {
                 this.result(target, reagent, commands, 'deprotonateReversal')
                 return
             }
+
+            console.log("deprotationReversal")
+            console.log(VMolecule(target).compressed())
+            console.log(VMolecule(reverse_reaction.container_substrate).compressed())
+            console.log(iop)
 
             const substrate_protonated = _.cloneDeep(reverse_reaction.container_substrate)
             const reagent_deprotonated = _.cloneDeep(reverse_reaction.container_reagent)

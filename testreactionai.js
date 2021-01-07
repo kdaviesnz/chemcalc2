@@ -5,8 +5,8 @@ const VMolecule = require('./Components/Stateless/Views/Molecule')
 // Chemicals to synthesise
 
 const imine2 = MoleculeFactory("CC(CC1=CC=CC=C1)=NC") // phenylacetone
-console.log(VMolecule([imine2,1]).compressed())
-console.log(VMolecule([imine2,1]).canonicalSMILES())
+//console.log(VMolecule([imine2,1]).compressed())
+//console.log(VMolecule([imine2,1]).canonicalSMILES())
 //console.log(mnb)
 
 
