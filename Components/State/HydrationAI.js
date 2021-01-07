@@ -141,9 +141,9 @@ class HydrationAI {
                 this.reaction.container_substrate[0][1][d_bonds[0].atom_index].push(uniqid())
                 this.reaction.container_substrate[0][1][d_bonds[0].atom_index].push(uniqid())
                 this.reaction.setChargeOnSubstrateAtom(d_bonds[0].atom_index)
+                e_free_electrons.push(d_bonds[0].shared_electrons[0])
+                e_free_electrons.push(d_bonds[0].shared_electrons[1])
             }
-            e_free_electrons.push(d_bonds[0].shared_electrons[0])
-            e_free_electrons.push(d_bonds[0].shared_electrons[1])
             //console.log(this.reaction.container_substrate[0][1][electrophile_index]) // eg C=N carbon atom
             //console.log(e_atom.indexedBonds("").length)
             //console.log(e_atom.indexedDoubleBonds("").length)

@@ -237,7 +237,7 @@ class ReactionAI {
              //console.log(VMolecule(reaction.container_reagent).compressed())
             //process.exit()
             if (VMolecule(starting_reagent).canonicalSMILES() === "CN") {
-                console.log(jgd)
+               // console.log(jgd)
             }
         } else {
             const command_names = commands.map((command)=>{
