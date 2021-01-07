@@ -1122,9 +1122,18 @@ class ReactionAI {
 
 
             console.log(VMolecule(reverse_reaction.container_substrate).compressed())
-            console.log(protontransferred)
+          //  console.log(protontransferred)
 
-            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'transferProtonReversal', depth+1)
+            this.breakOxygenCarbonDoubleBondReversal(
+                _.cloneDeep(reverse_reaction.container_substrate),
+                _.cloneDeep(reverse_reaction.container_reagent),
+                moleculeAI,
+                commands,
+                'protontransferred',
+                depth +1
+            )
+
+            //this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'transferProtonReversal', depth+1)
         } else {
                // console.log('transferProtonReversal() reaction failed')
         }
@@ -1146,11 +1155,15 @@ class ReactionAI {
          const substrate = _.cloneDeep(target)
 
 
+        this.debugger("breakOxygenCarbonDoubleBondReversal() reverse reaction result")
+
         const reverse_reaction = new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {})
 
         let r = null
 
-        this.debugger("breakOxygenCarbonDoubleBondReversal() reverse reaction result")
+
+
+
 
         const command_names = commands.map((command)=>{
             return command['name']
@@ -1164,6 +1177,12 @@ class ReactionAI {
 
         r = reverse_reaction.breakCarbonOxygenDoubleBondReverse()
 
+        if (caller === "protontransferred") {
+            console.log(command_names)
+          //  console.log(VMolecule(target).compressed())
+            console.log(r)
+            console.log(bbbreakOx)
+        }
 
         if (r===true) {
             console.log(VMolecule(reverse_reaction.container_substrate).compressed())

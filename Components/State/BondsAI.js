@@ -608,7 +608,8 @@ class BondsAI {
             const c_bonds = o.indexedBonds("").filter((bond)=>{
                 // Pinacol Rearrangement - add && bond.atom[4] === "+
                 // otherwise get into C=O CO C=O loop
-                return bond.atom[0] === "C" && bond.atom[4] === "+"
+                // However Leukart requires neutral carbon
+                return bond.atom[0] === "C"
             })
             return c_bonds.length > 0
         })
@@ -617,7 +618,6 @@ class BondsAI {
         if (oxygen_index === -1 || this.reaction.container_substrate[0][1][oxygen_index][4]=== "+") {
             return false
         }
-
 
         const oxygen = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
 
@@ -643,8 +643,9 @@ class BondsAI {
 
         const carbon_index = carbon_bonds[0].atom_index
 
-       // console.log("BondsAI carbon_index breakCarbonOxygenDoubleBondReverse():" + carbon_index)
-       // console.log(VMolecule(this.reaction.container_substrate).compressed())
+        // console.log("BondsAI carbon_index breakCarbonOxygenDoubleBondReverse():" + carbon_index)
+        // console.log(mno)
+        // console.log(VMolecule(this.reaction.container_substrate).compressed())
 
 
         const freeElectrons = oxygen.freeElectrons()
@@ -666,7 +667,6 @@ class BondsAI {
             )
         }
 
-
         // Charges
         // this.reaction.container_substrate[0][1][carbon_index][4] = ""
         this.reaction.setChargeOnSubstrateAtom(carbon_index)
@@ -683,6 +683,8 @@ class BondsAI {
             console.log(VMolecule(this.reaction.container_substrate).compressed())
             console.log(uittt)
         }
+
+        console.log(bbbbrak)
 
         return true
 
