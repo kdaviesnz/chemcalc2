@@ -75,20 +75,19 @@ class ReactionAI {
     constructor() {
 
         this.commands_filter = [
-            "addProtonFromReagentToHydroxylGroupReversal",
             "makeCarbonNitrogenDoubleBondReversal",
             "substituteHalideReversal",
             "oxygenCarbonDoubleBondReversal",
             "carbocationShiftReversal",
-            'transferProtonReversal',
-            'breakOxygenCarbonDoubleBondReversal',
             'bondSubstrateToReagentReversal',
             'addProtonFromReagentToSubstrateReversal'
         ]
-        // this.commands.push("dehydrationReversal")
-        // this.commands.push("protonateReversal")
-        // this.commands.push("deprotonateReversal")
-
+        // this.commands_filter.push("dehydrationReversal")
+        this.commands_filter.push("protonateReversal")
+        // this.commands_filter.push("deprotonateReversal")
+        // this.commands_filter.push("transferProtonReversal")
+        // this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal")
+        // this.commands_filter.push("breakOxygenCarbonDoubleBondReversal")
 
         this.debugger_on = true
 
@@ -565,10 +564,10 @@ class ReactionAI {
                 return
             }
 
-            console.log("deprotationReversal")
-            console.log(VMolecule(target).compressed())
-            console.log(VMolecule(reverse_reaction.container_substrate).compressed())
-            console.log(iop)
+            // console.log("deprotationReversal")
+            // console.log(VMolecule(target).compressed())
+            // console.log(VMolecule(reverse_reaction.container_substrate).compressed())
+            // console.log(iop)
 
             const substrate_protonated = _.cloneDeep(reverse_reaction.container_substrate)
             const reagent_deprotonated = _.cloneDeep(reverse_reaction.container_reagent)
@@ -752,11 +751,13 @@ class ReactionAI {
         // https://en.wikipedia.org/wiki/Pinacol_rearrangement
         let r = null
 
-
+        this.debugger("oxygenCarbonDouleBondReversal() reverse reaction result")
 
         r = reverse_reaction.makeOxygenCarbonDoubleBondReverse()
 
-        this.debugger("oxygenCarbonDouleBondReversal() reverse reaction result")
+
+
+
         this.debugger(r)
 
 
@@ -1030,9 +1031,27 @@ class ReactionAI {
         this.debugger("transferProtonReversal() reverse reaction result")
 
         r = reverse_reaction.transferProtonReverse()
+        const command_names = commands.map((command)=>{
+            return command['name']
+        })
+        // console.log(command_names)
+
+        if (_.isEqual(command_names, [ 'deprotonate',
+            'dehydrate',
+            'deprotonate',
+            'addProtonFromReagentToHydroxylGroup' ]
+        ) ) {
+          //  console.log(VMolecule(target).compressed())
+           // console.log(kkkkkk)
+        }
 
 
         this.debugger(r)
+
+
+        if (r===true) {
+        }
+
 
 
 
@@ -1102,6 +1121,9 @@ class ReactionAI {
             */
 
 
+            console.log(VMolecule(reverse_reaction.container_substrate).compressed())
+            console.log(protontransferred)
+
             this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'transferProtonReversal', depth+1)
         } else {
                // console.log('transferProtonReversal() reaction failed')
@@ -1128,9 +1150,25 @@ class ReactionAI {
 
         let r = null
 
+        this.debugger("breakOxygenCarbonDoubleBondReversal() reverse reaction result")
+
+        const command_names = commands.map((command)=>{
+            return command['name']
+        })
+        console.log(command_names)
+
+        if (command_names[command_names.length -1] === "transferProtonReversal") {
+            console.log(VMolecule(target).compressed())
+            console.log(xxxx)
+        }
+
         r = reverse_reaction.breakCarbonOxygenDoubleBondReverse()
 
-        this.debugger("breakOxygenCarbonDoubleBondReversal() reverse reaction result")
+
+        if (r===true) {
+            console.log(VMolecule(reverse_reaction.container_substrate).compressed())
+            console.log(breakoxybond)
+        }
         this.debugger(r)
 
 
