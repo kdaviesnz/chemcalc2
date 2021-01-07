@@ -4,6 +4,7 @@ const VMolecule = require('../Stateless/Views/Molecule')
 const _ = require('lodash');
 const CAtom = require('../../Controllers/Atom')
 const Set = require('../../Models/Set')
+const uniqid = require('uniqid');
 
 class HydrationAI {
 
@@ -66,6 +67,9 @@ class HydrationAI {
 
     dehydrateReverse() {
 
+        // console.log(VMolecule(this.reaction.container_substrate).compressed())
+        // console.log(dehydratereverse)
+
         if (this.reaction.MoleculeAI.validateMolecule() === false) {
             console.log('HydrationAI.js molecule is not valid (dehydrateReverse()) start')
             console.log('Method: dehydrateReverse() start')
@@ -127,12 +131,25 @@ class HydrationAI {
         if (e_free_electrons.length === 0) {
             // Check for double bond eg C=N and change to single bond
             // This will free up an electron pair that we can use to bond the O atom
-            console.log(this.reaction.container_substrate[0][1][electrophile_index]) // eg C=N carbon atom
-            console.log(e_atom.indexedBonds("").length)
-            console.log(e_atom.indexedDoubleBonds("").length)
-            console.log(TESTING)
+            const d_bonds = e_atom.indexedDoubleBonds("")
+            if (d_bonds.length > 0) {
+                const shared_electrons = d_bonds[0].shared_electrons
+                _.remove(this.reaction.container_substrate[0][1][d_bonds[0].atom_index], (v, i)=>{
+                    return v === shared_electrons[0] || v === shared_electrons[1]
+                })
+                // Replace electrons
+                this.reaction.container_substrate[0][1][d_bonds[0].atom_index].push(uniqid())
+                this.reaction.container_substrate[0][1][d_bonds[0].atom_index].push(uniqid())
+                this.reaction.setChargeOnSubstrateAtom(d_bonds[0].atom_index)
+            }
+            e_free_electrons.push(d_bonds[0].shared_electrons[0])
+            e_free_electrons.push(d_bonds[0].shared_electrons[1])
+            //console.log(this.reaction.container_substrate[0][1][electrophile_index]) // eg C=N carbon atom
+            //console.log(e_atom.indexedBonds("").length)
+            //console.log(e_atom.indexedDoubleBonds("").length)
         }
-        console.log("HydrationAI electrophile free electrons:" + e_free_electrons.length)
+        // console.log("HydrationAI electrophile free electrons:" + e_free_electrons.length)
+        // console.log(TESTING)
         // We do this so that the atom does not end up with more then 8 electrons
         this.reaction.container_substrate[0][1][electrophile_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][electrophile_index], e_free_electrons)
 
@@ -148,6 +165,8 @@ class HydrationAI {
         this.reaction.setChargeOnSubstrateAtom(electrophile_index)
 
         this.reaction.setMoleculeAI()
+        // console.log(VMolecule(this.reaction.container_substrate).compressed())
+        // console.log(ammmm)
 
         // Check we have a water molecule attached to main molecule
         this.reaction.MoleculeAI.findWaterOxygenIndex().should.be.greaterThan(-1)
