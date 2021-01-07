@@ -12,6 +12,7 @@ const ProtonationAI = require('../../Components/State/ProtonationAI')
 const BondsAI = require('../../Components/State/BondsAI')
 const ChargesAI = require('../../Components/State/ChargesAI')
 const SubstitutionAI = require('../../Components/State/SubstitutionAI')
+const range = require("range");
 
 class Reaction {
 
@@ -268,81 +269,84 @@ class Reaction {
 
         // console.log('Reaction.js transferProtonReverse()')
         // console.log(VMolecule(this.container_substrate).compressed())
-            // Get index of N not on C=N bond
-            const nucleophile_index = _.findIndex(this.container_substrate[0][1], (atom, index)=>{
-                if (atom[0] !== 'N') {
-                    return false
-                }
-                if (atom[4] === '+') {
-                    return false
-                }
-                if (atom[4] === '-') {
-                    return false
-                }
-                const n = CAtom(this.container_substrate[0][1][index], index, this.container_substrate)
-                const c_b = n.indexedDoubleBonds("").filter((bond)=>{
-                    return bond.atom[0] === "C"
-                })
-                return c_b.length === 0
+        // Get index of N not on C=N bond
+        const nucleophile_index = _.findIndex(this.container_substrate[0][1], (atom, index)=>{
+            if (atom[0] !== 'N') {
+                return false
+            }
+            if (atom[4] === '+') {
+                return false
+            }
+            if (atom[4] === '-') {
+                return false
+            }
+            const n = CAtom(this.container_substrate[0][1][index], index, this.container_substrate)
+            const c_b = n.indexedDoubleBonds("").filter((bond)=>{
+                return bond.atom[0] === "C"
             })
-
-            if (nucleophile_index === -1) {
-                return false
-            }
+            return c_b.length === 0
+        })
 
 
-            // Get index of OH
-            let electrophile_index = this.MoleculeAI.findHydroxylOxygenIndex()
 
-
-        /*
-            if (electrophile_index === -1) {
-                electrophile_index = this.MoleculeAI.findWaterOxygenIndex()
-            }
-            */
-
-            if (electrophile_index === -1) {
-                return false
-            }
-
-            // Get proton from electrophile
-            const electrophile_atom_object = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
-            const proton_bond = electrophile_atom_object.indexedBonds("").filter((bond)=>{
-                return bond.atom[0] === 'H'
-            }).pop()
-
-            if (proton_bond === undefined) {
-                return false
-            }
-
-            // Remove electrons from electrophile atom
-            const shared_electrons = proton_bond.shared_electrons
-            if (shared_electrons.length === 0) {
-                return false
-            }
-            _.remove(this.container_substrate[0][1][electrophile_index], (v, i)=> {
-                return shared_electrons[1] === v || shared_electrons[0] === v
-            })
-            this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4] === "+"?"":"-"
-
-            // Add proton to nucleophile atom
-            this.container_substrate[0][1][nucleophile_index].push(shared_electrons[0])
-            this.container_substrate[0][1][nucleophile_index].push(shared_electrons[1])
-            this.container_substrate[0][1][nucleophile_index][4] = this.container_substrate[0][1][nucleophile_index][4] === "-"?"":"+"
-
-            this.setMoleculeAI()
-
-
-        if (this.MoleculeAI.validateMolecule() === false) {
-            // console.log('Reaction.js molecule is not valid')
-            // console.log('Method: transferProtonReverse()')
-            // console.log(VMolecule(this.container_substrate).compressed())
-            process.exit()
+        if (nucleophile_index === -1) {
+            return false
         }
 
 
-        return true
 
+        // Get index of OH
+        let electrophile_index = this.MoleculeAI.findHydroxylOxygenIndex()
+
+
+        if (electrophile_index === -1) {
+            return false
+        }
+
+        // Get proton from electrophile
+        const electrophile_atom_object = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
+        const proton_bond = electrophile_atom_object.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === 'H'
+        }).pop()
+
+        if (proton_bond === undefined) {
+            return false
+        }
+
+        // Remove electrons from electrophile atom
+        const shared_electrons = proton_bond.shared_electrons
+        if (shared_electrons.length === 0) {
+            return false
+        }
+        _.remove(this.container_substrate[0][1][electrophile_index], (v, i)=> {
+            return shared_electrons[1] === v || shared_electrons[0] === v
+        })
+        // We do this so that atom is negatively charged
+        range.range(0, shared_electrons.length, 1).map((i)=>{
+            this.container_substrate[0][1][electrophile_index].push(uniqid())
+        })
+
+        //this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4] === "+"?"":"-"
+        this.setChargeOnSubstrateAtom(electrophile_index)
+
+
+        // Add proton to nucleophile atom
+        // shared electrons are electrons from proton
+        const nucleophile_atom_object = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate)
+        const nucleophile_free_electrons = nucleophile_atom_object.freeElectrons()
+        this.container_substrate[0][1][nucleophile_index] = Set().removeFromArray(this.container_substrate[0][1][nucleophile_index], nucleophile_free_electrons)
+        this.container_substrate[0][1][nucleophile_index].push(shared_electrons[0])
+        this.container_substrate[0][1][nucleophile_index].push(shared_electrons[1])
+        //this.container_substrate[0][1][nucleophile_index][4] = this.container_substrate[0][1][nucleophile_index][4] === "-"?"":"+"
+        this.setChargeOnSubstrateAtom(nucleophile_index)
+
+        // console.log('transferProton() nucleophile index: ' + nucleophile_index)
+        // console.log(this.container_substrate[0][1][nucleophile_index])
+        // console.log(klj)
+
+        this.setMoleculeAI()
+
+        return true
 
     }
 
@@ -351,7 +355,6 @@ class Reaction {
 
         // Get nucleophile  - this is the atom that is getting the proton
         const nucleophile_index = this.MoleculeAI.findNucleophileIndex()
-           // console.log('transferProton() nucleophile index: ' + nucleophile_index)
 
         // Get electrophile - this is the atom we are getting the proton from
         const electrophile_index = this.MoleculeAI.findElectrophileIndex()
