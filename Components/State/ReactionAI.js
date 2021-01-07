@@ -495,9 +495,11 @@ class ReactionAI {
         const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
 
         let r = null
-        r = reverse_reaction.deprotonateReverse()
 
         this.debugger("deprotonateReversal() reverse reaction result")
+
+        r = reverse_reaction.deprotonateReverse()
+
         this.debugger(r)
 
 
