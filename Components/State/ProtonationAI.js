@@ -333,14 +333,8 @@ class ProtonationAI {
 
     deprotonateReverse() {
 
-        if (this.reaction.MoleculeAI.validateMolecule() === false) {
-            console.log('ProtonationAI.js molecule is not valid (deprotonateReverse()) start')
-            console.log('Method: deprotonateReverse() start')
-            console.log(VMolecule(this.reaction.container_substrate).compressed())
-            console.log(kii)
-        }
+        this.reaction.MoleculeAI.validateMolecule()
 
-        // console.log(y)
 
         let atom_nucleophile_index = this.reaction.MoleculeAI.findNucleophileIndex()
 
@@ -404,6 +398,8 @@ class ProtonationAI {
 
         } else {
 
+            proton.push(free_electrons[0])
+            proton.push(free_electrons[1])
             this.reaction.setChargeOnSubstrateAtom(atom_nucleophile_index)
         }
 
@@ -412,8 +408,7 @@ class ProtonationAI {
             return false
         }
 
-        proton.push(free_electrons[0])
-        proton.push(free_electrons[1])
+
         this.reaction.container_substrate[0][1].push(proton)
 
 
@@ -445,6 +440,9 @@ class ProtonationAI {
             })
             this.reaction.setReagentAI()
         }
+
+        // 16 = C
+        // console.log("ProtonationAI, atom_nucleophile_index:" + atom_nucleophile_index )
 
         this.reaction.setChargeOnSubstrateAtom(atom_nucleophile_index)
         this.reaction.setMoleculeAI()
