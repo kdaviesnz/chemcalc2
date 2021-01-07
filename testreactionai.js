@@ -28,7 +28,7 @@ const r = new ReactionAI()
 //r.synthesise(isopropylamine)
 
 //r.synthesise(imine)
-//r.synthesise(m2)
+// r.synthesise(m2)
 r.synthesise(imine2)
 
 

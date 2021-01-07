@@ -1805,16 +1805,17 @@ class Reaction {
             }).pop().atom_index
         } else {
             // Get methyl group
-            atom_to_shift_index = carbon.indexedBonds("").filter((bond) => {
+            const methyl_bonds = carbon.indexedBonds("").filter((bond) => {
                 if (bond.atom[0] !== "C") {
                     return false
                 }
                 const c = CAtom(this.container_substrate[0][1][bond.atom_index], bond.atom_index, this.container_substrate)
                 return c.hydrogens().length === 3
-            }).pop().atom_index
+            })
+            atom_to_shift_index = methyl_bonds > 0 ? methyl_bonds.pop().atom_index : -1
         }
 
-        if (atom_to_shift_index === undefined) {
+        if (atom_to_shift_index === undefined || atom_to_shift_index === -1) {
             return false
         }
 
