@@ -27,6 +27,21 @@ class ProtonationAI {
     protonateCarbocation() {
         //Explanation: A carbocation is an organic molecule, an intermediate, that forms as a result of the loss of two valence electrons, normally shared electrons, from a carbon atom that already has four bonds. This leads to the formation of a carbon atom bearing a positive charge and three bonds instead of four.
        // https://socratic.org/questions/how-is-carbocation-formed
+        // https://chemistry.stackexchange.com/questions/22032/how-does-a-carbocation-have-a-positive-charge
+        /*
+        Well I get what your problem is.
+
+The thing is that earlier C had 4 electrons in its valence shell. Now it is bonded to 3 other atoms giving it a total of 6 electrons in its shell. The octet rule says that it should have 8. Since the other carbon took away 2 electrons this means that our carbon should have a +2 charge.
+
+Well this is where the confusion lies .
+
+The trick is whenever we calculate formal charge we use
+
+Formal Charge= (No.of valence electrons in unbonded state - no of lone pair electrons ) - (no. of bond pair electrons/2)
+In this case the charge comes out to be (4-0) - (6/2) =+1 We usually associate half of the bond pair electrons to each atom while calculating charge. On the other hand When counting the no of electrons in valence shell we count both the electrons in the bond pair.
+
+Good Luck :)
+        */
         return false
     }
 
