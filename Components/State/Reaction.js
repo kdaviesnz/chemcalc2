@@ -949,6 +949,16 @@ class Reaction {
         return protationAI.deprotonateOxygenOnDoubleBond()
     }
 
+    protonateCarbocation() {
+        const protationAI = new ProtonationAI(this)
+        return protationAI.protonateCarbocation()
+    }
+
+    protonateCarbocationReverse() {
+        const protationAI = new ProtonationAI(this)
+        return protationAI.protonateCarbocationReverse()
+    }
+
     protonateOxygenOnDoubleBond() {
         const protationAI = new ProtonationAI(this)
         return protationAI.protonateOxygenOnDoubleBond()

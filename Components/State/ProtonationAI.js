@@ -5,6 +5,7 @@ const _ = require('lodash');
 const CAtom = require('../../Controllers/Atom')
 const AtomFactory = require('../../Models/AtomFactory')
 
+// protonateCarboncation()
 // deprotonateCarbonyl()
 // protonateCarbonyl()
 // deprotonateOxygenOnDoubleBond()
@@ -21,6 +22,14 @@ class ProtonationAI {
 
     constructor(reaction) {
         this.reaction = reaction
+    }
+
+    protonateCarbocation() {
+        return false
+    }
+
+    protonateCarbocationReverse() {
+        return false
     }
 
     deprotonateCarbonyl() {

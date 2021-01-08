@@ -83,12 +83,13 @@ class ReactionAI {
         ]
         // this.commands_filter.push("dehydrationReversal")
         this.commands_filter.push("protonateReversal")
-        // this.commands_filter.push("deprotonateReversal")
+        this.commands_filter.push("deprotonateReversal")
         // this.commands_filter.push("transferProtonReversal")
         // this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal")
-        // this.commands_filter.push("breakOxygenCarbonDoubleBondReversal")
+        this.commands_filter.push("breakOxygenCarbonDoubleBondReversal")
         // this.commands_filter.push("substituteOxygenCarbonDoubleBondReversal")
-        // this.commands_filter.push("makeCarbonNitrogenDoubleBondReversal")
+         this.commands_filter.push("makeCarbonNitrogenDoubleBondReversal")
+        // this.commands_filter.push("protonateCarbocationReversal")
 
         this.debugger_on = true
 
@@ -293,13 +294,14 @@ class ReactionAI {
         const water = MoleculeFactory("O")
         const formate = MoleculeFactory("[C+](=O)[O-]")
         const methylamine = MoleculeFactory("CN")
+        const deprotonated_methylamine = MoleculeFactory("C[N-]") // methylamide
         const ammonia = MoleculeFactory("N")
         console.log("Synthesising " + VMolecule([target,1]).canonicalSMILES() + " reagent: " + VMolecule([ammonia,1]).canonicalSMILES())
        // console.log(VMolecule([formate,1]).compressed())
        // console.log(VMolecule([formate,1]).canonicalSMILES())
 
 
-        this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(methylamine),1], [], 'synthesise', 0)
+        this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(deprotonated_methylamine),1], [], 'synthesise', 0)
 
         //this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(ammonia),1], [], 'synthesise', 0)
     }
@@ -389,6 +391,11 @@ class ReactionAI {
                 }
 
 
+                if (this.commands_filter.indexOf('protonateCarbocationReversal') === -1) {
+                    this.protonateCarbocationReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                }
+
+
 
             } else {
 
@@ -409,6 +416,24 @@ class ReactionAI {
         }
 
 
+    }
+
+    protonateCarbocationReversal(target, reagent, moleculeAI, commands, caller, depth) {
+
+        if (caller === "protonateCarbocationReversal") {
+            return
+        }
+
+        this.debugger("protonateCarbocationReversal() reverse reaction result")
+
+        const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
+
+        let r = null
+        r = reverse_reaction.protonateCarbocationReverse()
+
+        this.debugger(r)
+
+        console.log(procarbocatonreversal)
     }
 
     substituteOxygenCarbonDoubleBondReversal(target, reagent, moleculeAI, commands, caller, depth) {
