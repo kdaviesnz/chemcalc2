@@ -6,6 +6,9 @@ const VMolecule = require('../Stateless/Views/Molecule')
 const uniqid = require('uniqid');
 const range = require("range");
 
+// substituteHalide()
+// substituteHalideReverse()
+// substituteOxygenCarbonDoubleBondReverse()
 class SubstitutionAI {
 
     constructor(reaction) {
@@ -17,6 +20,71 @@ class SubstitutionAI {
         if (this.debugger_on) {
             console.log(o)
         }
+    }
+
+    substituteOxygenCarbonDoubleBondReverse() {
+
+        let co_bonds = null
+        let oxygen = null
+
+        // SN2 mechanism
+        const oxygen_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=> {
+            if ( atom[0] !== "O") {
+                return false
+            }
+            if ( atom[4] !== "-") {
+                return false
+            }
+            oxygen = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate)
+            co_bonds = o.indexedBonds("").filter((bond)=>{
+                return bond.atom[0] === "C"
+            })
+            return c_bonds.length > 0 // O[C-]
+        })
+
+        if (oxygen_index === -1) {
+            return false
+        }
+
+        const c_index = co_bonds[0].atom_index
+        const carbon = CAtom(this.reaction.container_substrate[0][1][c_index], c_index, this.reaction.container_substrate)
+        if (carbon.indexedBonds("").length + carbon.indexedDoubleBonds("").length !== 4) {
+            console.log(notenoughcarbonbonds)
+            return false
+        }
+
+        // Look for NC bond
+        const n_bonds = carbon.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "N"
+        })
+
+        if (n_bonds.length > 0) {
+            const n_index = n_bonds[0].atom_index
+            const n_shared_electrons = n_bonds[0].shared_electrons
+            const o_free_electrons = oxygen_index.freeElectrons()
+            // Remove N electrons from C - this will break the NC bond
+            this.reaction.container_substrate[0][1][c_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][c_index], n_shared_electrons)
+            // Add O electrons to C - this will recreate the double bond
+            this.reaction.container_substrate[0][1][c_index].push(o_free_electrons[0])
+            this.reaction.container_substrate[0][1][c_index].push(o_free_electrons[1])
+
+            // Groups
+            this.reaction.setChargeOnSubstrateAtom(n_index)
+            const groups = this.reaction.MoleculeAI.extractGroupsReverse()
+            this.reaction.setSubstrateGroupsReverse(groups)
+            console.log("Leaving groups")
+            console.log(this.reaction.leaving_groups)
+            console.log(blahblah)
+            if(this.reaction.leaving_groups.length > 0) {
+                this.reaction.container_reagent = this.reaction.leaving_groups[0]
+            }
+            return true
+
+        }
+
+        console.log(noNonds)
+        return false
+
     }
 
     substituteHalide() {
