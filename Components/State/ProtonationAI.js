@@ -25,8 +25,8 @@ class ProtonationAI {
     }
 
     protonateCarbocation() {
-        Explanation: A carbocation is an organic molecule, an intermediate, that forms as a result of the loss of two valence electrons, normally shared electrons, from a carbon atom that already has four bonds. This leads to the formation of a carbon atom bearing a positive charge and three bonds instead of four.
-        https://socratic.org/questions/how-is-carbocation-formed
+        //Explanation: A carbocation is an organic molecule, an intermediate, that forms as a result of the loss of two valence electrons, normally shared electrons, from a carbon atom that already has four bonds. This leads to the formation of a carbon atom bearing a positive charge and three bonds instead of four.
+       // https://socratic.org/questions/how-is-carbocation-formed
         return false
     }
 
