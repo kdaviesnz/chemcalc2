@@ -7,6 +7,7 @@ const uniqid = require('uniqid');
 const range = require("range");
 
 // substituteHalide()
+// substituteOxygenCarbonDoubleBond()
 // substituteHalideReverse()
 // substituteOxygenCarbonDoubleBondReverse()
 class SubstitutionAI {
@@ -94,7 +95,87 @@ class SubstitutionAI {
 
     }
 
+    substituteOxygenCarbonDoubleBond() {
+
+        // SN2 mechanism -> O=C bond is replaced with OC bond at the same time as the replacement atom bonds.
+        let oxygen = null
+        let co_bonds = null
+        let carbon = null
+        const o_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
+            if (atom[0]!=="O") {
+                return false
+            }
+            oxygen = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate)
+            if (oxygen.indexedDoubleBonds("").length !== 1) {
+                return false
+            }
+            co_bonds = oxygen.indexedDoubleBonds("").filter((bond)=>{
+                return bond.atom[0] === "C" && (bond.atom[4] === "" || bond.atom[4] === 0)
+            })
+
+            if (co_bonds.length === 0) {
+                return false
+            }
+
+            // Don't get O on O=C-O bond
+            carbon = CAtom(this.reaction.container_substrate[0][1][co_bonds[0].atom_index], co_bonds[0].atom_index, this.reaction.container_substrate)
+            if(carbon.indexedBonds("").filter((bond)=>{
+                return bond.atom[0] === "O" && bond.bond_type === ""
+            }).length === 0){
+                return true
+            }
+            return false
+
+        })
+
+        if (o_index === -1) {
+            return false
+        }
+
+        // Look for N
+        const n_index = _.findIndex(this.reaction.container_reagent[0][1], (atom, index)=>{
+            return atom[0] === "N" && (atom[4] === "" || atom[4] === 0)
+        })
+
+        if (n_index !== -1) {
+
+            // Replace o=c with N-R / oc
+            // Convert O=C bond to OC bond
+            const c_bonds = oxygen.indexedBonds("").filter((bond)=>{
+                return bond.atom[0] == "C" && bond.bond_type === "="
+            })
+
+            this.reaction.container_substrate[0][1][o_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][o_index], _.cloneDeep(c_bonds[0].shared_electrons.slice(2)))
+            // Make sure oxygen atom still has 8 electrons
+            range.range(0, c_bonds[0].shared_electrons.slice(2).length).map((i)=>{
+                this.reaction.container_substrate[0][1][o_index].push(uniqid())
+            })
+
+            // We do this as otherwise the carbon atom ends up with too many electrons
+            this.reaction.container_substrate[0][1][c_bonds[0].atom_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][c_bonds[0].atom_index], _.cloneDeep(c_bonds[0].shared_electrons.slice(2)))
+
+            const n_atom = CAtom(this.reaction.container_reagent[0][1][n_index], n_index, this.reaction.container_reagent)
+
+            // bond reagent to substrate
+            this.reaction.setChargeOnSubstrateAtom(o_index) // Do this first.
+            this.reaction.bondSubstrateToReagent(n_index, c_bonds[0].atom_index)
+
+            this.reaction.setMoleculeAI()
+            this.reaction.setReagentAI()
+
+            // console.log(VMolecule(this.reaction.container_substrate).compressed())
+
+            // console.log(bbbbb)
+            return true
+
+        }
+
+        return false
+
+    }
+
     substituteHalide() {
+
         // SN2 mechanism -> halide is replaced at the same time as the replacement atom bonds.
         const halide_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
             return atom[0] === "Br"
@@ -131,41 +212,18 @@ class SubstitutionAI {
             this.reaction.container_substrate[0][1][c_bonds[0].atom_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][c_bonds[0].atom_index], c_bonds[0].shared_electrons )
 
             const n_atom = CAtom(this.reaction.container_reagent[0][1][n_index], n_index, this.reaction.container_reagent)
-            //console.log('Reagent')
-            //console.log(VMolecule(this.reaction.container_reagent).compressed())
-            //console.log(this.reaction.container_reagent[0][1][n_index])
 
             // bond reagent to substrate
             this.reaction.setChargeOnSubstrateAtom(halide_index) // Do this first.
             this.reaction.bondSubstrateToReagent(n_index, c_bonds[0].atom_index)
 
 
-           // console.log('Substrate:')
-           // console.log(VMolecule(this.reaction.container_substrate).compressed())
-           // console.log(kkkkk)
-
-           // const c_atom = CAtom(this.reaction.container_substrate[0][1][c_bonds[0].atom_index], c_bonds[0].atom_index, this.reaction.container_substrate)
-           // const free_electrons = c_atom.freeElectrons()
-           // console.log(free_electrons)
-           // console.log(c_atom.indexedBonds("").length)
-
-
-           // console.log(frreelelectrons)
-
-
-            // Remove halide from substrate and add to leaving group
-            //console.log(this.reaction.container_substrate[0][1][halide_index])
-            //console.log(ccccc)
 
             this.reaction.leaving_groups.push([[-1, [this.reaction.container_substrate[0][1][halide_index]]], 1])
             _.remove(this.reaction.container_substrate[0][1], (i, v) =>{
                 return v === halide_index
             })
 
-
-          //  console.log(VMolecule(this.reaction.container_substrate).compressed())
-//            console.log(VMolecule(this.reaction.leaving_groups[0]).compressed())
-            // console.log(rrrrr)
             return true
 
         }

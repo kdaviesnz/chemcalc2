@@ -115,6 +115,11 @@ class Reaction {
         return substitutionAI.substituteOxygenCarbonDoubleBondReverse()
     }
 
+    substituteOxygenCarbonDoubleBond() {
+        const substitutionAI = new SubstitutionAI(this)
+        return substitutionAI.substituteOxygenCarbonDoubleBond()
+    }
+
     substituteHalide(index) {
         const substitutionAI = new SubstitutionAI(this)
         return substitutionAI.substituteHalide(index)
