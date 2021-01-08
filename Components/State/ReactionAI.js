@@ -294,14 +294,17 @@ class ReactionAI {
         const water = MoleculeFactory("O")
         const formate = MoleculeFactory("[C+](=O)[O-]")
         const methylamine = MoleculeFactory("CN")
-        const deprotonated_methylamine = MoleculeFactory("C[N-]") // methylamide
+        const methylamide = MoleculeFactory("C[N-]")
+        const deprotonated_methylamide = MoleculeFactory("C[NH0]")
         const ammonia = MoleculeFactory("N")
-        console.log("Synthesising " + VMolecule([target,1]).canonicalSMILES() + " reagent: " + VMolecule([ammonia,1]).canonicalSMILES())
+       // console.log(VMolecule([deprotonated_methylamide,1]).compressed())
+       // console.log(sssss)
+        console.log("Synthesising " + VMolecule([target,1]).canonicalSMILES() + " reagent: " + VMolecule([deprotonated_methylamide,1]).canonicalSMILES())
        // console.log(VMolecule([formate,1]).compressed())
        // console.log(VMolecule([formate,1]).canonicalSMILES())
 
 
-        this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(deprotonated_methylamine),1], [], 'synthesise', 0)
+        this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(deprotonated_methylamide),1], [], 'synthesise', 0)
 
         //this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(ammonia),1], [], 'synthesise', 0)
     }

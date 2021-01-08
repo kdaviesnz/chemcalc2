@@ -4,6 +4,8 @@ const VMolecule = require('../Stateless/Views/Molecule')
 const _ = require('lodash');
 const CAtom = require('../../Controllers/Atom')
 const AtomFactory = require('../../Models/AtomFactory')
+const should = require('should')
+const Set = require('../../Models/Set')
 
 // protonateCarboncation()
 // deprotonateCarbonyl()
@@ -27,26 +29,81 @@ class ProtonationAI {
     protonateCarbocation() {
         //Explanation: A carbocation is an organic molecule, an intermediate, that forms as a result of the loss of two valence electrons, normally shared electrons, from a carbon atom that already has four bonds. This leads to the formation of a carbon atom bearing a positive charge and three bonds instead of four.
        // https://socratic.org/questions/how-is-carbocation-formed
-        // https://chemistry.stackexchange.com/questions/22032/how-does-a-carbocation-have-a-positive-charge
-        /*
-        Well I get what your problem is.
-
-The thing is that earlier C had 4 electrons in its valence shell. Now it is bonded to 3 other atoms giving it a total of 6 electrons in its shell. The octet rule says that it should have 8. Since the other carbon took away 2 electrons this means that our carbon should have a +2 charge.
-
-Well this is where the confusion lies .
-
-The trick is whenever we calculate formal charge we use
-
-Formal Charge= (No.of valence electrons in unbonded state - no of lone pair electrons ) - (no. of bond pair electrons/2)
-In this case the charge comes out to be (4-0) - (6/2) =+1 We usually associate half of the bond pair electrons to each atom while calculating charge. On the other hand When counting the no of electrons in valence shell we count both the electrons in the bond pair.
-
-Good Luck :)
-        */
         return false
     }
 
     protonateCarbocationReverse() {
-        return false
+        //Explanation: A carbocation is an organic molecule, an intermediate, that forms as a result of the loss of two valence electrons, normally shared electrons, from a carbon atom that already has four bonds. This leads to the formation of a carbon atom bearing a positive charge and three bonds instead of four.
+        // https://socratic.org/questions/how-is-carbocation-formed
+        // Look for carbon with 4 bonds and at least 1 hydrogen
+        let carbon = null
+        let c_h_bonds = null
+        const c_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index) => {
+            if (atom[0]!=="C") {
+                return false
+            }
+            carbon = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate)
+            if (carbon.indexedBonds("").length + carbon.indexedDoubleBonds("").length + carbon.indexedTripleBonds("").length !==4) {
+                return false
+            }
+            c_h_bonds = carbon.indexedBonds("").filter((bond)=>{
+                return bond.atom[0] === "H"
+            })
+            return c_h_bonds.length === 1
+        })
+
+        if (c_index === -1) {
+            return false
+        }
+
+        // console.log(VMolecule(this.reaction.container_substrate).compressed())
+        // console.log(c_index)
+
+
+        // https://chemistry.stackexchange.com/questions/22032/how-does-a-carbocation-have-a-positive-charge
+        // Formal Charge= (No.of valence electrons in unbonded state - no of lone pair electrons ) - (no. of bond pair electrons/2)
+        // In this case the charge comes out to be (4-0) - (6/2) =+1
+        // Remove c_h bond
+        // We should end up with carbon with no lone pair electrons
+        this.reaction.container_substrate[0][1][c_index] = Set().removeFromArray(
+            this.reaction.container_substrate[0][1][c_index],
+            c_h_bonds[0].shared_electrons
+        )
+        this.reaction.setChargeOnSubstrateAtom(c_index)
+
+
+      //  console.log(this.reaction.container_substrate[0][1][c_index])
+        //  console.log(cindex)
+
+        // Add proton to reagent
+        // console.log(VMolecule(this.reaction.container_reagent).compressed())
+        const nucleophile_index = this.reaction.ReagentAI.findNucleophileIndex()
+
+
+        if (nucleophile_index !== -1) {
+            const nucleophile_atom = CAtom(this.reaction.container_reagent[0][1][nucleophile_index], nucleophile_index, this.reaction.container_reagent)
+            const proton = AtomFactory("H")
+            proton.pop()
+            // console.log(nucleophile_index)
+            // console.log(proton)
+            const nucleophile_free_electrons = nucleophile_atom.freeElectrons()
+            // console.log(nucleophile_free_electrons)
+
+            proton.push(nucleophile_free_electrons[0])
+            proton.push(nucleophile_free_electrons[1])
+            this.reaction.container_reagent[0][1].push(proton)
+
+            this.reaction.container_reagent[0][1][nucleophile_index][4] = "-"
+        }
+
+        this.reaction.setMoleculeAI()
+        this.reaction.setReagentAI()
+
+        // console.log(VMolecule(this.reaction.container_reagent).compressed())
+        // console.log(nindex)
+
+
+        return true
     }
 
     deprotonateCarbonyl() {
