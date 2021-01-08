@@ -75,7 +75,6 @@ class ReactionAI {
     constructor() {
 
         this.commands_filter = [
-            "makeCarbonNitrogenDoubleBondReversal",
             "substituteHalideReversal",
             "oxygenCarbonDoubleBondReversal",
             "carbocationShiftReversal",
@@ -89,8 +88,9 @@ class ReactionAI {
         // this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal")
         // this.commands_filter.push("breakOxygenCarbonDoubleBondReversal")
         // this.commands_filter.push("substituteOxygenCarbonDoubleBondReversal")
+        // this.commands_filter.push("makeCarbonNitrogenDoubleBondReversal")
 
-        this.debugger_on = false
+        this.debugger_on = true
 
         this.command_sets = []
 
@@ -254,7 +254,7 @@ class ReactionAI {
              //console.log(VMolecule(reaction.container_reagent).compressed())
             //process.exit()
             if (VMolecule(starting_reagent).canonicalSMILES() === "CN") {
-               console.log(jgd)
+              // console.log(jgd)
             }
         } else {
             const command_names = commands.map((command)=>{
@@ -533,11 +533,16 @@ class ReactionAI {
         const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
 
         let r = null
-        r = reverse_reaction.makeCarbonNitrogenDoubleBondReverse()
 
         this.debugger("makeCarbonNitrogenDoubleBondReversal() reverse reaction result")
+
+        r = reverse_reaction.makeCarbonNitrogenDoubleBondReverse()
+
         this.debugger(r)
 
+
+
+        //console.log(nnnn)
 
         /*
         if (depth === 2 && caller==="addProtonFromReagentToHydroxylGroupReversal") {
@@ -634,22 +639,10 @@ class ReactionAI {
                 'function':(command_index, command_names, substrate)=>{
 
                     const deprotonate_reaction = new Reaction(_.cloneDeep(substrate_protonated), _.cloneDeep(reagent_deprotonated), {})
-                    /*
-                    const command_names = commands.map((command)=>{
-                        return command['name']
-                    })
-                    */
-                    /*
-                    console.log(VMolecule(target).canonicalSMILES())
-                    console.log("Substrate passed in:")
-                    console.log(VMolecule(substrate).canonicalSMILES())
-                    console.log(VMolecule(_.cloneDeep(substrate_protonated)).canonicalSMILES())
-                    console.log("Fn command index:" + command_index)
-                    console.log("Fn deprotonate command names:")
-                    console.log(command_names)
-                    */
-                    deprotonate_reaction.deprotonate(command_names, command_index )
 
+                    deprotonate_reaction.deprotonate(command_names, command_index )
+                    // console.log('deprotonate result')
+                    // console.log(VMolecule(deprotonate_reaction.container_substrate).compressed())
                     return deprotonate_reaction
                 }})
 
@@ -966,6 +959,8 @@ class ReactionAI {
                     'function':()=>{
                         const dehydrate_reaction = new Reaction(_.cloneDeep(hydrated_substrate), _.cloneDeep(hydrated_reagent), {})
                         dehydrate_reaction.dehydrate()
+                        console.log('dehydrate result')
+                        console.log(VMolecule(dehydrate_reaction.container_substrate).compressed())
                         return dehydrate_reaction
                     }})
 
@@ -1155,6 +1150,8 @@ class ReactionAI {
                     'function':()=>{
                         const transferProton_reaction = new Reaction(_.cloneDeep(substrate_with_proton_transferred), _.cloneDeep(reagent_with_proton_transferred), {})
                         transferProton_reaction.transferProton()
+                        // console.log("ReactionAI Transfer proton result:")
+                        // console.log(VMolecule(transferProton_reaction.container_substrate).compressed())
                         return transferProton_reaction
                     }
                 }

@@ -5,7 +5,9 @@ const _ = require('lodash');
 const CAtom = require('../../Controllers/Atom')
 const Set = require('../../Models/Set')
 const uniqid = require('uniqid');
+const SubstitutionAI = require('../../Components/State/SubstitutionAI')
 
+// dehydrateReverse()
 class HydrationAI {
 
     constructor(reaction) {
@@ -70,14 +72,7 @@ class HydrationAI {
         // console.log(VMolecule(this.reaction.container_substrate).compressed())
         // console.log(dehydratereverse)
 
-        if (this.reaction.MoleculeAI.validateMolecule() === false) {
-            console.log('HydrationAI.js molecule is not valid (dehydrateReverse()) start')
-            console.log('Method: dehydrateReverse() start')
-            console.log(VMolecule(this.reaction.container_substrate).compressed())
-            console.log(ijk)
-        }
-
-
+        this.reaction.MoleculeAI.validateMolecule()
 
       //  console.log("HydrationAI() dehydrateReverse() molecule before:")
       //  console.log(VMolecule(this.reaction.container_substrate).compressed())
@@ -125,8 +120,15 @@ class HydrationAI {
             }
         }
 
+
         // dehydrate reverse
         const e_atom = CAtom(this.reaction.container_substrate[0][1][electrophile_index], electrophile_index, this.reaction.container_substrate)
+
+        if (e_atom.indexedBonds("").length + e_atom.indexedDoubleBonds("").length === 4) {
+            // Use substitution instead
+            return false
+        }
+
         const e_free_electrons = e_atom.freeElectrons()
         if (e_free_electrons.length === 0) {
             // Check for double bond eg C=N and change to single bond

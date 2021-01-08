@@ -8,8 +8,10 @@ const range = require("range");
 
 // substituteHalide()
 // substituteOxygenCarbonDoubleBond()
+// substituteHydroxylForNitrogenDoubleBond()
 // substituteHalideReverse()
 // substituteOxygenCarbonDoubleBondReverse()
+// substituteHydroxylForNitrogenDoubleBondReverse()
 class SubstitutionAI {
 
     constructor(reaction) {
@@ -94,6 +96,85 @@ class SubstitutionAI {
         return false
 
     }
+
+    substituteHydroxylForNitrogenDoubleBondReverse() {
+
+    }
+
+    substituteHydroxylForNitrogenDoubleBond() {
+        // Look for [N-] atom attached to C bond with four bonds
+        let c_n_bonds = null
+        let n_atom = null
+        let c_atom = null
+        let hydroxyl_oxygen = null
+        const n_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
+            if (atom[0]!=="N") {
+                return false
+            }
+            if (atom[4]!=="-") {
+                return false
+            }
+            n_atom = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate[0][1])
+            c_n_bonds = n_atom.indexedBonds((bond)=>{
+                if (bond.atom[0] !== "C" || bond.bond_type === "=") {
+                    return false
+                }
+                c_atom = CAtom(this.reaction.container_substrate[0][1][bond.atom_index], bond.atom_index, this.reaction.container_substrate[0][1])
+                return c_atom.indexedBonds("").length + c_atom.indexedDoubleBonds("").length === 4
+            })
+
+            return c_n_bonds !== 0
+
+        })
+
+        if (n_index === -1) {
+            console.log(nnegindexnotfound)
+            return false
+        }
+
+        const c_hydroxyl_bonds = c_atom.indexedBonds("").filter((bond)=>{
+            if (bond.atom[0] !== "O") {
+                return false
+            }
+            hydroxyl_oxygen = CAtom(this.reaction.container_substrate[0][1][bond.atom_index], bond.atom_index, this.reaction.container_substrate[0][1])
+            const h_bonds = hydroxyl_oxygen.indexedBonds("").filter((b)=>{
+                return b.atom[0] === "H"
+            })
+            return h_bonds.length === 1
+        })
+
+        if (c_hydroxyl_bonds.length === -1) {
+            console.log(hydroxylbondnotfound)
+            return false
+        }
+
+        // Break C-OH bond
+        // Remove shared C-OH electrons from C
+        this.reaction.container_substrate[0][1][c_n_bonds[0].atom_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][c_n_bonds[0].atom_index], _.cloneDeep(c_hydroxyl_bonds[0].shared_electrons))
+
+        // C atom will now have 6 electrons
+        // Add electrons from nitrogen to create N=C bond
+        const n_free_electrons = n_atom.freeElectrons()
+        this.reaction.container_substrate[0][1][c_n_bonds[0].atom_index].push(n_free_electrons[0])
+        this.reaction.container_substrate[0][1][c_n_bonds[0].atom_index].push(n_free_electrons[1])
+
+        this.reaction.setChargeOnSubstrateAtom(n_index)
+        this.reaction.setChargeOnSubstrateAtom(c_n_bonds[0].atom_index)
+
+        // Groups
+        const groups = this.reaction.MoleculeAI.extractGroups()
+        if (groups.length === 0) {
+            return false
+        }
+        this.reaction.setSubstrateGroups(groups)
+        if(this.reaction.leaving_groups.length > 0) {
+            this.reaction.container_reagent = this.reaction.leaving_groups[0]
+        }
+        this.reaction.setMoleculeAI()
+        this.reaction.setReagentAI()
+        return true
+    }
+
 
     substituteOxygenCarbonDoubleBond() {
 
@@ -216,7 +297,6 @@ class SubstitutionAI {
             // bond reagent to substrate
             this.reaction.setChargeOnSubstrateAtom(halide_index) // Do this first.
             this.reaction.bondSubstrateToReagent(n_index, c_bonds[0].atom_index)
-
 
 
             this.reaction.leaving_groups.push([[-1, [this.reaction.container_substrate[0][1][halide_index]]], 1])
