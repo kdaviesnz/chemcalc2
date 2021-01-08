@@ -88,6 +88,7 @@ class ReactionAI {
         // this.commands_filter.push("transferProtonReversal")
         // this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal")
         // this.commands_filter.push("breakOxygenCarbonDoubleBondReversal")
+        // this.commands_filter.push("substituteOxygenCarbonDoubleBondReversal")
 
         this.debugger_on = true
 
@@ -378,6 +379,10 @@ class ReactionAI {
                     this.substituteHalideReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
                 }
 
+                if (this.commands_filter.indexOf('substituteOxygenCarbonDoubleBondReversal') === -1) {
+                    this.substituteOxygenCarbonDoubleBondReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                }
+
 
 
             } else {
@@ -401,6 +406,48 @@ class ReactionAI {
 
     }
 
+    substituteOxygenCarbonDoubleBondReversal(target, reagent, moleculeAI, commands, caller, depth) {
+        if (caller === "substituteOxygenCarbonDoubleBondReversal") {
+            return
+        }
+
+        this.debugger("substituteOxygenCarbonDoubleBondReversal() reverse reaction result")
+
+        const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
+
+        let r = null
+        r = reverse_reaction.substituteOxygenCarbonDoubleBondReverse()
+
+        this.debugger(r)
+
+        if (r) {
+
+            if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
+                //console.log(eeeee)
+                this.result(target, reagent, commands, 'substituteOxygenCarbonDoubleBondReversal')
+            }
+
+            const substrate_with_oxygen_double_bond = _.cloneDeep(reverse_reaction.container_substrate)
+            const reagent_substituteOxygenCarbonDoubleBondReversal = _.cloneDeep(reverse_reaction.container_reagent)
+
+            commands.push({
+                'name':'substituteOxygenCarbonDoubleBond',
+                'starting substrate': _.cloneDeep(substrate_with_oxygen_double_bond),
+                'starting reagent': _.cloneDeep(reagent_substituteOxygenCarbonDoubleBondReversal),
+                'finish substrate': _.cloneDeep(target),
+                'finish reagent': _.cloneDeep(reagent),
+                'function':()=>{
+                    const substituteOxygenCarbonDoubleBond_reaction = new Reaction(_.cloneDeep(substrate_with_oxygen_double_bond), _.cloneDeep(reagent_substituteOxygenCarbonDoubleBondReversal), {})
+                    substituteOxygenCarbonDoubleBond_reaction.substituteOxygenCarbonDoubleBond()
+                    return substituteOxygenCarbonDoubleBond_reaction
+                }})
+
+            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'substituteOxygenCarbonDoubleBondReversal', depth+1)
+        }
+
+
+    }
+
     addProtonFromReagentToHydroxylGroupReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
         // Akylation ok
@@ -410,12 +457,13 @@ class ReactionAI {
             return
         }
 
+        this.debugger("addProtonFromReagentToHydroxylGroupReversal() reverse reaction result")
+
         const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
 
         let r = null
         r = reverse_reaction.addProtonFromReagentToHydroxylGroupReverse()
 
-        this.debugger("addProtonFromReagentToHydroxylGroupReversal() reverse reaction result")
         this.debugger(r)
 
 
@@ -1124,7 +1172,7 @@ class ReactionAI {
             console.log(VMolecule(reverse_reaction.container_substrate).compressed())
           //  console.log(protontransferred)
 
-            this.breakOxygenCarbonDoubleBondReversal(
+            this.substituteOxygenCarbonDoubleBondReversal(
                 _.cloneDeep(reverse_reaction.container_substrate),
                 _.cloneDeep(reverse_reaction.container_reagent),
                 moleculeAI,

@@ -631,7 +631,7 @@ class BondsAI {
             if (c.doubleBondCount() > 0 ) {
                 return false
             }
-            if (c.bondCount() > 4) {
+            if (c.bondCount() > 3) {
                 return false
             }
             return true

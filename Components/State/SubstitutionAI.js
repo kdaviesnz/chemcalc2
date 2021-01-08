@@ -36,10 +36,10 @@ class SubstitutionAI {
                 return false
             }
             oxygen = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate)
-            co_bonds = o.indexedBonds("").filter((bond)=>{
+            co_bonds = oxygen.indexedBonds("").filter((bond)=>{
                 return bond.atom[0] === "C"
             })
-            return c_bonds.length > 0 // O[C-]
+            return co_bonds.length > 0 // O[C-]
         })
 
         if (oxygen_index === -1) {
@@ -49,10 +49,8 @@ class SubstitutionAI {
         const c_index = co_bonds[0].atom_index
         const carbon = CAtom(this.reaction.container_substrate[0][1][c_index], c_index, this.reaction.container_substrate)
         if (carbon.indexedBonds("").length + carbon.indexedDoubleBonds("").length !== 4) {
-            console.log(notenoughcarbonbonds)
             return false
         }
-
         // Look for NC bond
         const n_bonds = carbon.indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "N"
@@ -61,28 +59,37 @@ class SubstitutionAI {
         if (n_bonds.length > 0) {
             const n_index = n_bonds[0].atom_index
             const n_shared_electrons = n_bonds[0].shared_electrons
-            const o_free_electrons = oxygen_index.freeElectrons()
+            const o_free_electrons = oxygen.freeElectrons()
             // Remove N electrons from C - this will break the NC bond
             this.reaction.container_substrate[0][1][c_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][c_index], n_shared_electrons)
             // Add O electrons to C - this will recreate the double bond
             this.reaction.container_substrate[0][1][c_index].push(o_free_electrons[0])
             this.reaction.container_substrate[0][1][c_index].push(o_free_electrons[1])
+            this.reaction.setChargeOnSubstrateAtom(n_index)
+            this.reaction.setChargeOnSubstrateAtom(c_index)
+            this.reaction.setChargeOnSubstrateAtom(oxygen_index)
 
             // Groups
-            this.reaction.setChargeOnSubstrateAtom(n_index)
             const groups = this.reaction.MoleculeAI.extractGroupsReverse()
+            if (groups.length === 0) {
+                return false
+            }
             this.reaction.setSubstrateGroupsReverse(groups)
+            /*
             console.log("Leaving groups")
-            console.log(this.reaction.leaving_groups)
+            console.log(VMolecule(this.reaction.leaving_groups[0]).compressed())
+            console.log("Substrate")
+            console.log(VMolecule(this.reaction.container_substrate).compressed())
             console.log(blahblah)
+             */
             if(this.reaction.leaving_groups.length > 0) {
                 this.reaction.container_reagent = this.reaction.leaving_groups[0]
             }
+            this.reaction.setMoleculeAI()
+            this.reaction.setReagentAI()
             return true
-
         }
 
-        console.log(noNonds)
         return false
 
     }
