@@ -138,7 +138,8 @@ class ReactionAI {
 
             if( this._commmandSetExists(command_names)) {
                 console.log("Matching command set")
-                console.log(kioll)
+                return
+                //console.log(kioll)
             }
 
             this.command_sets.push(command_names)

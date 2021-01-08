@@ -363,12 +363,24 @@ class Reaction {
 
     transferProton() {
 
+        // console.log("Reaction.js transferProton()")
+        // console.log(VMolecule(this.container_substrate).compressed())
+
         // Get nucleophile  - this is the atom that is getting the proton
-        const nucleophile_index = this.MoleculeAI.findNucleophileIndex()
+        const nucleophile_index = this.MoleculeAI.findNucleophileIndex() // eg [O-]
+        //console.log(nucleophile_index)
+        //console.log(kkk)
+        if (nucleophile_index == -1) {
+            return false
+        }
 
         // Get electrophile - this is the atom we are getting the proton from
         const electrophile_index = this.MoleculeAI.findElectrophileIndex()
-           // console.log('transferProton() electrophile_index index: ' + electrophile_index)
+        // console.log('transferProton() electrophile_index index: ' + electrophile_index)
+        // console.log(jnc)
+        if (electrophile_index === -1) {
+            return false
+        }
 
         // Get proton from electrophile
         const electrophile_atom_object = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
@@ -376,17 +388,26 @@ class Reaction {
             return bond.atom[0] === 'H'
         }).pop()
 
-        // Remove electrons from electrophile
+        // Remove electrons from proton
         const shared_electrons = proton_bond.shared_electrons
-        _.remove(this.container_substrate[0][1][electrophile_index], (v, i)=> {
-            return shared_electrons[1] === v || shared_electrons[0] === v
-        })
-        this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4] === "+"?"":"-"
+        this.container_substrate[0][1][proton_bond.atom_index] = Set().removeFromArray(
+            this.container_substrate[0][1][proton_bond.atom_index],
+            shared_electrons
+        )
 
-        // Add proton to nucleophile
-        this.container_substrate[0][1][nucleophile_index].push(shared_electrons[0])
-        this.container_substrate[0][1][nucleophile_index].push(shared_electrons[1])
-        this.container_substrate[0][1][nucleophile_index][4] = this.container_substrate[0][1][nucleophile_index][4] === "-"?"":"+"
+        // Add proton to nucleophile (eg [O-]
+        const nucleophile_atom_object = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate)
+        const n_free_electrons = nucleophile_atom_object.freeElectrons()
+
+        if (n_free_electrons.length === 0) {
+            return false
+        }
+
+        // Bond proton to nucleophile
+        this.container_substrate[0][1][proton_bond.atom_index].push(n_free_electrons[0])
+        this.container_substrate[0][1][proton_bond.atom_index].push(n_free_electrons[1])
+        this.setChargeOnSubstrateAtom(nucleophile_index)
+        this.setChargeOnSubstrateAtom(electrophile_index)
 
         this.setMoleculeAI()
     }
