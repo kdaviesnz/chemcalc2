@@ -20,11 +20,65 @@ const uniqid = require('uniqid');
 // addProtonFromReagentToHydroxylGroup()
 // addProtonFromReagentToHydroxylGroupReverse()
 // deprotonateNitrogenReverse()
+// removeProtonFromOxygenReverse
 
 class ProtonationAI {
 
     constructor(reaction) {
         this.reaction = reaction
+    }
+
+    removeProtonFromOxygen() {
+
+        let oxygen = null
+        let o_h_bonds = null
+
+        // Look for [O+] with at least one hydrogen
+        const o_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
+
+            if (atom[0]!=="O") {
+                return false
+            }
+            if (atom[4]!=="+") {
+                return false
+            }
+
+            oxygen = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate)
+
+            o_h_bonds = oxygent.indexedBonds("").filter((bond)=>{
+                return bond.atom[0] === "H"
+            })
+
+            return o_h_bonds.length > 0
+
+        })
+
+        if (o_index === -1) {
+            return false
+        }
+
+        this.reaction.container_substrate[0][1][o_h_bonds[0].atom_index] = Set().removeFromArray(
+            this.reaction.container_substrate[0][1][o_h_bonds[0].atom_index],
+            o_h_bonds[0].shared_electrons
+        )
+
+        this.reaction.setChargeOnSubstrateAtom(o_index)
+
+        this.reaction.container_substrate[0][1] = Set().removeFromArray(
+            this.reaction.container_substrate[0][1],
+            this.reaction.container_substrate[0][1][o_h_bonds[0].atom_index]
+        )
+
+        this.reaction.setMoleculeAI()
+
+        this.reaction.MoleculeAI.validateMolecule()
+
+        return true
+
+    }
+
+    removeProtonFromOxygenReverse() {
+
     }
 
     protonateCarbocation() {

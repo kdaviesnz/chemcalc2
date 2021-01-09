@@ -15,15 +15,14 @@ const ReactionsList = [
     {
         "name": "Pinacol Rearrangement",
         "steps":     [
-            'makeOxygenCarbonDoubleBond',
-            'carbocationShift',
-            'dehydrate',
             'addProtonFromReagentToHydroxylGroup',
-            'deprotonate'
+            'dehydrate',
+            'carbocationShift',
+            'oxygenCarbonDoubleBond',
+            'removeProtonFromOxygen'
         ],
         "reagents":[
-            "acid",
-            "CN"
+            "acid"
         ]
     },
     {

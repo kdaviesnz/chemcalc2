@@ -78,25 +78,29 @@ class ReactionAI {
 
         this.commands_filter = [
             "oxygenCarbonDoubleBondReversal",
-            "carbocationShiftReversal",
-            'bondSubstrateToReagentReversal',
-            'addProtonFromReagentToSubstrateReversal'
+            '',
         ]
 
         // Akylation
-       // this.commands_filter.push("substituteHalideForAmineReversal")
-       // this.commands_filter.push("deprotonateNitrogenReversal") // breaks Leuckart Wallach
+        this.commands_filter.push("substituteHalideForAmineReversal")
+        this.commands_filter.push("deprotonateNitrogenReversal") // breaks Leuckart Wallach
 
         this.commands_filter.push("protonateReversal")
         this.commands_filter.push("makeCarbonNitrogenDoubleBondReversal")
         this.commands_filter.push("breakOxygenCarbonDoubleBondReversal")
 
         // Leuckart Wallach
-        // this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal")
-        // this.commands_filter.push("transferProtonReversal")
-        // this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal")
+         this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal")
+         this.commands_filter.push("transferProtonReversal")
+         this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal")
         // this.commands_filter.push("dehydrationReversal")
-        // this.commands_filter.push("protonateCarbocationReversal")
+        this.commands_filter.push("protonateCarbocationReversal")
+
+        // pinacol rearrangement
+        // this.commands_filter.push("addProtonFromReagentToSubstrateReversal")
+        // this.commands_filter.push("carbocationShiftReversal")
+        // this.commands_filter.push("bondSubstrateToReagentReversal")
+        // this.commands_filter.push("removeProtonFromOxygenReversal")
 
 
 
@@ -411,6 +415,12 @@ class ReactionAI {
                 if (this.commands_filter.indexOf('protonateCarbocationReversal') === -1) {
                     this.protonateCarbocationReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
                 }
+
+                if (this.commands_filter.indexOf('removeProtonFromOxygenReversal') === -1) {
+                    this.removeProtonFromOxygenReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                }
+
+
 
 
 
