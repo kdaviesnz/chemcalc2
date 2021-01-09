@@ -2,7 +2,7 @@ const ReactionsList = [
     {
         "name": "Leuckart Wallach",
         "steps": [
-            "substituteOxygenCarbonDoubleBond",
+            "substituteOxygenCarbonDoubleBondForAmine",
             "transferProton",
             "addProtonFromReagentToHydroxylGroup",
             "dehydrate",
@@ -29,7 +29,7 @@ const ReactionsList = [
     {
         "name": "Akylation",
         "steps":     [
-            'substituteHalide',
+            'substituteHalideForAmine',
             'deprotonate'
         ],
         "reagents":[

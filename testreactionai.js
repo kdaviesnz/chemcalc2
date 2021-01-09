@@ -29,8 +29,14 @@ const r = new ReactionAI()
 
 //r.synthesise(imine)
 // r.synthesise(m2)
-//r.synthesise(imine2)
+// r.synthesise(imine2)
+// r.synthesise(m)
+
+// Leuckart Wallach
 r.synthesise(m)
+
+// Akylation
+// r.synthesise(m2)
 
 
 // Epoxide acidic ring opening

@@ -74,24 +74,33 @@ class ReactionAI {
 
     constructor() {
 
+        this.debugger_on = true
+
         this.commands_filter = [
-            "substituteHalideReversal",
             "oxygenCarbonDoubleBondReversal",
             "carbocationShiftReversal",
             'bondSubstrateToReagentReversal',
             'addProtonFromReagentToSubstrateReversal'
         ]
-        // this.commands_filter.push("dehydrationReversal")
-        this.commands_filter.push("protonateReversal")
+
+        // Akylation
+        this.commands_filter.push("substituteHalideForAmineReversal")
         this.commands_filter.push("deprotonateReversal")
+
+        this.commands_filter.push("protonateReversal")
+        this.commands_filter.push("makeCarbonNitrogenDoubleBondReversal")
+        this.commands_filter.push("breakOxygenCarbonDoubleBondReversal")
+
+        // Leuckart Wallach
+        // this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal")
         // this.commands_filter.push("transferProtonReversal")
         // this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal")
-        this.commands_filter.push("breakOxygenCarbonDoubleBondReversal")
-        // this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal")
-         this.commands_filter.push("makeCarbonNitrogenDoubleBondReversal")
+        // this.commands_filter.push("dehydrationReversal")
         // this.commands_filter.push("protonateCarbocationReversal")
 
-        this.debugger_on = false
+
+
+
 
         this.command_sets = []
 
@@ -250,7 +259,7 @@ class ReactionAI {
             console.log(VMolecule(starting_substrate).canonicalSMILES() + " --> " + VMolecule(reaction.container_substrate).canonicalSMILES() + " (reagent=" + VMolecule(starting_reagent).canonicalSMILES() + ")")
             this.debugger("Start: reagent:")
             this.debugger(VMolecule(starting_reagent).compressed())
-            this.debugger("Finish: substrate=" + VMolecule(reaction.container_substrate).canonicalSMILES())
+            this.debugger("Finish: substrate")
             this.debugger(VMolecule(reaction.container_substrate).compressed())
             console.log(runcommands)
 
@@ -300,12 +309,16 @@ class ReactionAI {
         const ammonia = MoleculeFactory("N")
        // console.log(VMolecule([deprotonated_methylamide,1]).compressed())
        // console.log(sssss)
-        console.log("Synthesising " + VMolecule([target,1]).canonicalSMILES() + " reagent: " + VMolecule([deprotonated_methylamide,1]).canonicalSMILES())
-       // console.log(VMolecule([formate,1]).compressed())
-       // console.log(VMolecule([formate,1]).canonicalSMILES())
 
 
+        // console.log("Synthesising " + VMolecule([target,1]).canonicalSMILES() + " reagent: " + VMolecule([deprotonated_methylamide,1]).canonicalSMILES())
+
+        // Leuckart Wallach - synthesising MoleculeFactory("CC(CC1=CC=CC=C1)NC")
         this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(deprotonated_methylamide),1], [], 'synthesise', 0)
+
+        // Akylation - synthesising MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)N"
+        // this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(ammonia),1], [], 'synthesise', 0)
+
 
         //this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(ammonia),1], [], 'synthesise', 0)
     }
@@ -386,8 +399,8 @@ class ReactionAI {
 
                 //this.removeHalideReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
 
-                if (this.commands_filter.indexOf('substituteHalideReversal') === -1) {
-                    this.substituteHalideReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                if (this.commands_filter.indexOf('substituteHalideForAmineReversal') === -1) {
+                    this.substituteHalideForAmineReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
                 }
 
                 if (this.commands_filter.indexOf('substituteOxygenCarbonDoubleBondForAmineReversal') === -1) {
@@ -410,8 +423,8 @@ class ReactionAI {
                     this.transferProtonReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth + 1)
                 }
 
-                if (this.commands_filter.indexOf('substituteHalideReversal') === -1) {
-                    this.substituteHalideReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth + 1)
+                if (this.commands_filter.indexOf('substituteHalideForAmineReversal') === -1) {
+                    this.substituteHalideForAmineReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth + 1)
                 }
 
                 this.result(substrate, reagent, commands, 'synthesiseCallback()')
@@ -724,45 +737,45 @@ class ReactionAI {
         }
     }
 
-    substituteHalideReversal(target, reagent, moleculeAI, commands, caller, depth) {
+    substituteHalideForAmineReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
 
-        if (caller === "substituteHalideReversal") {
+        if (caller === "substituteHalideForAmineReversal") {
             return
         }
 
         const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
 
         let r = null
-        r = reverse_reaction.substituteHalideReverse()
+        r = reverse_reaction.substituteHalideForAmineReverse()
 
-        this.debugger("substituteHalideReversal() reverse reaction result")
+        this.debugger("substituteHalideForAmineReversal() reverse reaction result")
         this.debugger(r)
 
         if (r) {
 
             if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
                 // console.log(ggggg)
-                this.result(target, reagent, commands, 'substituteHalideReversal')
+                this.result(target, reagent, commands, 'substituteHalideForAmineReversal')
                 return
             }
 
             const substrate_with_halide = _.cloneDeep(reverse_reaction.container_substrate)
-            const reagent_substituteHalideReversal = _.cloneDeep(reverse_reaction.container_reagent)
+            const reagent_substituteHalideForAmineReversal = _.cloneDeep(reverse_reaction.container_reagent)
 
             commands.push({
-                'name':'substituteHalide',
+                'name':'substituteHalideForAmine',
                 'starting substrate': _.cloneDeep(substrate_with_halide),
-                'starting reagent': _.cloneDeep(reagent_substituteHalideReversal),
+                'starting reagent': _.cloneDeep(reagent_substituteHalideForAmineReversal),
                 'finish substrate': _.cloneDeep(target),
                 'finish reagent': _.cloneDeep(reagent),
                 'function':()=>{
-                    const substitute_halide_reaction = new Reaction(_.cloneDeep(substrate_with_halide), _.cloneDeep(reagent_substituteHalideReversal), {})
-                    substitute_halide_reaction.substituteHalide()
+                    const substitute_halide_reaction = new Reaction(_.cloneDeep(substrate_with_halide), _.cloneDeep(reagent_substituteHalideForAmineReversal), {})
+                    substitute_halide_reaction.substituteHalideForAmine()
                     return substitute_halide_reaction
                 }})
 
-            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'substituteHalideReversal', depth+1)
+            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'substituteHalideForAmineReversal', depth+1)
 
 
         }

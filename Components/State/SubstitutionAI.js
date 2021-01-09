@@ -6,10 +6,10 @@ const VMolecule = require('../Stateless/Views/Molecule')
 const uniqid = require('uniqid');
 const range = require("range");
 
-// substituteHalide()
+// substituteHalideForAmine()
 // substituteOxygenCarbonDoubleBondForAmine()
 // substituteHydroxylForNitrogenDoubleBond()
-// substituteHalideReverse()
+// substituteHalideForAmineReverse()
 // substituteOxygenCarbonDoubleBondForAmineReverse()
 // substituteHydroxylForNitrogenDoubleBondReverse()
 class SubstitutionAI {
@@ -255,7 +255,7 @@ class SubstitutionAI {
 
     }
 
-    substituteHalide() {
+    substituteHalideForAmine() {
 
         // SN2 mechanism -> halide is replaced at the same time as the replacement atom bonds.
         const halide_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
@@ -313,7 +313,7 @@ class SubstitutionAI {
 
     }
 
-    substituteHalideReverse() {
+    substituteHalideForAmineReverse() {
         // SN2 mechanism -> halide is replaced at the same time as the replacement atom bonds.
         // [N+]C
         let n_atom = null

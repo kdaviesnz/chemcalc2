@@ -105,9 +105,9 @@ class Reaction {
         return chargesAI.setChargeOnSubstrateAtom(index)
     }
 
-    substituteHalideReverse(index) {
+    substituteHalideForAmineReverse(index) {
         const substitutionAI = new SubstitutionAI(this)
-        return substitutionAI.substituteHalideReverse(index)
+        return substitutionAI.substituteHalideForAmineReverse(index)
     }
 
     substituteOxygenCarbonDoubleBondForAmineReverse() {
@@ -120,9 +120,9 @@ class Reaction {
         return substitutionAI.substituteOxygenCarbonDoubleBondForAmine()
     }
 
-    substituteHalide(index) {
+    substituteHalideForAmine(index) {
         const substitutionAI = new SubstitutionAI(this)
-        return substitutionAI.substituteHalide(index)
+        return substitutionAI.substituteHalideForAmine(index)
     }
 
 
