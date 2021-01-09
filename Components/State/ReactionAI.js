@@ -87,7 +87,7 @@ class ReactionAI {
         // this.commands_filter.push("transferProtonReversal")
         // this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal")
         this.commands_filter.push("breakOxygenCarbonDoubleBondReversal")
-        // this.commands_filter.push("substituteOxygenCarbonDoubleBondReversal")
+        // this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal")
          this.commands_filter.push("makeCarbonNitrogenDoubleBondReversal")
         // this.commands_filter.push("protonateCarbocationReversal")
 
@@ -328,7 +328,7 @@ class ReactionAI {
             return command['name']
         })
 
-        if (command_names[command_names.length-1] === "substituteOxygenCarbonDoubleBond") {
+        if (command_names[command_names.length-1] === "substituteOxygenCarbonDoubleBondForAmine") {
             this.result(substrate, reagent, commands, 'synthesiseCallback()')
         }
 
@@ -390,8 +390,8 @@ class ReactionAI {
                     this.substituteHalideReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
                 }
 
-                if (this.commands_filter.indexOf('substituteOxygenCarbonDoubleBondReversal') === -1) {
-                    this.substituteOxygenCarbonDoubleBondReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                if (this.commands_filter.indexOf('substituteOxygenCarbonDoubleBondForAmineReversal') === -1) {
+                    this.substituteOxygenCarbonDoubleBondForAmineReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
                 }
 
 
@@ -464,17 +464,17 @@ class ReactionAI {
 
     }
 
-    substituteOxygenCarbonDoubleBondReversal(target, reagent, moleculeAI, commands, caller, depth) {
-        if (caller === "substituteOxygenCarbonDoubleBondReversal") {
+    substituteOxygenCarbonDoubleBondForAmineReversal(target, reagent, moleculeAI, commands, caller, depth) {
+        if (caller === "substituteOxygenCarbonDoubleBondForAmineReversal") {
             return
         }
 
-        this.debugger("substituteOxygenCarbonDoubleBondReversal() reverse reaction result")
+        this.debugger("substituteOxygenCarbonDoubleBondForAmineReversal() reverse reaction result")
 
         const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
 
         let r = null
-        r = reverse_reaction.substituteOxygenCarbonDoubleBondReverse()
+        r = reverse_reaction.substituteOxygenCarbonDoubleBondForAmineReverse()
 
         this.debugger(r)
 
@@ -490,25 +490,25 @@ class ReactionAI {
 
             if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
                 //console.log(eeeee)
-                this.result(target, reagent, commands, 'substituteOxygenCarbonDoubleBondReversal')
+                this.result(target, reagent, commands, 'substituteOxygenCarbonDoubleBondForAmineReversal')
             }
 
             const substrate_with_oxygen_double_bond = _.cloneDeep(reverse_reaction.container_substrate)
-            const reagent_substituteOxygenCarbonDoubleBondReversal = _.cloneDeep(reverse_reaction.container_reagent)
+            const reagent_substituteOxygenCarbonDoubleBondForAmineReversal = _.cloneDeep(reverse_reaction.container_reagent)
 
             commands.push({
-                'name':'substituteOxygenCarbonDoubleBond',
+                'name':'substituteOxygenCarbonDoubleBondForAmine',
                 'starting substrate': _.cloneDeep(substrate_with_oxygen_double_bond),
-                'starting reagent': _.cloneDeep(reagent_substituteOxygenCarbonDoubleBondReversal),
+                'starting reagent': _.cloneDeep(reagent_substituteOxygenCarbonDoubleBondForAmineReversal),
                 'finish substrate': _.cloneDeep(target),
                 'finish reagent': _.cloneDeep(reagent),
                 'function':()=>{
-                    const substituteOxygenCarbonDoubleBond_reaction = new Reaction(_.cloneDeep(substrate_with_oxygen_double_bond), _.cloneDeep(reagent_substituteOxygenCarbonDoubleBondReversal), {})
-                    substituteOxygenCarbonDoubleBond_reaction.substituteOxygenCarbonDoubleBond()
-                    return substituteOxygenCarbonDoubleBond_reaction
+                    const substituteOxygenCarbonDoubleBondForAmine_reaction = new Reaction(_.cloneDeep(substrate_with_oxygen_double_bond), _.cloneDeep(reagent_substituteOxygenCarbonDoubleBondForAmineReversal), {})
+                    substituteOxygenCarbonDoubleBondForAmine_reaction.substituteOxygenCarbonDoubleBondForAmine()
+                    return substituteOxygenCarbonDoubleBondForAmine_reaction
                 }})
 
-            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'substituteOxygenCarbonDoubleBondReversal', depth+1)
+            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'substituteOxygenCarbonDoubleBondForAmineReversal', depth+1)
         }
 
 

@@ -7,10 +7,10 @@ const uniqid = require('uniqid');
 const range = require("range");
 
 // substituteHalide()
-// substituteOxygenCarbonDoubleBond()
+// substituteOxygenCarbonDoubleBondForAmine()
 // substituteHydroxylForNitrogenDoubleBond()
 // substituteHalideReverse()
-// substituteOxygenCarbonDoubleBondReverse()
+// substituteOxygenCarbonDoubleBondForAmineReverse()
 // substituteHydroxylForNitrogenDoubleBondReverse()
 class SubstitutionAI {
 
@@ -25,7 +25,7 @@ class SubstitutionAI {
         }
     }
 
-    substituteOxygenCarbonDoubleBondReverse() {
+    substituteOxygenCarbonDoubleBondForAmineReverse() {
 
         let co_bonds = null
         let oxygen = null
@@ -176,7 +176,7 @@ class SubstitutionAI {
     }
 
 
-    substituteOxygenCarbonDoubleBond() {
+    substituteOxygenCarbonDoubleBondForAmine() {
 
         // SN2 mechanism -> O=C bond is replaced with OC bond at the same time as the replacement atom bonds.
         let oxygen = null
