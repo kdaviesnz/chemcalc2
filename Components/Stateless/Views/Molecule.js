@@ -277,6 +277,7 @@ const VMolecule = (mmolecule) => {
     return {
 
         'compressed': () => {
+
             return _.cloneDeep(mmolecule[0][1]).map(
                 (atom, index) => {
                     const c = CAtom(atom, index, _.cloneDeep(mmolecule))

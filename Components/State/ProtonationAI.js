@@ -6,6 +6,7 @@ const CAtom = require('../../Controllers/Atom')
 const AtomFactory = require('../../Models/AtomFactory')
 const should = require('should')
 const Set = require('../../Models/Set')
+const uniqid = require('uniqid');
 
 // protonateCarboncation()
 // deprotonateCarbonyl()
@@ -29,36 +30,64 @@ class ProtonationAI {
     protonateCarbocation() {
         //Explanation: A carbocation is an organic molecule, an intermediate, that forms as a result of the loss of two valence electrons, normally shared electrons, from a carbon atom that already has four bonds. This leads to the formation of a carbon atom bearing a positive charge and three bonds instead of four.
        // https://socratic.org/questions/how-is-carbocation-formed
-        return false
+        const carbocation_index = this.reaction.MoleculeAI.findCarbocationIndex() // electrophile
+        if (carbocation_index === -1) {
+            return false
+        }
+        const nucleophile_index = this.reaction.ReagentAI.findNucleophileIndex()
+        // console.log(VMolecule(this.reaction.container_reagent).compressed())
+        //console.log(nucleophile_index)
+        const nucleophile_atom =  CAtom(this.reaction.container_reagent[0][1][nucleophile_index], nucleophile_index, this.reaction.container_reagent)
+        const proton_bonds = nucleophile_atom.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "H"
+        })
+        if (proton_bonds.length === 0) {
+            return false
+        }
+        // Add proton to substrate
+        // After proton added carbocation will now have 8 electrons and 4 bonds
+        this.reaction.container_substrate[0][1][carbocation_index].push(proton_bonds[0].shared_electrons[0])
+        this.reaction.container_substrate[0][1][carbocation_index].push(proton_bonds[0].shared_electrons[1])
+        this.reaction.container_substrate[0][1].push(this.reaction.container_reagent[0][1][proton_bonds[0].atom_index])
+
+        // Remove proton from reagent
+        this.reaction.container_reagent[0][1][nucleophile_index] = Set().removeFromArray(
+            this.reaction.container_reagent[0][1][nucleophile_index],
+            proton_bonds[0].shared_electrons
+        )
+        this.reaction.container_reagent[0][1][nucleophile_index].push(uniqid())
+        this.reaction.container_reagent[0][1][nucleophile_index].push(uniqid())
+        this.reaction.container_reagent[0][1][nucleophile_index][4] = "-1"
+
+        this.reaction.container_substrate[0][1][carbocation_index][4] = ""
+
+       // console.log(VMolecule(this.reaction.container_substrate).compressed())
+        // console.log(VMolecule(this.reaction.container_reagent).compressed())
+        this.reaction.setMoleculeAI()
+        this.reaction.setReagentAI()
+        this.reaction.MoleculeAI.validateMolecule()
+
+        return true
+
     }
 
     protonateCarbocationReverse() {
-        //Explanation: A carbocation is an organic molecule, an intermediate, that forms as a result of the loss of two valence electrons, normally shared electrons, from a carbon atom that already has four bonds. This leads to the formation of a carbon atom bearing a positive charge and three bonds instead of four.
-        // https://socratic.org/questions/how-is-carbocation-formed
-        // Look for carbon with 4 bonds and at least 1 hydrogen
+
         let carbon = null
         let c_h_bonds = null
-        const c_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index) => {
-            if (atom[0]!=="C") {
-                return false
-            }
-            carbon = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate)
-            if (carbon.indexedBonds("").length + carbon.indexedDoubleBonds("").length + carbon.indexedTripleBonds("").length !==4) {
-                return false
-            }
-            c_h_bonds = carbon.indexedBonds("").filter((bond)=>{
-                return bond.atom[0] === "H"
-            })
-            return c_h_bonds.length === 1
-        })
+        const c_index = this.reaction.MoleculeAI.findCarbocationIndexReverse()
 
         if (c_index === -1) {
             return false
         }
 
+        carbon = CAtom(this.reaction.container_substrate[0][1][c_index], c_index, this.reaction.container_substrate)
+        c_h_bonds = carbon.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "H"
+        })
+
         // console.log(VMolecule(this.reaction.container_substrate).compressed())
         // console.log(c_index)
-
 
         // https://chemistry.stackexchange.com/questions/22032/how-does-a-carbocation-have-a-positive-charge
         // Formal Charge= (No.of valence electrons in unbonded state - no of lone pair electrons ) - (no. of bond pair electrons/2)

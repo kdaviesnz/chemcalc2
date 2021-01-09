@@ -2,16 +2,13 @@ const ReactionsList = [
     {
         "name": "Leuckart Wallach",
         "steps": [
-            "bondSubstrateToReagent",
-            "breakOxygenCarbonDoubleBond",
+            "substituteOxygenCarbonDoubleBond",
             "transferProton",
-            "deprotonate",
-            "makeCarbonNitrogenDoubleBond",
             "addProtonFromReagentToHydroxylGroup",
-            "dehydrate"
+            "dehydrate",
+            "protonateCarbocation"
         ],
         "reagents":[
-            "N",
             "CN"
         ]
     },

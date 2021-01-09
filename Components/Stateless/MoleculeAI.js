@@ -10,7 +10,8 @@ findOxygenAttachedToCarbonIndex()
 findOxygenOnDoubleBondIndex()
 findNonWaterOxygenIndex()
 findIndexOfCarbonAtomDoubledBondedToNonCarbonBySymbol(symbol)
-findNitrogenAttachedToCarbonAttachedToOxygenDoubleBondIndex
+findNitrogenAttachedToCarbonAttachedToOxygenDoubleBondIndex()
+findCarbocationIndexReverse
  */
 
 const MoleculeAI = (container_molecule) => {
@@ -197,6 +198,35 @@ const MoleculeAI = (container_molecule) => {
     // All required parameters should be passed by MoleculeAI()
     // No method should change state of container_molecule
     return {
+
+        findCarbocationIndex: () => {
+            // Explanation: A carbocation is an organic molecule, an intermediate, that forms as a result of the loss of two valence electrons, normally shared electrons, from a carbon atom
+            // that already has four bonds. This leads to the formation of a carbon atom bearing a positive charge and three bonds instead of four.
+            // https://socratic.org/questions/how-is-carbocation-formed
+            // Look for carbon with 4 bonds and at least 1 hydrogen
+            return _.findIndex(container_molecule[0][1], (atom, index) => {
+                return atom[0] === "C" && atom[4] === "+" && atom.slice(5).length === 6
+            })
+        },
+
+        findCarbocationIndexReverse: () => {
+            //Explanation: A carbocation is an organic molecule, an intermediate, that forms as a result of the loss of two valence electrons, normally shared electrons, from a carbon atom that already has four bonds. This leads to the formation of a carbon atom bearing a positive charge and three bonds instead of four.
+            // https://socratic.org/questions/how-is-carbocation-formed
+            // Look for carbon with 4 bonds and at least 1 hydrogen
+            return _.findIndex(container_molecule[0][1], (atom, index) => {
+                if (atom[0]!=="C") {
+                    return false
+                }
+                carbon = CAtom(container_molecule[0][1][index], index, container_molecule)
+                if (carbon.indexedBonds("").length + carbon.indexedDoubleBonds("").length + carbon.indexedTripleBonds("").length !==4) {
+                    return false
+                }
+                c_h_bonds = carbon.indexedBonds("").filter((bond)=>{
+                    return bond.atom[0] === "H"
+                })
+                return c_h_bonds.length === 1
+            })
+        },
 
         findImineCarbonIndex: () =>{
             return _.findIndex(container_molecule[0][1], (atom, index)=>{

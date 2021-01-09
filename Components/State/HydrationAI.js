@@ -89,7 +89,13 @@ class HydrationAI {
 
         // Pinacol rearrangement -> c+ but < 4 bonds
         // (Leuckact Wallach reaction c-)
-        let electrophile_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
+        let electrophile_index = this.reaction.MoleculeAI.findCarbocationIndex()
+        if (electrophile_index === -1) {
+            return false
+        }
+
+        /*
+        electrophile_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
             if (atom[0]!=="C") {
                 return false
             }
@@ -110,8 +116,10 @@ class HydrationAI {
             }
             return false
         })
+         */
 
         // Leuckact Wallach reaction
+        /*
         if (electrophile_index === -1) {
             // Imine
             electrophile_index = this.reaction.MoleculeAI.findImineCarbonIndex()
@@ -119,6 +127,7 @@ class HydrationAI {
                 return false
             }
         }
+         */
 
 
         // dehydrate reverse
@@ -165,25 +174,15 @@ class HydrationAI {
         this.reaction.container_substrate[0][1].push(water_molecule[1][2])
 
         this.reaction.setChargeOnSubstrateAtom(electrophile_index)
+        // console.log(VMolecule(this.reaction.container_substrate).compressed())
 
         this.reaction.setMoleculeAI()
-        // console.log(VMolecule(this.reaction.container_substrate).compressed())
-        // console.log(ammmm)
 
         // Check we have a water molecule attached to main molecule
         this.reaction.MoleculeAI.findWaterOxygenIndex().should.be.greaterThan(-1)
 
+        this.reaction.MoleculeAI.validateMolecule()
 
-        if (this.reaction.MoleculeAI.validateMolecule() === false) {
-            console.log('HydrationAI.js molecule is not valid (dehydrateReverse())')
-            console.log('Method: dehydrateReverse()')
-            console.log(VMolecule(this.reaction.container_substrate).compressed())
-            console.log(i)
-        }
-
-       // console.log("HydrationAI() hydrated molecule()")
-       // console.log(VMolecule(this.reaction.container_substrate).compressed())
-       // console.log("HydrationAI() dehydrateReverse() fin.")
         return true
     }
 
