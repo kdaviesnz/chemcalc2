@@ -74,7 +74,7 @@ class ReactionAI {
 
     constructor() {
 
-        this.debugger_on = true
+        this.debugger_on = false
 
         this.commands_filter = [
             "oxygenCarbonDoubleBondReversal",
@@ -84,19 +84,19 @@ class ReactionAI {
         ]
 
         // Akylation
-        this.commands_filter.push("substituteHalideForAmineReversal")
-        this.commands_filter.push("deprotonateReversal")
+       // this.commands_filter.push("substituteHalideForAmineReversal")
+       // this.commands_filter.push("deprotonateNitrogenReversal") // breaks Leuckart Wallach
 
         this.commands_filter.push("protonateReversal")
         this.commands_filter.push("makeCarbonNitrogenDoubleBondReversal")
         this.commands_filter.push("breakOxygenCarbonDoubleBondReversal")
 
         // Leuckart Wallach
-        // this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal")
-        // this.commands_filter.push("transferProtonReversal")
-        // this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal")
-        // this.commands_filter.push("dehydrationReversal")
-        // this.commands_filter.push("protonateCarbocationReversal")
+        this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal")
+        this.commands_filter.push("transferProtonReversal")
+        this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal")
+        this.commands_filter.push("dehydrationReversal")
+        this.commands_filter.push("protonateCarbocationReversal")
 
 
 
@@ -314,10 +314,10 @@ class ReactionAI {
         // console.log("Synthesising " + VMolecule([target,1]).canonicalSMILES() + " reagent: " + VMolecule([deprotonated_methylamide,1]).canonicalSMILES())
 
         // Leuckart Wallach - synthesising MoleculeFactory("CC(CC1=CC=CC=C1)NC")
-        this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(deprotonated_methylamide),1], [], 'synthesise', 0)
+        // this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(deprotonated_methylamide),1], [], 'synthesise', 0)
 
         // Akylation - synthesising MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)N"
-        // this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(ammonia),1], [], 'synthesise', 0)
+        this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(ammonia),1], [], 'synthesise', 0)
 
 
         //this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(ammonia),1], [], 'synthesise', 0)
@@ -393,8 +393,8 @@ class ReactionAI {
                     this.makeCarbonNitrogenDoubleBondReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
                 }
 
-                if (this.commands_filter.indexOf('deprotonateReversal') === -1) {
-                    this.deprotonateReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                if (this.commands_filter.indexOf('deprotonateNitrogenReversal') === -1) {
+                    this.deprotonateNitrogenReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
                 }
 
                 //this.removeHalideReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
@@ -659,10 +659,10 @@ class ReactionAI {
 
 
 
-    deprotonateReversal(target, reagent, moleculeAI, commands, caller, depth) {
+    deprotonateNitrogenReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
 
-        if (caller === "deprotonateReversal") {
+        if (caller === "deprotonateNitrogenReversal") {
             return
         }
 
@@ -670,9 +670,9 @@ class ReactionAI {
 
         let r = null
 
-        this.debugger("deprotonateReversal() reverse reaction result")
+        this.debugger("deprotonateNitrogenReversal() reverse reaction result")
 
-        r = reverse_reaction.deprotonateReverse()
+        r = reverse_reaction.deprotonateNitrogenReverse()
 
         this.debugger(r)
 
@@ -689,7 +689,7 @@ class ReactionAI {
 
             if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
                // console.log(ggggg)
-                this.result(target, reagent, commands, 'deprotonateReversal')
+                this.result(target, reagent, commands, 'deprotonateNitrogenReversal')
                 return
             }
 
@@ -709,12 +709,12 @@ class ReactionAI {
                 'finish reagent': _.cloneDeep(reagent),
                 'function':(command_index, command_names, substrate)=>{
 
-                    const deprotonate_reaction = new Reaction(_.cloneDeep(substrate_protonated), _.cloneDeep(reagent_deprotonated), {})
+                    const deprotonate_nitrogen_reaction = new Reaction(_.cloneDeep(substrate_protonated), _.cloneDeep(reagent_deprotonated), {})
 
-                    deprotonate_reaction.deprotonate(command_names, command_index )
+                    deprotonate_nitrogen_reaction.deprotonateNitrogen(command_names, command_index )
                     // console.log('deprotonate result')
                     // console.log(VMolecule(deprotonate_reaction.container_substrate).compressed())
-                    return deprotonate_reaction
+                    return deprotonate_nitrogen_reaction
                 }})
 
 /*
@@ -733,7 +733,7 @@ class ReactionAI {
 
 
 
-            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'deprotonateReversal', depth+1)
+            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'deprotonateNitrogenReversal', depth+1)
         }
     }
 
@@ -959,8 +959,8 @@ class ReactionAI {
             return
         }
 
-        if (caller==="deprotonateReversal") {
-            console.log('Call from deprotonateReversal- dehydrationReversal()')
+        if (caller==="deprotonateNitrogenReversal") {
+            console.log('Call from deprotonateNitrogenReversal- dehydrationReversal()')
             return
         }
         */
@@ -1516,7 +1516,7 @@ class ReactionAI {
   //        // console.log('Leuckart reaction reversed - deprotonate (caller=' + caller + '):')
 
 
-        if (depth === 4 && caller==="deprotonateReversal") {
+        if (depth === 4 && caller==="deprotonateNitrogenReversal") {
             // console.log("ReactionAI.js Calling protonateReversal() caller=" + caller + " depth=" + depth)
             // console.log(r)
             // console.log(VMolecule(reverse_reaction.container_substrate).compressed())

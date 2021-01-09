@@ -191,7 +191,40 @@ class ChargesAI {
         }
 
     }
-    
+
+    setChargeOnReagentAtom(index) {
+
+        // https://chemistry.stackexchange.com/questions/22032/how-does-a-carbocation-have-a-positive-charge
+        // Formal Charge= (No.of valence electrons in unbonded state - no of lone pair electrons ) - (no. of bond pair electrons/2)
+        const a_obj = CAtom(this.reaction.container_reagent[0][1][index], index, this.reaction.container_reagent)
+        const b_count = a_obj.bondCount() + a_obj.doubleBondCount()
+        const electrons = _.cloneDeep(this.reaction.container_reagent[0][1][index].slice(5))
+
+        if (this.reaction.container_reagent[0][1][index][0] === "Br") {
+            const b = (7 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length)
+            this.reaction.container_reagent[0][1][index][4] = b  > 0? "+": (b < 0?"-":"")
+        }
+
+        if (this.reaction.container_reagent[0][1][index][0] === "O") {
+            const b = (6 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length)
+            this.reaction.container_substrate[0][1][index][4] = b  > 0? "+": (b < 0?"-":"")
+        }
+
+        if (this.reaction.container_reagent[0][1][index][0] === "N") {
+            const b = (5 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length)
+            this.reaction.container_reagent[0][1][index][4] = b  > 0? "+": (b < 0?"-":"")
+        }
+
+        if (this.reaction.container_substrate[0][1][index][0] === "C") {
+            // https://chemistry.stackexchange.com/questions/22032/how-does-a-carbocation-have-a-positive-charge
+            // Formal Charge= (No.of valence electrons in unbonded state - no of lone pair electrons ) - (no. of bond pair electrons/2)
+            // In this case the charge comes out to be (4-0) - (6/2) =+1
+            const b = (4 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length)
+            this.reaction.container_reagent[0][1][index][4] = b  > 0? "+": (b < 0?"-":"")
+        }
+
+    }
+
 }
 
 module.exports = ChargesAI

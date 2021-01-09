@@ -105,6 +105,11 @@ class Reaction {
         return chargesAI.setChargeOnSubstrateAtom(index)
     }
 
+    setChargeOnReagentAtom(index) {
+        const chargesAI = new ChargesAI(this)
+        return chargesAI.setChargeOnReagentAtom(index)
+    }
+
     substituteHalideForAmineReverse(index) {
         const substitutionAI = new SubstitutionAI(this)
         return substitutionAI.substituteHalideForAmineReverse(index)
@@ -1313,14 +1318,14 @@ class Reaction {
 
     }
 
-    deprotonate(command_names, command_index) {
+    deprotonateNitrogen(command_names, command_index) {
         const protationAI = new ProtonationAI(this)
-        return protationAI.deprotonate(command_names, command_index)
+        return protationAI.deprotonateNitrogen(command_names, command_index)
     }
 
-    deprotonateReverse() {
+    deprotonateNitrogenReverse() {
         const protationAI = new ProtonationAI(this)
-        return protationAI.deprotonateReverse()
+        return protationAI.deprotonateNitrogenReverse()
     }
 
 

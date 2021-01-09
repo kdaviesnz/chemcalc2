@@ -30,7 +30,7 @@ const ReactionsList = [
         "name": "Akylation",
         "steps":     [
             'substituteHalideForAmine',
-            'deprotonate'
+            'deprotonateNitrogen'
         ],
         "reagents":[
             "N"
