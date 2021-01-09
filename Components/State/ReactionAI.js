@@ -74,11 +74,12 @@ class ReactionAI {
 
     constructor() {
 
-        this.debugger_on = true
+        this.debugger_on = false
 
         this.commands_filter = []
 
         this.commands_filter.push("bondSubstrateToReagentReversal")
+        this.commands_filter.push("addProtonFromReagentToSubstrateReversal")
 
         // Akylation
         this.commands_filter.push("substituteHalideForAmineReversal")
@@ -91,12 +92,11 @@ class ReactionAI {
         // Leuckart Wallach
          this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal")
          this.commands_filter.push("transferProtonReversal")
-         this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal")
+        // this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal") // Also used by Pinacol Rearrangement
         // this.commands_filter.push("dehydrationReversal") // Also used by Pinacol Rearrangement
         this.commands_filter.push("protonateCarbocationReversal")
 
         // Pinacol Rearrangement
-        // this.commands_filter.push("addProtonFromReagentToSubstrateReversal")
         // this.commands_filter.push("carbocationShiftReversal")
         // this.commands_filter.push("removeProtonFromOxygenReversal")
         // this.commands_filter.push("oxygenCarbonDoubleBondReversal")
@@ -449,6 +449,11 @@ class ReactionAI {
 
     removeProtonFromOxygenReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
+        const command_names = commands.map((command)=>{
+            return command['name']
+        })
+        console.log(command_names)
+        console.log(llkklk)
         if (caller === "removeProtonFromOxygenReversal") {
             return
         }
@@ -472,7 +477,7 @@ class ReactionAI {
             const reagent_removeProtonFromOxygenReversal = _.cloneDeep(reverse_reaction.container_reagent)
 
             commands.push({
-                'name':'protonateCarbocation',
+                'name':'removeProtonFromOxygen',
                 'starting substrate': _.cloneDeep(substrate_with_proton_added),
                 'starting reagent': _.cloneDeep(reagent_removeProtonFromOxygenReversal),
                 'finish substrate': _.cloneDeep(target),
@@ -585,6 +590,17 @@ class ReactionAI {
 
         // Akylation ok
        // return false
+        const command_names = commands.map((command)=>{
+            return command['name']
+        })
+
+        if (command_names.length === 4 && command_names[0] === "removeProtonFromOxygen") {
+            console.log(command_names)
+            console.log(VMolecule(reverse_reaction.container_substrate).compressed())
+            console.log(r)
+            console.log(nnnn)
+        }
+
 
         if (caller === "addProtonFromReagentToHydroxylGroupReversal") {
             return
@@ -989,6 +1005,9 @@ class ReactionAI {
     dehydrationReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
 
+        if (caller === "dehydrationReversal") {
+            return
+        }
 
         // Akylation ok
         // return false
@@ -998,8 +1017,6 @@ class ReactionAI {
             return command['name']
         })
 
-       // console.log(command_names)
-//        // console.log(e)
 
         /*
         if (caller==="addProtonFromReagentToHydroxylGroupReversal") {
@@ -1037,14 +1054,18 @@ class ReactionAI {
 
             r = reverse_reaction.dehydrateReverse()
 
+
+
+
         this.debugger(r)
 
 
             if (r) {
 
+                //console.log(VMolecule(reverse_reaction.container_substrate).compressed())
+                //console.log(cccc)
 
                 if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
-                    console.log(iiiiii)
                     return
                 }
 
@@ -1054,20 +1075,6 @@ class ReactionAI {
                 if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
                     return
                 }
-
-
-                // console.log('substrate (substrate before reverse reaction (dehydration reversal))')
-                // console.log(VMolecule(target).compressed())
-              //  // console.log('Reagent: (reagent before reverse reaction')
-                // console.log(VMolecule(reagent).compressed())
-
-
-                // console.log('hydrated substrate (substrate after reverse reaction (dehydration reversal))')
-                // console.log(VMolecule(hydrated_substrate).compressed())
-//                // console.log('Reagent: (reagent after reverse reaction')
-  //              // console.log(VMolecule(hydrated_reagent).compressed())
-
-
 
 
                 commands.push({
@@ -1083,17 +1090,9 @@ class ReactionAI {
                     }})
 
 
-                // Pinacol rearrangement
-                /*
-                if (_.isEqual(command_names,['makeOxygenCarbonDoubleBond', 'carbocationShift', 'deprotonate'])) {
-                    console.log(VMolecule(hydrated_substrate).compressed())
-                    console.log(oooo)
-                }
-                */
-
-
-
                 this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent),_.cloneDeep(commands), 'dehydrationReversal', depth+1)
+
+
             } else {
                    // console.log("dehydrationReversal() reverse reaction failed")
             }
