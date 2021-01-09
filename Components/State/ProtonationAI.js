@@ -81,13 +81,10 @@ class ProtonationAI {
 
     removeProtonFromOxygenReverse() {
 
-
         let oxygen = null
         let o_h_bonds = null
 
         // Look for neutral oxygen
-
-        console.log(VMolecule(this.reaction.container_substrate).compressed())
         const o_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
 
             if (atom[0]!=="O") {
@@ -107,23 +104,22 @@ class ProtonationAI {
             return false
         }
 
-
+        // "Re-add" the proton
         const proton = AtomFactory("H", "")
+        proton.pop()
         const oxygen_free_electrons = oxygen.freeElectrons()
         proton.push(oxygen_free_electrons[0])
         proton.push(oxygen_free_electrons[1])
+        this.reaction.container_substrate[0][1].push(proton)
+        this.reaction.setChargeOnSubstrateAtom(o_index)
 
 
+        this.reaction.setMoleculeAI()
+        this.reaction.MoleculeAI.validateMolecule()
 
-
-        console.log(proton)
-
-        console.log(helloooworld)
-
+        return true
 
     }
-
-
 
 
     protonateCarbocation() {

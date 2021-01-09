@@ -142,6 +142,13 @@ class ChargesAI {
             }
         }
         if (this.reaction.container_substrate[0][1][index][0] === "O") {
+
+            // Formal Charge= (No.of valence electrons in unbonded state - no of lone pair electrons ) - (no. of bond pair electrons/2)
+            const b = (6 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length)
+
+            this.reaction.container_substrate[0][1][index][4] = b  > 0? "+": (b < 0?"-":"")
+
+            /*
             if (6 + b_count === electrons.length) {
                 this.reaction.container_substrate[0][1][index][4] = ""
             }
@@ -151,6 +158,7 @@ class ChargesAI {
             if (6 + b_count > electrons.length) {
                 this.reaction.container_substrate[0][1][index][4] = "+"
             }
+            */
         }
         if (this.reaction.container_substrate[0][1][index][0] === "N") {
             //console.log("ChargesAI.js setChargeOnSubstrateAtom()")

@@ -76,10 +76,9 @@ class ReactionAI {
 
         this.debugger_on = true
 
-        this.commands_filter = [
-            "oxygenCarbonDoubleBondReversal",
-            '',
-        ]
+        this.commands_filter = []
+
+        this.commands_filter.push("bondSubstrateToReagentReversal")
 
         // Akylation
         this.commands_filter.push("substituteHalideForAmineReversal")
@@ -93,15 +92,14 @@ class ReactionAI {
          this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal")
          this.commands_filter.push("transferProtonReversal")
          this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal")
-        // this.commands_filter.push("dehydrationReversal")
+        // this.commands_filter.push("dehydrationReversal") // Also used by Pinacol Rearrangement
         this.commands_filter.push("protonateCarbocationReversal")
 
-        // pinacol rearrangement
+        // Pinacol Rearrangement
         // this.commands_filter.push("addProtonFromReagentToSubstrateReversal")
         // this.commands_filter.push("carbocationShiftReversal")
-        // this.commands_filter.push("bondSubstrateToReagentReversal")
         // this.commands_filter.push("removeProtonFromOxygenReversal")
-
+        // this.commands_filter.push("oxygenCarbonDoubleBondReversal")
 
 
 
@@ -464,9 +462,28 @@ class ReactionAI {
 
         this.debugger(r)
 
-       // console.log(uuuu)
-
         if (r) {
+
+            if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
+                this.result(target, reagent, commands, 'removeProtonFromOxygenReversal')
+            }
+
+            const substrate_with_proton_added = _.cloneDeep(reverse_reaction.container_substrate)
+            const reagent_removeProtonFromOxygenReversal = _.cloneDeep(reverse_reaction.container_reagent)
+
+            commands.push({
+                'name':'protonateCarbocation',
+                'starting substrate': _.cloneDeep(substrate_with_proton_added),
+                'starting reagent': _.cloneDeep(reagent_removeProtonFromOxygenReversal),
+                'finish substrate': _.cloneDeep(target),
+                'finish reagent': _.cloneDeep(reagent),
+                'function':()=>{
+                    const removeProtonFromOxygenReversal_reaction = new Reaction(_.cloneDeep(substrate_with_proton_added), _.cloneDeep(reagent_removeProtonFromOxygenReversal), {})
+                    removeProtonFromOxygenReversal_reaction.removeProtonFromOxygen()
+                    return removeProtonFromOxygenReversal_reaction
+                }})
+
+            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'removeProtonFromOxygenReversal', depth+1)
 
         }
 
@@ -905,11 +922,9 @@ class ReactionAI {
         // https://en.wikipedia.org/wiki/Pinacol_rearrangement
         let r = null
 
-        this.debugger("oxygenCarbonDouleBondReversal() reverse reaction result")
+        this.debugger("oxygenCarbonDoubleBondReversal() reverse reaction result")
 
         r = reverse_reaction.makeOxygenCarbonDoubleBondReverse()
-
-
 
 
         this.debugger(r)
@@ -930,13 +945,9 @@ class ReactionAI {
             const substrate_with_oxygen_carbon_double_bond_removed = _.cloneDeep(reverse_reaction.container_substrate)
             const reagent_with_oxygen_carbon_double_bond_removed = _.cloneDeep(reverse_reaction.container_reagent)
 
-/*
-            console.log("oxygenCarbonDoubleBondReversal()")
-            console.log(r)
-            console.log(VMolecule(target).compressed())
-            console.log(VMolecule(substrate_with_oxygen_carbon_double_bond_removed).compressed())
-            console.log(jjjjjqqq)
-*/
+          //  console.log("oxygenCarbonDoubleBondReversal() substrate_with_oxygen_carbon_double_bond_removed")
+          //  console.log(VMolecule(substrate_with_oxygen_carbon_double_bond_removed).compressed())
+          //  console.log(jjjjjqqq)
 
             commands.push({
                 'name':'makeOxygenCarbonDoubleBond',

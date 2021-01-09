@@ -1826,25 +1826,30 @@ class Reaction {
         this.setMoleculeAI()
 
         const carbocation_index = this.MoleculeAI.findIndexOfCarbocationAttachedtoCarbon()
+
         if (carbocation_index === -1) {
             return false
         }
 
         const carbocation = CAtom(this.container_substrate[0][1][carbocation_index], carbocation_index, this.container_substrate)
 
+
+
         const carbon_bond = carbocation.indexedBonds("").filter((bond)=>{
             if (bond.atom[0] !=="C") {
                 return false
             }
             const c = CAtom(this.container_substrate[0][1][bond.atom_index], bond.atom_index, this.container_substrate)
-            return c.hydrogens().length === 0 // @todo
+            return c.hydrogens().length < 2 // @todo
         }).pop()
+
 
         if (carbon_bond === undefined) {
             return false
         }
 
         const carbon_index = carbon_bond.atom_index
+
 
         const carbon = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, this.container_substrate)
 
@@ -1860,7 +1865,7 @@ class Reaction {
                 return c.hydrogens().length === 3
             }).pop().atom_index
         } else {
-            // Get methyl group
+            // Get methyl group then try for hydrogen
             const methyl_bonds = carbon.indexedBonds("").filter((bond) => {
                 if (bond.atom[0] !== "C") {
                     return false
@@ -1868,8 +1873,17 @@ class Reaction {
                 const c = CAtom(this.container_substrate[0][1][bond.atom_index], bond.atom_index, this.container_substrate)
                 return c.hydrogens().length === 3
             })
-            atom_to_shift_index = methyl_bonds > 0 ? methyl_bonds.pop().atom_index : -1
+            if (methyl_bonds.length === 0) {
+                const h_bonds = carbon.indexedBonds("").filter((bond) => {
+                    return bond.atom[0] === "H"
+                })
+                atom_to_shift_index = h_bonds.length > 0? h_bonds.pop().atom_index: -1
+            } else {
+                atom_to_shift_index = methyl_bonds.pop().atom_index
+            }
+
         }
+
 
         if (atom_to_shift_index === undefined || atom_to_shift_index === -1) {
             return false
@@ -1897,6 +1911,12 @@ class Reaction {
        // console.log("carbocationshiftreverse()")
        // console.log(VMolecule(this.container_substrate).compressed())
        // console.log(jkhooo)
+       // console.log("Reaction.js Carbocation index:" +carbocation_index)
+       // console.log("carbon index: "+ carbon_index)
+      //  console.log("atom to shift index: "+ atom_to_shift_index)
+      // console.log(VMolecule(this.container_substrate).compressed())
+       // console.log(aaaa)
+
 
         return true
 
