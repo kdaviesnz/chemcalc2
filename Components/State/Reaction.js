@@ -949,6 +949,16 @@ class Reaction {
 
     }
 
+    removeProtonFromOxygenReverse() {
+        const protationAI = new ProtonationAI(this)
+        return protationAI.removeProtonFromOxygenReverse()
+    }
+
+    removeProtonFromOxygen() {
+        const protationAI = new ProtonationAI(this)
+        return protationAI.removeProtonFromOxygen()
+    }
+
     deprotonateOxygenOnDoubleBond() {
         const protationAI = new ProtonationAI(this)
         return protationAI.deprotonateOxygenOnDoubleBond()

@@ -4,7 +4,7 @@ const VMolecule = require('./Components/Stateless/Views/Molecule')
 
 // Chemicals to synthesise
 
-const imine2 = MoleculeFactory("CC(CC1=CC=CC=C1)=NC") // phenylacetone
+const imine2 = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
 //console.log(VMolecule([imine2,1]).compressed())
 //console.log(VMolecule([imine2,1]).canonicalSMILES())
 //console.log(mnb)
@@ -12,6 +12,7 @@ const imine2 = MoleculeFactory("CC(CC1=CC=CC=C1)=NC") // phenylacetone
 
 // https://en.wikipedia.org/wiki/Pinacol_rearrangement
 const pinacolone = MoleculeFactory("CC(=O)C(C)(C)C")
+const pm = MoleculeFactory("CC(=O)CC1=CC2=C(C=C1)OCO2")
 
 //https://en.wikipedia.org/wiki/Leuckart_reaction
 const isopropylamine = MoleculeFactory("CC(C)N")
@@ -29,15 +30,17 @@ const r = new ReactionAI()
 
 //r.synthesise(imine)
 // r.synthesise(m2)
-// r.synthesise(imine2)
+
 // r.synthesise(m)
 
 // Leuckart Wallach
-r.synthesise(m)
+// r.synthesise(m)
 
 // Akylation
 // r.synthesise(m2)
 
+// Pinacol Rearrangement
+r.synthesise(pinacolone)
 
 // Epoxide acidic ring opening
 // https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Map%3A_Organic_Chemistry_(McMurry)/Chapter_18%3A_Ethers_and_Epoxides%3B_Thiols_and_Sulfides/18.06_Reactions_of_Epoxides%3A_Ring-opening

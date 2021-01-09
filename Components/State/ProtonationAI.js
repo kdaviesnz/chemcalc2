@@ -77,9 +77,54 @@ class ProtonationAI {
 
     }
 
+
+
     removeProtonFromOxygenReverse() {
 
+
+        let oxygen = null
+        let o_h_bonds = null
+
+        // Look for neutral oxygen
+
+        console.log(VMolecule(this.reaction.container_substrate).compressed())
+        const o_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
+
+            if (atom[0]!=="O") {
+                return false
+            }
+            if (atom[4]==="+" || atom[4] === "-") {
+                return false
+            }
+
+            oxygen = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate)
+
+            return oxygen.freeElectrons().length > 0
+
+        })
+
+        if (o_index === -1) {
+            return false
+        }
+
+
+        const proton = AtomFactory("H", "")
+        const oxygen_free_electrons = oxygen.freeElectrons()
+        proton.push(oxygen_free_electrons[0])
+        proton.push(oxygen_free_electrons[1])
+
+
+
+
+        console.log(proton)
+
+        console.log(helloooworld)
+
+
     }
+
+
+
 
     protonateCarbocation() {
         //Explanation: A carbocation is an organic molecule, an intermediate, that forms as a result of the loss of two valence electrons, normally shared electrons, from a carbon atom that already has four bonds. This leads to the formation of a carbon atom bearing a positive charge and three bonds instead of four.

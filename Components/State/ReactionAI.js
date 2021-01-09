@@ -74,7 +74,7 @@ class ReactionAI {
 
     constructor() {
 
-        this.debugger_on = false
+        this.debugger_on = true
 
         this.commands_filter = [
             "oxygenCarbonDoubleBondReversal",
@@ -311,14 +311,18 @@ class ReactionAI {
         const methylamide = MoleculeFactory("C[N-]")
         const deprotonated_methylamide = MoleculeFactory("C[NH0]")
         const ammonia = MoleculeFactory("N")
-       // console.log(VMolecule([deprotonated_methylamide,1]).compressed())
-       // console.log(sssss)
+        const hydrochloric_acid = MoleculeFactory("Cl")
+        //console.log(VMolecule([target,1]).compressed())
+        //console.log(sssss)
 
 
         // console.log("Synthesising " + VMolecule([target,1]).canonicalSMILES() + " reagent: " + VMolecule([deprotonated_methylamide,1]).canonicalSMILES())
 
         // Leuckart Wallach - synthesising MoleculeFactory("CC(CC1=CC=CC=C1)NC")
-        this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(deprotonated_methylamide),1], [], 'synthesise', 0)
+        // this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(deprotonated_methylamide),1], [], 'synthesise', 0)
+
+        // Pinacol Rearrangement - synthesising MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
+        this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(hydrochloric_acid),1], [], 'synthesise', 0)
 
         // Akylation - synthesising MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)N"
        //  this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(ammonia),1], [], 'synthesise', 0)
@@ -442,6 +446,29 @@ class ReactionAI {
 
         }
 
+
+    }
+
+    removeProtonFromOxygenReversal(target, reagent, moleculeAI, commands, caller, depth) {
+
+        if (caller === "removeProtonFromOxygenReversal") {
+            return
+        }
+
+        this.debugger("removeProtonFromOxygenReversal() reverse reaction result")
+
+        const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
+
+        let r = null
+        r = reverse_reaction.removeProtonFromOxygenReverse()
+
+        this.debugger(r)
+
+       // console.log(uuuu)
+
+        if (r) {
+
+        }
 
     }
 
