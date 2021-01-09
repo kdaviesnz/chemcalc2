@@ -92,11 +92,11 @@ class ReactionAI {
         this.commands_filter.push("breakOxygenCarbonDoubleBondReversal")
 
         // Leuckart Wallach
-        this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal")
-        this.commands_filter.push("transferProtonReversal")
-        this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal")
-        this.commands_filter.push("dehydrationReversal")
-        this.commands_filter.push("protonateCarbocationReversal")
+        // this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal")
+        // this.commands_filter.push("transferProtonReversal")
+        // this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal")
+        // this.commands_filter.push("dehydrationReversal")
+        // this.commands_filter.push("protonateCarbocationReversal")
 
 
 
@@ -261,7 +261,7 @@ class ReactionAI {
             this.debugger(VMolecule(starting_reagent).compressed())
             this.debugger("Finish: substrate")
             this.debugger(VMolecule(reaction.container_substrate).compressed())
-            console.log(runcommands)
+           // console.log(runcommands)
 
             //process.exit()
             if (VMolecule(starting_reagent).canonicalSMILES() === "CN") {
@@ -314,14 +314,14 @@ class ReactionAI {
         // console.log("Synthesising " + VMolecule([target,1]).canonicalSMILES() + " reagent: " + VMolecule([deprotonated_methylamide,1]).canonicalSMILES())
 
         // Leuckart Wallach - synthesising MoleculeFactory("CC(CC1=CC=CC=C1)NC")
-        // this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(deprotonated_methylamide),1], [], 'synthesise', 0)
+        this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(deprotonated_methylamide),1], [], 'synthesise', 0)
 
         // Akylation - synthesising MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)N"
-        this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(ammonia),1], [], 'synthesise', 0)
+       //  this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(ammonia),1], [], 'synthesise', 0)
 
-
-        //this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(ammonia),1], [], 'synthesise', 0)
     }
+
+
 
     synthesiseCallback(substrate, reagent, commands, caller, depth) {
 

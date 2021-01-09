@@ -33,10 +33,10 @@ const r = new ReactionAI()
 // r.synthesise(m)
 
 // Leuckart Wallach
-// r.synthesise(m)
+r.synthesise(m)
 
 // Akylation
-r.synthesise(m2)
+// r.synthesise(m2)
 
 
 // Epoxide acidic ring opening
