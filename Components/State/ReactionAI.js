@@ -449,14 +449,6 @@ class ReactionAI {
 
     removeProtonFromOxygenReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
-        const command_names = commands.map((command)=>{
-            return command['name']
-        })
-        console.log(command_names)
-        console.log(llkklk)
-        if (caller === "removeProtonFromOxygenReversal") {
-            return
-        }
 
         this.debugger("removeProtonFromOxygenReversal() reverse reaction result")
 
@@ -466,6 +458,18 @@ class ReactionAI {
         r = reverse_reaction.removeProtonFromOxygenReverse()
 
         this.debugger(r)
+
+        const command_names = commands.map((command)=>{
+            return command['name']
+        })
+        console.log(command_names)
+        console.log(r)
+        console.log(VMolecule(reverse_reaction.container_substrate).compressed())
+        console.log(llkklk)
+        if (caller === "removeProtonFromOxygenReversal") {
+            return
+        }
+
 
         if (r) {
 
