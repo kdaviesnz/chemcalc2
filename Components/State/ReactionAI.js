@@ -449,12 +449,14 @@ class ReactionAI {
             return
         }
 
+        const command_names = commands.map((command)=>{
+            return command['name']
+        })
 
         this.debugger("protonateCarbocationReversal() reverse reaction result")
 
-        this.debugger(commands.map((command)=>{
-            return command['name']
-        }))
+        this.debugger(command_names)
+
 
         const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
 
@@ -462,6 +464,12 @@ class ReactionAI {
         r = reverse_reaction.protonateCarbocationReverse()
 
         this.debugger(r)
+
+        if (command_names.length === 4) {
+            console.log(VMolecule(reverse_reaction.container_substrate).compressed())
+            console.log(kkkk)
+        }
+
 
         if (r) {
 
@@ -554,6 +562,7 @@ class ReactionAI {
         })
 
 
+
         if (caller === "addProtonFromReagentToHydroxylGroupReversal") {
             return
         }
@@ -571,6 +580,8 @@ class ReactionAI {
         r = reverse_reaction.addProtonFromReagentToHydroxylGroupReverse()
 
         this.debugger(r)
+
+
 
         if (r) {
 
