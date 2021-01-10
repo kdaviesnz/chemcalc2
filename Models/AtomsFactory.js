@@ -441,11 +441,11 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                 return electron_haystack.indexOf(electron) === -1
             }
         )
-        free_electrons.should
+        free_electrons.length.isOdd().should.be.false()
         return free_electrons
     }
 
-    console.log(ringbondssss)
+    // console.log(ringbondssss)
 
     (atoms).map(
         (current, index) => {
@@ -459,10 +459,12 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                     const parent_atom_free_electrons = free_electrons(atoms, ring_bond_atom_index)
                     parent_atom_free_electrons.should.be.an.Array()
                     parent_atom_free_electrons.length.should.be.greaterThan(0)
+                    parent_atom_free_electrons.length.length.isOdd().should.be.false()
                     parent_atom_free_electrons[0].should.be.an.String()
                     const child_atom_free_electrons =  free_electrons(atoms, current_atom_index)
                     child_atom_free_electrons.should.be.an.Array()
                     child_atom_free_electrons.length.should.be.greaterThan(0)
+                    child_atom_free_electrons.length.length.isOdd().should.be.false()
                     child_atom_free_electrons[0].should.be.an.String()
                     atoms[current_atom_index].push(parent_atom_free_electrons[0])
                     atoms[ring_bond_atom_index].push(child_atom_free_electrons[0])
@@ -499,14 +501,14 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     //console.log(atoms_with_ring_bonds)
     //const mmolecule = [[12345,atoms_with_ring_bonds],1]
 
-    /*
+   
     atoms_with_ring_bonds.map(
         (atom, index) => {
             const c =  CAtom(atoms_with_ring_bonds[index], index, mmolecule)
             console.log ("Index: " + index + " Bonds: " + c.bondCount() +  " " + c.doubleBondCount())
         }
     )
-*/
+ console.log(ffffff)
 
 
 
