@@ -3,17 +3,18 @@ const MoleculeFactory = require('./Models/MoleculeFactory')
 const VMolecule = require('./Components/Stateless/Views/Molecule')
 
 // Chemicals to synthesise
-const methamphetamine = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
-console.log(mmmmkkk)
+// https://en.wikipedia.org/wiki/Pinacol_rearrangement
 
+const methamphetamine = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
+//console.log(mmmmkkk)
+
+const pinacolone = MoleculeFactory("CC(=O)C(C)(C)C")
 const imine2 = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
 //console.log(VMolecule([imine2,1]).compressed())
 //console.log(VMolecule([imine2,1]).canonicalSMILES())
 //console.log(mnb)
 
 
-// https://en.wikipedia.org/wiki/Pinacol_rearrangement
-const pinacolone = MoleculeFactory("CC(=O)C(C)(C)C")
 const pm = MoleculeFactory("CC(=O)CC1=CC2=C(C=C1)OCO2")
 
 //https://en.wikipedia.org/wiki/Leuckart_reaction

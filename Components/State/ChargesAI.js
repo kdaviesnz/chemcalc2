@@ -129,7 +129,7 @@ class ChargesAI {
                 console.log("No bonds: " + a_obj.indexedBonds("").length)
                 console.log("Double bonds: " + a_obj.indexedDoubleBonds("").length)
                 console.log("Triple bonds: " + a_obj.indexedTripleBonds("").length)
-                console.log(VMolecule(container_molecule).compressed())
+                // console.log(VMolecule(container_molecule).compressed())
                 throw new Error("Atom should have a negative charge")
             }
 

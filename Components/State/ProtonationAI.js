@@ -146,12 +146,17 @@ class ProtonationAI {
 
 
     protonateCarbocation() {
+
+
         //Explanation: A carbocation is an organic molecule, an intermediate, that forms as a result of the loss of two valence electrons, normally shared electrons, from a carbon atom that already has four bonds. This leads to the formation of a carbon atom bearing a positive charge and three bonds instead of four.
        // https://socratic.org/questions/how-is-carbocation-formed
         const carbocation_index = this.reaction.MoleculeAI.findCarbocationIndex() // electrophile
         if (carbocation_index === -1) {
             return false
         }
+        const carbocation = CAtom(this.reaction.container_substrate[0][1][carbocation_index], carbocation_index, this.reaction.container_substrate)
+        carbocation.indexedBonds("").length.should.be.equal(3)
+        carbocation.freeElectrons("").length.should.be.equal(0)
         const nucleophile_index = this.reaction.ReagentAI.findNucleophileIndex()
         // console.log(VMolecule(this.reaction.container_reagent).compressed())
         //console.log(nucleophile_index)
@@ -162,22 +167,29 @@ class ProtonationAI {
         if (proton_bonds.length === 0) {
             return false
         }
+
+
         // Add proton to substrate
         // After proton added carbocation will now have 8 electrons and 4 bonds
-        this.reaction.container_substrate[0][1][carbocation_index].push(proton_bonds[0].shared_electrons[0])
-        this.reaction.container_substrate[0][1][carbocation_index].push(proton_bonds[0].shared_electrons[1])
-        this.reaction.container_substrate[0][1].push(this.reaction.container_reagent[0][1][proton_bonds[0].atom_index])
+        console.log(this.reaction.container_substrate[0][1][carbocation_index])
+        console.log(carbocation.freeElectrons().length)
+        const proton = AtomFactory("H", "")
+        proton.pop()
+        const electrons = [uniqid(), uniqid()]
+        this.reaction.container_substrate[0][1][carbocation_index].push(electrons[0])
+        this.reaction.container_substrate[0][1][carbocation_index].push(electrons[1])
+        proton.push(electrons[0])
+        proton.push(electrons[1])
+        this.reaction.container_substrate[0][1].push(proton)
+        this.reaction.setChargeOnSubstrateAtom(carbocation_index)
+        carbocation.freeElectrons("").length.should.be.equal(0)
+
+        this.reaction.setMoleculeAI()
 
         // Remove proton from reagent
-        this.reaction.container_reagent[0][1][nucleophile_index] = Set().removeFromArray(
-            this.reaction.container_reagent[0][1][nucleophile_index],
-            proton_bonds[0].shared_electrons
-        )
-        this.reaction.container_reagent[0][1][nucleophile_index].push(uniqid())
-        this.reaction.container_reagent[0][1][nucleophile_index].push(uniqid())
-        this.reaction.container_reagent[0][1][nucleophile_index][4] = "-1"
-
-        this.reaction.container_substrate[0][1][carbocation_index][4] = ""
+        _.remove(this.reaction.container_reagent[0][1], (atom, index)=>{
+            return index === proton_bonds[0].atom_index
+        })
 
        // console.log(VMolecule(this.reaction.container_substrate).compressed())
         // console.log(VMolecule(this.reaction.container_reagent).compressed())
