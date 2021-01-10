@@ -3,6 +3,8 @@ const MoleculeFactory = require('./Models/MoleculeFactory')
 const VMolecule = require('./Components/Stateless/Views/Molecule')
 
 // Chemicals to synthesise
+const methamphetamine = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
+console.log(mmmmkkk)
 
 const imine2 = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
 //console.log(VMolecule([imine2,1]).compressed())
@@ -16,7 +18,7 @@ const pm = MoleculeFactory("CC(=O)CC1=CC2=C(C=C1)OCO2")
 
 //https://en.wikipedia.org/wiki/Leuckart_reaction
 const isopropylamine = MoleculeFactory("CC(C)N")
-const methamphetamine = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
+
 const MDA = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)N")
 //console.log(VMolecule([m2,1]).compressed())
 //console.log(m2[1][22])
