@@ -1522,16 +1522,25 @@ class Reaction {
         const proton = _.cloneDeep(this.container_substrate[0][1][proton_index])
 
         const proton_atom_object = CAtom(this.container_substrate[0][1][proton_index], proton_index, this.container_substrate)
-        const atom_index = proton_atom_object.indexedBonds("").pop().atom_index
-        this.container_substrate[0][1][atom_index][4] = this.container_substrate[0][1][atom_index][4] === '-' ? "": "+"
-        this.removeProtonFromSubstrate(proton_index)
+        let atom_index = proton_atom_object.indexedBonds("").pop().atom_index
+        // this.removeProtonFromSubstrate(proton_index)
+        _.remove(this.container_substrate[0][1], (atom, index)=>{
+            return index === proton_index
+        })
+        //this.container_substrate[0][1][atom_index][4] = this.container_substrate[0][1][atom_index][4] === '-' ? "": "+"
+        if (proton_index < atom_index) {
+            atom_index = atom_index - 1
+        }
+        this.setChargeOnSubstrateAtom(atom_index)
 
-        // Add proton to substrate
-        const electrons = _.cloneDeep(proton).slice(5)
+        // Add proton to reagent
+        const electrons = [uniqid(), uniqid()]
+        const reagent_proton = AtomFactory("H", "")
         this.container_reagent[0][1][electrophile_index].push(electrons[0])
         this.container_reagent[0][1][electrophile_index].push(electrons[1])
-        this.container_reagent[0][1][electrophile_index][4] = this.container_reagent[0][1][electrophile_index][4] === '+' ? "": "-"
-        this.container_reagent[0][1].push(proton)
+        this.container_reagent[0][1].push(reagent_proton)
+        // this.container_reagent[0][1][electrophile_index][4] = this.container_reagent[0][1][electrophile_index][4] === '+' ? "": "-"
+        this.setChargeOnReagentAtom(electrophile_index)
 
         this.setMoleculeAI()
         this.setReagentAI()

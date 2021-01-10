@@ -30,13 +30,12 @@ const imine = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)=NC")
 const r = new ReactionAI()
 
 
-// Pinacol Rearrangement
-// r.synthesise(pinacolone)
 // Leuckart Wallach
 // r.synthesise(methamphetamine)
-
 // Akylation
-r.synthesise(MDA)
+// r.synthesise(MDA)
+// Pinacol Rearrangement
+r.synthesise(pinacolone)
 
 
 

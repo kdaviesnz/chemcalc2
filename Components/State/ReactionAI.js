@@ -79,7 +79,7 @@ class ReactionAI {
         this.commands_filter = []
 
         // this.commands_filter.push("bondSubstrateToReagentReversal") // Works with Leuckart
-        // this.commands_filter.push("addProtonFromReagentToSubstrateReversal") // Works with Leuckart
+        this.commands_filter.push("addProtonFromReagentToSubstrateReversal") // Works with Leuckart
         this.commands_filter.push("protonateReversal") // Works with Leuckart
         // this.commands_filter.push("makeCarbonNitrogenDoubleBondReversal") // Works with Leuckart
         // this.commands_filter.push("breakOxygenCarbonDoubleBondReversal") // Works with Leuckart
@@ -91,11 +91,11 @@ class ReactionAI {
 
 
         // Leuckart Wallach
-        // this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal") // Works with Akylation
-        // this.commands_filter.push("transferProtonReversal") // Works with Akylation
+        // this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal") // Works with Akylation, Pinacol Rearrangement
+        // this.commands_filter.push("transferProtonReversal") // Works with Akylation, Pinacol Rearrangement
         // this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal") // Also used by Pinacol Rearrangement, Works with Akylation
         // this.commands_filter.push("dehydrationReversal") // Also used by Pinacol Rearrangement
-        // this.commands_filter.push("protonateCarbocationReversal") // Breaks Akylation
+         this.commands_filter.push("protonateCarbocationReversal") // Breaks Akylation
 
         // Pinacol Rearrangement
         // this.commands_filter.push("carbocationShiftReversal") // Works with Akylation, Leuckart
@@ -257,8 +257,6 @@ class ReactionAI {
             hydrochloric_acid, deprotonated_methylamide, ammonia
         ]
 
-        // Pinacol Rearrangement - synthesising MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
-        // this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(hydrochloric_acid),1], [], 'synthesise', 0)
 
         // Leuckart Wallach - synthesising MoleculeFactory("CC(CC1=CC=CC=C1)NC")
         reagents.map((reagent)=>{
@@ -267,6 +265,8 @@ class ReactionAI {
            //  this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(deprotonated_methylamide),1], [], 'synthesise', 0)
             // Akylation - synthesising MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)N"
             // this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(ammonia),1], [], 'synthesise', 0)
+            // Pinacol Rearrangement - synthesising MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
+            // this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(hydrochloric_acid),1], [], 'synthesise', 0)
             this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(reagent),1], [], 'synthesise', 0)
         })
 
@@ -1728,7 +1728,7 @@ class ReactionAI {
                     }
                 }
             )
-            this.synthesiseCallback(reverse_reaction.container_substrate, reverse_reaction.container_reagent, _.cloneDeep(commands), 'addProtonFromReagentToSubstrateReversal()', depth+1)
+            this.synthesiseCallback(reverse_reaction.container_substrate, reverse_reaction.container_reagent, _.cloneDeep(commands), 'addProtonFromReagentToSubstrateReversal', depth+1)
         } else {
             // console.log("addProtonFromReagentToSubstrateReversal() reverse reaction failed")
         }
