@@ -465,11 +465,6 @@ class ReactionAI {
 
         this.debugger(r)
 
-        if (command_names.length === 4) {
-            console.log(VMolecule(reverse_reaction.container_substrate).compressed())
-            console.log(kkkk)
-        }
-
 
         if (r) {
 
