@@ -592,6 +592,18 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                             atom.push(uniqid())
                         }
                     }
+                    if (bond_count === 4) {
+                        if (o_atom.freeElectrons().length !== 0) {
+                            console.log(o_atom.indexedBonds(""))
+                            o_atom.indexedBonds("").map((bond)=>{
+                                console.log("Bond type:"+bond.bond_type)
+                                console.log(bond.shared_electrons)
+                                return bond
+                            })
+                            // console.log(atom)
+                            console.log(jjklkjkl)
+                        }
+                    }
                     break;
             }
         }
