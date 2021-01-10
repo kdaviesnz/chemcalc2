@@ -505,6 +505,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     atoms_with_ring_bonds.map(
         (atom, index) => {
             const c =  CAtom(atoms_with_ring_bonds[index], index, mmolecule)
+            c.freeElectrons().length.isOdd().should.be.false()
             console.log ("Index: " + index + " Bonds: " + c.bondCount() +  " " + c.doubleBondCount())
         }
     )
@@ -544,6 +545,15 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
 
 
      */
+    
+    atoms_with_hydrogen_counts.map(
+        (atom, index) => {
+            const c =  CAtom(atoms_with_hydrogen_counts[index], index, mmolecule)
+            c.freeElectrons().length.isOdd().should.be.false()
+            console.log ("Index: " + index + " Bonds: " + c.bondCount() +  " " + c.doubleBondCount())
+        }
+    )
+ console.log(ffffff)
 
     const atoms_with_charges = _.cloneDeep(atoms_with_hydrogen_counts).reduce(
         (carry, current, index, atoms) => {
@@ -577,6 +587,15 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
    //const molecule3 = [[12345,atoms_with_charges],1]
    //console.log(VMolecule(molecule3).compressed())
    // console.log(qwe)
+    
+    atoms_with_charges.map(
+        (atom, index) => {
+            const c =  CAtom(atoms_with_charges[index], index, mmolecule)
+            c.freeElectrons().length.isOdd().should.be.false()
+            console.log ("Index: " + index + " Bonds: " + c.bondCount() +  " " + c.doubleBondCount())
+        }
+    )
+ console.log(ffffff)
 
     // Add hydrogens
     const molecule = [[12345,atoms_with_charges],1]
@@ -657,6 +676,15 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     // const molecule2 = [[12345,atoms_with_hydrogens],1]
     // console.log(VMolecule(molecule2).compressed())
     //console.log(oikk)
+    
+    atoms_with_hydrogens.map(
+        (atom, index) => {
+            const c =  CAtom(atoms_with_hydrogens[index], index, mmolecule)
+            c.freeElectrons().length.isOdd().should.be.false()
+            console.log ("Index: " + index + " Bonds: " + c.bondCount() +  " " + c.doubleBondCount())
+        }
+    )
+ console.log(ffffff)
 
     const atoms_electrons_checked = atoms_with_hydrogens.map((atom, index)=>{
         const o_atom = CAtom(atom, index, [['12345', atoms_with_hydrogens], 1])
