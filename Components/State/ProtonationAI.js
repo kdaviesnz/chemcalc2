@@ -32,9 +32,10 @@ class ProtonationAI {
 
         let oxygen = null
         let o_h_bonds = null
+        let o_index = null
 
         // Look for [O+] with at least one hydrogen
-        const o_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
+        o_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
 
             if (atom[0]!=="O") {
                 return false
@@ -45,7 +46,7 @@ class ProtonationAI {
 
             oxygen = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate)
 
-            o_h_bonds = oxygent.indexedBonds("").filter((bond)=>{
+            o_h_bonds = oxygen.indexedBonds("").filter((bond)=>{
                 return bond.atom[0] === "H"
             })
 
@@ -83,9 +84,10 @@ class ProtonationAI {
 
         let oxygen = null
         let o_h_bonds = null
+        let o_index = null
 
         // Look for [O-]
-        const o_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
+        o_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
 
             if (atom[0]!=="O") {
                 return false
@@ -99,6 +101,27 @@ class ProtonationAI {
             return oxygen.freeElectrons().length > 0
 
         })
+
+
+        if (o_index === -1) {
+            // Look for =O
+            o_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
+
+                if (atom[0]!=="O") {
+                    return false
+                }
+                if (atom[4]==="-" || atom[4] === "+"){
+                    return false
+                }
+
+                oxygen = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate)
+
+                return oxygen.doubleBondCount() ===1 && oxygen.freeElectrons().length > 0
+
+            })
+
+
+        }
 
         if (o_index === -1) {
             return false

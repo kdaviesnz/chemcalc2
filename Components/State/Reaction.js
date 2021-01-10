@@ -1857,13 +1857,17 @@ class Reaction {
 
         // Check for hydrogens
         if (carbon.hydrogens().length > 0) {
-            atom_to_shift_index = carbon.indexedBonds("").filter((bond) => {
+            const c_bonds = carbon.indexedBonds("").filter((bond) => {
                 if (bond.atom[0] !== "C") {
                     return false
                 }
                 const c = CAtom(this.container_substrate[0][1][bond.atom_index], bond.atom_index, this.container_substrate)
                 return c.hydrogens().length === 3
-            }).pop().atom_index
+            })
+            if (c_bonds.length === 0) {
+                return false
+            }
+            atom_to_shift_index = c_bonds.pop().atom_index
         } else {
             // Get methyl group then try for hydrogen
             const methyl_bonds = carbon.indexedBonds("").filter((bond) => {

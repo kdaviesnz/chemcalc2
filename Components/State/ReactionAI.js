@@ -74,35 +74,33 @@ class ReactionAI {
 
     constructor() {
 
-        this.debugger_on = false
+        this.debugger_on = true
 
         this.commands_filter = []
 
         this.commands_filter.push("bondSubstrateToReagentReversal")
         this.commands_filter.push("addProtonFromReagentToSubstrateReversal")
-
-        // Akylation
-        this.commands_filter.push("substituteHalideForAmineReversal")
-        this.commands_filter.push("deprotonateNitrogenReversal") // breaks Leuckart Wallach
-
         this.commands_filter.push("protonateReversal")
         this.commands_filter.push("makeCarbonNitrogenDoubleBondReversal")
         this.commands_filter.push("breakOxygenCarbonDoubleBondReversal")
 
+
+        // Akylation
+        this.commands_filter.push("substituteHalideForAmineReversal") // Works with Pinacol Rearrangement
+        this.commands_filter.push("deprotonateNitrogenReversal") // breaks Leuckart Wallach, Works with Pinacol Rearrangement
+
+
         // Leuckart Wallach
-         this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal")
-         this.commands_filter.push("transferProtonReversal")
-        // this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal") // Also used by Pinacol Rearrangement
+        // this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal") // Works with Akylation
+        // this.commands_filter.push("transferProtonReversal") // Works with Akylation
+        // this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal") // Also used by Pinacol Rearrangement, Works with Akylation
         // this.commands_filter.push("dehydrationReversal") // Also used by Pinacol Rearrangement
-        this.commands_filter.push("protonateCarbocationReversal")
+        // this.commands_filter.push("protonateCarbocationReversal") // Breaks Akylation
 
         // Pinacol Rearrangement
-        // this.commands_filter.push("carbocationShiftReversal")
-        // this.commands_filter.push("removeProtonFromOxygenReversal")
-        // this.commands_filter.push("oxygenCarbonDoubleBondReversal")
-
-
-
+        this.commands_filter.push("carbocationShiftReversal") // Works with Akylation
+        this.commands_filter.push("removeProtonFromOxygenReversal") // Works with Akylation
+        this.commands_filter.push("oxygenCarbonDoubleBondReversal") // Works with Akylation
 
         this.command_sets = []
 
@@ -174,18 +172,6 @@ class ReactionAI {
 
 
 
-            // Leuckart Wallach
-            /*
-            if (true) {
-                console.log("n=" + VMolecule(commands_reversed[0]["starting substrate"]).canonicalSMILES())
-                console.log("Starting substrate")
-                console.log(VMolecule(commands_reversed[0]["starting substrate"]).compressed())
-                console.log("LW (finish substrate)=" + VMolecule(commands_reversed[0]["finish substrate"]).canonicalSMILES())
-                console.log(commands_reversed[0]['name']) // makeOxygenCarbonDoubleBond
-            }
-            console.log(ujkjh)
-            */
-
             /*
             // Pinacol Rearrangement
             if (false) {
@@ -232,7 +218,7 @@ class ReactionAI {
             // console.log('starting substrate:')
             // console.log(VMolecule(commands[commands.length-1]['starting substrate']).canonicalSMILES())
             this.run(_.cloneDeep(commands).reverse(), 0, null, substrate, reagent)
-            console.log("Caller:" + caller)
+            this.debugger("Caller:" + caller)
         }
     }
 
@@ -253,7 +239,7 @@ class ReactionAI {
     run(commands, command_index, reaction, starting_substrate, starting_reagent) {
         if (commands[command_index] === undefined) {
 
-            this.debugger("\n\Run (result) " + commands.map((command)=>{
+            console.log("\n\Run (result) " + commands.map((command)=>{
                    return command['name']
             }))
             this.debugger("Start: substrate:")
@@ -317,13 +303,13 @@ class ReactionAI {
         // console.log("Synthesising " + VMolecule([target,1]).canonicalSMILES() + " reagent: " + VMolecule([deprotonated_methylamide,1]).canonicalSMILES())
 
         // Leuckart Wallach - synthesising MoleculeFactory("CC(CC1=CC=CC=C1)NC")
-        // this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(deprotonated_methylamide),1], [], 'synthesise', 0)
+        this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(deprotonated_methylamide),1], [], 'synthesise', 0)
 
         // Pinacol Rearrangement - synthesising MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
-        this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(hydrochloric_acid),1], [], 'synthesise', 0)
+        // this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(hydrochloric_acid),1], [], 'synthesise', 0)
 
         // Akylation - synthesising MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)N"
-       //  this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(ammonia),1], [], 'synthesise', 0)
+         // this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(ammonia),1], [], 'synthesise', 0)
 
     }
 
@@ -462,10 +448,7 @@ class ReactionAI {
         const command_names = commands.map((command)=>{
             return command['name']
         })
-        console.log(command_names)
-        console.log(r)
-        console.log(VMolecule(reverse_reaction.container_substrate).compressed())
-        console.log(llkklk)
+
         if (caller === "removeProtonFromOxygenReversal") {
             return
         }
@@ -597,13 +580,6 @@ class ReactionAI {
         const command_names = commands.map((command)=>{
             return command['name']
         })
-
-        if (command_names.length === 4 && command_names[0] === "removeProtonFromOxygen") {
-            console.log(command_names)
-            console.log(VMolecule(reverse_reaction.container_substrate).compressed())
-            console.log(r)
-            console.log(nnnn)
-        }
 
 
         if (caller === "addProtonFromReagentToHydroxylGroupReversal") {
@@ -1114,7 +1090,7 @@ class ReactionAI {
         // return false
 
 
-        if (caller === "carbocationShiftReversal()") {
+        if (caller === "carbocationShiftReversal") {
             return
         }
 
@@ -1163,7 +1139,7 @@ class ReactionAI {
                     carbocationShift_reaction.carbocationShift()
                     return carbocationShift_reaction
                 }})
-            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'carbocationSiftReversal()', depth+1)
+            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'carbocationShiftReversal', depth+1)
         }
 
     }
