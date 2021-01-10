@@ -441,6 +441,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                 return electron_haystack.indexOf(electron) === -1
             }
         )
+        free_electrons.should
         return free_electrons
     }
 
