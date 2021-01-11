@@ -28,7 +28,7 @@ class ChargesAI {
                 console.log("validateMolecule Br")
                 console.log(index)
                 console.log('Atom should have neutral charge')
-                return true
+                throw new Error("Atom should have a neutral charge")
             }
             if (electrons.length > (7 + b_count) && container_molecule[0][1][index][4] !== "-") {
                 console.log("validateMolecule Br")
@@ -53,7 +53,7 @@ class ChargesAI {
                 console.log("validateMolecule O")
                 console.log(index)
                 console.log('Atom should have neutral charge')
-                return true
+                throw new Error("Atom should have a neutral charge")
             }
             if (electrons.length > (6 + b_count) && container_molecule[0][1][index][4] !== "-") {
                 console.log("validateMolecule O")
@@ -76,8 +76,9 @@ class ChargesAI {
             if (5 + b_count === electrons.length && container_molecule[0][1][index][4] !== "" && container_molecule[0][1][index][4] !== 0) {
                 console.log("validateMolecule N")
                 console.log(index)
+                console.log(VMolecule(container_molecule).compressed())
                 console.log('Atom should have neutral charge')
-                return true
+                throw new Error("Atom should have a neutral charge")
             }
             if (electrons.length > (5 + b_count) && container_molecule[0][1][index][4] !== "-") {
                 console.log("validateMolecule N")
