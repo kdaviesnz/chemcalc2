@@ -352,7 +352,7 @@ class SubstitutionAI {
                 this.reaction.container_substrate[0][1][n_index].push(uniqid())
             }
         )
-        this.reaction.setChargeOnSubstrateAtom(n_index)
+        this.reaction.setChargeOnSubstrateAtom(n_index, 'substitutionAI')
 //        this.reaction.container_substrate[0][1][n_index][4] = ""
 
         const groups = this.reaction.MoleculeAI.extractGroupsReverse()

@@ -66,7 +66,7 @@ class Reaction {
         }
     }
 
-    setMoleculeAI(command_names, command_index, electrophile_index) {
+    setMoleculeAI(command_names, command_index, electrophile_index, trace) {
 
         this.container_substrate.length.should.be.equal(2) // molecule, units
         this.container_substrate[0].length.should.be.equal(2) // pKa, atoms
@@ -77,7 +77,7 @@ class Reaction {
 
         this.MoleculeAI = require("../Stateless/MoleculeAI")(this.container_substrate)
 
-        if (this.MoleculeAI.validateMolecule() === false) {
+        if (this.MoleculeAI.validateMolecule(trace) === false) {
             console.log('Reaction.js molecule is not valid')
             if (command_names !== undefined) {
                 console.log("Reaction.js setMoleculeAI command names:")
@@ -100,9 +100,9 @@ class Reaction {
         return bondsAI.makeOxygenCarbonDoubleBondReverse()
     }
 
-    setChargeOnSubstrateAtom(index) {
+    setChargeOnSubstrateAtom(index, trace) {
         const chargesAI = new ChargesAI(this)
-        return chargesAI.setChargeOnSubstrateAtom(index)
+        return chargesAI.setChargeOnSubstrateAtom(index, trace)
     }
 
     setChargesOnSubstrate(index) {

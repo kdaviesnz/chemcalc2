@@ -241,7 +241,7 @@ const MoleculeAI = (container_molecule) => {
             })
         },
 
-        validateMolecule: () => {
+        validateMolecule: (trace) => {
 
             // Check atoms do not have more than 8 electrons and 2 electrons if H
             container_molecule[0][1].map((atom, index)=>{
@@ -296,7 +296,7 @@ const MoleculeAI = (container_molecule) => {
 
             return _.findIndex(container_molecule[0][1], (atom, index)=> {
                 const chargesAI = new ChargesAI(null)
-                return chargesAI.checkCharge(container_molecule, atom, index)
+                return chargesAI.checkCharge(container_molecule, atom, index, trace)
             }) === -1
         },
 
