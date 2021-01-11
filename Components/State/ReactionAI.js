@@ -147,8 +147,9 @@ class ReactionAI {
 
             if( this._commmandSetExists(command_names)) {
                 console.log("Matching command set - exiting")
-                process.exit()
+               // process.exit()
                 //console.log(kioll)
+                return
             }
 
             this.command_sets.push(command_names)
@@ -399,10 +400,6 @@ class ReactionAI {
 
         this.debugger("removeProtonFromOxygenReversal() reverse reaction result")
 
-        this.debugger(commands.map((command)=>{
-            return command['name']
-        }))
-
 
         const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
 
@@ -419,9 +416,15 @@ class ReactionAI {
 
         if (r) {
 
+
             if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
                 this.result(target, reagent, commands, 'removeProtonFromOxygenReversal')
             }
+
+            this.debugger(commands.map((command)=>{
+                return command['name']
+            }))
+
 
             const substrate_with_proton_added = _.cloneDeep(reverse_reaction.container_substrate)
             const reagent_removeProtonFromOxygenReversal = _.cloneDeep(reverse_reaction.container_reagent)
@@ -456,7 +459,7 @@ class ReactionAI {
 
         this.debugger("protonateCarbocationReversal() reverse reaction result")
 
-        this.debugger(command_names)
+
 
 
         const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
@@ -468,6 +471,8 @@ class ReactionAI {
 
 
         if (r) {
+
+            this.debugger(command_names)
 
             if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
                 //console.log(eeeee)
@@ -501,9 +506,6 @@ class ReactionAI {
 
         this.debugger("substituteOxygenCarbonDoubleBondForAmineReversal() reverse reaction result")
 
-        this.debugger(commands.map((command)=>{
-            return command['name']
-        }))
 
 
         const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
@@ -523,10 +525,17 @@ class ReactionAI {
 
         if (r) {
 
+
             if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
                 //console.log(eeeee)
                 this.result(target, reagent, commands, 'substituteOxygenCarbonDoubleBondForAmineReversal')
             }
+
+
+            this.debugger(commands.map((command)=>{
+                return command['name']
+            }))
+
 
             const substrate_with_oxygen_double_bond = _.cloneDeep(reverse_reaction.container_substrate)
             const reagent_substituteOxygenCarbonDoubleBondForAmineReversal = _.cloneDeep(reverse_reaction.container_reagent)
@@ -565,9 +574,6 @@ class ReactionAI {
 
         this.debugger("addProtonFromReagentToHydroxylGroupReversal() reverse reaction result")
 
-        this.debugger(commands.map((command)=>{
-            return command['name']
-        }))
 
 
         const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
@@ -585,6 +591,13 @@ class ReactionAI {
                 //console.log(eeeee)
                 this.result(target, reagent, commands, 'addProtonFromReagentToHydroxylGroupReversal')
             }
+
+            this.debugger(commands.map((command)=>{
+                return command['name']
+            }))
+
+
+
 
             const substrate_proton_removed = _.cloneDeep(reverse_reaction.container_substrate)
             const reagent_with_proton_added = _.cloneDeep(reverse_reaction.container_reagent)
@@ -641,9 +654,6 @@ class ReactionAI {
 
         this.debugger("makeCarbonNitrogenDoubleBondReversal() reverse reaction result")
 
-        this.debugger(commands.map((command)=>{
-            return command['name']
-        }))
 
 
         r = reverse_reaction.makeCarbonNitrogenDoubleBondReverse()
@@ -672,6 +682,12 @@ class ReactionAI {
                 console.log(ffffff)
                 return
             }
+
+            this.debugger(commands.map((command)=>{
+                return command['name']
+            }))
+
+
 
             const substrate_carbon_nitrogen_double_bond_removed = _.cloneDeep(reverse_reaction.container_substrate)
             const reagent_after_reverse_reaction = _.cloneDeep(reverse_reaction.container_reagent)
@@ -711,10 +727,6 @@ class ReactionAI {
 
         this.debugger("deprotonateNitrogenReversal() reverse reaction result")
 
-        this.debugger(commands.map((command)=>{
-            return command['name']
-        }))
-
 
         r = reverse_reaction.deprotonateNitrogenReverse()
 
@@ -731,11 +743,17 @@ class ReactionAI {
         if (r) {
 
 
+
             if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
-               // console.log(ggggg)
+                // console.log(ggggg)
                 this.result(target, reagent, commands, 'deprotonateNitrogenReversal')
                 return
             }
+
+            this.debugger(commands.map((command)=>{
+                return command['name']
+            }))
+
 
             // console.log("deprotationReversal")
             // console.log(VMolecule(target).compressed())
@@ -795,9 +813,6 @@ class ReactionAI {
 
         this.debugger("substituteHalideForAmineReversal() reverse reaction result")
 
-        this.debugger(commands.map((command)=>{
-            return command['name']
-        }))
 
         this.debugger(r)
 
@@ -808,6 +823,13 @@ class ReactionAI {
                 this.result(target, reagent, commands, 'substituteHalideForAmineReversal')
                 return
             }
+
+            this.debugger(commands.map((command)=>{
+                return command['name']
+            }))
+
+
+
 
             const substrate_with_halide = _.cloneDeep(reverse_reaction.container_substrate)
             const reagent_substituteHalideForAmineReversal = _.cloneDeep(reverse_reaction.container_reagent)
@@ -848,9 +870,7 @@ class ReactionAI {
 
         this.debugger("removeHalideReversal() reverse reaction result")
 
-        this.debugger(commands.map((command)=>{
-            return command['name']
-        }))
+
 
 
         this.debugger(r)
@@ -864,11 +884,18 @@ class ReactionAI {
 
         if (r) {
 
+
             if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
                 // console.log(ggggg)
                 this.result(target, reagent, commands, 'removeHalideReversal')
                 return
             }
+
+
+            this.debugger(commands.map((command)=>{
+                return command['name']
+            }))
+
 
             const substrate_with_halide = _.cloneDeep(reverse_reaction.container_substrate)
             const reagent_removeHalideReversal = _.cloneDeep(reverse_reaction.container_reagent)
@@ -925,10 +952,6 @@ class ReactionAI {
 
         this.debugger("oxygenCarbonDoubleBondReversal() reverse reaction result")
 
-        this.debugger(commands.map((command)=>{
-            return command['name']
-        }))
-
 
         r = reverse_reaction.makeOxygenCarbonDoubleBondReverse()
 
@@ -939,11 +962,17 @@ class ReactionAI {
 
         if (r) {
 
-
             if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
-               // console.log(hhhhh)
+                // console.log(hhhhh)
                 return
             }
+
+            this.debugger(commands.map((command)=>{
+                return command['name']
+            }))
+
+
+
 
             // console.log(VMolecule(reagent_with_oxygen_carbon_double_bond_removed).compressed())
             // console.log('Pinacol rearrangement reversed - make oxygen carbon double bond reversed (caller=' + caller + '):')
@@ -1035,9 +1064,6 @@ class ReactionAI {
 
         this.debugger("dehydrationReversal() reverse reaction result")
 
-        this.debugger(commands.map((command)=>{
-            return command['name']
-        }))
 
 
 
@@ -1057,12 +1083,19 @@ class ReactionAI {
 
             if (r) {
 
-                //console.log(VMolecule(reverse_reaction.container_substrate).compressed())
-                //console.log(cccc)
 
                 if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
                     return
                 }
+
+                this.debugger(commands.map((command)=>{
+                    return command['name']
+                }))
+
+
+                //console.log(VMolecule(reverse_reaction.container_substrate).compressed())
+                //console.log(cccc)
+
 
                 const hydrated_substrate = _.cloneDeep(reverse_reaction.container_substrate)
                 const hydrated_reagent = _.cloneDeep(reverse_reaction.container_reagent)
@@ -1115,10 +1148,6 @@ class ReactionAI {
 
         this.debugger("carbocationShiftReversal() reverse reaction result")
 
-        this.debugger(commands.map((command)=>{
-            return command['name']
-        }))
-
 
         const reverse_reaction = new Reaction(_.cloneDeep(target), _.cloneDeep(reagent), {})
 
@@ -1130,6 +1159,9 @@ class ReactionAI {
 
 
         if (r) {
+
+
+
 
             if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
                 /*
@@ -1143,6 +1175,11 @@ class ReactionAI {
               */
                 return
             }
+
+            this.debugger(commands.map((command)=>{
+                return command['name']
+            }))
+
 
             // console.log('Pinacol rearrangement reversed - carbocation shift (caller=' + caller + '):')
             //this.render(reaction.container_substrate, reaction.container_reagent)
@@ -1195,10 +1232,6 @@ class ReactionAI {
 
         this.debugger("transferProtonReversal() reverse reaction result")
 
-        this.debugger(commands.map((command)=>{
-            return command['name']
-        }))
-
 
         r = reverse_reaction.transferProtonReverse()
         const command_names = commands.map((command)=>{
@@ -1211,10 +1244,17 @@ class ReactionAI {
         // console.log(r)
         if (r) {
 
+
             if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
                 console.log(kkkkk)
                 return
             }
+
+            this.debugger(commands.map((command)=>{
+                return command['name']
+            }))
+
+
 
             // console.log('Pinacol rearrangement reversed - deprotonate (caller=' + caller + '):')
             // https://en.wikipedia.org/wiki/Leuckart_reaction (4)
@@ -1315,11 +1355,6 @@ class ReactionAI {
         this.debugger("breakOxygenCarbonDoubleBondReversal() reverse reaction result")
 
 
-        this.debugger(commands.map((command)=>{
-            return command['name']
-        }))
-
-
         const reverse_reaction = new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {})
 
         let r = null
@@ -1356,20 +1391,19 @@ class ReactionAI {
 
         if (r) {
 
-
-            const command_names = commands.map((command)=>{
-                return command['name']
-            })
-            console.log(command_names)
-            console.log(VMolecule(target).compressed())
-            console.log(VMolecule(reverse_reaction.container_substrate).compressed())
-            console.log(uuuuu)
             // // https://en.wikipedia.org/wiki/Leuckart_reaction (5)
             //this.render(reaction.container_substrate, reaction.container_reagent)
             if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
-               // console.log(aaaaaa)
+                // console.log(aaaaaa)
                 return
             }
+
+            this.debugger(commands.map((command)=>{
+                return command['name']
+            }))
+
+
+
 
 
             const substrate_with_oxygen_carbon_double_bond = _.cloneDeep(reverse_reaction.container_substrate)
@@ -1434,9 +1468,6 @@ class ReactionAI {
 
         this.debugger("bondSubstrateToReagentReversal() reverse reaction result")
 
-        this.debugger(commands.map((command)=>{
-            return command['name']
-        }))
 
         this.debugger(r)
 
@@ -1479,9 +1510,6 @@ class ReactionAI {
 
         this.debugger("bondSubstrateToReagentReversal() reverse reaction result")
 
-        this.debugger(commands.map((command)=>{
-            return command['name']
-        }))
 
 
         this.debugger(r)
@@ -1490,11 +1518,17 @@ class ReactionAI {
 
         if (r) {
 
+
+
             if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
                 console.log(bbbbb)
                 return
             }
 
+
+            this.debugger(commands.map((command)=>{
+                return command['name']
+            }))
 
             // https://en.wikipedia.org/wiki/Leuckart_reaction (6)
             //this.render(reaction.container_substrate, reaction.container_reagent)
@@ -1593,10 +1627,6 @@ class ReactionAI {
 
         this.debugger("protonateReversal() reverse reaction result")
 
-        this.debugger(commands.map((command)=>{
-            return command['name']
-        }))
-
 
         this.debugger(r)
 
@@ -1608,6 +1638,11 @@ class ReactionAI {
                 console.log(ccccc)
                 return
             }
+
+            this.debugger(commands.map((command)=>{
+                return command['name']
+            }))
+
 
 
             // https://en.wikipedia.org/wiki/Leuckart_reaction (1)
@@ -1680,9 +1715,6 @@ class ReactionAI {
         // https://en.wikipedia.org/wiki/Leuckart_reaction (3)
         this.debugger("addProtonFromReagentToSubstrateReversal() reverse reaction result")
 
-        this.debugger(commands.map((command)=>{
-            return command['name']
-        }))
 
 
         let r = null
@@ -1700,6 +1732,9 @@ class ReactionAI {
                 return
             }
 
+            this.debugger(commands.map((command)=>{
+                return command['name']
+            }))
 
             // https://en.wikipedia.org/wiki/Leuckart_reaction (1)
             //this.render(reaction.container_substrate, reaction.container_reagent)
