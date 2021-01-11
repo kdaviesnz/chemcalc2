@@ -15,6 +15,24 @@ class ChargesAI {
         }
     }
 
+    setChargesOnReagent() {
+        this.reaction.container_reagent[0][1].map(
+            (atom, index) => {
+                this.setChargeOnReagentAtom(index)
+                return atom
+            }
+        )
+    }
+
+    setChargesOnSubstrate() {
+        this.reaction.container_substrate[0][1].map(
+            (atom, index) => {
+                this.setChargeOnReagentAtom(index)
+                return atom
+            }
+        )
+    }
+
     checkCharge(container_molecule, atom, index) {
 
         const a_obj = CAtom(container_molecule[0][1][index], index, container_molecule)

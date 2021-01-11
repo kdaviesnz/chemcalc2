@@ -741,22 +741,7 @@ class ProtonationAI {
         }
 
         // Remove proton
-        removeProtonFromREagenttt
-        const proton = _.cloneDeep(this.reaction.container_reagent[0][1][proton_bonds[0].atom_index])
-        this.reaction.container_reagent[0][1][proton_atom_index] = Set().removeFromArray(
-            this.reaction.container_reagent[0][1][proton_atom_index],
-            proton_bonds[0].shared_electrons
-        )
-        this.reaction.container_reagent[0][1][proton_atom_index].push(uniqid())
-        this.reaction.container_reagent[0][1][proton_atom_index].push(uniqid())
-        _.remove(this.reaction.container_reagent[0][1], (atom,index)=>{
-            return index === proton_bonds[0].atom_index
-        })
-        if (proton_bonds[0].atom_index < proton_atom_index) {
-            proton_atom_index = proton_atom_index - 1
-        }
-        this.reaction.setChargeOnReagentAtom(proton_atom_index)
-
+        const proton = this.removeProtonFromReagent(proton_bonds[0], proton_atom_index)
         // Add proton to nitrogen
         const nitrogen_free_electrons = nitrogen.freeElectrons()
         proton.pop()
@@ -777,7 +762,29 @@ class ProtonationAI {
 
     }
 
-    removeProtonFromReagent() {
+    removeProtonFromReagent(proton_bond, proton_atom_index) {
+
+        console.log(VMolecule(this.reaction.container_reagent).compressed())
+        const shared_electrons = this.reaction.container_reagent[0][1][proton_bond.atom_index].slice(4)
+        const proton = _.cloneDeep(this.reaction.container_reagent[0][1][proton_bond.atom_index])
+        this.reaction.container_reagent[0][1][proton_atom_index] = Set().removeFromArray(
+            this.reaction.container_reagent[0][1][proton_atom_index],
+            shared_electrons
+        )
+        this.reaction.container_reagent[0][1][proton_atom_index].push(uniqid())
+        this.reaction.container_reagent[0][1][proton_atom_index].push(uniqid())
+        _.remove(this.reaction.container_reagent[0][1], (atom,index)=>{
+            return index === proton_bond.atom_index
+        })
+
+        this.reaction.setChargesOnReagent()
+
+        console.log(VMolecule(this.reaction.container_reagent).compressed())
+
+        this.reaction.setReagentAI()
+        this.reaction.ReagentAI.validateMolecule()
+
+        return proton
 
     }
 

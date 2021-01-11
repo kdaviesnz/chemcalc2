@@ -105,6 +105,16 @@ class Reaction {
         return chargesAI.setChargeOnSubstrateAtom(index)
     }
 
+    setChargesOnSubstrate(index) {
+        const chargesAI = new ChargesAI(this)
+        return chargesAI.setChargesOnSubstrateAtom(index)
+    }
+
+    setChargesOnReagent(index) {
+        const chargesAI = new ChargesAI(this)
+        return chargesAI.setChargesOnReagent(index)
+    }
+
     setChargeOnReagentAtom(index) {
         const chargesAI = new ChargesAI(this)
         return chargesAI.setChargeOnReagentAtom(index)
