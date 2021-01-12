@@ -17,8 +17,8 @@ const VReaction = (reactions, container_end_product, rule) => {
             })
              */
 
-            console.log(VMolecule(container_end_product).canonicalSMILES() + " synthesis")
-            console.log("Mechanism: " + rule.mechanism)
+           // console.log(VMolecule(container_end_product).canonicalSMILES() + " synthesis")
+           // console.log("Mechanism: " + rule.mechanism)
 
             _.cloneDeep(reactions).reverse().map(
                 (reaction) => {
