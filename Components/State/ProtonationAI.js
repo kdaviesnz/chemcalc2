@@ -17,6 +17,7 @@ const uniqid = require('uniqid');
 // deprotonateNitrogen()
 // protonate()
 // removeProtonFromWater()
+// removeProtonFromOxygen()
 // addProtonFromReagentToHydroxylGroup()
 // addProtonFromReagentToHydroxylGroupReverse()
 // deprotonateNitrogenReverse()
@@ -33,6 +34,11 @@ class ProtonationAI {
         let oxygen = null
         let o_h_bonds = null
         let o_index = null
+
+        this.reaction.setReagentAI()
+        if (this.reaction.ReagentAI.isStrongAcid()) {
+            return false
+        }
 
         // Look for [O+] with at least one hydrogen
         o_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
@@ -85,6 +91,14 @@ class ProtonationAI {
         let oxygen = null
         let o_h_bonds = null
         let o_index = null
+
+
+        this.reaction.setReagentAI()
+
+
+        if (this.reaction.ReagentAI.isStrongAcid()) {
+            return false
+        }
 
         // Look for [O-]
         o_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{

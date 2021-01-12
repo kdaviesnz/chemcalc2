@@ -199,6 +199,12 @@ const MoleculeAI = (container_molecule) => {
     // No method should change state of container_molecule
     return {
 
+        isStrongAcid: () => {
+            const map = ["Cl", "OS(=O)(=O)O"] // hydrochloric acid, sulphuric acid
+            return map.indexOf(VMolecule(container_molecule).canonicalSMILES()) !== -1
+        },
+
+
         findCarbocationIndex: () => {
             // Explanation: A carbocation is an organic molecule, an intermediate, that forms as a result of the loss of two valence electrons, normally shared electrons, from a carbon atom
             // that already has four bonds. This leads to the formation of a carbon atom bearing a positive charge and three bonds instead of four.

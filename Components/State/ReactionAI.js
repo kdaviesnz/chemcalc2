@@ -241,9 +241,8 @@ class ReactionAI {
 
 
 
-        const reagents = [
-            hydrochloric_acid, deprotonated_methylamide, ammonia
-        ]
+        const reagents = [hydrochloric_acid, deprotonated_methylamide, ammonia]
+        //const reagents = [ammonia]
 
 
         // Leuckart Wallach - synthesising MoleculeFactory("CC(CC1=CC=CC=C1)NC")
