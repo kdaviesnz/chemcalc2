@@ -33,7 +33,7 @@ const r = new ReactionAI()
 // Leuckart Wallach
 // r.synthesise(methamphetamine)
 // Pinacol Rearrangement
-//r.synthesise(pinacolone)
+// r.synthesise(pinacolone)
 // Akylation
 r.synthesise(MDA)
 
