@@ -105,6 +105,7 @@ class ReactionAI {
         this.command_sets = []
 
 
+
         this.result = (substrate, reagent, commands, caller) => {
             if (reagent === null) {
             //console.log('No reagent')
@@ -431,6 +432,8 @@ class ReactionAI {
 
         }
 
+
+
     }
 
     protonateCarbocationReversal(target, reagent, moleculeAI, commands, caller, depth) {
@@ -485,6 +488,8 @@ class ReactionAI {
 
             this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'protonateCarbocationReversal', depth+1)
         }
+
+
 
     }
 
@@ -543,6 +548,7 @@ class ReactionAI {
 
             this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'substituteOxygenCarbonDoubleBondForAmineReversal', depth+1)
         }
+
 
 
     }
@@ -621,6 +627,8 @@ class ReactionAI {
 
             this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'addProtonFromReagentToHydroxylGroupReversal', depth+1)
         }
+
+
     }
 
 
@@ -699,6 +707,8 @@ class ReactionAI {
         } else {
            //console.log("ReactionAI.js makeCarbonNitrogenDoubleBondReversal() reaction failed")
         }
+
+
     }
 
 
@@ -786,6 +796,9 @@ class ReactionAI {
 
             this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'deprotonateNitrogenReversal', depth+1)
         }
+
+
+
     }
 
     substituteHalideForAmineReversal(target, reagent, moleculeAI, commands, caller, depth) {
@@ -839,6 +852,8 @@ class ReactionAI {
 
 
         }
+
+
 
     }
 
@@ -920,6 +935,8 @@ class ReactionAI {
 
             this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'removeHalideReversal', depth+1)
         }
+
+
     }
 
     oxygenCarbonDoubleBondReversal(target, reagent, moleculeAI, commands, caller, depth) {
@@ -986,6 +1003,8 @@ class ReactionAI {
             }})
             this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'oxygenCarbonDoubleBondReversal', depth+1)
         }
+
+
 
     }
 
@@ -1116,6 +1135,8 @@ class ReactionAI {
 
 
 
+
+
     }
 
 
@@ -1187,6 +1208,9 @@ class ReactionAI {
                 }})
             this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'carbocationShiftReversal', depth+1)
         }
+
+
+
 
     }
 
@@ -1323,6 +1347,22 @@ class ReactionAI {
         } else {
               //console.log('transferProtonReversal() reaction failed')
         }
+
+        this.command_map = {
+            'removeProtonFromOxygen': "Remove proton from oxygen atom",
+            'protonateCarbocation': 'Add proton to carbocation',
+            'substituteOxygenCarbonDoubleBondForAmine': 'Substitute oxygen-carbon double bond for oxygen-carbon single bond and amine group',
+            'addProtonFromReagentToHydroxylGroup': 'Add proton from reagent to hydroxyl group on substrate',
+            'makeCarbonNitrogenDoubleBond': 'Make carbon-nitrogen double bond',
+            'deprotonateNitrogen': 'Deprotonate nitrogen atom on substrate',
+            'substituteHalideForAmine': 'Substitute halide for amine group',
+            'removeHalide': 'Remove halide',
+            'makeOxygenCarbonDoubleBond': 'Make oxygen-carbon double bond',
+            'dehydrate': 'Dehydrate',
+            'carbocationShift': 'Shift carbocation',
+            'transferProton': 'Transfer proton'
+        }
+
 
     }
 

@@ -1,6 +1,6 @@
-const Reaction = (container_molecule) => {
+const Reaction = (r_command, substrate, reagent, product) => {
     return {
-        'command':command,
+        'command':r_command,
         'substrate':substrate,
         'reagent':reagent,
         'product': product
