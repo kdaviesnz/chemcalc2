@@ -66,7 +66,7 @@ class Reaction {
         }
     }
 
-    setMoleculeAI(command_names, command_index, electrophile_index, trace) {
+    setMoleculeAI(command_names, command_index, electrophile_index, trace, trace_id) {
 
         this.container_substrate.length.should.be.equal(2) // molecule, units
         this.container_substrate[0].length.should.be.equal(2) // pKa, atoms
@@ -77,17 +77,7 @@ class Reaction {
 
         this.MoleculeAI = require("../Stateless/MoleculeAI")(this.container_substrate)
 
-        if (this.MoleculeAI.validateMolecule(trace) === false) {
-            console.log('Reaction.js molecule is not valid')
-            if (command_names !== undefined) {
-                console.log("Reaction.js setMoleculeAI command names:")
-                console.log(command_names)
-                console.log("Reaction.js setMoleculeAI command index:" + command_index)
-                console.log("Reaction.js setMoleculeAI electrophile index:" + electrophile_index)
-            }
-            console.log(VMolecule(this.container_substrate).compressed())
-            console.log(iiii)
-        }
+        this.MoleculeAI.validateMolecule(trace, trace_id)
     }
 
     makeCarbonNitrogenDoubleBondReverse() {
@@ -105,14 +95,14 @@ class Reaction {
         return chargesAI.setChargeOnSubstrateAtom(index, trace, trace_id)
     }
 
-    setChargesOnSubstrate(index) {
+    setChargesOnSubstrate() {
         const chargesAI = new ChargesAI(this)
-        return chargesAI.setChargesOnSubstrateAtom(index)
+        return chargesAI.setChargesOnSubstrate()
     }
 
-    setChargesOnReagent(index) {
+    setChargesOnReagent() {
         const chargesAI = new ChargesAI(this)
-        return chargesAI.setChargesOnReagent(index)
+        return chargesAI.setChargesOnReagent()
     }
 
     setChargeOnReagentAtom(index) {
@@ -292,6 +282,9 @@ class Reaction {
 
     transferProtonReverse() {
 
+        this.setChargesOnSubstrate()
+        this.setMoleculeAI('transferprotonreverse')
+
         // console.log('Reaction.js transferProtonReverse()')
         // console.log(VMolecule(this.container_substrate).compressed())
         // Get index of N not on C=N bond
@@ -306,6 +299,9 @@ class Reaction {
                 return false
             }
             const n = CAtom(this.container_substrate[0][1][index], index, this.container_substrate)
+            if (n.indexedBonds("").length === 4) {
+                return false
+            }
             const c_b = n.indexedDoubleBonds("").filter((bond)=>{
                 return bond.atom[0] === "C"
             })
@@ -317,7 +313,6 @@ class Reaction {
         if (nucleophile_index === -1) {
             return false
         }
-
 
 
         // Get index of OH
@@ -338,38 +333,71 @@ class Reaction {
             return false
         }
 
+
         // Remove electrons from electrophile atom
         const shared_electrons = proton_bond.shared_electrons
+
         if (shared_electrons.length === 0) {
             return false
         }
+        // transferProtonReverse
+
+        //// console.log(this.container_substrate[0][1][electrophile_index])
+        // OH
         _.remove(this.container_substrate[0][1][electrophile_index], (v, i)=> {
             return shared_electrons[1] === v || shared_electrons[0] === v
         })
+
+
         // We do this so that atom is negatively charged
         range.range(0, shared_electrons.length, 1).map((i)=>{
             this.container_substrate[0][1][electrophile_index].push(uniqid())
         })
 
+
+        //// console.log(this.container_substrate[0][1][electrophile_index])
+
+
         //this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4] === "+"?"":"-"
-        this.setChargeOnSubstrateAtom(electrophile_index)
+      //  this.setChargeOnSubstrateAtom(electrophile_index)
 
 
         // Add proton to nucleophile atom
         // shared electrons are electrons from proton
+        // N
         const nucleophile_atom_object = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate)
         const nucleophile_free_electrons = nucleophile_atom_object.freeElectrons()
+
+        // console.log("nucl")
+        // console.log(this.container_substrate[0][1][nucleophile_index])
+        // console.log("Nucl, numver of bonds")
+        // console.log(nucleophile_atom_object.indexedBonds("").length )
+
         this.container_substrate[0][1][nucleophile_index] = Set().removeFromArray(this.container_substrate[0][1][nucleophile_index], nucleophile_free_electrons)
         this.container_substrate[0][1][nucleophile_index].push(shared_electrons[0])
         this.container_substrate[0][1][nucleophile_index].push(shared_electrons[1])
+
+
+
+        this.setChargesOnSubstrate()
+        // console.log("Shared electrons:")
+        // console.log(shared_electrons)
+        // console.log("Nucl free electrons")
+        // console.log(nucleophile_free_electrons)
+        this.setMoleculeAI('transferprotonreverse')
+
+
+
+
+
         //this.container_substrate[0][1][nucleophile_index][4] = this.container_substrate[0][1][nucleophile_index][4] === "-"?"":"+"
-        this.setChargeOnSubstrateAtom(nucleophile_index)
+        this.setChargesOnSubstrate()
 
         // console.log('transferProton() nucleophile index: ' + nucleophile_index)
         // console.log(this.container_substrate[0][1][nucleophile_index])
         // console.log(klj)
 
-        this.setMoleculeAI()
+        this.setMoleculeAI('transferprotonreverse')
 
         return true
 
@@ -383,8 +411,8 @@ class Reaction {
 
         // Get nucleophile  - this is the atom that is getting the proton
         const nucleophile_index = this.MoleculeAI.findNucleophileIndex() // eg [O-]
-        //console.log(nucleophile_index)
-        //console.log(kkk)
+        //// console.log(nucleophile_index)
+        //// console.log(kkk)
         if (nucleophile_index == -1) {
             return false
         }
@@ -1324,7 +1352,8 @@ class Reaction {
                 this.container_substrate[0][1][target_atom_index][4]=== "-"
                 || this.container_substrate[0][1][target_atom_index][4] < 0? 0:"+"
         }
-        this.setMoleculeAI()
+        this.setChargesOnSubstrate()
+        this.setMoleculeAI(null, null, null, "addprotontosubstrate", uniqid())
     }
 
     protonateReverse() {
@@ -1936,7 +1965,7 @@ class Reaction {
        // console.log(jkhooo)
        // console.log("Reaction.js Carbocation index:" +carbocation_index)
        // console.log("carbon index: "+ carbon_index)
-      //  console.log("atom to shift index: "+ atom_to_shift_index)
+      //  // console.log("atom to shift index: "+ atom_to_shift_index)
       // console.log(VMolecule(this.container_substrate).compressed())
        // console.log(aaaa)
 

@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const CAtom = require('../../Controllers/Atom')
 const VMolecule = require('../Stateless/Views/Molecule')
+const uniqid = require('uniqid');
 
 class ChargesAI {
 
@@ -11,7 +12,7 @@ class ChargesAI {
 
     debugger(o) {
         if (this.debugger_on) {
-            console.log(o)
+           // console.log(o)
         }
     }
 
@@ -27,18 +28,24 @@ class ChargesAI {
     setChargesOnSubstrate() {
         this.reaction.container_substrate[0][1].map(
             (atom, index) => {
-                this.setChargeOnReagentAtom(index)
+                this.setChargeOnSubstrateAtom(index, 'chargesai', uniqid())
                 return atom
             }
         )
     }
 
-    checkCharge(container_molecule, atom, index, trace) {
+    checkCharge(container_molecule, atom, index, trace, trace_id) {
 
-        if (trace === "substitutionAI") {
-            console.log(trace)
-        }
         const a_obj = CAtom(container_molecule[0][1][index], index, container_molecule)
+
+        /*
+        if (trace === "chargesai" || trace==="addprotontosubstrate") {
+           // console.log(trace + " " + trace_id)
+           // console.log("(trace) " + trace + " ChargesAI checking charge: " + container_molecule[0][1][index][0] + " index:" + index + " free electrons:" + a_obj.freeElectrons().length + " bonds:" + (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length))
+
+        }
+        */
+
         const b_count = a_obj.bondCount() + a_obj.doubleBondCount()
         const electrons = _.cloneDeep(container_molecule[0][1][index].slice(5))
         const freeElectrons = a_obj.freeElectrons()
@@ -50,23 +57,23 @@ class ChargesAI {
              b = (7 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length)
 /*
             if (7 + b_count === electrons.length && container_molecule[0][1][index][4] !== "" && container_molecule[0][1][index][4] !== 0) {
-                console.log("validateMolecule Br")
-                console.log(index)
-                console.log('Atom should have neutral charge')
+               // console.log("validateMolecule Br")
+               // console.log(index)
+               // console.log('Atom should have neutral charge')
                 throw new Error("Atom should have a neutral charge")
             }
             if (electrons.length > (7 + b_count) && container_molecule[0][1][index][4] !== "-") {
-                console.log("validateMolecule Br")
-                console.log(index)
-                console.log('Atom should have negative charge')
+               // console.log("validateMolecule Br")
+               // console.log(index)
+               // console.log('Atom should have negative charge')
                 return true
             }
             if (electrons.length < (7 + b_count) && container_molecule[0][1][index][4] !== "+") {
-                console.log("validateMolecule Br")
-                console.log(electrons.length)
-                console.log(b_count)
-                console.log(index)
-                console.log('Atom should have positive charge!')
+               // console.log("validateMolecule Br")
+               // console.log(electrons.length)
+               // console.log(b_count)
+               // console.log(index)
+               // console.log('Atom should have positive charge!')
                 return true
             }
             */
@@ -78,23 +85,23 @@ class ChargesAI {
              b = (6 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length)
 /*
             if (6 + b_count === electrons.length && container_molecule[0][1][index][4] !== "" && container_molecule[0][1][index][4] !== 0) {
-                console.log("validateMolecule O")
-                console.log(index)
-                console.log('Atom should have neutral charge')
+               // console.log("validateMolecule O")
+               // console.log(index)
+               // console.log('Atom should have neutral charge')
                 throw new Error("Atom should have a neutral charge")
             }
             if (electrons.length > (6 + b_count) && container_molecule[0][1][index][4] !== "-") {
-                console.log("validateMolecule O")
-                console.log(index)
-                console.log('Atom should have negative charge')
+               // console.log("validateMolecule O")
+               // console.log(index)
+               // console.log('Atom should have negative charge')
                 return true
             }
             if (electrons.length < (6 + b_count) && container_molecule[0][1][index][4] !== "+") {
-                console.log("validateMolecule O")
-                console.log(electrons.length)
-                console.log(b_count)
-                console.log(index)
-                console.log('Atom should have positive charge!')
+               // console.log("validateMolecule O")
+               // console.log(electrons.length)
+               // console.log(b_count)
+               // console.log(index)
+               // console.log('Atom should have positive charge!')
                 return true
             }
             */
@@ -105,22 +112,22 @@ class ChargesAI {
              b = (5 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length)
 /*
             if (5 + b_count === electrons.length && container_molecule[0][1][index][4] !== "" && container_molecule[0][1][index][4] !== 0) {
-                console.log("validateMolecule N")
-                console.log(index)
-                console.log(VMolecule(container_molecule).compressed())
-                console.log('Atom should have neutral charge')
+               // console.log("validateMolecule N")
+               // console.log(index)
+               // console.log(VMolecule(container_molecule).compressed())
+               // console.log('Atom should have neutral charge')
                 throw new Error("Atom should have a neutral charge")
             }
             if (electrons.length > (5 + b_count) && container_molecule[0][1][index][4] !== "-") {
-                console.log("validateMolecule N")
-                console.log(index)
-                console.log('Atom should have negative charge')
+               // console.log("validateMolecule N")
+               // console.log(index)
+               // console.log('Atom should have negative charge')
                 return true
             }
             if (electrons.length < (5 + b_count) && container_molecule[0][1][index][4] !== "+") {
-                console.log("DEBUG: Atom should have positive charge")
-                console.log("DEBUG: Atom " + atom[0])
-                console.log("DEBUG: Index " + index)
+               // console.log("DEBUG: Atom should have positive charge")
+               // console.log("DEBUG: Atom " + atom[0])
+               // console.log("DEBUG: Index " + index)
                 throw new Error("Atom should have positive charge")
             }
             */
@@ -137,22 +144,22 @@ class ChargesAI {
 
             /*
             if (4 + b_count === electrons.length && container_molecule[0][1][index][4] !== "" && container_molecule[0][1][index][4] !== 0) {
-                console.log("validateMolecule C")
-                console.log(index)
-                console.log('Atom should have neutral charge')
+               // console.log("validateMolecule C")
+               // console.log(index)
+               // console.log('Atom should have neutral charge')
                 return true
             }
             if (electrons.length > (4 + b_count) && container_molecule[0][1][index][4] !== "-") {
-                console.log("validateMolecule C")
-                console.log(index)
-                console.log('Atom should have negative charge')
+               // console.log("validateMolecule C")
+               // console.log(index)
+               // console.log('Atom should have negative charge')
                 return true
             }
             if (electrons.length < (4 + b_count) && container_molecule[0][1][index][4] !== "+") {
-                console.log("DEBUG: Atom should have positive charge")
-                console.log("DEBUG: Atom " + atom[0])
-                console.log("DEBUG: Index " + index)
-                console.log(VMolecule(container_molecule).compressed())
+               // console.log("DEBUG: Atom should have positive charge")
+               // console.log("DEBUG: Atom " + atom[0])
+               // console.log("DEBUG: Index " + index)
+               // console.log(VMolecule(container_molecule).compressed())
                 throw new Error("Atom should have positive charge")
             }
             */
@@ -160,36 +167,36 @@ class ChargesAI {
 
 
         if (b===0 && (container_molecule[0][1][index][4] !=="" && container_molecule[0][1][index][4] !==0)) {
-            console.log("DEBUG: Atom should have neutral charge")
-            console.log("DEBUG: Atom " + atom[0])
-            console.log("DEBUG: Charge " + atom[4])
-            console.log("DEBUG: Index " + index)
-            console.log(VMolecule(container_molecule).compressed())
+           // console.log("DEBUG: Atom should have neutral charge")
+           // console.log("DEBUG: Atom " + atom[0])
+           // console.log("DEBUG: Charge " + atom[4])
+           // console.log("DEBUG: Index " + index)
+           // console.log(VMolecule(container_molecule).compressed())
             throw new Error("Atom should have a neutral charge")
         }
 
         if (b > 0 && container_molecule[0][1][index][4] !=="+") {
-            console.log("DEBUG: Atom should have positive charge")
-            console.log("DEBUG: Atom " + atom[0])
-            console.log("DEBUG: Charge " + atom[4])
-            console.log("DEBUG: Index " + index)
-            console.log(VMolecule(container_molecule).compressed())
+           // console.log("DEBUG: Atom should have positive charge")
+           // console.log("DEBUG: Atom " + atom[0])
+           // console.log("DEBUG: Charge " + atom[4])
+           // console.log("DEBUG: Index " + index)
+           // console.log(VMolecule(container_molecule).compressed())
             throw new Error("Atom should have a positive charge")
         }
 
         if (b < 0 && container_molecule[0][1][index][4] !=="-") {
-            console.log("DEBUG: Atom should have negative charge")
-            console.log("TRACE:"+trace)
-            console.log("DEBUG: Atom " + atom[0])
-            console.log("DEBUG: Charge " + atom[4])
-            console.log("DEBUG: Index " + index)
-            console.log("DEBUG: b " + b)
-            console.log(a_obj.freeElectrons())
-            console.log("Free electrons: " + a_obj.freeElectrons().length)
-            console.log("No bonds: " + a_obj.indexedBonds("").length)
-            console.log("Double bonds: " + a_obj.indexedDoubleBonds("").length)
-            console.log("Triple bonds: " + a_obj.indexedTripleBonds("").length)
-            // console.log(VMolecule(container_molecule).compressed())
+           // console.log("DEBUG: Atom should have negative charge")
+           // console.log("TRACE:"+trace + " " + trace_id)
+           // console.log("DEBUG: Atom " + atom[0])
+           // console.log("DEBUG: Charge " + atom[4])
+           // console.log("DEBUG: Index " + index)
+           // console.log("DEBUG: b " + b)
+           // console.log(a_obj.freeElectrons())
+           // console.log("Free electrons: " + a_obj.freeElectrons().length)
+           // console.log("No bonds: " + a_obj.indexedBonds("").length)
+           // console.log("Double bonds: " + a_obj.indexedDoubleBonds("").length)
+           // console.log("Triple bonds: " + a_obj.indexedTripleBonds("").length)
+           // console.log(VMolecule(container_molecule).compressed())
             throw new Error("Atom should have a negative charge")
         }
 
@@ -198,7 +205,7 @@ class ChargesAI {
 
     }
 
-    setChargeOnSubstrateAtom(index, trace) {
+    setChargeOnSubstrateAtom(index, trace, trace_id) {
 
         // https://chemistry.stackexchange.com/questions/22032/how-does-a-carbocation-have-a-positive-charge
         // Formal Charge= (No.of valence electrons in unbonded state - no of lone pair electrons ) - (no. of bond pair electrons/2)
@@ -281,12 +288,15 @@ class ChargesAI {
 
 
         this.reaction.container_substrate[0][1][index][4] = b  > 0? "+": (b < 0?"-":"")
-        if (trace === "substitutionAI") {
-            console.log("(trace) " + trace + " ChargesAI setting charge: " + this.reaction.container_substrate[0][1][index][0] + " " + index + " " + b + " free electrons:" + a_obj.freeElectrons().length + " bonds:" + (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length))
-        }
 
-        this.reaction.setMoleculeAI(null, null, null, trace)
-        this.checkCharge(this.reaction.container_substrate, this.reaction.container_substrate[0][1][index], index)
+        /*
+        if (trace === "chargesai" || trace === "addprotontosubstrate") {
+           // console.log("(trace) " + trace + " ChargesAI setting charge: " + this.reaction.container_substrate[0][1][index][0] + " index:" + index + " b:" + b + " free electrons:" + a_obj.freeElectrons().length + " bonds:" + (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length))
+        }
+        */
+
+        // this.reaction.setMoleculeAI(null, null, null, trace, trace_id)
+        // this.checkCharge(this.reaction.container_substrate, this.reaction.container_substrate[0][1][index], index)
 
 
     }

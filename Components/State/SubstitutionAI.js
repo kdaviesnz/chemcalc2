@@ -21,7 +21,7 @@ class SubstitutionAI {
 
     debugger(o) {
         if (this.debugger_on) {
-            console.log(o)
+           // console.log(o)
         }
     }
 
@@ -79,11 +79,11 @@ class SubstitutionAI {
             }
             this.reaction.setSubstrateGroupsReverse(groups)
             /*
-            console.log("Leaving groups")
-            console.log(VMolecule(this.reaction.leaving_groups[0]).compressed())
-            console.log("Substrate")
-            console.log(VMolecule(this.reaction.container_substrate).compressed())
-            console.log(blahblah)
+           // console.log("Leaving groups")
+           // console.log(VMolecule(this.reaction.leaving_groups[0]).compressed())
+           // console.log("Substrate")
+           // console.log(VMolecule(this.reaction.container_substrate).compressed())
+           // console.log(blahblah)
              */
             if(this.reaction.leaving_groups.length > 0) {
                 this.reaction.container_reagent = this.reaction.leaving_groups[0]
@@ -128,7 +128,7 @@ class SubstitutionAI {
         })
 
         if (n_index === -1) {
-            console.log(nnegindexnotfound)
+           // console.log(nnegindexnotfound)
             return false
         }
 
@@ -144,7 +144,7 @@ class SubstitutionAI {
         })
 
         if (c_hydroxyl_bonds.length === -1) {
-            console.log(hydroxylbondnotfound)
+           // console.log(hydroxylbondnotfound)
             return false
         }
 
@@ -244,9 +244,9 @@ class SubstitutionAI {
             this.reaction.setMoleculeAI()
             this.reaction.setReagentAI()
 
-            // console.log(VMolecule(this.reaction.container_substrate).compressed())
+          // console.log(VMolecule(this.reaction.container_substrate).compressed())
 
-            // console.log(bbbbb)
+          // console.log(bbbbb)
             return true
 
         }
@@ -352,7 +352,9 @@ class SubstitutionAI {
                 this.reaction.container_substrate[0][1][n_index].push(uniqid())
             }
         )
-        this.reaction.setChargeOnSubstrateAtom(n_index, 'substitutionAI', uniqid())
+
+        this.reaction.setChargesOnSubstrate()
+        // this.reaction.setChargeOnSubstrateAtom(n_index, 'substitutionAI', uniqid())
 //        this.reaction.container_substrate[0][1][n_index][4] = ""
 
         const groups = this.reaction.MoleculeAI.extractGroupsReverse()
@@ -365,9 +367,10 @@ class SubstitutionAI {
             halide_atom.push(shared_electrons[1])
             this.reaction.container_substrate[0][1].push(halide_atom)
             this.reaction.setReagentAI()
+            this.reaction.setChargesOnSubstrate('chargesai', uniqid())
             this.reaction.setMoleculeAI()
-            //console.log(VMolecule(this.reaction.container_substrate).compressed())
-            //console.log(mmmm)
+          // console.log(VMolecule(this.reaction.container_substrate).compressed())
+          // console.log(mmmm)
             return true
         } else {
             return false
