@@ -73,10 +73,16 @@ const Test = () => {
         const db = client.db("chemistry")
 
         // Get known reactions from mongo
-        db.collection("molecules").find({}).toArray(function(err, result) {
+        db.collection("known_reactions").find({}).toArray(function(err, known_reactions) {
             if (err) throw err;
-            console.log(result);
-            db.close();
+            // Test to see if we can duplicate the reaction
+            known_reactions.map(
+                (know_reaction) => {
+                    console.log(known_reaction)
+                    return know_reaction
+                }
+            )
+
         });
 
     })
