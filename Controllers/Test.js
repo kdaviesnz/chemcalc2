@@ -129,15 +129,13 @@ const Test = () => {
                                     // known_reaction.substrate
                                     // known_reaction.reagent
                                     // console.log(molecule.CanonicalSMILES)
-                                    r.synthesise(product, (err, calculated_reactions) => {
-                                        // Look in calculated_reactions for molecule.CanonicalSMILES
-                                        const matching_reactions = calculated_reactions.filter((calculated_reaction) => {
-                                            console.log(VMolecule(calculated_reaction.product).canonicalSMILES())
-                                            console.log(VMolecule(calculated_reaction.substrate).canonicalSMILES())
-                                            return VMolecule(calculated_reaction.product).canonicalSMILES() === VMolecule([product, 1]).canonicalSMILES() && VMolecule(calculated_reaction.substrate).canonicalSMILES() === VMolecule([substrate, 1]).canonicalSMILES()
-                                        })
-                                        console.log(matching_reactions)
-                                        console.log(hfdd)
+                                    r.synthesise(product, (err, calculated_reaction_steps) => {
+                                        console.log("###########")
+                                        console.log(VMolecule(calculated_reaction_steps[calculated_reaction_steps.length-1].product).canonicalSMILES())
+                                        console.log(VMolecule(calculated_reaction_steps[0].substrate).canonicalSMILES())
+                                        //console.log(VMolecule([product,1]).canonicalSMILES() === VMolecule(calculated_reaction_steps[calculated_reaction_steps.length-1].product).canonicalSMILES() )
+                                        console.log(VMolecule([substrate,1]).canonicalSMILES() === VMolecule(calculated_reaction_steps[calculated_reaction_steps.length-1].product).canonicalSMILES() )
+                                        console.log("-------------")
                                     })
                                 },
 

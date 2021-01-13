@@ -216,7 +216,7 @@ class ReactionAI {
                 }})
              */
 
-            const reactions =  commands.map(
+            const reaction_steps =  commands.map(
                 (command, command_index)=> {
                     //console.log(this.command_map)
                     //console.log(this.command_map[command['name']])
@@ -234,9 +234,9 @@ class ReactionAI {
             )
 
             if (this.callback !== undefined && this.callback !== null) {
-                this.callback(null, reactions)
+                this.callback(null, reaction_steps)
             } else {
-                VReaction(reactions, reaction.container_substrate, '').render()
+                VReaction(reaction_steps, reaction.container_substrate, '').render()
                 this.render('============================================================================')
             }
 
@@ -311,8 +311,9 @@ class ReactionAI {
 
 
 
-        const reagents = [hydrochloric_acid, deprotonated_methylamide, ammonia]
+        //const reagents = [hydrochloric_acid, deprotonated_methylamide, ammonia]
         //const reagents = [ammonia]
+        const reagents = [hydrochloric_acid]
 
 
         // Leuckart Wallach - synthesising MoleculeFactory("CC(CC1=CC=CC=C1)NC")
