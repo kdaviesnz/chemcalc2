@@ -68,6 +68,8 @@ const Reaction = require("../State/Reaction")
 const MoleculeFactory = require('../../Models/MoleculeFactory')
 const VMolecule = require('../Stateless/Views/Molecule')
 const ReactionsList = require('../Stateless/ReactionsList')
+const MReaction = require('../Stateless/Reaction')
+const VReaction = require('../Stateless/Views/Reactions')
 const _ = require('lodash');
 
 class ReactionAI {
@@ -103,6 +105,25 @@ class ReactionAI {
         // this.commands_filter.push("oxygenCarbonDoubleBondReversal") // Works with Akylation, Leuckart
 
         this.command_sets = []
+
+        this.command_map = {
+            'removeProtonFromOxygen': "Remove proton from oxygen atom",
+            'protonateCarbocation': 'Add proton to carbocation',
+            'substituteOxygenCarbonDoubleBondForAmine': 'Substitute oxygen-carbon double bond for oxygen-carbon single bond and amine group',
+            'addProtonFromReagentToHydroxylGroup': 'Add proton from reagent to hydroxyl group on substrate',
+            'makeCarbonNitrogenDoubleBond': 'Make carbon-nitrogen double bond',
+            'deprotonateNitrogen': 'Deprotonate nitrogen atom on substrate',
+            'substituteHalideForAmine': 'Substitute halide for amine group',
+            'removeHalide': 'Remove halide',
+            'makeOxygenCarbonDoubleBond': 'Make oxygen-carbon double bond',
+            'dehydrate': 'Dehydrate',
+            'carbocationShift': 'Shift carbocation',
+            'transferProton': 'Transfer proton',
+            'breakOxygenCarbonDoubleBond': 'Break oxgen-carbon double bond',
+            'bondSubstrateToReagent': 'Bond substrate to reagent',
+            'protonate': 'Protonate',
+            'addProtonFromReagentToSubstrate': 'Add proton from reagent to substrate'
+        }
 
 
 
@@ -178,6 +199,42 @@ class ReactionAI {
     run(commands, command_index, reaction, starting_substrate, starting_reagent) {
         if (commands[command_index] === undefined) {
 
+            /*
+             commands.push({
+                'name':'removeProtonFromOxygen',
+                'starting substrate': _.cloneDeep(substrate_with_proton_added),
+                'starting reagent': _.cloneDeep(reagent_removeProtonFromOxygenReversal),
+                'finish substrate': _.cloneDeep(target),
+                'finish reagent': _.cloneDeep(reagent),
+                'function':()=>{
+                    const removeProtonFromOxygenReversal_reaction = new Reaction(_.cloneDeep(substrate_with_proton_added), _.cloneDeep(reagent_removeProtonFromOxygenReversal), {})
+                    removeProtonFromOxygenReversal_reaction.removeProtonFromOxygen()
+                    return removeProtonFromOxygenReversal_reaction
+                }})
+             */
+
+            const reactions =  commands.map(
+                (command, command_index)=> {
+                    //console.log(this.command_map)
+                    //console.log(this.command_map[command['name']])
+                    //console.log(command)
+                    //console.log(kljlkjljk)
+                    const command_in_plain_english = this.command_map[command['name']]
+                    return MReaction(
+                        command_in_plain_english,
+                        command['starting substrate'],
+                        command['starting reagent'],
+                        command['calculated product'],
+                        command['finish reagent']
+                    )
+                }
+            )
+
+            VReaction(reactions, reaction.container_substrate, '').render()
+
+            this.render('============================================================================')
+
+            /*
             this.render("\n\Run (result) " + commands.map((command)=>{
                    return command['name']
             }))
@@ -190,12 +247,14 @@ class ReactionAI {
             this.debugger(VMolecule(starting_reagent).compressed())
             this.debugger("Finish: substrate")
             this.debugger(VMolecule(reaction.container_substrate).compressed())
-          //console.log(runcommands)
 
             //process.exit()
             if (VMolecule(starting_reagent).canonicalSMILES() === "CN") {
              //console.log(jgd)
             }
+             */
+
+
         } else {
             const command_names = commands.map((command)=>{
                 return command['name']
@@ -206,6 +265,7 @@ class ReactionAI {
             }
 
             const r = _.cloneDeep(commands[command_index])['function'](command_index, command_names, commands[command_index]['starting substrate'])
+            commands[command_index]['calculated product'] = r.container_substrate
             /*
             if (commands.length === 3) {
 
@@ -248,7 +308,7 @@ class ReactionAI {
 
         // Leuckart Wallach - synthesising MoleculeFactory("CC(CC1=CC=CC=C1)NC")
         reagents.map((reagent)=>{
-           //console.log("Synthesising " + VMolecule([target,1]).canonicalSMILES() + " reagent: " + VMolecule([reagent,1]).canonicalSMILES())
+           this.render("Synthesising " + VMolecule([target,1]).canonicalSMILES() + " reagent: " + VMolecule([reagent,1]).canonicalSMILES())
             // Leuckart Wallach - synthesising MoleculeFactory("CC(CC1=CC=CC=C1)NC"), reagent deprotonated_methylamide
            //  this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(deprotonated_methylamide),1], [], 'synthesise', 0)
             // Akylation - synthesising MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)N"
@@ -1348,21 +1408,6 @@ class ReactionAI {
               //console.log('transferProtonReversal() reaction failed')
         }
 
-        this.command_map = {
-            'removeProtonFromOxygen': "Remove proton from oxygen atom",
-            'protonateCarbocation': 'Add proton to carbocation',
-            'substituteOxygenCarbonDoubleBondForAmine': 'Substitute oxygen-carbon double bond for oxygen-carbon single bond and amine group',
-            'addProtonFromReagentToHydroxylGroup': 'Add proton from reagent to hydroxyl group on substrate',
-            'makeCarbonNitrogenDoubleBond': 'Make carbon-nitrogen double bond',
-            'deprotonateNitrogen': 'Deprotonate nitrogen atom on substrate',
-            'substituteHalideForAmine': 'Substitute halide for amine group',
-            'removeHalide': 'Remove halide',
-            'makeOxygenCarbonDoubleBond': 'Make oxygen-carbon double bond',
-            'dehydrate': 'Dehydrate',
-            'carbocationShift': 'Shift carbocation',
-            'transferProton': 'Transfer proton'
-        }
-
 
     }
 
@@ -1481,6 +1526,9 @@ class ReactionAI {
         } else {
               //console.log('breakOxygenCarbonDoubleBondReversal() reverse reaction failed')
         }
+
+
+
 
     }
 
@@ -1608,6 +1656,8 @@ class ReactionAI {
              //console.log("Failed breakBond() reverse reaction")
         }
 
+
+
     }
 
     protonateReversal(target, reagent, moleculeAI, commands, caller, depth) {
@@ -1714,6 +1764,7 @@ class ReactionAI {
        // }
 
 
+
     }
 
     addProtonFromReagentToSubstrateReversal(target, reagent, moleculeAI, commands, caller, depth) {
@@ -1791,6 +1842,8 @@ class ReactionAI {
            //console.log("addProtonFromReagentToSubstrateReversal() reverse reaction failed")
         }
         // }
+
+
 
 
     }

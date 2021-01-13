@@ -13,9 +13,10 @@ const VReaction = (reactions, container_end_product, rule) => {
                     console.log("[" + reaction.command.bold.red + "] "
                         + VMolecule(reaction.substrate).canonicalSMILES().green
                     + " + " + (reaction.reagent=== undefined  ? "No reagent" : VMolecule(reaction.reagent).canonicalSMILES().yellow)
-                    + " = " + VMolecule(reaction.product).canonicalSMILES().bold)
+                    + " = " + VMolecule(reaction.product).canonicalSMILES().bold + " + " + VMolecule(reaction.finish_reagent).canonicalSMILES())
                 }
             )
+
 
 
         }
