@@ -12,6 +12,7 @@ const PubChemLookup = require('../Controllers/PubChemLookup')
 const pubchem = require("pubchem-access").domain("compound");
 const uniqid = require('uniqid');
 const MoleculeFactory = require('../Models/MoleculeFactory')
+const VMolecule = require('../Components/Stateless/Views/Molecule')
 
 /*
 const MoleculeController = require('../Controllers/Molecule')
@@ -113,12 +114,19 @@ const Test = () => {
                         // "resolves" callback
                         (molecule) => {
                             // known_reaction.product
-                            console.log(molecule.CanonicalSMILES)
-                            console.log('Molecule found in db')
+                            // known_reaction.substrate
+                            // known_reaction.reagent
+                            // console.log(molecule.CanonicalSMILES)
+                            console.log('Molecule found in db, testing ...')
                             const product = MoleculeFactory(molecule.CanonicalSMILES)
                             r.synthesise(product, (err, calculated_reactions)=> {
-                                console.log(calculated_reactions)
-                                console.log(akkkk)
+                                //console.log(VMolecule(calculated_reactions[0].product).canonicalSMILES())
+                                // Look in calculated_reactions for molecule.CanonicalSMILES
+                                const matching_reactions = calculated_reactions.filter((calculated_reaction)=>{
+                                    return VMolecule(calculated_reaction.product).canonicalSMILES() === VMolecule([product,1]).canonicalSMILES()
+                                })
+                                console.log(matching_reactions)
+                                console.log(hfdd)
                             })
                         },
                         onMoleculeNotFound((search, db, container_molecule, render) => {

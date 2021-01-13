@@ -74,7 +74,9 @@ const _ = require('lodash');
 
 class ReactionAI {
 
-    constructor(callback) {
+    constructor() {
+
+        this.callback = null
 
         this.debugger_on = false
 
@@ -196,7 +198,8 @@ class ReactionAI {
        console.log(o)
     }
 
-    run(commands, command_index, reaction, starting_substrate, starting_reagent, results_callback) {
+    run(commands, command_index, reaction, starting_substrate, starting_reagent) {
+
         if (commands[command_index] === undefined) {
 
             /*
@@ -230,8 +233,8 @@ class ReactionAI {
                 }
             )
 
-            if (results_callback !== undefined) {
-                results_callback(null, reactions)
+            if (this.callback !== undefined && this.callback !== null) {
+                this.callback(null, reactions)
             } else {
                 VReaction(reactions, reaction.container_substrate, '').render()
                 this.render('============================================================================')
@@ -292,7 +295,10 @@ class ReactionAI {
         })
     }
 
-    synthesise(target, callback, results_callback) {
+    synthesise(target, callback) {
+
+        this.callback = callback
+
         const water = MoleculeFactory("O")
         const formate = MoleculeFactory("[C+](=O)[O-]")
         const methylamine = MoleculeFactory("CN")
@@ -318,7 +324,7 @@ class ReactionAI {
             // this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(ammonia),1], [], 'synthesise', 0)
             // Pinacol Rearrangement - synthesising MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
             // this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(hydrochloric_acid),1], [], 'synthesise', 0)
-            this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(reagent),1], [], 'synthesise', 0, results_callback)
+            this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(reagent),1], [], 'synthesise', 0)
         })
 
 
@@ -328,7 +334,8 @@ class ReactionAI {
 
 
 
-    synthesiseCallback(substrate, reagent, commands, caller, depth, results_callback) {
+    synthesiseCallback(substrate, reagent, commands, caller, depth) {
+
 
         this._checkDepth(depth, commands)
 
@@ -347,11 +354,11 @@ class ReactionAI {
         })
 
         if (command_names[command_names.length-1] === "substituteOxygenCarbonDoubleBondForAmine") {
-            this.result(substrate, reagent, commands, 'synthesiseCallback()', results_callback)
+            this.result(substrate, reagent, commands, 'synthesiseCallback()')
         }
 
         if (command_names.length > 0 && command_names[command_names.length-1] === "bondSubstrateToReagent" ) {
-            this.result(substrate, reagent, commands, 'synthesiseCallback()', results_callback)
+            this.result(substrate, reagent, commands, 'synthesiseCallback()')
         } else {
 
 
@@ -438,7 +445,7 @@ class ReactionAI {
                     this.substituteHalideForAmineReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth + 1)
                 }
 
-                this.result(substrate, reagent, commands, 'synthesiseCallback()', results_callback)
+                this.result(substrate, reagent, commands, 'synthesiseCallback()')
             }
 
         }
