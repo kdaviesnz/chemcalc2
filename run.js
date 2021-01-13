@@ -2,6 +2,7 @@ const readline = require('readline');
 const help = require('help')('usage.txt')
 const ReactionSchemaParser = require('./Controllers/ReactionSchemaParser')
 const Synthesize = require('./Controllers/Synthesize')
+const Test = require('./Controllers/Test')
 const VReactions = require('./Components/Stateless/Views/Reactions');
 const FlaskController = require('./Controllers/Container')
 const Flask = require('./Components/State/Flask')
@@ -40,6 +41,11 @@ rl.on('line', (line) => {
         rl.prompt()
     } else if (lineTrimmed.toLowerCase().substr(0,4) === "add ") {
 
+        rl.prompt()
+    }
+    else if (lineTrimmed.toLowerCase().substr(0,4) === "test") {
+        console.log("Running tests, this may take a while")
+        Test()
         rl.prompt()
     } else if (lineTrimmed.toLowerCase().substr(0,10) === "synthesize") {
         console.log("Finding reactions for " + lineTrimmed.substr(10) + "...")
