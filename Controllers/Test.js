@@ -3,6 +3,7 @@
 const should = require('should')
 const _ = require('lodash');
 const MongoClient = require('mongodb').MongoClient
+const assert = require('assert');
 
 /*
 const MoleculeController = require('../Controllers/Molecule')
@@ -34,7 +35,7 @@ const uniqid = require('uniqid');
 
 // Install using npm install mongodb --save
 
-const assert = require('assert');
+
 
 const verbose = false
 
@@ -64,65 +65,22 @@ const FetchReactions = require('../Models/FetchReactions')
 
 const Test = () => {
 
-    console.log(process.env.MONGODBUSER)
-    console.log(process.env.MONGODBPASSWORD)
     const uri = "mongodb+srv://" + process.env.MONGODBUSER + ":" + process.env.MONGODBPASSWORD + "@cluster0.awqh6.mongodb.net/chemistry?retryWrites=true&w=majority";
     const client = new MongoClient(uri, {useNewUrlParser: true, useUnifiedTopology: true});
 
-    console.log(client)
-    console.log(abc)
-
-    client.connect(err => {
-
+    client.connect(err=> {
         assert.equal(err, null);
         const db = client.db("chemistry")
 
+        // Get known reactions from mongo
+        db.collection("molecules").find({}).toArray(function(err, result) {
+            if (err) throw err;
+            console.log(result);
+            db.close();
+        });
 
-        const onMoleculeNotFound = (onMoleculeAddedToDBCallback) => {
-            return (search) => {
-                console.log("Molecule not found in db " + search)
-                pkl.searchByName(search, db, (molecule_from_pubchem) => {
-                    if (molecule_from_pubchem !== null) {
-                        console.log("Molecule found in pubchem")
-                        molecule_from_pubchem['json'] = MoleculeFactory(molecule_from_pubchem.CanonicalSMILES)
-                        molecule_from_pubchem['search'] = search
-                        db.collection("molecules").insertOne(molecule_from_pubchem, (err, result) => {
-                            if (err) {
-                                console.log(err)
-                                client.close()
-                                process.exit()
-                            } else {
-                                onMoleculeAddedToDBCallback(search, db, [molecule_from_pubchem.json, 1], child_reaction_string, render)
-                            }
-                        })
+    })
 
-                    }
-                })
-            }
-        }
-
-        MoleculeLookup(db, molecule_to_synthesize_name, "SMILES", true).then(
-            // "resolves" callback
-            (molecule) => {
-                // Fetch and render reactions that synthesise chemical
-                FetchReactions(verbose, db, [molecule.json,1], child_reaction_string, render, (err) =>{
-                    console.log('There was an error fetching reactions for ' + molecule_to_synthesize_name)
-                    Err(err)
-                })
-            },
-            onMoleculeNotFound((search, db, container_molecule, child_reaction_string, render) => {
-                console.log("Molecule " + search + " added to database")
-                FetchReactions(verbose, db, container_molecule, child_reaction_string, render, (err) =>{
-                    console.log('There was an error fetching reactions for ' + molecule_to_synthesize_name)
-                    Err(err)
-                })
-            }),
-            // "rejects" callback
-            onErrorLookingUpMoleculeInDB
-        )
-
-
-    });
 
 }
 
