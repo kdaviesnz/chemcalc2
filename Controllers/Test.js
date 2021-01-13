@@ -117,11 +117,13 @@ const Test = () => {
                             // Look up substrate
                             console.log('Product found in db, testing ...')
                             const product = MoleculeFactory(molecule.CanonicalSMILES)
-
+                            console.log('Product: ' + VMolecule([product, 1]).canonicalSMILES())
                             MoleculeLookup(db, known_reaction.substrate).then(
                                 (molecule) => {
                                     console.log('Substrate found in db, testing ...')
                                     const substrate = MoleculeFactory(molecule.CanonicalSMILES)
+                                    console.log('Product: ' + VMolecule([product, 1]).canonicalSMILES())
+                                    console.log('Substrate: ' + VMolecule([substrate, 1]).canonicalSMILES())
                                     // "resolves" callback
                                     // known_reaction.product
                                     // known_reaction.substrate
@@ -130,6 +132,8 @@ const Test = () => {
                                     r.synthesise(product, (err, calculated_reactions) => {
                                         // Look in calculated_reactions for molecule.CanonicalSMILES
                                         const matching_reactions = calculated_reactions.filter((calculated_reaction) => {
+                                            console.log(VMolecule(calculated_reaction.product).canonicalSMILES())
+                                            console.log(VMolecule(calculated_reaction.substrate).canonicalSMILES())
                                             return VMolecule(calculated_reaction.product).canonicalSMILES() === VMolecule([product, 1]).canonicalSMILES() && VMolecule(calculated_reaction.substrate).canonicalSMILES() === VMolecule([substrate, 1]).canonicalSMILES()
                                         })
                                         console.log(matching_reactions)
