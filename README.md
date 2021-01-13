@@ -1,8 +1,8 @@
 # chemcalc2
 
 [Ubuntu]
-$ nodej test
-
+$ nodejs test
+$ node run
 
 # chemcalc2
 

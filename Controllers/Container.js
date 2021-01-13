@@ -271,9 +271,6 @@ class CContainer {
     add(molecule, units, verbose, test_number) {
 
 
-        // test 6
-        // ccontainer6.add(propylene, 1, verbose)
-        // ccontainer6.add(watermolecule, 1, verbose)
 
 
         if (undefined !== test_number) {

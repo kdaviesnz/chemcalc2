@@ -3,11 +3,12 @@ const help = require('help')('usage.txt')
 const ReactionSchemaParser = require('./Controllers/ReactionSchemaParser')
 const Synthesize = require('./Controllers/Synthesize')
 const VReactions = require('./Components/Stateless/Views/Reactions');
+const FlaskController = require('./Controllers/Container')
 
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
-    prompt: 'ChemCalc > '
+    prompt: "ChemCalc > Enter a command or type help\n> "
 });
 
 const verbose = true
@@ -15,11 +16,29 @@ const verbose = true
 rl.prompt()
 
 rl.on('line', (line) => {
+    const flask = ["this is the flask"]
+    const command_list = [
+        'add [chemical]',
+        'distill [chemical]',
+        'flask',
+        'synthesize [chemical]'
+    ]
     const lineTrimmed = line.trim();
     if (lineTrimmed.toLowerCase() === 'help') {
         help()
         rl.prompt()
     } else if (lineTrimmed === "") {
+        rl.prompt()
+    } else if (lineTrimmed.toLowerCase().substr(0,5) === "flask") {
+        console.log(flask)
+        rl.prompt()
+    } else if (lineTrimmed.toLowerCase().substr(0,8) === "commands") {
+        console.log(command_list.map((command)=>{
+            return command
+        }))
+        rl.prompt()
+    } else if (lineTrimmed.toLowerCase().substr(0,4) === "add ") {
+
         rl.prompt()
     } else if (lineTrimmed.toLowerCase().substr(0,10) === "synthesize") {
         console.log("Finding reactions for " + lineTrimmed.substr(10) + "...")
