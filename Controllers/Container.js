@@ -8,8 +8,8 @@ const CAtom = require('./Atom')
 class CContainer {
 
     // container is a container model
-    constructor(container, MoleculeFactory, MoleculeController, test_number, verbose) {
-        this.container = container
+    constructor(flask, MoleculeFactory, MoleculeController, test_number, verbose) {
+        this.flask = container
         this.MoleculeFactory = MoleculeFactory
         this.MoleculeController = MoleculeController
         this.test_number = test_number

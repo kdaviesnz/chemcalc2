@@ -4,6 +4,7 @@ const ReactionSchemaParser = require('./Controllers/ReactionSchemaParser')
 const Synthesize = require('./Controllers/Synthesize')
 const VReactions = require('./Components/Stateless/Views/Reactions');
 const FlaskController = require('./Controllers/Container')
+const Flask = require('./Components/State/Flask')
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -16,7 +17,7 @@ const verbose = true
 rl.prompt()
 
 rl.on('line', (line) => {
-    const flask = ["this is the flask"]
+    const flask = new Flask()
     const command_list = [
         'add [chemical]',
         'distill [chemical]',
@@ -30,7 +31,7 @@ rl.on('line', (line) => {
     } else if (lineTrimmed === "") {
         rl.prompt()
     } else if (lineTrimmed.toLowerCase().substr(0,5) === "flask") {
-        console.log(flask)
+        flask.render()
         rl.prompt()
     } else if (lineTrimmed.toLowerCase().substr(0,8) === "commands") {
         console.log(command_list.map((command)=>{
