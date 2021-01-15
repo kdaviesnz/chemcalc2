@@ -2,19 +2,7 @@
 // npm i should
 const should = require('should')
 const _ = require('lodash');
-const MongoClient = require('mongodb').MongoClient
-const assert = require('assert');
-const ReactionAI =  require('../Components/State/ReactionAI')
-const MoleculeLookup = require('../Controllers/MoleculeLookup')
-const PubChemLookup = require('../Controllers/PubChemLookup')
 
-// Install using npm install pubchem-access
-const pubchem = require("pubchem-access").domain("compound");
-const uniqid = require('uniqid');
-const MoleculeFactory = require('../Models/MoleculeFactory')
-const VMolecule = require('../Components/Stateless/Views/Molecule')
-
-/*
 const MoleculeController = require('../Controllers/Molecule')
 const FunctionalGroups = require('../Models/FunctionalGroups')
 const Canonical_SMILESParser = require("../Models/CanonicalSMILESParser")
@@ -23,7 +11,7 @@ const Hydrate = require('../Models/Hydrate')
 const Dehydrate = require('../Models/Dehydrate')
 const BondDisassociate = require('../Models/BondDissassociate')
 
-
+const MoleculeFactory = require('../Models/MoleculeFactory')
 const PeriodicTable = require("../Models/PeriodicTable")
 const CContainer = require('../Controllers/Container')
 const CMolecule = require('../Controllers/Molecule')
@@ -35,10 +23,16 @@ const VMolecule = require('../Components/Stateless/Views/Molecule')
 const VContainer = require('../Components/Stateless/Views/Container');
 const VReactions = require('../Components/Stateless/Views/Reactions');
 
+const MoleculeLookup = require('../Controllers/MoleculeLookup')
+const PubChemLookup = require('../Controllers/PubChemLookup')
+
+// Install using npm install pubchem-access
+const pubchem = require("pubchem-access").domain("compound");
+const uniqid = require('uniqid');
 
 // Install using npm install mongodb --save
-
-
+const MongoClient = require('mongodb').MongoClient
+const assert = require('assert');
 
 const verbose = false
 
@@ -46,6 +40,16 @@ const verbose = false
 require("dotenv").config()
 
 
+const pkl = PubChemLookup((err)=>{
+    console.log(err)
+    process.exit()
+})
+
+const onErrorLookingUpMoleculeInDB = (Err) => {
+    console.log(Err)
+    client.close();
+    process.exit()
+}
 
 
 // CAtom tests
@@ -54,30 +58,17 @@ require("dotenv").config()
 // Organic Chemistry 8th Edition P76
 
 const FetchReactions = require('../Models/FetchReactions')
-*/
 
-const pkl = PubChemLookup((err)=>{
-    console.log(err)
-    process.exit()
-})
-
-const onErrorLookingUpMoleculeInDB = (Err) => {
-    console.log(ddddd)
-    console.log(Err)
-    client.close();
-    process.exit()
-}
-
-require("dotenv").config()
-
-const Synthesize = (molecule_to_synthesize_name) => {
-
+const Synthesize = (verbose,  molecule_to_synthesize_name, search_type, child_reaction_string, render, Err) => {
+// COC dimethyl ether
     const uri = "mongodb+srv://" + process.env.MONGODBUSER + ":" + process.env.MONGODBPASSWORD + "@cluster0.awqh6.mongodb.net/chemistry?retryWrites=true&w=majority";
     const client = new MongoClient(uri, {useNewUrlParser: true, useUnifiedTopology: true});
 
-    client.connect(err=> {
+    client.connect(err => {
+
         assert.equal(err, null);
         const db = client.db("chemistry")
+
 
         const onMoleculeNotFound = (onMoleculeAddedToDBCallback) => {
             return (search) => {
@@ -93,7 +84,7 @@ const Synthesize = (molecule_to_synthesize_name) => {
                                 client.close()
                                 process.exit()
                             } else {
-                                onMoleculeAddedToDBCallback(search, db, [molecule_from_pubchem.json, 1])
+                                onMoleculeAddedToDBCallback(search, db, [molecule_from_pubchem.json, 1], child_reaction_string, render)
                             }
                         })
 
@@ -105,21 +96,25 @@ const Synthesize = (molecule_to_synthesize_name) => {
         MoleculeLookup(db, molecule_to_synthesize_name, "SMILES", true).then(
             // "resolves" callback
             (molecule) => {
-                const r = new ReactionAI()
-                console.log('Product found in db, synthesising ...')
-                const product = MoleculeFactory(molecule.CanonicalSMILES)
-                r.synthesise(product)
+                // Fetch and render reactions that synthesise chemical
+                FetchReactions(verbose, db, [molecule.json,1], child_reaction_string, render, (err) =>{
+                    console.log('There was an error fetching reactions for ' + molecule_to_synthesize_name)
+                    Err(err)
+                })
             },
             onMoleculeNotFound((search, db, container_molecule, child_reaction_string, render) => {
                 console.log("Molecule " + search + " added to database")
+                FetchReactions(verbose, db, container_molecule, child_reaction_string, render, (err) =>{
+                    console.log('There was an error fetching reactions for ' + molecule_to_synthesize_name)
+                    Err(err)
+                })
             }),
             // "rejects" callback
             onErrorLookingUpMoleculeInDB
         )
 
 
-    })
-
+    });
 
 }
 

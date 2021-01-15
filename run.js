@@ -47,20 +47,9 @@ rl.on('line', (line) => {
         console.log("Running tests, this may take a while")
         Test()
         rl.prompt()
-    } else if (lineTrimmed.toLowerCase().substr(0,10) === "synthesize") {
-        console.log("Finding reactions for " + lineTrimmed.substr(10) + "...")
+    } else if (lineTrimmed.toLowerCase().substr(0,10) === "synthesize" || lineTrimmed.toLowerCase().substr(0,5) === "synth") {
         Synthesize(
-            verbose,
-            lineTrimmed.toLowerCase().substr(10),
-            "",
-            "",
-            (reactions, product, rule)=>{
-                    VReactions(reactions, product, rule).render()
-                    rl.prompt()
-            },
-            (err) => {
-                console.log("Error synthesizing " + search)
-            }
+            lineTrimmed.toLowerCase().substr(10)
         )
     } else {
         //isobutene -> HCl

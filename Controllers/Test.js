@@ -67,6 +67,7 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
     process.exit()
 }
 
+require("dotenv").config()
 
 const Test = () => {
 
