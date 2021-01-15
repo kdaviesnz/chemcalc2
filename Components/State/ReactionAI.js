@@ -338,6 +338,7 @@ class ReactionAI {
     synthesiseCallback(substrate, reagent, commands, caller, depth) {
 
 
+        console.log('synthesiseCallback() depth='+depth)
         this._checkDepth(depth, commands)
 
          //console.log("---------------------------")
@@ -476,6 +477,7 @@ class ReactionAI {
 
                 ['addProtonFromReagentToSubstrate', 'dehydrate', 'protonate', 'transferProton', 'bondSubstrateToReagent', 'addProtonFromReagentToHydroxylGroup', 'makeCarbonNitrogenDoubleBond', 'deprotonateNitrogen', 'substituteHalideForAmine', 'protonateCarbocation', 'removeProtonFromOxygen'].map((command_name)=>{
                     if (this.commands_filter.indexOf(command_name + 'Reversal') === -1) {
+                        console.log('synthesiseCallback() inner depth='+depth)
                         this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), command_name, _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
 
                     }
