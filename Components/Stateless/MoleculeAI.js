@@ -201,7 +201,8 @@ const MoleculeAI = (container_molecule) => {
 
         isStrongAcid: () => {
             const map = ["Cl", "OS(=O)(=O)O"] // hydrochloric acid, sulphuric acid
-            return map.indexOf(VMolecule(container_molecule).canonicalSMILES()) !== -1
+            //return map.indexOf(VMolecule(container_molecule).canonicalSMILES()) !== -1
+            return false
         },
 
 
