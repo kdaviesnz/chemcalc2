@@ -85,7 +85,7 @@ class Reaction {
         return bondsAI.makeCarbonNitrogenDoubleBondReverse()
     }
 
-    makeOxygenCarbonDoubleBondReverse() {
+    oxygenCarbonDoubleBondReverse() {
         const bondsAI = new BondsAI(this)
         return bondsAI.makeOxygenCarbonDoubleBondReverse()
     }
@@ -156,7 +156,7 @@ class Reaction {
     }
 
 
-    makeOxygenCarbonDoubleBond() {
+    oxygenCarbonDoubleBond() {
         const bondsAI = new BondsAI(this)
         return bondsAI.makeOxygenCarbonDoubleBond()
     }

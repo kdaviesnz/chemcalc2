@@ -8,6 +8,8 @@ const VReaction = (reactions, container_end_product, rule) => {
 
         "render": () => {
 
+            //console.log(reactions)
+
             _.cloneDeep(reactions).map(
                 (reaction) => {
                     console.log("[" + reaction.command.bold.red + "] "
