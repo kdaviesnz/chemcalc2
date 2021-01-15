@@ -71,6 +71,7 @@ const ReactionsList = require('../Stateless/ReactionsList')
 const MReaction = require('../Stateless/Reaction')
 const VReaction = require('../Stateless/Views/Reactions')
 const _ = require('lodash');
+const reagents_processed = []
 
 class ReactionAI {
 
@@ -259,6 +260,9 @@ class ReactionAI {
              //console.log(jgd)
             }
              */
+           // reagents_processed.push(VMolecule(starting_reagent).canonicalSMILES())
+           // console.log('reagents_processed')
+           // console.log(reagents_processed)
 
 
         } else {
@@ -311,7 +315,7 @@ class ReactionAI {
 
 
 
-        const reagents = [hydrochloric_acid, deprotonated_methylamide, ammonia]
+        const reagents = [deprotonated_methylamide, ammonia,hydrochloric_acid]
         //const reagents = [ammonia]
         //const reagents = [hydrochloric_acid]
 
@@ -320,12 +324,12 @@ class ReactionAI {
         reagents.map((reagent)=>{
            this.render("Synthesising " + VMolecule([target,1]).canonicalSMILES() + " reagent: " + VMolecule([reagent,1]).canonicalSMILES())
             // Leuckart Wallach - synthesising MoleculeFactory("CC(CC1=CC=CC=C1)NC"), reagent deprotonated_methylamide
-           //  this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(deprotonated_methylamide),1], [], 'synthesise', 0)
+           //  this.synthesiseWithReagent([_.cloneDeep(target),1], [_.cloneDeep(deprotonated_methylamide),1], [], 'synthesise', 0)
             // Akylation - synthesising MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)N"
-            // this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(ammonia),1], [], 'synthesise', 0)
+            // this.synthesiseWithReagent([_.cloneDeep(target),1], [_.cloneDeep(ammonia),1], [], 'synthesise', 0)
             // Pinacol Rearrangement - synthesising MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
-            // this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(hydrochloric_acid),1], [], 'synthesise', 0)
-            this.synthesiseCallback([_.cloneDeep(target),1], [_.cloneDeep(reagent),1], [], 'synthesise', 0)
+            // this.synthesiseWithReagent([_.cloneDeep(target),1], [_.cloneDeep(hydrochloric_acid),1], [], 'synthesise', 0)
+            this.synthesiseWithReagent([_.cloneDeep(target),1], [_.cloneDeep(reagent),1], [], 'synthesise', 0)
         })
 
 
@@ -335,10 +339,10 @@ class ReactionAI {
 
 
 
-    synthesiseCallback(substrate, reagent, commands, caller, depth) {
+    synthesiseWithReagent(substrate, reagent, commands, caller, depth) {
 
 
-        console.log('synthesiseCallback() depth='+depth)
+        //console.log('synthesiseWithReagent() depth='+depth)
         this._checkDepth(depth, commands)
 
          //console.log("---------------------------")
@@ -356,11 +360,11 @@ class ReactionAI {
         })
 
         if (command_names[command_names.length-1] === "substituteOxygenCarbonDoubleBondForAmine") {
-            this.result(substrate, reagent, commands, 'synthesiseCallback()')
+            this.result(substrate, reagent, commands, 'synthesiseWithReagent()')
         }
 
         if (command_names.length > 0 && command_names[command_names.length-1] === "bondSubstrateToReagent" ) {
-            this.result(substrate, reagent, commands, 'synthesiseCallback()')
+            this.result(substrate, reagent, commands, 'synthesiseWithReagent()')
         } else {
 
 
@@ -477,12 +481,13 @@ class ReactionAI {
 
                 ['addProtonFromReagentToSubstrate', 'dehydrate', 'protonate', 'transferProton', 'bondSubstrateToReagent', 'addProtonFromReagentToHydroxylGroup', 'makeCarbonNitrogenDoubleBond', 'deprotonateNitrogen', 'substituteHalideForAmine', 'protonateCarbocation', 'removeProtonFromOxygen'].map((command_name)=>{
                     if (this.commands_filter.indexOf(command_name + 'Reversal') === -1) {
-                        console.log('synthesiseCallback() inner depth='+depth)
+                       // console.log('synthesiseWithReagent() inner depth='+depth)
                         this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), command_name, _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
 
                     }
                 })
 
+                reagents_processed.push(VMolecule(reagent).canonicalSMILES())
 
 
 
@@ -512,7 +517,8 @@ class ReactionAI {
                 }
                 */
 
-                this.result(substrate, reagent, commands, 'synthesiseCallback()')
+
+                this.result(substrate, reagent, commands, 'synthesiseWithReagent()')
             }
 
         }
@@ -565,7 +571,7 @@ class ReactionAI {
                     return reaction
                 }})
 
-            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), command_name + 'Reversal', depth+1)
+            this.synthesiseWithReagent(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), command_name + 'Reversal', depth+1)
 
         }
 
@@ -620,7 +626,7 @@ class ReactionAI {
                     return removeProtonFromOxygenReversal_reaction
                 }})
 
-            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'removeProtonFromOxygenReversal', depth+1)
+            this.synthesiseWithReagent(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'removeProtonFromOxygenReversal', depth+1)
 
         }
 
@@ -678,7 +684,7 @@ class ReactionAI {
                     return protonateCarbocation_reaction
                 }})
 
-            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'protonateCarbocationReversal', depth+1)
+            this.synthesiseWithReagent(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'protonateCarbocationReversal', depth+1)
         }
 
 
@@ -738,7 +744,7 @@ class ReactionAI {
                     return substituteOxygenCarbonDoubleBondForAmine_reaction
                 }})
 
-            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'substituteOxygenCarbonDoubleBondForAmineReversal', depth+1)
+            this.synthesiseWithReagent(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'substituteOxygenCarbonDoubleBondForAmineReversal', depth+1)
         }
 
 
@@ -817,7 +823,7 @@ class ReactionAI {
 
 
 
-            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'addProtonFromReagentToHydroxylGroupReversal', depth+1)
+            this.synthesiseWithReagent(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'addProtonFromReagentToHydroxylGroupReversal', depth+1)
         }
 
 
@@ -895,7 +901,7 @@ class ReactionAI {
 
 
 
-            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'makeCarbonNitrogenDoubleBondReversal', depth+1)
+            this.synthesiseWithReagent(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'makeCarbonNitrogenDoubleBondReversal', depth+1)
         } else {
            //console.log("ReactionAI.js makeCarbonNitrogenDoubleBondReversal() reaction failed")
         }
@@ -986,7 +992,7 @@ class ReactionAI {
 
 
 
-            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'deprotonateNitrogenReversal', depth+1)
+            this.synthesiseWithReagent(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'deprotonateNitrogenReversal', depth+1)
         }
 
 
@@ -1040,7 +1046,7 @@ class ReactionAI {
                     return substitute_halide_reaction
                 }})
 
-            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'substituteHalideForAmineReversal', depth+1)
+            this.synthesiseWithReagent(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'substituteHalideForAmineReversal', depth+1)
 
 
         }
@@ -1125,7 +1131,7 @@ class ReactionAI {
             */
 
 
-            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'removeHalideReversal', depth+1)
+            this.synthesiseWithReagent(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'removeHalideReversal', depth+1)
         }
 
 
@@ -1193,7 +1199,7 @@ class ReactionAI {
                     makeOxygenCarbonDoubleBond_reaction.makeOxygenCarbonDoubleBond()
                     return makeOxygenCarbonDoubleBond_reaction
             }})
-            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'oxygenCarbonDoubleBondReversal', depth+1)
+            this.synthesiseWithReagent(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'oxygenCarbonDoubleBondReversal', depth+1)
         }
 
 
@@ -1318,7 +1324,7 @@ class ReactionAI {
                     }})
 
 
-                this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent),_.cloneDeep(commands), 'dehydrationReversal', depth+1)
+                this.synthesiseWithReagent(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent),_.cloneDeep(commands), 'dehydrationReversal', depth+1)
 
 
             } else {
@@ -1398,7 +1404,7 @@ class ReactionAI {
                     carbocationShift_reaction.carbocationShift()
                     return carbocationShift_reaction
                 }})
-            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'carbocationShiftReversal', depth+1)
+            this.synthesiseWithReagent(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'carbocationShiftReversal', depth+1)
         }
 
 
@@ -1534,7 +1540,7 @@ class ReactionAI {
             )
              */
 
-            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'transferProtonReversal', depth+1)
+            this.synthesiseWithReagent(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'transferProtonReversal', depth+1)
 
         } else {
               //console.log('transferProtonReversal() reaction failed')
@@ -1654,7 +1660,7 @@ class ReactionAI {
             }
             */
 
-            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'breakOxygenCarbonDoubleBondReversal', depth+1)
+            this.synthesiseWithReagent(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'breakOxygenCarbonDoubleBondReversal', depth+1)
         } else {
               //console.log('breakOxygenCarbonDoubleBondReversal() reverse reaction failed')
         }
@@ -1783,7 +1789,7 @@ class ReactionAI {
             }
 */
 
-            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'bondSubstrateToReagentReversal()', depth+1)
+            this.synthesiseWithReagent(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), 'bondSubstrateToReagentReversal()', depth+1)
         } else{
              //console.log("Failed breakBond() reverse reaction")
         }
@@ -1889,7 +1895,7 @@ class ReactionAI {
                         }
                     }
                 )
-                this.synthesiseCallback(reverse_reaction.container_substrate, reverse_reaction.container_reagent, _.cloneDeep(commands), 'protonateReversal', depth+1)
+                this.synthesiseWithReagent(reverse_reaction.container_substrate, reverse_reaction.container_reagent, _.cloneDeep(commands), 'protonateReversal', depth+1)
             } else {
                  //console.log('protonateReversal() reaction returned false')
             }
@@ -1969,7 +1975,7 @@ class ReactionAI {
                     }
                 }
             )
-            this.synthesiseCallback(reverse_reaction.container_substrate, reverse_reaction.container_reagent, _.cloneDeep(commands), 'addProtonFromReagentToSubstrateReversal', depth+1)
+            this.synthesiseWithReagent(reverse_reaction.container_substrate, reverse_reaction.container_reagent, _.cloneDeep(commands), 'addProtonFromReagentToSubstrateReversal', depth+1)
         } else {
            //console.log("addProtonFromReagentToSubstrateReversal() reverse reaction failed")
         }
