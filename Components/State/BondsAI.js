@@ -684,7 +684,7 @@ class BondsAI {
             console.log(uittt)
         }
 
-        console.log(bbbbrak)
+        //console.log(bbbbrak)
 
         return true
 

@@ -7,6 +7,12 @@ const VReactions = require('./Components/Stateless/Views/Reactions');
 const FlaskController = require('./Controllers/Container')
 const Flask = require('./Components/State/Flask')
 
+const debug = (o) => {
+    console.log(o)
+}
+
+debug('init')
+
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -18,6 +24,7 @@ const verbose = true
 rl.prompt()
 
 rl.on('line', (line) => {
+    debug('Calling rl.on() callback')
     const flask = new Flask()
     const command_list = [
         'add [chemical]',
@@ -51,9 +58,14 @@ rl.on('line', (line) => {
         Synthesize(
             lineTrimmed.toLowerCase().substr(10)
         )
+    } else if (lineTrimmed.toLowerCase().substr(0,4) === "exit") {
+        process.exit()
     } else {
+        console.log("Command not recognized")
+        rl.prompt()
         //isobutene -> HCl
         //"2-chloro-2-methylbutane /"
+        /*
         ReactionSchemaParser(lineTrimmed, verbose,(err, reaction)=> {
             if (err) {
                 console.log("Error doing reaction")
@@ -65,6 +77,8 @@ rl.on('line', (line) => {
             console.log("Reaction done")
             rl.prompt()
         })
+        */
     }
 })
 
+debug('run.js end')

@@ -368,66 +368,118 @@ class ReactionAI {
 
                 if (this.commands_filter.indexOf('carbocationShiftReversal') === -1) {
                     this.carbocationShiftReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
-                }
+                    //this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), 'carbocationShift', _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
 
-                if (this.commands_filter.indexOf('addProtonFromReagentToSubstrateReversal') === -1) {
-                    this.addProtonFromReagentToSubstrateReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+
                 }
 
                 if (this.commands_filter.indexOf('oxygenCarbonDoubleBondReversal') === -1) {
                     this.oxygenCarbonDoubleBondReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                    //this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), 'oxygenCarbonDoubleBond', _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+
                 }
 
-                if (this.commands_filter.indexOf('dehydrationReversal') === -1) {
-                    this.dehydrationReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
-                }
-
-                if (this.commands_filter.indexOf('protonateReversal') === -1) {
-                    this.protonateReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
-                }
-
-                if (this.commands_filter.indexOf('transferProtonReversal') === -1) {
-                    this.transferProtonReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
-                }
 
                 if (this.commands_filter.indexOf('breakOxygenCarbonDoubleBondReversal') === -1) {
                     this.breakOxygenCarbonDoubleBondReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                    //this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), 'breakCarbonOxygenDoubleBond', _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
                 }
+
+/*
+                if (this.commands_filter.indexOf('addProtonFromReagentToSubstrateReversal') === -1) {
+                    //this.addProtonFromReagentToSubstrateReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                    this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), 'addProtonFromReagentToSubstrate', _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+
+                }
+
+
+                if (this.commands_filter.indexOf('dehydrationReversal') === -1) {
+                    //this.dehydrationReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                    this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), 'dehydrate', _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+
+                }
+
+
+
+                if (this.commands_filter.indexOf('protonateReversal') === -1) {
+                    //this.protonateReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                    this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), 'protonate', _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+
+                }
+
+
+
+                if (this.commands_filter.indexOf('transferProtonReversal') === -1) {
+                    //this.transferProtonReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                    this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), 'transferProton', _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+
+                }
+
 
                 if (this.commands_filter.indexOf('bondSubstrateToReagentReversal') === -1) {
-                    this.bondSubstrateToReagentReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                    //this.bondSubstrateToReagentReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                    this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), 'bondSubstrateToReagent', _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
                 }
+
 
                 if (this.commands_filter.indexOf('addProtonFromReagentToHydroxylGroupReversal') === -1) {
-                    this.addProtonFromReagentToHydroxylGroupReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                    //this.addProtonFromReagentToHydroxylGroupReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                    this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), 'addProtonFromReagentToHydroxylGroup', _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+
                 }
+
 
                 if (this.commands_filter.indexOf('makeCarbonNitrogenDoubleBondReversal') === -1) {
-                    this.makeCarbonNitrogenDoubleBondReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                   // this.makeCarbonNitrogenDoubleBondReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                    this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), 'makeCarbonNitrogenDoubleBond', _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+
                 }
 
+
                 if (this.commands_filter.indexOf('deprotonateNitrogenReversal') === -1) {
-                    this.deprotonateNitrogenReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                   // this.deprotonateNitrogenReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                    this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), 'deprotonateNitrogen', _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+
                 }
+
+
 
                 //this.removeHalideReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
 
                 if (this.commands_filter.indexOf('substituteHalideForAmineReversal') === -1) {
-                    this.substituteHalideForAmineReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                   // this.substituteHalideForAmineReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                    this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), 'substituteHalideForAmine', _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+
                 }
 
+
+
                 if (this.commands_filter.indexOf('substituteOxygenCarbonDoubleBondForAmineReversal') === -1) {
-                    this.substituteOxygenCarbonDoubleBondForAmineReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                    //this.substituteOxygenCarbonDoubleBondForAmineReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                    this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), 'substituteOxygenCarbonDoubleBondForAmine', _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+
                 }
+
 
 
                 if (this.commands_filter.indexOf('protonateCarbocationReversal') === -1) {
-                    this.protonateCarbocationReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                    // this.protonateCarbocationReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                    this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), 'protonateCarbocation', _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+
                 }
 
                 if (this.commands_filter.indexOf('removeProtonFromOxygenReversal') === -1) {
-                    this.removeProtonFromOxygenReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                    //this.removeProtonFromOxygenReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                    this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), 'removeProtonFromOxygen', _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
                 }
+*/
+
+                ['addProtonFromReagentToSubstrate', 'dehydrate', 'protonate', 'transferProton', 'bondSubstrateToReagent', 'addProtonFromReagentToHydroxylGroup', 'makeCarbonNitrogenDoubleBond', 'deprotonateNitrogen', 'substituteHalideForAmine', 'protonateCarbocation', 'removeProtonFromOxygen'].map((command_name)=>{
+                    if (this.commands_filter.indexOf(command_name + 'Reversal') === -1) {
+                        this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), command_name, _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+
+                    }
+                })
 
 
 
@@ -436,15 +488,27 @@ class ReactionAI {
             } else {
 
 
+                ['transferProton', 'substituteHalideForAmine'].map((command_name)=>{
+                    if (this.commands_filter.indexOf(command_name + 'Reversal') === -1) {
+                        this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), command_name, _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
 
+                    }
+                })
+
+                /*
                 // We can have a reverse proton transfer on a neutral substrate
                 if (this.commands_filter.indexOf('transferProtonReversal') === -1) {
-                    this.transferProtonReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth + 1)
+                   // this.transferProtonReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth + 1)
+                    this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), 'transferProton', _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+
                 }
 
                 if (this.commands_filter.indexOf('substituteHalideForAmineReversal') === -1) {
-                    this.substituteHalideForAmineReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth + 1)
+                    //this.substituteHalideForAmineReversal(_.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth + 1)
+                    this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), 'substituteHalideForAmine', _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+
                 }
+                */
 
                 this.result(substrate, reagent, commands, 'synthesiseCallback()')
             }
@@ -453,6 +517,61 @@ class ReactionAI {
 
 
     }
+
+
+    // removeProtonFromOxygenReversal(), // protonateCarbocationReversal(), // substituteOxygenCarbonDoubleBondForAmine()
+    runReverseCommand(reverse_reaction, command_name, target, reagent, moleculeAI, commands, caller, depth) {
+
+        this.debugger(caller + "  reverse reaction result")
+
+
+        let r = null
+        r = reverse_reaction[command_name + 'Reverse']()
+
+        this.debugger(r)
+
+
+        if (caller === command_name) {
+            return
+        }
+
+
+        if (r) {
+
+
+            if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
+                this.result(target, reagent, commands, command_name)
+            }
+
+            this.debugger(commands.map((command)=>{
+                return command['name']
+            }))
+
+
+            const reverse_reaction_substrate = _.cloneDeep(reverse_reaction.container_substrate)
+            const reverse_reaction_reagent = _.cloneDeep(reverse_reaction.container_reagent)
+
+            commands.push({
+                'name':command_name,
+                'starting substrate': _.cloneDeep(reverse_reaction_substrate),
+                'starting reagent': _.cloneDeep(reverse_reaction_reagent),
+                'finish substrate': _.cloneDeep(target),
+                'finish reagent': _.cloneDeep(reagent),
+                'function':()=>{
+                    const reaction = new Reaction(_.cloneDeep(reverse_reaction_substrate), _.cloneDeep(reverse_reaction_reagent), {})
+                    reaction[command_name]()
+                    return reaction
+                }})
+
+            this.synthesiseCallback(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), command_name + 'Reversal', depth+1)
+
+        }
+
+
+
+    }
+
+
 
     removeProtonFromOxygenReversal(target, reagent, moleculeAI, commands, caller, depth) {
 
