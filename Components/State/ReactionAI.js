@@ -37,17 +37,19 @@ class ReactionAI {
         // Leuckart Wallach
         this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal") // Works with Akylation, Pinacol Rearrangement
          this.commands_filter.push("transferProtonReversal") // Works with Akylation, Pinacol Rearrangement
-         this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal") // Also used by Pinacol Rearrangement, Works with Akylation
-         this.commands_filter.push("dehydrateReversal") // Also used by Pinacol Rearrangement
-         this.commands_filter.push("protonateCarbocationReversal") // Breaks Akylation
+
+
+
 
         // Pinacol Rearrangement
          this.commands_filter.push("carbocationShiftReversal") // Works with Akylation, Leuckart
          this.commands_filter.push("removeProtonFromOxygenReversal") // Works with Akylation, Leuckart
 
 
-        //this.commands_filter.push("oxygenCarbonDoubleBondReversal") // Works with Akylation, Leuckart
-
+        this.commands_filter.push("oxygenCarbonDoubleBondReversal") // Works with Akylation, Leuckart
+        //this.commands_filter.push("protonateCarbocationReversal") // Breaks Akylation
+        //this.commands_filter.push("dehydrateReversal") // Also used by Pinacol Rearrangement
+        //this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal") // Also used by Pinacol Rearrangement, Works with Akylation
 
         this.command_sets = []
 
@@ -200,6 +202,7 @@ class ReactionAI {
 
     runReverseCommand(reverse_reaction, command_name, target, reagent, moleculeAI, commands, caller, depth) {
 
+
         this.debugger(caller + "  reverse reaction result")
 
         let r = null
@@ -214,12 +217,15 @@ class ReactionAI {
             return
         }
 
+        console.log(command_name + ' ' + r)
       //  console.log('commands at start:')
-        /*
+
         console.log(commands.map((cc)=>{
-            return cc['name'] + ' ' + r
+            return cc['name']
         }))
-        */
+
+        console.log(commands.indexOf(command_name))
+
 
         if (!r) {
             return
@@ -273,12 +279,12 @@ class ReactionAI {
             }
             */
 
-            console.log(VMolecule(commands[0]['starting substrate']).canonicalSMILES() + " -> (" + commands[0]['name'] + ") " + VMolecule(commands[0]['finish substrate']).canonicalSMILES())
+          //  console.log(VMolecule(commands[0]['starting substrate']).canonicalSMILES() + " -> (" + commands[0]['name'] + ") " + VMolecule(commands[0]['finish substrate']).canonicalSMILES())
 
           //  console.log(VMolecule(reverse_reaction_substrate).canonicalSMILES())
            // console.log(this.hasCharge(reverse_reaction_substrate))
            // console.log(command_name)
-            if(commands.length === 5) {
+            if(commands.length === 3) {
                 commands.map((command)=>{
                     console.log(VMolecule(command['starting substrate']).canonicalSMILES() + " -> (" + command['name'] + ") " + VMolecule(command['finish substrate']).canonicalSMILES())
                     return command
