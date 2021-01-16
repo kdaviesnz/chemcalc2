@@ -15,7 +15,7 @@ class ReactionAI {
 
         this.callback = null
 
-        this.debugger_on = true
+        this.debugger_on = false
 
         this.commands_filter = []
 
@@ -34,12 +34,10 @@ class ReactionAI {
             'deprotonateNitrogen': 'Deprotonate nitrogen atom on substrate',
             'substituteHalideForAmine': 'Substitute halide for amine group',
             'removeHalide': 'Remove halide',
-            'makeOxygenCarbonDoubleBond': 'Make oxygen-carbon double bond',
             'oxygenCarbonDoubleBond': 'Make oxygen-carbon double bond',
             'dehydrate': 'Dehydrate',
             'carbocationShift': 'Shift carbocation',
             'transferProton': 'Transfer proton',
-            'breakOxygenCarbonDoubleBond': 'Break oxygen-carbon double bond',
             'breakCarbonOxygenDoubleBond': 'Break oxygen-carbon double bond',
             'bondSubstrateToReagent': 'Bond substrate to reagent',
             'protonate': 'Protonate',
@@ -48,44 +46,7 @@ class ReactionAI {
 
 
 
-        this.result = (substrate, reagent, commands, caller, results_callback) => {
-            if (reagent === null) {
-            //console.log('No reagent')
-            } else {
-              //console.log('Reagent:')
-               //console.log(VMolecule(reagent).compressed())
-            }
 
-
-
-            // Check if starting substate rate has no charges
-            if (commands.length ===0 || this.hasCharge(_.cloneDeep(commands[commands.length-1]["starting substrate"])) !== -1) {
-                return
-            }
-
-            const command_names = commands.map((command)=>{
-                return command['name']
-            })
-
-
-
-            if( this._commmandSetExists(command_names)) {
-               //console.log("Matching command set - exiting")
-               // process.exit()
-                //// //console.log(kioll)
-                return
-            }
-
-            this.command_sets.push(command_names)
-
-
-            const command_names_reversed = _.cloneDeep(command_names).reverse()
-            const commands_reversed = _.cloneDeep(commands).reverse()
-
-
-            this.run(_.cloneDeep(commands).reverse(), 0, null, substrate, reagent, results_callback)
-            this.debugger("Caller:" + caller)
-        }
     }
 
     debugger(o) {
@@ -106,46 +67,7 @@ class ReactionAI {
        console.log(o)
     }
 
-    run(commands, command_index, reaction, starting_substrate, starting_reagent) {
 
-        if (commands[command_index] === undefined) {
-
-
-            const reaction_steps =  commands.map(
-                (command, command_index)=> {
-                    const command_in_plain_english = this.command_map[command['name']]
-                    return MReaction(
-                        command_in_plain_english,
-                        command['starting substrate'],
-                        command['starting reagent'],
-                        command['calculated product'],
-                        command['finish reagent']
-                    )
-                }
-            )
-
-            if (this.callback !== undefined && this.callback !== null) {
-                this.callback(null, reaction_steps)
-            } else {
-                VReaction(reaction_steps, reaction.container_substrate, '').render()
-                this.render('============================================================================')
-            }
-
-        } else {
-            const command_names = commands.map((command)=>{
-                return command['name']
-            })
-            if (commands.length === 3) {
-               //console.log("RUN command_names:")
-               //console.log(command_names)
-            }
-
-            const r = _.cloneDeep(commands[command_index])['function'](command_index, command_names, commands[command_index]['starting substrate'])
-            commands[command_index]['calculated product'] = r.container_substrate
-
-            this.run(_.cloneDeep(commands), _.cloneDeep(command_index+1), _.cloneDeep(r), _.cloneDeep(starting_substrate), _.cloneDeep(starting_reagent))
-        }
-    }
 
     hasCharge(substrate) {
         return _.findIndex(substrate[0][1], (atom)=>{
@@ -185,6 +107,22 @@ class ReactionAI {
 
     _synthesise(substrate, reagent, commands, caller, depth, moleculeAI) {
 
+
+        for(const command_name in this.command_map) {
+            if (this.commands_filter.indexOf(command_name + 'Reversal') === -1) {
+                // console.log('_synthesise() inner depth='+depth)
+                if (caller !== command_name + 'Reversal') {
+                    this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), command_name, _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                }
+
+            }
+
+        }
+        console.log(jjj)
+
+
+            /*
+
         ['carbocationShift','addProtonFromReagentToSubstrate', 'dehydrate', 'protonate', 'transferProton', 'bondSubstrateToReagent', 'addProtonFromReagentToHydroxylGroup', 'makeCarbonNitrogenDoubleBond', 'deprotonateNitrogen', 'substituteHalideForAmine', 'protonateCarbocation', 'removeProtonFromOxygen', 'oxygenCarbonDoubleBond', 'breakCarbonOxygenDoubleBond'].map((command_name)=>{
             if (this.commands_filter.indexOf(command_name + 'Reversal') === -1) {
                 // console.log('_synthesise() inner depth='+depth)
@@ -194,7 +132,9 @@ class ReactionAI {
 
             }
         })
+        */
 
+        /*
         commands.reverse()
 
         //console.log(VMolecule(commands[0]['starting substrate']).canonicalSMILES())
@@ -227,6 +167,7 @@ class ReactionAI {
             }
 
         }
+        */
 
 
     }
@@ -238,7 +179,9 @@ class ReactionAI {
         this.debugger(caller + "  reverse reaction result")
 
 
+
         let r = null
+
         r = reverse_reaction[command_name + 'Reverse']()
 
         this.debugger(r)
@@ -248,6 +191,12 @@ class ReactionAI {
             return
         }
 
+      //  console.log('commands at start:')
+        /*
+        console.log(commands.map((cc)=>{
+            return cc['name'] + ' ' + r
+        }))
+        */
 
         if (!r) {
             return
@@ -267,6 +216,14 @@ class ReactionAI {
             const reverse_reaction_substrate = _.cloneDeep(reverse_reaction.container_substrate)
             const reverse_reaction_reagent = _.cloneDeep(reverse_reaction.container_reagent)
 
+/*
+            console.log('commands before:')
+            console.log(commands.map((cc)=>{
+                return cc['name']
+            }))
+            */
+
+
             commands.push({
                 'name':command_name,
                 'starting substrate': _.cloneDeep(reverse_reaction_substrate),
@@ -278,6 +235,31 @@ class ReactionAI {
                     reaction[command_name]()
                     return reaction
                 }})
+
+            /*
+            console.log('commands after:')
+            console.log(commands.map((cc)=>{
+                return cc['name']
+            }))
+*/
+
+            /*
+            if (commands[0]['name']==='protonateCarbocation') {
+                console.log(commands.length)
+                console.log(kdflkjasjlfd)
+            }
+            */
+
+          //  console.log(VMolecule(reverse_reaction_substrate).canonicalSMILES())
+           // console.log(this.hasCharge(reverse_reaction_substrate))
+           // console.log(command_name)
+            if(commands.length === 5) {
+                commands.map((command)=>{
+                    console.log(VMolecule(command['starting substrate']).canonicalSMILES() + " -> (" + command['name'] + ") " + VMolecule(command['finish substrate']).canonicalSMILES())
+                    return command
+                })
+                console.log(mmm)
+            }
 
             this._synthesise(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), command_name + 'Reversal', depth+1)
 
