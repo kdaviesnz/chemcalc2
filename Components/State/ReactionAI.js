@@ -116,8 +116,8 @@ class ReactionAI {
         const hydrochloric_acid = MoleculeFactory("Cl")
 
 
-        //const reagents = [deprotonated_methylamide, ammonia,hydrochloric_acid]
-        const reagents = [deprotonated_methylamide]
+        const reagents = [deprotonated_methylamide, ammonia,hydrochloric_acid]
+        //const reagents = [deprotonated_methylamide]
 
         const moleculeAI = require("../Stateless/MoleculeAI")(_.cloneDeep([_.cloneDeep(target),1]))
 
@@ -228,11 +228,6 @@ class ReactionAI {
             return
         }
 
-        console.log(command_name + ' ' + r)
-      //  console.log('commands at start:')
-
-
-
 
         if (!r) {
             return
@@ -252,13 +247,6 @@ class ReactionAI {
             const reverse_reaction_substrate = _.cloneDeep(reverse_reaction.container_substrate)
             const reverse_reaction_reagent = _.cloneDeep(reverse_reaction.container_reagent)
 
-/*
-            console.log('commands before:')
-            console.log(commands.map((cc)=>{
-                return cc['name']
-            }))
-            */
-
 
             commands.push({
                 'name':command_name,
@@ -272,34 +260,20 @@ class ReactionAI {
                     return reaction
                 }})
 
-            /*
-            console.log('commands after:')
-            console.log(commands.map((cc)=>{
-                return cc['name']
-            }))
-*/
 
-            /*
-            if (commands[0]['name']==='protonateCarbocation') {
-                console.log(commands.length)
-                console.log(kdflkjasjlfd)
-            }
-            */
-
-          //  console.log(VMolecule(commands[0]['starting substrate']).canonicalSMILES() + " -> (" + commands[0]['name'] + ") " + VMolecule(commands[0]['finish substrate']).canonicalSMILES())
-
-          //  console.log(VMolecule(reverse_reaction_substrate).canonicalSMILES())
-           // console.log(this.hasCharge(reverse_reaction_substrate))
-           // console.log(command_name)
-            if(commands.length === 3) {
+            if(commands.length > 9 || this.hasCharge(commands[commands.length-1]['starting substrate']) === -1) {
+                console.log("Read from bottom to top")
                 commands.map((command)=>{
                     console.log(VMolecule(command['starting substrate']).canonicalSMILES() + " -> (" + command['name'] + ") " + VMolecule(command['finish substrate']).canonicalSMILES())
                     return command
                 })
-                console.log(mmm)
-            }
 
-            this._synthesise(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), command_name + 'Reversal', depth+1)
+                return
+
+            } else {
+
+                this._synthesise(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), command_name + 'Reversal', depth + 1)
+            }
 
         }
 

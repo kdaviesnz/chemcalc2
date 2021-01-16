@@ -37,7 +37,8 @@ const r = new ReactionAI()
 //r.synthesise(pinacolone)
 // Akylation
 // r.synthesise(MDA)
-r.synthesise(methamphetamine)
+//r.synthesise(methamphetamine)
+r.synthesise(imine)
 
 
 
