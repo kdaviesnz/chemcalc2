@@ -205,6 +205,17 @@ class ReactionAI {
 
         this.debugger(caller + "  reverse reaction result")
 
+        // Check if the command has already been called and returned true
+        // Note: In some cases we may need to call a command twice but
+        // for now make all commands callable only once
+        const command_names = commands.map((command)=>{
+            return command['name']
+        })
+
+        if(command_names.indexOf(command_name)!==-1){
+            return
+        }
+
         let r = null
 
         r = reverse_reaction[command_name + 'Reverse']()
@@ -220,11 +231,7 @@ class ReactionAI {
         console.log(command_name + ' ' + r)
       //  console.log('commands at start:')
 
-        console.log(commands.map((cc)=>{
-            return cc['name']
-        }))
 
-        console.log(commands.indexOf(command_name))
 
 
         if (!r) {
