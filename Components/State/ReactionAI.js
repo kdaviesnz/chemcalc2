@@ -15,7 +15,7 @@ class ReactionAI {
 
         this.callback = null
 
-        this.debugger_on = false
+        this.debugger_on = true
 
         this.commands_filter = []
 
@@ -197,30 +197,37 @@ class ReactionAI {
 
         commands.reverse()
 
-        // Final command should result in the substrate we are trying to synthesise
-        VMolecule([this.target, 1]).canonicalSMILES().should.equal(VMolecule(commands[commands.length-1]['finish substrate']).canonicalSMILES())
+        //console.log(VMolecule(commands[0]['starting substrate']).canonicalSMILES())
+        //console.log(this.hasCharge(commands[0]['starting substrate']))
+        //console.log(lkkl)
 
-        const reaction_steps =  commands.map(
-            (command, command_index)=> {
-                const command_in_plain_english = this.command_map[command['name']]
-                return MReaction(
-                    command_in_plain_english,
-                    command['starting substrate'],
-                    command['starting reagent'],
-                    command['finish substrate'],
-                    command['finish reagent']
-                )
+        if (commands.length > 0 && this.hasCharge(commands[0]['starting substrate']) === -1) {
+
+            // Final command should result in the substrate we are trying to synthesise
+            VMolecule([this.target, 1]).canonicalSMILES().should.equal(VMolecule(commands[commands.length - 1]['finish substrate']).canonicalSMILES())
+
+            const reaction_steps = commands.map(
+                (command, command_index) => {
+                    const command_in_plain_english = this.command_map[command['name']]
+                    return MReaction(
+                        command_in_plain_english,
+                        command['starting substrate'],
+                        command['starting reagent'],
+                        command['finish substrate'],
+                        command['finish reagent'],
+                    )
+                }
+            )
+
+            if (this.callback !== undefined && this.callback !== null) {
+                this.callback(null, reaction_steps)
+            } else {
+                VReaction(reaction_steps).render()
+                this.render('============================================================================')
             }
-        )
 
-        if (this.callback !== undefined && this.callback !== null) {
-            this.callback(null, reaction_steps)
-        } else {
-            VReaction(reaction_steps).render()
-            this.render('============================================================================')
         }
 
-        console.log(aaa)
 
     }
 
@@ -266,7 +273,7 @@ class ReactionAI {
                 'starting reagent': _.cloneDeep(reverse_reaction_reagent),
                 'finish substrate': _.cloneDeep(target),
                 'finish reagent': _.cloneDeep(reagent),
-                'function':()=>{
+                'function':(reagent)=>{
                     const reaction = new Reaction(_.cloneDeep(reverse_reaction_substrate), _.cloneDeep(reverse_reaction_reagent), {})
                     reaction[command_name]()
                     return reaction
