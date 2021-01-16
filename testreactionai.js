@@ -27,11 +27,12 @@ const MDA = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)N")
 //console.log(VMolecule([m,1]).canonicalSMILES())
 //console.log(hjkkkll)
 const imine = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)=NC")
+const phenylacetone = MoleculeFactory("CC(=O)CC1=CC=CC=C1")
 const r = new ReactionAI()
 
 
 // Leuckart Wallach
-r.synthesise(methamphetamine)
+r.synthesise(phenylacetone)
 // Pinacol Rearrangement
 //r.synthesise(pinacolone)
 // Akylation

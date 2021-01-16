@@ -22,6 +22,32 @@ class ReactionAI {
         this.commands_filter.push("bondSubstrateToReagentReversal") // DO NOT USE
         this.commands_filter.push("addProtonFromReagentToSubstrateReversal") // Works with Leuckart
         this.commands_filter.push("protonateReversal") // Works with Leuckart
+        this.commands_filter.push("makeCarbonNitrogenDoubleBondReversal") // Works with Leuckart
+        this.commands_filter.push("breakOxygenCarbonDoubleBondReversal") // Works with Leuckart
+
+        this.commands_filter.push("removeHalideReversal")
+        this.commands_filter.push("dehydratrationReversal")
+        this.commands_filter.push("breakCarbonOxygenDoubleBondReversal")
+
+        // Akylation
+        this.commands_filter.push("substituteHalideForAmineReversal") // Works with Pinacol Rearrangement, Leuckart
+        this.commands_filter.push("deprotonateNitrogenReversal") // breaks Leuckart Wallach, Works with Pinacol Rearrangement, Leuckart
+
+
+        // Leuckart Wallach
+        this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal") // Works with Akylation, Pinacol Rearrangement
+         this.commands_filter.push("transferProtonReversal") // Works with Akylation, Pinacol Rearrangement
+         this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal") // Also used by Pinacol Rearrangement, Works with Akylation
+         this.commands_filter.push("dehydrateReversal") // Also used by Pinacol Rearrangement
+         this.commands_filter.push("protonateCarbocationReversal") // Breaks Akylation
+
+        // Pinacol Rearrangement
+         this.commands_filter.push("carbocationShiftReversal") // Works with Akylation, Leuckart
+         this.commands_filter.push("removeProtonFromOxygenReversal") // Works with Akylation, Leuckart
+
+
+        //this.commands_filter.push("oxygenCarbonDoubleBondReversal") // Works with Akylation, Leuckart
+
 
         this.command_sets = []
 
@@ -88,7 +114,8 @@ class ReactionAI {
         const hydrochloric_acid = MoleculeFactory("Cl")
 
 
-        const reagents = [deprotonated_methylamide, ammonia,hydrochloric_acid]
+        //const reagents = [deprotonated_methylamide, ammonia,hydrochloric_acid]
+        const reagents = [deprotonated_methylamide]
 
         const moleculeAI = require("../Stateless/MoleculeAI")(_.cloneDeep([_.cloneDeep(target),1]))
 
@@ -118,9 +145,6 @@ class ReactionAI {
             }
 
         }
-        console.log(jjj)
-
-
             /*
 
         ['carbocationShift','addProtonFromReagentToSubstrate', 'dehydrate', 'protonate', 'transferProton', 'bondSubstrateToReagent', 'addProtonFromReagentToHydroxylGroup', 'makeCarbonNitrogenDoubleBond', 'deprotonateNitrogen', 'substituteHalideForAmine', 'protonateCarbocation', 'removeProtonFromOxygen', 'oxygenCarbonDoubleBond', 'breakCarbonOxygenDoubleBond'].map((command_name)=>{
@@ -178,13 +202,12 @@ class ReactionAI {
 
         this.debugger(caller + "  reverse reaction result")
 
-
-
         let r = null
 
         r = reverse_reaction[command_name + 'Reverse']()
 
         this.debugger(r)
+
 
 
         if (caller === command_name) {
@@ -249,6 +272,8 @@ class ReactionAI {
                 console.log(kdflkjasjlfd)
             }
             */
+
+            console.log(VMolecule(commands[0]['starting substrate']).canonicalSMILES() + " -> (" + commands[0]['name'] + ") " + VMolecule(commands[0]['finish substrate']).canonicalSMILES())
 
           //  console.log(VMolecule(reverse_reaction_substrate).canonicalSMILES())
            // console.log(this.hasCharge(reverse_reaction_substrate))
