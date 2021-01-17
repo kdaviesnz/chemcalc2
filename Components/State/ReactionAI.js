@@ -29,9 +29,9 @@ class ReactionAI {
         this.commands_filter.push("removeHalideReversal")
         this.commands_filter.push("breakCarbonOxygenDoubleBondReversal")
         this.commands_filter.push("substituteHalideForAmineReversal") 
-        this.commands_filter.push("deprotonateNitrogenReversal") 
+        //this.commands_filter.push("deprotonateNitrogenReversal")
         this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal") 
-        this.commands_filter.push("transferProtonReversal") 
+        //this.commands_filter.push("transferProtonReversal")
         this.commands_filter.push("carbocationShiftReversal")
          this.commands_filter.push("removeProtonFromOxygenReversal")
         this.commands_filter.push("oxygenCarbonDoubleBondReversal") 
@@ -126,7 +126,8 @@ class ReactionAI {
            commands.reverse()
 
 
-           if (commands.length > 0 && this.hasCharge(commands[0]['starting substrate']) === -1) {
+        if (true) {
+        //if (commands.length > 0 && this.hasCharge(commands[0]['starting substrate']) === -1) {
 
                // Final command should result in the substrate we are trying to synthesise
                VMolecule([this.target, 1]).canonicalSMILES().should.equal(VMolecule(commands[commands.length - 1]['finish substrate']).canonicalSMILES())
@@ -216,10 +217,6 @@ class ReactionAI {
                 return
             }
 
-            this.debugger(commands.map((command)=>{
-                return command['name']
-            }))
-
 
             const reverse_reaction_substrate = _.cloneDeep(reverse_reaction.container_substrate)
             const reverse_reaction_reagent = _.cloneDeep(reverse_reaction.container_reagent)
@@ -238,7 +235,7 @@ class ReactionAI {
                 }})
 
 
-            if(commands.length > 0 || this.hasCharge(commands[commands.length-1]['starting substrate']) === -1) {
+            if(commands.length > 1 || this.hasCharge(commands[commands.length-1]['starting substrate']) === -1) {
                 this.results(_.cloneDeep(commands))
                 return
             } else {
