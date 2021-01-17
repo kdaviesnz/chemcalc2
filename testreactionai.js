@@ -25,15 +25,14 @@ const r = new ReactionAI()
 // Pinacol Rearrangement
 //r.synthesise(pinacolone)
 // Leuckart Wallach
-/*
 r.synthesise(me)
 r.synthesise(imine)
 r.synthesise(imine2)
 r.synthesise(phenylacetone)
 r.synthesise(MDA)
 r.synthesise(isopropylamine)
-*/
 r.synthesise(MDMA)
+r.synthesise(imine2)
 
 
 // Epoxide acidic ring opening

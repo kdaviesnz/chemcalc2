@@ -185,18 +185,18 @@ class ChargesAI {
         }
 
         if (b < 0 && container_molecule[0][1][index][4] !=="-") {
-           // console.log("DEBUG: Atom should have negative charge")
-           // console.log("TRACE:"+trace + " " + trace_id)
-           // console.log("DEBUG: Atom " + atom[0])
-           // console.log("DEBUG: Charge " + atom[4])
-           // console.log("DEBUG: Index " + index)
-           // console.log("DEBUG: b " + b)
-           // console.log(a_obj.freeElectrons())
-           // console.log("Free electrons: " + a_obj.freeElectrons().length)
-           // console.log("No bonds: " + a_obj.indexedBonds("").length)
-           // console.log("Double bonds: " + a_obj.indexedDoubleBonds("").length)
-           // console.log("Triple bonds: " + a_obj.indexedTripleBonds("").length)
-           // console.log(VMolecule(container_molecule).compressed())
+           console.log("DEBUG: Atom should have negative charge")
+            console.log("TRACE:"+trace + " " + trace_id)
+           console.log("DEBUG: Atom " + atom[0])
+           console.log("DEBUG: Charge " + atom[4])
+           console.log("DEBUG: Index " + index)
+           console.log("DEBUG: b " + b)
+           console.log(a_obj.freeElectrons())
+           console.log("Free electrons: " + a_obj.freeElectrons().length)
+           console.log("No bonds: " + a_obj.indexedBonds("").length)
+           console.log("Double bonds: " + a_obj.indexedDoubleBonds("").length)
+           console.log("Triple bonds: " + a_obj.indexedTripleBonds("").length)
+           console.log(VMolecule(container_molecule).compressed())
             throw new Error("Atom should have a negative charge")
         }
 

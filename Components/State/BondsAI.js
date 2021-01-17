@@ -910,7 +910,10 @@ class BondsAI {
     }
 
     removeHalideReverse() {
+
+        this.reaction.setMoleculeAI()
         const halide_atom = AtomFactory("Br", "")
+        let n_bonds = null
         //console.log(halide_atom)
         //console.log(ioj)
 
@@ -922,7 +925,7 @@ class BondsAI {
                 return false
             }
             const c_atom = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate)
-            const n_bonds = c_atom.indexedBonds("").filter((bond)=>{
+            n_bonds = c_atom.indexedBonds("").filter((bond)=>{
                 return bond.atom[0] === "N" && bond.atom[4] === "+"
             })
 
@@ -930,8 +933,6 @@ class BondsAI {
         })
 
         if (c_index !== -1) {
-
-            this.reaction.container_substrate[0][1][c_index][4] = "+"
 
             const c_atom = CAtom(this.reaction.container_substrate[0][1][c_index], c_index, this.reaction.container_substrate)
             const h_bonds = c_atom.indexedBonds("").filter((bond)=>{
@@ -941,7 +942,7 @@ class BondsAI {
                 return false
             }
 
-            // Remove the hydrogen
+            // Remove the nitrogen
             /*
             const l = _.cloneDeep(this.reaction.container_substrate[0][1]).length
             _.remove(this.reaction.container_substrate[0][1], (v, i)=> {
@@ -950,12 +951,23 @@ class BondsAI {
             l.should.not.be.equal(this.reaction.container_substrate[0][1].length)
             */
 
-            // Replace with halide
+            // Remove Nitrogen and replace with halide
+            //console.log(this.reaction.container_substrate[0][1][c_index])
+            //console.log(n_bonds)
+            _.remove(this.reaction.container_substrate[0][1][c_index], (electron, index)=>{
+                return electron == n_bonds[0].shared_electrons[0] || electron == n_bonds[0].shared_electrons[1]
+            })
+            _.remove(this.reaction.container_substrate[0][1], (atom, index)=>{
+                return index === n_bonds[0].atom_index
+            })
+            if (n_bonds[0].atom_index < c_index) {
+                c_index = c_index - 1
+            }
             this.reaction.container_substrate[0][1][c_index].push(halide_atom[halide_atom.length-1])
             this.reaction.container_substrate[0][1][c_index].push(halide_atom[halide_atom.length-2])
             this.reaction.container_substrate[0][1].push(halide_atom)
-            //console.log(VMolecule(this.reaction.container_substrate).compressed())
 
+            console.log("c index: "+c_index)
             this.reaction.setChargeOnSubstrateAtom(c_index)
             this.reaction.setMoleculeAI()
 

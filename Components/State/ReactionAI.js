@@ -33,7 +33,7 @@ class ReactionAI {
         // Akylation
         //this.commands_filter.push("substituteHalideForAmineReversal") // Works with Pinacol Rearrangement, Leuckart
         //****
-        this.commands_filter.push("deprotonateNitrogenReversal") // breaks Leuckart Wallach, Works with Pinacol Rearrangement, Leuckart
+        //this.commands_filter.push("deprotonateNitrogenReversal") // breaks Leuckart Wallach, Works with Pinacol Rearrangement, Leuckart
 
 
         // Leuckart Wallach
