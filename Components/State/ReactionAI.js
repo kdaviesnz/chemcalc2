@@ -20,33 +20,35 @@ class ReactionAI {
         this.commands_filter = []
 
         this.commands_filter.push("bondSubstrateToReagentReversal") // DO NOT USE
-        this.commands_filter.push("addProtonFromReagentToSubstrateReversal") // Works with Leuckart
-        this.commands_filter.push("protonateReversal") // Works with Leuckart
-        this.commands_filter.push("makeCarbonNitrogenDoubleBondReversal") // Works with Leuckart
-        this.commands_filter.push("breakOxygenCarbonDoubleBondReversal") // Works with Leuckart
+        //***
+        //this.commands_filter.push("addProtonFromReagentToSubstrateReversal") // Works with Leuckart
+        //this.commands_filter.push("protonateReversal") // Works with Leuckart
+        //this.commands_filter.push("makeCarbonNitrogenDoubleBondReversal") // Works with Leuckart
+        //this.commands_filter.push("breakOxygenCarbonDoubleBondReversal") // Works with Leuckart
 
-        this.commands_filter.push("removeHalideReversal")
-        this.commands_filter.push("dehydratrationReversal")
-        this.commands_filter.push("breakCarbonOxygenDoubleBondReversal")
+        //this.commands_filter.push("removeHalideReversal")
+        //this.commands_filter.push("dehydratrationReversal")
+        //this.commands_filter.push("breakCarbonOxygenDoubleBondReversal")
 
         // Akylation
-        this.commands_filter.push("substituteHalideForAmineReversal") // Works with Pinacol Rearrangement, Leuckart
+        //this.commands_filter.push("substituteHalideForAmineReversal") // Works with Pinacol Rearrangement, Leuckart
+        //****
         this.commands_filter.push("deprotonateNitrogenReversal") // breaks Leuckart Wallach, Works with Pinacol Rearrangement, Leuckart
 
 
         // Leuckart Wallach
-        this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal") // Works with Akylation, Pinacol Rearrangement
-         this.commands_filter.push("transferProtonReversal") // Works with Akylation, Pinacol Rearrangement
+        //this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal") // Works with Akylation, Pinacol Rearrangement
+        // this.commands_filter.push("transferProtonReversal") // Works with Akylation, Pinacol Rearrangement
 
 
 
 
         // Pinacol Rearrangement
-         this.commands_filter.push("carbocationShiftReversal") // Works with Akylation, Leuckart
-         this.commands_filter.push("removeProtonFromOxygenReversal") // Works with Akylation, Leuckart
+         //this.commands_filter.push("carbocationShiftReversal") // Works with Akylation, Leuckart
+         //this.commands_filter.push("removeProtonFromOxygenReversal") // Works with Akylation, Leuckart
 
 
-        this.commands_filter.push("oxygenCarbonDoubleBondReversal") // Works with Akylation, Leuckart
+        //this.commands_filter.push("oxygenCarbonDoubleBondReversal") // Works with Akylation, Leuckart
         //this.commands_filter.push("protonateCarbocationReversal") // Breaks Akylation
         //this.commands_filter.push("dehydrateReversal") // Also used by Pinacol Rearrangement
         //this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal") // Also used by Pinacol Rearrangement, Works with Akylation
@@ -133,6 +135,39 @@ class ReactionAI {
 
     }
 
+    results(commands) {
+
+           commands.reverse()
+
+
+           if (commands.length > 0 && this.hasCharge(commands[0]['starting substrate']) === -1) {
+
+               // Final command should result in the substrate we are trying to synthesise
+               VMolecule([this.target, 1]).canonicalSMILES().should.equal(VMolecule(commands[commands.length - 1]['finish substrate']).canonicalSMILES())
+
+               const reaction_steps = commands.map(
+                   (command, command_index) => {
+                       const command_in_plain_english = this.command_map[command['name']]
+                       return MReaction(
+                           command_in_plain_english,
+                           command['starting substrate'],
+                           command['starting reagent'],
+                           command['finish substrate'],
+                           command['finish reagent'],
+                       )
+                   }
+               )
+
+               if (this.callback !== undefined && this.callback !== null) {
+                   this.callback(null, reaction_steps)
+               } else {
+                   VReaction(reaction_steps).render()
+                   this.render('============================================================================')
+               }
+
+           }
+
+    }
 
     _synthesise(substrate, reagent, commands, caller, depth, moleculeAI) {
 
@@ -147,53 +182,8 @@ class ReactionAI {
             }
 
         }
-            /*
 
-        ['carbocationShift','addProtonFromReagentToSubstrate', 'dehydrate', 'protonate', 'transferProton', 'bondSubstrateToReagent', 'addProtonFromReagentToHydroxylGroup', 'makeCarbonNitrogenDoubleBond', 'deprotonateNitrogen', 'substituteHalideForAmine', 'protonateCarbocation', 'removeProtonFromOxygen', 'oxygenCarbonDoubleBond', 'breakCarbonOxygenDoubleBond'].map((command_name)=>{
-            if (this.commands_filter.indexOf(command_name + 'Reversal') === -1) {
-                // console.log('_synthesise() inner depth='+depth)
-                if (caller !== command_name + 'Reversal') {
-                    this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), command_name, _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
-                }
 
-            }
-        })
-        */
-
-        /*
-        commands.reverse()
-
-        //console.log(VMolecule(commands[0]['starting substrate']).canonicalSMILES())
-        //console.log(this.hasCharge(commands[0]['starting substrate']))
-        //console.log(lkkl)
-
-        if (commands.length > 0 && this.hasCharge(commands[0]['starting substrate']) === -1) {
-
-            // Final command should result in the substrate we are trying to synthesise
-            VMolecule([this.target, 1]).canonicalSMILES().should.equal(VMolecule(commands[commands.length - 1]['finish substrate']).canonicalSMILES())
-
-            const reaction_steps = commands.map(
-                (command, command_index) => {
-                    const command_in_plain_english = this.command_map[command['name']]
-                    return MReaction(
-                        command_in_plain_english,
-                        command['starting substrate'],
-                        command['starting reagent'],
-                        command['finish substrate'],
-                        command['finish reagent'],
-                    )
-                }
-            )
-
-            if (this.callback !== undefined && this.callback !== null) {
-                this.callback(null, reaction_steps)
-            } else {
-                VReaction(reaction_steps).render()
-                this.render('============================================================================')
-            }
-
-        }
-        */
 
 
     }
@@ -261,15 +251,9 @@ class ReactionAI {
                 }})
 
 
-            if(commands.length > 9 || this.hasCharge(commands[commands.length-1]['starting substrate']) === -1) {
-                console.log("Read from bottom to top")
-                commands.map((command)=>{
-                    console.log(VMolecule(command['starting substrate']).canonicalSMILES() + " -> (" + command['name'] + ") " + VMolecule(command['finish substrate']).canonicalSMILES())
-                    return command
-                })
-
+            if(commands.length > 2000 || this.hasCharge(commands[commands.length-1]['starting substrate']) === -1) {
+                this.results(_.cloneDeep(commands))
                 return
-
             } else {
 
                 this._synthesise(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), command_name + 'Reversal', depth + 1)
@@ -299,58 +283,6 @@ class ReactionAI {
     }
 
 
-    _synthesise_old(substrate, reagent, commands, caller, depth, moleculeAI) {
-
-        const command_names = commands.map((command)=>{
-            return command['name']
-        })
-
-        if (command_names[command_names.length-1] === "substituteOxygenCarbonDoubleBondForAmine") {
-            this.result(substrate, reagent, commands, '_synthesise()')
-        }
-
-        if (command_names.length > 0 && command_names[command_names.length-1] === "bondSubstrateToReagent" ) {
-            this.result(substrate, reagent, commands, '_synthesise()')
-        } else {
-
-
-            // Proceed only if first step or there is a charge on the substrate.
-            if (commands.length === 0 || this.hasCharge(_.cloneDeep(substrate)) !== -1) {
-
-
-
-                ['carbocationShift','addProtonFromReagentToSubstrate', 'dehydrate', 'protonate', 'transferProton', 'bondSubstrateToReagent', 'addProtonFromReagentToHydroxylGroup', 'makeCarbonNitrogenDoubleBond', 'deprotonateNitrogen', 'substituteHalideForAmine', 'protonateCarbocation', 'removeProtonFromOxygen', 'oxygenCarbonDoubleBond', 'breakCarbonOxygenDoubleBond'].map((command_name)=>{
-                    if (this.commands_filter.indexOf(command_name + 'Reversal') === -1) {
-                        // console.log('_synthesise() inner depth='+depth)
-                        if (caller !== command_name + 'Reversal') {
-                            this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), command_name, _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
-                        }
-
-                    }
-                })
-
-                //reagents_processed.push(VMolecule(reagent).canonicalSMILES())
-
-
-
-            } else {
-
-
-                ['transferProton', 'substituteHalideForAmine'].map((command_name)=>{
-                    if (this.commands_filter.indexOf(command_name + 'Reversal') === -1) {
-                        this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), command_name, _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
-
-                    }
-                })
-
-                this.result(substrate, reagent, commands, '_synthesise()')
-            }
-
-        }
-
-
-
-    }
 
 
 

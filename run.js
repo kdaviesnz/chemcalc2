@@ -54,9 +54,13 @@ rl.on('line', (line) => {
         console.log("Running tests, this may take a while")
         Test()
         rl.prompt()
-    } else if (lineTrimmed.toLowerCase().substr(0,10) === "synthesize" || lineTrimmed.toLowerCase().substr(0,5) === "synth") {
+    } else if (lineTrimmed.toLowerCase().substr(0,10) === "synthesize") {
         Synthesize(
             lineTrimmed.toLowerCase().substr(10)
+        )
+    } else if ( lineTrimmed.toLowerCase().substr(0,5) === "synth") {
+        Synthesize(
+            lineTrimmed.toLowerCase().substr(5)
         )
     } else if (lineTrimmed.toLowerCase().substr(0,4) === "exit") {
         process.exit()
@@ -81,4 +85,4 @@ rl.on('line', (line) => {
     }
 })
 
-debug('run.js end')
+

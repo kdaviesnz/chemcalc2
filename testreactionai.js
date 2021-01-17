@@ -4,42 +4,36 @@ const VMolecule = require('./Components/Stateless/Views/Molecule')
 
 // Chemicals to synthesise
 // https://en.wikipedia.org/wiki/Pinacol_rearrangement
-
-const methamphetamine = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
-//console.log(mmmmkkk)
+const me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 
 const pinacolone = MoleculeFactory("CC(=O)C(C)(C)C")
 const imine2 = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
-//console.log(VMolecule([imine2,1]).compressed())
-//console.log(VMolecule([imine2,1]).canonicalSMILES())
-//console.log(mnb)
-
 
 const pm = MoleculeFactory("CC(=O)CC1=CC2=C(C=C1)OCO2")
 
 //https://en.wikipedia.org/wiki/Leuckart_reaction
 const isopropylamine = MoleculeFactory("CC(C)N")
-
 const MDA = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)N")
-//console.log(VMolecule([m2,1]).compressed())
-//console.log(m2[1][22])
-//console.log(hjkkkll)
-//console.log(VMolecule([m,1]).canonicalSMILES())
-//console.log(hjkkkll)
+const MDMA = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)NC")
 const imine = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)=NC")
 const phenylacetone = MoleculeFactory("CC(=O)CC1=CC=CC=C1")
 const r = new ReactionAI()
 
 
-// Leuckart Wallach
-//r.synthesise(phenylacetone)
-// Pinacol Rearrangement
-//r.synthesise(pinacolone)
 // Akylation
 // r.synthesise(MDA)
-//r.synthesise(methamphetamine)
+// Pinacol Rearrangement
+//r.synthesise(pinacolone)
+// Leuckart Wallach
+/*
+r.synthesise(me)
 r.synthesise(imine)
-
+r.synthesise(imine2)
+r.synthesise(phenylacetone)
+r.synthesise(MDA)
+r.synthesise(isopropylamine)
+*/
+r.synthesise(MDMA)
 
 
 // Epoxide acidic ring opening
