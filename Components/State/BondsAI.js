@@ -967,7 +967,7 @@ class BondsAI {
             this.reaction.container_substrate[0][1][c_index].push(halide_atom[halide_atom.length-2])
             this.reaction.container_substrate[0][1].push(halide_atom)
 
-            console.log("c index: "+c_index)
+            //console.log("c index: "+c_index)
             this.reaction.setChargesOnSubstrate()
             this.reaction.setMoleculeAI()
 

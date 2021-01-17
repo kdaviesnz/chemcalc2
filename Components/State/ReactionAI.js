@@ -15,43 +15,29 @@ class ReactionAI {
 
         this.callback = null
 
-        this.debugger_on = false
+        this.debugger_on = true
 
         this.commands_filter = []
 
         this.commands_filter.push("bondSubstrateToReagentReversal") // DO NOT USE
-        //***
-        //this.commands_filter.push("addProtonFromReagentToSubstrateReversal") // Works with Leuckart
-        //this.commands_filter.push("protonateReversal") // Works with Leuckart
-        //this.commands_filter.push("makeCarbonNitrogenDoubleBondReversal") // Works with Leuckart
-        //this.commands_filter.push("breakOxygenCarbonDoubleBondReversal") // Works with Leuckart
 
-        //this.commands_filter.push("removeHalideReversal")
-        //this.commands_filter.push("dehydratrationReversal")
-        //this.commands_filter.push("breakCarbonOxygenDoubleBondReversal")
-
-        // Akylation
-        //this.commands_filter.push("substituteHalideForAmineReversal") // Works with Pinacol Rearrangement, Leuckart
-        //****
-        //this.commands_filter.push("deprotonateNitrogenReversal") // breaks Leuckart Wallach, Works with Pinacol Rearrangement, Leuckart
-
-
-        // Leuckart Wallach
-        //this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal") // Works with Akylation, Pinacol Rearrangement
-        // this.commands_filter.push("transferProtonReversal") // Works with Akylation, Pinacol Rearrangement
-
-
-
-
-        // Pinacol Rearrangement
-         //this.commands_filter.push("carbocationShiftReversal") // Works with Akylation, Leuckart
-         //this.commands_filter.push("removeProtonFromOxygenReversal") // Works with Akylation, Leuckart
-
-
-        //this.commands_filter.push("oxygenCarbonDoubleBondReversal") // Works with Akylation, Leuckart
-        //this.commands_filter.push("protonateCarbocationReversal") // Breaks Akylation
-        //this.commands_filter.push("dehydrateReversal") // Also used by Pinacol Rearrangement
-        //this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal") // Also used by Pinacol Rearrangement, Works with Akylation
+        
+        this.commands_filter.push("addProtonFromReagentToSubstrateReversal")
+        this.commands_filter.push("protonateReversal")
+        this.commands_filter.push("makeCarbonNitrogenDoubleBondReversal")
+        this.commands_filter.push("breakOxygenCarbonDoubleBondReversal")
+        this.commands_filter.push("removeHalideReversal")
+        this.commands_filter.push("breakCarbonOxygenDoubleBondReversal")
+        this.commands_filter.push("substituteHalideForAmineReversal") 
+        this.commands_filter.push("deprotonateNitrogenReversal") 
+        this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal") 
+        this.commands_filter.push("transferProtonReversal") 
+        this.commands_filter.push("carbocationShiftReversal")
+         this.commands_filter.push("removeProtonFromOxygenReversal")
+        this.commands_filter.push("oxygenCarbonDoubleBondReversal") 
+        this.commands_filter.push("protonateCarbocationReversal") 
+        //this.commands_filter.push("dehydrateReversal")
+        this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal")
 
         this.command_sets = []
 
@@ -118,8 +104,8 @@ class ReactionAI {
         const hydrochloric_acid = MoleculeFactory("Cl")
 
 
-        const reagents = [deprotonated_methylamide, ammonia,hydrochloric_acid]
-        //const reagents = [deprotonated_methylamide]
+        //const reagents = [deprotonated_methylamide, ammonia,hydrochloric_acid]
+        const reagents = [deprotonated_methylamide]
 
         const moleculeAI = require("../Stateless/MoleculeAI")(_.cloneDeep([_.cloneDeep(target),1]))
 
@@ -194,6 +180,7 @@ class ReactionAI {
 
 
         this.debugger(caller + "  reverse reaction result")
+        this.debugger("command " + command_name)
 
         // Check if the command has already been called and returned true
         // Note: In some cases we may need to call a command twice but
@@ -251,7 +238,7 @@ class ReactionAI {
                 }})
 
 
-            if(commands.length > 2000 || this.hasCharge(commands[commands.length-1]['starting substrate']) === -1) {
+            if(commands.length > 0 || this.hasCharge(commands[commands.length-1]['starting substrate']) === -1) {
                 this.results(_.cloneDeep(commands))
                 return
             } else {

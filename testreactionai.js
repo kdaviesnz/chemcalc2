@@ -7,7 +7,7 @@ const VMolecule = require('./Components/Stateless/Views/Molecule')
 const me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 
 const pinacolone = MoleculeFactory("CC(=O)C(C)(C)C")
-const imine2 = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
+
 
 const pm = MoleculeFactory("CC(=O)CC1=CC2=C(C=C1)OCO2")
 
@@ -16,6 +16,7 @@ const isopropylamine = MoleculeFactory("CC(C)N")
 const MDA = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)N")
 const MDMA = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)NC")
 const imine = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)=NC")
+const imine2 = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
 const phenylacetone = MoleculeFactory("CC(=O)CC1=CC=CC=C1")
 const r = new ReactionAI()
 
@@ -25,6 +26,7 @@ const r = new ReactionAI()
 // Pinacol Rearrangement
 //r.synthesise(pinacolone)
 // Leuckart Wallach
+/*
 r.synthesise(me)
 r.synthesise(imine)
 r.synthesise(imine2)
@@ -32,7 +34,8 @@ r.synthesise(phenylacetone)
 r.synthesise(MDA)
 r.synthesise(isopropylamine)
 r.synthesise(MDMA)
-r.synthesise(imine2)
+*/
+r.synthesise(imine)
 
 
 // Epoxide acidic ring opening
