@@ -35,6 +35,7 @@ class ReactionAI {
         //this.commands_filter.push("carbocationShiftReversal")
          //this.commands_filter.push("removeProtonFromOxygenReversal")
         //this.commands_filter.push("oxygenCarbonDoubleBondReversal")
+        //this.commands_filter.push("reduceImineToAmineReversal")
 
         // ****
         // Breaks Leuckart Wallach (imine2)
@@ -61,7 +62,8 @@ class ReactionAI {
             'breakCarbonOxygenDoubleBond': 'Break oxygen-carbon double bond',
             'bondSubstrateToReagent': 'Bond substrate to reagent',
             'protonate': 'Protonate',
-            'addProtonFromReagentToSubstrate': 'Add proton from reagent to substrate'
+            'addProtonFromReagentToSubstrate': 'Add proton from reagent to substrate',
+            'reduceImineToAmine': 'Reduce imine to amine'
         }
 
 

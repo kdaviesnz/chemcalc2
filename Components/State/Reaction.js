@@ -166,6 +166,12 @@ class Reaction {
         return bondsAI.makeNitrogenCarbonDoubleBond()
     }
 
+    reduceImineToAmine() {
+        this.container_reagent = MoleculeFactory("NaBH3CN",1)
+        console.log(this.container_reagent)
+        console.log()
+    }
+
     remercurify() {
 
         // @see https://www.chemistrysteps.com/oxymercuration-demercuration/
