@@ -226,10 +226,6 @@ class ProtonationAI {
             return false
         }
 
-      // console.log("ProtonationAI protonateCarbocationReverse carbocation index: " + c_index)
-      // console.log(c_index)
-      // console.log(VMolecule(this.reaction.container_substrate).compressed())
-      // console.log(aaaaaa)
 
         carbon = CAtom(this.reaction.container_substrate[0][1][c_index], c_index, this.reaction.container_substrate)
         c_h_bonds = carbon.indexedBonds("").filter((bond)=>{
@@ -278,12 +274,18 @@ class ProtonationAI {
         this.reaction.setMoleculeAI()
         this.reaction.setReagentAI()
 
-      // console.log(VMolecule(this.reaction.container_reagent).compressed())
+     //  console.log(VMolecule(this.reaction.container_reagent).compressed())
+        //console.log(VMolecule(this.reaction.container_substrate).compressed())
       // console.log(nindex)
+        //console.log(c_index)
+        //console.log('protonateCarbocationReverse()');
+        //console.log(cccc)
+
 
 
         return true
     }
+
 
     deprotonateCarbonyl() {
         return false

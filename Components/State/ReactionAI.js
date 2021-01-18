@@ -22,20 +22,24 @@ class ReactionAI {
         this.commands_filter.push("bondSubstrateToReagentReversal") // DO NOT USE
 
         
-        this.commands_filter.push("addProtonFromReagentToSubstrateReversal")
-        this.commands_filter.push("protonateReversal")
-        this.commands_filter.push("makeCarbonNitrogenDoubleBondReversal")
-        this.commands_filter.push("breakOxygenCarbonDoubleBondReversal")
-        this.commands_filter.push("removeHalideReversal")
-        this.commands_filter.push("breakCarbonOxygenDoubleBondReversal")
-        this.commands_filter.push("substituteHalideForAmineReversal") 
+        //this.commands_filter.push("addProtonFromReagentToSubstrateReversal")
+        //this.commands_filter.push("protonateReversal")
+        //this.commands_filter.push("makeCarbonNitrogenDoubleBondReversal")
+        //this.commands_filter.push("breakOxygenCarbonDoubleBondReversal")
+        //this.commands_filter.push("removeHalideReversal")
+        //this.commands_filter.push("breakCarbonOxygenDoubleBondReversal")
+        //this.commands_filter.push("substituteHalideForAmineReversal")
         //this.commands_filter.push("deprotonateNitrogenReversal")
         //this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal")
         //this.commands_filter.push("transferProtonReversal")
-        this.commands_filter.push("carbocationShiftReversal")
-         this.commands_filter.push("removeProtonFromOxygenReversal")
-        this.commands_filter.push("oxygenCarbonDoubleBondReversal") 
-        this.commands_filter.push("protonateCarbocationReversal") 
+        //this.commands_filter.push("carbocationShiftReversal")
+         //this.commands_filter.push("removeProtonFromOxygenReversal")
+        //this.commands_filter.push("oxygenCarbonDoubleBondReversal")
+
+        // ****
+        // Breaks Leuckart Wallach (imine2)
+        this.commands_filter.push("protonateCarbocationReversal")
+
         //this.commands_filter.push("dehydrateReversal")
         //this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal")
 
@@ -105,7 +109,7 @@ class ReactionAI {
 
 
         //const reagents = [deprotonated_methylamide, ammonia,hydrochloric_acid]
-        const reagents = [deprotonated_methylamide]
+        const reagents = [deprotonated_methylamide,hydrochloric_acid, ammonia]
 
         const moleculeAI = require("../Stateless/MoleculeAI")(_.cloneDeep([_.cloneDeep(target),1]))
 
@@ -237,6 +241,7 @@ class ReactionAI {
                 }})
 
 
+            this.debugger(command_names)
             if(this.hasCharge(commands[commands.length-1]['starting substrate']) === -1 && (reverse_reaction.transferProtonReverse(true) === false)) {
                 this.results(_.cloneDeep(commands))
                 return
