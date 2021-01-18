@@ -13,29 +13,26 @@ const pm = MoleculeFactory("CC(=O)CC1=CC2=C(C=C1)OCO2")
 
 //https://en.wikipedia.org/wiki/Leuckart_reaction
 const isopropylamine = MoleculeFactory("CC(C)N")
-const MDA = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)N")
-const MDMA = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)NC")
-const MDMAImine = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)=NC")
+const MA = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)N")
+const MD = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)NC")
+const MDImine = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)=NC")
 const MeImine2 = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
 const phenylacetone = MoleculeFactory("CC(=O)CC1=CC=CC=C1")
 const r = new ReactionAI()
 
 
 // Akylation
-// r.synthesise(MDA)
 
 //
 /*
 r.synthesise(me)
-r.synthesise(MDA)
-r.synthesise(MDMA)
+r.synthesise(MA)
 */
 // Leuckart Wallach
 r.synthesise(MeImine2)
-r.synthesise(MDMAImine)
+r.synthesise(MDImine)
 // Pinacol Rearrangement
 r.synthesise(pinacolone)
-
 r.synthesise(isopropylamine)
 r.synthesise(phenylacetone)
 

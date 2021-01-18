@@ -106,7 +106,7 @@ class ReactionAI {
         const deprotonated_methylamide = MoleculeFactory("C[NH0]")
         const ammonia = MoleculeFactory("N")
         const hydrochloric_acid = MoleculeFactory("Cl")
-
+git
 
         //const reagents = [deprotonated_methylamide, ammonia,hydrochloric_acid]
         const reagents = [deprotonated_methylamide,hydrochloric_acid, ammonia]
