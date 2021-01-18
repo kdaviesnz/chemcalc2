@@ -15,7 +15,7 @@ class ReactionAI {
 
         this.callback = null
 
-        this.debugger_on = true
+        this.debugger_on = false
 
         this.commands_filter = []
 
@@ -30,14 +30,14 @@ class ReactionAI {
         this.commands_filter.push("breakCarbonOxygenDoubleBondReversal")
         this.commands_filter.push("substituteHalideForAmineReversal") 
         //this.commands_filter.push("deprotonateNitrogenReversal")
-        this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal") 
+        //this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal")
         //this.commands_filter.push("transferProtonReversal")
         this.commands_filter.push("carbocationShiftReversal")
          this.commands_filter.push("removeProtonFromOxygenReversal")
         this.commands_filter.push("oxygenCarbonDoubleBondReversal") 
         this.commands_filter.push("protonateCarbocationReversal") 
         //this.commands_filter.push("dehydrateReversal")
-        this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal")
+        //this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal")
 
         this.command_sets = []
 
@@ -179,9 +179,11 @@ class ReactionAI {
 
     runReverseCommand(reverse_reaction, command_name, target, reagent, moleculeAI, commands, caller, depth) {
 
-
         this.debugger(caller + "  reverse reaction result")
         this.debugger("command " + command_name)
+
+
+
 
         // Check if the command has already been called and returned true
         // Note: In some cases we may need to call a command twice but
@@ -235,10 +237,11 @@ class ReactionAI {
                 }})
 
 
-            if(commands.length > 1 || this.hasCharge(commands[commands.length-1]['starting substrate']) === -1) {
+            if(this.hasCharge(commands[commands.length-1]['starting substrate']) === -1 && (reverse_reaction.transferProtonReverse(true) === false)) {
                 this.results(_.cloneDeep(commands))
                 return
             } else {
+
 
                 this._synthesise(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), command_name + 'Reversal', depth + 1)
             }

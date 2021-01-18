@@ -280,14 +280,11 @@ class Reaction {
 
 
 
-    transferProtonReverse() {
+    transferProtonReverse(check_mode) {
 
         this.setChargesOnSubstrate()
         this.setMoleculeAI('transferprotonreverse')
 
-        // console.log('Reaction.js transferProtonReverse()')
-        // console.log(VMolecule(this.container_substrate).compressed())
-        // Get index of N not on C=N bond
         const nucleophile_index = _.findIndex(this.container_substrate[0][1], (atom, index)=>{
             if (atom[0] !== 'N') {
                 return false
@@ -340,10 +337,13 @@ class Reaction {
         if (shared_electrons.length === 0) {
             return false
         }
-        // transferProtonReverse
 
-        //// console.log(this.container_substrate[0][1][electrophile_index])
-        // OH
+
+        // We're only testing to see if the function will return true
+        if (check_mode) {
+            return true
+        }
+
         _.remove(this.container_substrate[0][1][electrophile_index], (v, i)=> {
             return shared_electrons[1] === v || shared_electrons[0] === v
         })
@@ -355,47 +355,20 @@ class Reaction {
         })
 
 
-        //// console.log(this.container_substrate[0][1][electrophile_index])
-
-
-        //this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4] === "+"?"":"-"
-      //  this.setChargeOnSubstrateAtom(electrophile_index)
-
-
-        // Add proton to nucleophile atom
-        // shared electrons are electrons from proton
-        // N
         const nucleophile_atom_object = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate)
         const nucleophile_free_electrons = nucleophile_atom_object.freeElectrons()
 
-        // console.log("nucl")
-        // console.log(this.container_substrate[0][1][nucleophile_index])
-        // console.log("Nucl, numver of bonds")
-        // console.log(nucleophile_atom_object.indexedBonds("").length )
 
         this.container_substrate[0][1][nucleophile_index] = Set().removeFromArray(this.container_substrate[0][1][nucleophile_index], nucleophile_free_electrons)
         this.container_substrate[0][1][nucleophile_index].push(shared_electrons[0])
         this.container_substrate[0][1][nucleophile_index].push(shared_electrons[1])
 
 
-
         this.setChargesOnSubstrate()
-        // console.log("Shared electrons:")
-        // console.log(shared_electrons)
-        // console.log("Nucl free electrons")
-        // console.log(nucleophile_free_electrons)
         this.setMoleculeAI('transferprotonreverse')
 
-
-
-
-
-        //this.container_substrate[0][1][nucleophile_index][4] = this.container_substrate[0][1][nucleophile_index][4] === "-"?"":"+"
         this.setChargesOnSubstrate()
 
-        // console.log('transferProton() nucleophile index: ' + nucleophile_index)
-        // console.log(this.container_substrate[0][1][nucleophile_index])
-        // console.log(klj)
 
         this.setMoleculeAI('transferprotonreverse')
 
