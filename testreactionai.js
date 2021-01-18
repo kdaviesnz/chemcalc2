@@ -35,7 +35,7 @@ r.synthesise(MDA)
 r.synthesise(isopropylamine)
 r.synthesise(MDMA)
 */
-r.synthesise(imine)
+r.synthesise(imine2)
 
 
 // Epoxide acidic ring opening
