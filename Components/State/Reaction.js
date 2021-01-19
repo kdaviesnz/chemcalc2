@@ -1986,13 +1986,13 @@ class Reaction {
         const carbocation = CAtom(this.container_substrate[0][1][carbocation_index], carbocation_index, this.container_substrate)
 
 
-
         const carbon_bond = carbocation.indexedBonds("").filter((bond)=>{
             if (bond.atom[0] !=="C") {
                 return false
             }
             const c = CAtom(this.container_substrate[0][1][bond.atom_index], bond.atom_index, this.container_substrate)
-            return c.hydrogens().length < 2 // @todo
+            //return c.hydrogens().length < 2 // @todo
+            return true
         }).pop()
 
 
@@ -2000,8 +2000,8 @@ class Reaction {
             return false
         }
 
-        const carbon_index = carbon_bond.atom_index
 
+        const carbon_index = carbon_bond.atom_index
 
         const carbon = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, this.container_substrate)
 
@@ -2014,7 +2014,8 @@ class Reaction {
                     return false
                 }
                 const c = CAtom(this.container_substrate[0][1][bond.atom_index], bond.atom_index, this.container_substrate)
-                return c.hydrogens().length === 3
+                //return c.hydrogens().length === 3
+                return true
             })
             if (c_bonds.length === 0) {
                 return false
@@ -2040,6 +2041,7 @@ class Reaction {
 
         }
 
+        //console.log(atom_to_shift_index)
 
         if (atom_to_shift_index === undefined || atom_to_shift_index === -1) {
             return false

@@ -25,10 +25,30 @@ const r = new ReactionAI()
 r.synthesise(me)
 r.synthesise(MA)
 // Leuckart Wallach
-r.synthesise(MeImine2)
-r.synthesise(MDImine)
+// Causes error
+//r.synthesise(MeImine2)
+//r.synthesise(MDImine)
+
+
 // Pinacol Rearrangement
+/*
+============================================================================
+[Add proton from reagent to hydroxyl group on substrate] CC(O)(C)C(C)(C)O + Cl = CC(O)(C)C(C)(C)[O+] + Cl
+[Dehydrate] CC(O)(C)C(C)(C)[O+] + Cl = CC(O)(C)[C+](C)C + Cl
+[Shift carbocation] CC(O)(C)[C+](C)C + Cl = C[C+](O)C(C)(C)C + Cl
+[Remove proton from oxygen atom] C[C+](O)C(C)(C)C + Cl = C[C+]([O-])C(C)(C)C + Cl
+[Make oxygen-carbon double bond] C[C+]([O-])C(C)(C)C + Cl = CC(=O)C(C)(C)C + Cl
+============================================================================
+Synthesising CC(=O)CC9=CC=CC=C9 reagent: Cl
+[Add proton from reagent to hydroxyl group on substrate] CC(O)(O)CC9=CC=CC=C9 + Cl = CC(O)([O+])CC9=CC=CC=C9 + Cl
+[Dehydrate] CC(O)([O+])CC9=CC=CC=C9 + Cl = C[C+](O)CC9=CC=CC=C9 + Cl
+[Make oxygen-carbon double bond] C[C+](O)CC9=CC=CC=C9 + Cl = CC([=O+])CC9=CC=CC=C9 + Cl
+[Remove proton from oxygen atom] CC([=O+])CC9=CC=CC=C9 + Cl = CC(=O)CC9=CC=CC=C9 + Cl
+============================================================================
+
+ */
 r.synthesise(pinacolone)
+
 
 r.synthesise(isopropylamine)
 r.synthesise(phenylacetone)

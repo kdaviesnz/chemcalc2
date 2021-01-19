@@ -21,28 +21,44 @@ class ReactionAI {
 
         this.commands_filter.push("bondSubstrateToReagentReversal") // DO NOT USE
 
-        
-        //this.commands_filter.push("addProtonFromReagentToSubstrateReversal")
-        //this.commands_filter.push("protonateReversal")
-        //this.commands_filter.push("makeCarbonNitrogenDoubleBondReversal")
-        //this.commands_filter.push("breakOxygenCarbonDoubleBondReversal")
-        //this.commands_filter.push("removeHalideReversal")
-        //this.commands_filter.push("breakCarbonOxygenDoubleBondReversal")
-        //this.commands_filter.push("substituteHalideForAmineReversal")
-        //this.commands_filter.push("deprotonateNitrogenReversal")
-        //this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal")
-        //this.commands_filter.push("transferProtonReversal")
-        //this.commands_filter.push("carbocationShiftReversal")
-         //this.commands_filter.push("removeProtonFromOxygenReversal")
+        // pinacol rearrangement
+        /*
+        ============================================================================
+        [Add proton from reagent to hydroxyl group on substrate] CC(O)(C)C(C)(C)O + Cl = CC(O)(C)C(C)(C)[O+] + Cl
+        [Dehydrate] CC(O)(C)C(C)(C)[O+] + Cl = CC(O)(C)[C+](C)C + Cl
+        [Shift carbocation] CC(O)(C)[C+](C)C + Cl = C[C+](O)C(C)(C)C + Cl
+        [Remove proton from oxygen atom] C[C+](O)C(C)(C)C + Cl = C[C+]([O-])C(C)(C)C + Cl
+        [Make oxygen-carbon double bond] C[C+]([O-])C(C)(C)C + Cl = CC(=O)C(C)(C)C + Cl
+        ============================================================================
+        this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal")
+        this.commands_filter.push("dehydrateReversal")
+        this.commands_filter.push("carbocationShiftReversal")
+        this.commands_filter.push("removeProtonFromOxygenReversal")
         //this.commands_filter.push("oxygenCarbonDoubleBondReversal")
+         */
+
+/*
+        this.commands_filter.push("addProtonFromReagentToSubstrateReversal")
+        this.commands_filter.push("protonateReversal")
+        this.commands_filter.push("makeCarbonNitrogenDoubleBondReversal")
+        this.commands_filter.push("breakOxygenCarbonDoubleBondReversal")
+        this.commands_filter.push("removeHalideReversal")
+        this.commands_filter.push("breakCarbonOxygenDoubleBondReversal")
+        this.commands_filter.push("substituteHalideForAmineReversal")
+        this.commands_filter.push("deprotonateNitrogenReversal")
+        this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal")
+        this.commands_filter.push("transferProtonReversal")
+*/
+
+
         //this.commands_filter.push("reduceImineToAmineReversal")
 
         // ****
         // Breaks Leuckart Wallach (imine2)
         this.commands_filter.push("protonateCarbocationReversal")
 
-        //this.commands_filter.push("dehydrateReversal")
-        //this.commands_filter.push("addProtonFromReagentToHydroxylGroupReversal")
+
+
 
         this.command_sets = []
 
@@ -109,8 +125,8 @@ class ReactionAI {
         const ammonia = MoleculeFactory("N")
         const hydrochloric_acid = MoleculeFactory("Cl")
 
-        //const reagents = [deprotonated_methylamide, ammonia,hydrochloric_acid]
         const reagents = [deprotonated_methylamide,hydrochloric_acid, ammonia]
+        //const reagents = [hydrochloric_acid]
 
         const moleculeAI = require("../Stateless/MoleculeAI")(_.cloneDeep([_.cloneDeep(target),1]))
 
