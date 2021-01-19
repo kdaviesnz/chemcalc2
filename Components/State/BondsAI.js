@@ -614,7 +614,6 @@ class BondsAI {
             return c_bonds.length > 0
         })
 
-
         if (oxygen_index === -1 || this.reaction.container_substrate[0][1][oxygen_index][4]=== "+") {
             return false
         }
@@ -643,14 +642,17 @@ class BondsAI {
 
         const carbon_index = carbon_bonds[0].atom_index
 
-        // console.log("BondsAI carbon_index breakCarbonOxygenDoubleBondReverse():" + carbon_index)
-        // console.log(mno)
-        // console.log(VMolecule(this.reaction.container_substrate).compressed())
-
-
         const freeElectrons = oxygen.freeElectrons()
 
-        // Add electrons to carbon
+        const carbon_atom = CAtom(this.reaction.container_substrate[0][1][carbon_index], carbon_index, this.reaction.container_substrate)
+        const carbon_atom_free_electrons = carbon_atom.freeElectrons()
+
+        // Make space for electrons
+        _.remove(this.reaction.container_substrate[0][1][carbon_index], (e, i)=>{
+            return e === carbon_atom_free_electrons[0] || e === carbon_atom_free_electrons[1]
+        })
+
+        // Add electrons from oxygen to carbon
         this.reaction.container_substrate[0][1][carbon_index].push(freeElectrons[0])
         this.reaction.container_substrate[0][1][carbon_index].push(freeElectrons[1])
 
@@ -668,23 +670,11 @@ class BondsAI {
         }
 
         // Charges
-        // this.reaction.container_substrate[0][1][carbon_index][4] = ""
-        this.reaction.setChargeOnSubstrateAtom(carbon_index)
-        //this.reaction.container_substrate[0][1][oxygen_index][4] = this.reaction.container_substrate[0][1][oxygen_index][4]=== "-"? "": "+"
-        this.reaction.setChargeOnSubstrateAtom(oxygen_index)
-
+        this.reaction.setChargesOnSubstrate()
 
         this.reaction.setMoleculeAI()
 
-
-        if (this.reaction.MoleculeAI.validateMolecule() === false) {
-            console.log('BondsAI.js molecule is not valid (breakCarbonOxygenDoubleBondReverse())')
-            console.log('Method: breakCarbonOxygenDoubleBondReverse()')
-            console.log(VMolecule(this.reaction.container_substrate).compressed())
-            console.log(uittt)
-        }
-
-        //console.log(bbbbrak)
+        this.reaction.MoleculeAI.validateMolecule()
 
         return true
 

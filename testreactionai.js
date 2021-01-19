@@ -3,6 +3,8 @@ const MoleculeFactory = require('./Models/MoleculeFactory')
 const VMolecule = require('./Components/Stateless/Views/Molecule')
 
 // Chemicals to synthesise
+const methylamine = MoleculeFactory("CN")
+
 // https://en.wikipedia.org/wiki/Pinacol_rearrangement
 const me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 
@@ -20,6 +22,8 @@ const MeImine2 = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
 const phenylacetone = MoleculeFactory("CC(=O)CC1=CC=CC=C1")
 const r = new ReactionAI()
 
+
+r.synthesise(methylamine)
 
 // Akylation
 r.synthesise(me)
