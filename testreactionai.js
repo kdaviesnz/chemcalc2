@@ -54,7 +54,45 @@ r.synthesise(isopropylamine)
 r.synthesise(phenylacetone)
 r.synthesise(MD)
 
+// MD
+/*
+ChemCalc > Enter a command or type help
+Product found in db, synthesising ...
+Synthesising CC(NC)CC=CC=C13C=COCO13 reagent: CN
+[Substitute oxygen-carbon double bond for oxygen-carbon single bond and amine group] CC(=O)CC=CC=C12C=COCO12 + CN = CC([O-])([N+]C)CC=CC=C13C=COCO13 + CN
+[Transfer proton] CC([O-])([N+]C)CC=CC=C13C=COCO13 + CN = CC(O)(NC)CC=CC=C13C=COCO13 + CN
+[Add proton from reagent to hydroxyl group on substrate] CC(O)(NC)CC=CC=C13C=COCO13 + CN = CC([O+])(NC)CC=CC=C13C=COCO13 + C[NH1-]
+[Dehydrate] CC([O+])(NC)CC=CC=C13C=COCO13 + C[NH1-] = C[C+](NC)CC=CC=C13C=COCO13 + C[NH1-]
+[Make carbon-nitrogen double bond] C[C+](NC)CC=CC=C13C=COCO13 + C[NH1-] = CC([=N+]C)CC=CC=C13C=COCO13 + C[NH1-]
+[Deprotonate nitrogen atom on substrate] CC([=N+]C)CC=CC=C13C=COCO13 + C[NH1-] = CC(=NC)CC=CC=C13C=COCO13 + CN
+[Reduce imine to amine] CC(=NC)CC=CC=C13C=COCO13 + Reducing agent = CC(NC)CC=CC=C13C=COCO13
+============================================================================
+[Substitute oxygen-carbon double bond for oxygen-carbon single bond and amine group] CC(=O)CC=CC=C12C=COCO12 + CN = CC([O-])([N+]C)CC=CC=C13C=COCO13 + CN
+[Transfer proton] CC([O-])([N+]C)CC=CC=C13C=COCO13 + CN = CC(O)(NC)CC=CC=C13C=COCO13 + CN
+[Add proton from reagent to hydroxyl group on substrate] CC(O)(NC)CC=CC=C13C=COCO13 + CN = CC([O+])(NC)CC=CC=C13C=COCO13 + C[NH1-]
+[Dehydrate] CC([O+])(NC)CC=CC=C13C=COCO13 + C[NH1-] = CC([=N+]C)CC=CC=C13C=COCO13 + C[NH1-]
+[Deprotonate nitrogen atom on substrate] CC([=N+]C)CC=CC=C13C=COCO13 + C[NH1-] = CC(=NC)CC=CC=C13C=COCO13 + CN
+[Reduce imine to amine] CC(=NC)CC=CC=C13C=COCO13 + Reducing agent = CC(NC)CC=CC=C13C=COCO13
+============================================================================
+Synthesising CC(NC)CC=CC=C13C=COCO13 reagent: Cl
+Synthesising CC(NC)CC=CC=C13C=COCO13 reagent: N
+[Substitute oxygen-carbon double bond for oxygen-carbon single bond and amine group] CC(=O)CC=CC=C12C=COCO12 + CN = CC([O-])([N+]C)CC=CC=C13C=COCO13 + N
+[Transfer proton] CC([O-])([N+]C)CC=CC=C13C=COCO13 + N = CC(O)(NC)CC=CC=C13C=COCO13 + N
+[Add proton from reagent to hydroxyl group on substrate] CC(O)(NC)CC=CC=C13C=COCO13 + N = CC([O+])(NC)CC=CC=C13C=COCO13 + [NH2-]
+[Dehydrate] CC([O+])(NC)CC=CC=C13C=COCO13 + [NH2-] = C[C+](NC)CC=CC=C13C=COCO13 + [NH2-]
+[Make carbon-nitrogen double bond] C[C+](NC)CC=CC=C13C=COCO13 + [NH2-] = CC([=N+]C)CC=CC=C13C=COCO13 + [NH2-]
+[Deprotonate nitrogen atom on substrate] CC([=N+]C)CC=CC=C13C=COCO13 + [NH2-] = CC(=NC)CC=CC=C13C=COCO13 + N
+[Reduce imine to amine] CC(=NC)CC=CC=C13C=COCO13 + Reducing agent = CC(NC)CC=CC=C13C=COCO13
+============================================================================
+[Substitute oxygen-carbon double bond for oxygen-carbon single bond and amine group] CC(=O)CC=CC=C12C=COCO12 + CN = CC([O-])([N+]C)CC=CC=C13C=COCO13 + N
+[Transfer proton] CC([O-])([N+]C)CC=CC=C13C=COCO13 + N = CC(O)(NC)CC=CC=C13C=COCO13 + N
+[Add proton from reagent to hydroxyl group on substrate] CC(O)(NC)CC=CC=C13C=COCO13 + N = CC([O+])(NC)CC=CC=C13C=COCO13 + [NH2-]
+[Dehydrate] CC([O+])(NC)CC=CC=C13C=COCO13 + [NH2-] = CC([=N+]C)CC=CC=C13C=COCO13 + [NH2-]
+[Deprotonate nitrogen atom on substrate] CC([=N+]C)CC=CC=C13C=COCO13 + [NH2-] = CC(=NC)CC=CC=C13C=COCO13 + N
+[Reduce imine to amine] CC(=NC)CC=CC=C13C=COCO13 + Reducing agent = CC(NC)CC=CC=C13C=COCO13
+============================================================================
 
+ */
 // Epoxide acidic ring opening
 // https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Map%3A_Organic_Chemistry_(McMurry)/Chapter_18%3A_Ethers_and_Epoxides%3B_Thiols_and_Sulfides/18.06_Reactions_of_Epoxides%3A_Ring-opening
 
