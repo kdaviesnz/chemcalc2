@@ -22,16 +22,16 @@ const MeImine2 = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
 const phenylacetone = MoleculeFactory("CC(=O)CC1=CC=CC=C1")
 const r = new ReactionAI()
 
+// Leuckart Wallach
+// Causes error
+r.synthesise(MeImine2)
+r.synthesise(MDImine)
 
 r.synthesise(methylamine)
 
 // Akylation
 r.synthesise(me)
 r.synthesise(MA)
-// Leuckart Wallach
-// Causes error
-//r.synthesise(MeImine2)
-//r.synthesise(MDImine)
 
 
 // Pinacol Rearrangement

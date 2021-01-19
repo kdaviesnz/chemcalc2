@@ -135,8 +135,10 @@ class ReactionAI {
         this.target = _.cloneDeep(target)
 
         reagents.map((reagent)=>{
-           this.render("Synthesising " + VMolecule([target,1]).canonicalSMILES() + " reagent: " + VMolecule([reagent,1]).canonicalSMILES())
-            this._synthesise([_.cloneDeep(target),1], [_.cloneDeep(reagent),1], _.cloneDeep(commands), 'synthesise', 0, moleculeAI, )
+            if (VMolecule([target,1]).canonicalSMILES() !== VMolecule([reagent,1]).canonicalSMILES()) {
+                this.render("Synthesising " + VMolecule([target, 1]).canonicalSMILES() + " reagent: " + VMolecule([reagent, 1]).canonicalSMILES())
+                this._synthesise([_.cloneDeep(target), 1], [_.cloneDeep(reagent), 1], _.cloneDeep(commands), 'synthesise', 0, moleculeAI,)
+            }
         })
 
 
