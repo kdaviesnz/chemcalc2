@@ -166,10 +166,92 @@ class Reaction {
         return bondsAI.makeNitrogenCarbonDoubleBond()
     }
 
+
     reduceImineToAmine() {
-        this.container_reagent = MoleculeFactory("NaBH3CN",1)
-        console.log(this.container_reagent)
-        console.log()
+        let n_atom = null
+        // Look for =N
+        const n_index = _.findIndex(this.container_substrate[0][1], (atom, index)=>{
+            if (atom[0] !== "N") {
+                return false
+            }
+            n_atom = CAtom(this.container_substrate[0][1][index], index, this.container_substrate)
+            return n_atom.doubleBondCount() === 1
+        })
+        if (n_index === -1) {
+            return false
+        }
+        // Remove double bond
+        const c_n_bonds = n_atom.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "C" && bond.bond_type === "="
+        })
+        // Replace one of the NC bonds with hydrogen
+        const shared_electrons = c_n_bonds[0].shared_electrons
+        _.remove(this.container_substrate[0][1][c_n_bonds[0].atom_index], (electron, index)=>{
+            return electron === shared_electrons[0] || electron === shared_electrons[1]
+        })
+        const proton = AtomFactory("H","")
+        proton.pop()
+        proton.push(shared_electrons[0])
+        proton.push(shared_electrons[1])
+        this.container_substrate[0][1].push(proton)
+        this.setChargesOnSubstrate()
+        //console.log(VMolecule(this.container_substrate).compressed())
+        //console.log(fgggg)
+        return true
+    }
+
+    reduceImineToAmineReverse(check_mode) {
+        let n_atom = null
+        // Look for N
+        const n_index = _.findIndex(this.container_substrate[0][1], (atom, index)=>{
+            if (atom[0] !== "N") {
+                return false
+            }
+            if (atom[4] === "+" || atom[4] === "-") {
+                return false
+            }
+            n_atom = CAtom(this.container_substrate[0][1][index], index, this.container_substrate)
+            return n_atom.doubleBondCount() === 0
+        })
+        if (n_index === -1) {
+            return false
+        }
+        if (check_mode) {
+            return true
+        }
+        // Add double bond
+        const c_n_bonds = n_atom.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "C"
+        })
+        const c_atom = CAtom(this.container_substrate[0][1][c_n_bonds[0].atom_index], c_n_bonds[0].atom_index, this.container_substrate)
+        const h_n_bonds = n_atom.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "H"
+        })
+        const h_c_bonds = c_atom.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "H"
+        })
+        if (h_n_bonds.length > 0) {
+            const shared_electrons = h_n_bonds[0].shared_electrons
+            this.container_substrate[0][1][c_n_bonds[0].atom_index].push(shared_electrons[0])
+            this.container_substrate[0][1][c_n_bonds[0].atom_index].push(shared_electrons[1])
+            _.remove(this.container_substrate[0][1][h_n_bonds[0].atom_index], (electron, index)=>{
+                return electron === shared_electrons[0] || electron === shared_electrons[1]
+            })
+            this.container_substrate[0][1] = Set().removeFromArray(this.container_substrate[0][1], this.container_substrate[0][1][h_n_bonds[0].atom_index])
+        }
+        if (h_c_bonds.length > 0) {
+            const shared_electrons = h_c_bonds[0].shared_electrons
+            _.remove(this.container_substrate[0][1][c_n_bonds[0].atom_index], (electron, index)=>{
+                return electron === shared_electrons[0] || electron === shared_electrons[1]
+            })
+            this.container_substrate[0][1] = Set().removeFromArray(this.container_substrate[0][1], this.container_substrate[0][1][h_c_bonds[0].atom_index])
+        }
+
+        this.setChargesOnSubstrate()
+        this.setMoleculeAI()
+
+
+        return true
     }
 
     remercurify() {

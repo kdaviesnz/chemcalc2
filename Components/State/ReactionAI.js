@@ -232,9 +232,9 @@ class ReactionAI {
             commands.push({
                 'name':command_name,
                 'starting substrate': _.cloneDeep(reverse_reaction_substrate),
-                'starting reagent': _.cloneDeep(reverse_reaction_reagent),
+                'starting reagent': command_name === "reduceImineToAmine"?"Reducing agent":_.cloneDeep(reverse_reaction_reagent),
                 'finish substrate': _.cloneDeep(target),
-                'finish reagent': _.cloneDeep(reagent),
+                'finish reagent': command_name === "reduceImineToAmine"?"Reducing agent":_.cloneDeep(reagent),
                 'function':(reagent)=>{
                     const reaction = new Reaction(_.cloneDeep(reverse_reaction_substrate), _.cloneDeep(reverse_reaction_reagent), {})
                     reaction[command_name]()
@@ -243,7 +243,8 @@ class ReactionAI {
 
 
             this.debugger(command_names)
-            if(this.hasCharge(commands[commands.length-1]['starting substrate']) === -1 && (reverse_reaction.transferProtonReverse(true) === false)) {
+
+            if(this.hasCharge(commands[commands.length-1]['starting substrate']) === -1 && (reverse_reaction.transferProtonReverse(true) === false && command_name !== "reduceImineToAmine")) {
                 this.results(_.cloneDeep(commands))
                 return
             } else {
