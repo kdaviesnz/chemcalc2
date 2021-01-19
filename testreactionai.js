@@ -57,7 +57,7 @@ r.synthesise(MD)
 // MD
 /*
 ChemCalc > Enter a command or type help
-Product found in db, synthesising ...
+Product found in db, synthesising ... MD
 Synthesising CC(NC)CC=CC=C13C=COCO13 reagent: CN
 [Substitute oxygen-carbon double bond for oxygen-carbon single bond and amine group] CC(=O)CC=CC=C12C=COCO12 + CN = CC([O-])([N+]C)CC=CC=C13C=COCO13 + CN
 [Transfer proton] CC([O-])([N+]C)CC=CC=C13C=COCO13 + CN = CC(O)(NC)CC=CC=C13C=COCO13 + CN
