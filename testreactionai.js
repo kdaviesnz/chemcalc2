@@ -7,6 +7,7 @@ const methylamine = MoleculeFactory("CN")
 
 // https://en.wikipedia.org/wiki/Pinacol_rearrangement
 const me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
+const me2Compare = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 
 const pinacolone = MoleculeFactory("CC(=O)C(C)(C)C")
 
