@@ -230,8 +230,17 @@ class Reaction {
         const h_c_bonds = c_atom.indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "H"
         })
+
+        const carbon = CAtom(this.container_substrate[0][1][c_n_bonds[0].atom_index], c_n_bonds[0].atom_index, this.container_substrate)
         if (h_n_bonds.length > 0) {
+            // reduceImineToAmineReverse
             const shared_electrons = h_n_bonds[0].shared_electrons
+            if (this.container_substrate[0][1][c_n_bonds[0].atom_index].slice(5).length === 8){
+                const carbon_atom_free_electrons = carbon.freeElectrons()
+                if (carbon_atom_free_electrons.length < 2) {
+                    return false
+                }
+            }
             this.container_substrate[0][1][c_n_bonds[0].atom_index].push(shared_electrons[0])
             this.container_substrate[0][1][c_n_bonds[0].atom_index].push(shared_electrons[1])
             _.remove(this.container_substrate[0][1][h_n_bonds[0].atom_index], (electron, index)=>{
@@ -239,6 +248,7 @@ class Reaction {
             })
             this.container_substrate[0][1] = Set().removeFromArray(this.container_substrate[0][1], this.container_substrate[0][1][h_n_bonds[0].atom_index])
         }
+
         if (h_c_bonds.length > 0) {
             const shared_electrons = h_c_bonds[0].shared_electrons
             _.remove(this.container_substrate[0][1][c_n_bonds[0].atom_index], (electron, index)=>{
