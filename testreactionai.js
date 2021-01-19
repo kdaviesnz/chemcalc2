@@ -22,20 +22,18 @@ const r = new ReactionAI()
 
 
 // Akylation
-
-//
-/*
 r.synthesise(me)
 r.synthesise(MA)
-*/
 // Leuckart Wallach
-//r.synthesise(MeImine2)
-//r.synthesise(MDImine)
+r.synthesise(MeImine2)
+r.synthesise(MDImine)
 // Pinacol Rearrangement
-//r.synthesise(pinacolone)
-//r.synthesise(isopropylamine)
-//r.synthesise(phenylacetone)
+r.synthesise(pinacolone)
+
+r.synthesise(isopropylamine)
+r.synthesise(phenylacetone)
 r.synthesise(MD)
+
 
 // Epoxide acidic ring opening
 // https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Map%3A_Organic_Chemistry_(McMurry)/Chapter_18%3A_Ethers_and_Epoxides%3B_Thiols_and_Sulfides/18.06_Reactions_of_Epoxides%3A_Ring-opening
