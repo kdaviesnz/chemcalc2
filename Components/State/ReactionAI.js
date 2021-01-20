@@ -125,7 +125,7 @@ class ReactionAI {
         const ammonia = MoleculeFactory("N")
         const hydrochloric_acid = MoleculeFactory("Cl")
 
-        const reagents = reagent === null || reagent === undefined? [methylamide, methylamine, water, deprotonated_methylamide,hydrochloric_acid, ammonia] : [reagent]
+        const reagents = reagent === null || reagent === undefined? [methylamine, water, deprotonated_methylamide,hydrochloric_acid, ammonia] : [reagent]
         //const reagents = [hydrochloric_acid]
 
         const moleculeAI = require("../Stateless/MoleculeAI")(_.cloneDeep([_.cloneDeep(target),1]))
