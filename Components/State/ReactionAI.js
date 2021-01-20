@@ -125,10 +125,12 @@ class ReactionAI {
         const ammonia = MoleculeFactory("N")
         const hydrochloric_acid = MoleculeFactory("Cl")
 
-        const reagents = reagent === null || reagent === undefined? [methylamide, methylamine, water, deprotonated_methylamide,hydrochloric_acid, ammonia] : [reagent]
+
+        const reagents = reagent === null || reagent === undefined? [formate, methylamide, methylamine, water, deprotonated_methylamide,hydrochloric_acid, ammonia] : [reagent]
         //const reagents = [hydrochloric_acid]
 
         const moleculeAI = require("../Stateless/MoleculeAI")(_.cloneDeep([_.cloneDeep(target),1]))
+
 
         const commands = []
 
@@ -137,6 +139,9 @@ class ReactionAI {
         reagents.map((reagent)=>{
             if (VMolecule([target,1]).canonicalSMILES() !== VMolecule([reagent,1]).canonicalSMILES()) {
                 this.render("Synthesising " + VMolecule([target, 1]).canonicalSMILES() + " reagent: " + VMolecule([reagent, 1]).canonicalSMILES())
+                const reagentAI = require("../Stateless/MoleculeAI")(_.cloneDeep([_.cloneDeep(reagent),1]))
+                console.log(VMolecule([reagent,1]).compressed())
+                reagentAI.validateMolecule()
                 this._synthesise([_.cloneDeep(target), 1], [_.cloneDeep(reagent), 1], _.cloneDeep(commands), 'synthesise', 0, moleculeAI,)
             }
         })
