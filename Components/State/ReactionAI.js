@@ -118,7 +118,7 @@ class ReactionAI {
         this.callback = callback
 
         const water = MoleculeFactory("O")
-        const formate = MoleculeFactory("[C+](=O)[O-]")
+        const formate = MoleculeFactory("C(=O)[O-]")
         const methylamine = MoleculeFactory("CN")
         const methylamide = MoleculeFactory("C[N-]")
         const deprotonated_methylamide = MoleculeFactory("C[NH0]")

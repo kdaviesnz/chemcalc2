@@ -727,6 +727,10 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                             atom.push(uniqid())
                         }
                     }
+                    if (electrons.length ===9) {
+                        console.log(free_electrons)
+                        console.log(got)
+                    }
                     break;
                 case "N":
                     if (bond_count ===4){
@@ -828,8 +832,11 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     })
 
    const molecule4 = [[12345,atoms_electrons_checked],1]
-  // console.log(VMolecule(molecule4).compressed())
-  //  console.log(atomsfactoryyy)
+   console.log(VMolecule(molecule4).compressed())
+
+    const moleculeAI = require("../Components/Stateless/MoleculeAI")(molecule4)
+    moleculeAI.validateMolecule()
+   console.log(atomsfactoryyy)
 
     /*
     // console.log(atoms_with_hydrogens.filter((atom)=>{

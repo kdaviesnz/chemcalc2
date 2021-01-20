@@ -2,6 +2,9 @@ const ReactionAI =  require('./Components/State/ReactionAI')
 const MoleculeFactory = require('./Models/MoleculeFactory')
 const VMolecule = require('./Components/Stateless/Views/Molecule')
 
+const formate = MoleculeFactory("C(=O)[O-]")
+
+
 // Chemicals to synthesise
 const methylamine = MoleculeFactory("CN")
 
