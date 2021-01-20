@@ -375,7 +375,7 @@ class ProtonationAI {
 
             if (o_index !== -1) {
                 // Move proton from water group on subtrate to O- atom on reagent
-                this.reaction.container_substrate[0][1] = this.reaction.removeProtonFromAtom(this.MoleculeAI, this.container_substrate[0][1], water_oxygen_index)
+                this.reaction.container_substrate[0][1] = this.reaction.removeProtonFromAtom(this.reaction.MoleculeAI, this.reaction.container_substrate[0][1], water_oxygen_index)
                 this.reaction.addProtonToReagent(o_index)
                 return true
             }
@@ -708,6 +708,7 @@ class ProtonationAI {
 
 
         this.reaction.MoleculeAI.validateMolecule()
+        this.reaction.ReagentAI.validateMolecule()
 
       // console.log(VMolecule(this.reaction.container_substrate).compressed())
 
@@ -780,8 +781,11 @@ class ProtonationAI {
 
     removeProtonFromReagent(proton_bond, proton_atom_index) {
 
-       // console.log(VMolecule(this.reaction.container_reagent).compressed())
-        const shared_electrons = this.reaction.container_reagent[0][1][proton_bond.atom_index].slice(4)
+        this.reaction.setReagentAI()
+        this.reaction.ReagentAI.validateMolecule()
+
+        // console.log(VMolecule(this.reaction.container_reagent).compressed())
+        const shared_electrons = this.reaction.container_reagent[0][1][proton_bond.atom_index].slice(5)
         const proton = _.cloneDeep(this.reaction.container_reagent[0][1][proton_bond.atom_index])
         this.reaction.container_reagent[0][1][proton_atom_index] = Set().removeFromArray(
             this.reaction.container_reagent[0][1][proton_atom_index],

@@ -116,30 +116,26 @@ const Test = () => {
                         // "resolves" callback
                         (molecule) => {
                             // Look up substrate
-                            console.log('Product found in db, testing ...')
                             const product = MoleculeFactory(molecule.CanonicalSMILES)
-                            console.log('Product: ' + VMolecule([product, 1]).canonicalSMILES())
+                            const reagent_map = {
+                                "strong acid":"Cl"
+                            }
+
                             MoleculeLookup(db, known_reaction.substrate).then(
                                 (molecule) => {
-                                    console.log('Substrate found in db, testing ...')
                                     const substrate = MoleculeFactory(molecule.CanonicalSMILES)
-                                    console.log('Product: ' + VMolecule([product, 1]).canonicalSMILES())
-                                    console.log('Substrate: ' + VMolecule([substrate, 1]).canonicalSMILES())
-                                    // "resolves" callback
-                                    // known_reaction.product
-                                    // known_reaction.substrate
-                                    // known_reaction.reagent
-                                    // console.log(molecule.CanonicalSMILES)
-                                    r.synthesise(product, (err, calculated_reaction_steps) => {
-                                        console.log("###########")
-                                        console.log(VMolecule(calculated_reaction_steps[calculated_reaction_steps.length-1].product).canonicalSMILES())
-                                        console.log(VMolecule(calculated_reaction_steps[0].substrate).canonicalSMILES())
-                                        //console.log(VMolecule([product,1]).canonicalSMILES() === VMolecule(calculated_reaction_steps[calculated_reaction_steps.length-1].product).canonicalSMILES() )
-                                        console.log(VMolecule([substrate,1]).canonicalSMILES() === VMolecule(calculated_reaction_steps[calculated_reaction_steps.length-1].product).canonicalSMILES() )
-                                        console.log("-------------")
+                                    const reagent = MoleculeFactory(undefined === reagent_map[known_reaction.reagents[0]]?known_reaction.reagents[0]:reagent_map[known_reaction.reagents[0]])
+                                    r.synthesise(product,  reagent,(err, calculated_reaction_steps) => {
+                                        const substrate_from_db = [_.cloneDeep(substrate),1]
+                                        const calculated_substrate = _.cloneDeep(calculated_reaction_steps[0].substrate)
+                                        const product_from_db = [_.cloneDeep(product),1]
+                                        const calculated_product = _.cloneDeep(calculated_reaction_steps[calculated_reaction_steps.length-1].product)
+                                        if (VMolecule(substrate_from_db).canonicalSMILES() === VMolecule(calculated_substrate).canonicalSMILES()
+                                            && VMolecule(product_from_db).canonicalSMILES() === VMolecule(calculated_product).canonicalSMILES()) {
+                                            console.log(known_reaction.substrate + " plus " + known_reaction.reagents[0] +  " ---> " + known_reaction.product + " [OK]".bold.green)
+                                        }
                                     })
                                 },
-
 
                                 onMoleculeNotFound((search, db, container_molecule, render) => {
                                     console.log("Product " + search + " added to database")

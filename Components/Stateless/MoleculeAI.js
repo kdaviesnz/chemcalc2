@@ -275,10 +275,10 @@ const MoleculeAI = (container_molecule) => {
                         break;
                     case "N":
                         if (electrons.length > 8) {
-                           // console.log("DEBUG: Atom has more than allowed number of electrons")
-                           // console.log("DEBUG: Atom " + atom[0])
-                           // console.log("DEBUG: Index " + index)
-                           // console.log(VMolecule(container_molecule).compressed())
+                           console.log("DEBUG: Atom has more than allowed number of electrons")
+                            console.log("DEBUG: Atom " + atom[0])
+                           console.log("DEBUG: Index " + index)
+                            console.log(VMolecule(container_molecule).compressed())
                             throw new Error("Max number of electrons exceeded")
                         }
                         break;
