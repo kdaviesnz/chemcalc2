@@ -44,6 +44,9 @@ class Reaction {
 
         this.setMoleculeAI()
         this.setReagentAI()
+
+        this.MoleculeAI.validateMolecule()
+        this.ReagentAI.validateMolecule()
     }
 
     setReagentAI() {
