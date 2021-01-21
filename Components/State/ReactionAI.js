@@ -37,7 +37,7 @@ class ReactionAI {
         //this.commands_filter.push("oxygenCarbonDoubleBondReversal")
          */
 
-/*
+
         this.commands_filter.push("addProtonFromReagentToSubstrateReversal")
         this.commands_filter.push("protonateReversal")
         this.commands_filter.push("makeCarbonNitrogenDoubleBondReversal")
@@ -48,7 +48,7 @@ class ReactionAI {
         this.commands_filter.push("deprotonateNitrogenReversal")
         this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal")
         this.commands_filter.push("transferProtonReversal")
-*/
+
 
 
         //this.commands_filter.push("reduceImineToAmineReversal")
@@ -131,7 +131,7 @@ class ReactionAI {
         // Important: Reagent is the last reagent (as result of reaction step) used in the reaction.
         // eg for pinacol–pinacolone rearrangement the reagent is "Brønsted–Lowry conjugate base" as
         // we protonating a hydroxyl group in reverse
-        const reagents = ["Brønsted–Lowry acid"] // Brønsted–Lowry conjugate base
+        const reagents = ["Brønsted–Lowry conjugate base"] // Brønsted–Lowry conjugate base, Brønsted–Lowry acid
 
         const moleculeAI = require("../Stateless/MoleculeAI")(_.cloneDeep([_.cloneDeep(target),1]))
 
@@ -142,7 +142,7 @@ class ReactionAI {
 
         reagents.map((reagent)=>{
             if (typeof reagent === "string" || VMolecule([target,1]).canonicalSMILES() !== VMolecule([reagent,1]).canonicalSMILES()) {
-                this.render("Synthesising " + VMolecule([target, 1]).canonicalSMILES() + " reagent: " + (typeof reagent === "string"?reagent:VMolecule([reagent, 1]).canonicalSMILES()))
+                this.render("Synthesising " + VMolecule([target, 1]).canonicalSMILES() + " product reagent: " + (typeof reagent === "string"?reagent:VMolecule([reagent, 1]).canonicalSMILES()))
                 const reagentAI = typeof reagent === "string"?null:require("../Stateless/MoleculeAI")(_.cloneDeep([_.cloneDeep(reagent),1]))
                 if (reagentAI !== null) {
                     reagentAI.validateMolecule()

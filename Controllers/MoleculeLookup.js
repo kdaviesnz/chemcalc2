@@ -5,8 +5,9 @@ const MoleculeFactory = require('../Models/MoleculeFactory')
 const MoleculeLookup = (db, search, search_type, add_hydrogens, debug_statement, Err) =>
     new Promise(
         (resolve, notFound, reject) => {
+            const search_no_quotes = search.replace(/['"]+/g, '').trim()
             db.collection('molecules').findOne(
-                {$or:[{"CanonicalSMILES":search}, {"search":search}, {"IUPACName":search}]},
+                {$or:[{"CanonicalSMILES":search}, {"search":search_no_quotes}, {"IUPACName":search_no_quotes}]},
                 function (Err, molecule) {
 
                     // An error occurred

@@ -21,21 +21,22 @@ const PubChemLookup = (Err) => {
 
     const searchByName = (name, db, callback, debug_statement) => {
 
-        console.log("PubChem: searchByName() " + name)
+        const name_no_quotes = name.replace(/['"]+/g, '').trim()
+        console.log("PubChem: searchByName() " + name_no_quotes)
 
         setTimeout(function() {
         }, Math.floor(Math.random() * 3000))
 
         // https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/ethanol/property/CanonicalSMILES,IUPACName/JSON
 
-        request('https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/' + name + '/property/CanonicalSMILES,IUPACName/JSON', {json: true}, (err, res, body) => {
+        request('https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/' + name_no_quotes + '/property/CanonicalSMILES,IUPACName/JSON', {json: true}, (err, res, body) => {
             if (err) {
                 Err(err)
                 console.log('PubchemLookup searchByName()'+ debug_statement)
                 process.exit()
             } else {
                 if (undefined !== body.Fault || undefined !== body.Code) {
-                    console.log("There was an error searchByName()  " + name + debug_statement)
+                    console.log("There was an error searchByName()  " + name_no_quotes + debug_statement)
                     console.log(body)
                     if (Err) {
                         Err(body)

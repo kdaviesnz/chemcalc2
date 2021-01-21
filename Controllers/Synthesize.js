@@ -85,8 +85,9 @@ const Synthesize = (molecule_to_synthesize_name) => {
                 pkl.searchByName(search, db, (molecule_from_pubchem) => {
                     if (molecule_from_pubchem !== null) {
                         console.log("Molecule found in pubchem")
+                        const search_no_quotes = search.replace(/['"]+/g, '').trim()
                         molecule_from_pubchem['json'] = MoleculeFactory(molecule_from_pubchem.CanonicalSMILES)
-                        molecule_from_pubchem['search'] = search
+                        molecule_from_pubchem['search'] = search_no_quotes
                         db.collection("molecules").insertOne(molecule_from_pubchem, (err, result) => {
                             if (err) {
                                 console.log(err)
@@ -102,20 +103,25 @@ const Synthesize = (molecule_to_synthesize_name) => {
             }
         }
 
-        MoleculeLookup(db, molecule_to_synthesize_name, "SMILES", true).then(
-            // "resolves" callback
-            (molecule) => {
-                const r = new ReactionAI()
-                console.log('Product found in db, synthesising ...')
-                const product = MoleculeFactory(molecule.CanonicalSMILES)
-                r.synthesise(product)
-            },
-            onMoleculeNotFound((search, db, container_molecule, child_reaction_string, render) => {
-                console.log("Molecule " + search + " added to database")
-            }),
-            // "rejects" callback
-            onErrorLookingUpMoleculeInDB
-        )
+        const MoleculeLookupClosure = () => {
+             MoleculeLookup(db, molecule_to_synthesize_name, "SMILES", true).then(
+                // "resolves" callback
+                (molecule) => {
+                    const r = new ReactionAI()
+                    console.log('Product found in db, synthesising ...')
+                    const product = MoleculeFactory(molecule.CanonicalSMILES)
+                    r.synthesise(product)
+                },
+                onMoleculeNotFound((search, db, container_molecule, child_reaction_string, render) => {
+                    console.log("Molecule " + search + " added to database")
+                    MoleculeLookupClosure()
+                }),
+                // "rejects" callback
+                onErrorLookingUpMoleculeInDB
+            )
+        }
+
+        MoleculeLookupClosure()
 
 
     })
