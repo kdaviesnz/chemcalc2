@@ -14,8 +14,8 @@ const VReaction = (reactions, container_end_product, rule) => {
                 (reaction) => {
                     console.log("[" + reaction.command.bold.red + "] "
                         + VMolecule(reaction.substrate).canonicalSMILES().green
-                    + " + " + (reaction.reagent=== undefined  ? "No reagent" : typeof reaction.reagent === "string"?reaction.reagent:VMolecule(reaction.reagent).canonicalSMILES().yellow)
-                    + " = " + VMolecule(reaction.product).canonicalSMILES().bold  + (typeof reaction.finish_reagent === "string"?"":" + " + VMolecule(reaction.finish_reagent).canonicalSMILES()))
+                    + " + " + (reaction.reagent=== undefined  ? "No reagent" : typeof reaction.reagent[0] === "string"?reaction.reagent[0]:VMolecule(reaction.reagent).canonicalSMILES().yellow)
+                    + " = " + VMolecule(reaction.product).canonicalSMILES().bold  + (typeof reaction.finish_reagent[0] === "string"?" + " + reaction.finish_reagent[0]:" + " + VMolecule(reaction.finish_reagent).canonicalSMILES()))
                 }
             )
 

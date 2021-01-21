@@ -25,7 +25,7 @@ class Reaction {
         container_substrate[0][1][0].should.be.an.Array()
         container_substrate[0][1][0][0].should.be.an.String()
 
-        if (undefined !== container_reagent && null !== container_reagent) {
+        if (undefined !== container_reagent && null !== container_reagent && typeof container_reagent[0] !== "string") {
             container_reagent.length.should.be.equal(2) // molecule, units
             container_reagent[0].length.should.be.equal(2) // pKa, atoms
             container_reagent[0][0].should.be.an.Number() // pka
@@ -46,11 +46,13 @@ class Reaction {
         this.setReagentAI()
 
         this.MoleculeAI.validateMolecule()
-        this.ReagentAI.validateMolecule()
+        if (this.ReagentAI !== null) {
+            this.ReagentAI.validateMolecule()
+        }
     }
 
     setReagentAI() {
-        if (this.container_reagent !== null && this.container_reagent !== undefined) {
+        if (this.container_reagent !== null && this.container_reagent !== undefined && typeof this.container_reagent[0] !== "string") {
             this.container_reagent.length.should.be.equal(2) // molecule, units
             this.container_reagent[0].length.should.be.equal(2) // pKa, atoms
             this.container_reagent[0][0].should.be.an.Number() // pka
@@ -60,6 +62,8 @@ class Reaction {
                 this.container_reagent[0][1][0][0].should.be.an.String()
             }
             this.ReagentAI = require("../Stateless/MoleculeAI")(this.container_reagent)
+        } else {
+            this.ReagentAI = null
         }
     }
 
@@ -1618,7 +1622,8 @@ class Reaction {
     }
 
     addProtonFromReagentToSubstrateReverse() {
-        const electrophile_index = this.ReagentAI.findElectrophileIndex()
+
+        const electrophile_index = this.ReagentAI === null?null:this.ReagentAI.findElectrophileIndex()
 
         if (electrophile_index === -1) {
             return false
@@ -1634,45 +1639,43 @@ class Reaction {
 
         const proton_atom_object = CAtom(this.container_substrate[0][1][proton_index], proton_index, this.container_substrate)
         let atom_index = proton_atom_object.indexedBonds("").pop().atom_index
-        // this.removeProtonFromSubstrate(proton_index)
         _.remove(this.container_substrate[0][1], (atom, index)=>{
             return index === proton_index
         })
-        //this.container_substrate[0][1][atom_index][4] = this.container_substrate[0][1][atom_index][4] === '-' ? "": "+"
+
         if (proton_index < atom_index) {
             atom_index = atom_index - 1
         }
         this.setChargeOnSubstrateAtom(atom_index)
 
-        // Add proton to reagent
-        const reagent_proton = AtomFactory("H", "")
-        reagent_proton.pop()
 
-        const electrophile_atom = CAtom( this.container_reagent[0][1][electrophile_index], electrophile_index,  this.container_reagent)
-        const electrophile_free_electrons = electrophile_atom.freeElectrons()
-        //console.log(electrophile_free_electrons)
-        if (electrophile_free_electrons.length === 2) {
-            reagent_proton.push(electrophile_free_electrons[0])
-            reagent_proton.push(electrophile_free_electrons[1])
+        if (this.ReagentAI === null) {
+            if (this.container_reagent[0]==="Brønsted–Lowry conjugate base") {
+                this.container_reagent[0]="Brønsted–Lowry acid"
+            } else {
+                console.log("Warning: adding proton to  " + this.container_reagent[0] + "  (Reaction.js addProtonFromReagentToSubstrateReverse(), returning false")
+                return false
+            }
         } else {
-            return false
-            /*
-            const electrons = [uniqid(), uniqid()]
-            console.log(VMolecule(this.container_reagent).compressed())
-            this.container_reagent[0][1][electrophile_index].push(electrons[0])
-            this.container_reagent[0][1][electrophile_index].push(electrons[1])
-            reagent_proton.push(electrons[0])
-            reagent_proton.push(electrons[1])
-            */
+            // Add proton to reagent
+            const reagent_proton = AtomFactory("H", "")
+            reagent_proton.pop()
+            const electrophile_atom = CAtom(this.container_reagent[0][1][electrophile_index], electrophile_index, this.container_reagent)
+            const electrophile_free_electrons = electrophile_atom.freeElectrons()
+            if (electrophile_free_electrons.length === 2) {
+                reagent_proton.push(electrophile_free_electrons[0])
+                reagent_proton.push(electrophile_free_electrons[1])
+            } else {
+                return false
+            }
+            this.container_reagent[0][1].push(reagent_proton)
+            this.setChargeOnReagentAtom(electrophile_index)
+            this.setReagentAI()
+            this.ReagentAI.validateMolecule()
         }
-        this.container_reagent[0][1].push(reagent_proton)
-        this.setChargeOnReagentAtom(electrophile_index)
 
         this.setMoleculeAI()
-        this.setReagentAI()
-
         this.MoleculeAI.validateMolecule()
-        this.ReagentAI.validateMolecule()
 
         return true
     }

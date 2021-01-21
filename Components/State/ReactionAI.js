@@ -126,8 +126,12 @@ class ReactionAI {
         const hydrochloric_acid = MoleculeFactory("Cl")
 
 
-        const reagents = reagent === null || reagent === undefined? [formate, methylamide, methylamine, water, deprotonated_methylamide,hydrochloric_acid, ammonia] : [reagent]
+        //const reagents = reagent === null || reagent === undefined? [formate, methylamide, methylamine, water, deprotonated_methylamide,hydrochloric_acid, ammonia] : [reagent]
         //const reagents = [hydrochloric_acid]
+        // Important: Reagent is the last reagent (as result of reaction step) used in the reaction.
+        // eg for pinacol–pinacolone rearrangement the reagent is "Brønsted–Lowry conjugate base" as
+        // we protonating a hydroxyl group in reverse
+        const reagents = ["Brønsted–Lowry acid"] // Brønsted–Lowry conjugate base
 
         const moleculeAI = require("../Stateless/MoleculeAI")(_.cloneDeep([_.cloneDeep(target),1]))
 
@@ -137,10 +141,12 @@ class ReactionAI {
         this.target = _.cloneDeep(target)
 
         reagents.map((reagent)=>{
-            if (VMolecule([target,1]).canonicalSMILES() !== VMolecule([reagent,1]).canonicalSMILES()) {
-                this.render("Synthesising " + VMolecule([target, 1]).canonicalSMILES() + " reagent: " + VMolecule([reagent, 1]).canonicalSMILES())
-                const reagentAI = require("../Stateless/MoleculeAI")(_.cloneDeep([_.cloneDeep(reagent),1]))
-                reagentAI.validateMolecule()
+            if (typeof reagent === "string" || VMolecule([target,1]).canonicalSMILES() !== VMolecule([reagent,1]).canonicalSMILES()) {
+                this.render("Synthesising " + VMolecule([target, 1]).canonicalSMILES() + " reagent: " + (typeof reagent === "string"?reagent:VMolecule([reagent, 1]).canonicalSMILES()))
+                const reagentAI = typeof reagent === "string"?null:require("../Stateless/MoleculeAI")(_.cloneDeep([_.cloneDeep(reagent),1]))
+                if (reagentAI !== null) {
+                    reagentAI.validateMolecule()
+                }
                 moleculeAI.validateMolecule()
                 this._synthesise([_.cloneDeep(target), 1], [_.cloneDeep(reagent), 1], _.cloneDeep(commands), 'synthesise', 0, moleculeAI, reagentAI)
             }
@@ -187,7 +193,9 @@ class ReactionAI {
     _synthesise(substrate, reagent, commands, caller, depth, moleculeAI, reagentAI) {
 
         moleculeAI.validateMolecule()
-        reagentAI.validateMolecule()
+        if (reagentAI !== null) {
+            reagentAI.validateMolecule()
+        }
 
         for(const command_name in this.command_map) {
             if (this.commands_filter.indexOf(command_name + 'Reversal') === -1) {
@@ -251,13 +259,16 @@ class ReactionAI {
             const reverse_reaction_reagent = _.cloneDeep(reverse_reaction.container_reagent)
 
             const reverse_reaction_substrateAI = require("../Stateless/MoleculeAI")(_.cloneDeep(_.cloneDeep(reverse_reaction.container_substrate)))
-            const reverse_reaction_reagentAI = require("../Stateless/MoleculeAI")(_.cloneDeep(_.cloneDeep(reverse_reaction.container_reagent)))
+            const reverse_reaction_reagentAI = typeof reverse_reaction.container_reagent[0] === "string"?null:require("../Stateless/MoleculeAI")(_.cloneDeep(_.cloneDeep(reverse_reaction.container_reagent)))
 
             reverse_reaction_substrateAI.validateMolecule()
             // addProtonFromReagentToHydroxylGroupReverse
             // addProtonFromReagentToSubstrateReverse
             //console.log("ReactionAI > command name:" + command_name)
-            reverse_reaction_reagentAI.validateMolecule()
+            if (reverse_reaction_reagentAI !== null) {
+                reverse_reaction_reagentAI.validateMolecule()
+            }
+
 
             commands.push({
                 'name':command_name,

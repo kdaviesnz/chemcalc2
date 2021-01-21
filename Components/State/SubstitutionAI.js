@@ -30,6 +30,7 @@ class SubstitutionAI {
         let co_bonds = null
         let oxygen = null
 
+
         // SN2 mechanism
         const oxygen_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=> {
             if ( atom[0] !== "O") {
@@ -78,13 +79,7 @@ class SubstitutionAI {
                 return false
             }
             this.reaction.setSubstrateGroupsReverse(groups)
-            /*
-           // console.log("Leaving groups")
-           // console.log(VMolecule(this.reaction.leaving_groups[0]).compressed())
-           // console.log("Substrate")
-           // console.log(VMolecule(this.reaction.container_substrate).compressed())
-           // console.log(blahblah)
-             */
+
             if(this.reaction.leaving_groups.length > 0) {
                 this.reaction.container_reagent = this.reaction.leaving_groups[0]
             }
@@ -102,6 +97,11 @@ class SubstitutionAI {
     }
 
     substituteHydroxylForNitrogenDoubleBond() {
+
+        if(typeof this.reaction.container_reagent[0] === "string") {
+            throw new Error("Reagent should not be a string")
+        }
+
         // Look for [N-] atom attached to C bond with four bonds
         let c_n_bonds = null
         let n_atom = null
@@ -177,6 +177,10 @@ class SubstitutionAI {
 
 
     substituteOxygenCarbonDoubleBondForAmine() {
+
+        if(typeof this.reaction.container_reagent[0] === "string") {
+            throw new Error("Reagent should not be a string")
+        }
 
         // SN2 mechanism -> O=C bond is replaced with OC bond at the same time as the replacement atom bonds.
         let oxygen = null
@@ -257,6 +261,10 @@ class SubstitutionAI {
 
     substituteHalideForAmine() {
 
+        if (typeof this.reaction.container_reagent[0] === "string") {
+            throw new Error("Reagent should not be a string")
+        }
+
         // SN2 mechanism -> halide is replaced at the same time as the replacement atom bonds.
         const halide_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
             return atom[0] === "Br"
@@ -314,6 +322,7 @@ class SubstitutionAI {
     }
 
     substituteHalideForAmineReverse() {
+
         // SN2 mechanism -> halide is replaced at the same time as the replacement atom bonds.
         // [N+]C
         let n_atom = null

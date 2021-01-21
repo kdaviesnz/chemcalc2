@@ -95,8 +95,11 @@ class ProtonationAI {
 
         this.reaction.setReagentAI()
 
-
-        if (this.reaction.ReagentAI.isStrongAcid()) {
+        if (this.reaction.ReagentAI === null) {
+            if (this.reaction.container_reagent[0] !=="Brønsted–Lowry conjugate base") {
+                return false
+            }
+        }else if (this.reaction.ReagentAI.isStrongAcid()) {
             return false
         }
 
@@ -153,6 +156,10 @@ class ProtonationAI {
 
         this.reaction.setMoleculeAI()
         this.reaction.MoleculeAI.validateMolecule()
+
+        if (this.reaction.ReagentAI === null && this.reaction.container_reagent[0] !=="Brønsted–Lowry conjugate base") {
+            this.reaction.container_reagent[0] = "Brønsted–Lowry acid"
+        }
 
         return true
 
@@ -444,20 +451,9 @@ class ProtonationAI {
                 if (hydrogen_bond.atom_index < electrophile_index) {
                     electrophile_index = electrophile_index - 1
                 }
-                //this.reaction.container_substrate[0][1][electrophile_index][4] = "+"
-                //this.reaction.setChargeOnSubstrateAtom(electrophile_index)
-                /*
-              // console.log(VMolecule(this.reaction.container_substrate).compressed())
-              // console.log(c_atom.indexedBonds("").length)
-              // console.log(c_atom.bondCount())
-              // console.log(electrophile_index)
-              // console.log(this.reaction.container_substrate[0][1][electrophile_index])
-              // console.log(protonremoved)
-              // console.log(rew)
-                */
 
             } else {
-              // console.log("ProtonationAI 4444")
+
                 const carbon_bond = electrophile_bonds.filter((bond) => {
                     return bond.atom[0] === "C"
                 }).pop()
@@ -479,12 +475,16 @@ class ProtonationAI {
 
         }
 
-        // this.reaction.setChargeOnSubstrateAtom()
-        ////// console.log("ProtonationAI deprotonate() after")
-        ////// console.log(VMolecule(this.reaction.container_substrate).compressed())
 
+        if (this.reaction.ReagentAI === null) {
+            console.log("ProtonationAI > deprotonateNitrogen()" + this.reaction.container_reagent[0] )
+            if (this.reaction.container_reagent[0] === "Brønsted–Lowry conjugate base") {
+                this.reaction.container_reagent[0] = "Brønsted–Lowry acid"
+            }
+        } else {
+            this.reaction.setReagentAI()
+        }
 
-        this.reaction.setReagentAI()
         this.reaction.setMoleculeAI(command_names, command_index, electrophile_index)
 
         return true
@@ -708,7 +708,9 @@ class ProtonationAI {
 
 
         this.reaction.MoleculeAI.validateMolecule()
-        this.reaction.ReagentAI.validateMolecule()
+        if (this.reaction.ReagentAI !== null) {
+            this.reaction.ReagentAI.validateMolecule()
+        }
 
       // console.log(VMolecule(this.reaction.container_substrate).compressed())
 
@@ -747,33 +749,47 @@ class ProtonationAI {
 
         nitrogen = CAtom(this.reaction.container_substrate[0][1][nitrogen_index], nitrogen_index, this.reaction.container_substrate)
 
-        let proton_atom_index = this.reaction.ReagentAI.findNucleophileIndex()
-        const proton_atom = CAtom(this.reaction.container_reagent[0][1][proton_atom_index], proton_atom_index, this.reaction.container_reagent)
-        const proton_bonds = proton_atom.indexedBonds("").filter((bond)=>{
-            return bond.atom[0] === "H"
-        })
+        let proton = null
+        const nitrogen_free_electrons = nitrogen.freeElectrons()
+        if (this.reaction.ReagentAI === null) {
+            if (this.reaction.container_reagent[0] === "Brønsted–Lowry acid") {
+                this.reaction.container_reagent[0] = "Brønsted–Lowry conjugate base"
+            } else {
+                console.log("Warning: reagent is not an acid ProtonationAI > deprotonateNitrogenReverse(), returning false")
+                return false
+            }
+            proton = AtomFactory("H", "")
+            proton.pop()
+            proton.push(nitrogen_free_electrons[0])
+            proton.push(nitrogen_free_electrons[1])
 
-        if (proton_bonds.length === 0) {
-            return false
+        } else {
+            let proton_atom_index = this.reaction.ReagentAI.findNucleophileIndex()
+            const proton_atom = CAtom(this.reaction.container_reagent[0][1][proton_atom_index], proton_atom_index, this.reaction.container_reagent)
+            const proton_bonds = proton_atom.indexedBonds("").filter((bond) => {
+                return bond.atom[0] === "H"
+            })
+
+            if (proton_bonds.length === 0) {
+                return false
+            }
+
+            // Remove proton
+            proton = this.removeProtonFromReagent(proton_bonds[0], proton_atom_index)
+            // Add proton to nitrogen
+            proton.pop()
+            proton.pop()
+            proton.push(nitrogen_free_electrons[0])
+            proton.push(nitrogen_free_electrons[1])
+            this.reaction.setReagentAI()
+            this.reaction.ReagentAI.validateMolecule()
+
         }
 
-        // Remove proton
-        const proton = this.removeProtonFromReagent(proton_bonds[0], proton_atom_index)
-        // Add proton to nitrogen
-        const nitrogen_free_electrons = nitrogen.freeElectrons()
-        proton.pop()
-        proton.pop()
-        proton.push(nitrogen_free_electrons[0])
-        proton.push(nitrogen_free_electrons[1])
         this.reaction.container_substrate[0][1].push(proton)
-
         this.reaction.setChargesOnSubstrate()
-
         this.reaction.setMoleculeAI()
         this.reaction.MoleculeAI.validateMolecule()
-
-        this.reaction.setReagentAI()
-        this.reaction.ReagentAI.validateMolecule()
 
         return true
 
@@ -844,12 +860,21 @@ class ProtonationAI {
         this.reaction.setChargesOnSubstrate()
         this.reaction.setMoleculeAI()
 
-        this.reaction.addProtonToReagent()
-        this.reaction.setChargesOnReagent()
-        this.reaction.setReagentAI()
+        if (this.reaction.ReagentAI === null) {
+            if (this.reaction.container_reagent[0]==="Brønsted–Lowry conjugate base") {
+                this.reaction.container_reagent[0]="Brønsted–Lowry acid"
+            } else {
+                return false
+            }
+        } else {
+            this.reaction.addProtonToReagent()
+            this.reaction.setChargesOnReagent()
+            this.reaction.setReagentAI()
+            this.reaction.ReagentAI.validateMolecule()
+        }
 
         this.reaction.MoleculeAI.validateMolecule()
-        this.reaction.ReagentAI.validateMolecule()
+
 
         return true
 
