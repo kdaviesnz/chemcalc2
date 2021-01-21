@@ -167,11 +167,11 @@ class ChargesAI {
 
 
         if (b===0 && (container_molecule[0][1][index][4] !=="" && container_molecule[0][1][index][4] !==0)) {
-           // console.log("DEBUG: Atom should have neutral charge")
-           // console.log("DEBUG: Atom " + atom[0])
-           // console.log("DEBUG: Charge " + atom[4])
-           // console.log("DEBUG: Index " + index)
-           // console.log(VMolecule(container_molecule).compressed())
+           console.log("DEBUG: Atom should have neutral charge")
+           console.log("DEBUG: Atom " + atom[0])
+           console.log("DEBUG: Charge " + atom[4])
+           console.log("DEBUG: Index " + index)
+           console.log(VMolecule(container_molecule).compressed())
             throw new Error("Atom should have a neutral charge")
         }
 

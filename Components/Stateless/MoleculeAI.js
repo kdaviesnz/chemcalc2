@@ -257,10 +257,10 @@ const MoleculeAI = (container_molecule) => {
                 switch(atom[0]) {
                     case "H":
                         if (electrons.length > 2) {
-                           // console.log("DEBUG: Atom has more than allowed number of electrons")
-                           // console.log("DEBUG: Atom " + atom[0])
-                           // console.log("DEBUG: Index " + index)
-                           // console.log(container_molecule[0][1][index])
+                           console.log("DEBUG: Atom has more than allowed number of electrons")
+                           console.log("DEBUG: Atom " + atom[0])
+                           console.log("DEBUG: Index " + index)
+                           console.log(container_molecule[0][1][index])
                             throw new Error("Max number of electrons exceeded")
                         }
                         break;

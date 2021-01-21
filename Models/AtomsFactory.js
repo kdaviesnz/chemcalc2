@@ -824,7 +824,18 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                     }
                     break
                 case "N":
-                    if (5 + bond_count === electrons.length) {
+                    if (5 + bond_count === electrons.length && electrons.length + 1 < 9) {
+                        atom.push(uniqid())
+                    }
+                    if (bond_count === 3) {
+                        // Remove a hydrogen
+                        const h_bonds = o_atom.indexedBonds("").filter((bond)=>{
+                            return bond.atom[0] === "H"
+                        })
+                        _.remove(atom, (electron)=>{
+                            return electron === h_bonds[0].shared_electrons[0] || electron === h_bonds[0].shared_electrons[1]
+                        })
+                        atom.push(uniqid())
                         atom.push(uniqid())
                     }
                     break
@@ -839,11 +850,21 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         return atom
     })
 
-   const molecule4 = [[12345,atoms_electrons_checked],1]
-   console.log(VMolecule(molecule4).compressed())
+    // Remove hydrogens with no bonds
+    const atoms_with_redundant_hydrogens_removed = _.remove(atoms_electrons_checked, (atom, i)=>{
+        if (atom[0] !== "H") {
+            return false
+        }
+        const h = CAtom(atom, i, [['12345', atoms_electrons_checked], 1])
+        return h.indexedBonds("").length === 0
+    })
+
+   const molecule4 = [[12345,atoms_with_redundant_hydrogens_removed],1]
+   //console.log(VMolecule(molecule4).compressed())
 
     const moleculeAI = require("../Components/Stateless/MoleculeAI")(molecule4)
     moleculeAI.validateMolecule()
+
    //console.log(atomsfactoryyy)
 
     /*

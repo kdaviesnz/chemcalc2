@@ -140,9 +140,9 @@ class ReactionAI {
             if (VMolecule([target,1]).canonicalSMILES() !== VMolecule([reagent,1]).canonicalSMILES()) {
                 this.render("Synthesising " + VMolecule([target, 1]).canonicalSMILES() + " reagent: " + VMolecule([reagent, 1]).canonicalSMILES())
                 const reagentAI = require("../Stateless/MoleculeAI")(_.cloneDeep([_.cloneDeep(reagent),1]))
-                console.log(VMolecule([reagent,1]).compressed())
                 reagentAI.validateMolecule()
-                this._synthesise([_.cloneDeep(target), 1], [_.cloneDeep(reagent), 1], _.cloneDeep(commands), 'synthesise', 0, moleculeAI,)
+                moleculeAI.validateMolecule()
+                this._synthesise([_.cloneDeep(target), 1], [_.cloneDeep(reagent), 1], _.cloneDeep(commands), 'synthesise', 0, moleculeAI, reagentAI)
             }
         })
 
@@ -184,14 +184,16 @@ class ReactionAI {
 
     }
 
-    _synthesise(substrate, reagent, commands, caller, depth, moleculeAI) {
+    _synthesise(substrate, reagent, commands, caller, depth, moleculeAI, reagentAI) {
 
+        moleculeAI.validateMolecule()
+        reagentAI.validateMolecule()
 
         for(const command_name in this.command_map) {
             if (this.commands_filter.indexOf(command_name + 'Reversal') === -1) {
                 // console.log('_synthesise() inner depth='+depth)
                 if (caller !== command_name + 'Reversal') {
-                    this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), command_name, _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth)
+                    this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), command_name, _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth, reagentAI)
                 }
 
             }
@@ -205,13 +207,10 @@ class ReactionAI {
 
 
 
-    runReverseCommand(reverse_reaction, command_name, target, reagent, moleculeAI, commands, caller, depth) {
+    runReverseCommand(reverse_reaction, command_name, target, reagent, moleculeAI, commands, caller, depth, reagentAI) {
 
         this.debugger(caller + "  reverse reaction result")
         this.debugger("command " + command_name)
-
-
-
 
         // Check if the command has already been called and returned true
         // Note: In some cases we may need to call a command twice but
@@ -251,6 +250,14 @@ class ReactionAI {
             const reverse_reaction_substrate = _.cloneDeep(reverse_reaction.container_substrate)
             const reverse_reaction_reagent = _.cloneDeep(reverse_reaction.container_reagent)
 
+            const reverse_reaction_substrateAI = require("../Stateless/MoleculeAI")(_.cloneDeep(_.cloneDeep(reverse_reaction.container_substrate)))
+            const reverse_reaction_reagentAI = require("../Stateless/MoleculeAI")(_.cloneDeep(_.cloneDeep(reverse_reaction.container_reagent)))
+
+            reverse_reaction_substrateAI.validateMolecule()
+            // addProtonFromReagentToHydroxylGroupReverse
+            // addProtonFromReagentToSubstrateReverse
+            //console.log("ReactionAI > command name:" + command_name)
+            reverse_reaction_reagentAI.validateMolecule()
 
             commands.push({
                 'name':command_name,
@@ -273,7 +280,14 @@ class ReactionAI {
             } else {
 
 
-                this._synthesise(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(reverse_reaction.container_reagent), _.cloneDeep(commands), command_name + 'Reversal', depth + 1)
+                this._synthesise(
+                    _.cloneDeep(reverse_reaction.container_substrate),
+                    _.cloneDeep(reverse_reaction.container_reagent),
+                    _.cloneDeep(commands),
+                    command_name + 'Reversal', depth + 1,
+                    reverse_reaction_substrateAI,
+                    reverse_reaction_reagentAI
+                )
             }
 
         }

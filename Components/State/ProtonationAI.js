@@ -841,24 +841,15 @@ class ProtonationAI {
 
         this.reaction.container_substrate[0][1] = this.reaction.removeProtonFromAtom(this.reaction.MoleculeAI, this.reaction.container_substrate[0][1], water_oxygen_index)
 
-
+        this.reaction.setChargesOnSubstrate()
         this.reaction.setMoleculeAI()
 
         this.reaction.addProtonToReagent()
+        this.reaction.setChargesOnReagent()
         this.reaction.setReagentAI()
 
-        if (this.reaction.MoleculeAI.validateMolecule() === false) {
-          // console.log('ProtonationAI.js molecule is not valid (addProtonFromReagentToHydroxylGroupReverse())')
-          // console.log('Method: addProtonFromReagentToHydroxylGroupReverse()')
-          // console.log(VMolecule(this.container_substrate).compressed())
-          // console.log(i)
-        }
-
-
-     //// console.log(VMolecule(this.reaction.container_substrate).compressed())
-     // console.log("ProtonationAI addProtonFromReagentToHydroxylGroupReverse() fin")
-       ////// console.log(abc)
-
+        this.reaction.MoleculeAI.validateMolecule()
+        this.reaction.ReagentAI.validateMolecule()
 
         return true
 

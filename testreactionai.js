@@ -27,7 +27,6 @@ const phenylacetone = MoleculeFactory("CC(=O)CC1=CC=CC=C1")
 const r = new ReactionAI()
 
 // Leuckart Wallach
-// Causes error
 r.synthesise(MeImine2)
 r.synthesise(MDImine)
 
