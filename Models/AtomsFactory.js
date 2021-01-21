@@ -727,10 +727,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                             atom.push(uniqid())
                         }
                     }
-                    if (electrons.length ===9) {
-                        console.log(free_electrons)
-                        console.log(got)
-                    }
+
                     break;
                 case "N":
                     if (bond_count ===4){
@@ -811,7 +808,18 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         if (atom[4] === "-") {
             switch (atom[0]) {
                 case "O":
-                    if (6 + bond_count === electrons.length) {
+                    if (6 + bond_count === electrons.length && electrons.length + 1 < 9) {
+                        atom.push(uniqid())
+                    }
+                    if (bond_count === 2) {
+                        // Remove a hydrogen
+                        const h_bonds = o_atom.indexedBonds("").filter((bond)=>{
+                            return bond.atom[0] === "H"
+                        })
+                        _.remove(atom, (electron)=>{
+                            return electron === h_bonds[0].shared_electrons[0] || electron === h_bonds[0].shared_electrons[1]
+                        })
+                        atom.push(uniqid())
                         atom.push(uniqid())
                     }
                     break
@@ -836,7 +844,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
 
     const moleculeAI = require("../Components/Stateless/MoleculeAI")(molecule4)
     moleculeAI.validateMolecule()
-   console.log(atomsfactoryyy)
+   //console.log(atomsfactoryyy)
 
     /*
     // console.log(atoms_with_hydrogens.filter((atom)=>{
