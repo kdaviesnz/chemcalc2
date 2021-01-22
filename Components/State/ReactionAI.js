@@ -220,12 +220,17 @@ class ReactionAI {
         this.debugger(caller + "  reverse reaction result")
         this.debugger("command " + command_name)
 
+
         // Check if the command has already been called and returned true
         // Note: In some cases we may need to call a command twice but
         // for now make all commands callable only once
         const command_names = commands.map((command)=>{
             return command['name']
         })
+
+        if (command_name === "removeProtonFromOxygen" && command_names.length > 0 && command_names[command_names.length-1] === "oxygenCarbonDoubleBond") {
+            return
+        }
 
         if(command_names.indexOf(command_name)!==-1){
             return

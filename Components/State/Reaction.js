@@ -2006,9 +2006,16 @@ class Reaction {
 
     }
 
-    carbocationShiftReverse() {
+    carbocationShiftReverse(check_mode) {
 
         this.setMoleculeAI()
+
+        // Dehydrate first if possible
+        const water_index = this.MoleculeAI.findWaterOxygenIndex()
+        if (water_index !== -1) {
+            return false
+        }
+
 
         const carbocation_index = this.MoleculeAI.findIndexOfCarbocationAttachedtoCarbon()
 
@@ -2080,6 +2087,10 @@ class Reaction {
             return false
         }
 
+        if (check_mode) {
+            return true
+        }
+
         const carbon_methyl_shared_electrons = Set().intersection(this.container_substrate[0][1][carbon_index].slice(5), this.container_substrate[0][1][atom_to_shift_index].slice(5))
 
         this.container_substrate[0][1][carbon_index] = Set().removeFromArray(this.container_substrate[0][1][carbon_index], carbon_methyl_shared_electrons)
@@ -2098,15 +2109,6 @@ class Reaction {
         // console.log("Reaction.js carbocation_index:" + carbocation_index)
         // console.log(VMolecule(this.container_substrate).compressed())
         this.setMoleculeAI()
-
-       // console.log("carbocationshiftreverse()")
-       // console.log(VMolecule(this.container_substrate).compressed())
-       // console.log(jkhooo)
-       // console.log("Reaction.js Carbocation index:" +carbocation_index)
-       // console.log("carbon index: "+ carbon_index)
-      //  // console.log("atom to shift index: "+ atom_to_shift_index)
-      // console.log(VMolecule(this.container_substrate).compressed())
-       // console.log(aaaa)
 
 
         return true

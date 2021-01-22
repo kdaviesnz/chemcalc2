@@ -92,6 +92,17 @@ class ProtonationAI {
         let o_h_bonds = null
         let o_index = null
 
+        // Look for water leaving group
+        // If found then return false as we always dehydrate the molecule first.
+        const water_index = this.reaction.MoleculeAI.findWaterOxygenIndex()
+        if (water_index !== -1) {
+            return false
+        }
+
+        // Carbocation shift possible? If so do that first
+        if (this.reaction.carbocationShiftReverse(true)) {
+            return false
+        }
 
         this.reaction.setReagentAI()
 
