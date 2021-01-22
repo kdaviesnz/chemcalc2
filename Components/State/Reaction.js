@@ -2020,6 +2020,8 @@ class Reaction {
 
         const carbocation_index = this.MoleculeAI.findIndexOfCarbocationAttachedtoCarbon()
 
+        console.log("carbocation index:" + carbocation_index)
+
         if (carbocation_index === -1) {
             return false
         }
@@ -2034,6 +2036,10 @@ class Reaction {
             const c = CAtom(this.container_substrate[0][1][bond.atom_index], bond.atom_index, this.container_substrate)
             //return c.hydrogens().length < 2 // @todo
             return true
+        }).sort( (bond_a, bond_b) => {
+            const a =  CAtom(this.container_substrate[0][1][bond_a.atom_index], bond_a.atom_index, this.container_substrate)
+            const b =  CAtom(this.container_substrate[0][1][bond_b.atom_index], bond_b.atom_index, this.container_substrate)
+            return a.hydrogens().length - b.hydrogens().length;
         }).pop()
 
 
@@ -2044,9 +2050,12 @@ class Reaction {
 
         const carbon_index = carbon_bond.atom_index
 
+
         const carbon = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, this.container_substrate)
 
         let atom_to_shift_index = null
+
+        console.log("carbon index:"+carbon_index)
 
         // Check for hydrogens
         if (carbon.hydrogens().length > 0) {
@@ -2082,15 +2091,18 @@ class Reaction {
 
         }
 
-        //console.log(atom_to_shift_index)
+
 
         if (atom_to_shift_index === undefined || atom_to_shift_index === -1) {
             return false
         }
 
         console.log("carboncatioinShiftReverse()")
-        console.log(VMolecule(this.container_substrate).canonicalSMILES())
+        console.log(VMolecule(this.container_substrate).compressed())
+        console.log(atom_to_shift_index)
+        console.log(this.container_substrate[0][1][atom_to_shift_index])
 
+        console.log(kljklj)
 
         if (check_mode) {
             return true
@@ -2117,7 +2129,7 @@ class Reaction {
 
         console.log("carboncatioinShiftReverse()")
         console.log(VMolecule(this.container_substrate).canonicalSMILES())
-        console.log(carbocationshiftreverssse)
+        //console.log(carbocationshiftreverssse)
 
 
 
