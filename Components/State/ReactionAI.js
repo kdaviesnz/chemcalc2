@@ -37,7 +37,7 @@ class ReactionAI {
         //this.commands_filter.push("oxygenCarbonDoubleBondReversal")
          */
 
-
+/*
         this.commands_filter.push("addProtonFromReagentToSubstrateReversal")
         this.commands_filter.push("protonateReversal")
         this.commands_filter.push("makeCarbonNitrogenDoubleBondReversal")
@@ -48,7 +48,7 @@ class ReactionAI {
         this.commands_filter.push("deprotonateNitrogenReversal")
         this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal")
         this.commands_filter.push("transferProtonReversal")
-
+*/
 
 
         //this.commands_filter.push("reduceImineToAmineReversal")

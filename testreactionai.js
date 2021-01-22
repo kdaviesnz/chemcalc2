@@ -45,12 +45,12 @@ Synthesising CC(=O)CC9=CC=CC=C9 reagent: Cl
 
  */
 r.synthesise(pinacolone)
-//r.synthesise(methyl_piperonyl_ketone)
-console.log(nnnn)
+r.synthesise(methyl_piperonyl_ketone)
 
 // Leuckart Wallach
 r.synthesise(MeImine2)
 r.synthesise(MDImine)
+console.log(nnnn)
 
 r.synthesise(methylamine)
 
