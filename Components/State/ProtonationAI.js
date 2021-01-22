@@ -109,7 +109,6 @@ class ProtonationAI {
         if (this.reaction.ReagentAI === null) {
             // We are adding proton from reagent to substrate
             if (this.reaction.container_reagent[0] !=="Brønsted–Lowry acid") {
-                console.log("Warning ProtonationAI removeProtonFromOxygenReverse() reagent should be Brønsted–Lowry acid")
                 return false
             }
         }

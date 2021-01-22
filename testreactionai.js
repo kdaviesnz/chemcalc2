@@ -27,6 +27,11 @@ const phenylacetone = MoleculeFactory("CC(=O)CC1=CC=CC=C1")
 const methyl_piperonyl_ketone = MoleculeFactory("CC(=O)CC1=CC2=C(C=C1)OCO2")
 const r = new ReactionAI()
 
+// Leuckart Wallach
+r.synthesise(MeImine2)
+//r.synthesise(MDImine)
+console.log(nnnn)
+
 // Pinacol Rearrangement
 /*
 ============================================================================
@@ -47,10 +52,7 @@ Synthesising CC(=O)CC9=CC=CC=C9 reagent: Cl
 r.synthesise(pinacolone)
 r.synthesise(methyl_piperonyl_ketone)
 
-// Leuckart Wallach
-r.synthesise(MeImine2)
-r.synthesise(MDImine)
-console.log(nnnn)
+
 
 r.synthesise(methylamine)
 

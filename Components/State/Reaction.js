@@ -1653,7 +1653,7 @@ class Reaction {
             if (this.container_reagent[0]==="Brønsted–Lowry conjugate base") {
                 this.container_reagent[0]="Brønsted–Lowry acid"
             } else {
-                console.log("Warning: adding proton to  " + this.container_reagent[0] + "  (Reaction.js addProtonFromReagentToSubstrateReverse(), returning false")
+               // console.log("Warning: adding proton to  " + this.container_reagent[0] + "  (Reaction.js addProtonFromReagentToSubstrateReverse(), returning false")
                 return false
             }
         } else {
