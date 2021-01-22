@@ -2020,7 +2020,7 @@ class Reaction {
 
         const carbocation_index = this.MoleculeAI.findIndexOfCarbocationAttachedtoCarbon()
 
-        console.log("carbocation index:" + carbocation_index)
+        // console.log("carbocation index:" + carbocation_index)
 
         if (carbocation_index === -1) {
             return false
@@ -2055,10 +2055,11 @@ class Reaction {
 
         let atom_to_shift_index = null
 
-        console.log("carbon index:"+carbon_index)
+       // console.log("carbon index:"+carbon_index)
 
         // Check for hydrogens
         if (carbon.hydrogens().length > 0) {
+            /*
             const c_bonds = carbon.indexedBonds("").filter((bond) => {
                 if (bond.atom[0] !== "C") {
                     return false
@@ -2070,7 +2071,18 @@ class Reaction {
             if (c_bonds.length === 0) {
                 return false
             }
-            atom_to_shift_index = c_bonds.pop().atom_index
+            */
+            const h_bonds = carbon.indexedBonds("").filter((bond) => {
+                if (bond.atom[0] !== "H") {
+                    return false
+                }
+                const h = CAtom(this.container_substrate[0][1][bond.atom_index], bond.atom_index, this.container_substrate)
+                return true
+            })
+            if (h_bonds.length === 0) {
+                return false
+            }
+            atom_to_shift_index = h_bonds.pop().atom_index
         } else {
             // Get methyl group then try for hydrogen
             const methyl_bonds = carbon.indexedBonds("").filter((bond) => {
@@ -2097,12 +2109,11 @@ class Reaction {
             return false
         }
 
-        console.log("carboncatioinShiftReverse()")
-        console.log(VMolecule(this.container_substrate).compressed())
-        console.log(atom_to_shift_index)
-        console.log(this.container_substrate[0][1][atom_to_shift_index])
+        //console.log("carboncatioinShiftReverse()")
+        //console.log(VMolecule(this.container_substrate).canonicalSMILES())
+      //  console.log(atom_to_shift_index)
+      //  console.log(this.container_substrate[0][1][atom_to_shift_index])
 
-        console.log(kljklj)
 
         if (check_mode) {
             return true
@@ -2110,25 +2121,23 @@ class Reaction {
 
         const carbon_methyl_shared_electrons = Set().intersection(this.container_substrate[0][1][carbon_index].slice(5), this.container_substrate[0][1][atom_to_shift_index].slice(5))
 
+       // console.log(carbon_methyl_shared_electrons)
+      //  console.log(jjj)
+
         this.container_substrate[0][1][carbon_index] = Set().removeFromArray(this.container_substrate[0][1][carbon_index], carbon_methyl_shared_electrons)
-        // this.container_substrate[0][1][atom_to_shift_index] = Set().removeFromArray(this.container_substrate[0][1][atom_to_shift_index], carbon_methyl_shared_electrons)
+
         // Make carbocation - methyl bond
         this.container_substrate[0][1][carbocation_index].push(carbon_methyl_shared_electrons[0])
         this.container_substrate[0][1][carbocation_index].push(carbon_methyl_shared_electrons[1])
 
-
-
-        //this.container_substrate[0][1][carbocation_index][4] = this.container_substrate[0][1][carbocation_index][4] === "+" ? "" : "-"
-        this.setChargeOnSubstrateAtom(carbocation_index)
-        //this.container_substrate[0][1][carbon_index][4] = this.container_substrate[0][1][carbon_index][4] === "-" ? "" : "+"
-        this.setChargeOnSubstrateAtom(carbon_index)
+        this.setChargesOnSubstrate()
 
         // console.log("Reaction.js carbocation_index:" + carbocation_index)
         // console.log(VMolecule(this.container_substrate).compressed())
         this.setMoleculeAI()
 
-        console.log("carboncatioinShiftReverse()")
-        console.log(VMolecule(this.container_substrate).canonicalSMILES())
+        //console.log("carboncatioinShiftReverse()")
+        //console.log(VMolecule(this.container_substrate).canonicalSMILES())
         //console.log(carbocationshiftreverssse)
 
 
