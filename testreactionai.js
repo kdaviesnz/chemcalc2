@@ -44,8 +44,8 @@ Synthesising CC(=O)CC9=CC=CC=C9 reagent: Cl
 ============================================================================
 
  */
-//r.synthesise(pinacolone)
-r.synthesise(methyl_piperonyl_ketone)
+r.synthesise(pinacolone)
+//r.synthesise(methyl_piperonyl_ketone)
 console.log(nnnn)
 
 // Leuckart Wallach
