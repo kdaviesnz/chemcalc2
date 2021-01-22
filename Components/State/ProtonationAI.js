@@ -35,10 +35,6 @@ class ProtonationAI {
         let o_h_bonds = null
         let o_index = null
 
-        this.reaction.setReagentAI()
-        if (this.reaction.ReagentAI.isStrongAcid()) {
-            return false
-        }
 
         // Look for [O+] with at least one hydrogen
         o_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
@@ -77,7 +73,11 @@ class ProtonationAI {
         )
 
         this.reaction.setMoleculeAI()
+        this.reaction.setReagentAI()
 
+        if (this.reaction.ReagentAI === null && this.reaction.container_reagent[0] !=="Brønsted–Lowry conjugate base") {
+            this.reaction.container_reagent[0] = "Brønsted–Lowry acid"
+        }
         this.reaction.MoleculeAI.validateMolecule()
 
         return true
@@ -107,11 +107,11 @@ class ProtonationAI {
         this.reaction.setReagentAI()
 
         if (this.reaction.ReagentAI === null) {
-            if (this.reaction.container_reagent[0] !=="Brønsted–Lowry conjugate base") {
+            // We are adding proton from reagent to substrate
+            if (this.reaction.container_reagent[0] !=="Brønsted–Lowry acid") {
+                console.log("Warning ProtonationAI removeProtonFromOxygenReverse() reagent should be Brønsted–Lowry acid")
                 return false
             }
-        }else if (this.reaction.ReagentAI.isStrongAcid()) {
-            return false
         }
 
         // Look for [O-]
@@ -168,8 +168,9 @@ class ProtonationAI {
         this.reaction.setMoleculeAI()
         this.reaction.MoleculeAI.validateMolecule()
 
-        if (this.reaction.ReagentAI === null && this.reaction.container_reagent[0] !=="Brønsted–Lowry conjugate base") {
-            this.reaction.container_reagent[0] = "Brønsted–Lowry acid"
+        // if (this.reaction.ReagentAI === null && this.reaction.container_reagent[0] !=="Brønsted–Lowry conjugate base") {
+        if (this.reaction.ReagentAI === null && this.reaction.container_reagent[0] ==="Brønsted–Lowry acid") {
+            this.reaction.container_reagent[0] = "Brønsted–Lowry conjugate base"
         }
 
         return true
