@@ -2010,6 +2010,7 @@ class Reaction {
 
         this.setMoleculeAI()
 
+
         // Dehydrate first if possible
         const water_index = this.MoleculeAI.findWaterOxygenIndex()
         if (water_index !== -1) {
@@ -2087,6 +2088,10 @@ class Reaction {
             return false
         }
 
+        console.log("carboncatioinShiftReverse()")
+        console.log(VMolecule(this.container_substrate).canonicalSMILES())
+
+
         if (check_mode) {
             return true
         }
@@ -2109,6 +2114,11 @@ class Reaction {
         // console.log("Reaction.js carbocation_index:" + carbocation_index)
         // console.log(VMolecule(this.container_substrate).compressed())
         this.setMoleculeAI()
+
+        console.log("carboncatioinShiftReverse()")
+        console.log(VMolecule(this.container_substrate).canonicalSMILES())
+        console.log(carbocationshiftreverssse)
+
 
 
         return true
