@@ -2,6 +2,10 @@ const ReactionAI =  require('./Components/State/ReactionAI')
 const MoleculeFactory = require('./Models/MoleculeFactory')
 const VMolecule = require('./Components/Stateless/Views/Molecule')
 
+const methyl_piperonyl_ketone = MoleculeFactory("CC(=O)CC1=CC2=C(C=C1)OCO2")
+//console.log(VMolecule([methyl_piperonyl_ketone,1]).canonicalSMILES())
+//console.log(jjjj)
+
 const formate = MoleculeFactory("C(=O)[O-]")
 
 
@@ -24,7 +28,7 @@ const MD = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)NC")
 const MDImine = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)=NC")
 const MeImine2 = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
 const phenylacetone = MoleculeFactory("CC(=O)CC1=CC=CC=C1")
-const methyl_piperonyl_ketone = MoleculeFactory("CC(=O)CC1=CC2=C(C=C1)OCO2")
+
 const r = new ReactionAI()
 
 // Leuckart Wallach
