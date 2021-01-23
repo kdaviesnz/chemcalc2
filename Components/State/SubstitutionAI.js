@@ -61,11 +61,6 @@ class SubstitutionAI {
             return false
         }
 
-        console.log("SubstitutionAI substituteOxygenCarbonDoubleBondForAmineReverse()")
-        console.log("After substitution")
-        console.log("carbon index on o bond:" + c_index + ('should be one'))
-        console.log("oxygen index:" + oxygen_index)
-        console.log(VMolecule(this.reaction.container_substrate).compressed())
 
         // Look for NC bond
         const n_bonds = carbon.indexedBonds("").filter((bond)=>{
@@ -79,15 +74,7 @@ class SubstitutionAI {
             const n_shared_electrons = n_bonds[0].shared_electrons
             const o_shared_electrons = co_bonds[0].shared_electrons
 
-            console.log("Carbon index on NC bond (should be 10):" + n_bonds[0].atom_index)
-
-
-            console.log('n shared electrons:')
-            console.log(o_shared_electrons)
             const o_free_electrons = oxygen.freeElectrons()
-            console.log("oxygen free electrons")
-            console.log(o_free_electrons)
-
 
             // Remove N electrons from C - this will break the NC bond
             this.reaction.container_substrate[0][1][c_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][c_index], n_shared_electrons)
@@ -120,12 +107,6 @@ class SubstitutionAI {
             this.reaction.setMoleculeAI()
             this.reaction.setReagentAI()
 
-            console.log("SubstitutionAI substituteOxygenCarbonDoubleBondForAmineReverse()")
-            console.log("Before substitution")
-            console.log(VMolecule(this.reaction.container_substrate).compressed())
-            console.log(VMolecule(this.reaction.container_substrate).canonicalSMILES())
-
-            console.log(jjjjjlll)
             return true
         }
 

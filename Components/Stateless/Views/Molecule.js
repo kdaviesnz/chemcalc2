@@ -348,7 +348,12 @@ const VMolecule = (mmolecule) => {
             return charge !== "" || symbol === "Br"  || symbol === "Al" || symbol === "Hg" || symbol === "Ac"
         },
         getBond: function(chain, atom_index, i) {
-            if (i===0) {
+
+            let symbol = mmolecule[0][1][atom_index][0]
+
+
+
+            if (i < 0) {
                 return ""
             }
             if (typeof chain[i] !== "number") {
@@ -361,6 +366,7 @@ const VMolecule = (mmolecule) => {
                         return bond.atom_index === atom_index
                     }
                 )
+
 
                 if (bonds.length === 0) {
                     return this.getBond(chain, atom_index, i - 1)
@@ -394,6 +400,7 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
             }
 
 
+
             // "C  O   C  (C) (C)   C   O")
             //  3  4   5  (9) (13)  16  18
             //console.log(this.compressed())
@@ -424,6 +431,8 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
 
             let chain = ""
             let branch_atom_index = null
+
+
             if (chains.length === 1) {
                 // Replace atom indexes with symbols
                // console.log(chains[0])
@@ -432,6 +441,17 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                 Apple [ 1, 2, '(', 3, ')', '(', 4, ')', 6 ]
                 [  1,   2, '(', 6, ')', '(', 4, ')', 3 ]
                  */
+
+                /*
+                [
+      [
+        0,   '(', 1, ')', '(', 19,
+        ')', 5,   6, 7,   8,   9,
+        10,  11,  6
+      ]
+    ]
+
+                 */
                 const smiles = _.cloneDeep(chains[0]).reduce(
                     (carry, atom_index, i, arr) => {
 
@@ -439,13 +459,15 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                            return carry + atom_index
                         }
 
+                        let symbol = mmolecule[0][1][atom_index][0]
+
                         const bond = this.getBond(_.cloneDeep(chains[0]), atom_index, i)
 
                         const atom_object = CAtom(mmolecule[0][1][atom_index], atom_index, mmolecule)
 
                         const charge = atom_object.isNegativelyCharged()?"-":(atom_object.isPositivelyCharged()?"+":"")
 
-                        let symbol = mmolecule[0][1][atom_index][0]
+
                         const next_atom_index = this.nextAtomIndex(chains[0], i+1)
 
                         let add_brackets = this.addBrackets(symbol, charge)
