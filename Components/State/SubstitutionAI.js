@@ -27,6 +27,7 @@ class SubstitutionAI {
 
     substituteOxygenCarbonDoubleBondForAmineReverse() {
 
+
         let co_bonds = null
         let oxygen = null
 
@@ -50,6 +51,13 @@ class SubstitutionAI {
             return false
         }
 
+        console.log("SubstitutionAI substituteOxygenCarbonDoubleBondForAmineReverse()")
+        console.log("After substitution")
+        console.log(VMolecule(this.reaction.container_substrate).canonicalSMILES())
+
+
+
+
         const c_index = co_bonds[0].atom_index
         const carbon = CAtom(this.reaction.container_substrate[0][1][c_index], c_index, this.reaction.container_substrate)
         if (carbon.indexedBonds("").length + carbon.indexedDoubleBonds("").length !== 4) {
@@ -63,15 +71,18 @@ class SubstitutionAI {
         if (n_bonds.length > 0) {
             const n_index = n_bonds[0].atom_index
             const n_shared_electrons = n_bonds[0].shared_electrons
+            const o_shared_electrons = co_bonds[0].shared_electrons
+            console.log('o shared electrons:')
+            console.log(o_shared_electrons)
             const o_free_electrons = oxygen.freeElectrons()
+            console.log("oxygen free electrons")
+            console.log(o_free_electrons)
             // Remove N electrons from C - this will break the NC bond
             this.reaction.container_substrate[0][1][c_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][c_index], n_shared_electrons)
             // Add O electrons to C - this will recreate the double bond
             this.reaction.container_substrate[0][1][c_index].push(o_free_electrons[0])
             this.reaction.container_substrate[0][1][c_index].push(o_free_electrons[1])
-            this.reaction.setChargeOnSubstrateAtom(n_index)
-            this.reaction.setChargeOnSubstrateAtom(c_index)
-            this.reaction.setChargeOnSubstrateAtom(oxygen_index)
+            this.reaction.setChargesOnSubstrate(n_index)
 
             // Groups
             const groups = this.reaction.MoleculeAI.extractGroupsReverse()
@@ -85,6 +96,12 @@ class SubstitutionAI {
             }
             this.reaction.setMoleculeAI()
             this.reaction.setReagentAI()
+
+            console.log("SubstitutionAI substituteOxygenCarbonDoubleBondForAmineReverse()")
+            console.log("Before substitution")
+            console.log(VMolecule(this.reaction.container_substrate).canonicalSMILES())
+
+            console.log(jjjjjlll)
             return true
         }
 
@@ -322,6 +339,7 @@ class SubstitutionAI {
     }
 
     substituteHalideForAmineReverse() {
+
 
         // SN2 mechanism -> halide is replaced at the same time as the replacement atom bonds.
         // [N+]C
