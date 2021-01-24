@@ -6,6 +6,7 @@ const MReaction = require('../Stateless/Reaction')
 const VReaction = require('../Stateless/Views/Reactions')
 const _ = require('lodash');
 const reagents_processed = []
+var term = require( 'terminal-kit' ).terminal ;
 
 class ReactionAI {
 
@@ -159,6 +160,10 @@ class ReactionAI {
 
            commands.reverse()
 
+        if (VMolecule(commands[0]['starting substrate']).canonicalSMILES() === VMolecule(commands[commands.length-1]['finish substrate']).canonicalSMILES() ) {
+            return
+        }
+
 
         if (true) {
         //if (commands.length > 0 && this.hasCharge(commands[0]['starting substrate']) === -1) {
@@ -197,9 +202,16 @@ class ReactionAI {
             reagentAI.validateMolecule()
         }
 
+        const indicator_map = ["\\", "/"]
+
+
         for(const command_name in this.command_map) {
             if (this.commands_filter.indexOf(command_name + 'Reversal') === -1) {
                 // console.log('_synthesise() inner depth='+depth)
+                term.eraseLine()
+                //term(indicator_map[Math.floor(Math.random() * 3)])
+                term(this.command_map[command_name])
+                term.column(0)
                 if (caller !== command_name + 'Reversal') {
                     this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), command_name, _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth, reagentAI)
                 }
