@@ -210,7 +210,7 @@ class ReactionAI {
                 // console.log('_synthesise() inner depth='+depth)
                 term.eraseLine()
                 //term(indicator_map[Math.floor(Math.random() * 3)])
-                term(this.command_map[command_name])
+                term(indicator_map[Math.floor(Math.random() * 2)] + ' ' + this.command_map[command_name])
                 term.column(0)
                 if (caller !== command_name + 'Reversal') {
                     this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), command_name, _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth, reagentAI)
