@@ -33,8 +33,8 @@ const r = new ReactionAI()
 
 // Leuckart Wallach
 r.synthesise(MeImine2)
-//r.synthesise(MDImine)
-console.log(nnnn)
+r.synthesise(MDImine)
+
 
 // Pinacol Rearrangement
 /*
@@ -57,12 +57,14 @@ r.synthesise(pinacolone)
 r.synthesise(methyl_piperonyl_ketone)
 
 
-
 r.synthesise(methylamine)
+
 
 // Akylation
 r.synthesise(me)
 r.synthesise(MA)
+
+console.log(nnnn)
 
 
 
