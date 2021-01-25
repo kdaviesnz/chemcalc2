@@ -256,10 +256,14 @@ class ReactionAI {
 
         this.debugger(r)
 
+        /*
         if (command_name === "reduceImineToAmine") {
             console.log(r)
-            console.log(reduceiminetoamineggg)
+            console.log(VMolecule(reverse_reaction.container_substrate).compressed())
+            console.log(VMolecule(reverse_reaction.container_substrate).canonicalSMILES())
+            console.log(reduceiminetoaminereevesre)
         }
+        */
 
 
 

@@ -227,9 +227,7 @@ class Reaction {
         }
 
 
-        if (check_mode) {
-            return true
-        }
+
 
         // Add double bond
         const c_n_bonds = n_atom.indexedBonds("").filter((bond)=>{
@@ -245,42 +243,51 @@ class Reaction {
 
         const carbon = CAtom(this.container_substrate[0][1][c_n_bonds[0].atom_index], c_n_bonds[0].atom_index, this.container_substrate)
 
-
-        if (h_n_bonds.length > 0) {
-            // reduceImineToAmineReverse
-            const shared_electrons = h_n_bonds[0].shared_electrons
-            console.log(VMolecule(this.container_substrate).compressed())
-            console.log(shared_electrons)
-            console.log(reduceImineToAmineReverseooo)
-
-            if (this.container_substrate[0][1][c_n_bonds[0].atom_index].slice(5).length === 8){
-                const carbon_atom_free_electrons = carbon.freeElectrons()
-                if (carbon_atom_free_electrons.length < 2) {
-                    return false
-                }
-            }
-
-
-            this.container_substrate[0][1][c_n_bonds[0].atom_index].push(shared_electrons[0])
-            this.container_substrate[0][1][c_n_bonds[0].atom_index].push(shared_electrons[1])
-            _.remove(this.container_substrate[0][1][h_n_bonds[0].atom_index], (electron, index)=>{
-                return electron === shared_electrons[0] || electron === shared_electrons[1]
-            })
-            this.container_substrate[0][1] = Set().removeFromArray(this.container_substrate[0][1], this.container_substrate[0][1][h_n_bonds[0].atom_index])
+        // Check that there is at least on H-N bond that we can remove
+        if (h_n_bonds.length === 0) {
+            return false
         }
 
-        if (h_c_bonds.length > 0) {
-            const shared_electrons = h_c_bonds[0].shared_electrons
-            _.remove(this.container_substrate[0][1][c_n_bonds[0].atom_index], (electron, index)=>{
-                return electron === shared_electrons[0] || electron === shared_electrons[1]
-            })
-            this.container_substrate[0][1] = Set().removeFromArray(this.container_substrate[0][1], this.container_substrate[0][1][h_c_bonds[0].atom_index])
+        // Check that there is at least on H-C on the C-N carbon that we can remove
+        if (h_c_bonds.length === 0) {
+            return false
         }
+
+        if (check_mode) {
+            return true
+        }
+
+        // Remove the H-N bond
+        const h_n_shared_electrons = h_n_bonds[0].shared_electrons
+        _.remove(this.container_substrate[0][1][n_index], (electron, index)=>{
+            return electron === h_n_shared_electrons[0] || electron === h_n_shared_electrons[1]
+        })
+        // Check that the N now has a free slot
+        n_atom.freeSlots().should.be.greaterThan(0)
+
+
+        // Remove the H-C bond
+        const h_c_shared_electrons = h_c_bonds[0].shared_electrons
+        _.remove(this.container_substrate[0][1][c_n_bonds[0].atom_index], (electron, index)=>{
+            return electron === h_c_shared_electrons[0] || electron === h_c_shared_electrons[1]
+        })
+        // Check that the C now has a free electron pair
+        carbon.freeSlots().should.be.greaterThan(0)
+
+        // Add another bond to C-N bond
+        const shared_electrons = [uniqid(), uniqid()]
+        this.container_substrate[0][1][c_n_bonds[0].atom_index].push(shared_electrons[0])
+        this.container_substrate[0][1][c_n_bonds[0].atom_index].push(shared_electrons[1])
+        this.container_substrate[0][1][n_index].push(shared_electrons[0])
+        this.container_substrate[0][1][n_index].push(shared_electrons[1])
+
+        // Remove H-C hydrogen
+        this.container_substrate[0][1] = Set().removeFromArray(this.container_substrate[0][1], this.container_substrate[0][1][h_c_bonds[0].atom_index])
+        // Remove H-N hydrogen
+        this.container_substrate[0][1] = Set().removeFromArray(this.container_substrate[0][1], this.container_substrate[0][1][h_n_bonds[0].atom_index])
 
         this.setChargesOnSubstrate()
         this.setMoleculeAI()
-
-
 
 
         return true
