@@ -32,8 +32,10 @@ const phenylacetone = MoleculeFactory("CC(=O)CC1=CC=CC=C1")
 const r = new ReactionAI()
 
 // Leuckart Wallach
-r.synthesise(MeImine2)
-r.synthesise(MDImine)
+//r.synthesise(MeImine2)
+//r.synthesise(MDImine)
+r.synthesise(MD)
+console.log(kkkk)
 
 
 // Pinacol Rearrangement

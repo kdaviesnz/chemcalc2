@@ -208,6 +208,7 @@ class Reaction {
     }
 
     reduceImineToAmineReverse(check_mode) {
+
         let n_atom = null
         // Look for N
         const n_index = _.findIndex(this.container_substrate[0][1], (atom, index)=>{
@@ -220,12 +221,16 @@ class Reaction {
             n_atom = CAtom(this.container_substrate[0][1][index], index, this.container_substrate)
             return n_atom.doubleBondCount() === 0
         })
+
         if (n_index === -1) {
             return false
         }
+
+
         if (check_mode) {
             return true
         }
+
         // Add double bond
         const c_n_bonds = n_atom.indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "C"
@@ -239,15 +244,23 @@ class Reaction {
         })
 
         const carbon = CAtom(this.container_substrate[0][1][c_n_bonds[0].atom_index], c_n_bonds[0].atom_index, this.container_substrate)
+
+
         if (h_n_bonds.length > 0) {
             // reduceImineToAmineReverse
             const shared_electrons = h_n_bonds[0].shared_electrons
+            console.log(VMolecule(this.container_substrate).compressed())
+            console.log(shared_electrons)
+            console.log(reduceImineToAmineReverseooo)
+
             if (this.container_substrate[0][1][c_n_bonds[0].atom_index].slice(5).length === 8){
                 const carbon_atom_free_electrons = carbon.freeElectrons()
                 if (carbon_atom_free_electrons.length < 2) {
                     return false
                 }
             }
+
+
             this.container_substrate[0][1][c_n_bonds[0].atom_index].push(shared_electrons[0])
             this.container_substrate[0][1][c_n_bonds[0].atom_index].push(shared_electrons[1])
             _.remove(this.container_substrate[0][1][h_n_bonds[0].atom_index], (electron, index)=>{
@@ -266,6 +279,8 @@ class Reaction {
 
         this.setChargesOnSubstrate()
         this.setMoleculeAI()
+
+
 
 
         return true

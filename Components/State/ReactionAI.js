@@ -64,6 +64,7 @@ class ReactionAI {
         this.command_sets = []
 
         this.command_map = {
+            'reduceImineToAmine': 'Reduce imine to amine',
             'removeProtonFromOxygen': "Remove proton from oxygen atom",
             'protonateCarbocation': 'Add proton to carbocation',
             'substituteOxygenCarbonDoubleBondForAmine': 'Substitute oxygen-carbon double bond for oxygen-carbon single bond and amine group',
@@ -79,8 +80,8 @@ class ReactionAI {
             'breakCarbonOxygenDoubleBond': 'Break oxygen-carbon double bond',
             'bondSubstrateToReagent': 'Bond substrate to reagent',
             'protonate': 'Protonate',
-            'addProtonFromReagentToSubstrate': 'Add proton from reagent to substrate',
-            'reduceImineToAmine': 'Reduce imine to amine'
+            'addProtonFromReagentToSubstrate': 'Add proton from reagent to substrate'
+
         }
 
 
@@ -229,6 +230,7 @@ class ReactionAI {
 
     runReverseCommand(reverse_reaction, command_name, target, reagent, moleculeAI, commands, caller, depth, reagentAI) {
 
+
         this.debugger(caller + "  reverse reaction result")
         this.debugger("command " + command_name)
 
@@ -253,6 +255,11 @@ class ReactionAI {
         r = reverse_reaction[command_name + 'Reverse']()
 
         this.debugger(r)
+
+        if (command_name === "reduceImineToAmine") {
+            console.log(r)
+            console.log(reduceiminetoamineggg)
+        }
 
 
 
