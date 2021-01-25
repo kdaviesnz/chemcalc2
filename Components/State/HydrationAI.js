@@ -69,22 +69,23 @@ class HydrationAI {
 
     dehydrateReverse() {
 
-        // console.log(VMolecule(this.reaction.container_substrate).compressed())
-        // console.log(dehydratereverse)
+        const id = uniqid()
+
+        console.log('dehydratereverse (start)' + id + ' ' + VMolecule(this.reaction.container_substrate).canonicalSMILES())
 
         this.reaction.MoleculeAI.validateMolecule()
 
-      //  console.log("HydrationAI() dehydrateReverse() molecule before:")
-      //  console.log(VMolecule(this.reaction.container_substrate).compressed())
+        //  console.log("HydrationAI() dehydrateReverse() molecule before:")
+        //  console.log(VMolecule(this.reaction.container_substrate).compressed())
 
         const water_molecule = MoleculeFactory("O")
-        water_molecule[1][2][4]="+"
+        water_molecule[1][2][4] = "+"
 
-        const water_ai = require("../Stateless/MoleculeAI")([water_molecule,1])
+        const water_ai = require("../Stateless/MoleculeAI")([water_molecule, 1])
         const water_oxygen_index = water_ai.findWaterOxygenIndex()
         const electrons = CAtom(water_molecule[1][water_oxygen_index],
             water_oxygen_index,
-            [water_molecule,1]).freeElectrons()
+            [water_molecule, 1]).freeElectrons()
         electrons.length.should.be.greaterThan(1)
 
         let electrophile_index = this.reaction.MoleculeAI.findCarbocationIndex()
@@ -111,7 +112,7 @@ class HydrationAI {
             const d_bonds = e_atom.indexedDoubleBonds("")
             if (d_bonds.length > 0) {
                 const shared_electrons = d_bonds[0].shared_electrons
-                _.remove(this.reaction.container_substrate[0][1][d_bonds[0].atom_index], (v, i)=>{
+                _.remove(this.reaction.container_substrate[0][1][d_bonds[0].atom_index], (v, i) => {
                     return v === shared_electrons[0] || v === shared_electrons[1]
                 })
                 // Replace electrons
@@ -146,6 +147,9 @@ class HydrationAI {
         this.reaction.MoleculeAI.findWaterOxygenIndex().should.be.greaterThan(-1)
 
         this.reaction.MoleculeAI.validateMolecule()
+
+        console.log('dehydratereverse (end)'+ id +' ' + VMolecule(this.reaction.container_substrate).canonicalSMILES())
+
 
         return true
     }
@@ -186,12 +190,8 @@ class HydrationAI {
         // Check we have a water molecule attached to main molecule
         this.reaction.MoleculeAI.findWaterOxygenIndex().should.be.greaterThan(-1)
 
-        if (this.reaction.MoleculeAI.validateMolecule() === false) {
-            console.log('HydrationAI.js molecule is not valid (hydrate())')
-            console.log('Method: hydrate()')
-            console.log(VMolecule(this.container_substrate).compressed())
-            console.log(i)
-        }
+        this.reaction.MoleculeAI.validateMolecule()
+
 
         return true
     }
