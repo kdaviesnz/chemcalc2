@@ -69,9 +69,9 @@ class HydrationAI {
 
     dehydrateReverse() {
 
-        const id = uniqid()
+        //const id = uniqid()
 
-        console.log('dehydratereverse (start)' + id + ' ' + VMolecule(this.reaction.container_substrate).canonicalSMILES())
+      //  console.log('dehydratereverse (start)' + id + ' ' + VMolecule(this.reaction.container_substrate).canonicalSMILES())
 
         this.reaction.MoleculeAI.validateMolecule()
 
@@ -148,7 +148,7 @@ class HydrationAI {
 
         this.reaction.MoleculeAI.validateMolecule()
 
-        console.log('dehydratereverse (end)'+ id +' ' + VMolecule(this.reaction.container_substrate).canonicalSMILES())
+        // console.log('dehydratereverse (end)'+ id +' ' + VMolecule(this.reaction.container_substrate).canonicalSMILES())
 
 
         return true
