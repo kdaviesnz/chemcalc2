@@ -209,6 +209,11 @@ class Reaction {
 
     reduceImineToAmineReverse(check_mode) {
 
+        /*
+        Sodium cyanoborohydride (NaBH3CN) is a mild reducing agent that is commonly used in reductive aminations. The presence of the electron-withdrawing cyano (CN) group makes it less reactive
+        than sodium borohydride (NaBH4). This reduced reactivity allows NaBH3CN to be employed at neutral or slightly acidic conditions for the selective reduction of iminium ions in the presence of ketones and aldehydes.
+         */
+
         let n_atom = null
         // Look for N
         const n_index = _.findIndex(this.container_substrate[0][1], (atom, index)=>{
@@ -226,30 +231,32 @@ class Reaction {
             return false
         }
 
-
-
-
         // Add double bond
-        const c_n_bonds = n_atom.indexedBonds("").filter((bond)=>{
+        const c_n_carbon_bonds = n_atom.indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "C"
         })
-        const c_atom = CAtom(this.container_substrate[0][1][c_n_bonds[0].atom_index], c_n_bonds[0].atom_index, this.container_substrate)
-        const h_n_bonds = n_atom.indexedBonds("").filter((bond)=>{
+        const carbon = CAtom(this.container_substrate[0][1][c_n_carbon_bonds[0].atom_index], c_n_carbon_bonds[0].atom_index, this.container_substrate)
+        const h_n_hydrogen_bonds = n_atom.indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "H"
         })
-        const h_c_bonds = c_atom.indexedBonds("").filter((bond)=>{
+        const h_c_hydrogen_bonds = carbon.indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "H"
         })
 
-        const carbon = CAtom(this.container_substrate[0][1][c_n_bonds[0].atom_index], c_n_bonds[0].atom_index, this.container_substrate)
+        //const carbon = CAtom(this.container_substrate[0][1][c_n_carbon_bonds[0].atom_index], c_n_carbon_bonds[0].atom_index, this.container_substrate)
 
         // Check that there is at least on H-N bond that we can remove
-        if (h_n_bonds.length === 0) {
+        if (h_n_hydrogen_bonds.length === 0) {
             return false
         }
 
         // Check that there is at least on H-C on the C-N carbon that we can remove
-        if (h_c_bonds.length === 0) {
+        if (h_c_hydrogen_bonds.length === 0) {
+            return false
+        }
+
+        const electrons_to_share = n_atom.freeElectrons()
+        if (electrons_to_share.length === 0) {
             return false
         }
 
@@ -258,36 +265,41 @@ class Reaction {
         }
 
         // Remove the H-N bond
-        const h_n_shared_electrons = h_n_bonds[0].shared_electrons
+        /*
+        const h_n_shared_electrons = h_n_hydrogen_bonds[0].shared_electrons
         _.remove(this.container_substrate[0][1][n_index], (electron, index)=>{
             return electron === h_n_shared_electrons[0] || electron === h_n_shared_electrons[1]
         })
         // Check that the N now has a free slot
         n_atom.freeSlots().should.be.greaterThan(0)
-
+        */
 
         // Remove the H-C bond
-        const h_c_shared_electrons = h_c_bonds[0].shared_electrons
-        _.remove(this.container_substrate[0][1][c_n_bonds[0].atom_index], (electron, index)=>{
+        const h_c_shared_electrons = h_c_hydrogen_bonds[0].shared_electrons
+        _.remove(this.container_substrate[0][1][c_n_carbon_bonds[0].atom_index], (electron, index)=>{
             return electron === h_c_shared_electrons[0] || electron === h_c_shared_electrons[1]
         })
         // Check that the C now has a free electron pair
         carbon.freeSlots().should.be.greaterThan(0)
 
         // Add another bond to C-N bond
-        const shared_electrons = [uniqid(), uniqid()]
-        this.container_substrate[0][1][c_n_bonds[0].atom_index].push(shared_electrons[0])
-        this.container_substrate[0][1][c_n_bonds[0].atom_index].push(shared_electrons[1])
-        this.container_substrate[0][1][n_index].push(shared_electrons[0])
-        this.container_substrate[0][1][n_index].push(shared_electrons[1])
+        //const shared_electrons = [uniqid(), uniqid()]
+        this.container_substrate[0][1][c_n_carbon_bonds[0].atom_index].push(electrons_to_share[0])
+        this.container_substrate[0][1][c_n_carbon_bonds[0].atom_index].push(electrons_to_share[1])
+        //this.container_substrate[0][1][n_index].push(shared_electrons[0])
+        //this.container_substrate[0][1][n_index].push(shared_electrons[1])
 
         // Remove H-C hydrogen
-        this.container_substrate[0][1] = Set().removeFromArray(this.container_substrate[0][1], this.container_substrate[0][1][h_c_bonds[0].atom_index])
+        this.container_substrate[0][1] = Set().removeFromArray(this.container_substrate[0][1], this.container_substrate[0][1][h_c_hydrogen_bonds[0].atom_index])
         // Remove H-N hydrogen
-        this.container_substrate[0][1] = Set().removeFromArray(this.container_substrate[0][1], this.container_substrate[0][1][h_n_bonds[0].atom_index])
+        //this.container_substrate[0][1] = Set().removeFromArray(this.container_substrate[0][1], this.container_substrate[0][1][h_n_hydrogen_bonds[0].atom_index])
 
         this.setChargesOnSubstrate()
         this.setMoleculeAI()
+
+        //console.log(VMolecule(this.container_substrate).compressed())
+        //console.log(reductimeinetoaminereverse)
+        // Nitrogen atom should have positive charge (4 bonds)
 
 
         return true
