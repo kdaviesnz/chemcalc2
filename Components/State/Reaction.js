@@ -207,6 +207,54 @@ class Reaction {
         return true
     }
 
+    reduceImineToAmineOnNitrogenMethylCarbonReverse(check_mode) {
+        /*
+       Sodium cyanoborohydride (NaBH3CN) is a mild reducing agent that is commonly used in reductive aminations. The presence of the electron-withdrawing cyano (CN) group makes it less reactive
+       than sodium borohydride (NaBH4). This reduced reactivity allows NaBH3CN to be employed at neutral or slightly acidic conditions for the selective reduction of iminium ions in the presence of ketones and aldehydes.
+        */
+
+        let n_atom = null
+        let c_atom = null
+        let c_index = null
+
+        // Look for N attached to methyl carbon
+        const n_index = _.findIndex(this.container_substrate[0][1], (atom, index)=>{
+            if (atom[0] !== "N") {
+                return false
+            }
+
+            if (atom[4] === "+" || atom[4] === "-") {
+                return false
+            }
+
+            n_atom = CAtom(this.container_substrate[0][1][index], index, this.container_substrate)
+            if (n_atom.doubleBondCount() !== 0) {
+                return false
+            }
+
+            const c_n_carbon_methyl_bonds = n_atom.indexedBonds("").filter((bond)=>{
+                if (bond.atom[0]!=="C") {
+                    return false
+                }
+                c_index = bond.atom_index
+                c_atom = CAtom(this.container_substrate[0][1][bond.atom_index], bond.atom_index, this.container_substrate)
+                return c_atom.indexedBonds("").filter((bond)=>{
+                    return bond.atom[0] === "H"
+                }).length ===3
+            })
+            return c_n_carbon_methyl_bonds.length > 0
+
+        })
+
+
+        if (n_index === -1) {
+            return false
+        }
+
+        console.log('Reaction.js ' + n_index)
+        return this.__reduceImineToAmineReverse(check_mode, n_atom, c_atom, n_index, c_index)
+    }
+
     reduceImineToAmineReverse(check_mode) {
 
         /*
@@ -231,19 +279,30 @@ class Reaction {
             return false
         }
 
-        // Add double bond
         const c_n_carbon_bonds = n_atom.indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "C"
         })
         const carbon = CAtom(this.container_substrate[0][1][c_n_carbon_bonds[0].atom_index], c_n_carbon_bonds[0].atom_index, this.container_substrate)
+
+        return this.__reduceImineToAmineReverse(check_mode, n_atom, carbon, n_index, c_n_carbon_bonds[0].atom_index)
+
+    }
+
+    __reduceImineToAmineReverse(check_mode, n_atom, carbon, n_index, c_index) {
+
+        /*
+        Sodium cyanoborohydride (NaBH3CN) is a mild reducing agent that is commonly used in reductive aminations. The presence of the electron-withdrawing cyano (CN) group makes it less reactive
+        than sodium borohydride (NaBH4). This reduced reactivity allows NaBH3CN to be employed at neutral or slightly acidic conditions for the selective reduction of iminium ions in the presence of ketones and aldehydes.
+         */
+
+        // Add double bond
+
         const h_n_hydrogen_bonds = n_atom.indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "H"
         })
         const h_c_hydrogen_bonds = carbon.indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "H"
         })
-
-        //const carbon = CAtom(this.container_substrate[0][1][c_n_carbon_bonds[0].atom_index], c_n_carbon_bonds[0].atom_index, this.container_substrate)
 
         // Check that there is at least on H-N bond that we can remove
         if (h_n_hydrogen_bonds.length === 0) {
@@ -276,7 +335,7 @@ class Reaction {
 
         // Remove the H-C bond
         const h_c_shared_electrons = h_c_hydrogen_bonds[0].shared_electrons
-        _.remove(this.container_substrate[0][1][c_n_carbon_bonds[0].atom_index], (electron, index)=>{
+        _.remove(this.container_substrate[0][1][c_index], (electron, index)=>{
             return electron === h_c_shared_electrons[0] || electron === h_c_shared_electrons[1]
         })
         // Check that the C now has a free electron pair
@@ -284,8 +343,8 @@ class Reaction {
 
         // Add another bond to C-N bond
         //const shared_electrons = [uniqid(), uniqid()]
-        this.container_substrate[0][1][c_n_carbon_bonds[0].atom_index].push(electrons_to_share[0])
-        this.container_substrate[0][1][c_n_carbon_bonds[0].atom_index].push(electrons_to_share[1])
+        this.container_substrate[0][1][c_index].push(electrons_to_share[0])
+        this.container_substrate[0][1][c_index].push(electrons_to_share[1])
         //this.container_substrate[0][1][n_index].push(shared_electrons[0])
         //this.container_substrate[0][1][n_index].push(shared_electrons[1])
 
@@ -297,8 +356,8 @@ class Reaction {
         this.setChargesOnSubstrate()
         this.setMoleculeAI()
 
-        //console.log(VMolecule(this.container_substrate).compressed())
-        //console.log(reductimeinetoaminereverse)
+        console.log(VMolecule(this.container_substrate).compressed())
+        console.log(reductimeinetoaminereverse)
         // Nitrogen atom should have positive charge (4 bonds)
 
 

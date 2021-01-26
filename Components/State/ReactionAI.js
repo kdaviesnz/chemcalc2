@@ -53,6 +53,7 @@ class ReactionAI {
 
 
         //this.commands_filter.push("reduceImineToAmineReversal")
+        //this.commands_filter.push("reduceImineToAmineOnNitrogenMethylCarbonReversal")
 
         // ****
         // Breaks Leuckart Wallach (imine2)
@@ -64,6 +65,7 @@ class ReactionAI {
         this.command_sets = []
 
         this.command_map = {
+            'reduceImineToAmineOnNitrogenMethylCarbon': 'Reduce imine to amine',
             'reduceImineToAmine': 'Reduce imine to amine',
             'removeProtonFromOxygen': "Remove proton from oxygen atom",
             'protonateCarbocation': 'Add proton to carbocation',
@@ -81,7 +83,6 @@ class ReactionAI {
             'bondSubstrateToReagent': 'Bond substrate to reagent',
             'protonate': 'Protonate',
             'addProtonFromReagentToSubstrate': 'Add proton from reagent to substrate'
-
         }
 
 
