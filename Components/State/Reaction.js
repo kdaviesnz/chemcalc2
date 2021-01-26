@@ -251,7 +251,7 @@ class Reaction {
             return false
         }
 
-        console.log('Reaction.js ' + n_index)
+       //xs console.log('Reaction.js ' + n_index)
         return this.__reduceImineToAmineReverse(check_mode, n_atom, c_atom, n_index, c_index)
     }
 
@@ -356,8 +356,8 @@ class Reaction {
         this.setChargesOnSubstrate()
         this.setMoleculeAI()
 
-        console.log(VMolecule(this.container_substrate).compressed())
-        console.log(reductimeinetoaminereverse)
+        //console.log(VMolecule(this.container_substrate).compressed())
+        //console.log(reductimeinetoaminereverse)
         // Nitrogen atom should have positive charge (4 bonds)
 
 
