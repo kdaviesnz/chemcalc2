@@ -126,17 +126,17 @@ class ReactionAI {
         const deprotonated_methylamide = MoleculeFactory("C[NH0]")
         const ammonia = MoleculeFactory("N")
         const hydrochloric_acid = MoleculeFactory("Cl")
-
+        const formaldehyde  = MoleculeFactory("C=O")
 
         //const reagents = reagent === null || reagent === undefined? [formate, methylamide, methylamine, water, deprotonated_methylamide,hydrochloric_acid, ammonia] : [reagent]
         //const reagents = [hydrochloric_acid]
         // Important: Reagent is the last reagent (as result of reaction step) used in the reaction.
         // eg for pinacol–pinacolone rearrangement the reagent is "Brønsted–Lowry conjugate base" as
         // we protonating a hydroxyl group in reverse
-        const reagents = ["Brønsted–Lowry acid"] // Brønsted–Lowry conjugate base, Brønsted–Lowry acid
+        //const reagents = ["Brønsted–Lowry acid"] // Brønsted–Lowry conjugate base, Brønsted–Lowry acid, formaldehyde
+        const reagents = [formaldehyde]
 
         const moleculeAI = require("../Stateless/MoleculeAI")(_.cloneDeep([_.cloneDeep(target),1]))
-
 
         const commands = []
 
