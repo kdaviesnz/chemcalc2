@@ -710,6 +710,7 @@ const MoleculeAI = (container_molecule) => {
                                 ////// console.log((chains)
                                 ////// console.log((bond.atom_index)
                             }
+
                             chains[chain_index] = _.cloneDeep(chains[chain_index - 1]).slice(0, depth)
                             ////// console.log(("Added new branch col=" + col )
                             ////// console.log((chains)

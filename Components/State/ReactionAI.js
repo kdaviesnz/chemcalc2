@@ -135,8 +135,8 @@ class ReactionAI {
         // eg for pinacol–pinacolone rearrangement the reagent is "Brønsted–Lowry conjugate base" as
         // we protonating a hydroxyl group in reverse
         //const reagents = ["Brønsted–Lowry acid"] // Brønsted–Lowry conjugate base, Brønsted–Lowry acid, formaldehyde
-        //const reagents = [formaldehyde]
-        const reagents = [ammonia] // MDA
+        const reagents = [formaldehyde, ammonia]
+        //const reagents = [ammonia] // MDA
 
         const moleculeAI = require("../Stateless/MoleculeAI")(_.cloneDeep([_.cloneDeep(target),1]))
 

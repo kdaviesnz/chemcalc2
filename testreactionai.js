@@ -29,13 +29,16 @@ const MDImine = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)=NC")
 const MeImine2 = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
 const phenylacetone = MoleculeFactory("CC(=O)CC1=CC=CC=C1")
 
+console.log(VMolecule([MD,1]).compressed())
+console.log(abc)
+
 const r = new ReactionAI()
 
 // Leuckart Wallach
 //r.synthesise(MeImine2)
 //r.synthesise(MDImine)
-//r.synthesise(MD)
-r.synthesise(MA) // reagent = ammonia
+r.synthesise(MD)
+//r.synthesise(MA) // reagent = ammonia
 console.log(kkkk)
 
 
