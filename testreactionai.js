@@ -34,7 +34,8 @@ const r = new ReactionAI()
 // Leuckart Wallach
 //r.synthesise(MeImine2)
 //r.synthesise(MDImine)
-r.synthesise(MD)
+//r.synthesise(MD)
+r.synthesise(MA) // reagent = ammonia
 console.log(kkkk)
 
 

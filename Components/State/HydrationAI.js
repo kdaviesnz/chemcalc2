@@ -14,7 +14,7 @@ class HydrationAI {
         this.reaction = reaction
     }
 
-    dehydrate() {
+    dehydrate(check_mode) {
 
         // console.log("HydrationAI dehydrate()")
 
@@ -22,6 +22,10 @@ class HydrationAI {
 
         if (oxygen_atom_index === -1) {
             return false
+        }
+
+        if (check_mode) {
+            return true
         }
 
         const oxygen_atom = CAtom(this.reaction.container_substrate[0][1][oxygen_atom_index], oxygen_atom_index, this.reaction.container_substrate)
@@ -67,7 +71,7 @@ class HydrationAI {
 
     }
 
-    dehydrateReverse() {
+    dehydrateReverse(check_mode) {
 
         //const id = uniqid()
 

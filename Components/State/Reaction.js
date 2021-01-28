@@ -44,6 +44,8 @@ class Reaction {
 
         this.setMoleculeAI()
         this.setReagentAI()
+        this.CommandLogic = require('../../Components/Stateless/CommandLogic')(this)
+
 
         this.MoleculeAI.validateMolecule()
         if (this.ReagentAI !== null) {
@@ -257,6 +259,7 @@ class Reaction {
 
     reduceImineToAmineReverse(check_mode) {
 
+
         /*
         Sodium cyanoborohydride (NaBH3CN) is a mild reducing agent that is commonly used in reductive aminations. The presence of the electron-withdrawing cyano (CN) group makes it less reactive
         than sodium borohydride (NaBH4). This reduced reactivity allows NaBH3CN to be employed at neutral or slightly acidic conditions for the selective reduction of iminium ions in the presence of ketones and aldehydes.
@@ -290,6 +293,11 @@ class Reaction {
 
     __reduceImineToAmineReverse(check_mode, n_atom, carbon, n_index, c_index) {
 
+        if (!this.CommandLogic.check('reduceImineToAmineReverse')) {
+            return false
+        }
+
+        const substrate = _.cloneDeep(this.container_substrate)
         /*
         Sodium cyanoborohydride (NaBH3CN) is a mild reducing agent that is commonly used in reductive aminations. The presence of the electron-withdrawing cyano (CN) group makes it less reactive
         than sodium borohydride (NaBH4). This reduced reactivity allows NaBH3CN to be employed at neutral or slightly acidic conditions for the selective reduction of iminium ions in the presence of ketones and aldehydes.
@@ -324,15 +332,6 @@ class Reaction {
         }
 
         // Remove the H-N bond
-        /*
-        const h_n_shared_electrons = h_n_hydrogen_bonds[0].shared_electrons
-        _.remove(this.container_substrate[0][1][n_index], (electron, index)=>{
-            return electron === h_n_shared_electrons[0] || electron === h_n_shared_electrons[1]
-        })
-        // Check that the N now has a free slot
-        n_atom.freeSlots().should.be.greaterThan(0)
-        */
-
         // Remove the H-C bond
         const h_c_shared_electrons = h_c_hydrogen_bonds[0].shared_electrons
         _.remove(this.container_substrate[0][1][c_index], (electron, index)=>{
@@ -345,13 +344,11 @@ class Reaction {
         //const shared_electrons = [uniqid(), uniqid()]
         this.container_substrate[0][1][c_index].push(electrons_to_share[0])
         this.container_substrate[0][1][c_index].push(electrons_to_share[1])
-        //this.container_substrate[0][1][n_index].push(shared_electrons[0])
-        //this.container_substrate[0][1][n_index].push(shared_electrons[1])
 
         // Remove H-C hydrogen
         this.container_substrate[0][1] = Set().removeFromArray(this.container_substrate[0][1], this.container_substrate[0][1][h_c_hydrogen_bonds[0].atom_index])
-        // Remove H-N hydrogen
-        //this.container_substrate[0][1] = Set().removeFromArray(this.container_substrate[0][1], this.container_substrate[0][1][h_n_hydrogen_bonds[0].atom_index])
+
+        n_atom.doubleBondCount().should.be.greaterThan(0)
 
         this.setChargesOnSubstrate()
         this.setMoleculeAI()
@@ -646,9 +643,9 @@ class Reaction {
         return hydrationAI.hydrate(electrophile_index)
     }
 
-    dehydrate() {
+    dehydrate(check_mode) {
         const hydrationAI = new HydrationAI(this)
-        return hydrationAI.dehydrate()
+        return hydrationAI.dehydrate(check_mode)
     }
 
     dehydrateReverse() {
