@@ -266,8 +266,8 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
 
 
     // [O+]
-     console.log(atoms_with_bonds)
-     console.log(atomswbonds)
+    // console.log(atoms_with_bonds)
+     //console.log(atomswbonds)
     /*
 
      */
@@ -300,6 +300,35 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
      */
 
     let ring_bond_atom_index = null
+
+
+    const ringbond_atom_indexes = atoms.reduce((carry, row, ring_bond_index) =>{
+        if (row.type === 'Ringbond') {
+            const matching_ringbond_index = _.findIndex(atoms, (r, j)=>{
+                return r.type === 'Ringbond' && r.value === row.value && j !== ring_bond_index
+            })
+            carry.push([ring_bond_index, matching_ringbond_index])
+        }
+        return carry
+    }, [])
+
+    console.log(atoms.map((a, i)=> {
+        if (undefined !== a.push) {
+            a.push(i)
+        } else {
+            a.index = i
+        }
+        return a
+    }))
+
+    // [ [ 3, 15 ], [ 7, 19 ], [ 13, 5 ], [ 17, 9 ] ]
+    // 3 = CR1, 15O = R1        7 R2=C, R2 19N
+    //
+    console.log(ringbond_atom_indexes)
+
+
+
+    console.log(rindbondsss)
 
     const free_electrons = (atoms, current_atom_index) => {
         const atom_electrons = atoms[current_atom_index].slice(5)
