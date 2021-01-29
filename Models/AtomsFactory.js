@@ -121,119 +121,6 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     // [O+]
     // console.log(atoms_with_tokens_no_brackets)
    // console.log(oplus)
-    /*
-[ [ 'C',
-    6,
-    4,
-    4,
-    0,
-    '4r7b81s1gkjqmv8or',
-    '4r7b81s1gkjqmv8os',
-    '4r7b81s1gkjqmv8ot',
-    '4r7b81s1gkjqmv8ou' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    0,
-    '4r7b81s1gkjqmv8ov',
-    '4r7b81s1gkjqmv8ow',
-    '4r7b81s1gkjqmv8ox',
-    '4r7b81s1gkjqmv8oy' ],
-  { type: 'Branch', value: 'begin' },
-  [ 'C',
-    6,
-    4,
-    4,
-    0,
-    '4r7b81s1gkjqmv8oz',
-    '4r7b81s1gkjqmv8p0',
-    '4r7b81s1gkjqmv8p1',
-    '4r7b81s1gkjqmv8p2' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    0,
-    '4r7b81s1gkjqmv8p3',
-    '4r7b81s1gkjqmv8p4',
-    '4r7b81s1gkjqmv8p5',
-    '4r7b81s1gkjqmv8p6' ],
-  { type: 'Ringbond', value: 1 },
-  { type: 'Bond', value: '=' },
-  [ 'C',
-    6,
-    4,
-    4,
-    0,
-    '4r7b81s1gkjqmv8p7',
-    '4r7b81s1gkjqmv8p8',
-    '4r7b81s1gkjqmv8p9',
-    '4r7b81s1gkjqmv8pa' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    0,
-    '4r7b81s1gkjqmv8pb',
-    '4r7b81s1gkjqmv8pc',
-    '4r7b81s1gkjqmv8pd',
-    '4r7b81s1gkjqmv8pe' ],
-  { type: 'Bond', value: '=' },
-  [ 'C',
-    6,
-    4,
-    4,
-    0,
-    '4r7b81s1gkjqmv8pf',
-    '4r7b81s1gkjqmv8pg',
-    '4r7b81s1gkjqmv8ph',
-    '4r7b81s1gkjqmv8pi' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    0,
-    '4r7b81s1gkjqmv8pj',
-    '4r7b81s1gkjqmv8pk',
-    '4r7b81s1gkjqmv8pl',
-    '4r7b81s1gkjqmv8pm' ],
-  { type: 'Bond', value: '=' },
-  [ 'C',
-    6,
-    4,
-    4,
-    0,
-    '4r7b81s1gkjqmv8pn',
-    '4r7b81s1gkjqmv8po',
-    '4r7b81s1gkjqmv8pp',
-    '4r7b81s1gkjqmv8pq' ],
-  { type: 'Ringbond', value: 1 },
-  { type: 'Branch', value: 'end' },
-  [ 'N',
-    7,
-    5,
-    3,
-    0,
-    '4r7b81s1gkjqmv8pr',
-    '4r7b81s1gkjqmv8ps',
-    '4r7b81s1gkjqmv8pt',
-    '4r7b81s1gkjqmv8pu',
-    '4r7b81s1gkjqmv8pv' ],
-  [ 'C',
-    6,
-    4,
-    4,
-    0,
-    '4r7b81s1gkjqmv8pw',
-    '4r7b81s1gkjqmv8px',
-    '4r7b81s1gkjqmv8py',
-    '4r7b81s1gkjqmv8pz' ] ]
-/Users/kevindavies/Development/chemcalc2/Models/AtomsFactory.js:108
-    // console.log(oplus)
-
-     */
-
 
     // Add the bonds and branches
     let branch_number = 0
@@ -379,21 +266,10 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
 
 
     // [O+]
-   //  // console.log(atoms_with_bonds)
-   //  // console.log(oplus)
+     console.log(atoms_with_bonds)
+     console.log(atomswbonds)
     /*
-    [ [ 'O',
-    8,
-    6,
-    2,
-    0,
-    '4r7b813cxkjjk6d2p',
-    '4r7b813cxkjjk6d2q',
-    '4r7b813cxkjjk6d2r',
-    '4r7b813cxkjjk6d2s',
-    '4r7b813cxkjjk6d2t',
-    '4r7b813cxkjjk6d2u' ],
-  { type: 'Charge', value: 1 } ]
+
      */
 
     // Remove bonds using filter
@@ -875,13 +751,18 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     process.exit()
 */
     //  atomic symbol, proton count, valence count, number of bonds, charge, velectron1, velectron2, velectron3
+    console.log(atoms_electrons_checked)
 
     // Sort atoms by atom and number of elements so that they return the same canonical smiles
-    return _.sortBy(atoms_electrons_checked, (o)=>{
+    const atoms_sorted =  _.sortBy(atoms_electrons_checked, (o)=>{
         return o[0]
     }).sort(function (a, b) {
         return b.length - a.length;
     })
+
+    console.log(atoms_sorted)
+    console.log(cba)
+    return atoms_sorted
 
 
 }

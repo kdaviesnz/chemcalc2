@@ -1,0 +1,212 @@
+davies@davies-X541NA:~/Development/chemcalc2$ node testreactionai
+[
+[
+        0
+'C',
+6,
+4,
+4,
+0,
+'bqdtz0psjkkhj6kym',
+'bqdtz0psjkkhj6kyn',
+'bqdtz0psjkkhj6kyo',
+'bqdtz0psjkkhj6kyp',
+'bqdtz0psjkkhj6kyt'
+],
+[
+        1
+'C',
+6,
+4,
+4,
+0,
+'bqdtz0psjkkhj6kyq',
+'bqdtz0psjkkhj6kyr',
+'bqdtz0psjkkhj6kys',
+'bqdtz0psjkkhj6kyt',
+'bqdtz0psjkkhj6kyp',
+'bqdtz0psjkkhj6kyx',
+'bqdtz0psjkkhj6l06'
+],
+[
+        2
+'C',
+6,
+4,
+4,
+0,
+'bqdtz0psjkkhj6kyu',
+'bqdtz0psjkkhj6kyv',
+'bqdtz0psjkkhj6kyw',
+'bqdtz0psjkkhj6kyx',
+'bqdtz0psjkkhj6kys',
+'bqdtz0psjkkhj6kz1'
+],
+[
+        3
+'C',
+6,
+4,
+4,
+0,
+'bqdtz0psjkkhj6kyy',
+'bqdtz0psjkkhj6kyz',
+'bqdtz0psjkkhj6kz0',
+'bqdtz0psjkkhj6kz1',
+'bqdtz0psjkkhj6kyw',
+'bqdtz0psjkkhj6kz5',
+'bqdtz0psjkkhj6kz4'
+],
+{ type: 'Ringbond', value: 1 },(7)
+{ type: 'Bond', value: '=' },
+[
+        4
+'C',
+6,
+4,
+4,
+0,
+'bqdtz0psjkkhj6kz2',
+'bqdtz0psjkkhj6kz3',
+'bqdtz0psjkkhj6kz4',
+'bqdtz0psjkkhj6kz5',
+'bqdtz0psjkkhj6kz0',
+'bqdtz0psjkkhj6kyz',
+'bqdtz0psjkkhj6kz9'
+],
+[
+        5
+'C',
+6,
+4,
+4,
+0,
+'bqdtz0psjkkhj6kz6',
+'bqdtz0psjkkhj6kz7',
+'bqdtz0psjkkhj6kz8',
+'bqdtz0psjkkhj6kz9',
+'bqdtz0psjkkhj6kz3',
+'bqdtz0psjkkhj6kzd',
+'bqdtz0psjkkhj6kzc'
+],
+{ type: 'Ringbond', value: 2 },
+{ type: 'Bond', value: '=' },
+[
+        6
+'C',
+6,
+4,
+4,
+0,
+'bqdtz0psjkkhj6kza',
+'bqdtz0psjkkhj6kzb',
+'bqdtz0psjkkhj6kzc',
+'bqdtz0psjkkhj6kzd',
+'bqdtz0psjkkhj6kz8',
+'bqdtz0psjkkhj6kz7',
+'bqdtz0psjkkhj6kzh',
+'bqdtz0psjkkhj6kzr'
+],
+[
+        7
+'C',
+6,
+4,
+4,
+0,
+'bqdtz0psjkkhj6kze',
+'bqdtz0psjkkhj6kzf',
+'bqdtz0psjkkhj6kzg',
+'bqdtz0psjkkhj6kzh',
+'bqdtz0psjkkhj6kzb',
+'bqdtz0psjkkhj6kzl',
+'bqdtz0psjkkhj6kzk'
+],
+{ type: 'Bond', value: '=' },
+[
+        8
+'C',
+6,
+4,
+4,
+0,
+'bqdtz0psjkkhj6kzi', f
+'bqdtz0psjkkhj6kzj', f
+'bqdtz0psjkkhj6kzk', 7
+'bqdtz0psjkkhj6kzl', 7
+'bqdtz0psjkkhj6kzg', 7
+'bqdtz0psjkkhj6kzf' 7
+],
+{ type: 'Ringbond', value: 1 }, 3
+[
+'O',
+8,
+6,
+2,
+0,
+'bqdtz0psjkkhj6kzm',
+'bqdtz0psjkkhj6kzn',
+'bqdtz0psjkkhj6kzo',
+'bqdtz0psjkkhj6kzp',
+'bqdtz0psjkkhj6kzq',
+'bqdtz0psjkkhj6kzr',
+'bqdtz0psjkkhj6kza',
+'bqdtz0psjkkhj6kzv'
+],
+[
+'C',
+6,
+4,
+4,
+0,
+'bqdtz0psjkkhj6kzs',
+'bqdtz0psjkkhj6kzt',
+'bqdtz0psjkkhj6kzu',
+'bqdtz0psjkkhj6kzv',
+'bqdtz0psjkkhj6kzq',
+'bqdtz0psjkkhj6l01'
+],
+[
+'O',
+8,
+6,
+2,
+0,
+'bqdtz0psjkkhj6kzw',
+'bqdtz0psjkkhj6kzx',
+'bqdtz0psjkkhj6kzy',
+'bqdtz0psjkkhj6kzz',
+'bqdtz0psjkkhj6l00',
+'bqdtz0psjkkhj6l01',
+'bqdtz0psjkkhj6kzu'
+],
+{ type: 'Ringbond', value: 2 },
+[
+'N',
+7,
+5,
+3,
+0,
+'bqdtz0psjkkhj6l02',
+'bqdtz0psjkkhj6l03',
+'bqdtz0psjkkhj6l04',
+'bqdtz0psjkkhj6l05',
+'bqdtz0psjkkhj6l06',
+'bqdtz0psjkkhj6kyr',
+'bqdtz0psjkkhj6l0a'
+],
+[
+'C',
+6,
+4,
+4,
+0,
+'bqdtz0psjkkhj6l07',
+'bqdtz0psjkkhj6l08',
+'bqdtz0psjkkhj6l09',
+'bqdtz0psjkkhj6l0a',
+'bqdtz0psjkkhj6l05'
+]
+]
+/home/davies/Development/chemcalc2/Models/AtomsFactory.js:270
+console.log(atomswbonds)
