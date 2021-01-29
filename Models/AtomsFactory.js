@@ -733,7 +733,9 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
 */
     //  atomic symbol, proton count, valence count, number of bonds, charge, velectron1, velectron2, velectron3
    // console.log(atoms_electrons_checked)
+    return atoms_electrons_checked
 
+    // We can't do this
     // Sort atoms by atom and number of elements so that they return the same canonical smiles
     const atoms_sorted =  _.sortBy(atoms_electrons_checked, (o)=>{
         return o[0]
@@ -748,7 +750,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     }))
     console.log(atomssorted)
 */
-    return atoms_sorted
+    //return atoms_sorted
 
 
 }

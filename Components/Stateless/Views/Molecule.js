@@ -350,7 +350,7 @@ const VMolecule = (mmolecule) => {
                     const electrons = atom.slice(5)
                     const free_electrons = c.freeElectrons()
 
-                    return [atom[0]+atom[4], index,  bonds, double_bonds, triple_bonds]
+                    return [atom[0]+(atom[4]===0?"":atom[4]), index,  bonds, double_bonds, triple_bonds]
                 }
             ).filter(
                 (atom) => {
