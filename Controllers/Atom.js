@@ -171,6 +171,10 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
             (bonds, _atom, _atom_index) => {
 
+                if (undefined === _atom.sort) {
+                    return bonds
+                }
+
                 if ((_.isEqual(_.cloneDeep(atom).sort(), _.cloneDeep(_atom).sort())) || _atom[0]=== filter_by) {
                     return bonds
                 }
@@ -506,6 +510,11 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         const atom_electrons = atom.slice(5)
         return atoms.reduce(
             (carry, __atom, __atom_index) => {
+
+
+                if (undefined === __atom.slice) {
+                    return carry
+                }
 
                 if (current_atom_index === __atom_index ) {
                     return carry

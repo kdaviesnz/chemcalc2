@@ -317,6 +317,47 @@ const VMolecule = (mmolecule) => {
                 }
             )
         },
+        'formatted': () => {
+
+            return _.cloneDeep(mmolecule[0][1]).map(
+                (atom, index) => {
+                    const c = CAtom(atom, index, _.cloneDeep(mmolecule))
+                    const h = c.indexedBonds("").filter((bond)=>{
+                        return bond.atom[0] === "H"
+                    })
+                    const bonds = c.indexedBonds("").filter((bond)=>{
+                        return bond.atom[0] !== 'H'
+                    }).map(
+                        (bond)=>{
+                            return bond.atom_index
+                        }
+                    )
+                    const double_bonds = c.indexedDoubleBonds("").filter((bond)=>{
+                        return bond.atom[0] !== 'H'
+                    }).map(
+                        (bond)=>{
+                            return bond.atom_index
+                        }
+                    )
+                    const triple_bonds = c.indexedTripleBonds("").filter((bond)=>{
+                        return bond.atom[0] !== 'H'
+                    }).map(
+                        (bond)=>{
+                            return bond.atom_index
+                        }
+                    )
+
+                    const electrons = atom.slice(5)
+                    const free_electrons = c.freeElectrons()
+
+                    return [atom[0]+atom[4], index,  bonds, double_bonds, triple_bonds]
+                }
+            ).filter(
+                (atom) => {
+                    return atom[0] !== "H"
+                }
+            )
+        },
         nextAtomIndex: function(chain, current_index) {
             if (undefined === chain[current_index]) {
                 return false

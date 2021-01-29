@@ -1,162 +1,163 @@
-kevindavies@Kevins-MacBook-Pro chemcalc2 % node testreactionai
+davies@davies-X541NA:~/Development/chemcalc2$ node testreactionai
 [
 [
-'C',
-6,
-4,
-4,
-0,
-'25s718y9kkhltswo',
-'25s718y9kkhltswp',
-'25s718y9kkhltswq',
-'25s718y9kkhltswr',
-'25s718y9kkhltswv',
-0
+'C',                 6,
+4,                   4,
+0,                   'bqdtz0slukkhs2gfk',
+'bqdtz0slukkhs2gfl', 'bqdtz0slukkhs2gfm',
+'bqdtz0slukkhs2gfn', 'bqdtz0slukkhs2gfr',
+'bqdtz0slukkhs2ghb', 'bqdtz0slukkhs2ghc',
+'bqdtz0slukkhs2ghd', 0
 ],
 [
-'C',                6,
-4,                  4,
-0,                  '25s718y9kkhltsws',
-'25s718y9kkhltswt', '25s718y9kkhltswu',
-'25s718y9kkhltswv', '25s718y9kkhltswr',
-'25s718y9kkhltswz', '25s718y9kkhltsy8',
-1
+'C',                 6,
+4,                   4,
+0,                   'bqdtz0slukkhs2gfo',
+'bqdtz0slukkhs2gfp', 'bqdtz0slukkhs2gfq',
+'bqdtz0slukkhs2gfr', 'bqdtz0slukkhs2gfn',
+'bqdtz0slukkhs2gfv', 'bqdtz0slukkhs2gh4',
+'bqdtz0slukkhs2ghe', 1
 ],
 [
-'C',
-6,
-4,
-4,
-0,
-'25s718y9kkhltsww',
-'25s718y9kkhltswx',
-'25s718y9kkhltswy',
-'25s718y9kkhltswz',
-'25s718y9kkhltswu',
-'25s718y9kkhltsx3',
-2
+'C',                 6,
+4,                   4,
+0,                   'bqdtz0slukkhs2gfs',
+'bqdtz0slukkhs2gft', 'bqdtz0slukkhs2gfu',
+'bqdtz0slukkhs2gfv', 'bqdtz0slukkhs2gfq',
+'bqdtz0slukkhs2gfz', 'bqdtz0slukkhs2ghf',
+'bqdtz0slukkhs2ghg', 2
 ],
 [
-'C',                6,
-4,                  4,
-0,                  '25s718y9kkhltsx0',
-'25s718y9kkhltsx1', '25s718y9kkhltsx2',
-'25s718y9kkhltsx3', '25s718y9kkhltswy',
-'25s718y9kkhltsx7', '25s718y9kkhltsx6',
-3
-],
-{ type: 'Ringbond', value: 1, index: 4 },
-[
-'C',                6,
-4,                  4,
-0,                  '25s718y9kkhltsx4',
-'25s718y9kkhltsx5', '25s718y9kkhltsx6',
-'25s718y9kkhltsx7', '25s718y9kkhltsx2',
-'25s718y9kkhltsx1', '25s718y9kkhltsxb',
-5
+'C',                 6,
+4,                   4,
+0,                   'bqdtz0slukkhs2gfw',
+'bqdtz0slukkhs2gfx', 'bqdtz0slukkhs2gfy',
+'bqdtz0slukkhs2gfz', 'bqdtz0slukkhs2gfu',
+'bqdtz0slukkhs2gg3', 'bqdtz0slukkhs2gg2',
+'bqdtz0slukkhs2ggg', 3
 ],
 [
-'C',                6,
-4,                  4,
-0,                  '25s718y9kkhltsx8',
-'25s718y9kkhltsx9', '25s718y9kkhltsxa',
-'25s718y9kkhltsxb', '25s718y9kkhltsx5',
-'25s718y9kkhltsxf', '25s718y9kkhltsxe',
-6
-],
-{ type: 'Ringbond', value: 2, index: 7 },
-[
-'C',                6,
-4,                  4,
-0,                  '25s718y9kkhltsxc',
-'25s718y9kkhltsxd', '25s718y9kkhltsxe',
-'25s718y9kkhltsxf', '25s718y9kkhltsxa',
-'25s718y9kkhltsx9', '25s718y9kkhltsxj',
-'25s718y9kkhltsxt', 8
+'C',                 6,
+4,                   4,
+0,                   'bqdtz0slukkhs2gg0',
+'bqdtz0slukkhs2gg1', 'bqdtz0slukkhs2gg2',
+'bqdtz0slukkhs2gg3', 'bqdtz0slukkhs2gfy',
+'bqdtz0slukkhs2gfx', 'bqdtz0slukkhs2gg7',
+'bqdtz0slukkhs2ghh', 4
 ],
 [
-'C',                6,
-4,                  4,
-0,                  '25s718y9kkhltsxg',
-'25s718y9kkhltsxh', '25s718y9kkhltsxi',
-'25s718y9kkhltsxj', '25s718y9kkhltsxd',
-'25s718y9kkhltsxn', '25s718y9kkhltsxm',
-9
+'C',                 6,
+4,                   4,
+0,                   'bqdtz0slukkhs2gg4',
+'bqdtz0slukkhs2gg5', 'bqdtz0slukkhs2gg6',
+'bqdtz0slukkhs2gg7', 'bqdtz0slukkhs2gg1',
+'bqdtz0slukkhs2ggb', 'bqdtz0slukkhs2gga',
+'bqdtz0slukkhs2ggu', 5
 ],
 [
-'C',
-6,
-4,
-4,
-0,
-'25s718y9kkhltsxk',
-'25s718y9kkhltsxl',
-'25s718y9kkhltsxm',
-'25s718y9kkhltsxn',
-'25s718y9kkhltsxi',
-'25s718y9kkhltsxh',
-10
-],
-{ type: 'Ringbond', value: 1, index: 11 },
-[
-'O',                8,
-6,                  2,
-0,                  '25s718y9kkhltsxo',
-'25s718y9kkhltsxp', '25s718y9kkhltsxq',
-'25s718y9kkhltsxr', '25s718y9kkhltsxs',
-'25s718y9kkhltsxt', '25s718y9kkhltsxc',
-'25s718y9kkhltsxx', 12
+'C',                 6,
+4,                   4,
+0,                   'bqdtz0slukkhs2gg8',
+'bqdtz0slukkhs2gg9', 'bqdtz0slukkhs2gga',
+'bqdtz0slukkhs2ggb', 'bqdtz0slukkhs2gg6',
+'bqdtz0slukkhs2gg5', 'bqdtz0slukkhs2ggf',
+'bqdtz0slukkhs2ggp', 6
 ],
 [
-'C',
-6,
-4,
-4,
-0,
-'25s718y9kkhltsxu',
-'25s718y9kkhltsxv',
-'25s718y9kkhltsxw',
-'25s718y9kkhltsxx',
-'25s718y9kkhltsxs',
-'25s718y9kkhltsy3',
-13
+'C',                 6,
+4,                   4,
+0,                   'bqdtz0slukkhs2ggc',
+'bqdtz0slukkhs2ggd', 'bqdtz0slukkhs2gge',
+'bqdtz0slukkhs2ggf', 'bqdtz0slukkhs2gg9',
+'bqdtz0slukkhs2ggj', 'bqdtz0slukkhs2ggi',
+'bqdtz0slukkhs2ghi', 7
 ],
 [
-'O',                8,
-6,                  2,
-0,                  '25s718y9kkhltsxy',
-'25s718y9kkhltsxz', '25s718y9kkhltsy0',
-'25s718y9kkhltsy1', '25s718y9kkhltsy2',
-'25s718y9kkhltsy3', '25s718y9kkhltsxw',
-14
-],
-{ type: 'Ringbond', value: 2, index: 15 },
-[
-'N',                7,
-5,                  3,
-0,                  '25s718y9kkhltsy4',
-'25s718y9kkhltsy5', '25s718y9kkhltsy6',
-'25s718y9kkhltsy7', '25s718y9kkhltsy8',
-'25s718y9kkhltswt', '25s718y9kkhltsyc',
-16
+'C',                 6,
+4,                   4,
+0,                   'bqdtz0slukkhs2ggg',
+'bqdtz0slukkhs2ggh', 'bqdtz0slukkhs2ggi',
+'bqdtz0slukkhs2ggj', 'bqdtz0slukkhs2gge',
+'bqdtz0slukkhs2ggd', 'bqdtz0slukkhs2gfw',
+'bqdtz0slukkhs2ghj', 8
 ],
 [
-'C',
-6,
-4,
-4,
-0,
-'25s718y9kkhltsy9',
-'25s718y9kkhltsya',
-'25s718y9kkhltsyb',
-'25s718y9kkhltsyc',
-'25s718y9kkhltsy7',
-17
+'C',                 6,
+4,                   4,
+0,                   'bqdtz0slukkhs2ggq',
+'bqdtz0slukkhs2ggr', 'bqdtz0slukkhs2ggs',
+'bqdtz0slukkhs2ggt', 'bqdtz0slukkhs2ggo',
+'bqdtz0slukkhs2ggz', 'bqdtz0slukkhs2ghk',
+'bqdtz0slukkhs2ghl', 9
+],
+[
+'C',                 6,
+4,                   4,
+0,                   'bqdtz0slukkhs2gh5',
+'bqdtz0slukkhs2gh6', 'bqdtz0slukkhs2gh7',
+'bqdtz0slukkhs2gh8', 'bqdtz0slukkhs2gh3',
+'bqdtz0slukkhs2ghn', 'bqdtz0slukkhs2gho',
+'bqdtz0slukkhs2ghp', 10
+],
+[
+'N',                 7,
+5,                   3,
+0,                   'bqdtz0slukkhs2gh0',
+'bqdtz0slukkhs2gh1', 'bqdtz0slukkhs2gh2',
+'bqdtz0slukkhs2gh3', 'bqdtz0slukkhs2gh4',
+'bqdtz0slukkhs2gfp', 'bqdtz0slukkhs2gh8',
+'bqdtz0slukkhs2ghm', 11
+],
+[
+'O',                 8,
+6,                   2,
+0,                   'bqdtz0slukkhs2ggk',
+'bqdtz0slukkhs2ggl', 'bqdtz0slukkhs2ggm',
+'bqdtz0slukkhs2ggn', 'bqdtz0slukkhs2ggo',
+'bqdtz0slukkhs2ggp', 'bqdtz0slukkhs2gg8',
+'bqdtz0slukkhs2ggt', 12
+],
+[
+'O',                 8,
+6,                   2,
+0,                   'bqdtz0slukkhs2ggu',
+'bqdtz0slukkhs2ggv', 'bqdtz0slukkhs2ggw',
+'bqdtz0slukkhs2ggx', 'bqdtz0slukkhs2ggy',
+'bqdtz0slukkhs2ggz', 'bqdtz0slukkhs2ggs',
+'bqdtz0slukkhs2gg4', 13
+],
+[ 'H', 1, 1, 1, '', 'bqdtz0slukkhs2ghb', 'bqdtz0slukkhs2gfk', 14 ],
+[ 'H', 1, 1, 1, '', 'bqdtz0slukkhs2ghc', 'bqdtz0slukkhs2gfl', 15 ],
+[ 'H', 1, 1, 1, '', 'bqdtz0slukkhs2ghd', 'bqdtz0slukkhs2gfm', 16 ],
+[ 'H', 1, 1, 1, '', 'bqdtz0slukkhs2ghe', 'bqdtz0slukkhs2gfo', 17 ],
+[ 'H', 1, 1, 1, '', 'bqdtz0slukkhs2ghf', 'bqdtz0slukkhs2gfs', 18 ],
+[ 'H', 1, 1, 1, '', 'bqdtz0slukkhs2ghg', 'bqdtz0slukkhs2gft', 19 ],
+[ 'H', 1, 1, 1, '', 'bqdtz0slukkhs2ghh', 'bqdtz0slukkhs2gg0', 20 ],
+[ 'H', 1, 1, 1, '', 'bqdtz0slukkhs2ghi', 'bqdtz0slukkhs2ggc', 21 ],
+[ 'H', 1, 1, 1, '', 'bqdtz0slukkhs2ghj', 'bqdtz0slukkhs2ggh', 22 ],
+[ 'H', 1, 1, 1, '', 'bqdtz0slukkhs2ghk', 'bqdtz0slukkhs2ggq', 23 ],
+[ 'H', 1, 1, 1, '', 'bqdtz0slukkhs2ghl', 'bqdtz0slukkhs2ggr', 24 ],
+[ 'H', 1, 1, 1, '', 'bqdtz0slukkhs2ghm', 'bqdtz0slukkhs2gh0', 25 ],
+[ 'H', 1, 1, 1, '', 'bqdtz0slukkhs2ghn', 'bqdtz0slukkhs2gh5', 26 ],
+[ 'H', 1, 1, 1, '', 'bqdtz0slukkhs2gho', 'bqdtz0slukkhs2gh6', 27 ],
+[ 'H', 1, 1, 1, '', 'bqdtz0slukkhs2ghp', 'bqdtz0slukkhs2gh7', 28 ]
 ]
+
+[
+[ 'C0', 0, [ 1 ], [], [] ],
+[ 'C0', 1, [ 0, 2, 11 ], [], [] ],
+[ 'C0', 2, [ 1, 3 ], [], [] ],
+[ 'C0', 3, [ 2, 4, 8 ], [ 4 ], [] ],
+[ 'C0', 4, [ 3, 5 ], [ 3 ], [] ],
+[ 'C0', 5, [ 4, 6, 13 ], [ 6 ], [] ],
+[ 'C0', 6, [ 5, 7, 12 ], [ 5 ], [] ],
+[ 'C0', 7, [ 6, 8 ], [ 8 ], [] ],
+[ 'C0', 8, [ 3, 7 ], [ 7 ], [] ],
+[ 'C0', 9, [ 12, 13 ], [], [] ],
+[ 'C0', 10, [ 11 ], [], [] ],
+[ 'N0', 11, [ 1, 10 ], [], [] ],
+[ 'O0', 12, [ 6, 9 ], [], [] ],
+[ 'O0', 13, [ 5, 9 ], [], [] ]
 ]
-[ [ 4, 11 ], [ 7, 15 ], [ 11, 4 ], [ 15, 7 ] ]
+CC(NC)CC3=CCOCOCC=C3
 
-
-R1i=4
-
-R2i=7 8C 14C R2i=15

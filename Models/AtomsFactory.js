@@ -307,11 +307,12 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
             const matching_ringbond_index = _.findIndex(atoms, (r, j)=>{
                 return r.type === 'Ringbond' && r.value === row.value && j !== ring_bond_index
             })
-            carry.push([ring_bond_index, matching_ringbond_index])
+            carry.push([ring_bond_index -1, matching_ringbond_index -1])
         }
         return carry
     }, [])
 
+    /*
     console.log(atoms.map((a, i)=> {
         if (undefined !== a.push) {
             a.push(i)
@@ -320,93 +321,44 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }
         return a
     }))
-
-    // [ [ 3, 15 ], [ 7, 19 ], [ 13, 5 ], [ 17, 9 ] ]
+*/
+    //
     // 3 = CR1, 15O = R1        7 R2=C, R2 19N
     //
-    console.log(ringbond_atom_indexes)
+    // [ [ 3, 10 ], [ 6, 14 ], [ 10, 3 ], [ 14, 6 ] ]
+   //console.log(ringbond_atom_indexes)
+    // Make the ring bonds
+    ringbond_atom_indexes.map((indexes)=>{
+        if (indexes[0]>indexes[1]) {
+            return indexes
+        }
+        //console.log(indexes)
+        const e = uniqid()
+        const m = [[12345,atoms],1]
+        const parent_atom = CAtom(m[0][1][indexes[0]], indexes[0], m)
+        const child_atom = CAtom(m[0][1][indexes[1]], indexes[1], m)
+        const parent_free_electrons = parent_atom.freeElectrons()
+        const child_free_electrons = child_atom.freeElectrons()
+        //console.log(parent_free_electrons) // [ 'bqdtz0rmfkkhrfctm' ]
+        //console.log(child_free_electrons) // [ 'bqdtz0rmfkkhrfcu6', 'bqdtz0rmfkkhrfcu7' ]
+        atoms[indexes[0]].push(child_free_electrons[0])
+        atoms[indexes[1]].push(parent_free_electrons[0])
+        //console.log(parent_atom.indexedBonds(""))
+        //console.log(child_atom.indexedBonds(""))
+        return indexes
+    })
+
+    //console.log(rindbondsss)
 
 
-
-    console.log(rindbondsss)
-
-    const free_electrons = (atoms, current_atom_index) => {
-        const atom_electrons = atoms[current_atom_index].slice(5)
-        const electron_haystack = atoms.reduce(
-            (carry, __atom, __atom_index) => {
-                if (__atom.type !== undefined || current_atom_index === __atom_index) {
-                    return carry
-                }
-                return [...carry, ...__atom.slice(5)]
-            },
-            []
-        )
-        const free_electrons = atom_electrons.filter(
-            (electron) => {
-                return electron_haystack.indexOf(electron) === -1
-            }
-        )
-        return free_electrons
-    }
-
-    // console.log(ringbondssss)
-
-    (atoms).map(
-        (current, index) => {
-            if (current.type === "Ringbond") {
-                const current_atom_index = index - 1
-                if (ring_bond_atom_index === null) {
-                    ring_bond_atom_index = current_atom_index
-                } else {
-                    // @todo sub rings
-                    // Close the ring
-                    const parent_atom_free_electrons = free_electrons(atoms, ring_bond_atom_index)
-                    parent_atom_free_electrons.should.be.an.Array()
-                    parent_atom_free_electrons.length.should.be.greaterThan(0)
-                    parent_atom_free_electrons[0].should.be.an.String()
-                    const child_atom_free_electrons =  free_electrons(atoms, current_atom_index)
-                    child_atom_free_electrons.should.be.an.Array()
-                    child_atom_free_electrons.length.should.be.greaterThan(0)
-                    child_atom_free_electrons[0].should.be.an.String()
-                    atoms[current_atom_index].push(parent_atom_free_electrons[0])
-                    atoms[ring_bond_atom_index].push(child_atom_free_electrons[0])
-                    ring_bond_atom_index = null
-                }
-            }
-            return current
-        }, []
-    )
 
     const atoms_with_ring_bonds = _.cloneDeep(atoms).filter((atom)=>{
        return atom.type !== "Ringbond"
     })
 
 
-    // [O+]
-   //  // console.log(atoms_with_ring_bonds)
-   //  // console.log(oplus)
-    /*
-    [ [ 'O',
-    8,
-    6,
-    2,
-    0,
-    '4r7b813dfkjjk9rlq',
-    '4r7b813dfkjjk9rlr',
-    '4r7b813dfkjjk9rls',
-    '4r7b813dfkjjk9rlt',
-    '4r7b813dfkjjk9rlu',
-    '4r7b813dfkjjk9rlv' ],
-  { type: 'Charge', value: 1 } ]
-     */
-
     //// console.log(atoms_with_ring_bonds)
     //const mmolecule = [[12345,atoms_with_ring_bonds],1]
-
-   
-
-
-
 
 
 /*
@@ -780,7 +732,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     process.exit()
 */
     //  atomic symbol, proton count, valence count, number of bonds, charge, velectron1, velectron2, velectron3
-    console.log(atoms_electrons_checked)
+   // console.log(atoms_electrons_checked)
 
     // Sort atoms by atom and number of elements so that they return the same canonical smiles
     const atoms_sorted =  _.sortBy(atoms_electrons_checked, (o)=>{
@@ -789,8 +741,13 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         return b.length - a.length;
     })
 
-    console.log(atoms_sorted)
-    console.log(cba)
+/*
+    console.log(atoms_sorted.map((a, i)=>{
+        a.push(i)
+        return a
+    }))
+    console.log(atomssorted)
+*/
     return atoms_sorted
 
 
