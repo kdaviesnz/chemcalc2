@@ -436,12 +436,6 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                         return a.length > b.length  ? -1: 1
                 })
 
-                //console.log('VMolecule')
-                //console.log('chains')
-                ////console.log(chains)
-               // console.log(chainssss)
-                // apple [ [ 1, 2, 6 ], [ 1, 2, 4 ], [ 1, 2, 3 ] ]
-                // [ [ 1, 2, 3 ], [ 1, 2, 4 ], [ 1, 2, 6 ] ]
             }
 
           //  if (undefined === chains2) {
@@ -456,7 +450,7 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                 })
 
                 //console.log('VMolecule')
-                console.log('chains2')
+                console.log('chains2 Molecule.js')
                 console.log(chains2)
                 console.log(chain2ssss)
                 // apple [ [ 1, 2, 6 ], [ 1, 2, 4 ], [ 1, 2, 3 ] ]

@@ -831,18 +831,20 @@ VMolecule
                 }).pop()
                 if (chains[chain_index].indexOf(b) !== -1) {
                     chains[chain_index].push(b)
+                    chains[chain_index].push('R')
+                } else {
+                    // Flag end of branch
+                    // depth 9
+                    //console.log(bvvv)
+                    chains[chain_index].push("|")
                 }
-                // Flag end of branch
-                // depth 9
-                //console.log(bvvv)
-                chains[chain_index].push("|")
             }
 
             console.log("---------------------------------------------")
             console.log('Depth:'+depth)
-            console.log(previous_atom_index)
-            console.log(root_atom_index)
-            console.log(chain_index)
+            console.log("Previous atom index:" + previous_atom_index)
+            console.log("Root atom index:" + root_atom_index)
+            console.log("Chain index:" + chain_index)
             console.log('chains:')
             console.log(chains)
             console.log('bonds:')
@@ -856,9 +858,6 @@ VMolecule
                 chain_index = chain_index + 1
             }
 
-            if (depth ===10) {
-                console.log(chains22)
-            }
 
             // previous_atom_index: null | null | null | null | null | null | null | 15 |
             // root_atom_index: 3 | 5 | 8 | 9 | 11 | 12 | 13 | 15 | 17
@@ -867,7 +866,18 @@ VMolecule
             // bonds: [5] | [8,24] | [9] | [11,17] | [12] | [13,22] | [15,18] | [17] | []
 
             if (bonds.length> 0) {
-                if (bonds.length === 1) {
+
+                _.cloneDeep(bonds).map(
+                    (bond, index) => {
+                        if (undefined ===  chains[chain_index+index]) {
+                            chains[chain_index+index] = []
+                        }
+                        chains[chain_index+index].push(bonds[0].atom_index)
+                        chains = this.chains2( root_atom_index, bonds[0].atom_index, chains, chain_index+index, col, depth + 1)
+                    }
+                )
+
+                if (bonds.length === 10000) {
                     chains[chain_index].push(bonds[0].atom_index)
                     //                                             5,                   [[3]],  0
                     //                                             24,                  [[3,5]],  0
@@ -875,56 +885,55 @@ VMolecule
                     chains = this.chains2( root_atom_index, bonds[0].atom_index, chains, chain_index, col, depth + 1)
                 } else {
 
-                    _.cloneDeep(bonds).map(
-                        (bond, index) => {
+                    //console.log(chains)
+                    //console.log(bbbbb)
+                    if (chain_index === 9999) {
+                        _.cloneDeep(bonds).map(
+                            (bond, index) => {
                                 // depth 2 bonds [8,24] chains [3,5]
                                 // index 0: chains ->  chains[[3,5]] atom index 8
                                 // index 1: chains ->  chains[[3,5]] atom index 24
-                            //console.log(bond.atom_index)
-                            //console.log(abc)
-                            const chains_saved = _.cloneDeep(chains)
-                            if (index > 0) {
-                                if (undefined === chains[chain_index + index]) {
-                                    chains[chain_index + index] = []
-                                }
-                                chains[chain_index + index] = _.cloneDeep(chains[chain_index + index - 1])
-                                // index 1
-                                // chain index 0
-                                // depth 7
-                                console.log(index)
-                                console.log(chain_index)
-                                console.log('root atom:' + root_atom_index)
-                                console.log('atom:' + bond.atom_index)
-                                console.log(depth)
-                                console.log(chains_saved)
-                                console.log(aabbb)
-                                // index 1: chains -> [ chains[[3,5], [3,5]
-                            }
-                            chains[chain_index+index].push(bond.atom_index) // index 0: [[3,5,8]
-                            //console.log(chains)
-                            //console.log(dddd)
-                            // index 0:                                    8,              [[3,8]]           0
-                            chains = this.chains2(null, bond.atom_index, chains, chain_index + index, col, depth + 1)
-                            //chains = this.chains2( chains[chain_index+index][ chains[chain_index+1].length -1], bond.atom_index, chains, chain_index+index, col, depth + 1)
-
-
-                                /*
-                                var chain_index = chains.length + index - 1 < 0 ? chains.length + index : chains.length + index - 1
-                                if (undefined === chains[chain_index]) {
-                                    if (undefined === chains[chain_index - 1]) {
-                                        chain_index = chain_index - 1
+                                //console.log(bond.atom_index)
+                                //console.log(abc)
+                                if (index > 0) {
+                                    if (depth === 222222) {
+                                        console.log('D2 chains:')
+                                        console.log(chains)
+                                        console.log(chain_index)
+                                        console.log(chains[chain_index])
+                                        console.log('Previous atom index:' + previous_atom_index)
+                                        console.log(bonds.map((bond) => {
+                                            return bond.atom_index
+                                        }))
+                                        //const chain2 = chains[chain_index+ index - 1].slice(0,chains[chain_index+ index - 1].indexOf(previous_atom_index))
+                                        const chain2 = chains[chain_index + index - 1].slice(0, previous_atom_index - 1)
+                                        console.log(chain2)
+                                        console.log(aaaa)
                                     }
-                                    chains[chain_index] = _.cloneDeep(chains[chain_index - 1]).slice(0, depth)
+                                    // const chain = chains[chain_index+ index - 1].slice(0,chains[chain_index+ index - 1].indexOf(previous_atom_index)+1)
+                                    const chain = chains[chain_index + index - 1].slice(0, previous_atom_index - 1)
+                                    // index 1
+                                    // chain index 0
+                                    // depth 7
+                                    //console.log("Bond index:" + index) 1
+                                    //console.log(chain_index) 0
+                                    //console.log('root atom:' + root_atom_index) 13
+                                    //console.log('atom:' + bond.atom_index) 18
+                                    //console.log('Depth:' + depth) 7
+                                    chains.push(chain)
+                                    //console.log(chains)
+                                    //console.log(aabbb)
+                                    // index 1: chains -> [ chains[[3,5,8,9,11,12,13,15,17,9,|], [3,5,8,9,11,12,13]
+                                } else {
+                                    // index 1: chains -> [ chains[[3,5,8,9,11,12,13,15,17,9,|], [3,5,8,9,11,12,13]
+                                    chains[chain_index + index].push(bond.atom_index)
                                 }
-                                chains[chain_index].push(bond.atom_index)
-                                col++
-                                if (chains[chain_index].indexOf(bond.atom_index) === chains[chain_index].length - 1) {
-                                    chains = this.chains2(root_atom_index, bond.atom_index, chains, chain_index, col, depth + 1)
-                                }*/
+                                // index 0: [[3,5,8]
+                                chains = this.chains2(null, bond.atom_index, chains, chain_index + index, index, depth + 1)
 
-
-                        }
-                    )
+                            }
+                        )
+                    }
                 }
             }
 
