@@ -792,6 +792,62 @@ VMolecule
         },
 
 
+        "chains2": function(previous_atom_index, root_atom_index, chains, chain_index, col, depth) {
+
+            if (depth > 20) {
+                process.exit()
+            }
+            // previous_atom_index: null | 5
+            // root_atom_index:        3| 8
+            // chains: [] | [[3,5], [3,5]]
+            // chain_index: 0 | 1
+
+            const root_atom_object = CAtom(container_molecule[0][1][root_atom_index], root_atom_index, container_molecule)
+            const bonds = _.cloneDeep(root_atom_object).indexedBonds("").filter(
+                (bond) => {
+                    return bond.atom_index !== previous_atom_index && bond.atom[0] !== "H"
+                }
+            )
+
+            // Add root atom index to current chain
+            chains[chain_index].push(root_atom_index)  // chains[0] = [3] | chains[1] = [3,5,8]
+
+            // chain_index starts at 0
+            if (bonds.length > 0) {
+                chains[chain_index].push(bonds[0].atom_index)  // chains[0] = [3,5]
+                bonds.shift()
+                if (bonds.length > 0) {
+                    _.cloneDeep(bonds).map(
+                        (bond, index) => {
+                            if (undefined === chains[chain_index+1]) {
+                                chains[chain_index+1] = []
+                            }
+                            chains[chain_index+1] = chains[chain_index] // chains[1] = chains[0] = [3,5]
+                            chains = this.chains2( chains[chain_index+1][ chains[chain_index+1].length -1], bond.atom_index, chains, chain_index+1, col, depth + 1)
+
+                            /*
+                            var chain_index = chains.length + index - 1 < 0 ? chains.length + index : chains.length + index - 1
+                            if (undefined === chains[chain_index]) {
+                                if (undefined === chains[chain_index - 1]) {
+                                    chain_index = chain_index - 1
+                                }
+                                chains[chain_index] = _.cloneDeep(chains[chain_index - 1]).slice(0, depth)
+                            }
+                            chains[chain_index].push(bond.atom_index)
+                            col++
+                            if (chains[chain_index].indexOf(bond.atom_index) === chains[chain_index].length - 1) {
+                                chains = this.chains2(root_atom_index, bond.atom_index, chains, chain_index, col, depth + 1)
+                            }*/
+
+                        }
+                    )
+                }
+            }
+
+            return chains
+
+        },
+
         "isWater":() => {
             if  (container_molecule[0][1].length !== 3) {
                 return false
