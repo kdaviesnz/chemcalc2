@@ -791,8 +791,77 @@ VMolecule
 
         },
 
+        "__addChainRecursively": function(bonds, chains, chain_index, depth) {
+
+            console.log('Depth:'+depth)
+            console.log('Bonds:')
+            console.log(bonds.map((b)=>{
+                return b.atom_index
+            }))
+            console.log('Chains:')
+            console.log(chains)
+
+            if (bonds.length === 0) {
+                console.log()
+            }
+
+            if (depth === 9) {
+                console.log(addddd)
+            }
+            bonds.map((bond, i)=>{
+                if (undefined === chains[chain_index+i] ) {
+                    chains[chain_index+i] = chains[chain_index +i-1].slice(0,chains[chain_index +i-1].length-1)
+                }
+                chains[chain_index+i].push(bond.atom_index)
+                const atom_object = CAtom(container_molecule[0][1][bond.atom_index], bond.atom_index, container_molecule)
+                const child_bonds = atom_object.indexedBonds("").filter(
+                    (child_bond) => {
+                        return child_bond.atom_index > bond.atom_index && child_bond.atom_index !== bond.atom_index && child_bond.atom[0] !== "H"
+                    }
+                )
+                console.log('child bonds for atom:' + bond.atom_index)
+                console.log(child_bonds.map((cb)=>{
+                    return cb.atom_index
+                }))
+                if (child_bonds.length === 0) {
+                    chains[chain_index+i].push["|"]
+                    console.log(chains)
+                    console.log('end of chain (depth=' + depth + ")")
+                } else {
+                    this.__addChainRecursively(child_bonds, _.cloneDeep(chains), chain_index + i, depth + 1)
+                }
+
+            })
+
+            return chains
+        },
 
         "chains2": function(previous_atom_index, root_atom_index, chains, chain_index, col, depth) {
+            if (undefined === chains[chain_index]) {
+                chains[chain_index] = []
+            }
+            const root_atom_object = CAtom(container_molecule[0][1][root_atom_index], root_atom_index, container_molecule)
+            chains[chain_index].push(root_atom_index)
+            const bonds = _.cloneDeep(root_atom_object).indexedBonds("").filter(
+                (bond) => {
+                    return bond.atom_index !== previous_atom_index && bond.atom[0] !== "H" &&  bond.atom_index > root_atom_index
+                }
+            )
+            console.log('Bonds:')
+            console.log(bonds.map((bond)=>{
+                return bond.atom_index
+            }))
+            chains = this.__addChainRecursively(bonds, _.cloneDeep(chains), chain_index, 0)
+            console.log("Final chains:")
+            console.log(chains)
+            console.log(addchainrec)
+
+            console.log('Chains:')
+            console.log(chains)
+            console.log(backup)
+        },
+
+        "chains2old": function(previous_atom_index, root_atom_index, chains, chain_index, col, depth) {
 
             if (depth > 200) {
                 process.exit()

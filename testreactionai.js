@@ -3,7 +3,7 @@ const MoleculeFactory = require('./Models/MoleculeFactory')
 const VMolecule = require('./Components/Stateless/Views/Molecule')
 
 const MD = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)NC")
-console.log(VMolecule([MD,1]).formatted())
+//console.log(VMolecule([MD,1]).formatted())
 console.log(VMolecule([MD,1]).canonicalSMILES())
 console.log(mmddd)
 

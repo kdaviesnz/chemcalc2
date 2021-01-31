@@ -422,6 +422,10 @@ const VMolecule = (mmolecule) => {
 
 
             const root_atom_index = this.rootAtomIndex(0)
+            chains = MoleculeAI.chains(null, root_atom_index, [[root_atom_index]], 0, 0, 1)
+            console.log('Views/Molecule.js chains')
+            console.log(chains)
+            console.log(abc)
 
 
             //if (undefined === chains) {
@@ -443,16 +447,19 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                 /* If compare(a,b) is less than zero, the sort() method sorts a to a lower index than b. In other words, a will come first.
 If compare(a,b) is greater than zero, the sort() method sort b to a lower index than a, i.e., b will come first.
 If compare(a,b) returns zero, the sort() method considers a equals b and leaves their positions unchanged.*/
+               // console.log(root_atom_index)
+            //console.log(mnj)
+
+                //chains2 = MoleculeAI.chains2(null, root_atom_index, [], 0, 0, 1).sort((a,b)=> {
+            /*
                 chains2 = MoleculeAI.chains2(null, root_atom_index, [[root_atom_index]], 0, 0, 1).sort((a,b)=> {
                     return  a[a.length-1]  > b[b.length-1] ? -1: 1
                 }).sort((a,b)=>{
                     return a.length > b.length  ? -1: 1
                 })
+                */
 
                 //console.log('VMolecule')
-                console.log('chains2 Molecule.js')
-                console.log(chains2)
-                console.log(chain2ssss)
                 // apple [ [ 1, 2, 6 ], [ 1, 2, 4 ], [ 1, 2, 3 ] ]
                 // [ [ 1, 2, 3 ], [ 1, 2, 4 ], [ 1, 2, 6 ] ]
          //   }
