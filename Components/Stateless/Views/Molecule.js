@@ -434,8 +434,9 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                 })
 
                 //console.log('VMolecule')
-                //console.log('chains')
-                //console.log(chains)
+                console.log('chains')
+                console.log(chains)
+                console.log(chainssss)
                 // apple [ [ 1, 2, 6 ], [ 1, 2, 4 ], [ 1, 2, 3 ] ]
                 // [ [ 1, 2, 3 ], [ 1, 2, 4 ], [ 1, 2, 6 ] ]
             }
