@@ -420,9 +420,12 @@ const VMolecule = (mmolecule) => {
         },
         canonicalSMILES: function(chains) {
 
+
             const root_atom_index = this.rootAtomIndex(0)
 
-            if (undefined === chains) {
+
+            //if (undefined === chains) {
+            if (false) {
                 // Get chains
                 /* If compare(a,b) is less than zero, the sort() method sorts a to a lower index than b. In other words, a will come first.
 If compare(a,b) is greater than zero, the sort() method sort b to a lower index than a, i.e., b will come first.
