@@ -418,7 +418,59 @@ const VMolecule = (mmolecule) => {
             }
 
         },
+
         canonicalSMILES: function(chains) {
+
+
+            const root_atom_index = this.rootAtomIndex(0)
+            chains = MoleculeAI.chains(null, root_atom_index, [[root_atom_index]], 0, 0, 1)
+            //console.log('Views/Molecule.js chains')
+            //console.log(chains)
+            // 3,  5,  8,  *9, 11, 12, 13, 15, 17,  *9
+            //  3,  5,  8,  9, 11, *12, 13, 18, 21, 22, *12
+
+            let ring_bond_number = 1
+            const formatted_with_ringbonds = this.formatted().reduce((carry, row, i, arr)=>{
+                const ring_chain_index = _.findIndex((chains), (chain)=>{
+                    return chain.filter((item)=>{
+                        return item === row[1] * 1
+                    }).length > 1
+                })
+                if (ring_chain_index > -1) {
+                    row[0] = row[0] + ring_bond_number
+                    const end_ring_index = _.findIndex(arr, (r)=>{
+                        return r[1] === chains[ring_chain_index][chains[ring_chain_index].length - 2]
+                    })
+                    arr[end_ring_index][0] = arr[end_ring_index][0] + ring_bond_number
+                    ring_bond_number++
+                    //console.log(arr)
+                    //console.log(aaaa)
+                }
+                carry.push(row)
+                return carry
+            }, [])
+
+            const formatted_with_bonds = formatted_with_ringbonds.map((row)=>{
+                if (row[3].length > 0) {
+                    const double_bonds = row[3].filter((b_index)=>{
+                        return b_index > row[1]
+                    })
+                    if (double_bonds.length > 0) {
+                        row[0] = row[0] + "="
+                    }
+                }
+                return row
+            })
+
+            console.log(formatted_with_bonds)
+            console.log(nnnnoo)
+
+            // console.log(formatted_with_bonds)
+
+
+        },
+
+        canonicalSMILESold: function(chains) {
 
 
             const root_atom_index = this.rootAtomIndex(0)
