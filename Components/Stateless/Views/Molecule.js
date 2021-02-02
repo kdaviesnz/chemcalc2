@@ -462,7 +462,22 @@ const VMolecule = (mmolecule) => {
                 return row
             })
 
-            console.log(formatted_with_bonds)
+            const formatted_with_branches = formatted_with_bonds.reduce((carry, row, i, arr)=>{
+                if (row[2].length > 2) {
+                    row[0] = row[0] + "("
+                    const end_branch_index = _.findIndex(arr, (r)=>{
+                        return r[1] === row[2][row[2].length-1]
+                    })
+                    arr[end_branch_index][0] = ")" + arr[end_branch_index][0]
+                }
+                carry.push(row)
+                return carry
+            }, [])
+
+            console.log(formatted_with_branches)
+            console.log(formatted_with_branches.map((r)=>{
+                return r[0]
+            }).join(''))
             console.log(nnnnoo)
 
             // console.log(formatted_with_bonds)
