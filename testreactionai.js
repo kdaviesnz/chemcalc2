@@ -2,6 +2,11 @@ const ReactionAI =  require('./Components/State/ReactionAI')
 const MoleculeFactory = require('./Models/MoleculeFactory')
 const VMolecule = require('./Components/Stateless/Views/Molecule')
 
+const formate = MoleculeFactory("C(=O)[O-]")
+VMolecule([formate,1]).canonicalSMILES().should.equal("C(=O)[O-]")
+console.log(bbbb)
+
+
 const MD = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)NC")
 //console.log(VMolecule([MD,1]).formatted())
 VMolecule([MD,1]).canonicalSMILES().should.equal("CC(CC1=CC2=C(C=C1)OCO2)NC")
@@ -12,9 +17,6 @@ const methyl_piperonyl_ketone = MoleculeFactory("CC(=O)CC1=CC2=C(C=C1)OCO2")
 VMolecule([methyl_piperonyl_ketone,1]).canonicalSMILES().should.equal("CC(=O)CC1=CC2=C(C=C1)OCO2")
 //console.log(jjjj)
 
-const formate = MoleculeFactory("C(=O)[O-]")
-VMolecule([formate,1]).canonicalSMILES().should.equal("C(=O)[O-]")
-console.log(bbbb)
 
 // Chemicals to synthesise
 const methylamine = MoleculeFactory("CN")

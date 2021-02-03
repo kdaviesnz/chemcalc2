@@ -350,11 +350,11 @@ const VMolecule = (mmolecule) => {
                     const electrons = atom.slice(5)
                     const free_electrons = c.freeElectrons()
 
-                    return [atom[0]+(atom[4]===0?"":atom[4]), index,  bonds, double_bonds, triple_bonds]
+                    return [(atom[4]===0?"":"[") + atom[0]+(atom[4]===0?"":atom[4] + (atom[4]===0?"":"]")), index,  bonds, double_bonds, triple_bonds]
                 }
             ).filter(
                 (atom) => {
-                    return atom[0] !== "H"
+                    return atom[0] !== "H" && atom[0] !== "[H]"
                 }
             )
         },
@@ -480,7 +480,7 @@ const VMolecule = (mmolecule) => {
 
 
             const formatted_with_branches = formatted_with_ringbonds.reduce((carry, row, i, arr)=>{
-                if (row[2].length > 2 && row[row.length-1]!==true) { // todo row[row.length-1 is true if ring bond atom
+                if ((i===0 && row[2].length > 1) || (row[2].length > 2 && row[row.length-1]!==true)) { // todo row[row.length-1 is true if ring bond atom
                     row[0] = row[0] + "("
                     const end_branch_index = _.findIndex(arr, (r)=>{
                         return r[1] === row[2][row[2].length-1]
@@ -490,6 +490,9 @@ const VMolecule = (mmolecule) => {
                 carry.push(row)
                 return carry
             }, [])
+
+            //console.log(formatted_with_branches)
+            //console.log(ppp)
 
 
             const formatted_with_bonds = formatted_with_branches.map((row)=>{
@@ -504,11 +507,14 @@ const VMolecule = (mmolecule) => {
                 return row
             })
 
+            //console.log(formatted_with_bonds)
+            //console.log(iii)
+
             return formatted_with_bonds.map((r)=>{
                 return r[0]
             }).join('')
 
-            // console.log(formatted_with_bonds)
+
 
 
         },
