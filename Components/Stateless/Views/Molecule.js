@@ -431,26 +431,6 @@ const VMolecule = (mmolecule) => {
 
             let ring_bond_number = 1
 
-            // Atoms
-            /*
-            [
-  [ 'C', 3, [ 5 ], [], [] ],
-  [ 'C', 5, [ 3, 8, 24 ], [], [] ],
-  [ 'C', 8, [ 5, 9 ], [], [] ],
-  [ 'C', 9, [ 8, 11, 17 ], [ 11 ], [] ],
-  [ 'C', 11, [ 9, 12 ], [ 9 ], [] ],
-  [ 'C', 12, [ 11, 13, 22 ], [ 13 ], [] ],
-  [ 'C', 13, [ 12, 15, 18 ], [ 12 ], [] ],
-  [ 'C', 15, [ 13, 17 ], [ 17 ], [] ],
-  [ 'C', 17, [ 9, 15 ], [ 15 ], [] ],
-  [ 'O', 18, [ 13, 21 ], [], [] ],
-  [ 'C', 21, [ 18, 22 ], [], [] ],
-  [ 'O', 22, [ 12, 21 ], [], [] ],
-  [ 'N', 24, [ 5, 28 ], [], [] ],
-  [ 'C', 28, [ 24 ], [], [] ]
-]
-
-             */
             /*
             Add ring bond numbers to atoms.
             An atom is a ring bond if it's index number (row[1]) occurs more than once
@@ -479,6 +459,8 @@ const VMolecule = (mmolecule) => {
 
 
 
+
+
             const formatted_with_branches = formatted_with_ringbonds.reduce((carry, row, i, arr)=>{
                 if ((i===0 && row[2].length > 1) || (row[2].length > 2 && row[row.length-1]!==true)) { // todo row[row.length-1 is true if ring bond atom
                     row[0] = row[0] + "("
@@ -493,7 +475,23 @@ const VMolecule = (mmolecule) => {
 
             //console.log(formatted_with_branches)
             //console.log(ppp)
+            // CC(=O)C(C)(C)C
+            // CC(=O)C(CC)C
+            console.log(formatted_with_branches)
 
+            console.log(jjj)
+            // Atoms
+            /*
+[
+  [ 'C', 3, [ 4 ], [], [] ],
+  [ 'C', 4, [ 3, 5, 6 ], [ 5 ], [] ],
+  [ 'O', 5, [ 4 ], [ 4 ], [] ],
+  [ 'C', 6, [ 4, 10, 14, 18 ], [], [] ],
+  [ 'C', 10, [ 6 ], [], [] ],
+  [ 'C', 14, [ 6 ], [], [] ],
+  [ 'C', 18, [ 6 ], [], [] ]
+]
+             */
 
             const formatted_with_bonds = formatted_with_branches.map((row)=>{
                 if (row[3].length > 0) {
