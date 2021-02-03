@@ -430,27 +430,69 @@ const VMolecule = (mmolecule) => {
             //  3,  5,  8,  9, 11, *12, 13, 18, 21, 22, *12
 
             let ring_bond_number = 1
+
+            // Atoms
+            /*
+            [
+  [ 'C', 3, [ 5 ], [], [] ],
+  [ 'C', 5, [ 3, 8, 24 ], [], [] ],
+  [ 'C', 8, [ 5, 9 ], [], [] ],
+  [ 'C', 9, [ 8, 11, 17 ], [ 11 ], [] ],
+  [ 'C', 11, [ 9, 12 ], [ 9 ], [] ],
+  [ 'C', 12, [ 11, 13, 22 ], [ 13 ], [] ],
+  [ 'C', 13, [ 12, 15, 18 ], [ 12 ], [] ],
+  [ 'C', 15, [ 13, 17 ], [ 17 ], [] ],
+  [ 'C', 17, [ 9, 15 ], [ 15 ], [] ],
+  [ 'O', 18, [ 13, 21 ], [], [] ],
+  [ 'C', 21, [ 18, 22 ], [], [] ],
+  [ 'O', 22, [ 12, 21 ], [], [] ],
+  [ 'N', 24, [ 5, 28 ], [], [] ],
+  [ 'C', 28, [ 24 ], [], [] ]
+]
+
+             */
+            /*
+            Add ring bond numbers to atoms.
+            An atom is a ring bond if it's index number (row[1]) occurs more than once
+            in a chain. The end ring index of a ring bond row is the second to last item in the matching chain.
+             */
             const formatted_with_ringbonds = this.formatted().reduce((carry, row, i, arr)=>{
                 const ring_chain_index = _.findIndex((chains), (chain)=>{
                     return chain.filter((item)=>{
                         return item === row[1] * 1
                     }).length > 1
                 })
-                if (ring_chain_index > -1) {
+                if (ring_chain_index > -1 && ring_bond_number < 3) { // todo
                     row[0] = row[0] + ring_bond_number
+                    row.push(true)
                     const end_ring_index = _.findIndex(arr, (r)=>{
                         return r[1] === chains[ring_chain_index][chains[ring_chain_index].length - 2]
                     })
                     arr[end_ring_index][0] = arr[end_ring_index][0] + ring_bond_number
+                    arr[end_ring_index].push(true)
                     ring_bond_number++
-                    //console.log(arr)
-                    //console.log(aaaa)
                 }
                 carry.push(row)
                 return carry
             }, [])
 
-            const formatted_with_bonds = formatted_with_ringbonds.map((row)=>{
+
+
+
+            const formatted_with_branches = formatted_with_ringbonds.reduce((carry, row, i, arr)=>{
+                if (row[2].length > 2 && row[row.length-1]!==true) { // todo row[row.length-1 is true if ring bond atom
+                    row[0] = row[0] + "("
+                    const end_branch_index = _.findIndex(arr, (r)=>{
+                        return r[1] === row[2][row[2].length-1]
+                    })
+                    arr[end_branch_index][0] = ")" + arr[end_branch_index][0]
+                }
+                carry.push(row)
+                return carry
+            }, [])
+
+
+            const formatted_with_bonds = formatted_with_branches.map((row)=>{
                 if (row[3].length > 0) {
                     const double_bonds = row[3].filter((b_index)=>{
                         return b_index > row[1]
@@ -462,23 +504,9 @@ const VMolecule = (mmolecule) => {
                 return row
             })
 
-            const formatted_with_branches = formatted_with_bonds.reduce((carry, row, i, arr)=>{
-                if (row[2].length > 2) {
-                    row[0] = row[0] + "("
-                    const end_branch_index = _.findIndex(arr, (r)=>{
-                        return r[1] === row[2][row[2].length-1]
-                    })
-                    arr[end_branch_index][0] = ")" + arr[end_branch_index][0]
-                }
-                carry.push(row)
-                return carry
-            }, [])
-
-            console.log(formatted_with_branches)
-            console.log(formatted_with_branches.map((r)=>{
+            return formatted_with_bonds.map((r)=>{
                 return r[0]
-            }).join(''))
-            console.log(nnnnoo)
+            }).join('')
 
             // console.log(formatted_with_bonds)
 

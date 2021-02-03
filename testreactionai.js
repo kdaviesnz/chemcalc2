@@ -4,15 +4,17 @@ const VMolecule = require('./Components/Stateless/Views/Molecule')
 
 const MD = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)NC")
 //console.log(VMolecule([MD,1]).formatted())
-console.log(VMolecule([MD,1]).canonicalSMILES())
-console.log(mmddd)
+VMolecule([MD,1]).canonicalSMILES().should.equal("CC(CC1=CC2=C(C=C1)OCO2)NC")
+//console.log(mmddd)
 
 const methyl_piperonyl_ketone = MoleculeFactory("CC(=O)CC1=CC2=C(C=C1)OCO2")
-//console.log(VMolecule([methyl_piperonyl_ketone,1]).canonicalSMILES())
+// CC=(O)CC1=CC2=C(C=C1)OCO2
+VMolecule([methyl_piperonyl_ketone,1]).canonicalSMILES().should.equal("CC(=O)CC1=CC2=C(C=C1)OCO2")
 //console.log(jjjj)
 
 const formate = MoleculeFactory("C(=O)[O-]")
-
+VMolecule([formate,1]).canonicalSMILES().should.equal("C(=O)[O-]")
+console.log(bbbb)
 
 // Chemicals to synthesise
 const methylamine = MoleculeFactory("CN")
