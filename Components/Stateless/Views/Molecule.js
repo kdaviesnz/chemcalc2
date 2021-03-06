@@ -419,7 +419,15 @@ const VMolecule = (mmolecule) => {
 
         },
 
-        canonicalSMILES: function(chains) {
+        canonicalSMILES: function() {
+            console.log(mmolecule)
+            console.log(mmolecule[0][1].filter((atom)=>{
+                return atom[0] !== "H"
+            }))
+            console.log(abc)
+        },
+
+        canonicalSMILESOld2: function(chains) {
 
 
             const root_atom_index = this.rootAtomIndex(0)
