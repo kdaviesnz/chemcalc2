@@ -420,10 +420,108 @@ const VMolecule = (mmolecule) => {
         },
 
         canonicalSMILES: function() {
-            console.log(mmolecule)
-            console.log(mmolecule[0][1].filter((atom)=>{
-                return atom[0] !== "H"
-            }))
+            // const benzene = MoleculeFactory("C1=CC=CC=C1")
+            /*
+[
+[
+  [ 'C', 1, [ 3, 11 ], [ 3 ], [] ],
+  [ 'C', 3, [ 1, 5 ], [ 1 ], [] ],
+  [ 'C', 5, [ 3, 7 ], [ 7 ], [] ],
+  [ 'C', 7, [ 5, 9 ], [ 5 ], [] ],
+  [ 'C', 9, [ 7, 11 ], [ 11 ], [] ],
+  [ 'C', 11, [ 1, 9 ], [ 9 ], [] ]
+]
+
+]
+
+             */
+            const atoms = this.formatted()
+            console.log(atoms)
+            let SMILES = ""
+
+            // Pass 1
+            let next_atom_index = 0
+            let current_atom = null
+            let i = 0
+            while(i < atoms.length) {
+                current_atom = atoms[next_atom_index]
+                // Add atom
+                SMILES = SMILES + atoms[0][0] + atoms[0][1]
+                // Does first_atom have more than 1 branch?
+                if ((i === 0 && current_atom[2].length > 1) || (i > 0 && current_atom[2].length > 2)) {
+                    // Add "(" to SMILES and stop
+                    SMILES = SMILES + "(" // C1(
+                    break
+                } else {
+                    // Get the next atom index
+                    next_atom_index = _.findIndex(atoms, (v,i)=>{
+                        if (i === 0) {
+                            return v[1] === current_atom[2][0]
+                        } else {
+                            return v[1] === current_atom[2][1]
+                        }
+                    })
+                }
+                i++
+            }
+
+            // SMILES = "C1("
+            console.log(SMILES)
+            console.log(nnnn)
+
+            // Pass 2
+            next_atom_index = 0
+            current_atom = null
+            i = 0
+            while(i < atoms.length) {
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+            while(i < atoms.length) {
+                // Get atom
+                const atom = atoms[i]
+                // Add atom to SMILES
+                SMILES = SMILES + atom[0] + atom[1] // SMILES = C2C3
+                // If atom has more than one bond then stop
+                // @todo
+                if (atom[4].length -1 > 1) {
+                    i = 99999
+                    break
+                }
+                i++
+            }
+
+            // SMILES = C1C3 // benzene, pass 1
+
+            // Pass 2
+            i = 0
+            while(i < atoms.length) {
+                // Get atom
+                const atom = atoms[i]
+                // Is atom already in SMILES
+                if (SMILES.indexOf((atom[0] + atom(1)) !== -1)) {
+                    // Is atom sole branch?
+                    if (atom[4].length > 1) {
+
+                    }
+
+                }
+                i++
+            }
+            console.log(SMILES)
+
+
+
             console.log(abc)
         },
 
