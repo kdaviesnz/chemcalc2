@@ -421,61 +421,113 @@ const VMolecule = (mmolecule) => {
 
 
         canonicalSMILES: function() {
-            // const benzene = MoleculeFactory("C1=CC=CC=C1")
+            // const m = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
             /*
 [
-[
-  [ 'C', 1, [ 3, 11 ], [ 3 ], [] ],
-  [ 'C', 3, [ 1, 5 ], [ 1 ], [] ],
-  [ 'C', 5, [ 3, 7 ], [ 7 ], [] ],
-  [ 'C', 7, [ 5, 9 ], [ 5 ], [] ],
-  [ 'C', 9, [ 7, 11 ], [ 11 ], [] ],
-  [ 'C', 11, [ 1, 9 ], [ 9 ], [] ]
-]
+
+  [ 'C', 3, [ 5 ], [], [] ],
+  [ 'C', 5, [ 3, 8, 21 ], [], [] ],
+  [ 'C', 8, [ 5, 9 ], [], [] ],
+  [ 'C', 9, [ 8, 11, 19 ], '=', [] ],
+  [ 'C', 11, [ 9, 13 ], [ 9 ], [] ],
+  [ 'C', 13, [ 11, 15 ], '=', [] ],
+  [ 'C', 15, [ 13, 17 ], [ 13 ], [] ],
+  [ 'C', 17, [ 15, 19 ], '=', [] ],
+  [ 'C', 19, [ 9, 17 ], [ 17 ], [] ],
+  [ 'N', 21, [ 5, 25 ], [], [] ],
+  [ 'C', 25, [ 21 ], [], [] ]
+
 
 ]
 
              */
-            const atoms = this.formatted()
-            console.log(atoms)
-            console.log(aaa)
-            let SMILES = ""
-
-            // Sort by last bond
-            /*
-            [
-  [ 'C', 1, [ 3, 11 ], [ 3 ], [] ],
-  [ 'C', 3, [ 1, 5 ], [ 1 ], [] ],
-  [ 'C', 5, [ 3, 7 ], [ 7 ], [] ],
-  [ 'C', 7, [ 5, 9 ], [ 5 ], [] ],
-  [ 'C', 9, [ 7, 11 ], [ 11 ], [] ],
-  [ 'C', 11, [ 1, 9 ], [ 9 ], [] ]
-]
-             */
-            const atoms_sorted = atoms.reduce((carry, atom)=>{
-                if (carry.length === 0) {
-                    carry.push(atom)
-                    return carry
+            // Get atoms formatted and add bond type
+            const atoms = this.formatted().map((atom, i, arr)=>{
+                if (atom[3].length > 0) {
+                    const bond_number = atom[3][0]
+                    if (bond_number > atom[1]) {
+                        atom[3] = "="
+                    }
                 }
-                // Is atom bonded to previous atom?
-                if (carry[carry.length-1][2][carry[carry.length-1][2].length-1] === atom[1]) {
-                    // Add atom to carry
-                    carry[carry.length-1][2].pop()
-                    atoms[carry.length-1][2].pop()
-                    carry.push(atom)
-                }
-                return carry
-            }, [])
-/*
-carry
-[
- [ 'C', 1, [ 3, 11 ], [ 3 ], [] ],
-]
- */
+                return atom
+            })
 
             console.log(atoms)
-            console.log(atoms_sorted)
-            console.log(ggg)
+            console.log(lll)
+
+            const atoms_with_end_branches = atoms.map((atom,i)=>{
+                // End branch if atom has only 1 bond and is not the first atom
+                if (i === 0) {
+                    return atom
+                }
+                if (atom[2].length ===1) {
+                    atom.push(")")
+                } else {
+                    atom.push("")
+                }
+                return atom
+            })
+
+            const atoms_with_start_branches = atoms_with_end_branches.map((atom,i)=>{
+                // Start of branch if atom has more than 2 bonds and is not the first atom
+                if (i === 0) {
+                    return atom
+                }
+                if (atom[2].length > 2) {
+                    atom.push("(")
+                } else {
+                    atom.push("")
+                }
+                return atom
+            })
+
+
+            const atoms_with_ringbonds = atoms_with_start_branches.map((atom,i)=>{
+                // Ring bond if atom has more than 1 bond, at least one of the bonds
+                // is a previous bond but not a direct previous bond and is not a branch,
+                // and atom is not the first atom
+                if (i === 0) {
+                    return atom
+                }
+                if (atom[2].length > 1) {
+                    const bond_numbers = atom[2]
+                    // Determine ring number
+                    const prev_atom_number = atoms_with_start_branches[i-1][1]
+                    // const next_atom_number = atoms_with_start_branches[i+1][1]
+                    let bond_atom_index = null
+                    const f = bond_numbers.filter((bond_number,j)=>{
+                        if (bond_number < atom[1] && bond_number !== prev_atom_number) {
+                            bond_atom_index = _.findIndex(atoms_with_start_branches, (a, k) =>{
+                                return a[1] === bond_number
+                            })
+                            const b_atom = atoms_with_start_branches[bond_atom_index]
+                            return b_atom[b_atom.length-1] !== "("
+                        }
+                        return false
+                    })
+                    if (f.length > 0) {
+                        atoms[bond_atom_index][1] = '' + atoms[bond_atom_index][1]
+                        atom.push(f[0])
+                    }
+                } else {
+                    atom.push("")
+                }
+                return atom
+            })
+
+            const atoms_numbers_removed = atoms_with_ringbonds.map((a)=>{
+                if (typeof a[1] === "number") { // if ring bond then string
+                    a[1] = ""
+                }
+                return a
+            })
+
+            return (atoms_numbers_removed.map((a,i)=>{
+                return a.filter((item)=>{
+                        return typeof item !== 'object'
+                    }
+                ).join('')
+            }).join(''))
 
         },
 
