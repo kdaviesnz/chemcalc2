@@ -8,7 +8,7 @@ const AtomFactory = require('./Models/AtomFactory')
 const CAtom = require('./Controllers/Atom')
 
 const CommandTest = require('./Components/Stateless/CommandTest')
-const benzene = MoleculeFactory("C1=CC=CC=C1")
+const benzene = MoleculeFactory("C1=C(NC)C=CC=C1")
 console.log(VMolecule([benzene,1]).canonicalSMILES())
 //const methanol = MoleculeFactory("CO")
 //VMolecule([methanol,1]).canonicalSMILES().should.be.equal("CO")

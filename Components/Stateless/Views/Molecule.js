@@ -419,6 +419,7 @@ const VMolecule = (mmolecule) => {
 
         },
 
+
         canonicalSMILES: function() {
             // const benzene = MoleculeFactory("C1=CC=CC=C1")
             /*
@@ -437,8 +438,44 @@ const VMolecule = (mmolecule) => {
              */
             const atoms = this.formatted()
             console.log(atoms)
+            console.log(aaa)
             let SMILES = ""
 
+            // Sort by last bond
+            /*
+            [
+  [ 'C', 1, [ 3, 11 ], [ 3 ], [] ],
+  [ 'C', 3, [ 1, 5 ], [ 1 ], [] ],
+  [ 'C', 5, [ 3, 7 ], [ 7 ], [] ],
+  [ 'C', 7, [ 5, 9 ], [ 5 ], [] ],
+  [ 'C', 9, [ 7, 11 ], [ 11 ], [] ],
+  [ 'C', 11, [ 1, 9 ], [ 9 ], [] ]
+]
+             */
+            const atoms_sorted = atoms.reduce((carry, atom)=>{
+                if (carry.length === 0) {
+                    carry.push(atom)
+                    return carry
+                }
+                // Is atom bonded to previous atom?
+                if (carry[carry.length-1][2][carry[carry.length-1][2].length-1] === atom[1]) {
+                    // Add atom to carry
+                    carry[carry.length-1][2].pop()
+                    atoms[carry.length-1][2].pop()
+                    carry.push(atom)
+                }
+                return carry
+            }, [])
+/*
+carry
+[
+ [ 'C', 1, [ 3, 11 ], [ 3 ], [] ],
+]
+ */
+
+            console.log(atoms)
+            console.log(atoms_sorted)
+            console.log(ggg)
 
         },
 
