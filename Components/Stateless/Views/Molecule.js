@@ -471,25 +471,21 @@ const VMolecule = (mmolecule) => {
                 return atom
             })
 
-            const atoms_with_end_branches = atoms.map((atom,i)=>{
-                // End branch if atom has only 1 bond and is not the first atom
-                if (i === 0) {
-                    return atom
-                }
-                if (atom[2].length ===1) {
-                    atom.push(")")
-                } else {
-                    atom.push("")
-                }
-                return atom
-            })
-
-            const atoms_with_start_branches = atoms_with_end_branches.map((atom,i)=>{
+            const atoms_with_branches = atoms.map((atom,i)=>{
                 // Start of branch if atom has more than 2 bonds and is not the first atom
                 if (i === 0) {
                     return atom
                 }
                 if (atom[2].length > 2) {
+                    // Add ")" to each bond > atom number
+                    atom[2].map((bond_number)=>{
+                        if (bond_number > atom[1]) {
+                            const bond_atom_index = _.findIndex(atoms, (a)=> {
+                                return a[1] === bond_number
+                            })
+                            atoms[bond_atom_index].unshift(")")
+                        }
+                    })
                     atom.push("(")
                 } else {
                     atom.push("")
@@ -497,46 +493,20 @@ const VMolecule = (mmolecule) => {
                 return atom
             })
 
-            console.log(atoms_with_start_branches)
 
-            const atoms_with_ringbonds = atoms_with_start_branches.map((atom,i)=>{
-                // Ring bond if atom has more than 1 bond, at least one of the bonds
-                // is a previous bond but not a direct previous bond and is not a branch,
-                // and atom is not the first atom
+            const atoms_with_ringbonds = atoms_with_branches.map((atom,i)=>{
+                // Ring bond if atom has ")" in front, one of the bond is not previous atom
+                // and < atom number and all bonds < atom number
                 if (i === 0) {
                     return atom
                 }
-                if (atom[2].length > 1) {
-                    const bond_numbers = atom[2]
-                    // Determine ring number
-                    const prev_atom_number = atoms_with_start_branches[i-1][1]
-                    // const next_atom_number = atoms_with_start_branches[i+1][1]
-                    let bond_atom_index = null
-                    const f = bond_numbers.filter((bond_number,j)=>{
-                        if (bond_number < atom[1] && bond_number !== prev_atom_number) {
-                            bond_atom_index = _.findIndex(atoms_with_start_branches, (a, k) =>{
-                                return a[1] === bond_number
-                            })
-                            const b_atom = atoms_with_start_branches[bond_atom_index]
-                            // Get the number of bonds the bond atom has and subtract 1
-                            // if the number of bonds is < 3 then remove "("
-                            const b_atom_bond_numbers = b_atom[2]
-                            if (b_atom_bond_numbers.length - 1 < 3 && b_atom[b_atom.length-1] === "(") {
-                                console.log('bond_numbers')
-                                console.log(bond_numbers)
-                                console.log('b_atom_bond_numbers')
-                                console.log([b_atom[1]])
-                                console.log(Set().intersection(bond_numbers, [b_atom[1]]))
-                                console.log(Set().intersection(b_atom_bond_numbers, [atom[1]]))
-                                b_atom.pop()
-                            }
-                            return b_atom[b_atom.length-1] !== "("
-                        }
-                        return false
-                    })
-                    if (f.length > 0) {
-                        atoms[bond_atom_index][1] = '' + atoms[bond_atom_index][1]
-                        atom.push(f[0])
+                if (atom[0] === ")" && atom[3].length > 1) {
+                   const bonds = atom[3].filter((bond_number)=>{
+                       return bond_number < atom[2] && bond_number !== atoms[i-1][1]  && bond_number !== atoms[i-1][2]
+                   })
+                    if (bonds.length > 0) {
+                        console.log(atom[3])
+                        console.log(bonds)
                     }
                 } else {
                     atom.push("")
@@ -544,6 +514,7 @@ const VMolecule = (mmolecule) => {
                 return atom
             })
 
+            console.log(nnnn)
             console.log(atoms_with_ringbonds)
             console.log(ooo)
 
