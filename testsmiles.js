@@ -9,12 +9,13 @@ const CAtom = require('./Controllers/Atom')
 
 const CommandTest = require('./Components/Stateless/CommandTest')
 
+const benzene = MoleculeFactory("C1=CC=CC=C1")
+VMolecule([benzene,1]).canonicalSMILES().should.be.equal('C1=CC=CC=C1')
+
 const m = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 // CC(CC=(CC=CC=CNC)
 VMolecule([m,1]).canonicalSMILES().should.be.equal("CC(CC9=CC=CC=C9)NC")
 console.log(cccc)
-const benzene = MoleculeFactory("C1=CC=CC=C1")
-VMolecule([benzene,1]).canonicalSMILES().should.be.equal('C1=CC=CC=C1')
 const cyclohexanamine = MoleculeFactory("C1=C(NC)C=CC=C1")
 VMolecule([cyclohexanamine,1]).canonicalSMILES().should.be.equal('C1=C(NC)C=CC=C1')
 const three_Methylamino_phenol = MoleculeFactory("CNC1=CC(=CC=C1)O")
