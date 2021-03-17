@@ -11,7 +11,7 @@ const CommandTest = require('./Components/Stateless/CommandTest')
 
 const m = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 // CC(CC=(CC=CC=CNC)
-console.log(VMolecule([m,1]).canonicalSMILES())
+VMolecule([m,1]).canonicalSMILES().should.be.equal("CC(CC9=CC=CC=C9)NC")
 console.log(cccc)
 const benzene = MoleculeFactory("C1=CC=CC=C1")
 VMolecule([benzene,1]).canonicalSMILES().should.be.equal('C1=CC=CC=C1')

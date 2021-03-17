@@ -499,78 +499,71 @@ const VMolecule = (mmolecule) => {
             })
 
 
-            const atoms_with_ringbonds = atoms_with_branches.map((atom,i,arr,current_arr)=>{
+            const atoms_with_ringbonds = atoms_with_branches.reduce((carry, atom,i,arr)=>{
                 // Ring bond if atom has ")" in front, one of the bond is not previous atom
                 // and < atom number and all bonds < atom number
                 if (i === 0) {
-                    return atom
+                    carry.push(atom)
+                    return carry
                 }
                 if (atom[0] === ")" && atom[3].length > 1) {
                     const next_bonds =  atom[3].filter((bond_number)=>{
+                        // filter
                         return bond_number > atom[2]
                     })
                     if (next_bonds.length > 0) {
                         // Not all the bonds are previous bonds
-                        return atom
+                        carry.push(atom)
+                        return carry
                     }
                     const bonds = atom[3].filter((bond_number)=>{
+                        // filter
                         return bond_number < atom[2] && bond_number !== atoms[i-1][1]  && bond_number !== atoms[i-1][2]
                     })
                     if (bonds.length > 0) {
-                        // "CC(CC1=CC=CC=C1)NC"
-                        const bond_atom_index = _.findIndex(atoms_with_branches, (a)=> {
+                        const bond_atom_index = _.findIndex(carry, (a)=> {
+                            // findIndex
                             return a[2] === bonds[0]
                         })
                         // Remove ")" from next atom
-                        atoms_with_branches[bond_atom_index+1][0] = ""
+                        carry[bond_atom_index+1][0] = ""
+                        // Remove ")" from previous atom
+                        carry[bond_atom_index - 1][0] = ""
                         // Remove "("
-                        atoms_with_branches[bond_atom_index] = atoms_with_branches[bond_atom_index].map((item)=>{
+                        carry[bond_atom_index] = carry[bond_atom_index].map((item)=>{
+                            // Map
                             if (item==="("){
                                 item = ''
                             }
                             return item
                         })
                         // Mark where start of ring is so we don't remove the ring number
-                        this[bond_atom_index][2] = '<' + arr[bond_atom_index][2] + '>'
-                        console.log('arr')
-                        console.log(arr)
+                        carry[bond_atom_index][2] = '<<' + carry[bond_atom_index][2] + '>>'
                         atom[0] = "" // Remove ")" from start of string
                         atom[2] = "" // Remove the atom number
-                        atom.push('{'+bonds[0]+'}') // Add ring number
+                        atom.push('{{'+bonds[0]+'}}') // Add ring number
                     }
                 } else {
                     atom.push("")
                 }
-                return atom
-            })
-
-            console.log(atoms_with_ringbonds)
+                carry.push(atom)
+                return carry
+            }, [])
 
             const atoms_numbers_removed = atoms_with_ringbonds.map((a)=>{
-                if (typeof a[1] === "number") { // if ring bond then string
-                    a[1] = ""
+                if (typeof a[2] === "number") { // if ring bond then string
+                    a[2] = ""
                 }
                 return a
             })
 
-            console.log("CC(CC9=CC=CC=C9)NC")
 
-            console.log((atoms_with_ringbonds.map((a,i)=>{
+            return ((atoms_numbers_removed.map((a,i)=>{
                 return a.filter((item)=>{
                         return typeof item !== 'object'
                     }
                 ).join('')
-            }).join('')))
-
-            console.log(ooo)
-
-
-            return (atoms_numbers_removed.map((a,i)=>{
-                return a.filter((item)=>{
-                        return typeof item !== 'object'
-                    }
-                ).join('')
-            }).join(''))
+            }).join('')).replace(/<</g, "").replace(/>>/g, "").replace(/{{/g, "").replace(/}}/g, ""))
 
         },
 
