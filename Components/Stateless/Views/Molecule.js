@@ -491,22 +491,52 @@ const VMolecule = (mmolecule) => {
                     atom.push("")
                 }
                 return atom
+            }).map((atom)=>{
+                if (atom[0]!==")") {
+                    atom.unshift("")
+                }
+                return atom
             })
 
 
-            const atoms_with_ringbonds = atoms_with_branches.map((atom,i)=>{
+            const atoms_with_ringbonds = atoms_with_branches.map((atom,i,arr,current_arr)=>{
                 // Ring bond if atom has ")" in front, one of the bond is not previous atom
                 // and < atom number and all bonds < atom number
                 if (i === 0) {
                     return atom
                 }
                 if (atom[0] === ")" && atom[3].length > 1) {
-                   const bonds = atom[3].filter((bond_number)=>{
-                       return bond_number < atom[2] && bond_number !== atoms[i-1][1]  && bond_number !== atoms[i-1][2]
-                   })
+                    const next_bonds =  atom[3].filter((bond_number)=>{
+                        return bond_number > atom[2]
+                    })
+                    if (next_bonds.length > 0) {
+                        // Not all the bonds are previous bonds
+                        return atom
+                    }
+                    const bonds = atom[3].filter((bond_number)=>{
+                        return bond_number < atom[2] && bond_number !== atoms[i-1][1]  && bond_number !== atoms[i-1][2]
+                    })
                     if (bonds.length > 0) {
-                        console.log(atom[3])
-                        console.log(bonds)
+                        // "CC(CC1=CC=CC=C1)NC"
+                        const bond_atom_index = _.findIndex(atoms_with_branches, (a)=> {
+                            return a[2] === bonds[0]
+                        })
+                        // Remove ")" from next atom
+                        atoms_with_branches[bond_atom_index+1][0] = ""
+                        // Remove "("
+                        atoms_with_branches[bond_atom_index] = atoms_with_branches[bond_atom_index].map((item)=>{
+                            if (item==="("){
+                                item = ''
+                            }
+                            return item
+                        })
+                        // Mark where start of ring is so we don't remove the ring number
+                        this[bond_atom_index][2] = '<' + arr[bond_atom_index][2] + '>'
+                        console.log('arr')
+                        console.log(arr)
+                        atom[0] = "" // Remove ")" from start of string
+                        atom[2] = "" // Remove the atom number
+                        atom.push('{'+bonds[0]+'}') // Add ring number
                     }
                 } else {
                     atom.push("")
@@ -514,9 +544,7 @@ const VMolecule = (mmolecule) => {
                 return atom
             })
 
-            console.log(nnnn)
             console.log(atoms_with_ringbonds)
-            console.log(ooo)
 
             const atoms_numbers_removed = atoms_with_ringbonds.map((a)=>{
                 if (typeof a[1] === "number") { // if ring bond then string
@@ -524,6 +552,18 @@ const VMolecule = (mmolecule) => {
                 }
                 return a
             })
+
+            console.log("CC(CC9=CC=CC=C9)NC")
+
+            console.log((atoms_with_ringbonds.map((a,i)=>{
+                return a.filter((item)=>{
+                        return typeof item !== 'object'
+                    }
+                ).join('')
+            }).join('')))
+
+            console.log(ooo)
+
 
             return (atoms_numbers_removed.map((a,i)=>{
                 return a.filter((item)=>{
