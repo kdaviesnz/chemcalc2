@@ -422,20 +422,19 @@ const VMolecule = (mmolecule) => {
 
         canonicalSMILES: function() {
             // const m = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
+// const benzene = MoleculeFactory("C1=CC=CC=C1")
             /*
 [
 
-  [ 'C', 3, [ 5 ], [], [] ],
-  [ 'C', 5, [ 3, 8, 21 ], [], [] ],
-  [ 'C', 8, [ 5, 9 ], [], [] ],
-  [ 'C', 9, [ 8, 11, 19 ], '=', [] ],
-  [ 'C', 11, [ 9, 13 ], [ 9 ], [] ],
-  [ 'C', 13, [ 11, 15 ], '=', [] ],
-  [ 'C', 15, [ 13, 17 ], [ 13 ], [] ],
-  [ 'C', 17, [ 15, 19 ], '=', [] ],
-  [ 'C', 19, [ 9, 17 ], [ 17 ], [] ],
-  [ 'N', 21, [ 5, 25 ], [], [] ],
-  [ 'C', 25, [ 21 ], [], [] ]
+Benzene C1=CC=CC=C1
+[
+  [ 'C', 1, [ 3, 11 ], '=', [] ],
+  [ 'C', 3, [ 1, 5 ], [ 1 ], [] ],
+  [ 'C', 5, [ 3, 7 ], '=', [] ],
+  [ 'C', 7, [ 5, 9 ], [ 5 ], [] ],
+  [ 'C', 9, [ 7, 11 ], '=', [] ],
+  [ 'C', 11, [ 1, 9 ], [ 9 ], [] ]
+]
 
 
 ]
@@ -472,11 +471,9 @@ const VMolecule = (mmolecule) => {
             })
 
             const atoms_with_branches = atoms.map((atom,i)=>{
-                // Start of branch if atom has more than 2 bonds and is not the first atom
-                if (i === 0) {
-                    return atom
-                }
-                if (atom[2].length > 2) {
+                // Start of branch if atom is first atom and has more than 1 bond
+                // or if atom is not the first atom has more than 2 bonds
+                if ((i === 0 && atom[2].length > 1) || atom[2].length > 2) {
                     // Add ")" to each bond > atom number
                     atom[2].map((bond_number)=>{
                         if (bond_number > atom[1]) {
@@ -498,6 +495,18 @@ const VMolecule = (mmolecule) => {
                 return atom
             })
 
+            /*
+            Benzene C1=CC=CC=C1
+[
+  [ '', 'C', 1, [ 3, 11 ], '=', [], '(' ],
+  [ ')', 'C', 3, [ 1, 5 ], [ 1 ], [], '' ],
+  [ '', 'C', 5, [ 3, 7 ], '=', [], '' ],
+  [ '', 'C', 7, [ 5, 9 ], [ 5 ], [], '' ],
+  [ '', 'C', 9, [ 7, 11 ], '=', [], '' ],
+  [ ')', 'C', 11, [ 1, 9 ], [ 9 ], [], '' ]
+]
+
+             */
 
             const atoms_with_ringbonds = atoms_with_branches.reduce((carry, atom,i,arr)=>{
                 // Ring bond if atom has ")" in front, one of the bond is not previous atom
@@ -528,7 +537,9 @@ const VMolecule = (mmolecule) => {
                         // Remove ")" from next atom
                         carry[bond_atom_index+1][0] = ""
                         // Remove ")" from previous atom
-                        carry[bond_atom_index - 1][0] = ""
+                        if (bond_atom_index > 0) {
+                            carry[bond_atom_index - 1][0] = ""
+                        }
                         // Remove "("
                         carry[bond_atom_index] = carry[bond_atom_index].map((item)=>{
                             // Map
@@ -550,13 +561,25 @@ const VMolecule = (mmolecule) => {
                 return carry
             }, [])
 
+
+            /*
+            [
+  [ '', 'C', '<<1>>', [ 3, 11 ], '=', [], '' ],
+  [ '', 'C', 3, [ 1, 5 ], [ 1 ], [], '' ],
+  [ '', 'C', 5, [ 3, 7 ], '=', [], '', '' ],
+  [ '', 'C', 7, [ 5, 9 ], [ 5 ], [], '', '' ],
+  [ '', 'C', 9, [ 7, 11 ], '=', [], '', '' ],
+  [ '', 'C', '', [ 1, 9 ], [ 9 ], [], '', '{{1}}' ]
+]
+             */
+
+
             const atoms_numbers_removed = atoms_with_ringbonds.map((a)=>{
                 if (typeof a[2] === "number") { // if ring bond then string
                     a[2] = ""
                 }
                 return a
             })
-
 
             return ((atoms_numbers_removed.map((a,i)=>{
                 return a.filter((item)=>{
