@@ -424,6 +424,19 @@ const VMolecule = (mmolecule) => {
             // const m = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 // const benzene = MoleculeFactory("C1=CC=CC=C1")
             /*
+
+           cyclohexanamine "C1=C(NC)C=CC=C1"
+           [
+  [ 'C', 1, [ 2, 16 ], '=', [] ],
+  [ 'C', 2, [ 1, 4, 10 ], [ 1 ], [] ],
+  [ 'N', 4, [ 2, 8 ], [], [] ],
+  [ 'C', 8, [ 4 ], [], [] ],
+  [ 'C', 10, [ 2, 12 ], '=', [] ],
+  [ 'C', 12, [ 10, 14 ], [ 10 ], [] ],
+  [ 'C', 14, [ 12, 16 ], '=', [] ],
+  [ 'C', 16, [ 1, 14 ], [ 14 ], [] ]
+]
+
 [
 
 Benzene C1=CC=CC=C1
@@ -470,6 +483,21 @@ Benzene C1=CC=CC=C1
                 return atom
             })
 
+            /*
+              /*
+
+           cyclohexanamine "C1=C(NC)C=CC=C1"
+           [
+  [ 'C', 1, [ 2, 16 ], '=', [] ],
+  [ 'C', 2, [ 1, 4, 10 ], [ 1 ], [] ],
+  [ 'N', 4, [ 2, 8 ], [], [] ],
+  [ 'C', 8, [ 4 ], [], [] ],
+  [ 'C', 10, [ 2, 12 ], '=', [] ],
+  [ 'C', 12, [ 10, 14 ], [ 10 ], [] ],
+  [ 'C', 14, [ 12, 16 ], '=', [] ],
+  [ 'C', 16, [ 1, 14 ], [ 14 ], [] ]
+]
+             */
             const atoms_with_branches = atoms.map((atom,i)=>{
                 // Start of branch if atom is first atom and has more than 1 bond
                 // or if atom is not the first atom has more than 2 bonds
@@ -494,6 +522,29 @@ Benzene C1=CC=CC=C1
                 }
                 return atom
             })
+
+            /*
+
+                       cyclohexanamine "C1=C(NC)C=CC=C1"
+                       [
+  [ '', 'C', 1, [ 2, 16 ], '=', [], '(' ],
+  [ ')', 'C', 2, [ 1, 4, 10 ], [ 1 ], [], '' ],
+  [ '', 'N', 4, [ 2, 8 ], [], [], '' ],
+  [
+    '',    'C', 8,
+    [ 4 ], [],  [],
+    ''
+  ],
+  [ '', 'C', 10, [ 2, 12 ], '=', [], '' ],
+  [ '', 'C', 12, [ 10, 14 ], [ 10 ], [], '' ],
+  [ '', 'C', 14, [ 12, 16 ], '=', [], '' ],
+  [ ')', 'C', 16, [ 1, 14 ], [ 14 ], [], '' ]
+]
+
+                         */
+            console.log(atoms_with_branches)
+            console.log(ooo)
+
 
             /*
             Benzene C1=CC=CC=C1
