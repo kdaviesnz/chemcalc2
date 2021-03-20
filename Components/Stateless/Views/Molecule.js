@@ -34,7 +34,7 @@ const VMolecule = (mmolecule) => {
     const __endOfBranch = (current_atom, index, mmolecule_sans_hydrogens) => {
         const catom_current = CAtom(current_atom, index, mmolecule)
         if (catom_current.bondCount() === 1) {
-               return true
+            return true
         }
         return false
     }
@@ -95,17 +95,17 @@ const VMolecule = (mmolecule) => {
             },
             */
             if (processed_atoms_indexes.includes(bond.atom_index)) {
-              //  return
+                //  return
             }
             const current_atom = mmolecule[0][1][bond.atom_index]
             if (!processed_atoms_indexes.includes(bond.atom_index)) {
                 processed_atoms_indexes.push(bond.atom_index)
             } else {
-           //     console.log('WARNING 6: atom already added')
+                //     console.log('WARNING 6: atom already added')
             }
-         //   console.log(5)
+            //   console.log(5)
             branch =  branch + "(" + __getBondType(current_atom, previous_atom) + __SMILES_recursive("", current_atom, null, bond.atom_index, branch_index, processed_atoms_indexes) + ")"
-           // console.log ("ADD branches  branch:" + branch_index + " " + current_atom[0] + " " + current_atom[5] + branch)
+            // console.log ("ADD branches  branch:" + branch_index + " " + current_atom[0] + " " + current_atom[5] + branch)
         })
 
         return branch
@@ -126,7 +126,7 @@ const VMolecule = (mmolecule) => {
 
     const __SMILES_recursive = (carry, current_atom, previous_atom, index, branch_index, processed_atoms_indexes) => {
 
-     //   console.log('Recursion ' + branch_index)
+        //   console.log('Recursion ' + branch_index)
         // Index: 3 Bonds: 3 1
         // Loop atom is the bottom one on the benzene ring
         // AssertionError: expected 'C(=CCC(C=C)(CO))(C)' to be 'C1=CC=C(C=C1)CO'
@@ -147,7 +147,7 @@ const VMolecule = (mmolecule) => {
             if (processed_atoms_indexes.includes(next_atom_index)) {
                 return carry
             }
-           // processed_atoms_indexes.push(next_atom_index)
+            // processed_atoms_indexes.push(next_atom_index)
             return __SMILES_recursive(carry, mmolecule[0][1][next_atom_index], previous_atom, next_atom_index, branch_index, processed_atoms_indexes)
         }
 
@@ -200,12 +200,12 @@ const VMolecule = (mmolecule) => {
                 //carry = carry + __getAtomAsSMILE(catom, current_atom)
                 // C
                 carry = carry + __getAtomAsSMILE(catom, current_atom, processed_atoms_indexes,index)
-               // console.log ("4 CARRY branch:" + branch_index + " " + carry)
+                // console.log ("4 CARRY branch:" + branch_index + " " + carry)
                 next_atom_index = __getIndexOfNextAtom(current_atom, index)
                 if (!processed_atoms_indexes.includes(index)) {
                     processed_atoms_indexes.push(index)
                 } else {
-                  //  console.log('WARNING 2: atom already added')
+                    //  console.log('WARNING 2: atom already added')
                 }
                 //console.log ("4 CARRY branch:" + branch_index + " (carry)" + carry + ' (carry) ' + current_atom[0] + ' ' + current_atom[5])
                 //console.log(2)
@@ -215,7 +215,7 @@ const VMolecule = (mmolecule) => {
 
                 // First atom but has more than one atom attached to it eg C(C)O
                 // Therefore we need start recursively branching
-              //  console.log ("6 CARRY branch:" + branch_index + " " + carry)
+                //  console.log ("6 CARRY branch:" + branch_index + " " + carry)
                 if (!processed_atoms_indexes.includes(index)) {
                     processed_atoms_indexes.push(index)
                     // Branch or ring?
@@ -257,10 +257,10 @@ const VMolecule = (mmolecule) => {
                     processed_atoms_indexes.push(index)
                     //console.log('b2')
                     carry = carry +  __getAtomAsSMILE(catom, current_atom, processed_atoms_indexes, index) + __addBranches(bonds, branch_index+1, processed_atoms_indexes, current_atom)
-                  //  console.log ("1 CARRY branch:" + branch_index + " " + carry + ' ' + current_atom[0] + ' ' + current_atom[5])
+                    //  console.log ("1 CARRY branch:" + branch_index + " " + carry + ' ' + current_atom[0] + ' ' + current_atom[5])
                     return carry
                 } else {
-                //    console.log('WARNING 5: atom already added')
+                    //    console.log('WARNING 5: atom already added')
                     return carry
                 }
 
@@ -268,7 +268,7 @@ const VMolecule = (mmolecule) => {
 
         }
 
-  //      return carry
+        //      return carry
 
 
 
@@ -422,7 +422,6 @@ const VMolecule = (mmolecule) => {
 
         canonicalSMILES: function() {
             // const m = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
-            console.log("C1=C(NC)C=CC=C1")
 // const benzene = MoleculeFactory("C1=CC=CC=C1")
             /*
 
@@ -482,54 +481,43 @@ Benzene C1=CC=CC=C1
                     }
                 }
                 return atom
+            }).map((atom)=>{
+                atom.unshift("")
+                return atom
             })
 
-            /*
-              /*
 
-           cyclohexanamine "C1=C(NC)C=CC=C1"
-           [
-  [ 'C', 1, [ 2, 16 ], '=', [] ],
-  [ 'C', 2, [ 1, 4, 10 ], [ 1 ], [] ],
-  [ 'N', 4, [ 2, 8 ], [], [] ],
-  [ 'C', 8, [ 4 ], [], [] ],
-  [ 'C', 10, [ 2, 12 ], '=', [] ],
-  [ 'C', 12, [ 10, 14 ], [ 10 ], [] ],
-  [ 'C', 14, [ 12, 16 ], '=', [] ],
-  [ 'C', 16, [ 1, 14 ], [ 14 ], [] ]
+            /*
+
+         cyclohexanamine "C1=C(NC)C=CC=C1"
+         [
+[ 'C', 1, [ 2, 16 ], '=', [] ],
+[ 'C', 2, [ 1, 4, 10 ], [ 1 ], [] ],
+[ 'N', 4, [ 2, 8 ], [], [] ],
+[ 'C', 8, [ 4 ], [], [] ],
+[ 'C', 10, [ 2, 12 ], '=', [] ],
+[ 'C', 12, [ 10, 14 ], [ 10 ], [] ],
+[ 'C', 14, [ 12, 16 ], '=', [] ],
+[ 'C', 16, [ 1, 14 ], [ 14 ], [] ]
 ]
-             */
+           */
             const atoms_with_branches = atoms.map((atom,i)=>{
                 // Start of branch if atom is first atom and has more than 1 bond
                 // or if atom is not the first atom has more than 2 bonds
                 //console.log(atom)
                 //console.log((i === 0 && atom[2].length > 1)
-                //    || ("object" === typeof atom[2] && atom[2].length > 2)
                 //    || ("object" === typeof atom[3] && atom[3].length > 2))
-                if ((i === 0 && atom[2].length > 1)
-                    || ("object" === typeof atom[2] && atom[2].length > 2)
-                    || ("object" === typeof atom[3] && atom[3].length > 2)
-                ) {
+                if ((i === 0 && atom[3].length > 1) || atom[3].length > 2) {
                     // Add ")" to each bond > atom number
-                    if ("object"===typeof atom[2]) {
-                        atom[2].map((bond_number) => {
-                            if (bond_number > atom[1]) {
-                                const bond_atom_index = _.findIndex(atoms, (a) => {
-                                    return a[1] === bond_number
-                                })
-                                atoms[bond_atom_index].unshift(")")
-                            }
-                        })
-                    } else if ("object"===typeof atom[3]) {
-                        atom[3].map((bond_number) => {
-                            if (bond_number > atom[1]) {
-                                const bond_atom_index = _.findIndex(atoms, (a) => {
-                                    return a[1] === bond_number
-                                })
-                                atoms[bond_atom_index].unshift(")")
-                            }
-                        })
-                    }
+                    atom[3].map((bond_number) => {
+                        if (bond_number > atom[2]) {
+                            const bond_atom_index = _.findIndex(atoms, (a) => {
+                                return a[2] === bond_number
+                            })
+                            // Add ")"
+                            atoms[bond_atom_index][0] = ")"
+                        }
+                    })
                     atom.push("(")
                 } else {
                     atom.push("")
@@ -537,7 +525,7 @@ Benzene C1=CC=CC=C1
                 return atom
             }).map((atom)=>{
                 if (atom[0]!==")") {
-                    atom.unshift("")
+                    atom[0] = ""
                 }
                 return atom
             })
@@ -561,9 +549,6 @@ Benzene C1=CC=CC=C1
 ]
 
                          */
-            console.log(atoms_with_branches)
-            console.log(ooo)
-
 
             /*
             Benzene C1=CC=CC=C1
@@ -656,7 +641,7 @@ Benzene C1=CC=CC=C1
                         return typeof item !== 'object'
                     }
                 ).join('')
-            }).join('')).replace(/<</g, "").replace(/>>/g, "").replace(/{{/g, "").replace(/}}/g, ""))
+            }).join('')).replace(/<</g, "").replace(/>>/g, "").replace(/{{/g, "").replace(/}}/g, "").replace(/\(\)/g, "("))
 
         },
 
@@ -775,22 +760,22 @@ Benzene C1=CC=CC=C1
 If compare(a,b) is greater than zero, the sort() method sort b to a lower index than a, i.e., b will come first.
 If compare(a,b) returns zero, the sort() method considers a equals b and leaves their positions unchanged.*/
                 chains = MoleculeAI.chains(null, root_atom_index, [[root_atom_index]], 0, 0, 1).sort((a,b)=> {
-                   return  a[a.length-1]  > b[b.length-1] ? -1: 1
+                    return  a[a.length-1]  > b[b.length-1] ? -1: 1
                 }).sort((a,b)=>{
-                        return a.length > b.length  ? -1: 1
+                    return a.length > b.length  ? -1: 1
                 })
 
             }
 
-          //  if (undefined === chains2) {
-                // Get chains2
-                /* If compare(a,b) is less than zero, the sort() method sorts a to a lower index than b. In other words, a will come first.
+            //  if (undefined === chains2) {
+            // Get chains2
+            /* If compare(a,b) is less than zero, the sort() method sorts a to a lower index than b. In other words, a will come first.
 If compare(a,b) is greater than zero, the sort() method sort b to a lower index than a, i.e., b will come first.
 If compare(a,b) returns zero, the sort() method considers a equals b and leaves their positions unchanged.*/
-               // console.log(root_atom_index)
+            // console.log(root_atom_index)
             //console.log(mnj)
 
-                //chains2 = MoleculeAI.chains2(null, root_atom_index, [], 0, 0, 1).sort((a,b)=> {
+            //chains2 = MoleculeAI.chains2(null, root_atom_index, [], 0, 0, 1).sort((a,b)=> {
             /*
                 chains2 = MoleculeAI.chains2(null, root_atom_index, [[root_atom_index]], 0, 0, 1).sort((a,b)=> {
                     return  a[a.length-1]  > b[b.length-1] ? -1: 1
@@ -799,10 +784,10 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                 })
                 */
 
-                //console.log('VMolecule')
-                // apple [ [ 1, 2, 6 ], [ 1, 2, 4 ], [ 1, 2, 3 ] ]
-                // [ [ 1, 2, 3 ], [ 1, 2, 4 ], [ 1, 2, 6 ] ]
-         //   }
+            //console.log('VMolecule')
+            // apple [ [ 1, 2, 6 ], [ 1, 2, 4 ], [ 1, 2, 3 ] ]
+            // [ [ 1, 2, 3 ], [ 1, 2, 4 ], [ 1, 2, 6 ] ]
+            //   }
 
 
 
@@ -824,9 +809,9 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
             // [ 3, 4, 5, 13 ],
             // <1 empty item>,
             // [ 16 ]
-         //   console.log(chains)
-         //   console.log('VMolecule')
-         //   process.exit()
+            //   console.log(chains)
+            //   console.log('VMolecule')
+            //   process.exit()
             /*
 
              */
@@ -840,7 +825,7 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
 
             if (chains.length === 1) {
                 // Replace atom indexes with symbols
-               // console.log(chains[0])
+                // console.log(chains[0])
                 //process.exit()
                 /*
                 Apple [ 1, 2, '(', 3, ')', '(', 4, ')', 6 ]
@@ -861,7 +846,7 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                     (carry, atom_index, i, arr) => {
 
                         if (typeof atom_index !== "number") {
-                           return carry + atom_index
+                            return carry + atom_index
                         }
 
                         let symbol = mmolecule[0][1][atom_index][0]
@@ -918,7 +903,7 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                 // should be OS(=O)(=O)O
                 // OS(O)(=O)O
                 return smiles
-               // return smiles.replace(/\=\(/g, "(=")
+                // return smiles.replace(/\=\(/g, "(=")
 
             } else {
                 // Get atom indexes in the second row which are not in the first row
@@ -930,8 +915,8 @@ If compare(a,b) returns zero, the sort() method considers a equals b and leaves 
                 }
                 // Remove second row as it has been merged into the first row
                 chains.splice(1,1)
-               // console.log("VMolecule --")
-               // console.log(chains)
+                // console.log("VMolecule --")
+                // console.log(chains)
                 return this.canonicalSMILES(chains)
             }
 
