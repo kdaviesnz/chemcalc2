@@ -422,6 +422,7 @@ const VMolecule = (mmolecule) => {
 
         canonicalSMILES: function() {
             // const m = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
+            console.log("C1=C(NC)C=CC=C1")
 // const benzene = MoleculeFactory("C1=CC=CC=C1")
             /*
 
@@ -502,6 +503,7 @@ Benzene C1=CC=CC=C1
                 // Start of branch if atom is first atom and has more than 1 bond
                 // or if atom is not the first atom has more than 2 bonds
                 if ((i === 0 && atom[2].length > 1) || atom[2].length > 2) {
+                    console.log(branch)
                     // Add ")" to each bond > atom number
                     atom[2].map((bond_number)=>{
                         if (bond_number > atom[1]) {
