@@ -502,17 +502,34 @@ Benzene C1=CC=CC=C1
             const atoms_with_branches = atoms.map((atom,i)=>{
                 // Start of branch if atom is first atom and has more than 1 bond
                 // or if atom is not the first atom has more than 2 bonds
-                if ((i === 0 && atom[2].length > 1) || atom[2].length > 2) {
-                    console.log(branch)
+                //console.log(atom)
+                //console.log((i === 0 && atom[2].length > 1)
+                //    || ("object" === typeof atom[2] && atom[2].length > 2)
+                //    || ("object" === typeof atom[3] && atom[3].length > 2))
+                if ((i === 0 && atom[2].length > 1)
+                    || ("object" === typeof atom[2] && atom[2].length > 2)
+                    || ("object" === typeof atom[3] && atom[3].length > 2)
+                ) {
                     // Add ")" to each bond > atom number
-                    atom[2].map((bond_number)=>{
-                        if (bond_number > atom[1]) {
-                            const bond_atom_index = _.findIndex(atoms, (a)=> {
-                                return a[1] === bond_number
-                            })
-                            atoms[bond_atom_index].unshift(")")
-                        }
-                    })
+                    if ("object"===typeof atom[2]) {
+                        atom[2].map((bond_number) => {
+                            if (bond_number > atom[1]) {
+                                const bond_atom_index = _.findIndex(atoms, (a) => {
+                                    return a[1] === bond_number
+                                })
+                                atoms[bond_atom_index].unshift(")")
+                            }
+                        })
+                    } else if ("object"===typeof atom[3]) {
+                        atom[3].map((bond_number) => {
+                            if (bond_number > atom[1]) {
+                                const bond_atom_index = _.findIndex(atoms, (a) => {
+                                    return a[1] === bond_number
+                                })
+                                atoms[bond_atom_index].unshift(")")
+                            }
+                        })
+                    }
                     atom.push("(")
                 } else {
                     atom.push("")
