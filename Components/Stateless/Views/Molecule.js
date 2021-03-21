@@ -425,6 +425,21 @@ const VMolecule = (mmolecule) => {
 // const benzene = MoleculeFactory("C1=CC=CC=C1")
             /*
 
+            three_Methylamino_phenol
+            CNC1=CC(=CC=C1)O
+[
+  [ '', 'C', 3, [ 5 ], [], [] ],
+  [ '', 'N', 5, [ 3, 6 ], [], [] ],
+  [ '', 'C', 6, [ 5, 8, 15 ], '=', [] ],
+  [ '', 'C', 8, [ 6, 9 ], [ 6 ], [] ],
+  [ '', 'C', 9, [ 8, 11, 17 ], '=', [] ],
+  [ '', 'C', 11, [ 9, 13 ], [ 9 ], [] ],
+  [ '', 'C', 13, [ 11, 15 ], '=', [] ],
+  [ '', 'C', 15, [ 6, 13 ], [ 13 ], [] ],
+  [ '', 'O', 17, [ 9 ], [], [] ]
+]
+
+
            cyclohexanamine "C1=C(NC)C=CC=C1"
            [
   [ 'C', 1, [ 2, 16 ], '=', [] ],
@@ -477,7 +492,7 @@ Benzene C1=CC=CC=C1
                 if (atom[3].length > 0) {
                     const bond_number = atom[3][0]
                     if (bond_number > atom[1]) {
-                        atom[3] = "="
+                        atom[4] = "="
                     }
                 }
                 return atom
@@ -489,24 +504,29 @@ Benzene C1=CC=CC=C1
 
             /*
 
-         cyclohexanamine "C1=C(NC)C=CC=C1"
-         [
-[ 'C', 1, [ 2, 16 ], '=', [] ],
-[ 'C', 2, [ 1, 4, 10 ], [ 1 ], [] ],
-[ 'N', 4, [ 2, 8 ], [], [] ],
-[ 'C', 8, [ 4 ], [], [] ],
-[ 'C', 10, [ 2, 12 ], '=', [] ],
-[ 'C', 12, [ 10, 14 ], [ 10 ], [] ],
-[ 'C', 14, [ 12, 16 ], '=', [] ],
-[ 'C', 16, [ 1, 14 ], [ 14 ], [] ]
+         three_Methylamino_phenol
+            CNC1=CC(=CC=C1)O
+[
+  [ '', 'C', 3, [ 5 ], [], [] ],
+  [ '', 'N', 5, [ 3, 6 ], [], [] ],
+  [ '', 'C', 6, [ 5, 8, 15 ], '=', [] ],
+  [ '', 'C', 8, [ 6, 9 ], [ 6 ], [] ],
+
+  [ '', 'C', 9, [ 8, 11, 17 ], '=', [] ],
+
+  [ '', 'C', 11, [ 9, 13 ], [ 9 ], [] ],
+  [ '', 'C', 13, [ 11, 15 ], '=', [] ],
+  [ '', 'C', 15, [ 6, 13 ], [ 13 ], [] ],
+  [ '', 'O', 17, [ 9 ], [], [] ]
 ]
-           */
+CNC1=CC(=C  C =C1)   O
+356  89  11 13 15    17
+CNC6=CC=(C  C=  C6)  O
+356  89  11 13  15   17
+*/
             const atoms_with_branches = atoms.map((atom,i)=>{
                 // Start of branch if atom is first atom and has more than 1 bond
                 // or if atom is not the first atom has more than 2 bonds
-                //console.log(atom)
-                //console.log((i === 0 && atom[2].length > 1)
-                //    || ("object" === typeof atom[3] && atom[3].length > 2))
                 if ((i === 0 && atom[3].length > 1) || atom[3].length > 2) {
                     // Add ")" to each bond > atom number
                     atom[3].map((bond_number) => {
@@ -531,37 +551,28 @@ Benzene C1=CC=CC=C1
             })
 
             /*
-
-                       cyclohexanamine "C1=C(NC)C=CC=C1"
-                       [
-  [ '', 'C', 1, [ 2, 16 ], '=', [], '(' ],
-  [ ')', 'C', 2, [ 1, 4, 10 ], [ 1 ], [], '' ],
-  [ '', 'N', 4, [ 2, 8 ], [], [], '' ],
+[
   [
-    '',    'C', 8,
-    [ 4 ], [],  [],
+    '',    'C', 3,
+    [ 5 ], [],  [],
     ''
   ],
-  [ '', 'C', 10, [ 2, 12 ], '=', [], '' ],
-  [ '', 'C', 12, [ 10, 14 ], [ 10 ], [], '' ],
-  [ '', 'C', 14, [ 12, 16 ], '=', [], '' ],
-  [ ')', 'C', 16, [ 1, 14 ], [ 14 ], [], '' ]
-]
-
-                         */
-
-            /*
-            Benzene C1=CC=CC=C1
-[
-  [ '', 'C', 1, [ 3, 11 ], '=', [], '(' ],
-  [ ')', 'C', 3, [ 1, 5 ], [ 1 ], [], '' ],
-  [ '', 'C', 5, [ 3, 7 ], '=', [], '' ],
-  [ '', 'C', 7, [ 5, 9 ], [ 5 ], [], '' ],
-  [ '', 'C', 9, [ 7, 11 ], '=', [], '' ],
-  [ ')', 'C', 11, [ 1, 9 ], [ 9 ], [], '' ]
+  [ '', 'N', 5, [ 3, 6 ], [], [], '' ],
+  [ '', 'C', 6, [ 5, 8, 15 ], '=', [], '(' ],
+  [ ')', 'C', 8, [ 6, 9 ], [ 6 ], [], '' ],
+  [ '', 'C', 9, [ 8, 11, 17 ], '=', [], '(' ],
+  [ ')', 'C', 11, [ 9, 13 ], [ 9 ], [], '' ],
+  [ '', 'C', 13, [ 11, 15 ], '=', [], '' ],
+  [ ')', 'C', 15, [ 6, 13 ], [ 13 ], [], '' ],
+  [
+    ')',   'O', 17,
+    [ 9 ], [],  [],
+    ''
+  ]
 ]
 
              */
+            let ring_bond_number = 1
 
             const atoms_with_ringbonds = atoms_with_branches.reduce((carry, atom,i,arr)=>{
                 // Ring bond if atom has ")" in front, one of the bond is not previous atom
@@ -604,28 +615,56 @@ Benzene C1=CC=CC=C1
                             return item
                         })
                         // Mark where start of ring is so we don't remove the ring number
-                        carry[bond_atom_index][2] = '<<' + carry[bond_atom_index][2] + '>>'
+                        carry[bond_atom_index][2] = '<<' + ring_bond_number + '>>'
                         atom[0] = "" // Remove ")" from start of string
                         atom[2] = "" // Remove the atom number
-                        atom.push('{{'+bonds[0]+'}}') // Add ring number
+                        atom.push('{{'+ (ring_bond_number) +'}}') // Add ring number
+                        ring_bond_number = ring_bond_number + 1
                     }
                 } else {
                     atom.push("")
                 }
                 carry.push(atom)
                 return carry
-            }, [])
+            }, []).map((atom)=>{
+                if (atom[5]==="=" && atom[6]==="("){
+                    atom[6] = "(" + atom[5]
+                    atom[5] = ""
+                }
+                return atom
+            })
 
+
+            //console.log(atoms_with_ringbonds)
+            //console.log(abc)
 
             /*
-            [
-  [ '', 'C', '<<1>>', [ 3, 11 ], '=', [], '' ],
-  [ '', 'C', 3, [ 1, 5 ], [ 1 ], [], '' ],
-  [ '', 'C', 5, [ 3, 7 ], '=', [], '', '' ],
-  [ '', 'C', 7, [ 5, 9 ], [ 5 ], [], '', '' ],
-  [ '', 'C', 9, [ 7, 11 ], '=', [], '', '' ],
-  [ '', 'C', '', [ 1, 9 ], [ 9 ], [], '', '{{1}}' ]
+
+
+[
+  [
+    '',    'C', 3,
+    [ 5 ], [],  [],
+    ''
+  ],
+  [ '', 'N', 5, [ 3, 6 ], [], [], '', '' ],
+  [ '', 'C', '<<6>>', [ 5, 8, 15 ], [ 8 ], '=', '', '' ],
+  [ '', 'C', 8, [ 6, 9 ], [ 6 ], [], '' ],
+  [ '', 'C', 9, [ 8, 11, 17 ], [ 11 ], '=', '(', '' ],
+  [ ')', 'C', 11, [ 9, 13 ], [ 9 ], [], '' ],
+  [ '', 'C', 13, [ 11, 15 ], [ 15 ], '=', '', '' ],
+  [ '', 'C', '', [ 6, 13 ], [ 13 ], [], '', '{{6}}' ],
+  [
+    ')',   'O', 17,
+    [ 9 ], [],  [],
+    '',    ''
+  ]
 ]
+
+CNC1=CC(=C  C =C1)   O
+
+CNC6=CC=(
+
              */
 
 
@@ -642,6 +681,7 @@ Benzene C1=CC=CC=C1
                     }
                 ).join('')
             }).join('')).replace(/<</g, "").replace(/>>/g, "").replace(/{{/g, "").replace(/}}/g, "").replace(/\(\)/g, "("))
+                .replace(/\(\=\)/,"(=")
 
         },
 
