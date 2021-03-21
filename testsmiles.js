@@ -8,6 +8,12 @@ const AtomFactory = require('./Models/AtomFactory')
 const CAtom = require('./Controllers/Atom')
 
 const CommandTest = require('./Components/Stateless/CommandTest')
+
+const pinacolone = MoleculeFactory("CC(=O)C(C)(C)C")
+// CC(=O)C(C)(C)C
+// CC(=O)C(C)C)C
+// CC(=(O))C((C))(C))C
+VMolecule([pinacolone,1]).canonicalSMILES().should.equal("CC(=O)C(C)(C)C")
 const md = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)NC")
 VMolecule([md,1]).canonicalSMILES().should.be.equal("CC(CC1=CC2=C(C=C1)OCO2)NC")
 
@@ -30,10 +36,6 @@ VMolecule([m,1]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)NC")
 const methanol = MoleculeFactory("CO")
 VMolecule([methanol,1]).canonicalSMILES().should.be.equal("CO")
 
-const pinacolone = MoleculeFactory("CC(=O)C(C)(C)C")
-// CC(=O)C(C)(C)C
-// CC(=O)C(C)C)C
-VMolecule([pinacolone,1]).canonicalSMILES().should.equal("CC(=O)C(C)(C)C")
 
 
 

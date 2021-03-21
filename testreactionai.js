@@ -18,7 +18,6 @@ const me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 const me2Compare = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 VMolecule([me,1]).canonicalSMILES().should.equal("CC(CC1=CC=CC=C1)NC")
 VMolecule([me2Compare,1]).canonicalSMILES().should.equal("CC(CC1=CC=CC=C1)NC")
-console.log(bbbb)
 
 
 // Chemicals to synthesise
@@ -31,9 +30,6 @@ const MA = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)N")
 const MDImine = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)=NC")
 const MeImine2 = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
 const phenylacetone = MoleculeFactory("CC(=O)CC1=CC=CC=C1")
-
-console.log(VMolecule([MD,1]).compressed())
-console.log(abc)
 
 const r = new ReactionAI()
 
