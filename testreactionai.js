@@ -41,6 +41,7 @@ r.synthesise(MD)
 console.log(kkkk)
 
 
+
 // Pinacol Rearrangement
 /*
 ============================================================================
@@ -59,6 +60,7 @@ Synthesising CC(=O)CC9=CC=CC=C9 reagent: Cl
 
  */
 r.synthesise(pinacolone)
+console.log(nnnn)
 r.synthesise(methyl_piperonyl_ketone)
 
 
@@ -69,7 +71,6 @@ r.synthesise(methylamine)
 r.synthesise(me)
 r.synthesise(MA)
 
-console.log(nnnn)
 
 
 
