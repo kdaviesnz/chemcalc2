@@ -30,7 +30,10 @@ VMolecule([m,1]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)NC")
 const methanol = MoleculeFactory("CO")
 VMolecule([methanol,1]).canonicalSMILES().should.be.equal("CO")
 
-
+const pinacolone = MoleculeFactory("CC(=O)C(C)(C)C")
+// CC(=O)C(C)(C)C
+// CC(=O)C(C)C)C
+VMolecule([pinacolone,1]).canonicalSMILES().should.equal("CC(=O)C(C)(C)C")
 
 
 
