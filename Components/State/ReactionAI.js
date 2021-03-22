@@ -189,7 +189,7 @@ class ReactionAI {
                if (this.callback !== undefined && this.callback !== null) {
                    this.callback(null, reaction_steps)
                } else {
-                   VReaction(reaction_steps).render()
+                   VReaction(this.db, reaction_steps).render()
                    this.render('============================================================================')
                }
 

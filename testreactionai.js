@@ -48,7 +48,8 @@ client.connect(err => {
 
     // Leuckart Wallach
     r.synthesise(MA) // reagent = ammonia
-    console.log(bbbb)
+
+    /*
     r.synthesise(MeImine2)
     r.synthesise(MDImine)
     r.synthesise(MD)
@@ -64,6 +65,7 @@ client.connect(err => {
     r.synthesise(me)
     r.synthesise(isopropylamine)
     r.synthesise(phenylacetone)
+    */
 
 
 })

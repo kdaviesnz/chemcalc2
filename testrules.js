@@ -86,7 +86,7 @@ client.connect(err => {
                 "child_reaction_string",
                 (reactions, product, rule) => {
 
-                    VReactions(_.cloneDeep(reactions), product, rule).render()
+                    VReactions(db, _.cloneDeep(reactions), product, rule).render()
 
                     _.cloneDeep(reactions).reverse().map((reaction)=>{
                         console.log( VMolecule(reaction.products[0]).canonicalSMILES().green)

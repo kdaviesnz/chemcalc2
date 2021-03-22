@@ -396,7 +396,7 @@ client.connect(err => {
                     console.log(VMolecule(r.products[1]).canonicalSMILES())
                 })
                 */
-                VReactions(reactions, product, rule).render()
+                VReactions(db, reactions, product, rule).render()
 
 
             },
@@ -425,7 +425,7 @@ client.connect(err => {
                         console.log(VMolecule(r.products[1]).canonicalSMILES())
                     })
                     */
-                    VReactions(reactions, product, rule).render()
+                    VReactions(db, reactions, product, rule).render()
 
 
                 },
