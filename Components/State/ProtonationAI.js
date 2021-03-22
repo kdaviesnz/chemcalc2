@@ -775,7 +775,16 @@ class ProtonationAI {
             proton.push(nitrogen_free_electrons[1])
 
         } else {
-            let proton_atom_index = this.reaction.ReagentAI.findNucleophileIndex()
+            // NH4
+            //let proton_atom_index = this.reaction.ReagentAI.findNucleophileIndex()
+            let proton_atom_index = this.reaction.ReagentAI.findProtonIndex()
+
+            if (this.reaction.container_reagent[0][1][proton_atom_index] === undefined) {
+                console.log("Warning: atom is undefined (proton atom index = " + proton_atom_index + ")")
+                console.log("Reagent:")
+                console.log(this.reaction.container_reagent[0][1])
+            }
+
             const proton_atom = CAtom(this.reaction.container_reagent[0][1][proton_atom_index], proton_atom_index, this.reaction.container_reagent)
             const proton_bonds = proton_atom.indexedBonds("").filter((bond) => {
                 return bond.atom[0] === "H"

@@ -10,7 +10,9 @@ var term = require( 'terminal-kit' ).terminal ;
 
 class ReactionAI {
 
-    constructor() {
+    constructor(db) {
+
+        this.db = db
 
         this.target = null
 
@@ -58,9 +60,6 @@ class ReactionAI {
         // ****
         // Breaks Leuckart Wallach (imine2)
         this.commands_filter.push("protonateCarbocationReversal")
-
-
-
 
         this.command_sets = []
 

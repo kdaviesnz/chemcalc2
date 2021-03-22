@@ -682,6 +682,9 @@ CNC6=CC=(
                 ).join('')
             }).join('')).replace(/<</g, "").replace(/>>/g, "").replace(/{{/g, "").replace(/}}/g, "").replace(/\(\)/g, "("))
                 .replace(/\(\=\)/,"(=").replace(/\)\)/g, ")").replace(/\(\(/g, "(").replace(/\(=\(/g, "(=")
+                .replace(/\[C\]/g, "C")
+                .replace(/\[O\]/g, "O")
+                .replace(/\[N\]/g, "N")
 
         },
 
