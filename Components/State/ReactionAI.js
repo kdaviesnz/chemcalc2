@@ -190,7 +190,6 @@ class ReactionAI {
                    this.callback(null, reaction_steps)
                } else {
                    VReaction(this.db, reaction_steps).render()
-                   this.render('============================================================================')
                }
 
            }

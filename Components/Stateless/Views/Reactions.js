@@ -16,40 +16,36 @@ const VReaction = (db, reactions, container_end_product, rule) => {
         process.exit()
     }
 
-    const addFinishReagent = function(reactions, index, reaction, substrate, product, reagent) {
+    const addFinishReagent = function(lines, reactions, index, reaction, substrate, product, reagent) {
         if (typeof reaction.finish_reagent[0] === "string") {
             const finish_reagent = reaction.finish_reagent[0]
-            renderLine(reactions, index, reaction, substrate, product, reagent, finish_reagent)
+            renderLine(lines, reactions, index, reaction, substrate, product, reagent, finish_reagent)
         } else {
             MoleculeLookup(db, VMolecule(reaction.finish_reagent).canonicalSMILES(), "SMILES", true).then(
                 (finish_reagent_json_obj) => {
                    // console.log("Finish Reagent:")
                    // console.log(finish_reagent_json_obj)
                     const finish_reagent = undefined === finish_reagent_json_obj.IUPACName?finish_reagent_json_obj.search:finish_reagent_json_obj.IUPACName
-                    renderLine(reactions, index, reaction, substrate, product, reagent, finish_reagent)
+                    renderLine(lines, reactions, index, reaction, substrate, product, reagent, finish_reagent)
                 },
                 onErrorLookingUpMoleculeInDB
             )
         }
     }
 
-    const renderLine = function(reactions, index, reaction, substrate, product, reagent, finish_reagent) {
+    const renderLine = function(lines, reactions, index, reaction, substrate, product, reagent, finish_reagent) {
 
-        console.log("[" + reaction.command.bold.red + "] "
+        lines.push("[" + reaction.command.bold.red + "] "
             + substrate.green
             +  ' + ' + reagent.yellow
             + " -> " + product.bold +  ' + ' + finish_reagent)
-        //console.log("reactions:")
-        //console.log(reactions)
-        //console.log(aabb)
-        renderReactionsRecursive(reactions, index + 1)
-        // callback(Err, reaction)
+        renderReactionsRecursive(lines, reactions, index + 1)
+
     }
 
-    const renderReactionsRecursive = function(reactions, index) {
+    const renderReactionsRecursive = function(lines, reactions, index) {
 
         const reaction = reactions[index]
-
 
         if (reaction !== undefined) {
 
@@ -78,17 +74,17 @@ const VReaction = (db, reactions, container_end_product, rule) => {
 
                             if (reaction.reagent === undefined || reaction.reagent === null) {
                                 const reagent = "no reagent"
-                                addFinishReagent(reactions, index, reaction, substrate, product, reagent)
+                                addFinishReagent(lines, reactions, index, reaction, substrate, product, reagent)
                             } else if(typeof reaction.reagent[0] === "string") {
                                 const reagent = reaction.reagent[0]
-                                addFinishReagent(reactions, index, reaction, substrate, product, reagent)
+                                addFinishReagent(lines, reactions, index, reaction, substrate, product, reagent)
                             } else {
                                 MoleculeLookup(db, VMolecule(reaction.reagent).canonicalSMILES(), "SMILES", true).then(
                                     (reagent_json_obj) => {
                                       //  console.log("Reagent:")
                                       //  console.log(reagent_json_obj)
                                         const reagent = undefined === reagent_json_obj.IUPACName?reagent_json_obj.search:reagent_json_obj.IUPACName
-                                        addFinishReagent(reactions, index, reaction, substrate, product, reagent)
+                                        addFinishReagent(lines, reactions, index, reaction, substrate, product, reagent)
                                     },
                                     // "rejects" callback
                                     onErrorLookingUpMoleculeInDB
@@ -108,7 +104,12 @@ const VReaction = (db, reactions, container_end_product, rule) => {
 
         } else {
 
-            process.exit()
+            console.log("============================================================")
+            lines.map((line)=>{
+                console.log(line)
+            })
+            console.log("============================================================")
+
         }
     }
 
@@ -118,7 +119,7 @@ const VReaction = (db, reactions, container_end_product, rule) => {
         "render": () => {
 
             //console.log(reactions)
-            renderReactionsRecursive(reactions, 0)
+            renderReactionsRecursive([], reactions, 0)
         }
 
     }

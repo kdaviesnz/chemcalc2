@@ -47,7 +47,7 @@ client.connect(err => {
     const r = new ReactionAI(db)
 
     // Leuckart Wallach
-    r.synthesise(MA) // reagent = ammonia
+    r.synthesise(MD) // reagent = ammonia
 
     /*
     r.synthesise(MeImine2)
