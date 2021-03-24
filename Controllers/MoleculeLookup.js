@@ -34,15 +34,15 @@ const MoleculeLookup =(db, search, search_type, add_hydrogens, debug_statement, 
                                     molecule_from_pubchem['json'] = MoleculeFactory(search)
                                     molecule_from_pubchem['search'] = search
                                     db.collection("molecules").insertOne(molecule_from_pubchem, (err, result) => {
-                                        console.log("Inserted molecule")
-                                        console.log(molecule_from_pubchem)
+                                        //console.log("Inserted molecule")
+                                        //console.log(molecule_from_pubchem)
                                         //process.exit()
                                         if (err) {
                                             console.log(err)
                                             process.exit()
                                         } else {
                                             //onMoleculeAddedToDBCallback(search)
-                                            console.log('PKL molecule added to db')
+                                           // console.log('PKL molecule added to db')
                                         }
                                         resolve(molecule_from_pubchem)
                                     })

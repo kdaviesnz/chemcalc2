@@ -1,5 +1,5 @@
 const Reaction = require("../State/Reaction")
-
+const MoleculeFactory = require('../../Models/MoleculeFactory')
 const VMolecule = require('../Stateless/Views/Molecule')
 const ReactionsList = require('../Stateless/ReactionsList')
 const MReaction = require('../Stateless/Reaction')
@@ -120,8 +120,15 @@ class ReactionAI {
 
     synthesise(target, reagent, callback) {
 
-
-
+        const water = MoleculeFactory("O")
+        const formate = MoleculeFactory("C(=O)[O-]")
+        const methylamine = MoleculeFactory("CN")
+        const methylamide = MoleculeFactory("C[N-]")
+        const deprotonated_methylamide = MoleculeFactory("C[NH0]")
+        const hydrochloric_acid = MoleculeFactory("Cl")
+        const ammonia = MoleculeFactory("N")
+        const formaldehyde  = MoleculeFactory("C=O")
+        const reagents = [water, methylamine, formaldehyde, ammonia]
 
         //const reagents = reagent === null || reagent === undefined? [formate, methylamide, methylamine, water, deprotonated_methylamide,hydrochloric_acid, ammonia] : [reagent]
         //const reagents = [hydrochloric_acid]
@@ -131,62 +138,47 @@ class ReactionAI {
         //const reagents = ["Brønsted–Lowry acid"] // Brønsted–Lowry conjugate base, Brønsted–Lowry acid, formaldehyde
         //const reagents = [ammonia] // MDA
 
-        (async () => {
-            this.callback = callback
-            this.target = _.cloneDeep(target)
-            let find_target_response =   MoleculeLookup(this.db, VMolecule([target,1]).canonicalSMILES())
-            return find_target_response
+        this.callback = callback
+        this.target = _.cloneDeep(target)
+        const moleculeAI = require("../Stateless/MoleculeAI")(_.cloneDeep([_.cloneDeep(target),1]))
+        moleculeAI.validateMolecule()
+        const commands = []
 
-        })().then((target_json_obj)=>{
+        MoleculeLookup(this.db, VMolecule([target,1]).canonicalSMILES()).then(
+            (target_json_obj) => {
+                const target_name = undefined === target_json_obj.IUPACName?target_json_obj.search:target_json_obj.IUPACName
+                reagents.map((reagent)=>{
+                    if (typeof reagent === "string" || VMolecule([target,1]).canonicalSMILES() !== VMolecule([reagent,1]).canonicalSMILES()) {
 
-            const target_name = undefined === target_json_obj.IUPACName?target_json_obj.search:target_json_obj.IUPACName
-            const MoleculeFactory = require('../../Models/MoleculeFactory')
-            const water = MoleculeFactory("O")
-            const formate = MoleculeFactory("C(=O)[O-]")
-            const methylamine = MoleculeFactory("CN")
-            const methylamide = MoleculeFactory("C[N-]")
-            const deprotonated_methylamide = MoleculeFactory("C[NH0]")
-            const hydrochloric_acid = MoleculeFactory("Cl")
-            const ammonia = MoleculeFactory("N")
-            const formaldehyde  = MoleculeFactory("C=O")
-            const reagents = [formaldehyde, ammonia]
+                        const reagentAI = typeof reagent === "string"?null:require("../Stateless/MoleculeAI")(_.cloneDeep([_.cloneDeep(reagent),1]))
+                        if (reagentAI !== null) {
+                            reagentAI.validateMolecule()
+                        }
 
-            reagents.map((reagent)=>{
-                if (typeof reagent === "string" || VMolecule([target,1]).canonicalSMILES() !== VMolecule([reagent,1]).canonicalSMILES()) {
+                        MoleculeLookup(this.db, typeof reagent === "string"?reagent:VMolecule([reagent, 1]).canonicalSMILES()).then(
+                            (reagent_json_obj) => {
+                                const reagent_name = undefined === reagent_json_obj.IUPACName?reagent_json_obj.search:reagent_json_obj.IUPACName
+                                this.render("Synthesising " + target_name + " using reagent: " + reagent_name)
+                                this._synthesise([_.cloneDeep(target), 1], [_.cloneDeep(reagent), 1], _.cloneDeep(commands), 'synthesise', 0, moleculeAI, reagentAI)
+                            },
+                            (Err) => {
+                                console.log(Err)
+                                console.log("Could not get reagent from db")
+                            }
+                        )
 
-                    const reagentAI = typeof reagent === "string"?null:require("../Stateless/MoleculeAI")(_.cloneDeep([_.cloneDeep(reagent),1]))
-                    if (reagentAI !== null) {
-                        reagentAI.validateMolecule()
                     }
+                })
 
-                    (async () => {
-                        let find_reagent_response =  MoleculeLookup(this.db, typeof reagent === "string"?reagent:VMolecule([reagent, 1]).canonicalSMILES())
-                        return find_reagent_response
-                    })().then((reagent_json_obj)=>{
-                        const moleculeAI = require("../Stateless/MoleculeAI")(_.cloneDeep([_.cloneDeep(target),1]))
+            },
+            (Err) => {
+                console.log(Err)
+                console.log("Could not get target from db")
+            }
 
-                        const reagent_name = undefined === reagent_json_obj.IUPACName?reagent_json_obj.search:reagent_json_obj.IUPACName
-                        this.render("Synthesising " + target_name + " using reagent: " + reagent_name)
-
-                        moleculeAI.validateMolecule()
-                        const commands = []
-                        this._synthesise([_.cloneDeep(target), 1], [_.cloneDeep(reagent), 1], _.cloneDeep(commands), 'synthesise', 0, moleculeAI, reagentAI)
-
-                    }).catch((Err)=>{
-                        console.log(Err)
-                        console.log("Reagent not found")
-                       // process.exit()
-                    })
-
-                }
-            })
+        )
 
 
-        }).catch((Err)=>{
-            console.log(Err)
-            console.log("Target not found")
-           // process.exit()
-        })
 
     }
 
@@ -221,7 +213,7 @@ class ReactionAI {
                if (this.callback !== undefined && this.callback !== null) {
                    this.callback(null, reaction_steps)
                } else {
-                   VReaction(reaction_steps).render()
+                   VReaction(reaction_steps).render(this.db)
                }
 
            }

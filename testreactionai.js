@@ -36,8 +36,9 @@ require("dotenv").config()
 
 const MongoClient = require('mongodb').MongoClient
 const assert = require('assert');
-const uri = "mongodb+srv://" + process.env.MONGODBUSER + ":" + process.env.MONGODBPASSWORD + "@cluster0.awqh6.mongodb.net/chemistry?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+//const uri = "mongodb+srv://" + process.env.MONGODBUSER + ":" + process.env.MONGODBPASSWORD + "@cluster0.awqh6.mongodb.net/chemistry?retryWrites=true&w=majority";
+const uri = "mongodb+srv://" + process.env.MONGODBUSER + ":" + process.env.MONGODBPASSWORD + "@cluster0.awqh6.mongodb.net/chemistry?keepAlive=true&poolSize=300&autoReconnect=true&socketTimeoutMS=990000&connectTimeoutMS=99000&retryWrites=true&w=majority";
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: false });
 
 process.on('unhandledRejection', function(err) {
     console.log(err);
@@ -51,8 +52,7 @@ client.connect(err => {
 
     const r = new ReactionAI(db)
 
-    // Leuckart Wallach
-    r.synthesise(MD, null) // reagent = ammonia
+    r.synthesise(phenylacetone, null)
 
     /*
     r.synthesise(MeImine2)
@@ -75,8 +75,6 @@ client.connect(err => {
 
 })
 
-console.log("Closing connection")
-client.close()
 
 
 

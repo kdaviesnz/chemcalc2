@@ -7,17 +7,6 @@ const PubChemLookup = require('../../../Controllers/PubChemLookup')
 const MoleculeFactory = require('../../../Models/MoleculeFactory')
 const pubchem = require("pubchem-access").domain("compound");
 
-// Install using npm install dotenv
-require("dotenv").config()
-
-const MongoClient = require('mongodb').MongoClient
-const assert = require('assert');
-const uri = "mongodb+srv://" + process.env.MONGODBUSER + ":" + process.env.MONGODBPASSWORD + "@cluster0.awqh6.mongodb.net/chemistry?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-
-
-
-
 
 const VReaction = (reactions, container_end_product, rule) => {
 
@@ -33,19 +22,6 @@ const VReaction = (reactions, container_end_product, rule) => {
             renderLine(db, lines, reactions, index, reaction, substrate, product, reagent, finish_reagent)
         } else {
 
-
-            (async () => {
-                // await
-                let response =  MoleculeLookup(db, VMolecule(reaction.finish_reagent).canonicalSMILES(), "SMILES", true)
-                return response
-            })().then((finish_reagent_json_obj)=>{
-                const finish_reagent = undefined === finish_reagent_json_obj.IUPACName?finish_reagent_json_obj.search:finish_reagent_json_obj.IUPACName
-                renderLine(db, lines, reactions, index, reaction, substrate, product, reagent, finish_reagent)
-            }).catch((Err)=>{
-                onErrorLookingUpMoleculeInDB(Err)
-            })
-
-            /*
             MoleculeLookup(db, VMolecule(reaction.finish_reagent).canonicalSMILES(), "SMILES", true).then(
                 (finish_reagent_json_obj) => {
                     const finish_reagent = undefined === finish_reagent_json_obj.IUPACName?finish_reagent_json_obj.search:finish_reagent_json_obj.IUPACName
@@ -53,8 +29,6 @@ const VReaction = (reactions, container_end_product, rule) => {
                 },
                 onErrorLookingUpMoleculeInDB
             )
-            */
-
         }
     }
 
@@ -141,15 +115,8 @@ const VReaction = (reactions, container_end_product, rule) => {
     return {
 
 
-        "render": () => {
-
-            client.connect(err => {
-
-                assert.equal(err, null);
-                const db = client.db("chemistry")
-                renderReactionsRecursive(db, [], reactions, 0)
-
-            })
+        "render": (db) => {
+            renderReactionsRecursive(db, [], reactions, 0)
         }
 
     }
