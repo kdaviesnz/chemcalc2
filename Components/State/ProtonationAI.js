@@ -779,6 +779,10 @@ class ProtonationAI {
             //let proton_atom_index = this.reaction.ReagentAI.findNucleophileIndex()
             let proton_atom_index = this.reaction.ReagentAI.findProtonIndex()
 
+            if (proton_atom_index ===-1) {
+                return false
+            }
+
             if (this.reaction.container_reagent[0][1][proton_atom_index] === undefined) {
                 console.log("Warning: atom is undefined (proton atom index = " + proton_atom_index + ")")
                 console.log("Reagent:")

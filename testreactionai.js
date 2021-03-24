@@ -37,7 +37,7 @@ require("dotenv").config()
 const MongoClient = require('mongodb').MongoClient
 const assert = require('assert');
 //const uri = "mongodb+srv://" + process.env.MONGODBUSER + ":" + process.env.MONGODBPASSWORD + "@cluster0.awqh6.mongodb.net/chemistry?retryWrites=true&w=majority";
-const uri = "mongodb+srv://" + process.env.MONGODBUSER + ":" + process.env.MONGODBPASSWORD + "@cluster0.awqh6.mongodb.net/chemistry?keepAlive=true&poolSize=300&autoReconnect=true&socketTimeoutMS=990000&connectTimeoutMS=99000&retryWrites=true&w=majority";
+const uri = "mongodb+srv://" + process.env.MONGODBUSER + ":" + process.env.MONGODBPASSWORD + "@cluster0.awqh6.mongodb.net/chemistry?keepAlive=true&poolSize=300&autoReconnect=true&socketTimeoutMS=1990000&connectTimeoutMS=1990000&retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: false });
 
 process.on('unhandledRejection', function(err) {
@@ -52,7 +52,23 @@ client.connect(err => {
 
     const r = new ReactionAI(db)
 
-    r.synthesise(phenylacetone, null)
+    r.synthesise(MD, null)
+
+    /*
+    r.synthesise(formate, null)
+    r.synthesise(me2Compare, null)
+    r.synthesise(MeImine2, null)
+    r.synthesise(MDImine, null)
+    r.synthesise(MA, null)
+    r.synthesise(isopropylamine, null)
+*/
+  //  r.synthesise(pinacolone, null)
+  //  r.synthesise(pm, null)
+  //  r.synthesise(methylamine, null)
+  //  r.synthesise(methyl_piperonyl_ketone, null)
+    //r.synthesise(me, null)
+    //r.synthesise(MD, null)
+    //r.synthesise(phenylacetone, null)
 
     /*
     r.synthesise(MeImine2)
