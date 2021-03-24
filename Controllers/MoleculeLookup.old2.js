@@ -9,9 +9,7 @@ const pkl = PubChemLookup((err)=>{
 })
 
 
-
-
-const MoleculeLookup =(db, search, search_type, add_hydrogens, debug_statement, Err) =>
+const MoleculeLookup = (db, search, search_type, add_hydrogens, debug_statement, Err) =>
     new Promise(
         (resolve, reject) => {
             const search_no_quotes = search.replace(/['"]+/g, '').trim()

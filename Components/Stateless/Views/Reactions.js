@@ -7,8 +7,19 @@ const PubChemLookup = require('../../../Controllers/PubChemLookup')
 const MoleculeFactory = require('../../../Models/MoleculeFactory')
 const pubchem = require("pubchem-access").domain("compound");
 
+// Install using npm install dotenv
+require("dotenv").config()
 
-const VReaction = (db, reactions, container_end_product, rule) => {
+const MongoClient = require('mongodb').MongoClient
+const assert = require('assert');
+const uri = "mongodb+srv://" + process.env.MONGODBUSER + ":" + process.env.MONGODBPASSWORD + "@cluster0.awqh6.mongodb.net/chemistry?retryWrites=true&w=majority";
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+
+
+
+
+const VReaction = (reactions, container_end_product, rule) => {
 
 
     const onErrorLookingUpMoleculeInDB = (Err) => {
@@ -16,34 +27,48 @@ const VReaction = (db, reactions, container_end_product, rule) => {
         process.exit()
     }
 
-    const addFinishReagent = function(lines, reactions, index, reaction, substrate, product, reagent) {
+    const addFinishReagent = function(db, lines, reactions, index, reaction, substrate, product, reagent) {
         if (typeof reaction.finish_reagent[0] === "string") {
             const finish_reagent = reaction.finish_reagent[0]
-            renderLine(lines, reactions, index, reaction, substrate, product, reagent, finish_reagent)
+            renderLine(db, lines, reactions, index, reaction, substrate, product, reagent, finish_reagent)
         } else {
+
+
+            (async () => {
+                // await
+                let response =  MoleculeLookup(db, VMolecule(reaction.finish_reagent).canonicalSMILES(), "SMILES", true)
+                return response
+            })().then((finish_reagent_json_obj)=>{
+                const finish_reagent = undefined === finish_reagent_json_obj.IUPACName?finish_reagent_json_obj.search:finish_reagent_json_obj.IUPACName
+                renderLine(db, lines, reactions, index, reaction, substrate, product, reagent, finish_reagent)
+            }).catch((Err)=>{
+                onErrorLookingUpMoleculeInDB(Err)
+            })
+
+            /*
             MoleculeLookup(db, VMolecule(reaction.finish_reagent).canonicalSMILES(), "SMILES", true).then(
                 (finish_reagent_json_obj) => {
-                   // console.log("Finish Reagent:")
-                   // console.log(finish_reagent_json_obj)
                     const finish_reagent = undefined === finish_reagent_json_obj.IUPACName?finish_reagent_json_obj.search:finish_reagent_json_obj.IUPACName
-                    renderLine(lines, reactions, index, reaction, substrate, product, reagent, finish_reagent)
+                    renderLine(db, lines, reactions, index, reaction, substrate, product, reagent, finish_reagent)
                 },
                 onErrorLookingUpMoleculeInDB
             )
+            */
+
         }
     }
 
-    const renderLine = function(lines, reactions, index, reaction, substrate, product, reagent, finish_reagent) {
+    const renderLine = function(db, lines, reactions, index, reaction, substrate, product, reagent, finish_reagent) {
 
         lines.push("[" + reaction.command.bold.red + "] "
             + substrate.green
             +  ' + ' + reagent.yellow
             + " -> " + product.bold +  ' + ' + finish_reagent)
-        renderReactionsRecursive(lines, reactions, index + 1)
+        renderReactionsRecursive(db, lines, reactions, index + 1)
 
     }
 
-    const renderReactionsRecursive = function(lines, reactions, index) {
+    const renderReactionsRecursive = function(db, lines, reactions, index) {
 
         const reaction = reactions[index]
 
@@ -74,17 +99,17 @@ const VReaction = (db, reactions, container_end_product, rule) => {
 
                             if (reaction.reagent === undefined || reaction.reagent === null) {
                                 const reagent = "no reagent"
-                                addFinishReagent(lines, reactions, index, reaction, substrate, product, reagent)
+                                addFinishReagent(db, lines, reactions, index, reaction, substrate, product, reagent)
                             } else if(typeof reaction.reagent[0] === "string") {
                                 const reagent = reaction.reagent[0]
-                                addFinishReagent(lines, reactions, index, reaction, substrate, product, reagent)
+                                addFinishReagent(db, lines, reactions, index, reaction, substrate, product, reagent)
                             } else {
                                 MoleculeLookup(db, VMolecule(reaction.reagent).canonicalSMILES(), "SMILES", true).then(
                                     (reagent_json_obj) => {
                                       //  console.log("Reagent:")
                                       //  console.log(reagent_json_obj)
                                         const reagent = undefined === reagent_json_obj.IUPACName?reagent_json_obj.search:reagent_json_obj.IUPACName
-                                        addFinishReagent(lines, reactions, index, reaction, substrate, product, reagent)
+                                        addFinishReagent(db, lines, reactions, index, reaction, substrate, product, reagent)
                                     },
                                     // "rejects" callback
                                     onErrorLookingUpMoleculeInDB
@@ -118,8 +143,13 @@ const VReaction = (db, reactions, container_end_product, rule) => {
 
         "render": () => {
 
-            //console.log(reactions)
-            renderReactionsRecursive([], reactions, 0)
+            client.connect(err => {
+
+                assert.equal(err, null);
+                const db = client.db("chemistry")
+                renderReactionsRecursive(db, [], reactions, 0)
+
+            })
         }
 
     }

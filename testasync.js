@@ -31,6 +31,10 @@ const MDImine = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)=NC")
 const MeImine2 = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
 const phenylacetone = MoleculeFactory("CC(=O)CC1=CC=CC=C1")
 
+const MoleculeLookup = require('./Controllers/MoleculeLookup')
+const PubChemLookup = require('./Controllers/PubChemLookup')
+const pubchem = require("pubchem-access").domain("compound");
+
 // Install using npm install dotenv
 require("dotenv").config()
 
@@ -43,41 +47,35 @@ process.on('unhandledRejection', function(err) {
     console.log(err);
 });
 
+/*
+const Pr =() =>
+    new Promise(
+        (resolve, reject) => {
+            resolve('hello')
+        }
+    )
+*/
+
 
 client.connect(err => {
 
     assert.equal(err, null);
-    const db = client.db("chemistry")
 
-    const r = new ReactionAI(db)
-
-    // Leuckart Wallach
-    r.synthesise(MD, null) // reagent = ammonia
+    (async (db) => {
+        let response =  MoleculeLookup(db, "CO")
+        return response
+    })(client.db("chemistry")).then((v)=>{
+        console.log(v)
+    })
 
     /*
-    r.synthesise(MeImine2)
-    r.synthesise(MDImine)
-    r.synthesise(MD)
 
-
-
-// Pinacol Rearrangement
-    r.synthesise(pinacolone)
-    r.synthesise(methyl_piperonyl_ketone)
-    r.synthesise(methylamine)
-
-// Akylation
-    r.synthesise(me)
-    r.synthesise(isopropylamine)
-    r.synthesise(phenylacetone)
+    testing(client.db("chemistry")).then((v)=>{
+        console.log(v)
+    })
     */
 
 
 })
-
-console.log("Closing connection")
-client.close()
-
-
 
 
