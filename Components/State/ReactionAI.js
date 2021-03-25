@@ -67,8 +67,8 @@ class ReactionAI {
         this.command_sets = []
 
         this.description_map = {
-            'substituteOxygenCarbonDoubleBondForAmine':
-            "SN2 mechanism; O=C bond is replaced with OC bond at the same time as the replacement atom bonds.\nReagent nitrogen atom is bonded to the carboxyl carbon double bonded to oxygen atom on the substrate. At the same time one of the bonds on oxygen=carbon breaks, leaving the oxygen with a negative charge."
+            'substituteOxygenCarbonDoubleBondForAmine':"SN2 mechanism; O=C bond is replaced with OC bond at the same time as the replacement atom bonds.\nReagent nitrogen atom is bonded to the carboxyl carbon double bonded to oxygen atom on the substrate. At the same time one of the bonds on oxygen=carbon breaks, leaving the oxygen with a negative charge.",
+            'transferProton':"Proton is transferred from electrophile on substrate to nucleophile on substrate."
         }
 
         this.command_map = {

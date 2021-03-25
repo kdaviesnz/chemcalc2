@@ -4,6 +4,7 @@ const VMolecule = require('./Components/Stateless/Views/Molecule')
 
 // Reagents
 const hydrochloric_acid = MoleculeFactory("Cl")
+const methylamide = MoleculeFactory("C[N-]")
 
 const pinacolone = MoleculeFactory("CC(=O)C(C)(C)C")
 VMolecule([pinacolone,1]).canonicalSMILES().should.equal("CC(=O)C(C)(C)C")
@@ -55,7 +56,7 @@ client.connect(err => {
 
     const r = new ReactionAI(db)
 
-    r.synthesise(MD, [hydrochloric_acid])
+    r.synthesise(MD, [methylamide])
 
     /*
     r.synthesise(formate, null)

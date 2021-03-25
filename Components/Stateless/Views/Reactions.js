@@ -76,9 +76,9 @@ const VReaction = (reactions, container_end_product, rule) => {
                 // "resolves" callback
                 (substract_json_obj) => {
 
-                    // We only want known starting substrates
+                    // We only want reactions with known starting substrates
                     if (index === 0 && undefined === substract_json_obj.IUPACName) {
-                        renderReactionsRecursive(db, lines, reactions, index + 1)
+                        // Do nothing
                     } else {
                         const substrate = (undefined === substract_json_obj.IUPACName ? substract_json_obj.search : substract_json_obj.IUPACName)
 
