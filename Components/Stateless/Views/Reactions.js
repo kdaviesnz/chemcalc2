@@ -37,7 +37,9 @@ const VReaction = (reactions, container_end_product, rule) => {
 
             MoleculeLookup(db, VMolecule(reaction.finish_reagent).canonicalSMILES(), "SMILES", true).then(
                 (finish_reagent_json_obj) => {
-                    const finish_reagent = undefined === finish_reagent_json_obj.IUPACName?finish_reagent_json_obj.search:finish_reagent_json_obj.IUPACName
+
+                    const finish_reagent = undefined === finish_reagent_json_obj.names && undefined === finish_reagent_json_obj.IUPACName ? finish_reagent_json_obj.search : ((undefined === finish_reagent_json_obj.names?finish_reagent_json_obj.IUPACName:finish_reagent_json_obj.names[0]) + ' (' + finish_reagent_json_obj.MolecularFormula + ')')
+
                     renderLine(db, lines, reactions, index, reaction, substrate, product, reagent, finish_reagent)
                 },
                 onErrorLookingUpMoleculeInDB
@@ -81,7 +83,7 @@ const VReaction = (reactions, container_end_product, rule) => {
                         // Do nothing
                     } else {
 
-                        const substrate = undefined === substrate_json_obj.names && undefined === substrate_json_obj.IUPACName ? substrate_json_obj.search : ((undefined === substrate_json_obj.names?substrate_json_obj.IUPACName:substrate_json_obj.names[0]) + ' (' + substrate_json_obj.MolecularFormula + ')')
+                        const substrate = undefined === substrate_json_obj.names && undefined === substrate_json_obj.IUPACName ? substrate_json_obj.search : ((undefined === substrate_json_obj.names?substrate_json_obj.IUPACName:substrate_json_obj.names[0]) + (undefined !== substrate_json_obj.MolecularFormula?' (' + substrate_json_obj.MolecularFormula + ')':""))
 
 
                         MoleculeLookup(db, VMolecule(reaction.product).canonicalSMILES(), "SMILES", true).then(
@@ -89,7 +91,7 @@ const VReaction = (reactions, container_end_product, rule) => {
 
                                 // console.log("Product:")
                                 // console.log(product_json_obj)
-                                const product = undefined === product_json_obj.IUPACName ? product_json_obj.search : product_json_obj.IUPACName
+                                const product = undefined === product_json_obj.names && undefined === product_json_obj.IUPACName ? product_json_obj.search : ((undefined === product_json_obj.names?product_json_obj.IUPACName:product_json_obj.names[0]) + (undefined !== product_json_obj.MolecularFormula?' (' + product_json_obj.MolecularFormula + ')':""))
 
                                 if (reaction.reagent === undefined || reaction.reagent === null) {
                                     const reagent = "no reagent"

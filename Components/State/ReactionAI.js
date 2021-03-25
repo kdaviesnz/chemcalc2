@@ -155,7 +155,7 @@ class ReactionAI {
         MoleculeLookup(this.db, VMolecule([target,1]).canonicalSMILES()).then(
             (target_json_obj) => {
 
-                const target_name = undefined === target_json_obj.names && undefined === target_json_obj.IUPACName ? target_json_obj.search : ((undefined === target_json_obj.names?target_json_obj.IUPACName:target_json_obj.names[0]) + ' (' + target_json_obj.MolecularFormula + ')')
+                const target_name = undefined === target_json_obj.names && undefined === target_json_obj.IUPACName ? target_json_obj.search : ((undefined === target_json_obj.names?target_json_obj.IUPACName:target_json_obj.names[0]) + (undefined !== target_json_obj.MolecularFormula?' (' + target_json_obj.MolecularFormula + ')':""))
                 
                 reagents.map((reagent)=>{
                     if (typeof reagent === "string" || VMolecule([target,1]).canonicalSMILES() !== VMolecule([reagent,1]).canonicalSMILES()) {
