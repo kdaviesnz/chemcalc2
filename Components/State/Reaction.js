@@ -297,7 +297,12 @@ class Reaction {
             return false
         }
 
+
         const substrate = _.cloneDeep(this.container_substrate)
+
+        console.log("Starting substrate:")
+        console.log(VMolecule(substrate).formatted())
+
         /*
         Sodium cyanoborohydride (NaBH3CN) is a mild reducing agent that is commonly used in reductive aminations. The presence of the electron-withdrawing cyano (CN) group makes it less reactive
         than sodium borohydride (NaBH4). This reduced reactivity allows NaBH3CN to be employed at neutral or slightly acidic conditions for the selective reduction of iminium ions in the presence of ketones and aldehydes.
@@ -353,7 +358,10 @@ class Reaction {
         this.setChargesOnSubstrate()
         this.setMoleculeAI()
 
-        //console.log(VMolecule(this.container_substrate).compressed())
+        console.log(VMolecule(this.container_substrate).formatted())
+        console.log('reduceImineToAmineReverse')
+        console.log(bbbb)
+        process.exit()
         //console.log(reductimeinetoaminereverse)
         // Nitrogen atom should have positive charge (4 bonds)
 
