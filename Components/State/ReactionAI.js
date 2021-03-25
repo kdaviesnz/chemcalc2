@@ -68,7 +68,8 @@ class ReactionAI {
 
         this.description_map = {
             'substituteOxygenCarbonDoubleBondForAmine':"SN2 mechanism; O=C bond is replaced with OC bond at the same time as the replacement atom bonds.\nReagent nitrogen atom is bonded to the carboxyl carbon double bonded to oxygen atom on the substrate. At the same time one of the bonds on oxygen=carbon breaks, leaving the oxygen with a negative charge.",
-            'transferProton':"Proton is transferred from electrophile on substrate to nucleophile on substrate."
+            'transferProton':"Proton is transferred from electrophile on substrate to nucleophile on substrate.",
+            'addProtonFromReagentToSubstrate':"Hydroxyl oxygen (oxygen with one hydrogen and one carbon bond) atom on substrate attacks a proton on the reagent. The proton bonds to the oxygen atom giving the oxygen a positive charge and creating a water leaving group."
         }
 
         this.command_map = {
@@ -153,7 +154,9 @@ class ReactionAI {
 
         MoleculeLookup(this.db, VMolecule([target,1]).canonicalSMILES()).then(
             (target_json_obj) => {
-                const target_name = undefined === target_json_obj.IUPACName?target_json_obj.search:target_json_obj.IUPACName
+
+                const target_name = undefined === target_json_obj.names && undefined === target_json_obj.IUPACName ? target_json_obj.search : ((undefined === target_json_obj.names?target_json_obj.IUPACName:target_json_obj.names[0]) + ' (' + target_json_obj.MolecularFormula + ')')
+                
                 reagents.map((reagent)=>{
                     if (typeof reagent === "string" || VMolecule([target,1]).canonicalSMILES() !== VMolecule([reagent,1]).canonicalSMILES()) {
 

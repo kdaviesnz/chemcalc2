@@ -1816,8 +1816,8 @@ class Reaction {
     }
 
     addProtonFromReagentToHydroxylGroup() {
-        const protationAI = new ProtonationAI(this)
-        return protationAI.addProtonFromReagentToHydroxylGroup()
+        const protonationAI = new ProtonationAI(this)
+        return protonationAI.addProtonFromReagentToHydroxylGroup()
     }
 
     addProtonFromReagentToNonHydroxylGroup() {

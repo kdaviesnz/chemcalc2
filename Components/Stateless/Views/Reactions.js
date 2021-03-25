@@ -74,13 +74,14 @@ const VReaction = (reactions, container_end_product, rule) => {
 
             MoleculeLookup(db, VMolecule(reaction.substrate).canonicalSMILES(), "SMILES", true).then(
                 // "resolves" callback
-                (substract_json_obj) => {
+                (substrate_json_obj) => {
 
                     // We only want reactions with known starting substrates
-                    if (index === 0 && undefined === substract_json_obj.IUPACName) {
+                    if (index === 0 && undefined === substrate_json_obj.IUPACName) {
                         // Do nothing
                     } else {
-                        const substrate = (undefined === substract_json_obj.IUPACName ? substract_json_obj.search : substract_json_obj.IUPACName)
+
+                        const substrate = undefined === substrate_json_obj.names && undefined === substrate_json_obj.IUPACName ? substrate_json_obj.search : ((undefined === substrate_json_obj.names?substrate_json_obj.IUPACName:substrate_json_obj.names[0]) + ' (' + substrate_json_obj.MolecularFormula + ')')
 
 
                         MoleculeLookup(db, VMolecule(reaction.product).canonicalSMILES(), "SMILES", true).then(
@@ -114,7 +115,9 @@ const VReaction = (reactions, container_end_product, rule) => {
                                         (reagent_json_obj) => {
                                             //  console.log("Reagent:")
                                             //  console.log(reagent_json_obj)
-                                            const reagent = undefined === reagent_json_obj.IUPACName ? reagent_json_obj.search : reagent_json_obj.IUPACName
+                                            const reagent = undefined === reagent_json_obj.names && undefined === reagent_json_obj.IUPACName ? reagent_json_obj.search : ((undefined === reagent_json_obj.names?reagent_json_obj.IUPACName:reagent_json_obj.names[0]) + ' (' + reagent_json_obj.MolecularFormula + ')')
+                                            
+                                            
                                             addFinishReagent(db, lines, reactions, index, reaction, substrate, product, reagent)
                                         },
                                         // "rejects" callback
