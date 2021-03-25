@@ -2,6 +2,9 @@ const ReactionAI =  require('./Components/State/ReactionAI')
 const MoleculeFactory = require('./Models/MoleculeFactory')
 const VMolecule = require('./Components/Stateless/Views/Molecule')
 
+// Reagents
+const hydrochloric_acid = MoleculeFactory("Cl")
+
 const pinacolone = MoleculeFactory("CC(=O)C(C)(C)C")
 VMolecule([pinacolone,1]).canonicalSMILES().should.equal("CC(=O)C(C)(C)C")
 
@@ -37,8 +40,8 @@ require("dotenv").config()
 const MongoClient = require('mongodb').MongoClient
 const assert = require('assert');
 //const uri = "mongodb+srv://" + process.env.MONGODBUSER + ":" + process.env.MONGODBPASSWORD + "@cluster0.awqh6.mongodb.net/chemistry?retryWrites=true&w=majority";
-const uri = "mongodb+srv://" + process.env.MONGODBUSER + ":" + process.env.MONGODBPASSWORD + "@cluster0.awqh6.mongodb.net/chemistry?keepAlive=true&poolSize=300&autoReconnect=true&socketTimeoutMS=1990000&connectTimeoutMS=1990000&retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: false });
+const uri = "mongodb+srv://" + process.env.MONGODBUSER + ":" + process.env.MONGODBPASSWORD + "@cluster0.awqh6.mongodb.net/chemistry?keepAlive=true&poolSize=300&socketTimeoutMS=1990000&connectTimeoutMS=1990000&retryWrites=true&w=majority";
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 process.on('unhandledRejection', function(err) {
     console.log(err);
@@ -52,7 +55,7 @@ client.connect(err => {
 
     const r = new ReactionAI(db)
 
-    r.synthesise(MD, null)
+    r.synthesise(MD, [hydrochloric_acid])
 
     /*
     r.synthesise(formate, null)

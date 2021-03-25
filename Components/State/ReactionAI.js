@@ -66,6 +66,11 @@ class ReactionAI {
 
         this.command_sets = []
 
+        this.description_map = {
+            'substituteOxygenCarbonDoubleBondForAmine':
+            "SN2 mechanism; O=C bond is replaced with OC bond at the same time as the replacement atom bonds.\nReagent nitrogen atom is bonded to the carboxyl carbon double bonded to oxygen atom on the substrate. At the same time one of the bonds on oxygen=carbon breaks, leaving the oxygen with a negative charge."
+        }
+
         this.command_map = {
             'reduceImineToAmineOnNitrogenMethylCarbon': 'Reduce imine to amine',
             'reduceImineToAmine': 'Reduce imine to amine',
@@ -118,17 +123,19 @@ class ReactionAI {
         })
     }
 
-    synthesise(target, reagent, callback) {
+    synthesise(target, reagents, callback) {
 
-        const water = MoleculeFactory("O")
-        const formate = MoleculeFactory("C(=O)[O-]")
-        const methylamine = MoleculeFactory("CN")
-        const methylamide = MoleculeFactory("C[N-]")
-        const deprotonated_methylamide = MoleculeFactory("C[NH0]")
-        const hydrochloric_acid = MoleculeFactory("Cl")
-        const ammonia = MoleculeFactory("N")
-        const formaldehyde  = MoleculeFactory("C=O")
-        const reagents = [water, methylamine, methylamide, deprotonated_methylamide, hydrochloric_acid, formate, formaldehyde, ammonia]
+        if (reagents === undefined || reagents === null) {
+            const water = MoleculeFactory("O")
+            const formate = MoleculeFactory("C(=O)[O-]")
+            const methylamine = MoleculeFactory("CN")
+            const methylamide = MoleculeFactory("C[N-]")
+            const deprotonated_methylamide = MoleculeFactory("C[NH0]")
+            const hydrochloric_acid = MoleculeFactory("Cl")
+            const ammonia = MoleculeFactory("N")
+            const formaldehyde = MoleculeFactory("C=O")
+            reagents = [water, methylamine, methylamide, deprotonated_methylamide, hydrochloric_acid, formate, formaldehyde, ammonia]
+        }
 
         //const reagents = reagent === null || reagent === undefined? [formate, methylamide, methylamine, water, deprotonated_methylamide,hydrochloric_acid, ammonia] : [reagent]
         //const reagents = [hydrochloric_acid]
@@ -200,12 +207,14 @@ class ReactionAI {
                const reaction_steps = commands.map(
                    (command, command_index) => {
                        const command_in_plain_english = this.command_map[command['name']]
+                       const description = undefined === this.description_map[command['name']]?"":this.description_map[command['name']];
                        return MReaction(
-                           command_in_plain_english,
+                           "[" + command['name'] + "]" + " " +command_in_plain_english,
                            command['starting substrate'],
                            command['starting reagent'],
                            command['finish substrate'],
                            command['finish reagent'],
+                           description
                        )
                    }
                )

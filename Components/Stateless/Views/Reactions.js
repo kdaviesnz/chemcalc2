@@ -51,7 +51,8 @@ const VReaction = (reactions, container_end_product, rule) => {
         lines.push("[" + reaction.command.bold.red + "] "
             + substrate.green
             +  ' + ' + reagent.yellow
-            + " -> " + product.bold +  ' + ' + finish_reagent)
+            + " -> " + product.bold +  ' + ' + finish_reagent
+            + "\nDescription: " + reaction.description)
         renderReactionsRecursive(db, lines, reactions, index + 1)
 
     }
@@ -75,55 +76,58 @@ const VReaction = (reactions, container_end_product, rule) => {
                 // "resolves" callback
                 (substract_json_obj) => {
 
-                    const substrate = (undefined === substract_json_obj.IUPACName?substract_json_obj.search:substract_json_obj.IUPACName)
+                    // We only want known starting substrates
+                    if (index === 0 && undefined === substract_json_obj.IUPACName) {
+                        renderReactionsRecursive(db, lines, reactions, index + 1)
+                    } else {
+                        const substrate = (undefined === substract_json_obj.IUPACName ? substract_json_obj.search : substract_json_obj.IUPACName)
 
 
+                        MoleculeLookup(db, VMolecule(reaction.product).canonicalSMILES(), "SMILES", true).then(
+                            (product_json_obj) => {
 
-                    MoleculeLookup(db,VMolecule(reaction.product).canonicalSMILES(), "SMILES", true).then(
+                                // console.log("Product:")
+                                // console.log(product_json_obj)
+                                const product = undefined === product_json_obj.IUPACName ? product_json_obj.search : product_json_obj.IUPACName
 
-                        (product_json_obj) => {
-
-                           // console.log("Product:")
-                           // console.log(product_json_obj)
-                            const product = undefined === product_json_obj.IUPACName?product_json_obj.search:product_json_obj.IUPACName
-
-                            if (reaction.reagent === undefined || reaction.reagent === null) {
-                                const reagent = "no reagent"
-                                addFinishReagent(db, lines, reactions, index, reaction, substrate, product, reagent)
-                            } else if(typeof reaction.reagent[0] === "string") {
-                                const reagent = reaction.reagent[0]
-                                addFinishReagent(db, lines, reactions, index, reaction, substrate, product, reagent)
-                            } else {
-
-                                /*
-                                (async () => {
-                                    // await
-                                    let response =  MoleculeLookup(db, VMolecule(reaction.reagent).canonicalSMILES(), "SMILES", true)
-                                    return response
-                                })().then((reagent_json_obj)=>{
-                                    const reagent = undefined === reagent_json_obj.IUPACName?reagent_json_obj.search:reagent_json_obj.IUPACName
+                                if (reaction.reagent === undefined || reaction.reagent === null) {
+                                    const reagent = "no reagent"
                                     addFinishReagent(db, lines, reactions, index, reaction, substrate, product, reagent)
-                                }).catch( onErrorLookingUpMoleculeInDB
-                                )
-*/
+                                } else if (typeof reaction.reagent[0] === "string") {
+                                    const reagent = reaction.reagent[0]
+                                    addFinishReagent(db, lines, reactions, index, reaction, substrate, product, reagent)
+                                } else {
 
-                                MoleculeLookup(db, VMolecule(reaction.reagent).canonicalSMILES(), "SMILES", true).then(
-                                    (reagent_json_obj) => {
-                                      //  console.log("Reagent:")
-                                      //  console.log(reagent_json_obj)
+                                    /*
+                                    (async () => {
+                                        // await
+                                        let response =  MoleculeLookup(db, VMolecule(reaction.reagent).canonicalSMILES(), "SMILES", true)
+                                        return response
+                                    })().then((reagent_json_obj)=>{
                                         const reagent = undefined === reagent_json_obj.IUPACName?reagent_json_obj.search:reagent_json_obj.IUPACName
                                         addFinishReagent(db, lines, reactions, index, reaction, substrate, product, reagent)
-                                    },
-                                    // "rejects" callback
-                                    onErrorLookingUpMoleculeInDB
-                                )
+                                    }).catch( onErrorLookingUpMoleculeInDB
+                                    )
+    */
 
-                            }
+                                    MoleculeLookup(db, VMolecule(reaction.reagent).canonicalSMILES(), "SMILES", true).then(
+                                        (reagent_json_obj) => {
+                                            //  console.log("Reagent:")
+                                            //  console.log(reagent_json_obj)
+                                            const reagent = undefined === reagent_json_obj.IUPACName ? reagent_json_obj.search : reagent_json_obj.IUPACName
+                                            addFinishReagent(db, lines, reactions, index, reaction, substrate, product, reagent)
+                                        },
+                                        // "rejects" callback
+                                        onErrorLookingUpMoleculeInDB
+                                    )
 
-                        },
-                        onErrorLookingUpMoleculeInDB
+                                }
 
-                    )
+                            },
+                            onErrorLookingUpMoleculeInDB
+                        )
+
+                    }
 
                 },
                 // "rejects" callback

@@ -246,12 +246,13 @@ class SubstitutionAI {
 
         if (n_index !== -1) {
 
-            // Replace o=c with N-R / oc
+            // Replace o=c with N-R / OC
             // Convert O=C bond to OC bond
             const c_bonds = oxygen.indexedBonds("").filter((bond)=>{
-                return bond.atom[0] == "C" && bond.bond_type === "="
+                return bond.atom[0] === "C" && bond.bond_type === "="
             })
 
+            // Remove one of the bonds oxygen bonds on the O=C
             this.reaction.container_substrate[0][1][o_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][o_index], _.cloneDeep(c_bonds[0].shared_electrons.slice(2)))
             // Make sure oxygen atom still has 8 electrons
             range.range(0, c_bonds[0].shared_electrons.slice(2).length).map((i)=>{
