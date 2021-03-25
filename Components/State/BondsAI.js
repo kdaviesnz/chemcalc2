@@ -27,6 +27,11 @@ class BondsAI {
         this.reaction = reaction
     }
 
+    removeAtom(molecule, atom) {
+        //this.container_substrate[0][1] = Set().removeFromArray(this.container_substrate[0][1], this.container_substrate[0][1][h_c_hydrogen_bonds[0].atom_index])
+        molecule[0][1] = Set().removeFromArray(molecule[0][1], atom)
+        return molecule
+    }
 
     makeNitrogenCarbonTripleBond() {
 

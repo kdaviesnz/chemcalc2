@@ -51,6 +51,9 @@ class Reaction {
         if (this.ReagentAI !== null) {
             this.ReagentAI.validateMolecule()
         }
+
+        this.bondsAI = new BondsAI(this)
+
     }
 
     setReagentAI() {
@@ -309,33 +312,27 @@ class Reaction {
          */
 
         // Add double bond
-
         const h_n_hydrogen_bonds = n_atom.indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "H"
         })
         const h_c_hydrogen_bonds = carbon.indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "H"
         })
-
         // Check that there is at least on H-N bond that we can remove
         if (h_n_hydrogen_bonds.length === 0) {
             return false
         }
-
         // Check that there is at least on H-C on the C-N carbon that we can remove
         if (h_c_hydrogen_bonds.length === 0) {
             return false
         }
-
         const electrons_to_share = n_atom.freeElectrons()
         if (electrons_to_share.length === 0) {
             return false
         }
-
         if (check_mode) {
             return true
         }
-
         // Remove the H-N bond
         // Remove the H-C bond
         const h_c_shared_electrons = h_c_hydrogen_bonds[0].shared_electrons
@@ -351,8 +348,13 @@ class Reaction {
         this.container_substrate[0][1][c_index].push(electrons_to_share[1])
 
         // Remove H-C hydrogen
-        this.container_substrate[0][1] = Set().removeFromArray(this.container_substrate[0][1], this.container_substrate[0][1][h_c_hydrogen_bonds[0].atom_index])
+        //this.container_substrate[0][1] = Set().removeFromArray(this.container_substrate[0][1], this.container_substrate[0][1][h_c_hydrogen_bonds[0].atom_index])
+        const hydrogen_atom_on_carbon = this.container_substrate[0][1][h_c_hydrogen_bonds[0].atom_index]
+        this.container_substrate = this.bondsAI.removeAtom(this.container_substrate, hydrogen_atom_on_carbon)
 
+        console.log(VMolecule(this.container_substrate).formatted())
+        console.log(uio)
+        process.exit()
         n_atom.doubleBondCount().should.be.greaterThan(0)
 
         this.setChargesOnSubstrate()
