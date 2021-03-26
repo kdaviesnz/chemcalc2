@@ -303,8 +303,8 @@ class Reaction {
 
         const substrate = _.cloneDeep(this.container_substrate)
 
-        console.log("Starting substrate:")
-        console.log(VMolecule(substrate).formatted())
+       // console.log("Starting substrate:")
+       // console.log(VMolecule(substrate).formatted())
 
         /*
         Sodium cyanoborohydride (NaBH3CN) is a mild reducing agent that is commonly used in reductive aminations. The presence of the electron-withdrawing cyano (CN) group makes it less reactive
@@ -336,9 +336,15 @@ class Reaction {
         // Remove the H-N bond
         // Remove the H-C bond
         const h_c_shared_electrons = h_c_hydrogen_bonds[0].shared_electrons
+        /*
         _.remove(this.container_substrate[0][1][c_index], (electron, index)=>{
             return electron === h_c_shared_electrons[0] || electron === h_c_shared_electrons[1]
         })
+        */
+        this.container_substrate = this.bondsAI.removeBond(this.container_substrate, c_index, h_c_shared_electrons)
+
+
+
         // Check that the C now has a free electron pair
         carbon.freeSlots().should.be.greaterThan(0)
 
@@ -352,15 +358,21 @@ class Reaction {
         const hydrogen_atom_on_carbon = this.container_substrate[0][1][h_c_hydrogen_bonds[0].atom_index]
         this.container_substrate = this.bondsAI.removeAtom(this.container_substrate, hydrogen_atom_on_carbon)
 
-        console.log(VMolecule(this.container_substrate).formatted())
-        console.log(uio)
-        process.exit()
+        // h_n_hydrogen_bonds
+        // Remove hydrogen on nitrogen
+        const h_n_shared_electrons = h_n_hydrogen_bonds[0].shared_electrons
+        const bonds_length_before = this.container_substrate[0][1][n_index].length
+        this.container_substrate = this.bondsAI.removeBond(this.container_substrate, n_index, h_n_shared_electrons)
+        this.container_substrate[0][1][n_index].length.should.be.lessThan(bonds_length_before)
+        const hydrogen_atom_on_nitrogen = this.container_substrate[0][1][h_n_hydrogen_bonds[0].atom_index]
+        this.container_substrate = this.bondsAI.removeAtom(this.container_substrate, hydrogen_atom_on_nitrogen)
+
         n_atom.doubleBondCount().should.be.greaterThan(0)
 
-        this.setChargesOnSubstrate()
+        //this.setChargesOnSubstrate()
         this.setMoleculeAI()
 
-        console.log(VMolecule(this.container_substrate).formatted())
+        console.log(VMolecule(this.container_substrate).compressed())
         console.log('reduceImineToAmineReverse')
         console.log(bbbb)
         process.exit()
