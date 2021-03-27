@@ -155,6 +155,8 @@ const VReaction = (reactions, container_end_product, rule) => {
 
 
         "render": (db) => {
+            console.log(reactions)
+            console.log(bbbb)
             renderReactionsRecursive(db, [], reactions, 0)
         }
 
