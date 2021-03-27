@@ -5,6 +5,7 @@ const _ = require('lodash');
 const CAtom = require('../../Controllers/Atom')
 const AtomFactory = require('../../Models/AtomFactory')
 const Set = require('../../Models/Set')
+const uniqid = require('uniqid');
 
 // makeNitrogenCarbonTripleBond()
 // makeNitrogenCarbonDoubleBond()
@@ -25,6 +26,15 @@ class BondsAI {
 
     constructor(reaction) {
         this.reaction = reaction
+    }
+
+    removeProton(molecule, atom_index, electrons, proton) {
+
+        molecule = this.removeBond(molecule, atom_index, electrons)
+        molecule[0][1][atom_index].push(uniqid())
+        molecule[0][1][atom_index].push(uniqid())
+        molecule = this.removeAtom(molecule, proton)
+        return molecule
     }
 
    removeBond(molecule, atom_index, electrons) {

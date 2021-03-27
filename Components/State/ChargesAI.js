@@ -52,9 +52,6 @@ class ChargesAI {
 
         let b = 0
 
-        console.log("checkCharge()")
-        console.log(atom[0])
-
         if (atom[0] === "Br") {
             // 7 is the number of valence electrons when there are no bonds
              b = (7 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length)
@@ -289,6 +286,7 @@ class ChargesAI {
         }
 
 
+        // this.reaction.container_substrate[0][1][index][4] is the charge
 
         this.reaction.container_substrate[0][1][index][4] = b  > 0? "+": (b < 0?"-":"")
 

@@ -346,7 +346,6 @@ class ReactionAI {
                     return reaction
                 }})
 
-
             this.debugger(command_names)
 
             if(this.hasCharge(commands[commands.length-1]['starting substrate']) === -1 && (reverse_reaction.transferProtonReverse(true) === false && command_name !== "reduceImineToAmine")) {

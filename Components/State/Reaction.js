@@ -2,6 +2,7 @@
 const CAtom = require('../../Controllers/Atom')
 const _ = require('lodash');
 const VMolecule = require('../../Components/Stateless/Views/Molecule')
+const VAtom = require('../../Components/Stateless/Views/Atom')
 const MoleculeFactory = require('../../Models/MoleculeFactory')
 const AtomFactory = require('../../Models/AtomFactory')
 const Set = require('../../Models/Set')
@@ -361,24 +362,25 @@ class Reaction {
         // h_n_hydrogen_bonds
         // Remove hydrogen on nitrogen
         const h_n_shared_electrons = h_n_hydrogen_bonds[0].shared_electrons
-        const bonds_length_before = this.container_substrate[0][1][n_index].length
-        this.container_substrate = this.bondsAI.removeBond(this.container_substrate, n_index, h_n_shared_electrons)
-        this.container_substrate[0][1][n_index].length.should.be.lessThan(bonds_length_before)
-        const hydrogen_atom_on_nitrogen = this.container_substrate[0][1][h_n_hydrogen_bonds[0].atom_index]
-        this.container_substrate = this.bondsAI.removeAtom(this.container_substrate, hydrogen_atom_on_nitrogen)
+        //const bonds_length_before = this.container_substrate[0][1][n_index].length
+        this.container_substrate = this.bondsAI.removeProton(this.container_substrate, n_index, h_n_shared_electrons, this.container_substrate[0][1][h_n_hydrogen_bonds[0].atom_index])
+        //this.container_substrate[0][1][n_index].length.should.be.lessThan(bonds_length_before)
+       // const hydrogen_atom_on_nitrogen = this.container_substrate[0][1][h_n_hydrogen_bonds[0].atom_index]
+        //this.container_substrate = this.bondsAI.removeAtom(this.container_substrate, hydrogen_atom_on_nitrogen)
 
         n_atom.doubleBondCount().should.be.greaterThan(0)
 
-        //this.setChargesOnSubstrate()
+        this.setChargesOnSubstrate()
+
         this.setMoleculeAI()
 
-        console.log(VMolecule(this.container_substrate).compressed())
-        console.log('reduceImineToAmineReverse')
-        console.log(bbbb)
-        process.exit()
-        //console.log(reductimeinetoaminereverse)
-        // Nitrogen atom should have positive charge (4 bonds)
+        // VAtom(n_atom).render()
 
+//        console.log(VMolecule(this.container_substrate).compressed())
+  //      console.log('reduceImineToAmineReverse')
+    //    console.log(bbbb)
+//        process.exit()
+        //console.log(reductimeinetoaminereverse)
 
         return true
     }
