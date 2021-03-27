@@ -717,13 +717,10 @@ class ProtonationAI {
 
     deprotonateNitrogenReverse() {
 
-
         this.reaction.MoleculeAI.validateMolecule()
         if (this.reaction.ReagentAI !== null) {
             this.reaction.ReagentAI.validateMolecule()
         }
-
-      // console.log(VMolecule(this.reaction.container_substrate).compressed())
 
         // return false if we have a [O-]
         if (_.findIndex(this.reaction.container_substrate[0][1], (atom, index)=> {
@@ -741,11 +738,12 @@ class ProtonationAI {
         let nitrogen = null
         let n_h_bonds = null
 
-        // Find [N+] with at least one hydrogen
+
         let nitrogen_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
             if (atom[0] !=="N") {
                 return false
             }
+
             if (atom[4] === "+" || atom[4] === "-") {
                 return false
             }
@@ -753,6 +751,8 @@ class ProtonationAI {
             return true
 
         })
+
+
 
         if (nitrogen_index === -1) {
             return false
@@ -762,22 +762,35 @@ class ProtonationAI {
 
         let proton = null
         const nitrogen_free_electrons = nitrogen.freeElectrons()
+
+
         if (this.reaction.ReagentAI === null) {
-            if (this.reaction.container_reagent[0] === "Brønsted–Lowry acid") {
-                this.reaction.container_reagent[0] = "Brønsted–Lowry conjugate base"
-            } else {
-                console.log("Warning: reagent is not an acid ProtonationAI > deprotonateNitrogenReverse(), returning false")
+
+            if (this.reaction.container_reagent !==  "Brønsted–Lowry base") {
+                //console.log(this.reaction.container_reagent)
+                //console.log(ppppq)
+                console.log("Warning: reagent is not a base ProtonationAI > deprotonateNitrogenReverse(), returning false")
                 return false
             }
+            //console.log(ppppk)
             proton = AtomFactory("H", "")
             proton.pop()
             proton.push(nitrogen_free_electrons[0])
             proton.push(nitrogen_free_electrons[1])
 
+            //console.log(klk)
+            //process.exit()
+
         } else {
+
+            //console.log(iii)
+            //process.exit()
+
+
             // NH4
             //let proton_atom_index = this.reaction.ReagentAI.findNucleophileIndex()
             let proton_atom_index = this.reaction.ReagentAI.findProtonIndex()
+
 
             if (proton_atom_index ===-1) {
                 return false
@@ -810,10 +823,15 @@ class ProtonationAI {
 
         }
 
+        //console.log(hre)
+        //process.exit()
+
         this.reaction.container_substrate[0][1].push(proton)
         this.reaction.setChargesOnSubstrate()
         this.reaction.setMoleculeAI()
         this.reaction.MoleculeAI.validateMolecule()
+
+
 
         return true
 

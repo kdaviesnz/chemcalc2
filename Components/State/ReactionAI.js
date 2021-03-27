@@ -73,6 +73,7 @@ class ReactionAI {
             'reduceImineToAmineOnNitrogenMethylCarbon':'Nitrogen=Carbon double bond is replaced with a single bond.'
         }
 
+        /*
         this.command_map = {
             'reduceImineToAmineOnNitrogenMethylCarbon': 'Reduce imine to amine',
             'reduceImineToAmine': 'Reduce imine to amine',
@@ -93,7 +94,13 @@ class ReactionAI {
             'protonate': 'Protonate',
             'addProtonFromReagentToSubstrate': 'Add proton from reagent to substrate'
         }
+        */
 
+      this.command_map = {
+          'reduceImineToAmineOnNitrogenMethylCarbon': 'Reduce imine to amine',
+          'deprotonateNitrogen': 'Deprotonate nitrogen atom on substrate',
+          'dehydrate': 'Dehydrate'
+      }
 
 
 
@@ -202,6 +209,7 @@ class ReactionAI {
         }
 
 
+
         if (true) {
             //if (commands.length > 0 && this.hasCharge(commands[0]['starting substrate']) === -1) {
 
@@ -223,6 +231,7 @@ class ReactionAI {
                 }
             )
 
+
             if (this.callback !== undefined && this.callback !== null) {
                 this.callback(null, reaction_steps)
             } else {
@@ -234,6 +243,7 @@ class ReactionAI {
     }
 
     _synthesise(substrate, reagent, commands, caller, depth, moleculeAI, reagentAI) {
+
 
         moleculeAI.validateMolecule()
         if (reagentAI !== null) {
@@ -250,7 +260,24 @@ class ReactionAI {
                 //term(indicator_map[Math.floor(Math.random() * 3)])
                 term(indicator_map[Math.floor(Math.random() * 2)] + ' ' + this.command_map[command_name])
                 term.column(0)
+
                 if (caller !== command_name + 'Reversal') {
+
+
+                    /*
+                    ProtonateAI.js::deprotonateNitrogenReverse
+        if (this.reaction.container_reagent[0] === "Brønsted–Lowry acid") {
+               this.reaction.container_reagent[0] = "Brønsted–Lowry conjugate base"
+           } else {
+               console.log("Warning: reagent is not an acid ProtonationAI > deprotonateNitrogenReverse(), returning false")
+               return false
+           }
+        */
+                    // If command_name is deprotonateNitrogen then pass in Brønsted–Lowry acid as the reagent"
+
+                    if (command_name === 'deprotonateNitrogen') {
+                        reagent = "Brønsted–Lowry base"
+                    }
                     this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), command_name, _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth, reagentAI)
                 }
 
@@ -258,14 +285,18 @@ class ReactionAI {
 
         }
 
-
-
-
     }
 
 
 
     runReverseCommand(reverse_reaction, command_name, target, reagent, moleculeAI, commands, caller, depth, reagentAI) {
+
+        if (commands.length>99999) {
+            console.log(commands)
+            console.log(command_name)
+            console.log(uuu)
+            process.exit()
+        }
 
 
         this.debugger(caller + "  reverse reaction result")
@@ -289,7 +320,16 @@ class ReactionAI {
 
         let r = null
 
+
         r = reverse_reaction[command_name + 'Reverse']()
+
+        /*
+        if (command_name === "deprotonateNitrogen" && commands.length>0) {
+            console.log(commands)
+            console.log(r)
+            console.log(kkkk)
+        }
+        */
 
         this.debugger(r)
 
@@ -323,6 +363,10 @@ class ReactionAI {
             const reverse_reaction_substrate = _.cloneDeep(reverse_reaction.container_substrate)
             const reverse_reaction_reagent = _.cloneDeep(reverse_reaction.container_reagent)
 
+            //console.log(VMolecule(reverse_reaction_substrate).compressed())
+            //console.log(aaaa)
+            //process.exit()
+
             const reverse_reaction_substrateAI = require("../Stateless/MoleculeAI")(_.cloneDeep(_.cloneDeep(reverse_reaction.container_substrate)))
             const reverse_reaction_reagentAI = typeof reverse_reaction.container_reagent[0] === "string"?null:require("../Stateless/MoleculeAI")(_.cloneDeep(_.cloneDeep(reverse_reaction.container_reagent)))
 
@@ -349,17 +393,31 @@ class ReactionAI {
 
             this.debugger(command_names)
 
-            if(this.hasCharge(commands[commands.length-1]['starting substrate']) === -1 && (reverse_reaction.transferProtonReverse(true) === false && command_name !== "reduceImineToAmine")) {
+            // testing
+            if (commands.length === 2) {
+                this.results(_.cloneDeep(commands))
+                return
+            }
+
+
+
+
+            if(this.hasCharge(commands[commands.length-1]['starting substrate']) === -1 && (reverse_reaction.transferProtonReverse(true) === false && command_name !== "reduceImineToAmine" && command_name !=="reduceImineToAmineOnNitrogenMethylCarbon")) {
                 this.results(_.cloneDeep(commands))
                 return
             } else {
 
+               //console.log(commands)
+               //console.log(VMolecule(reverse_reaction.container_substrate).compressed())
+               //console.log(nbn)
+                //process.exit()
 
                 this._synthesise(
                     _.cloneDeep(reverse_reaction.container_substrate),
                     _.cloneDeep(reverse_reaction.container_reagent),
                     _.cloneDeep(commands),
-                    command_name + 'Reversal', depth + 1,
+                    command_name + 'Reversal',
+                    depth + 1,
                     reverse_reaction_substrateAI,
                     reverse_reaction_reagentAI
                 )
