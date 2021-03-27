@@ -18,7 +18,7 @@ const VReaction = (reactions, container_end_product, rule) => {
 
     const addFinishReagent = function(db, lines, reactions, index, reaction, substrate, product, reagent) {
         if (typeof reaction.finish_reagent[0] === "string") {
-            const finish_reagent = reaction.finish_reagent[0]
+            const finish_reagent = reaction.finish_reagent==="Reducing reagent"?reaction.finish_reagent:reaction.finish_reagent[0]
             renderLine(db, lines, reactions, index, reaction, substrate, product, reagent, finish_reagent)
         } else {
 
@@ -63,6 +63,7 @@ const VReaction = (reactions, container_end_product, rule) => {
 
         const reaction = reactions[index]
 
+
         if (reaction !== undefined) {
 
             if (reaction.command === "Dehydrate") {
@@ -78,6 +79,7 @@ const VReaction = (reactions, container_end_product, rule) => {
                 // "resolves" callback
                 (substrate_json_obj) => {
 
+
                     // We only want reactions with known starting substrates
                     if (index === 0 && undefined === substrate_json_obj.IUPACName) {
                         // Do nothing
@@ -89,6 +91,7 @@ const VReaction = (reactions, container_end_product, rule) => {
                         MoleculeLookup(db, VMolecule(reaction.product).canonicalSMILES(), "SMILES", true).then(
                             (product_json_obj) => {
 
+
                                 // console.log("Product:")
                                 // console.log(product_json_obj)
                                 const product = undefined === product_json_obj.names && undefined === product_json_obj.IUPACName ? product_json_obj.search : ((undefined === product_json_obj.names?product_json_obj.IUPACName:product_json_obj.names[0]) + (undefined !== product_json_obj.MolecularFormula?' (' + product_json_obj.MolecularFormula + ')':""))
@@ -97,7 +100,7 @@ const VReaction = (reactions, container_end_product, rule) => {
                                     const reagent = "no reagent"
                                     addFinishReagent(db, lines, reactions, index, reaction, substrate, product, reagent)
                                 } else if (typeof reaction.reagent[0] === "string") {
-                                    const reagent = reaction.reagent[0]
+                                    const reagent = reaction.reagent==="Reducing reagent"?reaction.reagent:reaction.reagent[0]
                                     addFinishReagent(db, lines, reactions, index, reaction, substrate, product, reagent)
                                 } else {
 
@@ -115,6 +118,9 @@ const VReaction = (reactions, container_end_product, rule) => {
 
                                     MoleculeLookup(db, VMolecule(reaction.reagent).canonicalSMILES(), "SMILES", true).then(
                                         (reagent_json_obj) => {
+
+                                            console.log(reaction.reagent)
+                                            console.log(jjj)
                                             //  console.log("Reagent:")
                                             //  console.log(reagent_json_obj)
                                             const reagent = undefined === reagent_json_obj.names && undefined === reagent_json_obj.IUPACName ? reagent_json_obj.search : ((undefined === reagent_json_obj.names?reagent_json_obj.IUPACName:reagent_json_obj.names[0]) + ' (' + reagent_json_obj.MolecularFormula + ')')
@@ -155,8 +161,6 @@ const VReaction = (reactions, container_end_product, rule) => {
 
 
         "render": (db) => {
-            console.log(reactions)
-            console.log(bbbb)
             renderReactionsRecursive(db, [], reactions, 0)
         }
 

@@ -43,18 +43,18 @@ class ReactionAI {
         //this.commands_filter.push("oxygenCarbonDoubleBondReversal")
          */
 
-/*
-        this.commands_filter.push("addProtonFromReagentToSubstrateReversal")
-        this.commands_filter.push("protonateReversal")
-        this.commands_filter.push("makeCarbonNitrogenDoubleBondReversal")
-        this.commands_filter.push("breakOxygenCarbonDoubleBondReversal")
-        this.commands_filter.push("removeHalideReversal")
-        this.commands_filter.push("breakCarbonOxygenDoubleBondReversal")
-        this.commands_filter.push("substituteHalideForAmineReversal")
-        this.commands_filter.push("deprotonateNitrogenReversal")
-        this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal")
-        this.commands_filter.push("transferProtonReversal")
-*/
+        /*
+                this.commands_filter.push("addProtonFromReagentToSubstrateReversal")
+                this.commands_filter.push("protonateReversal")
+                this.commands_filter.push("makeCarbonNitrogenDoubleBondReversal")
+                this.commands_filter.push("breakOxygenCarbonDoubleBondReversal")
+                this.commands_filter.push("removeHalideReversal")
+                this.commands_filter.push("breakCarbonOxygenDoubleBondReversal")
+                this.commands_filter.push("substituteHalideForAmineReversal")
+                this.commands_filter.push("deprotonateNitrogenReversal")
+                this.commands_filter.push("substituteOxygenCarbonDoubleBondForAmineReversal")
+                this.commands_filter.push("transferProtonReversal")
+        */
 
 
         //this.commands_filter.push("reduceImineToAmineReversal")
@@ -69,7 +69,8 @@ class ReactionAI {
         this.description_map = {
             'substituteOxygenCarbonDoubleBondForAmine':"SN2 mechanism; O=C bond is replaced with OC bond at the same time as the replacement atom bonds.\nReagent nitrogen atom is bonded to the carboxyl carbon double bonded to oxygen atom on the substrate. At the same time one of the bonds on oxygen=carbon breaks, leaving the oxygen with a negative charge.",
             'transferProton':"Proton is transferred from electrophile on substrate to nucleophile on substrate.",
-            'addProtonFromReagentToSubstrate':"Hydroxyl oxygen (oxygen with one hydrogen and one carbon bond) atom on substrate attacks a proton on the reagent. The proton bonds to the oxygen atom giving the oxygen a positive charge and creating a water leaving group."
+            'addProtonFromReagentToSubstrate':"Hydroxyl oxygen (oxygen with one hydrogen and one carbon bond) atom on substrate attacks a proton on the reagent. The proton bonds to the oxygen atom giving the oxygen a positive charge and creating a water leaving group.",
+            'reduceImineToAmineOnNitrogenMethylCarbon':'Nitrogen=Carbon double bond is replaced with a single bond.'
         }
 
         this.command_map = {
@@ -101,7 +102,7 @@ class ReactionAI {
     debugger(o) {
         //// //console.log(this.debugger_on)
         if (this.debugger_on) {
-           console.log(o)
+            console.log(o)
         }
     }
 
@@ -113,7 +114,7 @@ class ReactionAI {
     }
 
     render(o) {
-       console.log(o)
+        console.log(o)
     }
 
 
@@ -156,7 +157,7 @@ class ReactionAI {
             (target_json_obj) => {
 
                 const target_name = undefined === target_json_obj.names && undefined === target_json_obj.IUPACName ? target_json_obj.search : ((undefined === target_json_obj.names?target_json_obj.IUPACName:target_json_obj.names[0]) + (undefined !== target_json_obj.MolecularFormula?' (' + target_json_obj.MolecularFormula + ')':""))
-                
+
                 reagents.map((reagent)=>{
                     if (typeof reagent === "string" || VMolecule([target,1]).canonicalSMILES() !== VMolecule([reagent,1]).canonicalSMILES()) {
 
@@ -194,7 +195,7 @@ class ReactionAI {
 
     results(commands) {
 
-           commands.reverse()
+        commands.reverse()
 
         if (VMolecule(commands[0]['starting substrate']).canonicalSMILES() === VMolecule(commands[commands.length-1]['finish substrate']).canonicalSMILES() ) {
             return
@@ -202,33 +203,33 @@ class ReactionAI {
 
 
         if (true) {
-        //if (commands.length > 0 && this.hasCharge(commands[0]['starting substrate']) === -1) {
+            //if (commands.length > 0 && this.hasCharge(commands[0]['starting substrate']) === -1) {
 
-               // Final command should result in the substrate we are trying to synthesise
-              // VMolecule([this.target, 1]).canonicalSMILES().should.equal(VMolecule(commands[commands.length - 1]['finish substrate']).canonicalSMILES())
+            // Final command should result in the substrate we are trying to synthesise
+            // VMolecule([this.target, 1]).canonicalSMILES().should.equal(VMolecule(commands[commands.length - 1]['finish substrate']).canonicalSMILES())
 
-               const reaction_steps = commands.map(
-                   (command, command_index) => {
-                       const command_in_plain_english = this.command_map[command['name']]
-                       const description = undefined === this.description_map[command['name']]?"":this.description_map[command['name']];
-                       return MReaction(
-                           "[" + command['name'] + "]" + " " +command_in_plain_english,
-                           command['starting substrate'],
-                           command['starting reagent'],
-                           command['finish substrate'],
-                           command['finish reagent'],
-                           description
-                       )
-                   }
-               )
+            const reaction_steps = commands.map(
+                (command, command_index) => {
+                    const command_in_plain_english = this.command_map[command['name']]
+                    const description = undefined === this.description_map[command['name']]?"":this.description_map[command['name']];
+                    return MReaction(
+                        "[" + command['name'] + "]" + " " +command_in_plain_english,
+                        command['starting substrate'],
+                        command['name'] === "reduceImineToAmineOnNitrogenMethylCarbon" ? "Reducing reagent":command['starting reagent'],
+                        command['finish substrate'],
+                        command['name'] === "reduceImineToAmineOnNitrogenMethylCarbon" ? "Reducing reagent":command['finish reagent'],
+                        description
+                    )
+                }
+            )
 
-               if (this.callback !== undefined && this.callback !== null) {
-                   this.callback(null, reaction_steps)
-               } else {
-                   VReaction(reaction_steps).render(this.db)
-               }
+            if (this.callback !== undefined && this.callback !== null) {
+                this.callback(null, reaction_steps)
+            } else {
+                VReaction(reaction_steps).render(this.db)
+            }
 
-           }
+        }
 
     }
 
@@ -314,7 +315,7 @@ class ReactionAI {
 
 
             if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
-               // this.result(target, reagent, commands, command_name)
+                // this.result(target, reagent, commands, command_name)
                 return
             }
 
@@ -382,8 +383,8 @@ class ReactionAI {
 
     _checkDepth(depth, commands) {
         if (depth > 40) {
-           //console.log(commands)
-           //console.log(depthgreaterthan40)
+            //console.log(commands)
+            //console.log(depthgreaterthan40)
         }
     }
 
