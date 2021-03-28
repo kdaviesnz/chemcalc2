@@ -530,72 +530,18 @@ const MoleculeAI = (container_molecule) => {
 //          // console.log((atoms.length)
   //          process.exit()
             const groups = this.extractGroupsRecursive([], 0, _.cloneDeep(atoms), atom_indexes_added, 0)
-         // console.log(('extractGroups()')
-         // console.log((VMolecule([[-1,groups[0]],1]).compressed())
-         // // console.log((VMolecule([[-1,groups[1]],1]).compressed())
-         // console.log((groups.length)
-         //   process.exit()
 
-            /*
+            console.log("Groups:")
+            console.log(groups)
+            console.log(gggroups)
+            process.exit()
 
-            // Extract groups from molecule
-            const groups = _.cloneDeep(container_molecule[0][1]).reduce((carry, atom, index)=>{
-                if (carry.length ===0) {
-                    carry.push([atom])
-                    return carry
-                }
-                const atom_object = CAtom(atom, index, container_molecule)
-                // Find atom from groups that current atom is bonded to
-                const i = _.findIndex(carry, (group_atoms, group_atom_index)=> {
-                    const k = _.findIndex(group_atoms, (group_atom, group_atom_index)=>{
-                        return atom_object.isBondedTo(group_atom)
-                    })
-                    return k !==-1
-                })
-                if (i !== -1) {
-                    carry[i].push(atom)
-                } else {
-                    carry.push([atom])
-                }
-                return carry
-            }, [])
-
-          // console.log(('GROUPS')
-          // console.log((groups)
-
-            // fix hydrogens
-            const groups_saved = _.cloneDeep(groups)
-            const hydrogens = _.cloneDeep(groups).filter((group)=> {
-                return group.length === 1 && group[0][0] === 'H'
-            }).map((group)=>{
-                return group.pop()
-            })
-            _.cloneDeep(groups).map((group, index)=> {
-                const i = _.findIndex(hydrogens, (hydrogen) => {
-                    const k = _.findIndex(group, (atom) => {
-                        if (atom[0]==="H") {
-                            return false
-                        }
-                        return Set().intersection(hydrogen.slice(5), atom.slice(5)).length > 0
-                    })
-                    ////// console.log((k)
-                    if (k > -1) {
-                        ////// console.log((index)
-                        groups_saved[index].push(hydrogen)
-                        ////// console.log(('hydrogen')
-                        ////// console.log((hydrogen)
-                        ////// console.log((groups_saved[index])
-                        //process.exit()
-                    }
-                })
-                return group
-            })
- // molecule, units
- */
 
             const groups_filtered = groups.filter((group)=>{
                 return group.length === 1 && group[0][0] === "H" ? false: true
             })
+
+
 
             return groups_filtered
         },
