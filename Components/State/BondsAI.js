@@ -1,6 +1,7 @@
 const Reaction = require("../State/Reaction")
 const MoleculeFactory = require('../../Models/MoleculeFactory')
 const VMolecule = require('../Stateless/Views/Molecule')
+const VAtom = require('../Stateless/Views/Atom')
 const _ = require('lodash');
 const CAtom = require('../../Controllers/Atom')
 const AtomFactory = require('../../Models/AtomFactory')
@@ -934,14 +935,32 @@ class BondsAI {
             return false
         }
 
+
+        console.log(VMolecule(this.reaction.container_substrate).formatted())
+        console.log(VAtom(nitrogen_atom).render())
         // Break bond between carbon atom and nitrogen atom
         const shared_electrons = Set().intersection(_.cloneDeep(this.reaction.container_substrate[0][1][nitrogen_index].slice(5)), _.cloneDeep(this.reaction.container_substrate[0][1][carbon_atom_index].slice(5)))
-        this.reaction.container_substrate[0][1][nitrogen_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][nitrogen_index], shared_electrons)
+       // this.reaction.container_substrate[0][1][nitrogen_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][nitrogen_index], shared_electrons)
+        this.reaction.container_substrate[0][1][nitrogen_index] = _.remove(this.reaction.container_substrate[0][1][nitrogen_index], (v,i)=>{
+            return v === shared_electrons[0] ||  v === shared_electrons[1]
+        })
+        this.reaction.container_substrate[0][1][nitrogen_index].push(uniqid())
+        this.reaction.container_substrate[0][1][nitrogen_index].push(uniqid())
 
         this.reaction.setChargeOnSubstrateAtom(nitrogen_index)
+        console.log(VAtom(nitrogen_atom).render())
+        console.log(kkkkkk)
+
+
+
         this.reaction.setChargeOnSubstrateAtom(carbon_atom_index)
         this.reaction.setMoleculeAI()
 
+
+
+        console.log(VAtom(nitrogen_atom).render())
+        console.log(VAtom(carbon_atom).render())
+        console.log(bbbbb)
 //        console.log(VMolecule(this.reaction.container_substrate).compressed())
 
         const groups = this.reaction.MoleculeAI.extractGroups()
