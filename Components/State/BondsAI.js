@@ -37,13 +37,13 @@ class BondsAI {
         return molecule
     }
 
-   removeBond(molecule, atom_index, electrons) {
+    removeBond(molecule, atom_index, electrons) {
 
-       _.remove(molecule[0][1][atom_index], (electron, index)=>{
-           return electron === electrons[0] || electron === electrons[1]
-       })
-       return molecule
-   }
+        _.remove(molecule[0][1][atom_index], (electron, index)=>{
+            return electron === electrons[0] || electron === electrons[1]
+        })
+        return molecule
+    }
 
     removeAtom(molecule, atom) {
         //this.container_substrate[0][1] = Set().removeFromArray(this.container_substrate[0][1], this.container_substrate[0][1][h_c_hydrogen_bonds[0].atom_index])
@@ -240,8 +240,8 @@ class BondsAI {
 
         this.reaction.setMoleculeAI()
 
-       // console.log("BondsAI makeOxygenCarbonDoubleBond() oxygen_index:" + oxygen_index)
-       // console.log(carbon_bonds.length)
+        // console.log("BondsAI makeOxygenCarbonDoubleBond() oxygen_index:" + oxygen_index)
+        // console.log(carbon_bonds.length)
         // console.log(qju)
 
 
@@ -572,9 +572,9 @@ class BondsAI {
     makeCarbonNitrogenDoubleBondReverse() {
 
         const nitrogen_index = this.reaction.MoleculeAI.findNitrogenOnDoubleBondIndex()
-      //  console.log('makeCarbonNitrogenDoubleBondReverse()')
-      //  console.log(VMolecule(this.reaction.container_substrate).compressed())
-      //  console.log(nitrogen_index)
+        //  console.log('makeCarbonNitrogenDoubleBondReverse()')
+        //  console.log(VMolecule(this.reaction.container_substrate).compressed())
+        //  console.log(nitrogen_index)
 
         if (nitrogen_index === -1) {
             return false
@@ -709,7 +709,7 @@ class BondsAI {
         // Important:
         // The reagent is the nucleophile and is attacking the substrate
         // The substrate is the electrophile
-      //  console.log('BondsAI.js bondSubstrateToReagent')
+        //  console.log('BondsAI.js bondSubstrateToReagent')
         // Check for Nitrogen atom  on reagent and C=O bond on substrate
         if (nucleophile_index === null) {
             nucleophile_index = _.findIndex(this.reaction.container_reagent[0][1], (atom, index) => {
@@ -805,7 +805,7 @@ class BondsAI {
         )
 
 //        this.reaction.setMoleculeAI()
-  //      this.reaction.setReagentAI()
+        //      this.reaction.setReagentAI()
 
         // Charges
         // this.reaction.container_substrate[0][1][electrophile_index][4] = this.reaction.container_substrate[0][1][electrophile_index][4] === "+"?"":"-"
@@ -826,7 +826,7 @@ class BondsAI {
         return true
 
     }
-    
+
     bondSubstrateToReagentReverse() {
         // Important (orginal reaction):
         // The reagent is the nucleophile and is attacking the substrate
@@ -882,8 +882,8 @@ class BondsAI {
                 if(this.reaction.leaving_groups.length > 0) {
                     this.reaction.container_reagent = this.reaction.leaving_groups[0]
 //                    console.log(VMolecule(this.reaction.container_reagent).canonicalSMILES())
-  //                  console.log(VMolecule(this.reaction.container_substrate).compressed())
-    //                console.log(nnjjn)
+                    //                  console.log(VMolecule(this.reaction.container_substrate).compressed())
+                    //                console.log(nnjjn)
                     return true
                 }
             }
@@ -891,6 +891,86 @@ class BondsAI {
 
         return false
     }
+
+    bondNitrogenToCarboxylCarbonReverse() {
+
+        // Important (orginal reaction):
+        // The reagent is the nucleophile and is attacking the substrate
+        // The substrate is the electrophile
+        // Look for N-C=[O+] nitrogen
+        let nitrogen_index = null
+        let nitrogen_atom = null
+        let carbon_atom = null
+        let carbon_atom_index = null
+        let oxygen_index = null
+        nitrogen_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index) => {
+            return atom[0] === "N" && (atom[4] === "+")
+        })
+
+
+        if (nitrogen_index === -1) {
+            return false
+        }
+
+        nitrogen_atom = CAtom(this.reaction.container_substrate[0][1][nitrogen_index], nitrogen_index, this.reaction.container_substrate)
+
+        let nitrogen_carbon_bonds = nitrogen_atom.indexedBonds("").filter((bond) => {
+            if (bond.atom[0] !== "C") {
+                return false
+            }
+            carbon_atom_index = bond.atom_index
+            carbon_atom = CAtom(this.reaction.container_substrate[0][1][carbon_atom_index], carbon_atom_index, this.reaction.container_substrate)
+            const o_bonds = carbon_atom.indexedBonds("").filter((obond) => {
+                if (obond.atom[0]!=="O") {
+                    return false
+                }
+                oxygen_index = obond.atom_index
+                return obond.atom[0] === "O"
+            })
+            return o_bonds.length > 0
+        })
+
+        if (nitrogen_carbon_bonds.length === 0) {
+            return false
+        }
+
+        // Break bond between carbon atom and nitrogen atom
+        const shared_electrons = Set().intersection(_.cloneDeep(this.reaction.container_substrate[0][1][nitrogen_index].slice(5)), _.cloneDeep(this.reaction.container_substrate[0][1][carbon_atom_index].slice(5)))
+        this.reaction.container_substrate[0][1][nitrogen_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][nitrogen_index], shared_electrons)
+
+        this.reaction.setChargeOnSubstrateAtom(nitrogen_index)
+        this.reaction.setChargeOnSubstrateAtom(carbon_atom_index)
+        this.reaction.setMoleculeAI()
+
+//        console.log(VMolecule(this.reaction.container_substrate).compressed())
+
+        const groups = this.reaction.MoleculeAI.extractGroups()
+        console.log(groups)
+
+        this.reaction.__setSubstrateGroups(groups)
+        if (this.reaction.leaving_groups.length > 0) {
+            this.reaction.container_reagent = this.reaction.leaving_groups[0]
+            console.log(VMolecule(this.reaction.container_reagent).compressed())
+            console.log(reagentshouldbeNR)
+            process.exit()
+
+            // Create carbon=oxygen double bond
+            const carbon_free_electrons = carbon_atom.freeElectrons()
+            // Add electrons to oxygen
+            this.reaction.container_substrate[0][1][oxygen_index].push(carbon_free_electrons[0])
+            this.reaction.container_substrate[0][1][oxygen_index].push(carbon_free_electrons[1])
+
+            this.reaction.setChargeOnSubstrateAtom(nitrogen_index)
+            this.reaction.setChargeOnSubstrateAtom(carbon_atom_index)
+            this.reaction.setMoleculeAI()
+
+            return true
+        } else {
+            return false
+        }
+
+    }
+
 
     removeHalide() {
 

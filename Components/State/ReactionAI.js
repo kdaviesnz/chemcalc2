@@ -72,7 +72,8 @@ class ReactionAI {
             'addProtonFromReagentToSubstrate':"Hydroxyl oxygen (oxygen with one hydrogen and one carbon bond) atom on substrate attacks a proton on the reagent. The proton bonds to the oxygen atom giving the oxygen a positive charge and creating a water leaving group.",
             'reduceImineToAmineOnNitrogenMethylCarbon':'Nitrogen=Carbon double bond is replaced with a single bond.',
             'dehydrate':"Oxygen atom with a positive charge and two hydrogen bonds is removed from the substrate",
-            'deprotonateNitrogen': "Reagent (base) attacks the proton on the nitrogen. Substrate acts as an acid as it loses a proton."
+            'deprotonateNitrogen': "Reagent (base) attacks the proton on the nitrogen. Substrate acts as an acid as it loses a proton.",
+            'bondNitrogenToCarboxylCarbon': 'Nitrogen atom (Lewis base, nucleophile) on reagent attacks the carboxyl carbon, forming a bond, and breaking one of the C=O bonds.'
         }
 
         /*
@@ -102,7 +103,9 @@ class ReactionAI {
           'reduceImineToAmineOnNitrogenMethylCarbon': 'Reduce imine to amine',
           'deprotonateNitrogen': 'Deprotonate nitrogen atom on substrate',
           'dehydrate': 'Dehydrate',
-          'transferProton': 'Transfer proton'
+          'transferProton': 'Transfer proton',
+          'bondNitrogenToCarboxylCarbon': 'Bond nitrogen on reagent to carboxyl carbon on substrate'
+
       }
 
 
@@ -257,15 +260,24 @@ class ReactionAI {
 
 
         for(const command_name in this.command_map) {
+
+            console.log("C:"+command_name)
+
             if (this.commands_filter.indexOf(command_name + 'Reversal') === -1) {
+
                 // console.log('_synthesise() inner depth='+depth)
                 term.eraseLine()
                 //term(indicator_map[Math.floor(Math.random() * 3)])
                 term(indicator_map[Math.floor(Math.random() * 2)] + ' ' + this.command_map[command_name])
                 term.column(0)
 
-                if (caller !== command_name + 'Reversal') {
+                // testing
+                if (caller === "transferProtonReversal") {
+                    console.log("Command")
+                    console.log(command_name)
+                }
 
+                if (caller !== command_name + 'Reversal') {
 
                     /*
                     ProtonateAI.js::deprotonateNitrogenReverse
@@ -277,7 +289,8 @@ class ReactionAI {
            }
         */
                     // If command_name is deprotonateNitrogen then pass in Brønsted–Lowry acid as the reagent"
-
+                    // testing
+                    //console.log(command_name)
                     if (command_name === 'deprotonateNitrogen') {
                         reagent = "Brønsted–Lowry base"
                     }
@@ -295,6 +308,9 @@ class ReactionAI {
     runReverseCommand(reverse_reaction, command_name, target, reagent, moleculeAI, commands, caller, depth, reagentAI) {
 
 
+        if (commands.length>3) {
+            console.log(command_name)
+        }
 
         this.debugger(caller + "  reverse reaction result")
         this.debugger("command " + command_name)
@@ -322,6 +338,10 @@ class ReactionAI {
 
         r = reverse_reaction[command_name + 'Reverse']()
 
+        if (command_name==="bondSubstrateToReagent" && commands.length===4) {
+            console.log(hrrre)
+            process.exit()
+        }
 
 
         this.debugger(r)
@@ -389,18 +409,8 @@ class ReactionAI {
             this.debugger(command_names)
 
 
-
-
-            // testing
-            if (commands.length === 4) {
-                this.results(_.cloneDeep(commands))
-                return
-            }
-
-
-
-
-            if(this.hasCharge(commands[commands.length-1]['starting substrate']) === -1 && (reverse_reaction.transferProtonReverse(true) === false && command_name !== "reduceImineToAmine" && command_name !=="reduceImineToAmineOnNitrogenMethylCarbon")) {
+            if (false) {
+            //if(this.hasCharge(commands[commands.length-1]['starting substrate']) === -1 && (reverse_reaction.transferProtonReverse(true) === false && command_name !== "reduceImineToAmine" && command_name !=="reduceImineToAmineOnNitrogenMethylCarbon")) {
                 this.results(_.cloneDeep(commands))
                 return
             } else {

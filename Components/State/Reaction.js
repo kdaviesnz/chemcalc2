@@ -93,6 +93,11 @@ class Reaction {
         this.MoleculeAI.validateMolecule(trace, trace_id)
     }
 
+    bondNitrogenToCarboxylCarbonReverse() {
+        const bondsAI = new BondsAI(this)
+        return bondsAI.bondNitrogenToCarboxylCarbonReverse()
+    }
+
     makeCarbonNitrogenDoubleBondReverse() {
         const bondsAI = new BondsAI(this)
         return bondsAI.makeCarbonNitrogenDoubleBondReverse()

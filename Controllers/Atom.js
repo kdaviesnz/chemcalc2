@@ -9,7 +9,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     mmolecule[0].length.should.be.equal(2) // pKa, atoms
 
     if (atom === undefined) {
-        console.log("Warning: atom is undefined")
+        console.log("Atom.js Warning: atom is undefined")
     }
     atom.should.be.an.Array()
 
