@@ -63,6 +63,7 @@ const VReaction = (reactions, container_end_product, rule) => {
 
         const reaction = reactions[index]
 
+
         if (reaction !== undefined) {
 
             if (reaction.command === "Dehydrate") {
@@ -81,6 +82,7 @@ const VReaction = (reactions, container_end_product, rule) => {
 
                     // We only want reactions with known starting substrates
                     //if (index === 0 && undefined === substrate_json_obj.IUPACName) {
+                    // testing
                     if (false) {
                         // Do nothing
                     } else {

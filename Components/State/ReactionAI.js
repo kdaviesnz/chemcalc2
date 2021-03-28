@@ -68,9 +68,11 @@ class ReactionAI {
 
         this.description_map = {
             'substituteOxygenCarbonDoubleBondForAmine':"SN2 mechanism; O=C bond is replaced with OC bond at the same time as the replacement atom bonds.\nReagent nitrogen atom is bonded to the carboxyl carbon double bonded to oxygen atom on the substrate. At the same time one of the bonds on oxygen=carbon breaks, leaving the oxygen with a negative charge.",
-            'transferProton':"Proton is transferred from electrophile on substrate to nucleophile on substrate.",
+            'transferProton':"Proton is transferred from electrophile (atom with positive charge) on substrate to nucleophile on substrate.",
             'addProtonFromReagentToSubstrate':"Hydroxyl oxygen (oxygen with one hydrogen and one carbon bond) atom on substrate attacks a proton on the reagent. The proton bonds to the oxygen atom giving the oxygen a positive charge and creating a water leaving group.",
-            'reduceImineToAmineOnNitrogenMethylCarbon':'Nitrogen=Carbon double bond is replaced with a single bond.'
+            'reduceImineToAmineOnNitrogenMethylCarbon':'Nitrogen=Carbon double bond is replaced with a single bond.',
+            'dehydrate':"Oxygen atom with a positive charge and two hydrogen bonds is removed from the substrate",
+            'deprotonateNitrogen': "Reagent (base) attacks the proton on the nitrogen. Substrate acts as an acid as it loses a proton."
         }
 
         /*
@@ -99,7 +101,8 @@ class ReactionAI {
       this.command_map = {
           'reduceImineToAmineOnNitrogenMethylCarbon': 'Reduce imine to amine',
           'deprotonateNitrogen': 'Deprotonate nitrogen atom on substrate',
-          'dehydrate': 'Dehydrate'
+          'dehydrate': 'Dehydrate',
+          'transferProton': 'Transfer proton'
       }
 
 
@@ -291,12 +294,6 @@ class ReactionAI {
 
     runReverseCommand(reverse_reaction, command_name, target, reagent, moleculeAI, commands, caller, depth, reagentAI) {
 
-        if (commands.length>99999) {
-            console.log(commands)
-            console.log(command_name)
-            console.log(uuu)
-            process.exit()
-        }
 
 
         this.debugger(caller + "  reverse reaction result")
@@ -321,15 +318,11 @@ class ReactionAI {
         let r = null
 
 
+
+
         r = reverse_reaction[command_name + 'Reverse']()
 
-        /*
-        if (command_name === "deprotonateNitrogen" && commands.length>0) {
-            console.log(commands)
-            console.log(r)
-            console.log(kkkk)
-        }
-        */
+
 
         this.debugger(r)
 
@@ -352,6 +345,8 @@ class ReactionAI {
         if (!r) {
             return
         } else {
+
+
 
 
             if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
@@ -393,8 +388,11 @@ class ReactionAI {
 
             this.debugger(command_names)
 
+
+
+
             // testing
-            if (commands.length === 2) {
+            if (commands.length === 4) {
                 this.results(_.cloneDeep(commands))
                 return
             }

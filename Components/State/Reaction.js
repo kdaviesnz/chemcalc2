@@ -531,9 +531,18 @@ class Reaction {
         }
 
 
-        // Get index of OH
-        let electrophile_index = this.MoleculeAI.findHydroxylOxygenIndex()
+        // Get index of [O+]H2
+        //let electrophile_index = this.MoleculeAI.findHydroxylOxygenIndex()
 
+        let electrophile_index = this.MoleculeAI.findWaterOxygenIndex()
+
+        /*
+        console.log("Transfer proton: nucleophile index")
+        console.log(nucleophile_index)
+        console.log("Transfer proton: electrophile_index index")
+        console.log(electrophile_index)
+        console.log(VMolecule(this.container_substrate).compressed())
+        */
 
         if (electrophile_index === -1) {
             return false
