@@ -59,6 +59,8 @@ client.connect(err => {
 
     const r = new ReactionAI(db)
 
+ //   console.log(VMolecule([me,0]).formatted())
+
     r.synthesise(me, [methylamine])
 
     /*

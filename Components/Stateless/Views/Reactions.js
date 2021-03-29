@@ -17,6 +17,11 @@ const VReaction = (reactions, container_end_product, rule) => {
     }
 
     const addFinishReagent = function(db, lines, reactions, index, reaction, substrate, product, reagent) {
+
+        if (reaction.finish_reagent === null) {
+            reaction.finish_reagent = ["No reagent"]
+        }
+
         if (typeof reaction.finish_reagent[0] === "string") {
             const finish_reagent = reaction.finish_reagent==="Reducing reagent" ||  reaction.finish_reagent==="Brønsted–Lowry base"?reaction.finish_reagent:reaction.finish_reagent[0]
             renderLine(db, lines, reactions, index, reaction, substrate, product, reagent, finish_reagent)

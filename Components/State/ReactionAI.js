@@ -104,11 +104,11 @@ class ReactionAI {
           'deprotonateNitrogen': 'Deprotonate nitrogen atom on substrate',
           'dehydrate': 'Dehydrate',
           'transferProton': 'Transfer proton',
-          'breakCarbonOxygenDoubleBond': 'Break oxygen-carbon double bond'
-
+          'breakCarbonOxygenDoubleBond': 'Break oxygen-carbon double bond',
+          'bondNitrogenToCarboxylCarbon': 'Bond nitrogen on reagent to carboxyl carbon on substrate'
       }
 
-// 'bondNitrogenToCarboxylCarbon': 'Bond nitrogen on reagent to carboxyl carbon on substrate'
+//
 
     }
 
@@ -298,6 +298,9 @@ class ReactionAI {
                     if (command_name === 'deprotonateNitrogen') {
                         reagent = "Brønsted–Lowry base"
                     }
+                    if (command_name==='breakCarbonOxygenDoubleBond') {
+                        reagent = null
+                    }
                     this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), command_name, _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth, reagentAI)
                 }
 
@@ -341,7 +344,7 @@ class ReactionAI {
         r = reverse_reaction[command_name + 'Reverse']()
 
         // testing
-        if (commands.length>3 && caller==="transferProtonReversal" && command_name==="breakCarbonOxygenDoubleBond") {
+        if (commands.length>3 && caller==="breakCarbonOxygenDoubleBond" && command_name==="bondNitrogenToCarboxylCarbon") {
             console.log("Caller:" + caller)
             console.log(command_name)
             console.log(r)
@@ -387,7 +390,7 @@ class ReactionAI {
             //process.exit()
 
             const reverse_reaction_substrateAI = require("../Stateless/MoleculeAI")(_.cloneDeep(_.cloneDeep(reverse_reaction.container_substrate)))
-            const reverse_reaction_reagentAI = typeof reverse_reaction.container_reagent[0] === "string"?null:require("../Stateless/MoleculeAI")(_.cloneDeep(_.cloneDeep(reverse_reaction.container_reagent)))
+            const reverse_reaction_reagentAI = reverse_reaction.container_reagent === null || typeof reverse_reaction.container_reagent[0] === "string"?null:require("../Stateless/MoleculeAI")(_.cloneDeep(_.cloneDeep(reverse_reaction.container_reagent)))
 
             reverse_reaction_substrateAI.validateMolecule()
             // addProtonFromReagentToHydroxylGroupReverse
@@ -424,7 +427,7 @@ class ReactionAI {
                //console.log(nbn)
                 //process.exit()
                 // testing
-                if (commands.length>3 && caller==="transferProtonReversal" && command_name==="breakCarbonOxygenDoubleBond") {
+                if (commands.length>5 && caller==="breakCarbonOxygenDoubleBondReversal" && command_name==="bondNitrogenToCarboxylCarbon") {
                     this.results(_.cloneDeep(commands))
                 } else {
 

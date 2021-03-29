@@ -531,17 +531,9 @@ const MoleculeAI = (container_molecule) => {
   //          process.exit()
             const groups = this.extractGroupsRecursive([], 0, _.cloneDeep(atoms), atom_indexes_added, 0)
 
-            console.log("Groups:")
-            console.log(groups)
-            console.log(gggroups)
-            process.exit()
-
-
             const groups_filtered = groups.filter((group)=>{
                 return group.length === 1 && group[0][0] === "H" ? false: true
             })
-
-
 
             return groups_filtered
         },

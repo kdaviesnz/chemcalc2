@@ -899,6 +899,8 @@ class BondsAI {
     bondNitrogenToCarboxylCarbonReverse() {
 
 
+       // console.log(VMolecule(this.reaction.container_substrate).formatted())
+
         // Important (orginal reaction):
         // The reagent is the nucleophile and is attacking the substrate
         // The substrate is the electrophile
@@ -953,47 +955,37 @@ class BondsAI {
         })
 
         this.reaction.setChargeOnSubstrateAtom(nitrogen_index)
-        console.log(VMolecule(this.reaction.container_substrate).compressed())
+       // console.log(VMolecule(this.reaction.container_substrate).compressed())
         nitrogen_atom = CAtom(this.reaction.container_substrate[0][1][nitrogen_index], nitrogen_index, this.reaction.container_substrate)
-        console.log(VAtom(nitrogen_atom).render())
-        console.log(ddddd)
-
+       // console.log(VAtom(nitrogen_atom).render())
 
         //console.log(VAtom(nitrogen_atom).render())
-        console.log(kkkkkk)
-
-
-
 
         this.reaction.setChargeOnSubstrateAtom(carbon_atom_index)
-
         this.reaction.setMoleculeAI()
 
+       // console.log(VMolecule(this.reaction.container_substrate).formatted())
 
-
-        console.log(VAtom(nitrogen_atom).render())
-        console.log(VAtom(carbon_atom).render())
-        console.log(bbbbb)
-//        console.log(VMolecule(this.reaction.container_substrate).compressed())
 
         const groups = this.reaction.MoleculeAI.extractGroups()
-        console.log(groups)
 
         this.reaction.__setSubstrateGroups(groups)
         if (this.reaction.leaving_groups.length > 0) {
             this.reaction.container_reagent = this.reaction.leaving_groups[0]
-            console.log(VMolecule(this.reaction.container_reagent).compressed())
-            console.log(reagentshouldbeNR)
-            process.exit()
-
-            // Create carbon=oxygen double bond
+           // console.log("Substrate")
+           // console.log(VMolecule(this.reaction.container_substrate).formatted())
+           // console.log("Reagent")
+           // console.log(VMolecule(this.reaction.container_reagent).formatted())
+           // console.log(jjjkkppp)
+            /*
             const carbon_free_electrons = carbon_atom.freeElectrons()
             // Add electrons to oxygen
             this.reaction.container_substrate[0][1][oxygen_index].push(carbon_free_electrons[0])
             this.reaction.container_substrate[0][1][oxygen_index].push(carbon_free_electrons[1])
+             */
 
-            this.reaction.setChargeOnSubstrateAtom(nitrogen_index)
-            this.reaction.setChargeOnSubstrateAtom(carbon_atom_index)
+           // this.reaction.setChargeOnSubstrateAtom(nitrogen_index)
+          //  this.reaction.setChargeOnSubstrateAtom(carbon_atom_index)
             this.reaction.setMoleculeAI()
 
             return true
