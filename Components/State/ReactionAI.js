@@ -73,7 +73,8 @@ class ReactionAI {
             'reduceImineToAmineOnNitrogenMethylCarbon':'Nitrogen=Carbon double bond is replaced with a single bond.',
             'dehydrate':"Oxygen atom with a positive charge and two hydrogen bonds is removed from the substrate",
             'deprotonateNitrogen': "Reagent (base) attacks the proton on the nitrogen. Substrate acts as an acid as it loses a proton.",
-            'bondNitrogenToCarboxylCarbon': 'Nitrogen atom (Lewis base, nucleophile) on reagent attacks the carboxyl carbon, forming a bond, and breaking one of the C=O bonds.'
+            'bondNitrogenToCarboxylCarbon': 'Nitrogen atom (Lewis base, nucleophile) on reagent attacks the carboxyl carbon, forming a bond, and breaking one of the C=O bonds.',
+            'breakCarbonOxygenDoubleBond': 'Change C=O bond to a single bond'
         }
 
         /*
@@ -105,7 +106,8 @@ class ReactionAI {
           'dehydrate': 'Dehydrate',
           'transferProton': 'Transfer proton',
           'breakCarbonOxygenDoubleBond': 'Break oxygen-carbon double bond',
-          'bondNitrogenToCarboxylCarbon': 'Bond nitrogen on reagent to carboxyl carbon on substrate'
+          'bondNitrogenToCarboxylCarbon': 'Bond nitrogen on reagent to carboxyl carbon on substrate',
+          'addProtonFromReagentToHydroxylGroup': 'Add proton from reagent to hydroxyl group on substrate'
       }
 
 //
@@ -298,6 +300,9 @@ class ReactionAI {
                     if (command_name === 'deprotonateNitrogen') {
                         reagent = "Brønsted–Lowry base"
                     }
+                    if (command_name === 'addProtonFromReagentToHydroxylGroup') {
+                        reagent = "Brønsted–Lowry acid"
+                    }
                     if (command_name==='breakCarbonOxygenDoubleBond') {
                         reagent = null
                     }
@@ -338,16 +343,15 @@ class ReactionAI {
         let r = null
 
 
-
-
-
         r = reverse_reaction[command_name + 'Reverse']()
 
         // testing
-        if (commands.length>3 && caller==="breakCarbonOxygenDoubleBond" && command_name==="bondNitrogenToCarboxylCarbon") {
+        if (commands.length>5 && caller==="bondNitrogenToCarboxylCarbonReversal" && command_name==="addProtonFromReagentToHydroxylGroup") {
             console.log("Caller:" + caller)
+            console.log(commands.length)
             console.log(command_name)
             console.log(r)
+            console.log(hjhhhhh)
         }
 
 
@@ -427,7 +431,7 @@ class ReactionAI {
                //console.log(nbn)
                 //process.exit()
                 // testing
-                if (commands.length>5 && caller==="breakCarbonOxygenDoubleBondReversal" && command_name==="bondNitrogenToCarboxylCarbon") {
+                if (commands.length>6 && caller==="bondNitrogenToCarboxylCarbonReversal" && command_name==="bondNitrogenToCarboxylCarbon") {
                     this.results(_.cloneDeep(commands))
                 } else {
 

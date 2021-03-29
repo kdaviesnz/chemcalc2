@@ -375,7 +375,6 @@ class ProtonationAI {
 
     protonateReverse() {
 
-        //// console.log("protonateReverse()")
         //// console.log(VMolecule(this.container_substrate).compressed())
         //// console.log(VMolecule(this.container_reagent).compressed())
 
@@ -888,6 +887,8 @@ class ProtonationAI {
     addProtonFromReagentToHydroxylGroupReverse() {
 
 
+        console.log("ProtonationAI: addProtonFromReagentToHydroxylGroupReverse ")
+        console.log(abc)
         const water_oxygen_index = this.reaction.MoleculeAI.findWaterOxygenIndex()
 
         ////// console.log(VMolecule(this.reaction.container_substrate).compressed())
