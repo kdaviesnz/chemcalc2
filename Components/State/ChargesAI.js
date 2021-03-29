@@ -287,7 +287,6 @@ class ChargesAI {
 
 
         // this.reaction.container_substrate[0][1][index][4] is the charge
-
         this.reaction.container_substrate[0][1][index][4] = b  > 0? "+": (b < 0?"-":"")
 
         /*

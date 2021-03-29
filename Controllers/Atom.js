@@ -13,6 +13,13 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     }
     atom.should.be.an.Array()
 
+    if (atom.length < 3) {
+        console.log("Atom length is not greater than 3")
+        console.log("Atom:")
+        console.log(atom)
+        throw new Error()
+        process.exit()
+    }
     atom.length.should.be.greaterThan(3)
     current_atom_index.should.be.Number()
 

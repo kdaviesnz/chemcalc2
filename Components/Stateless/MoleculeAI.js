@@ -283,7 +283,7 @@ const MoleculeAI = (container_molecule) => {
                         }
                         break;
                     case "C":
-                        if (electrons.length > 8) {
+                        if (electrons.length > 10) { // if we are doing a reversal
                            console.log("DEBUG: Atom has more than allowed number of electrons")
                            console.log("DEBUG: Atom " + atom[0])
                             console.log("DEBUG: Index " + index)

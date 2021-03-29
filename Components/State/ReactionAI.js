@@ -104,11 +104,11 @@ class ReactionAI {
           'deprotonateNitrogen': 'Deprotonate nitrogen atom on substrate',
           'dehydrate': 'Dehydrate',
           'transferProton': 'Transfer proton',
-          'bondNitrogenToCarboxylCarbon': 'Bond nitrogen on reagent to carboxyl carbon on substrate'
+          'breakCarbonOxygenDoubleBond': 'Break oxygen-carbon double bond'
 
       }
 
-
+// 'bondNitrogenToCarboxylCarbon': 'Bond nitrogen on reagent to carboxyl carbon on substrate'
 
     }
 
@@ -208,9 +208,13 @@ class ReactionAI {
 
     results(commands) {
 
+       console.log('results()')
+      //  process.exit()
+
         commands.reverse()
 
         if (VMolecule(commands[0]['starting substrate']).canonicalSMILES() === VMolecule(commands[commands.length-1]['finish substrate']).canonicalSMILES() ) {
+            console.log("Starting substrate same as finish substrate")
             return
         }
 
@@ -241,6 +245,8 @@ class ReactionAI {
             if (this.callback !== undefined && this.callback !== null) {
                 this.callback(null, reaction_steps)
             } else {
+                console.log('ReactionAIgothere')
+                console.log(reaction_steps)
                 VReaction(reaction_steps).render(this.db)
             }
 
@@ -260,8 +266,6 @@ class ReactionAI {
 
 
         for(const command_name in this.command_map) {
-
-            console.log("C:"+command_name)
 
             if (this.commands_filter.indexOf(command_name + 'Reversal') === -1) {
 
@@ -308,9 +312,6 @@ class ReactionAI {
     runReverseCommand(reverse_reaction, command_name, target, reagent, moleculeAI, commands, caller, depth, reagentAI) {
 
 
-        if (commands.length>3) {
-            console.log(command_name)
-        }
 
         this.debugger(caller + "  reverse reaction result")
         this.debugger("command " + command_name)
@@ -336,11 +337,14 @@ class ReactionAI {
 
 
 
+
         r = reverse_reaction[command_name + 'Reverse']()
 
-        if (command_name==="bondSubstrateToReagent" && commands.length===4) {
-            console.log(hrrre)
-            process.exit()
+        // testing
+        if (commands.length>3 && caller==="transferProtonReversal" && command_name==="breakCarbonOxygenDoubleBond") {
+            console.log("Caller:" + caller)
+            console.log(command_name)
+            console.log(r)
         }
 
 
@@ -419,16 +423,23 @@ class ReactionAI {
                //console.log(VMolecule(reverse_reaction.container_substrate).compressed())
                //console.log(nbn)
                 //process.exit()
+                // testing
+                if (commands.length>3 && caller==="transferProtonReversal" && command_name==="breakCarbonOxygenDoubleBond") {
+                    this.results(_.cloneDeep(commands))
+                } else {
 
-                this._synthesise(
-                    _.cloneDeep(reverse_reaction.container_substrate),
-                    _.cloneDeep(reverse_reaction.container_reagent),
-                    _.cloneDeep(commands),
-                    command_name + 'Reversal',
-                    depth + 1,
-                    reverse_reaction_substrateAI,
-                    reverse_reaction_reagentAI
-                )
+
+                    this._synthesise(
+                        _.cloneDeep(reverse_reaction.container_substrate),
+                        _.cloneDeep(reverse_reaction.container_reagent),
+                        _.cloneDeep(commands),
+                        command_name + 'Reversal',
+                        depth + 1,
+                        reverse_reaction_substrateAI,
+                        reverse_reaction_reagentAI
+                    )
+
+                }
             }
 
         }

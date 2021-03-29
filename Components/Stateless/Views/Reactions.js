@@ -63,6 +63,9 @@ const VReaction = (reactions, container_end_product, rule) => {
 
         const reaction = reactions[index]
 
+        console.log('renderReactionsRecursive')
+        console.log(reaction)
+
 
         if (reaction !== undefined) {
 
