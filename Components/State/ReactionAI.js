@@ -74,7 +74,8 @@ class ReactionAI {
             'dehydrate':"Oxygen atom with a positive charge and two hydrogen bonds is removed from the substrate",
             'deprotonateNitrogen': "Reagent (base) attacks the proton on the nitrogen. Substrate acts as an acid as it loses a proton.",
             'bondNitrogenToCarboxylCarbon': 'Nitrogen atom (Lewis base, nucleophile) on reagent attacks the carboxyl carbon, forming a bond, and breaking one of the C=O bonds.',
-            'breakCarbonOxygenDoubleBond': 'Change C=O bond to a single bond'
+            'breakCarbonOxygenDoubleBond': 'Change C=O bond to a single bond',
+            'addProtonToReagent': 'Reagent attacks a proton on an acid catalyst.'
         }
 
         /*
@@ -100,16 +101,19 @@ class ReactionAI {
         }
         */
 
-      this.command_map = {
-          'reduceImineToAmineOnNitrogenMethylCarbon': 'Reduce imine to amine',
-          'deprotonateNitrogen': 'Deprotonate nitrogen atom on substrate',
-          'dehydrate': 'Dehydrate',
-          'transferProton': 'Transfer proton',
-          'breakCarbonOxygenDoubleBond': 'Break oxygen-carbon double bond',
-          'bondNitrogenToCarboxylCarbon': 'Bond nitrogen on reagent to carboxyl carbon on substrate',
-          'addProtonFromReagentToHydroxylGroup': 'Add proton from reagent to hydroxyl group on substrate'
-      }
 
+
+        this.command_map = {
+            'reduceImineToAmineOnNitrogenMethylCarbon': 'Reduce imine to amine',
+            'deprotonateNitrogen': 'Deprotonate nitrogen atom on substrate',
+            'dehydrate': 'Dehydrate',
+            'transferProton': 'Transfer proton',
+            'breakCarbonOxygenDoubleBond': 'Break oxygen-carbon double bond',
+            'bondNitrogenToCarboxylCarbon': 'Bond nitrogen on reagent to carboxyl carbon on substrate',
+            'addProtonToReagent': 'Protonate reagent using acid catalyst'
+        }
+
+        //     'addProtonFromReagentToHydroxylGroup': 'Add proton from reagent to hydroxyl group on substrate'
 //
 
     }
@@ -210,8 +214,8 @@ class ReactionAI {
 
     results(commands) {
 
-       console.log('results()')
-      //  process.exit()
+        console.log('results()')
+        //  process.exit()
 
         commands.reverse()
 
@@ -283,6 +287,15 @@ class ReactionAI {
                     console.log(command_name)
                 }
 
+                // testing
+                if (command_name === "addProtonToReagent") {
+                    // O on reagent should have an oxygen
+                    reagent = commands[commands.length-1]['starting reagent']
+                    console.log(commands[commands.length-1])
+                    console.log(VMolecule(reagent).compressed())
+                    console.log(bbbb)
+                }
+
                 if (caller !== command_name + 'Reversal') {
 
                     /*
@@ -303,6 +316,11 @@ class ReactionAI {
                     if (command_name === 'addProtonFromReagentToHydroxylGroup') {
                         reagent = "Brønsted–Lowry acid"
                     }
+                    if (command_name === 'addProtonToReagent') {
+                        substrate = reagent
+                        reagent = "Brønsted–Lowry acid"
+                    }
+
                     if (command_name==='breakCarbonOxygenDoubleBond') {
                         reagent = null
                     }
@@ -319,6 +337,14 @@ class ReactionAI {
 
     runReverseCommand(reverse_reaction, command_name, target, reagent, moleculeAI, commands, caller, depth, reagentAI) {
 
+
+        if (command_name === 'addProtonToReagent') {
+            console.log('Substrate')
+            console.log(VMolecule(target).compressed())
+           console.log('reagent')
+            console.log(reagent)
+            console.log(jjjj)
+        }
 
 
         this.debugger(caller + "  reverse reaction result")
@@ -421,14 +447,14 @@ class ReactionAI {
 
 
             if (false) {
-            //if(this.hasCharge(commands[commands.length-1]['starting substrate']) === -1 && (reverse_reaction.transferProtonReverse(true) === false && command_name !== "reduceImineToAmine" && command_name !=="reduceImineToAmineOnNitrogenMethylCarbon")) {
+                //if(this.hasCharge(commands[commands.length-1]['starting substrate']) === -1 && (reverse_reaction.transferProtonReverse(true) === false && command_name !== "reduceImineToAmine" && command_name !=="reduceImineToAmineOnNitrogenMethylCarbon")) {
                 this.results(_.cloneDeep(commands))
                 return
             } else {
 
-               //console.log(commands)
-               //console.log(VMolecule(reverse_reaction.container_substrate).compressed())
-               //console.log(nbn)
+                //console.log(commands)
+                //console.log(VMolecule(reverse_reaction.container_substrate).compressed())
+                //console.log(nbn)
                 //process.exit()
                 // testing
                 if (commands.length>6 && caller==="bondNitrogenToCarboxylCarbonReversal" && command_name==="bondNitrogenToCarboxylCarbon") {
