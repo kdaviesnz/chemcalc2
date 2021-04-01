@@ -290,8 +290,8 @@ class ReactionAI {
                 // testing
                 if (command_name === "addProtonToReagent") {
                     // O on reagent should have an oxygen
+                    console.log(commands)
                     reagent = commands[commands.length-1]['starting reagent']
-                    console.log(commands[commands.length-1])
                     console.log(VMolecule(reagent).compressed())
                     console.log(bbbb)
                 }
