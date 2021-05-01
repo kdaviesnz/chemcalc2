@@ -61,9 +61,13 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
 
 const Families = require('./Models/Families')
 
+console.log("Testing sulphuric acid (OS(=O)(=O)O)")
 const sulphuric_acid = MoleculeFactory("OS(=O)(=O)O")
-//console.log("OS(=O)(=O)O")
-//console.log(VMolecule([sulphuric_acid, 1]).compressed())
+// return [atom[0], index, "H " + h.length, 'Charge: '+ atom[4],  bonds, double_bonds, triple_bonds, electrons.length, free_electrons.length]
+console.log("Atomic symbol / Hydrogens / Charge / Single bonds / Double bonds / Triple bonds/ # of electrons / # of free electrons")
+console.log("Neutral sulphur atoms have six bonds in total including hydrogen bonds.")
+console.log("Compressed:")
+console.log(VMolecule([sulphuric_acid, 1]).compressed())
 VMolecule([sulphuric_acid, 1]).canonicalSMILES().should.be.equal("OS(=O)(=O)O")
 
 process.exit()

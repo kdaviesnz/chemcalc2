@@ -10,6 +10,24 @@ const VMolecule = require('../Components/Stateless/Views/Molecule')
 
 const CMolecule = (mmolecule, verbose) => {
 
+    const verifyMolecule = () => {
+        const molecule_compressed = VMolecule([mmolecule, 1]).compressed()
+        // "Atomic symbol / Hydrogens / Charge / Single bonds / Double bonds / Triple bonds/ # of electrons / # of free electrons"
+        molecule_compressed.map((atom)=>{
+            const atomic_symbol = atom[0]
+            const number_of_hydrogens = atom[2].replace('H ', "") * 1
+            const number_of_single_bonds = atom[4].length
+            const number_of_double_bonds = atom[5].length
+            const number_of_triple_bonds = atom[6].length
+            const number_of_electrons = atom[7]
+            const number_of_free_electrons = atom[8]
+            switch(atomic_symbol) {
+                case 'O':
+                    break;
+            }
+        })
+    }
+
     const __checkContainer = (container) => {
         container.should.be.an.Array()
         container[0].should.be.an.Boolean()
