@@ -419,12 +419,20 @@ const VMolecule = (mmolecule) => {
 
         },
 
-        branchCount: function(compressed_atom, start_of_branch_index) {
+        branchCount: function(compressed_atom, start_of_branch_index, previous_atom_id) {
             let number_of_branches = 0
             const compressed_atom_from_start_of_branch = compressed_atom.slice(start_of_branch_index)
             compressed_atom_from_start_of_branch.map((atom, k)=> {
-                // get bonds
-                const bond_indexes = merge atom[4] atom[5]
+                // merge bonds
+                const bonds = atom[4].concat(atom[5]).concat(atom[6])
+                // Format
+                const bond_indexes = bonds.map((b)=>{
+                    return b[0] *1
+                }).filter((id)=>{
+                    return id !==previous_atom_id
+                })
+                console.log(bond_indexes);
+                process.error("hello world")
             })
         },
         canonicalSMILES: function() {
@@ -451,10 +459,13 @@ const VMolecule = (mmolecule) => {
             ]*/
             // for each atom we need to get if it's the end of the chain or part of a chain, what atoms it is attached to, whether we start a new branch etc
             // Atomic symbol / Hydrogens / Charge / Single bonds / Double bonds / Triple bonds/ # of electrons / # of free electrons
-            const smiles = this.compressed().reduce((s, atom, i)=>{
+            const compressedMolecule = this.compressed()
+            const smiles = compressedMolecule.reduce((s, atom, i)=>{
                 if(i===0) {
                     s = atom[0]
                 }
+                const b_count = this.branchCount(compressedMolecule, i+1, atom[1])
+
             }, "")
 
 
