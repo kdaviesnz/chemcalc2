@@ -470,10 +470,14 @@ const VMolecule = (mmolecule) => {
             // Atomic symbol / id / Hydrogens / Charge / Single bonds / Double bonds / Triple bonds/ # of electrons / # of free electrons
             const compressedMolecule = this.compressed()
             // (OS(=O)(=O)O)
-            const smiles = compressedMolecule.reduce((s, atom, i)=>{
+            const smiles = compressedMolecule.reduce((s, atom, i)=> {
                 s = atom[0]
-                process.error("If an atom has double bonds then the single bonds should be empty unless those single bonds are bonded to a different atom")
                 const number_of_branches = atom[4].length + atom[5]
+                if (i === 1) {
+                    console.log("Number or branches atom " + i)
+                    console.log("*" + number_of_branches + "*")
+                    process.error()
+                }
 
             }, "")
 
