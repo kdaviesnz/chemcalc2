@@ -424,7 +424,7 @@ const VMolecule = (mmolecule) => {
             const compressed_atom_from_start_of_branch = compressed_atom.slice(start_of_branch_index)
             compressed_atom_from_start_of_branch.map((atom, k)=> {
                 // get bonds
-                const bonds = merge atom[4] atom[5]
+                const bond_indexes = merge atom[4] atom[5]
             })
         },
         canonicalSMILES: function() {
