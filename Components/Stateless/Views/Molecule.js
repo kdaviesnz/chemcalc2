@@ -419,9 +419,14 @@ const VMolecule = (mmolecule) => {
 
         },
 
-        branchCount: function(compressed_atom, start_of_branch_index, previous_atom_id) {
+        isBranch: function(compressed_atom, start_of_branch_index, previous_atom_id) {
             let number_of_branches = 0
             const compressed_atom_from_start_of_branch = compressed_atom.slice(start_of_branch_index)
+            let is_branch = false
+            if (previous_atom_id === 1) {
+                console.log(compressed_atom_from_start_of_branch)
+//                process.error()
+            }
             compressed_atom_from_start_of_branch.map((atom, k)=> {
                 // merge bonds
                 const bonds = atom[4].concat(atom[5]).concat(atom[6])
@@ -431,9 +436,14 @@ const VMolecule = (mmolecule) => {
                 }).filter((id)=>{
                     return id !==previous_atom_id
                 })
-                console.log(bond_indexes);
-                process.error("hello world")
+                if (bond_indexes.length ===0) {
+                    number_of_branches = number_of_branches + 1
+                }
             })
+            if (previous_atom_id === 1) {
+                console.log(number_of_branches)
+                process.error()
+            }
         },
         canonicalSMILES: function() {
 
@@ -464,7 +474,7 @@ const VMolecule = (mmolecule) => {
                 if(i===0) {
                     s = atom[0]
                 }
-                const b_count = this.branchCount(compressedMolecule, i+1, atom[1])
+                const b_count = this.isBranch(compressedMolecule, i+1, atom[1])
 
             }, "")
 
