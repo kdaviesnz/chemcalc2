@@ -437,13 +437,12 @@ const VMolecule = (mmolecule) => {
                     return id !==previous_atom_id
                 })
                 if (bond_indexes.length ===0) {
-                    number_of_branches = number_of_branches + 1
+                    is_branch = true
                 }
+                previous_atom_id = atom[1]
             })
-            if (previous_atom_id === 1) {
-                console.log(number_of_branches)
-                process.error()
-            }
+
+            return is_branch
         },
         canonicalSMILES: function() {
 
@@ -468,13 +467,13 @@ const VMolecule = (mmolecule) => {
                 [ 'O', 6, 'H 1', 'Charge: 0', [ '2  S' ], [], [], 8, 4 ]
             ]*/
             // for each atom we need to get if it's the end of the chain or part of a chain, what atoms it is attached to, whether we start a new branch etc
-            // Atomic symbol / Hydrogens / Charge / Single bonds / Double bonds / Triple bonds/ # of electrons / # of free electrons
+            // Atomic symbol / id / Hydrogens / Charge / Single bonds / Double bonds / Triple bonds/ # of electrons / # of free electrons
             const compressedMolecule = this.compressed()
+            // (OS(=O)(=O)O)
             const smiles = compressedMolecule.reduce((s, atom, i)=>{
-                if(i===0) {
-                    s = atom[0]
-                }
-                const b_count = this.isBranch(compressedMolecule, i+1, atom[1])
+                s = atom[0]
+                process.error("If an atom has double bonds then the single bonds should be empty unless those single bonds are bonded to a different atom")
+                const number_of_branches = atom[4].length + atom[5]
 
             }, "")
 

@@ -86,7 +86,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
         filter_by.should.be.an.String()
 
-        const r =  _.cloneDeep(atoms).reduce(
+        let r =  _.cloneDeep(atoms).reduce(
 
             (bonds, _atom, _atom_index) => {
 
@@ -113,72 +113,99 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             []
         )
 
-        return r
-
-        /*
-        const r2 =  atoms.map(
-
-            (_atom, _atom_index) => {
-
-                if (atom === _atom) {
-                    return false
-                }
-
-
-                const shared_electrons = Set().intersection(atom_electrons, _atom.slice(5)).reduce(
-                    (carry, electron) => {
-                        carry.push(
-                                electron
-                        )
-                        return carry;
-                    },
-                    []
-                )
-
-                return {
-                    'atom': _atom,
-                    'atom_index': _atom_index,
-                    'shared_electrons': shared_electrons
-
-                }
-
-            }
-        ).filter(
-            (item) => {
-                return item !== false && item.atom[0] !== filter_by
-            }
-        )
-
-        if(atom[0]==='Cl') {
-            console.log("r")
+/*
+        if (r.length > 0) {
+            console.log("_indexedDoubleBonds()")
             console.log(r)
-            process.exit()
+            process.error()
         }
+ */
+        /*
+        r:
+        [
+  {
+    atom: [
+      'O',
+      8,
+      6,
+      2,
+      0,
+      '2yyvqtf2zxko6cfqsg',
+      '2yyvqtf2zxko6cfqsh',
+      '2yyvqtf2zxko6cfqsi',
+      '2yyvqtf2zxko6cfqsj',
+      '2yyvqtf2zxko6cfqsk',
+      '2yyvqtf2zxko6cfqsl',
+      '2yyvqtf2zxko6cfqse',
+      '2yyvqtf2zxko6cfqsd'
+    ],
+    atom_index: 3,
+    shared_electrons: [
+      '2yyvqtf2zxko6cfqsd',
+      '2yyvqtf2zxko6cfqse',
+      '2yyvqtf2zxko6cfqsl',
+      '2yyvqtf2zxko6cfqsk'
+    ]
+  },
+  {
+    atom: [
+      'O',
+      8,
+      6,
+      2,
+      0,
+      '2yyvqtf2zxko6cfqsm',
+      '2yyvqtf2zxko6cfqsn',
+      '2yyvqtf2zxko6cfqso',
+      '2yyvqtf2zxko6cfqsp',
+      '2yyvqtf2zxko6cfqsq',
+      '2yyvqtf2zxko6cfqsr',
+      '2yyvqtf2zxko6cfqsc',
+      '2yyvqtf2zxko6cfqsb'
+    ],
+    atom_index: 4,
+    shared_electrons: [
+      '2yyvqtf2zxko6cfqsb',
+      '2yyvqtf2zxko6cfqsc',
+      '2yyvqtf2zxko6cfqsr',
+      '2yyvqtf2zxko6cfqsq'
+    ]
+  }
+]
+
+
+         */
+
+
+        // Filter out "double" bonds that are actually triple bonds
+        const t_bonds = __indexedTripleBonds("H")
+        if (t_bonds.length>0) {
+            // Get indexes of the double bonds
+            const t_bond_indexes = t_bonds.map((b)=>{
+                return b.atom_index
+            })
+            // Filter doublke bonds that have indexes in t_bond_indexes
+            //console.log(t_bond_indexes)
+            r = r.filter((db)=>{
+                return t_bond_indexes.indexOf(db.atom_index)===-1
+            })
+        }
+
         return r
-        */
+
 
     }
 
 
-    const __indexedBonds = (filter_by) => {
+    const __indexedBonds = function(filter_by)  {
 
         const atoms = mmolecule[0][1]
         const atom_electrons = atom.slice(5)
 
         filter_by.should.be.an.String()
 
-        /*
-[
-    {
-         atom_index:3 // index of the current atom is bonded to
-         shared_electrons: ["il8089098","8909809uu"]
-    },
-    ...
 
-]
- */
-
-        const r =  _.cloneDeep(atoms).reduce(
+        let r =  _.cloneDeep(atoms).reduce(
 
             (bonds, _atom, _atom_index) => {
 
@@ -209,49 +236,41 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             []
         )
 
-        return r
-
-        /*
-        const r2 =  atoms.map(
-
-            (_atom, _atom_index) => {
-
-                if (atom === _atom) {
-                    return false
-                }
-
-
-                const shared_electrons = Set().intersection(atom_electrons, _atom.slice(5)).reduce(
-                    (carry, electron) => {
-                        carry.push(
-                                electron
-                        )
-                        return carry;
-                    },
-                    []
-                )
-
-                return {
-                    'atom': _atom,
-                    'atom_index': _atom_index,
-                    'shared_electrons': shared_electrons
-
-                }
-
-            }
-        ).filter(
-            (item) => {
-                return item !== false && item.atom[0] !== filter_by
-            }
-        )
-
-        if(atom[0]==='Cl') {
-            console.log("r")
-            console.log(r)
-            process.exit()
+        // Filter out "single" bonds that are actually double bonds
+        const d_bonds = __indexedDoubleBonds("H")
+        if (d_bonds.length>0) {
+            // Get indexes of the double bonds
+            const d_bond_indexes = d_bonds.map((b)=>{
+                return b.atom_index
+            })
+            // Filter single bonds that have indexes in d_bond_indexes
+            //console.log(d_bond_indexes)
+            r = r.filter((sb)=>{
+                //console.log(sb.atom_index)
+                //console.log(d_bond_indexes.indexOf(sb.atom_index))
+                //console.log(d_bond_indexes.indexOf(sb.atom_index)===-1)
+                // 3,4 are double bond indexes
+                return d_bond_indexes.indexOf(sb.atom_index)===-1
+            })
+            //process.error()
         }
+
+        // Filter out "single" bonds that are actually triple bonds
+        const t_bonds = __indexedTripleBonds("H")
+        if (t_bonds.length>0) {
+            // Get indexes of the double bonds
+            const t_bond_indexes = t_bonds.map((b)=>{
+                return b.atom_index
+            })
+            // Filter single bonds that have indexes in t_bont_indexes
+            //console.log(t_bond_indexes)
+            r = r.filter((sb)=>{
+                return t_bond_indexes.indexOf(sb.atom_index)===-1
+            })
+        }
+
         return r
-        */
+
 
     }
 
@@ -288,6 +307,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                 return item !== false
             }
         )
+
 
         return r
     }
