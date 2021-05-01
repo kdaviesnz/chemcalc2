@@ -68,6 +68,7 @@ console.log("Atomic symbol / Hydrogens / Charge / Single bonds / Double bonds / 
 console.log("Neutral sulphur atoms have six bonds in total including hydrogen bonds.")
 console.log("Compressed:")
 console.log(VMolecule([sulphuric_acid, 1]).compressed())
+CMolecule(sulphuric_acid).verifyMolecule()
 VMolecule([sulphuric_acid, 1]).canonicalSMILES().should.be.equal("OS(=O)(=O)O")
 
 process.exit()

@@ -16,6 +16,7 @@ const CMolecule = (mmolecule, verbose) => {
         molecule_compressed.map((atom)=>{
             const atomic_symbol = atom[0]
             const number_of_hydrogens = atom[2].replace('H ', "") * 1
+            const charge = atom[3].replace('Charge: ', "") * 1
             const number_of_single_bonds = atom[4].length
             const number_of_double_bonds = atom[5].length
             const number_of_triple_bonds = atom[6].length
@@ -23,6 +24,18 @@ const CMolecule = (mmolecule, verbose) => {
             const number_of_free_electrons = atom[8]
             switch(atomic_symbol) {
                 case 'O':
+                    if (charge === 0) {
+                        number_of_single_bonds + number_of_hydrogens.should.be.equal(2)
+                        number_of_electrons.should.be.equal(8)
+                        number_of_free_electrons.should.be.equal(4)
+                    }
+                    break;
+                case 'S':
+                    if (charge === 0) {
+                        number_of_single_bonds + number_of_hydrogens.should.be.equal(6)
+                        number_of_electrons.should.be.equal(12)
+                        number_of_free_electrons.should.be.equal(0)
+                    }
                     break;
             }
         })
@@ -804,6 +817,7 @@ const CMolecule = (mmolecule, verbose) => {
         atomsWithFreeSlots: __atomsWithFreeSlots,
         nucleophileIndex: determineNucleophileIndex,
         electrophileIndex: determineElectrophileIndex,
+        verifyMolecule: verifyMolecule,
         removeProton: (container,  proton_index, molecule_index, reactant_units) => {
             
             const mmolecule_before = _.cloneDeep(mmolecule)
