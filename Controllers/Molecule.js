@@ -25,14 +25,14 @@ const CMolecule = (mmolecule, verbose) => {
             switch(atomic_symbol) {
                 case 'O':
                     if (charge === 0) {
-                        number_of_single_bonds + number_of_hydrogens.should.be.equal(2)
+                        (number_of_single_bonds + number_of_hydrogens + number_of_double_bonds).should.be.equal(2)
                         number_of_electrons.should.be.equal(8)
                         number_of_free_electrons.should.be.equal(4)
                     }
                     break;
                 case 'S':
                     if (charge === 0) {
-                        number_of_single_bonds + number_of_hydrogens.should.be.equal(6)
+                        (number_of_single_bonds + number_of_hydrogens + number_of_double_bonds).should.be.equal(6)
                         number_of_electrons.should.be.equal(12)
                         number_of_free_electrons.should.be.equal(0)
                     }

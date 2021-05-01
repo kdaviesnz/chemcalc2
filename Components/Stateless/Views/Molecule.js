@@ -419,8 +419,48 @@ const VMolecule = (mmolecule) => {
 
         },
 
-
+        branchCount: function(compressed_atom, start_of_branch_index) {
+            let number_of_branches = 0
+            const compressed_atom_from_start_of_branch = compressed_atom.slice(start_of_branch_index)
+            compressed_atom_from_start_of_branch.map((atom, k)=> {
+                // get bonds
+                const bonds = merge atom[4] atom[5]
+            })
+        },
         canonicalSMILES: function() {
+
+            // sulphuric acid compressed
+            // (OS(=O)(=O)O)
+            /*
+            [
+                [ 'O', 1, 'H 1', 'Charge: 0', [ '2  S' ], [], [], 8, 4 ],
+                [
+                    'S',
+                    2,
+                    'H 0',
+                    'Charge: 0',
+                    [ '1  O', '3  O', '4  O', '6  O' ],
+                    [ '3  O', '4  O' ],
+                    [],
+                    12,
+                    0
+                ],
+                [ 'O', 3, 'H 0', 'Charge: 0', [ '2  S' ], [ '2  S' ], [], 8, 4 ],
+                [ 'O', 4, 'H 0', 'Charge: 0', [ '2  S' ], [ '2  S' ], [], 8, 4 ],
+                [ 'O', 6, 'H 1', 'Charge: 0', [ '2  S' ], [], [], 8, 4 ]
+            ]*/
+            // for each atom we need to get if it's the end of the chain or part of a chain, what atoms it is attached to, whether we start a new branch etc
+            // Atomic symbol / Hydrogens / Charge / Single bonds / Double bonds / Triple bonds/ # of electrons / # of free electrons
+            const smiles = this.compressed().reduce((s, atom, i)=>{
+                if(i===0) {
+                    s = atom[0]
+                }
+            }, "")
+
+
+        },
+
+        canonicalSMILESold: function() {
             // const m = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 // const benzene = MoleculeFactory("C1=CC=CC=C1")
             /*
