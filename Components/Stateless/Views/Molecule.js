@@ -471,16 +471,36 @@ const VMolecule = (mmolecule) => {
             // Atomic symbol / id / Hydrogens / Charge / Single bonds / Double bonds / Triple bonds/ # of electrons / # of free electrons
             const compressedMolecule = this.compressed()
             // (OS(=O)(=O)O)
+            const start_of_branches_ids = []
             const smiles = compressedMolecule.reduce((s, atom, i)=> {
-                s = atom[0]
                 const number_of_branches = atom[4].length + atom[5].length
-                if (i === 1) {
-                    console.log("Number or branches atom " + i)
-                    console.log("*" + number_of_branches + "*")
-                    process.error()
+                if (number_of_branches > 1) {
+                    // s = s + "("
+                    // Add start of branch ids
+                    atom[4].map((id)=>{
+                        start_of_branches_ids.push(id[0]*1)  // "1 0"
+                    })
+                    atom[5].map((id)=>{
+                        start_of_branches_ids.push(id[0]*1) // "1 0"
+                    })
+                    atom[6].map((id)=>{
+                        start_of_branches_ids.push(id[0]*1) // "1 0"
+                    })
                 }
-
+                //console.log(start_of_branches_ids)
+                if (start_of_branches_ids.indexOf(atom[1]) > -1) {
+                    s = s + "("
+                }
+                s = s + atom[0]
+                // End of branch
+                if (i !==0 && i!==compressedMolecule.length-1 && atom[4].length + atom[5].length + atom[6].length===1) {
+                    s = s + ")"
+                }
+                return s
             }, "")
+            console.log('smiles')
+            console.log(smiles)
+            process.error()
 
 
         },
