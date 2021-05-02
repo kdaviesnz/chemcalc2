@@ -509,8 +509,8 @@ const VMolecule = (mmolecule) => {
                 return s
             }, "")
 
-            console.log(smiles)
-            process.error()
+            //console.log(smiles)
+            //process.error()
             return smiles
 
         },

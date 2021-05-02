@@ -71,6 +71,9 @@ console.log(VMolecule([sulphuric_acid, 1]).compressed())
 CMolecule(sulphuric_acid).verifyMolecule()
 VMolecule([sulphuric_acid, 1]).canonicalSMILES().should.be.equal("OS(=O)(=O)O") // actual OS(=O)(O)O
 
+// benzene
+// C1=CC=CC=C1
+
 process.exit()
 
 const methyline = MoleculeFactory("[CH2]")
