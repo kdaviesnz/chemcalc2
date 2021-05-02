@@ -449,30 +449,31 @@ const VMolecule = (mmolecule) => {
             // sulphuric acid compressed
             // (OS(=O)(=O)O)
             /*
-            [
-                [ 'O', 1, 'H 1', 'Charge: 0', [ '2  S' ], [], [], 8, 4 ],
-                [
-                    'S',
-                    2,
-                    'H 0',
-                    'Charge: 0',
-                    [ '1  O', '3  O', '4  O', '6  O' ],
-                    [ '3  O', '4  O' ],
-                    [],
-                    12,
-                    0
-                ],
-                [ 'O', 3, 'H 0', 'Charge: 0', [ '2  S' ], [ '2  S' ], [], 8, 4 ],
-                [ 'O', 4, 'H 0', 'Charge: 0', [ '2  S' ], [ '2  S' ], [], 8, 4 ],
-                [ 'O', 6, 'H 1', 'Charge: 0', [ '2  S' ], [], [], 8, 4 ]
-            ]*/
+           [
+  [ 'O', 1, 'H 1', 'Charge: 0', [ '2  S' ], [], [], 8, 4 ],
+  [
+    'S',
+    2,
+    'H 0',
+    'Charge: 0',
+    [ '1  O', '6  O' ],
+    [ '3  O', '4  O' ],
+    [],
+    12,
+    0
+  ],
+  [ 'O', 3, 'H 0', 'Charge: 0', [], [ '2  S' ], [], 8, 4 ],
+  [ 'O', 4, 'H 0', 'Charge: 0', [], [ '2  S' ], [], 8, 4 ],
+  [ 'O', 6, 'H 1', 'Charge: 0', [ '2  S' ], [], [], 8, 4 ]
+]
+*/
             // for each atom we need to get if it's the end of the chain or part of a chain, what atoms it is attached to, whether we start a new branch etc
             // Atomic symbol / id / Hydrogens / Charge / Single bonds / Double bonds / Triple bonds/ # of electrons / # of free electrons
             const compressedMolecule = this.compressed()
             // (OS(=O)(=O)O)
             const smiles = compressedMolecule.reduce((s, atom, i)=> {
                 s = atom[0]
-                const number_of_branches = atom[4].length + atom[5]
+                const number_of_branches = atom[4].length + atom[5].length
                 if (i === 1) {
                     console.log("Number or branches atom " + i)
                     console.log("*" + number_of_branches + "*")
