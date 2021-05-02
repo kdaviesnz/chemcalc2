@@ -488,45 +488,56 @@ const VMolecule = (mmolecule) => {
             // Get ids of ring bonds
             const ring_bond_ids = {}
             let ring_bond_id = 1
-            compressedMolecule.map((parent_atom, i)=>{
+            compressedMolecule.map((parent_atom, i) => {
 
 
-                    const other_atoms = compressedMolecule.slice(i + 2)
+                const other_atoms = compressedMolecule.slice(i + 2)
 
-                    // Check other atoms for a bond with the same id as the current atom
-                    if (other_atoms.length > 0) {
-                        other_atoms.map((other_atom, k) => {
-                            const other_atom_single_bonds = other_atom[4].map((a) => {
-                                a = a.split(" ")
-                                return a[0] * 1
-                            })
-                            const other_atom_double_bonds = other_atom[5].map((b) => {
-                                b = b.split(" ")
-                                return b[0] * 1
-                            })
-
-                            if (other_atom_single_bonds.indexOf(parent_atom[1]) > -1 || other_atom_double_bonds.indexOf(parent_atom[1]) > -1) {
-                                const parent_item = {}
-                                const child_atom_id = other_atom[1]
-                                parent_item[parent_atom[1]] = ring_bond_id
-                                ring_bond_ids[parent_item[parent_atom[1]]] = ring_bond_id
-                                ring_bond_ids[child_atom_id] = ring_bond_id
-                            }
-
+                // Check other atoms for a bond with the same id as the current atom
+                if (other_atoms.length > 0) {
+                    other_atoms.map((other_atom, k) => {
+                        const other_atom_single_bonds = other_atom[4].map((a) => {
+                            a = a.split(" ")
+                            return a[0] * 1
                         })
-                    }
+                        const other_atom_double_bonds = other_atom[5].map((b) => {
+                            b = b.split(" ")
+                            return b[0] * 1
+                        })
+
+                        if (other_atom_single_bonds.indexOf(parent_atom[1]) > -1 || other_atom_double_bonds.indexOf(parent_atom[1]) > -1) {
+                            const parent_item = {}
+                            const child_atom_id = other_atom[1]
+                            parent_item[parent_atom[1]] = ring_bond_id
+                            ring_bond_ids[parent_item[parent_atom[1]]] = ring_bond_id
+                            ring_bond_ids[child_atom_id] = ring_bond_id
+                        }
+
+                    })
+                }
 
 
             })
 
 
-
             if (testing) {
                 console.log("ring bond ids")
                 console.log(ring_bond_ids)
-                process.error()
             }
 
+
+            if (testing) {
+                const atoms_with_ring_bond_ids = compressedMolecule.map((atom) => {
+                    if (undefined !== ring_bond_ids[atom[1] + '']) {
+                        atom[0] = atom[0] + ring_bond_ids[atom[1] + '']
+                    }
+                    return atom
+                })
+
+                console.log(atoms_with_ring_bond_ids)
+                process.exit()
+
+            }
 
 
             const start_of_branches_ids = []
