@@ -74,7 +74,7 @@ VMolecule([sulphuric_acid, 1]).canonicalSMILES().should.be.equal("OS(=O)(=O)O") 
 // benzene
 // C1=CC=CC=C1
 const benzene = MoleculeFactory("C1=CC=CC=C1")
-console.log("Benzene compressed:")
+console.log("Benzene compressed: C1=CC=CC=C1")
 /*
 [
   [ 'C', 1, 'H 1', 'Charge: 0', [ '11  C' ], [ '3  C' ], [], 8, 0 ],
