@@ -73,8 +73,21 @@ VMolecule([sulphuric_acid, 1]).canonicalSMILES().should.be.equal("OS(=O)(=O)O") 
 
 // benzene
 // C1=CC=CC=C1
+const benzene = MoleculeFactory("C1=CC=CC=C1")
+console.log("Benzene compressed:")
+/*
+[
+  [ 'C', 1, 'H 1', 'Charge: 0', [ '11  C' ], [ '3  C' ], [], 8, 0 ],
+  [ 'C', 3, 'H 1', 'Charge: 0', [ '5  C' ], [ '1  C' ], [], 8, 0 ],
+  [ 'C', 5, 'H 1', 'Charge: 0', [ '3  C' ], [ '7  C' ], [], 8, 0 ],
+  [ 'C', 7, 'H 1', 'Charge: 0', [ '9  C' ], [ '5  C' ], [], 8, 0 ],
+  [ 'C', 9, 'H 1', 'Charge: 0', [ '7  C' ], [ '11  C' ], [], 8, 0 ],
+  [ 'C', 11, 'H 1', 'Charge: 0', [ '1  C' ], [ '9  C' ], [], 8, 0 ]
+]
+ */
+console.log(VMolecule([benzene, 1]).compressed())
 
-process.exit()
+process.error()
 
 const methyline = MoleculeFactory("[CH2]")
 
