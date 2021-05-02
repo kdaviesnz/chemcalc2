@@ -61,6 +61,9 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
 
 const Families = require('./Models/Families')
 
+
+
+
 console.log("Testing sulphuric acid OS(=O)(=O)O")
 const sulphuric_acid = MoleculeFactory("OS(=O)(=O)O")
 // return [atom[0], index, "H " + h.length, 'Charge: '+ atom[4],  bonds, double_bonds, triple_bonds, electrons.length, free_electrons.length]
@@ -73,8 +76,11 @@ VMolecule([sulphuric_acid, 1]).canonicalSMILES().should.be.equal("OS(=O)(=O)O") 
 
 // benzene
 // C1=CC=CC=C1
+console.log("Testing benzene C1=CC=CC=C1")
 const benzene = MoleculeFactory("C1=CC=CC=C1")
 console.log("Benzene compressed: C1=CC=CC=C1")
+console.log(VMolecule([benzene, 1]).compressed())
+console.log(VMolecule([benzene, 1]).canonicalSMILES(true))
 /*
 [
   [ 'C', 1, 'H 1', 'Charge: 0', [ '11  C' ], [ '3  C' ], [], 8, 0 ],

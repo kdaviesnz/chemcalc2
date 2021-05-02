@@ -444,7 +444,7 @@ const VMolecule = (mmolecule) => {
 
             return is_branch
         },
-        canonicalSMILES: function() {
+        canonicalSMILES: function(testing) {
 
             // sulphuric acid compressed
             // OS(=O)(=O)O
@@ -471,6 +471,72 @@ const VMolecule = (mmolecule) => {
             // Atomic symbol / id / Hydrogens / Charge / Single bonds / Double bonds / Triple bonds/ # of electrons / # of free electrons
             const compressedMolecule = this.compressed()
             // (OS(=O)(=O)O)
+
+            // Ring bonds
+            /*
+            C1=CC=CC=C1
+[
+  [ 'C', 1, 'H 1', 'Charge: 0', [ '11  C' ], [ '3  C' ], [], 8, 0 ],
+  [ 'C', 3, 'H 1', 'Charge: 0', [ '5  C' ], [ '1  C' ], [], 8, 0 ],
+  [ 'C', 5, 'H 1', 'Charge: 0', [ '3  C' ], [ '7  C' ], [], 8, 0 ],
+  [ 'C', 7, 'H 1', 'Charge: 0', [ '9  C' ], [ '5  C' ], [], 8, 0 ],
+  [ 'C', 9, 'H 1', 'Charge: 0', [ '7  C' ], [ '11  C' ], [], 8, 0 ],
+  [ 'C', 11, 'H 1', 'Charge: 0', [ '1  C' ], [ '9  C' ], [], 8, 0 ]
+]
+
+             */
+            // Get ids of ring bonds
+            const ring_bond_ids = {}
+            let ring_bond_id = 1
+            compressedMolecule.map((atom, i)=>{
+                const other_atoms = compressedMolecule.slice(i+2)
+                // Check other atoms for a bond with the same id as the current atom
+                other_atoms.map((other_atom, k)=>{
+                    const other_atom_single_bonds = other_atom[4].map((a)=>{
+                        return a[0] * 1
+                    })
+                    const other_atom_double_bonds = other_atom[5].map((a)=>{
+                        return a[0] * 1
+                    })
+                    if (other_atom_single_bonds.indexOf(atom[1]) > -1 || other_atom_double_bonds.indexOf(atom[1]) > -1) {
+                        const parent_item = {}
+                        parent_item[atom[1]] = ring_bond_id
+                        ring_bond_ids[parent_item[atom[1]]] = ring_bond_id
+                        if (true) {
+                            const child_atom_id = other_atom[1]
+                            ring_bond_ids[child_atom_id] = ring_bond_id
+                        }
+                    }
+
+                })
+
+                /*
+                filter((a,k)=>{
+                    const single_bond_ids = atom[4].map((id)=>{
+                        return id[0] * 1
+                    })
+                    const double_bond_ids = atom[5].map((id)=>{
+                        return id[0] * 1
+                    })
+                   return single_bond_ids.indexOf(atom[1]) > -1 || double_bond_ids.indexOf(atom[1]) > -1
+                })
+                if (testing) {
+                    console.log("Other atoms filtered")
+                    console.log(other_atoms)
+                    process.error()
+                }
+                 */
+            })
+
+
+            if (testing) {
+                console.log("ring bond ids")
+                console.log(ring_bond_ids)
+                process.error()
+            }
+
+
+
             const start_of_branches_ids = []
             let single_bond_indexes = []
             let bond_indexes = []
