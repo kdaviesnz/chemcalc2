@@ -447,7 +447,7 @@ const VMolecule = (mmolecule) => {
         canonicalSMILES: function() {
 
             // sulphuric acid compressed
-            // (OS(=O)(=O)O)
+            // OS(=O)(=O)O
             /*
            [
   [ 'O', 1, 'H 1', 'Charge: 0', [ '2  S' ], [], [], 8, 4 ],
@@ -472,6 +472,8 @@ const VMolecule = (mmolecule) => {
             const compressedMolecule = this.compressed()
             // (OS(=O)(=O)O)
             const start_of_branches_ids = []
+            let single_bond_indexes = []
+            let bond_indexes = []
             const smiles = compressedMolecule.reduce((s, atom, i)=> {
                 const number_of_branches = atom[4].length + atom[5].length
                 if (number_of_branches > 1) {
@@ -488,20 +490,28 @@ const VMolecule = (mmolecule) => {
                     })
                 }
                 //console.log(start_of_branches_ids)
-                if (start_of_branches_ids.indexOf(atom[1]) > -1) {
+                if (start_of_branches_ids.indexOf(atom[1]) > -1 && i !== compressedMolecule.length -1) {
                     s = s + "("
                 }
-                s = s + atom[0]
+                // Determine bond type
+                let bond_type = ""
+                const double_parent_bond_ids = atom[5].filter((id)=>{
+                    return id[0] * 1 < atom[1]
+                })
+                if (double_parent_bond_ids.length > 0) {
+                    bond_type = "="
+                }
+                s = s + bond_type + atom[0]
                 // End of branch
                 if (i !==0 && i!==compressedMolecule.length-1 && atom[4].length + atom[5].length + atom[6].length===1) {
                     s = s + ")"
                 }
                 return s
             }, "")
-            console.log('smiles')
+
             console.log(smiles)
             process.error()
-
+            return smiles
 
         },
 
