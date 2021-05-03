@@ -72,7 +72,7 @@ console.log("Neutral sulphur atoms have six bonds in total including hydrogen bo
 console.log("Compressed:")
 console.log(VMolecule([sulphuric_acid, 1]).compressed())
 CMolecule(sulphuric_acid).verifyMolecule()
-VMolecule([sulphuric_acid, 1]).canonicalSMILES(false).should.be.equal("OS(=O)(=O)O") // actual OS(=O)(O)O
+VMolecule([sulphuric_acid, 1]).canonicalSMILES(false).should.be.equal("OS(=O)(=O)O")
 
 // benzene
 // C1=CC=CC=C1
@@ -80,7 +80,7 @@ console.log("Testing benzene C1=CC=CC=C1")
 const benzene = MoleculeFactory("C1=CC=CC=C1")
 console.log("Benzene compressed: C1=CC=CC=C1")
 console.log(VMolecule([benzene, 1]).compressed())
-console.log(VMolecule([benzene, 1]).canonicalSMILES(true))
+VMolecule([benzene, 1]).canonicalSMILES(false).should.be.equal("C1=CC=CC=C1") // actual C1=CC=C=C=C1
 /*
 [
   [ 'C', 1, 'H 1', 'Charge: 0', [ '11  C' ], [ '3  C' ], [], 8, 0 ],
@@ -90,12 +90,18 @@ console.log(VMolecule([benzene, 1]).canonicalSMILES(true))
   [ 'C', 9, 'H 1', 'Charge: 0', [ '7  C' ], [ '11  C' ], [], 8, 0 ],
   [ 'C', 11, 'H 1', 'Charge: 0', [ '1  C' ], [ '9  C' ], [], 8, 0 ]
 ]
+C1=CC=CC=C1
  */
-console.log(VMolecule([benzene, 1]).compressed())
+
+
+console.log("Testing methyline [CH2]")
+const methyline = MoleculeFactory("[CH2]")
+console.log("methyline compressed: [CH2]")
+console.log(VMolecule([methyline, 1]).compressed())
+VMolecule([methyline, 1]).canonicalSMILES(true).should.be.equal("[CH2]") // actual
+
 
 process.error()
-
-const methyline = MoleculeFactory("[CH2]")
 
 // Check number of hydrogens
 methyline[1].filter((atom)=>{

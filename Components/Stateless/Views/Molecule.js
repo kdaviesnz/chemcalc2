@@ -486,6 +486,10 @@ const VMolecule = (mmolecule) => {
 
              */
 
+
+            // Rules
+            // An atom has a branch if it has more than 2 bonds.
+
             let start_of_branches_ids = []
             compressedMolecule.map((atom, i)=> {
                 const single_bonds = atom[4].length
@@ -512,9 +516,7 @@ const VMolecule = (mmolecule) => {
             const ring_bond_ids = {}
             let ring_bond_id = 1
             compressedMolecule.map((parent_atom, i) => {
-
                 const child_atoms = compressedMolecule.slice(i + 2)
-
                 // Check other atoms for a bond with the same id as the current atom
                 if (child_atoms.length > 0) {
                     child_atoms.map((child_atom, k) => {
@@ -537,28 +539,13 @@ const VMolecule = (mmolecule) => {
                         }
                     })
                 }
-
-
             })
 
 
             if (testing) {
-                console.log("ring bond ids")
-                console.log(ring_bond_ids)
+                //console.log("ring bond ids")
+                //console.log(ring_bond_ids)
             }
-
-            start_of_branches_ids = start_of_branches_ids.filter((id)=>{
-                return ring_bond_ids[id] === undefined
-            })
-
-            if (testing) {
-                console.log('start of branches ids')
-                console.log(start_of_branches_ids)
-                //process.error()
-            }
-
-
-
 
             const atoms_with_ring_bond_ids = compressedMolecule.map((atom) => {
                 if (undefined !== ring_bond_ids[atom[1] + '']) {
@@ -569,6 +556,17 @@ const VMolecule = (mmolecule) => {
             })
 
 
+            /*
+[
+  [ 'C', 1, 'H 1', 'Charge: 0', [ '11  C' ], [ '3  C' ], [], 8, 0 ],
+  [ 'C', 3, 'H 1', 'Charge: 0', [ '5  C' ], [ '1  C' ], [], 8, 0 ],
+  [ 'C', 5, 'H 1', 'Charge: 0', [ '3  C' ], [ '7  C' ], [], 8, 0 ],
+  [ 'C', 7, 'H 1', 'Charge: 0', [ '9  C' ], [ '5  C' ], [], 8, 0 ],
+  [ 'C', 9, 'H 1', 'Charge: 0', [ '7  C' ], [ '11  C' ], [], 8, 0 ],
+  [ 'C', 11, 'H 1', 'Charge: 0', [ '1  C' ], [ '9  C' ], [], 8, 0 ]
+]
+C1=CC=CC=C1
+ */
 
            // const start_of_branches_ids = []
             start_of_branches_ids = []
@@ -576,7 +574,7 @@ const VMolecule = (mmolecule) => {
             let bond_indexes = []
             const smiles = compressedMolecule.reduce((s, atom, i)=> {
                 const number_of_branches = atom[4].length + atom[5].length
-                if (number_of_branches > 1) {
+                if (number_of_branches > 2) {
                     // s = s + "("
                     // Add start of branch ids
                     atom[4].map((id)=>{
@@ -589,10 +587,14 @@ const VMolecule = (mmolecule) => {
                         start_of_branches_ids.push(id[0]*1) // "1 0"
                     })
                 }
-                //console.log(start_of_branches_ids)
-                if (atom[atom.length-1] !== "is_ring_bond" && start_of_branches_ids.indexOf(atom[1]) > -1 && i !== compressedMolecule.length -1) {
+                if (testing) {
+                   // console.log("start of branches ids")
+                    //console.log(start_of_branches_ids)
+                    //process.error()
+                }
+                if (start_of_branches_ids.indexOf(atom[1]) > -1 && i !== compressedMolecule.length -1) {
                     if (testing) {
-                        console.log(atom)
+                        //console.log(atom)
                       //  process.log()
                     }
                     s = s + "("
@@ -600,8 +602,17 @@ const VMolecule = (mmolecule) => {
                 // Determine bond type
                 let bond_type = ""
                 const double_parent_bond_ids = atom[5].filter((id)=>{
-                    return id[0] * 1 < atom[1]
+                    id = id.split(" ")
+                    if (testing) {
+                        //console.log("Id: " + id)
+                    }
+                    return (id[0] * 1) < atom[1]
                 })
+                if (testing) {
+                    //console.log("double_parent_bond_ids")
+                    //console.log(atom)
+                    //console.log(double_parent_bond_ids)
+                }
                 if (double_parent_bond_ids.length > 0) {
                     bond_type = "="
                 }
@@ -613,7 +624,10 @@ const VMolecule = (mmolecule) => {
                 return s
             }, "")
 
-            //console.log(smiles)
+            if (testing) {
+                console.log(smiles)
+            }
+
             //process.error()
             return smiles
 
