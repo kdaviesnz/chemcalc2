@@ -72,7 +72,7 @@ console.log("Neutral sulphur atoms have six bonds in total including hydrogen bo
 console.log("Compressed:")
 console.log(VMolecule([sulphuric_acid, 1]).compressed())
 CMolecule(sulphuric_acid).verifyMolecule()
-VMolecule([sulphuric_acid, 1]).canonicalSMILES(true).should.be.equal("OS(=O)(=O)O") // actual OS(=O)(O)O
+VMolecule([sulphuric_acid, 1]).canonicalSMILES(false).should.be.equal("OS(=O)(=O)O") // actual OS(=O)(O)O
 
 // benzene
 // C1=CC=CC=C1
