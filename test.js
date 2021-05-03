@@ -95,10 +95,10 @@ C1=CC=CC=C1
 
 
 console.log("Testing methyline [CH2]")
-const methyline = MoleculeFactory("[CH2]")
-console.log("methyline compressed: [CH2]")
-console.log(VMolecule([methyline, 1]).compressed())
-VMolecule([methyline, 1]).canonicalSMILES(true).should.be.equal("[CH2]") // actual
+const methylene = MoleculeFactory("[CH2]")
+console.log("methane compressed: [CH2]")
+console.log(VMolecule([methylene, 1]).compressed())
+VMolecule([methylene, 1]).canonicalSMILES(true).should.be.equal("[CH2]") // actual
 
 
 process.error()
