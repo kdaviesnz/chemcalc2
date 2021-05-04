@@ -26,87 +26,47 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     // parse a SMILES string, returns an array of SMILES tokens [{type: '...', value: '...'}, ...]
     const smiles_tokens = smiles.parse(canonicalSMILES)
 
-    // [O+]
-  // console.log(smiles_tokens)
-   // console.log(oplus)
+    //[CH2]
+    // console.log(smiles_tokens)
     /*
-   [ { type: 'AliphaticOrganic', value: 'C' },
-  { type: 'AliphaticOrganic', value: 'C' },
-  { type: 'Branch', value: 'begin' },
-  { type: 'AliphaticOrganic', value: 'C' },
-  { type: 'AliphaticOrganic', value: 'C' },
-  { type: 'Ringbond', value: 1 },
-  { type: 'Bond', value: '=' },
-  { type: 'AliphaticOrganic', value: 'C' },
-  { type: 'AliphaticOrganic', value: 'C' },
-  { type: 'Bond', value: '=' },
-  { type: 'AliphaticOrganic', value: 'C' },
-  { type: 'AliphaticOrganic', value: 'C' },
-  { type: 'Bond', value: '=' },
-  { type: 'AliphaticOrganic', value: 'C' },
-  { type: 'Ringbond', value: 1 },
-  { type: 'Branch', value: 'end' },
-  { type: 'AliphaticOrganic', value: 'N' },
-  { type: 'AliphaticOrganic', value: 'C' } ]
-
-     */
-
-
-
-
-    // [C1=CC=C(C=C1)CO]
-    /*
-[ { type: 'AliphaticOrganic', value: 'C' }, 1 anti clockwise
-  { type: 'Ringbond', value: 1 },
-  { type: 'Bond', value: '=' },
-  { type: 'AliphaticOrganic', value: 'C' }, 2
-  { type: 'AliphaticOrganic', value: 'C' }, 3
-  { type: 'Bond', value: '=' },
-  { type: 'AliphaticOrganic', value: 'C' }, 4
-  { type: 'Branch', value: 'begin' }, ?
-  { type: 'AliphaticOrganic', value: 'C' },  5
-  { type: 'Bond', value: '=' },
-  { type: 'AliphaticOrganic', value: 'C' }, 6
-  { type: 'Ringbond', value: 1 }, 7 - carbon 2
-  { type: 'Branch', value: 'end' },
-  { type: 'AliphaticOrganic', value: 'C' },
-  { type: 'AliphaticOrganic', value: 'O' } ]
+    [
+  { type: 'BracketAtom', value: 'begin' },
+  { type: 'ElementSymbol', value: 'C' },
+  { type: 'HydrogenCount', value: 2 },
+  { type: 'BracketAtom', value: 'end' }
+]
 
      */
     const atoms_with_tokens = _.cloneDeep(smiles_tokens).map(
         (row, i, arr) => {
             if (row.type === "AliphaticOrganic" || row.type === "ElementSymbol") {
              //   const charge = undefined !== arr[i+1] && arr[i+1]['type']==='Charge'?arr[i+1]['value']*1:0
-              //  // console.log(arr[i+1])
-              //  // console.log("Charge:" + charge)
                 return AtomFactory(row.value, 0)
             }
             return row
         }
     )
 
-    // [O+]
+    // [CH2]
     // console.log(atoms_with_tokens)
-    // console.log(oplus)
-    /*
-[ { type: 'BracketAtom', value: 'begin' },
-  [ 'O',
-    8,
+  /*
+[
+  { type: 'BracketAtom', value: 'begin' },
+  [
+    'C',
     6,
-    2,
+    4,
+    4,
     0,
-    '4r7b8138ukjjjyjat',
-    '4r7b8138ukjjjyjau',
-    '4r7b8138ukjjjyjav',
-    '4r7b8138ukjjjyjaw',
-    '4r7b8138ukjjjyjax',
-    '4r7b8138ukjjjyjay' ],
-  { type: 'Charge', value: 1 },
-  { type: 'BracketAtom', value: 'end' } ]
-
-     */
-
-
+    '2yyvqtf2aunko9hbud5',
+    '2yyvqtf2aunko9hbud6',
+    '2yyvqtf2aunko9hbud7',
+    '2yyvqtf2aunko9hbud8'
+  ],
+  { type: 'HydrogenCount', value: 2 },
+  { type: 'BracketAtom', value: 'end' }
+]
+   */
 
     // Filter out brackets
     const atoms_with_tokens_no_brackets = _.cloneDeep(atoms_with_tokens).filter(
@@ -118,9 +78,25 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }
     )
 
-    // [O+]
+    // [CH2]
     // console.log(atoms_with_tokens_no_brackets)
-   // console.log(oplus)
+    /*
+     // atomic symbol, proton count, valence count,  number of bonds, velectron1, velectron2, velectron3 ...
+[
+  [
+    'C',
+    6,
+    4,
+    4,
+    0,
+    '2yyvqtf2axako9hdlq1',
+    '2yyvqtf2axako9hdlq2',
+    '2yyvqtf2axako9hdlq3',
+    '2yyvqtf2axako9hdlq4'
+  ],
+  { type: 'HydrogenCount', value: 2 }
+]
+     */
 
     // Add the bonds and branches
     let branch_number = 0
@@ -265,10 +241,23 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
 
 
 
-    // [O+]
+    // [CH2]
     // console.log(atoms_with_bonds)
-     //console.log(atomswbonds)
     /*
+[
+  [
+    'C',
+    6,
+    4,
+    4,
+    0,
+    '2yyvqtf2b1eko9hjmzb',
+    '2yyvqtf2b1eko9hjmzc',
+    '2yyvqtf2b1eko9hjmzd',
+    '2yyvqtf2b1eko9hjmze'
+  ],
+  { type: 'HydrogenCount', value: 2 }
+]
 
      */
 
@@ -280,27 +269,27 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }
     )
 
-
-    // [O+]
+    // [CH2]
     // console.log(atoms)
-    // console.log(oplus)
     /*
-    [ [ 'O',
-    8,
+[
+  [
+    'C',
     6,
-    2,
+    4,
+    4,
     0,
-    '4r7b813d9kjjk7r82',
-    '4r7b813d9kjjk7r83',
-    '4r7b813d9kjjk7r84',
-    '4r7b813d9kjjk7r85',
-    '4r7b813d9kjjk7r86',
-    '4r7b813d9kjjk7r87' ],
-  { type: 'Charge', value: 1 } ]
+    '2yyvqtf2b1eko9hjmzb',
+    '2yyvqtf2b1eko9hjmzc',
+    '2yyvqtf2b1eko9hjmzd',
+    '2yyvqtf2b1eko9hjmze'
+  ],
+  { type: 'HydrogenCount', value: 2 }
+]
+
      */
 
     let ring_bond_atom_index = null
-
 
     const ringbond_atom_indexes = atoms.reduce((carry, row, ring_bond_index) =>{
         if (row.type === 'Ringbond') {
@@ -312,103 +301,80 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         return carry
     }, [])
 
-    /*
-    console.log(atoms.map((a, i)=> {
-        if (undefined !== a.push) {
-            a.push(i)
-        } else {
-            a.index = i
-        }
-        return a
-    }))
-*/
-    //
-    // 3 = CR1, 15O = R1        7 R2=C, R2 19N
-    //
-    // [ [ 3, 10 ], [ 6, 14 ], [ 10, 3 ], [ 14, 6 ] ]
-   //console.log(ringbond_atom_indexes)
+
     // Make the ring bonds
     ringbond_atom_indexes.map((indexes)=>{
         if (indexes[0]>indexes[1]) {
             return indexes
         }
-        //console.log(indexes)
+        //// console.log(indexes)
         const e = uniqid()
         const m = [[12345,atoms],1]
         const parent_atom = CAtom(m[0][1][indexes[0]], indexes[0], m)
         const child_atom = CAtom(m[0][1][indexes[1]], indexes[1], m)
         const parent_free_electrons = parent_atom.freeElectrons()
         const child_free_electrons = child_atom.freeElectrons()
-        //console.log(parent_free_electrons) // [ 'bqdtz0rmfkkhrfctm' ]
-        //console.log(child_free_electrons) // [ 'bqdtz0rmfkkhrfcu6', 'bqdtz0rmfkkhrfcu7' ]
+        //// console.log(parent_free_electrons) // [ 'bqdtz0rmfkkhrfctm' ]
+        //// console.log(child_free_electrons) // [ 'bqdtz0rmfkkhrfcu6', 'bqdtz0rmfkkhrfcu7' ]
         atoms[indexes[0]].push(child_free_electrons[0])
         atoms[indexes[1]].push(parent_free_electrons[0])
-        //console.log(parent_atom.indexedBonds(""))
-        //console.log(child_atom.indexedBonds(""))
+        //// console.log(parent_atom.indexedBonds(""))
+        //// console.log(child_atom.indexedBonds(""))
         return indexes
     })
-
-    //console.log(rindbondsss)
-
 
 
     const atoms_with_ring_bonds = _.cloneDeep(atoms).filter((atom)=>{
        return atom.type !== "Ringbond"
     })
 
-
-    //// console.log(atoms_with_ring_bonds)
-    //const mmolecule = [[12345,atoms_with_ring_bonds],1]
-
-
-/*
-    const atoms_with_hydrogen_counts = _.cloneDeep(atoms_with_ring_bonds).reduce(
-        (carry, current, index, atoms) => {
-            if (undefined === current.type || current.type === 'Charge') {
-                if (undefined !== atoms[index+1] && atoms[index+1].type === "HydrogenCount") {
-                    current.push(atoms[index+1].value)
-                }
-                carry.push(current)
-            }
-            return carry
-        }, []
-    )
-    */
-    const atoms_with_hydrogen_counts = _.cloneDeep(atoms_with_ring_bonds)
-
-    // [CH5+]
-   //  // console.log(atoms_with_hydrogen_counts)
-    // console.log(oplus)
+    // [CH2]
+    // console.log(atoms_with_ring_bonds)
     /*
-    [ [ 'C',
+    [
+  [
+    'C',
     6,
     4,
     4,
     0,
-    '4r7b815ltkjkguxld',
-    '4r7b815ltkjkguxle',
-    '4r7b815ltkjkguxlf',
-    '4r7b815ltkjkguxlg',
-    5 ],
-  { type: 'Charge', value: 1 } ]
-
+    '2yyvqtf2b36ko9hlpky',
+    '2yyvqtf2b36ko9hlpkz',
+    '2yyvqtf2b36ko9hlpl0',
+    '2yyvqtf2b36ko9hlpl1'
+  ],
+  { type: 'HydrogenCount', value: 2 }
+]
 
      */
 
-    const molecule_with_hydrogen_counts = [[12345,atoms_with_hydrogen_counts],1]
-    // console.log(VMolecule(molecule_with_hydrogen_counts).compressed())
+    const atoms_with_hydrogen_counts = _.cloneDeep(atoms_with_ring_bonds)
+    // [CH2]
+    // console.log(atoms_with_hydrogen_counts)
     /*
-    atoms_with_hydrogen_counts.map(
-        (atom, index) => {
-            const c =  CAtom(atoms_with_hydrogen_counts[index], index, molecule_with_hydrogen_counts)
-            // console.log ("Index: " + index + " Bonds: " + c.bondCount() +  " " + c.doubleBondCount())
-        }
-    )
-    */
+    [
+  [
+    'C',
+    6,
+    4,
+    4,
+    0,
+    '2yyvqtf2b5zko9hs0qm',
+    '2yyvqtf2b5zko9hs0qn',
+    '2yyvqtf2b5zko9hs0qo',
+    '2yyvqtf2b5zko9hs0qp'
+  ],
+  { type: 'HydrogenCount', value: 2 }
+]
+     */
+   // const molecule_with_hydrogen_counts = [[12345,atoms_with_hydrogen_counts],1]
+
 
     const atoms_with_charges = _.cloneDeep(atoms_with_hydrogen_counts).reduce(
         (carry, current, index, atoms) => {
-            if (typeof current[0]==="string") {
+            if (current['type'] !== undefined && current['type'] === "HydrogenCount") {
+                carry.push(current)
+            } else if (typeof current[0]==="string") {
                 if (undefined !== atoms[index+1] && atoms[index+1].type === "Charge") {
                     current[4] =  atoms[index+1].value === 1 ? "+":"-"
                 }
@@ -418,30 +384,28 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }, []
     )
 
-    // [CH5+]
+    // [CH2]
     // console.log(atoms_with_charges)
-    // console.log(oplus)
     /*
-    [ [ 'C',
+[
+  [
+    'C',
     6,
     4,
     4,
-    '+',
-    '4r7b815m7kjkgw5in',
-    '4r7b815m7kjkgw5io',
-    '4r7b815m7kjkgw5ip',
-    '4r7b815m7kjkgw5iq',
-    5 ] ]
+    0,
+    '2yyvqtf2b7ako9hvh6v',
+    '2yyvqtf2b7ako9hvh6w',
+    '2yyvqtf2b7ako9hvh6x',
+    '2yyvqtf2b7ako9hvh6y'
+  ],
+  { type: 'HydrogenCount', value: 2 }
+]
 
      */
 
-   //const molecule3 = [[12345,atoms_with_charges],1]
-   //// console.log(VMolecule(molecule3).compressed())
-   // console.log(qwe)
-
     // Add hydrogens
     const molecule = [[12345,atoms_with_charges],1]
-    // console.log(VMolecule(molecule).compressed())
     const atoms_with_hydrogens = _.cloneDeep(atoms_with_charges).reduce(
         (carry, current, index, arr) => {
 
@@ -450,70 +414,9 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                 const catom = CAtom(_.cloneDeep(current), index, molecule)
 
                 const free_electrons = catom.freeElectrons()
-                let number_of_hydrogens_required = 0
-                if (current[0] === "Hg" || current[0] === "Ac") {
-                    number_of_hydrogens_required = 0
-                } else {
-                    number_of_hydrogens_required = free_electrons.length
-                }
 
-
-                // if last element of atom is a number then this is the number of hydrogens
-                //let number_of_hydrogens_required = 0
-                /*
-                let valence_electrons = []
-                if (typeof current[current.length-1] === "number") {
-                    number_of_hydrogens_required = current[current.length-1]
-                    current.pop()
-                    valence_electrons = current.slice(5)
-                } else {
-
-                    if (current[0] === "Hg" || current[0] === "Ac") {
-                        number_of_hydrogens_required = 0
-                    } else {
-
-
-                        // Check how many bonds it currently has
-                        valence_electrons = current.slice(5)
-                        // Check each valence electron to see if it is being shared
-
-
-                        const actual_number_of_bonds = catom.bondCount() - catom.doubleBondCount() + (catom.doubleBondCount() * 2)  - catom.tripleBondCount() + (catom.tripleBond() * 3)
-
-
-                        // current[3] is the number of electrons the atom has when it is neutrally charged
-                        number_of_hydrogens_required = current[3] - actual_number_of_bonds + (current[4]) // current[4] is the charge
-
-                     //   // console.log("Index: " + index + " Bond count: " + actual_number_of_bonds + " Hydrogens req: " + number_of_hydrogens_required)
-                    }
-                }
-                */
-
-                /*
-                if (number_of_hydrogens_required > 0) {
-                    range.range(0, number_of_hydrogens_required,1).map(
-                        (e_index) => {
-                            if (undefined !== valence_electrons[e_index]) {
-                                const hydrogen = AtomFactory('H', "")
-                                hydrogen.push(valence_electrons[e_index])
-                                current.push(hydrogen[hydrogen.length - 2])
-                                carry.push(hydrogen)
-                            } else {
-                               // console.log(valence_electrons)
-                               // console.log('Valence electron not found:' + e_index)
-                            }
-                        }
-                    )
-                }
-                */
-
-                if (number_of_hydrogens_required > 0) {
-                    const offset_map = {
-                        "O":4,
-                        "N":2,
-                        "C":0,
-                    }
-                    range.range(0, number_of_hydrogens_required - offset_map[current[0]],1).map(
+                if (atoms_with_charges[index+1] !== undefined && atoms_with_charges[index+1]['type'] !== undefined && atoms_with_charges[index+1]['type'] === "HydrogenCount") {
+                    range.range(0, atoms_with_charges[index+1]['value'],1).map(
                         (e_index) => {
                             if (undefined !== free_electrons[e_index]) {
                                 const hydrogen = AtomFactory('H', "")
@@ -524,43 +427,73 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                             }
                         }
                     )
+                }  else {
+
+
+                    let number_of_hydrogens_required = 0
+                    if (current[0] === "Hg" || current[0] === "Ac") {
+                        number_of_hydrogens_required = 0
+                    } else {
+                        number_of_hydrogens_required = free_electrons.length
+                    }
+
+                    if (number_of_hydrogens_required > 0) {
+                        const offset_map = {
+                            "O":4,
+                            "N":2,
+                            "C":0,
+                        }
+                        range.range(0, number_of_hydrogens_required - offset_map[current[0]],1).map(
+                            (e_index) => {
+                                if (undefined !== free_electrons[e_index]) {
+                                    const hydrogen = AtomFactory('H', "")
+                                    hydrogen.push(free_electrons[e_index])
+                                    current.push(hydrogen[hydrogen.length - 2])
+                                    carry.push(hydrogen)
+                                } else {
+                                }
+                            }
+                        )
+                    }
+
+
                 }
 
             }
-            carry.push(current)
+
+            if(current['type'] === undefined) {
+                carry.push(current)
+            }
             return carry
         },
         []
     )
 
 
-    // [CH5+]
-  // console.log(atoms_with_hydrogens)
-  // console.log(oplus)
+    // [CH2]
+   // console.log(atoms_with_hydrogens)
     /*
-    [ [ 'O',
-    8,
+
+[
+  [ 'H', 1, 1, 1, '', '2yyvqtf2bkeko9i9ir9', '2yyvqtf2bkeko9i9iqy' ],
+  [ 'H', 1, 1, 1, '', '2yyvqtf2bkeko9i9ira', '2yyvqtf2bkeko9i9iqz' ],
+  [
+    'C',
     6,
-    2,
-    '+',
-    '4r7b813elkjjkg4q2',
-    '4r7b813elkjjkg4q3',
-    '4r7b813elkjjkg4q4',
-    '4r7b813elkjjkg4q5',
-    '4r7b813elkjjkg4q6',
-    '4r7b813elkjjkg4q7' ] ]
+    4,
+    4,
+    0,
+    '2yyvqtf2bkeko9i9iqy',
+    '2yyvqtf2bkeko9i9iqz',
+    '2yyvqtf2bkeko9i9ir0',
+    '2yyvqtf2bkeko9i9ir1',
+    '2yyvqtf2bkeko9i9ir9',
+    '2yyvqtf2bkeko9i9ira'
+  ]
+]
+
 
      */
-
-    // const molecule2 = [[12345,atoms_with_hydrogens],1]
-    // console.log(VMolecule(molecule2).compressed())
-    //// console.log(oikk)
-  //  // console.log("===========================================")
-  //  const molecule_with_hydrogens = [[12345,atoms_with_hydrogens],1]
-   // console.log(VMolecule(molecule_with_hydrogens).compressed())
-
-
- // console.log(hhhhh)
 
     const atoms_electrons_checked = atoms_with_hydrogens.map((atom, index)=>{
         const o_atom = CAtom(atom, index, [['12345', atoms_with_hydrogens], 1])
@@ -601,7 +534,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                     }
                     break;
                 case "C":
-                    // console.log('Bond count on C:'+bond_count+" " + index)
+                    // // console.log('Bond count on C:'+bond_count+" " + index)
                     if (bond_count ===5){
                         if (o_atom.hydrogens().length > 0) {
                             // Remove a hydrogen
@@ -616,14 +549,14 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                     }
                     if (bond_count === 4) {
                         if (o_atom.freeElectrons().length !== 0) {
-                            // console.log(o_atom.indexedBonds(""))
+                            // // console.log(o_atom.indexedBonds(""))
                             o_atom.indexedBonds("").map((bond)=>{
-                                // console.log("Bond type:"+bond.bond_type)
-                                // console.log(bond.shared_electrons)
+                                // // console.log("Bond type:"+bond.bond_type)
+                                // // console.log(bond.shared_electrons)
                                 return bond
                             })
-                            // console.log(atom)
-                            // console.log(jjklkjkl)
+                            // // console.log(atom)
+                            // // console.log(jjklkjkl)
                         }
                     }
                     break;
@@ -717,22 +650,22 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     })
 
    const molecule4 = [[12345,atoms_with_redundant_hydrogens_removed],1]
-   //console.log(VMolecule(molecule4).compressed())
+   //// console.log(VMolecule(molecule4).compressed())
 
     const moleculeAI = require("../Components/Stateless/MoleculeAI")(molecule4)
     moleculeAI.validateMolecule()
 
-   //console.log(atomsfactoryyy)
+   //// console.log(atomsfactoryyy)
 
     /*
-    // console.log(atoms_with_hydrogens.filter((atom)=>{
+    // // console.log(atoms_with_hydrogens.filter((atom)=>{
         return atom[0] === "H"
     }).length)
-    // console.log("AtomsFactory.js")
+    // // console.log("AtomsFactory.js")
     process.exit()
 */
     //  atomic symbol, proton count, valence count, number of bonds, charge, velectron1, velectron2, velectron3
-   // console.log(atoms_electrons_checked)
+   // // console.log(atoms_electrons_checked)
     return atoms_electrons_checked
 
     // We can't do this
@@ -744,11 +677,11 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     })
 
 /*
-    console.log(atoms_sorted.map((a, i)=>{
+    // console.log(atoms_sorted.map((a, i)=>{
         a.push(i)
         return a
     }))
-    console.log(atomssorted)
+    // console.log(atomssorted)
 */
     //return atoms_sorted
 

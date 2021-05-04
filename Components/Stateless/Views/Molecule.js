@@ -616,6 +616,15 @@ C1=CC=CC=C1
                 if (double_parent_bond_ids.length > 0) {
                     bond_type = "="
                 }
+
+                // square brackets if required
+                switch(atom[0]) {
+                    case "C":
+                        if (atom[2].replace(/H /, "") * 1 + atom[4].length + (atom[5].length*2) !== 4) {
+                            atom[0] = "[" + atom[0] + "H" + atom[1] + "]"
+                        }
+                        break
+                }
                 s = s + bond_type + atom[0]
                 // End of branch
                 if (i !==0 && i!==compressedMolecule.length-1 && atom[4].length + atom[5].length + atom[6].length===1) {

@@ -64,6 +64,7 @@ const Families = require('./Models/Families')
 
 
 
+
 console.log("Testing sulphuric acid OS(=O)(=O)O")
 const sulphuric_acid = MoleculeFactory("OS(=O)(=O)O")
 // return [atom[0], index, "H " + h.length, 'Charge: '+ atom[4],  bonds, double_bonds, triple_bonds, electrons.length, free_electrons.length]
@@ -93,30 +94,19 @@ VMolecule([benzene, 1]).canonicalSMILES(false).should.be.equal("C1=CC=CC=C1") //
 C1=CC=CC=C1
  */
 
-
-console.log("Testing methyline [CH2]")
+console.log("Testing methylene [CH2]")
 const methylene = MoleculeFactory("[CH2]")
-console.log("methane compressed: [CH2]")
+console.log("methylene compressed: [CH2]")
 console.log(VMolecule([methylene, 1]).compressed())
 VMolecule([methylene, 1]).canonicalSMILES(true).should.be.equal("[CH2]") // actual
-
-
-process.error()
-
-// Check number of hydrogens
-methyline[1].filter((atom)=>{
-    return atom[0] === "H"
-}).length.should.be.equal(2)
-
-const methyline_s = VMolecule([methyline, 1]).canonicalSMILES()
-methyline_s.should.be.equal("[CH2]")
-
 
 // epoxide acidic ring opening
 // CC(C)(CO)OC
 // 2-Methoxy-2-methylpropan-1-ol
 const Two_Methoxy_2_methylpropan_1_ol = MoleculeFactory("COC(C)(C)CO")
 VMolecule([Two_Methoxy_2_methylpropan_1_ol, 1]).canonicalSMILES().should.be.equal("COC(C)(C)CO")
+
+process.error()
 
 const ethanol = MoleculeFactory("C(O)C")
 VMolecule([ethanol, 1]).canonicalSMILES().should.be.equal("C(O)C")
