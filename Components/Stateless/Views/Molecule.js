@@ -496,20 +496,28 @@ const VMolecule = (mmolecule) => {
                 const double_bonds = atom[5].length
 //                const_single_bonds_
                 const number_of_branches = atom[4].length + atom[5].length
-                if (number_of_branches > 1) {
+                if (number_of_branches > 2) {
                     // s = s + "("
                     // Add start of branch ids
                     atom[4].map((id)=>{
+                        id = id.split(" ")
                         start_of_branches_ids.push(id[0]*1)  // "1 0"
                     })
                     atom[5].map((id)=>{
+                        id = id.split(" ")
                         start_of_branches_ids.push(id[0]*1) // "1 0"
                     })
                     atom[6].map((id)=>{
+                        id = id.split(" ")
                         start_of_branches_ids.push(id[0]*1) // "1 0"
                     })
                 }
             })
+
+            if (testing) {
+                console.log("start of branch ids")
+                console.log(start_of_branches_ids)
+            }
 
            // process.error()
             // Get ids of ring bonds
@@ -578,12 +586,15 @@ C1=CC=CC=C1
                     // s = s + "("
                     // Add start of branch ids
                     atom[4].map((id)=>{
+                        id = id.split(" ")
                         start_of_branches_ids.push(id[0]*1)  // "1 0"
                     })
                     atom[5].map((id)=>{
+                        id = id.split(" ")
                         start_of_branches_ids.push(id[0]*1) // "1 0"
                     })
                     atom[6].map((id)=>{
+                        id = id.split(" ")
                         start_of_branches_ids.push(id[0]*1) // "1 0"
                     })
                 }
@@ -627,6 +638,7 @@ C1=CC=CC=C1
                 }
                 s = s + bond_type + atom[0]
                 // End of branch
+                // if (i !==0 && i!==compressedMolecule.length-1 && atom[4].length + atom[5].length + atom[6].length===1) {
                 if (i !==0 && i!==compressedMolecule.length-1 && atom[4].length + atom[5].length + atom[6].length===1) {
                     s = s + ")"
                 }
