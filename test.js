@@ -62,18 +62,23 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
 const Families = require('./Models/Families')
 
 
+console.log("Testing ethanol C(O)(C)")
+const ethanol = MoleculeFactory("C(O)(C)")
+console.log(VMolecule([ethanol,1]).compressed())
+VMolecule([ethanol, 1]).canonicalSMILES(false).should.be.equal("C(O)(C)")
+
+process.error()
 
 
-
-console.log("Testing sulphuric acid OS(=O)(=O)O")
-const sulphuric_acid = MoleculeFactory("OS(=O)(=O)O")
+console.log("Testing sulphuric acid OS(=O)(=O)(O)")
+const sulphuric_acid = MoleculeFactory("OS(=O)(=O)(O)")
 // return [atom[0], index, "H " + h.length, 'Charge: '+ atom[4],  bonds, double_bonds, triple_bonds, electrons.length, free_electrons.length]
 console.log("Atomic symbol / Hydrogens / Charge / Single bonds / Double bonds / Triple bonds/ # of electrons / # of free electrons")
 console.log("Neutral sulphur atoms have six bonds in total including hydrogen bonds.")
 console.log("Compressed:")
 console.log(VMolecule([sulphuric_acid, 1]).compressed())
 CMolecule(sulphuric_acid).verifyMolecule()
-VMolecule([sulphuric_acid, 1]).canonicalSMILES(false).should.be.equal("OS(=O)(=O)O")
+VMolecule([sulphuric_acid, 1]).canonicalSMILES(false).should.be.equal("OS(=O)(=O)(O)")
 
 // benzene
 // C1=CC=CC=C1
@@ -103,14 +108,13 @@ VMolecule([methylene, 1]).canonicalSMILES(false).should.be.equal("[CH2]") // act
 // epoxide acidic ring opening
 // CC(C)(CO)OC
 // 2-Methoxy-2-methylpropan-1-ol
-const Two_Methoxy_2_methylpropan_1_ol = MoleculeFactory("COC(C)(C)CO")
+console.log("Testing 2-Methoxy-2-methylpropan-1-ol COC(C)(C)(CO)")
+const Two_Methoxy_2_methylpropan_1_ol = MoleculeFactory("COC(C)(C)(CO)")
 console.log(VMolecule([Two_Methoxy_2_methylpropan_1_ol,1]).compressed())
-VMolecule([Two_Methoxy_2_methylpropan_1_ol, 1]).canonicalSMILES(true).should.be.equal("COC(C)(C)CO")
+VMolecule([Two_Methoxy_2_methylpropan_1_ol, 1]).canonicalSMILES(false).should.be.equal("COC(C)(C)(CO)")
 
-process.error()
 
-const ethanol = MoleculeFactory("C(O)C")
-VMolecule([ethanol, 1]).canonicalSMILES().should.be.equal("C(O)C")
+
 
 
 const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")

@@ -496,7 +496,7 @@ const VMolecule = (mmolecule) => {
                 const double_bonds = atom[5].length
 //                const_single_bonds_
                 const number_of_branches = atom[4].length + atom[5].length
-                if (number_of_branches > 2) {
+                if (number_of_branches > 2 || (i===0 && number_of_branches > 1)) {
                     // s = s + "("
                     // Add start of branch ids
                     atom[4].map((id)=>{
@@ -517,6 +517,7 @@ const VMolecule = (mmolecule) => {
             if (testing) {
                 console.log("start of branch ids")
                 console.log(start_of_branches_ids)
+               // process.error()
             }
 
            // process.error()
@@ -551,8 +552,9 @@ const VMolecule = (mmolecule) => {
 
 
             if (testing) {
-                //console.log("ring bond ids")
-                //console.log(ring_bond_ids)
+                console.log("ring bond ids")
+                console.log(ring_bond_ids)
+                //process.error()
             }
 
             const atoms_with_ring_bond_ids = compressedMolecule.map((atom) => {
@@ -582,7 +584,7 @@ C1=CC=CC=C1
             let bond_indexes = []
             const smiles = compressedMolecule.reduce((s, atom, i)=> {
                 const number_of_branches = atom[4].length + atom[5].length
-                if (number_of_branches > 2) {
+                if (number_of_branches > 2 || (i===0 && number_of_branches > 1) ) {
                     // s = s + "("
                     // Add start of branch ids
                     atom[4].map((id)=>{
@@ -603,7 +605,7 @@ C1=CC=CC=C1
                     //console.log(start_of_branches_ids)
                     //process.error()
                 }
-                if (start_of_branches_ids.indexOf(atom[1]) > -1 && i !== compressedMolecule.length -1) {
+                if (start_of_branches_ids.indexOf(atom[1]) > -1) {
                     if (testing) {
                         //console.log(atom)
                       //  process.log()
@@ -639,7 +641,7 @@ C1=CC=CC=C1
                 s = s + bond_type + atom[0]
                 // End of branch
                 // if (i !==0 && i!==compressedMolecule.length-1 && atom[4].length + atom[5].length + atom[6].length===1) {
-                if (i !==0 && i!==compressedMolecule.length-1 && atom[4].length + atom[5].length + atom[6].length===1) {
+                if (i !==0 &&  atom[4].length + atom[5].length + atom[6].length===1) {
                     s = s + ")"
                 }
                 return s
