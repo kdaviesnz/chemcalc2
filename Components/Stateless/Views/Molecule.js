@@ -501,7 +501,28 @@ const VMolecule = (mmolecule) => {
                     // Add start of branch ids
                     atom[4].map((id)=>{
                         id = id.split(" ")
-                        start_of_branches_ids.push(id[0]*1)  // "1 0"
+                        if (testing) {
+                            console.log(atom)
+                            console.log(id)
+                        }
+                        id = id[0] * 1
+                        // Check for ring bond
+                        const child_atom = compressedMolecule.filter((a)=>{
+                            return a[1] === id
+                        }).pop()
+                        const child_bond_ids = child_atom[4].map((b)=>{
+                            b = b.split(" ")
+                            return b[0] * 1
+                        })
+                        if (testing) {
+                            console.log("child bond ids")
+                            console.log(child_bond_ids)
+                            console.log(atom[1])
+                            console.log(child_bond_ids.indexOf(atom[1]))
+                        }
+                        if (child_bond_ids.indexOf(atom[1])) {
+                            start_of_branches_ids.push(id)  // "1 0"
+                        }
                     })
                     atom[5].map((id)=>{
                         id = id.split(" ")
@@ -517,7 +538,6 @@ const VMolecule = (mmolecule) => {
             if (testing) {
                 console.log("start of branch ids")
                 console.log(start_of_branches_ids)
-               // process.error()
             }
 
            // process.error()
@@ -554,7 +574,7 @@ const VMolecule = (mmolecule) => {
             if (testing) {
                 console.log("ring bond ids")
                 console.log(ring_bond_ids)
-                //process.error()
+                process.error()
             }
 
             const atoms_with_ring_bond_ids = compressedMolecule.map((atom) => {

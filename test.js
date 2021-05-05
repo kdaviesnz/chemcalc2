@@ -65,9 +65,7 @@ const Families = require('./Models/Families')
 console.log("Testing ethanol C(O)(C)")
 const ethanol = MoleculeFactory("C(O)(C)")
 console.log(VMolecule([ethanol,1]).compressed())
-VMolecule([ethanol, 1]).canonicalSMILES(false).should.be.equal("C(O)(C)")
-
-process.error()
+VMolecule([ethanol, 1]).canonicalSMILES(true).should.be.equal("C(O)(C)")
 
 
 console.log("Testing sulphuric acid OS(=O)(=O)(O)")
@@ -78,7 +76,9 @@ console.log("Neutral sulphur atoms have six bonds in total including hydrogen bo
 console.log("Compressed:")
 console.log(VMolecule([sulphuric_acid, 1]).compressed())
 CMolecule(sulphuric_acid).verifyMolecule()
-VMolecule([sulphuric_acid, 1]).canonicalSMILES(false).should.be.equal("OS(=O)(=O)(O)")
+VMolecule([sulphuric_acid, 1]).canonicalSMILES(true).should.be.equal("OS(=O)(=O)(O)")
+
+
 
 // benzene
 // C1=CC=CC=C1
@@ -86,7 +86,7 @@ console.log("Testing benzene C1=CC=CC=C1")
 const benzene = MoleculeFactory("C1=CC=CC=C1")
 console.log("Benzene compressed: C1=CC=CC=C1")
 console.log(VMolecule([benzene, 1]).compressed())
-VMolecule([benzene, 1]).canonicalSMILES(false).should.be.equal("C1=CC=CC=C1") // actual C1=CC=C=C=C1
+VMolecule([benzene, 1]).canonicalSMILES(true).should.be.equal("C1=CC=CC=C1") // actual C1=CC=C=C=C1
 /*
 [
   [ 'C', 1, 'H 1', 'Charge: 0', [ '11  C' ], [ '3  C' ], [], 8, 0 ],
@@ -98,6 +98,8 @@ VMolecule([benzene, 1]).canonicalSMILES(false).should.be.equal("C1=CC=CC=C1") //
 ]
 C1=CC=CC=C1
  */
+
+process.error()
 
 console.log("Testing methylene [CH2]")
 const methylene = MoleculeFactory("[CH2]")
