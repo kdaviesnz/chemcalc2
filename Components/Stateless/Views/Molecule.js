@@ -496,7 +496,7 @@ const VMolecule = (mmolecule) => {
                 const double_bonds = atom[5].length
 //                const_single_bonds_
                 const number_of_branches = atom[4].length + atom[5].length
-                if (number_of_branches > 2 || (i===0 && number_of_branches > 1)) {
+                if (number_of_branches > 2 ) {
                     // s = s + "("
                     // Add start of branch ids
                     atom[4].map((id)=>{
@@ -520,9 +520,9 @@ const VMolecule = (mmolecule) => {
                             console.log(atom[1])
                             console.log(child_bond_ids.indexOf(atom[1]))
                         }
-                        if (child_bond_ids.indexOf(atom[1])) {
+                     //  if (child_bond_ids.indexOf(atom[1])) {
                             start_of_branches_ids.push(id)  // "1 0"
-                        }
+                       // }
                     })
                     atom[5].map((id)=>{
                         id = id.split(" ")
@@ -547,7 +547,7 @@ const VMolecule = (mmolecule) => {
             compressedMolecule.map((parent_atom, i) => {
                 const child_atoms = compressedMolecule.slice(i + 2)
                 // Check other atoms for a bond with the same id as the current atom
-                if (child_atoms.length > 0) {
+                if (child_atoms.length > 1) {
                     child_atoms.map((child_atom, k) => {
                         if (start_of_branches_ids.indexOf(child_atom[1]) === -1) {
                             const child_atom_single_bonds = child_atom[4].length == 0 ? [] : child_atom[4].map((a) => {
@@ -562,8 +562,18 @@ const VMolecule = (mmolecule) => {
                                 const parent_item = {}
                                 const child_atom_id = child_atom[1]
                                 parent_item[parent_atom[1]] = ring_bond_id
-                                ring_bond_ids[parent_item[parent_atom[1]]] = ring_bond_id
+
+                               // ring_bond_ids[parent_item[parent_atom[1]]] = ring_bond_id
+                                ring_bond_ids[parent_atom[1]+""] = ring_bond_id
                                 ring_bond_ids[child_atom_id] = ring_bond_id
+
+                                if (testing) {
+                                    console.log(parent_item)
+                                    console.log(parent_item[parent_atom[1]])
+                                    console.log(parent_item[parent_atom[0]])
+                                    console.log(ring_bond_ids)
+                                    //process.error()
+                                }
                             }
                         }
                     })
@@ -574,7 +584,7 @@ const VMolecule = (mmolecule) => {
             if (testing) {
                 console.log("ring bond ids")
                 console.log(ring_bond_ids)
-                process.error()
+                //process.error()
             }
 
             const atoms_with_ring_bond_ids = compressedMolecule.map((atom) => {
