@@ -384,25 +384,27 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }, []
     )
 
-    // [CH2]
-    // console.log(atoms_with_charges)
+    // [OH3+]
     /*
 [
   [
-    'C',
+    'O',
+    8,
     6,
-    4,
-    4,
+    2,
     0,
-    '2yyvqtf2b7ako9hvh6v',
-    '2yyvqtf2b7ako9hvh6w',
-    '2yyvqtf2b7ako9hvh6x',
-    '2yyvqtf2b7ako9hvh6y'
+    '2yyvqtf44gkoddrx1e',
+    '2yyvqtf44gkoddrx1f',
+    '2yyvqtf44gkoddrx1g',
+    '2yyvqtf44gkoddrx1h',
+    '2yyvqtf44gkoddrx1i',
+    '2yyvqtf44gkoddrx1j'
   ],
-  { type: 'HydrogenCount', value: 2 }
+  { type: 'HydrogenCount', value: 3 }
 ]
 
      */
+
 
     // Add hydrogens
     const molecule = [[12345,atoms_with_charges],1]
@@ -470,28 +472,31 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     )
 
 
-    // [CH2]
-   // console.log(atoms_with_hydrogens)
-    /*
-
+    // [OH3
+    //console.log(atoms_with_hydrogens)
+    //process.error()
+  /*
 [
-  [ 'H', 1, 1, 1, '', '2yyvqtf2bkeko9i9ir9', '2yyvqtf2bkeko9i9iqy' ],
-  [ 'H', 1, 1, 1, '', '2yyvqtf2bkeko9i9ira', '2yyvqtf2bkeko9i9iqz' ],
+  [ 'H', 1, 1, 1, '', '2yyvqtf48zkoddy2eh', '2yyvqtf48zkoddy2eb' ],
+  [ 'H', 1, 1, 1, '', '2yyvqtf48zkoddy2ei', '2yyvqtf48zkoddy2ec' ],
+  [ 'H', 1, 1, 1, '', '2yyvqtf48zkoddy2ej', '2yyvqtf48zkoddy2ed' ],
   [
-    'C',
+    'O',
+    8,
     6,
-    4,
-    4,
+    2,
     0,
-    '2yyvqtf2bkeko9i9iqy',
-    '2yyvqtf2bkeko9i9iqz',
-    '2yyvqtf2bkeko9i9ir0',
-    '2yyvqtf2bkeko9i9ir1',
-    '2yyvqtf2bkeko9i9ir9',
-    '2yyvqtf2bkeko9i9ira'
+    '2yyvqtf48zkoddy2eb',
+    '2yyvqtf48zkoddy2ec',
+    '2yyvqtf48zkoddy2ed',
+    '2yyvqtf48zkoddy2ee',
+    '2yyvqtf48zkoddy2ef',
+    '2yyvqtf48zkoddy2eg',
+    '2yyvqtf48zkoddy2eh',
+    '2yyvqtf48zkoddy2ei',
+    '2yyvqtf48zkoddy2ej'
   ]
 ]
-
 
      */
 
@@ -505,7 +510,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         if (atom[4] === "" || atom[4] === 0) {
             switch(atom[0]) {
                 case "O":
-                    if (bond_count ===3){
+                    if (bond_count > 3){
                         if (o_atom.hydrogens().length > 0) {
                             // Remove a hydrogen
                             const h_bonds = o_atom.indexedBonds("").filter((bond)=>{
@@ -517,7 +522,9 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                             atom.push(uniqid())
                         }
                     }
-
+                    if (bond_count > 2) {
+                        atom[4] = "+"
+                    }
                     break;
                 case "N":
                     if (bond_count ===4){
@@ -665,7 +672,10 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     process.exit()
 */
     //  atomic symbol, proton count, valence count, number of bonds, charge, velectron1, velectron2, velectron3
-   // // console.log(atoms_electrons_checked)
+    //console.log("[OH3+]")
+    //console.log(atoms_electrons_checked)
+    //process.error()
+
     return atoms_electrons_checked
 
     // We can't do this

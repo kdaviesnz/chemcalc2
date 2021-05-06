@@ -61,7 +61,6 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
 
 const Families = require('./Models/Families')
 
-
 // benzene
 // C1=CC=CC=C1
 console.log("Testing benzene C1=CC=CC=C1")
@@ -103,31 +102,16 @@ const Two_Methoxy_2_methylpropan_1_ol = MoleculeFactory("COC(C)(C)(CO)")
 console.log(VMolecule([Two_Methoxy_2_methylpropan_1_ol,1]).compressed())
 VMolecule([Two_Methoxy_2_methylpropan_1_ol, 1]).canonicalSMILES(false).should.be.equal("COC(C)(C)(CO)")
 
-process.error()
-
-
-
-
-
-
+console.log("Testing bromide [Br-]")
 const bromide_neg = MoleculeFactory("[Br-]")
-VMolecule([bromide_neg, 1]).canonicalSMILES().should.be.equal("[Br-]")
-MoleculeController([bromide_neg, 1]).nucleophileIndex().should.be.equal(0)
+console.log(VMolecule([bromide_neg, 1]).compressed())
+VMolecule([bromide_neg, 1]).canonicalSMILES(false).should.be.equal("[Br-]")
 
-const oxide = MoleculeFactory("[OH3+]")
-oxide[1].should.be.an.Array()
-oxide[1].length.should.be.equal(4)
-oxide[1][3][0].should.be.equal("O")
-const oxide_oxygen = CAtom(oxide[1][3], 2, [oxide, 1])
-oxide[1][3].slice(5).length.should.be.equal(9)
-oxide_oxygen.hydrogens().length.should.be.equal(3)
-oxide_oxygen.carbons().length.should.be.equal(0)
-oxide_oxygen.freeSlots().should.be.equal(-1)
-oxide_oxygen.bondCount().should.be.equal(3)
-oxide_oxygen.doubleBondCount().should.be.equal(0)
-oxide_oxygen.isNegativelyCharged().should.be.false() // proton count 8, total number of electrons 11
-oxide_oxygen.isPositivelyCharged().should.be.true()
-VMolecule([oxide, 1]).canonicalSMILES().should.be.equal("[O+]")
+console.log("Testing oxonium [OH3+]")
+const oxonium = MoleculeFactory("[OH3+]")
+console.log(VMolecule([oxonium, 1]).compressed())
+VMolecule([oxonium, 1]).canonicalSMILES(false).should.be.equal("[OH3+]")
+process.error()
 
 
 
@@ -168,12 +152,6 @@ if (true) {
         return bond.atom[0] === "H"
     }).length.should.be.equal(1)
     VMolecule([oxidane, 1]).canonicalSMILES().should.be.equal("CO")
-
-
-    const oxonium = MoleculeFactory("[OH3+]")
-    VMolecule([oxonium, 1]).canonicalSMILES().should.be.equal("[O+]")
-
-
 
     const butane = MoleculeFactory("CC[C+]C")
     VMolecule([butane, 1]).canonicalSMILES().should.be.equal("CC[C+]C")

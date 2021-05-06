@@ -655,12 +655,35 @@ const VMolecule = (mmolecule) => {
                 }
 
                 // square brackets if required
+                let add_square_brackets = false
+                // Charge
+                // Hydrogens
                 switch(current_atom[0]) {
                     case "C":
                         if (current_atom[2].replace(/H /, "") * 1 + current_atom[4].length + (current_atom[5].length*2) !== 4) {
-                            current_atom[0] = "[" + current_atom[0] + "H" + current_atom[1] + "]"
+                            add_square_brackets = true
+                            current_atom[0] = current_atom[0] + "H" + current_atom[1]
                         }
                         break
+                    case "O":
+                        if (current_atom[2].replace(/H /, "") * 1 + current_atom[4].length + (current_atom[5].length*2) !== 2) {
+                            add_square_brackets = true
+                            current_atom[0] = current_atom[0] + "H" + current_atom[1]
+                        }
+                        break
+
+                }
+                const charge = current_atom[3].replace("Charge: ", "")
+                if (testing) {
+                    console.log("Charge:")
+                    console.log(charge)
+                }
+                if (charge !== "0") {
+                    current_atom[0] = current_atom[0] + charge
+                    add_square_brackets = true
+                }
+                if (add_square_brackets === true) {
+                    current_atom[0] = "[" + current_atom[0] + "]"
                 }
                 s = s + bond_type + current_atom[0]
 
