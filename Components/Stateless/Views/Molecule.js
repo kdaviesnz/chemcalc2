@@ -587,6 +587,11 @@ const VMolecule = (mmolecule) => {
                 }
                 s = s + bond_type + current_atom[0]
 
+                // Ring bond ids
+                if (ring_bond_ids[current_atom[1]+""] !== undefined) {
+                    s = s + ring_bond_ids[current_atom[1]+""]
+                }
+
                 // End of branch
                 if (i !==0 &&  current_atom[4].length + current_atom[5].length + current_atom[6].length===1) {
                     s = s + ")"

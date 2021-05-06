@@ -67,9 +67,7 @@ console.log("Testing benzene C1=CC=CC=C1")
 const benzene = MoleculeFactory("C1=CC=CC=C1")
 console.log("Benzene compressed: C1=CC=CC=C1")
 console.log(VMolecule([benzene, 1]).compressed())
-VMolecule([benzene, 1]).canonicalSMILES(true).should.be.equal("C1=CC=CC=C1") // actual C1=CC=C=C=C1
-process.error()
-
+VMolecule([benzene, 1]).canonicalSMILES(false).should.be.equal("C1=CC=CC=C1") // actual C1=CC=C=C=C1
 
 console.log("Testing sulphuric acid OS(=O)(=O)(O)")
 const sulphuric_acid = MoleculeFactory("OS(=O)(=O)(O)")
@@ -79,37 +77,13 @@ console.log("Neutral sulphur atoms have six bonds in total including hydrogen bo
 console.log("Compressed:")
 console.log(VMolecule([sulphuric_acid, 1]).compressed())
 CMolecule(sulphuric_acid).verifyMolecule()
-VMolecule([sulphuric_acid, 1]).canonicalSMILES(true).should.be.equal("OS(=O)(=O)(O)")
+VMolecule([sulphuric_acid, 1]).canonicalSMILES(false).should.be.equal("OS(=O)(=O)(O)")
 
 
 console.log("Testing ethanol C(O)(C)")
 const ethanol = MoleculeFactory("C(O)(C)")
 console.log(VMolecule([ethanol,1]).compressed())
-VMolecule([ethanol, 1]).canonicalSMILES(true).should.be.equal("C(O)(C)")
-
-
-
-/*
-[
-  [ 'C', 1, 'H 1', 'Charge: 0', [ '11  C' ], [ '3  C' ], [], 8, 0 ],
-  [ 'C', 3, 'H 1', 'Charge: 0', [ '5  C' ], [ '1  C' ], [], 8, 0 ],
-  [ 'C', 5, 'H 1', 'Charge: 0', [ '3  C' ], [ '7  C' ], [], 8, 0 ],
-  [ 'C', 7, 'H 1', 'Charge: 0', [ '9  C' ], [ '5  C' ], [], 8, 0 ],
-  [ 'C', 9, 'H 1', 'Charge: 0', [ '7  C' ], [ '11  C' ], [], 8, 0 ],
-  [ 'C', 11, 'H 1', 'Charge: 0', [ '1  C' ], [ '9  C' ], [], 8, 0 ]
-]
-C1=CC=CC=C1
- */
-
-
-
-
-
-
-
-
-
-
+VMolecule([ethanol, 1]).canonicalSMILES(false).should.be.equal("C(O)(C)")
 
 console.log("Testing methylene [CH2]")
 const methylene = MoleculeFactory("[CH2]")
@@ -118,18 +92,20 @@ console.log(VMolecule([methylene, 1]).compressed())
 VMolecule([methylene, 1]).canonicalSMILES(false).should.be.equal("[CH2]") // actual
 
 // epoxide acidic ring opening
-// CC(C)(CO)OC
 // 2-Methoxy-2-methylpropan-1-ol
 console.log("Testing 2-Methoxy-2-methylpropan-1-ol COC(C)(C)(CO)")
 const Two_Methoxy_2_methylpropan_1_ol = MoleculeFactory("COC(C)(C)(CO)")
 console.log(VMolecule([Two_Methoxy_2_methylpropan_1_ol,1]).compressed())
 VMolecule([Two_Methoxy_2_methylpropan_1_ol, 1]).canonicalSMILES(false).should.be.equal("COC(C)(C)(CO)")
 
+console.log("Testing benyzl_alcohol C1=CC=C(C=C1)CO")
+const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)(CO)")
+console.log(VMolecule([benyzl_alcohol,1]).compressed())
+VMolecule([benyzl_alcohol, 1]).canonicalSMILES(true).should.be.equal("C1=CC=C(C=C1)(CO)")
+
+process.error()
 
 
-
-
-const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
 //console.log(VMolecule([benyzl_alcohol, 1]).compressed())
 /*
 [ [ 'C', 1, [ '3  C', '10  C' ] ],
