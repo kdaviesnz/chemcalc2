@@ -384,7 +384,9 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }, []
     )
 
-    // [OH3+]
+    //console.log(atoms_with_charges)
+    //process.error()
+    // [NH4+]
     /*
 [
   [
@@ -472,29 +474,30 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     )
 
 
-    // [OH3
-    //console.log(atoms_with_hydrogens)
-    //process.error()
+    // [NH4+]
+  //  console.log(atoms_with_hydrogens)
+//    process.error()
   /*
 [
-  [ 'H', 1, 1, 1, '', '2yyvqtf48zkoddy2eh', '2yyvqtf48zkoddy2eb' ],
-  [ 'H', 1, 1, 1, '', '2yyvqtf48zkoddy2ei', '2yyvqtf48zkoddy2ec' ],
-  [ 'H', 1, 1, 1, '', '2yyvqtf48zkoddy2ej', '2yyvqtf48zkoddy2ed' ],
+  [ 'H', 1, 1, 1, '', '2yyvqtf7eukodgfth2', '2yyvqtf7eukodgftgx' ],
+  [ 'H', 1, 1, 1, '', '2yyvqtf7eukodgfth3', '2yyvqtf7eukodgftgy' ],
+  [ 'H', 1, 1, 1, '', '2yyvqtf7eukodgfth4', '2yyvqtf7eukodgftgz' ],
+  [ 'H', 1, 1, 1, '', '2yyvqtf7eukodgfth5', '2yyvqtf7eukodgfth0' ],
   [
-    'O',
-    8,
-    6,
-    2,
+    'N',
+    7,
+    5,
+    3,
     0,
-    '2yyvqtf48zkoddy2eb',
-    '2yyvqtf48zkoddy2ec',
-    '2yyvqtf48zkoddy2ed',
-    '2yyvqtf48zkoddy2ee',
-    '2yyvqtf48zkoddy2ef',
-    '2yyvqtf48zkoddy2eg',
-    '2yyvqtf48zkoddy2eh',
-    '2yyvqtf48zkoddy2ei',
-    '2yyvqtf48zkoddy2ej'
+    '2yyvqtf7eukodgftgx',
+    '2yyvqtf7eukodgftgy',
+    '2yyvqtf7eukodgftgz',
+    '2yyvqtf7eukodgfth0',
+    '2yyvqtf7eukodgfth1',
+    '2yyvqtf7eukodgfth2',
+    '2yyvqtf7eukodgfth3',
+    '2yyvqtf7eukodgfth4',
+    '2yyvqtf7eukodgfth5'
   ]
 ]
 
@@ -527,7 +530,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                     }
                     break;
                 case "N":
-                    if (bond_count ===4){
+                    if (bond_count >4){
                         if (o_atom.hydrogens().length > 0) {
                             // Remove a hydrogen
                             const h_bonds = o_atom.indexedBonds("").filter((bond)=>{
@@ -538,6 +541,9 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                             })
                             atom.push(uniqid())
                         }
+                    }
+                    if (bond_count > 3) {
+                        atom[4] = "+"
                     }
                     break;
                 case "C":
@@ -672,7 +678,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     process.exit()
 */
     //  atomic symbol, proton count, valence count, number of bonds, charge, velectron1, velectron2, velectron3
-    //console.log("[OH3+]")
+    //console.log("[NH4+]")
     //console.log(atoms_electrons_checked)
     //process.error()
 

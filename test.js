@@ -61,6 +61,9 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
 
 const Families = require('./Models/Families')
 
+
+
+
 // benzene
 // C1=CC=CC=C1
 console.log("Testing benzene C1=CC=CC=C1")
@@ -111,6 +114,33 @@ console.log("Testing oxonium [OH3+]")
 const oxonium = MoleculeFactory("[OH3+]")
 console.log(VMolecule([oxonium, 1]).compressed())
 VMolecule([oxonium, 1]).canonicalSMILES(false).should.be.equal("[OH3+]")
+
+console.log("Testing ammonium [NH4+]")
+const ammonium = MoleculeFactory("[NH4+]")
+console.log(VMolecule([ammonium, 1]).compressed())
+VMolecule([ammonium, 1]).canonicalSMILES(false).should.be.equal("[NH4+]")
+
+console.log("Testing chloride [Cl-]")
+const chloride = MoleculeFactory("[Cl-]")
+console.log(VMolecule([chloride, 1]).compressed())
+VMolecule([chloride, 1]).canonicalSMILES(false).should.be.equal("[Cl-]")
+
+console.log("Testing chloranium [Cl+]")
+const chloranium = MoleculeFactory("[Cl+]")
+console.log(VMolecule([chloranium, 1]).compressed())
+VMolecule([chloranium, 1]).canonicalSMILES(false).should.be.equal("[Cl+]")
+
+console.log("Testing m CC(CC1=CC=CC=C1)(NC)")
+const m = MoleculeFactory("CC(CC1=CC=CC=C1)(NC)")
+console.log(VMolecule([m, 1]).compressed())
+VMolecule([m, 1]).canonicalSMILES(false).should.be.equal("CC(CC1=CC=CC=C1)(NC)")
+
+console.log("Testing md CC(CC1=CC2=C(C=C1)OCO2)NC")
+const md = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)NC")
+//                                 Actual CC(CC1=CC2=C(C=C1)(OCO2)(NC)
+console.log(VMolecule([md, 1]).compressed())
+VMolecule([md, 1]).canonicalSMILES(true).should.be.equal("CC(CC1=CC2=C(C=C1)OCO2)NC")
+
 process.error()
 
 
@@ -139,46 +169,8 @@ if (true) {
 // COC dimethyl ether
 if (true) {
 
-    console.log("Running initial tests ...")
 
 
-
-
-    const oxidane = MoleculeFactory("CO")
-    const o = oxidane[1][5]
-    o[0].should.be.equal("O")
-    CAtom(o, 5, [oxidane, 1]).indexedBonds("").length.should.be.equal(2)
-    CAtom(o, 5, [oxidane, 1]).indexedBonds("").filter((bond)=>{
-        return bond.atom[0] === "H"
-    }).length.should.be.equal(1)
-    VMolecule([oxidane, 1]).canonicalSMILES().should.be.equal("CO")
-
-    const butane = MoleculeFactory("CC[C+]C")
-    VMolecule([butane, 1]).canonicalSMILES().should.be.equal("CC[C+]C")
-    const butaneAI = require('./Components/Stateless/MoleculeAI')([butane,1])
-    butaneAI.findElectrophileIndex().should.be.equal(7)
-
-
-    const butene = MoleculeFactory("CC=CC")
-    VMolecule([butene, 1]).canonicalSMILES().should.be.equal("CC=CC")
-    const bromide = MoleculeFactory("Br")
-    VMolecule([bromide, 1]).canonicalSMILES().should.be.equal("[Br]")
-
-    const chloride = MoleculeFactory("[Cl-]")
-    chloride[0].should.be.equal(2.86) // pKa
-    chloride[1].should.be.an.Array()
-    chloride[1].length.should.be.equal(1)
-    chloride[1][0][0].should.be.equal("Cl")
-    const chloride_chlorine = CAtom(chloride[1][0], 0, [chloride, 1])
-    chloride[1][0].slice(5).length.should.be.equal(7) // number of electrons - should be 8
-    chloride_chlorine.hydrogens().length.should.be.equal(0) // Cl- has no hydrogens
-    chloride_chlorine.carbons().length.should.be.equal(0)
-    chloride_chlorine.freeSlots().should.be.equal(11) // ???
-    chloride_chlorine.bondCount().should.be.equal(0)
-    chloride_chlorine.doubleBondCount().should.be.equal(0)
-    chloride_chlorine.isNegativelyCharged().should.be.true()
-    chloride_chlorine.isPositivelyCharged().should.be.false()
-    VMolecule([chloride, 1]).canonicalSMILES().should.be.equal("[Cl-]")
 
     const propylene = MoleculeFactory("C=C")
     Set().intersection(propylene[1][2].slice(5),propylene[1][5].slice(5)).length.should.be.equal(4)

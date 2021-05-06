@@ -567,10 +567,8 @@ const VMolecule = (mmolecule) => {
                 // Get ids of bonded atoms
                 const bond_ids = __getBondIds(current_atom[4]).concat(__getBondIds(current_atom[5])).concat(__getBondIds(current_atom[6]))
                 if (testing) {
-                    if (current_atom[1] === 6) {
                         console.log("Branches - bond ids")
                         console.log(bond_ids)
-                    }
                 }
 
                 // Remove ring bond ids
@@ -578,25 +576,16 @@ const VMolecule = (mmolecule) => {
                     return ring_bond_ids[bond_id+""] === undefined
                 })
 
-                if (testing) {
-                    if (current_atom[1] === 6) {
-                        console.log("Branches -bond_ids_no_ring_bond_ids")
-                        console.log(bond_ids_no_ring_bond_ids)
-                    }
-                }
-
                 // Remove bond id < current atom bond id
                 const bond_ids_final = bond_ids_no_ring_bond_ids.filter((bond_id)=>{
                     return bond_id > current_atom[1]
                 })
 
                 if (testing) {
-                    if (current_atom[1] === 6) {
-                        console.log("Branches -bond_ids_final")
+                        console.log("Branches -bond_ids_final, current atom = " + current_atom[1])
                         console.log(bond_ids_final)
-                    }
+                        //process.error()
                 }
-
 
                 // First atom
                 if (i === 0) {
@@ -625,7 +614,7 @@ const VMolecule = (mmolecule) => {
                 console.log(ring_bond_ids)
                 console.log("Branches")
                 console.log(start_of_branches_ids)
-                //process.error()
+                process.error()
             }
 
 
@@ -671,7 +660,12 @@ const VMolecule = (mmolecule) => {
                             current_atom[0] = current_atom[0] + "H" + current_atom[1]
                         }
                         break
-
+                    case "N":
+                        if (current_atom[2].replace(/H /, "") * 1 + current_atom[4].length + (current_atom[5].length*2) !== 3) {
+                            add_square_brackets = true
+                            current_atom[0] = current_atom[0] + "H" + current_atom[1]
+                        }
+                        break
                 }
                 const charge = current_atom[3].replace("Charge: ", "")
                 if (testing) {
