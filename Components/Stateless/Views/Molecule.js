@@ -15,6 +15,27 @@ const VMolecule = (mmolecule) => {
         __getIndexOfNextAtom(current_atom, current_atom_index)
     }
 
+    const __determineIfEndOfBranch = (i, current_atom, on_branch, ring_bond_ids) => {
+        if (on_branch == false) {
+            return false
+        }
+        if (i !==0 &&  current_atom[4].length + current_atom[5].length + current_atom[6].length===1) {
+            return true
+        }
+        if (ring_bond_ids[current_atom[1]+""] !== undefined) {
+            // Child ring bond?
+            const bond_ids = __getBondIds(current_atom[4]).concat(__getBondIds(current_atom[5])).concat(__getBondIds(current_atom[6]))
+            let is_child_ring_bond = false
+            bond_ids.map((b_id)=>{
+                if (ring_bond_ids[b_id] !== undefined && b_id < current_atom[1]) {
+                    is_child_ring_bond = true
+                }
+            })
+            return is_child_ring_bond
+        }
+        return false
+    }
+
     const __getBondType = (current_atom, previous_atom) => {
 
         if (previous_atom === null) {
@@ -491,15 +512,44 @@ const VMolecule = (mmolecule) => {
                 // Get atoms from the first atom that is not bonded to the current atom
                 const child_atoms = __getChildAtoms(compressedMolecule, current_atom)
 
+                if (testing) {
+                    console.log("Current atom id: " + current_atom[1])
+                    console.log("Child atoms")
+                    console.log(child_atoms.map((a)=>{
+                        return a[1]
+                    }))
+                    console.log("Ring bond ids:")
+                    console.log(ring_bond_ids)
+                }
+
                 if (child_atoms.length > 0) {
 
                     // Identify ring bonds
                     // Ring bond if current atom id in list of child atoms
                     const ring_bond_child_atoms = child_atoms.filter((child_atom,i)=>{
                         const bonds_ids = __getBondIds(child_atom[4]).concat(__getBondIds(child_atom[5])).concat(__getBondIds(child_atom[6]))
-                        return bonds_ids.indexOf(current_atom[1]) !== -1
+                        const current_atom_bond_index = bonds_ids.indexOf(current_atom[1])
+                        if (current_atom_bond_index !== -1) {
+                            if (testing) {
+                                //console.log("current atom bond index:")
+                                //console.log(current_atom_bond_index)
+                                //console.log("child atom")
+                                //console.log(child_atom)
+                                //console.log("bond ids")
+                                //console.log(bonds_ids)
+                            }
+                            // Filter out current bond id and bond ids > child bond id
+                            const bond_ids_to_test = _.cloneDeep(bonds_ids).filter((b_id)=>{
+                                return b_id !== current_atom[1] && b_id < child_atom[1]
+                            })
+                            return bond_ids_to_test.length > 0
+                        } else {
+                            return false
+                        }
+
                     })
                     if (testing) {
+                        console.log("ring bond child atoms")
                         console.log(ring_bond_child_atoms)
                     }
                     if (ring_bond_child_atoms.length > 0) {
@@ -516,14 +566,38 @@ const VMolecule = (mmolecule) => {
                 // Branches
                 // Get ids of bonded atoms
                 const bond_ids = __getBondIds(current_atom[4]).concat(__getBondIds(current_atom[5])).concat(__getBondIds(current_atom[6]))
+                if (testing) {
+                    if (current_atom[1] === 6) {
+                        console.log("Branches - bond ids")
+                        console.log(bond_ids)
+                    }
+                }
+
                 // Remove ring bond ids
                 const bond_ids_no_ring_bond_ids = bond_ids.filter((bond_id)=>{
                     return ring_bond_ids[bond_id+""] === undefined
                 })
+
+                if (testing) {
+                    if (current_atom[1] === 6) {
+                        console.log("Branches -bond_ids_no_ring_bond_ids")
+                        console.log(bond_ids_no_ring_bond_ids)
+                    }
+                }
+
                 // Remove bond id < current atom bond id
                 const bond_ids_final = bond_ids_no_ring_bond_ids.filter((bond_id)=>{
                     return bond_id > current_atom[1]
                 })
+
+                if (testing) {
+                    if (current_atom[1] === 6) {
+                        console.log("Branches -bond_ids_final")
+                        console.log(bond_ids_final)
+                    }
+                }
+
+
                 // First atom
                 if (i === 0) {
                     if (bond_ids_final.length > 1) {
@@ -534,7 +608,7 @@ const VMolecule = (mmolecule) => {
                     }
                 } else {
                     // Not first atom
-                    if (bond_ids_final.length > 2) {
+                    if (bond_ids_final.length > 1) {
                         // Branch
                         bond_ids_final.map((bond_id) => {
                             start_of_branches_ids.push(bond_id)
@@ -551,14 +625,17 @@ const VMolecule = (mmolecule) => {
                 console.log(ring_bond_ids)
                 console.log("Branches")
                 console.log(start_of_branches_ids)
+                //process.error()
             }
 
 
             let single_bond_indexes = []
             let bond_indexes = []
+            let on_branch = false
             const smiles = compressedMolecule.reduce((s, current_atom, i)=> {
                 if (start_of_branches_ids.indexOf(current_atom[1]) > -1) {
                     s = s + "("
+                    on_branch = true
                 }
                 // Determine bond type
                 let bond_type = ""
@@ -593,9 +670,11 @@ const VMolecule = (mmolecule) => {
                 }
 
                 // End of branch
-                if (i !==0 &&  current_atom[4].length + current_atom[5].length + current_atom[6].length===1) {
+                if (__determineIfEndOfBranch(i, current_atom, on_branch, ring_bond_ids)) {
                     s = s + ")"
+                    on_branch = false
                 }
+
 
                 return s
 

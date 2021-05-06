@@ -61,6 +61,7 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
 
 const Families = require('./Models/Families')
 
+
 // benzene
 // C1=CC=CC=C1
 console.log("Testing benzene C1=CC=CC=C1")
@@ -68,6 +69,11 @@ const benzene = MoleculeFactory("C1=CC=CC=C1")
 console.log("Benzene compressed: C1=CC=CC=C1")
 console.log(VMolecule([benzene, 1]).compressed())
 VMolecule([benzene, 1]).canonicalSMILES(false).should.be.equal("C1=CC=CC=C1") // actual C1=CC=C=C=C1
+
+console.log("Testing benyzl_alcohol C1=CC=C(C=C1)CO")
+const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)(CO)")
+console.log(VMolecule([benyzl_alcohol,1]).compressed())
+VMolecule([benyzl_alcohol, 1]).canonicalSMILES(false).should.be.equal("C1=CC=C(C=C1)(CO)")
 
 console.log("Testing sulphuric acid OS(=O)(=O)(O)")
 const sulphuric_acid = MoleculeFactory("OS(=O)(=O)(O)")
@@ -78,7 +84,6 @@ console.log("Compressed:")
 console.log(VMolecule([sulphuric_acid, 1]).compressed())
 CMolecule(sulphuric_acid).verifyMolecule()
 VMolecule([sulphuric_acid, 1]).canonicalSMILES(false).should.be.equal("OS(=O)(=O)(O)")
-
 
 console.log("Testing ethanol C(O)(C)")
 const ethanol = MoleculeFactory("C(O)(C)")
@@ -98,69 +103,9 @@ const Two_Methoxy_2_methylpropan_1_ol = MoleculeFactory("COC(C)(C)(CO)")
 console.log(VMolecule([Two_Methoxy_2_methylpropan_1_ol,1]).compressed())
 VMolecule([Two_Methoxy_2_methylpropan_1_ol, 1]).canonicalSMILES(false).should.be.equal("COC(C)(C)(CO)")
 
-console.log("Testing benyzl_alcohol C1=CC=C(C=C1)CO")
-const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)(CO)")
-console.log(VMolecule([benyzl_alcohol,1]).compressed())
-VMolecule([benyzl_alcohol, 1]).canonicalSMILES(true).should.be.equal("C1=CC=C(C=C1)(CO)")
-
 process.error()
 
 
-//console.log(VMolecule([benyzl_alcohol, 1]).compressed())
-/*
-[ [ 'C', 1, [ '3  C', '10  C' ] ],
-  [ 'C', 3, [ '1  C', '5  C' ] ],
-  [ 'C', 5, [ '3  C', '6  C' ] ],
-  [ 'C', 6, [ '5  C', '8  C', '13  C' ] ],
-  [ 'C', 8, [ '6  C', '10  C' ] ],
-  [ 'C', 10, [ '1  C', '8  C' ] ],
-  [ 'C', 13, [ '6  C', '15  O' ] ],
-  [ 'O', 15, [ '13  C' ] ] ]
-  // C1=CC=C(C=C1)CO
-  1 is the bottom C on the benzene ring
-  6 is the top carbon
-chains start
-[ [ 1, 10, 8, 6, 5, 3, 1 ], // benzene ring anti clockwise
-  [ 1, 3, 5, 6, 8, 10, 1 ], // benzene ring clockwise
-  [ 1, 10, 8, 6, 13, 15 ],  // branch to oxygen atom going from right
-  [ 1, 3, 5, 6, 13, 15 ] ]   // branch to oxygen atom going from left
-VMolecule -- Merge benzene ring anti clockwise with benzene ring clockwise - no differences so keep benzene ring anti clockwise
-[ [ 1, 10, 8, 6, 5, 3, 1 ],
-  [ 1, 10, 8, 6, 13, 15 ],
-  [ 1, 3, 5, 6, 13, 15 ] ]
-chains start
-[ [ 1, 10, 8, 6, 5, 3, 1 ],
-  [ 1, 10, 8, 6, 13, 15 ],
-  [ 1, 3, 5, 6, 13, 15 ] ]
-VMolecule -- Merge branch to oxygen atom going from right with benzene ring anti clockwise
-[ [ 1, 10, 8, 6, '(', 13, 15, ')', 5, 3, 1 ],
-  [ 1, 3, 5, 6, 13, 15 ] ]
-chains start
-[ [ 1, 10, 8, 6, '(', 13, 15, ')', 5, 3, 1 ],
-  [ 1, 3, 5, 6, 13, 15 ] ]
-VMolecule -- Merge branch to oxygen atom going from left with benzene ring
-[ [ 1, 10, 8, 6, '(', 13, 15, ')', 5, 3, 1 ] ]
-C1C=CC(CO)=CC=1 (correct)
-C1C=CC(CO)CC=1 (not correct)
-C1  C=  C  C (CO)    = C C=1 (correct)
- 1A  10  8  6 (13,15) = 5 3=A
- */
-// 1A= 3 5= 6 (8= 10A) 13 15
-
-VMolecule([benyzl_alcohol, 1]).canonicalSMILES().should.be.equal("C1C=CC(CO)=CC=1")
-const benyzl_alcohol_molecule_ai = require("./Components/Stateless/MoleculeAI")([benyzl_alcohol, 1])
-const benzyl_alcohol_carbons = benyzl_alcohol[1].filter((atom)=>{
-    return atom[0] === "C"
-})
-const benzyl_alcohol_hydrogens = benyzl_alcohol[1].filter((atom)=>{
-    return atom[0] === "H"
-})
-const benzyl_alcohol_oxygens = benyzl_alcohol[1].filter((atom)=>{
-    return atom[0] === "O"
-})
-benzyl_alcohol_carbons.length.should.be.equal(7)
-benzyl_alcohol_hydrogens.length.should.be.equal(8)
-benzyl_alcohol_oxygens.length.should.be.equal(1)
 
 
 
