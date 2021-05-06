@@ -124,6 +124,38 @@ const VMolecule = (mmolecule) => {
         }, null)
     }
 
+    const __getBondIds = function(bonds) {
+        return bonds.map((b)=>{
+            b = b.split(" ")
+            return b[0] * 1
+        })
+    }
+
+    const __getChildAtoms = (atoms, current_atom) => {
+        /*
+        Benzene compressed: C1=CC=CC=C1
+[
+  [ 'C', 1, 'H 1', 'Charge: 0', [ '11  C' ], [ '3  C' ], [], 8, 0 ],
+  [ 'C', 3, 'H 1', 'Charge: 0', [ '5  C' ], [ '1  C' ], [], 8, 0 ],
+  [ 'C', 5, 'H 1', 'Charge: 0', [ '3  C' ], [ '7  C' ], [], 8, 0 ],
+  [ 'C', 7, 'H 1', 'Charge: 0', [ '9  C' ], [ '5  C' ], [], 8, 0 ],
+  [ 'C', 9, 'H 1', 'Charge: 0', [ '7  C' ], [ '11  C' ], [], 8, 0 ],
+  [ 'C', 11, 'H 1', 'Charge: 0', [ '1  C' ], [ '9  C' ], [], 8, 0 ]
+]
+         */
+        const current_atom_id = current_atom[1]
+        // Get index of first atom that is not bonded to the current atom
+        const start_index = _.findIndex(atoms, (atom, i)=>{
+            const bonds_ids = __getBondIds(atom[4]).concat(__getBondIds(atom[5])).concat(__getBondIds(atom[6]))
+            return bonds_ids.indexOf(current_atom_id) === -1 && atom[1] > current_atom_id
+        })
+
+//        console.log(start_index)
+  //      process.error()
+
+        return start_index == -1? []: atoms.slice(start_index)
+    }
+
     const __SMILES_recursive = (carry, current_atom, previous_atom, index, branch_index, processed_atoms_indexes) => {
 
         //   console.log('Recursion ' + branch_index)
@@ -446,239 +478,127 @@ const VMolecule = (mmolecule) => {
         },
         canonicalSMILES: function(testing) {
 
-            // sulphuric acid compressed
-            // OS(=O)(=O)O
-            /*
-           [
-  [ 'O', 1, 'H 1', 'Charge: 0', [ '2  S' ], [], [], 8, 4 ],
-  [
-    'S',
-    2,
-    'H 0',
-    'Charge: 0',
-    [ '1  O', '6  O' ],
-    [ '3  O', '4  O' ],
-    [],
-    12,
-    0
-  ],
-  [ 'O', 3, 'H 0', 'Charge: 0', [], [ '2  S' ], [], 8, 4 ],
-  [ 'O', 4, 'H 0', 'Charge: 0', [], [ '2  S' ], [], 8, 4 ],
-  [ 'O', 6, 'H 1', 'Charge: 0', [ '2  S' ], [], [], 8, 4 ]
-]
-*/
-            // for each atom we need to get if it's the end of the chain or part of a chain, what atoms it is attached to, whether we start a new branch etc
-            // Atomic symbol / id / Hydrogens / Charge / Single bonds / Double bonds / Triple bonds/ # of electrons / # of free electrons
+            const ring_bond_ids = {}
+            let ring_bond_id = 1
+            const start_of_branches_ids = []
+
             const compressedMolecule = this.compressed()
-            // (OS(=O)(=O)O)
-
-            // Ring bonds
-            /*
-            C1=CC=CC=C1
-[
-  [ 'C', 1, 'H 1', 'Charge: 0', [ '11  C' ], [ '3  C' ], [], 8, 0 ],
-  [ 'C', 3, 'H 1', 'Charge: 0', [ '5  C' ], [ '1  C' ], [], 8, 0 ],
-  [ 'C', 5, 'H 1', 'Charge: 0', [ '3  C' ], [ '7  C' ], [], 8, 0 ],
-  [ 'C', 7, 'H 1', 'Charge: 0', [ '9  C' ], [ '5  C' ], [], 8, 0 ],
-  [ 'C', 9, 'H 1', 'Charge: 0', [ '7  C' ], [ '11  C' ], [], 8, 0 ],
-  [ 'C', 11, 'H 1', 'Charge: 0', [ '1  C' ], [ '9  C' ], [], 8, 0 ]
-]
-
-             */
 
 
-            // Rules
-            // An atom has a branch if it has more than 2 bonds.
+            compressedMolecule.map((current_atom, i)=>{
 
-            let start_of_branches_ids = []
-            compressedMolecule.map((atom, i)=> {
-                const single_bonds = atom[4].length
-                const double_bonds = atom[5].length
-//                const_single_bonds_
-                const number_of_branches = atom[4].length + atom[5].length
-                if (number_of_branches > 2 ) {
-                    // s = s + "("
-                    // Add start of branch ids
-                    atom[4].map((id)=>{
-                        id = id.split(" ")
-                        if (testing) {
-                            console.log(atom)
-                            console.log(id)
-                        }
-                        id = id[0] * 1
-                        // Check for ring bond
-                        const child_atom = compressedMolecule.filter((a)=>{
-                            return a[1] === id
-                        }).pop()
-                        const child_bond_ids = child_atom[4].map((b)=>{
-                            b = b.split(" ")
-                            return b[0] * 1
-                        })
-                        if (testing) {
-                            console.log("child bond ids")
-                            console.log(child_bond_ids)
-                            console.log(atom[1])
-                            console.log(child_bond_ids.indexOf(atom[1]))
-                        }
-                     //  if (child_bond_ids.indexOf(atom[1])) {
-                            start_of_branches_ids.push(id)  // "1 0"
-                       // }
+                // Ring bonds
+                // Get atoms from the first atom that is not bonded to the current atom
+                const child_atoms = __getChildAtoms(compressedMolecule, current_atom)
+
+                if (child_atoms.length > 0) {
+
+                    // Identify ring bonds
+                    // Ring bond if current atom id in list of child atoms
+                    const ring_bond_child_atoms = child_atoms.filter((child_atom,i)=>{
+                        const bonds_ids = __getBondIds(child_atom[4]).concat(__getBondIds(child_atom[5])).concat(__getBondIds(child_atom[6]))
+                        return bonds_ids.indexOf(current_atom[1]) !== -1
                     })
-                    atom[5].map((id)=>{
-                        id = id.split(" ")
-                        start_of_branches_ids.push(id[0]*1) // "1 0"
-                    })
-                    atom[6].map((id)=>{
-                        id = id.split(" ")
-                        start_of_branches_ids.push(id[0]*1) // "1 0"
-                    })
+                    if (testing) {
+                        console.log(ring_bond_child_atoms)
+                    }
+                    if (ring_bond_child_atoms.length > 0) {
+                        const ring_bond_child_atom = ring_bond_child_atoms[0]
+                        const parent_item = {}
+                        const child_atom_id = ring_bond_child_atom[1]
+                        parent_item[current_atom[1]] = ring_bond_id
+                        ring_bond_ids[current_atom[1]+""] = ring_bond_id
+                        ring_bond_ids[child_atom_id] = ring_bond_id
+                        ring_bond_id = ring_bond_id + 1
+                    }
                 }
+
+                // Branches
+                // Get ids of bonded atoms
+                const bond_ids = __getBondIds(current_atom[4]).concat(__getBondIds(current_atom[5])).concat(__getBondIds(current_atom[6]))
+                // Remove ring bond ids
+                const bond_ids_no_ring_bond_ids = bond_ids.filter((bond_id)=>{
+                    return ring_bond_ids[bond_id+""] === undefined
+                })
+                // Remove bond id < current atom bond id
+                const bond_ids_final = bond_ids_no_ring_bond_ids.filter((bond_id)=>{
+                    return bond_id > current_atom[1]
+                })
+                // First atom
+                if (i === 0) {
+                    if (bond_ids_final.length > 1) {
+                        // Branch
+                        bond_ids_final.map((bond_id) => {
+                            start_of_branches_ids.push(bond_id)
+                        })
+                    }
+                } else {
+                    // Not first atom
+                    if (bond_ids_final.length > 2) {
+                        // Branch
+                        bond_ids_final.map((bond_id) => {
+                            start_of_branches_ids.push(bond_id)
+                        })
+                    }
+                }
+
             })
 
             if (testing) {
-                console.log("start of branch ids")
+                console.log("compressedMolecule")
+                console.log(compressedMolecule)
+                console.log("Ring bonds")
+                console.log(ring_bond_ids)
+                console.log("Branches")
                 console.log(start_of_branches_ids)
             }
 
-           // process.error()
-            // Get ids of ring bonds
-            const ring_bond_ids = {}
-            let ring_bond_id = 1
-            compressedMolecule.map((parent_atom, i) => {
-                const child_atoms = compressedMolecule.slice(i + 2)
-                // Check other atoms for a bond with the same id as the current atom
-                if (child_atoms.length > 1) {
-                    child_atoms.map((child_atom, k) => {
-                        if (start_of_branches_ids.indexOf(child_atom[1]) === -1) {
-                            const child_atom_single_bonds = child_atom[4].length == 0 ? [] : child_atom[4].map((a) => {
-                                a = a.split(" ")
-                                return a[0] * 1
-                            })
-                            const child_atom_double_bonds = child_atom[5].length === 0 ? [] : child_atom[5].map((b) => {
-                                b = b.split(" ")
-                                return b[0] * 1
-                            })
-                            if (child_atom_single_bonds.indexOf(parent_atom[1]) > -1 || child_atom_double_bonds.indexOf(parent_atom[1]) > -1) {
-                                const parent_item = {}
-                                const child_atom_id = child_atom[1]
-                                parent_item[parent_atom[1]] = ring_bond_id
 
-                               // ring_bond_ids[parent_item[parent_atom[1]]] = ring_bond_id
-                                ring_bond_ids[parent_atom[1]+""] = ring_bond_id
-                                ring_bond_ids[child_atom_id] = ring_bond_id
-
-                                if (testing) {
-                                    console.log(parent_item)
-                                    console.log(parent_item[parent_atom[1]])
-                                    console.log(parent_item[parent_atom[0]])
-                                    console.log(ring_bond_ids)
-                                    //process.error()
-                                }
-                            }
-                        }
-                    })
-                }
-            })
-
-
-            if (testing) {
-                console.log("ring bond ids")
-                console.log(ring_bond_ids)
-                //process.error()
-            }
-
-            const atoms_with_ring_bond_ids = compressedMolecule.map((atom) => {
-                if (undefined !== ring_bond_ids[atom[1] + '']) {
-                    atom[0] = atom[0] + ring_bond_ids[atom[1] + '']
-                    atom.push("is_ring_bond")
-                }
-                return atom
-            })
-
-
-            /*
-[
-  [ 'C', 1, 'H 1', 'Charge: 0', [ '11  C' ], [ '3  C' ], [], 8, 0 ],
-  [ 'C', 3, 'H 1', 'Charge: 0', [ '5  C' ], [ '1  C' ], [], 8, 0 ],
-  [ 'C', 5, 'H 1', 'Charge: 0', [ '3  C' ], [ '7  C' ], [], 8, 0 ],
-  [ 'C', 7, 'H 1', 'Charge: 0', [ '9  C' ], [ '5  C' ], [], 8, 0 ],
-  [ 'C', 9, 'H 1', 'Charge: 0', [ '7  C' ], [ '11  C' ], [], 8, 0 ],
-  [ 'C', 11, 'H 1', 'Charge: 0', [ '1  C' ], [ '9  C' ], [], 8, 0 ]
-]
-C1=CC=CC=C1
- */
-
-           // const start_of_branches_ids = []
-            start_of_branches_ids = []
             let single_bond_indexes = []
             let bond_indexes = []
-            const smiles = compressedMolecule.reduce((s, atom, i)=> {
-                const number_of_branches = atom[4].length + atom[5].length
-                if (number_of_branches > 2 || (i===0 && number_of_branches > 1) ) {
-                    // s = s + "("
-                    // Add start of branch ids
-                    atom[4].map((id)=>{
-                        id = id.split(" ")
-                        start_of_branches_ids.push(id[0]*1)  // "1 0"
-                    })
-                    atom[5].map((id)=>{
-                        id = id.split(" ")
-                        start_of_branches_ids.push(id[0]*1) // "1 0"
-                    })
-                    atom[6].map((id)=>{
-                        id = id.split(" ")
-                        start_of_branches_ids.push(id[0]*1) // "1 0"
-                    })
-                }
-                if (testing) {
-                   // console.log("start of branches ids")
-                    //console.log(start_of_branches_ids)
-                    //process.error()
-                }
-                if (start_of_branches_ids.indexOf(atom[1]) > -1) {
-                    if (testing) {
-                        //console.log(atom)
-                      //  process.log()
-                    }
+            const smiles = compressedMolecule.reduce((s, current_atom, i)=> {
+                if (start_of_branches_ids.indexOf(current_atom[1]) > -1) {
                     s = s + "("
                 }
                 // Determine bond type
                 let bond_type = ""
-                const double_parent_bond_ids = atom[5].filter((id)=>{
+                const double_parent_bond_ids = current_atom[5].filter((id)=>{
                     id = id.split(" ")
-                    if (testing) {
-                        //console.log("Id: " + id)
-                    }
-                    return (id[0] * 1) < atom[1]
+                    return (id[0] * 1) < current_atom[1]
                 })
-                if (testing) {
-                    //console.log("double_parent_bond_ids")
-                    //console.log(atom)
-                    //console.log(double_parent_bond_ids)
-                }
                 if (double_parent_bond_ids.length > 0) {
                     bond_type = "="
                 }
+                const triple_parent_bond_ids = current_atom[6].filter((id)=>{
+                    id = id.split(" ")
+                    return (id[0] * 1) < current_atom[1]
+                })
+                if (triple_parent_bond_ids.length > 0) {
+                    bond_type = "#"
+                }
 
                 // square brackets if required
-                switch(atom[0]) {
+                switch(current_atom[0]) {
                     case "C":
-                        if (atom[2].replace(/H /, "") * 1 + atom[4].length + (atom[5].length*2) !== 4) {
-                            atom[0] = "[" + atom[0] + "H" + atom[1] + "]"
+                        if (current_atom[2].replace(/H /, "") * 1 + current_atom[4].length + (current_atom[5].length*2) !== 4) {
+                            current_atom[0] = "[" + current_atom[0] + "H" + current_atom[1] + "]"
                         }
                         break
                 }
-                s = s + bond_type + atom[0]
+                s = s + bond_type + current_atom[0]
+
                 // End of branch
-                // if (i !==0 && i!==compressedMolecule.length-1 && atom[4].length + atom[5].length + atom[6].length===1) {
-                if (i !==0 &&  atom[4].length + atom[5].length + atom[6].length===1) {
+                if (i !==0 &&  current_atom[4].length + current_atom[5].length + current_atom[6].length===1) {
                     s = s + ")"
                 }
+
                 return s
+
             }, "")
 
             if (testing) {
                 console.log(smiles)
+                process.error()
             }
 
             //process.error()
