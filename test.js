@@ -61,7 +61,20 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
 
 const Families = require('./Models/Families')
 
+console.log("Testing md CC(CC1=CC2=C(C=C1)OCO2)NC")
+const md = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)NC")
+console.log(VMolecule([md, 1]).compressed())
+VMolecule([md, 1]).canonicalSMILES(false).should.be.equal("CC(CC1=CC2=C(C=C1)OCO2)NC")
 
+
+console.log("Testing sulphuric acid OS(=O)(=O)O")
+const sulphuric_acid = MoleculeFactory("OS(=O)(=O)O")
+// return [atom[0], index, "H " + h.length, 'Charge: '+ atom[4],  bonds, double_bonds, triple_bonds, electrons.length, free_electrons.length]
+console.log("Atomic symbol / Hydrogens / Charge / Single bonds / Double bonds / Triple bonds/ # of electrons / # of free electrons")
+console.log("Neutral sulphur atoms have six bonds in total including hydrogen bonds.")
+console.log("Compressed:")
+console.log(VMolecule([sulphuric_acid, 1]).compressed())
+VMolecule([sulphuric_acid, 1]).canonicalSMILES(false).should.be.equal("OS(=O)(=O)O")
 
 
 // benzene
@@ -73,24 +86,16 @@ console.log(VMolecule([benzene, 1]).compressed())
 VMolecule([benzene, 1]).canonicalSMILES(false).should.be.equal("C1=CC=CC=C1") // actual C1=CC=C=C=C1
 
 console.log("Testing benyzl_alcohol C1=CC=C(C=C1)CO")
-const benyzl_alcohol = MoleculeFactory("C1=CC=C(C=C1)(CO)")
-console.log(VMolecule([benyzl_alcohol,1]).compressed())
-VMolecule([benyzl_alcohol, 1]).canonicalSMILES(false).should.be.equal("C1=CC=C(C=C1)(CO)")
+const benzyl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
+console.log(VMolecule([benzyl_alcohol,1]).compressed())
+VMolecule([benzyl_alcohol, 1]).canonicalSMILES(false).should.be.equal("C1=CC=C(C=C1)CO")
 
-console.log("Testing sulphuric acid OS(=O)(=O)(O)")
-const sulphuric_acid = MoleculeFactory("OS(=O)(=O)(O)")
-// return [atom[0], index, "H " + h.length, 'Charge: '+ atom[4],  bonds, double_bonds, triple_bonds, electrons.length, free_electrons.length]
-console.log("Atomic symbol / Hydrogens / Charge / Single bonds / Double bonds / Triple bonds/ # of electrons / # of free electrons")
-console.log("Neutral sulphur atoms have six bonds in total including hydrogen bonds.")
-console.log("Compressed:")
-console.log(VMolecule([sulphuric_acid, 1]).compressed())
-CMolecule(sulphuric_acid).verifyMolecule()
-VMolecule([sulphuric_acid, 1]).canonicalSMILES(false).should.be.equal("OS(=O)(=O)(O)")
 
-console.log("Testing ethanol C(O)(C)")
-const ethanol = MoleculeFactory("C(O)(C)")
+
+console.log("Testing ethanol C(O)C")
+const ethanol = MoleculeFactory("C(O)C")
 console.log(VMolecule([ethanol,1]).compressed())
-VMolecule([ethanol, 1]).canonicalSMILES(false).should.be.equal("C(O)(C)")
+VMolecule([ethanol, 1]).canonicalSMILES(false).should.be.equal("C(O)C")
 
 console.log("Testing methylene [CH2]")
 const methylene = MoleculeFactory("[CH2]")
@@ -100,10 +105,10 @@ VMolecule([methylene, 1]).canonicalSMILES(false).should.be.equal("[CH2]") // act
 
 // epoxide acidic ring opening
 // 2-Methoxy-2-methylpropan-1-ol
-console.log("Testing 2-Methoxy-2-methylpropan-1-ol COC(C)(C)(CO)")
-const Two_Methoxy_2_methylpropan_1_ol = MoleculeFactory("COC(C)(C)(CO)")
+console.log("Testing 2-Methoxy-2-methylpropan-1-ol COC(C)(C)CO")
+const Two_Methoxy_2_methylpropan_1_ol = MoleculeFactory("COC(C)(C)CO")
 console.log(VMolecule([Two_Methoxy_2_methylpropan_1_ol,1]).compressed())
-VMolecule([Two_Methoxy_2_methylpropan_1_ol, 1]).canonicalSMILES(false).should.be.equal("COC(C)(C)(CO)")
+VMolecule([Two_Methoxy_2_methylpropan_1_ol, 1]).canonicalSMILES(false).should.be.equal("COC(C)(C)CO")
 
 console.log("Testing bromide [Br-]")
 const bromide_neg = MoleculeFactory("[Br-]")
@@ -130,18 +135,12 @@ const chloranium = MoleculeFactory("[Cl+]")
 console.log(VMolecule([chloranium, 1]).compressed())
 VMolecule([chloranium, 1]).canonicalSMILES(false).should.be.equal("[Cl+]")
 
-console.log("Testing m CC(CC1=CC=CC=C1)(NC)")
-const m = MoleculeFactory("CC(CC1=CC=CC=C1)(NC)")
+console.log("Testing m CC(CC1=CC=CC=C1)NC")
+const m = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 console.log(VMolecule([m, 1]).compressed())
-VMolecule([m, 1]).canonicalSMILES(false).should.be.equal("CC(CC1=CC=CC=C1)(NC)")
+VMolecule([m, 1]).canonicalSMILES(false).should.be.equal("CC(CC1=CC=CC=C1)NC")
 
-console.log("Testing md CC(CC1=CC2=C(C=C1)OCO2)NC")
-const md = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)NC")
-//                                 Actual CC(CC1=CC2=C(C=C1)(OCO2)(NC)
-console.log(VMolecule([md, 1]).compressed())
-VMolecule([md, 1]).canonicalSMILES(true).should.be.equal("CC(CC1=CC2=C(C=C1)OCO2)NC")
 
-process.error()
 
 
 
@@ -165,134 +164,7 @@ if (true) {
 
 }
 
-
-// COC dimethyl ether
-if (true) {
-
-
-
-
-    const propylene = MoleculeFactory("C=C")
-    Set().intersection(propylene[1][2].slice(5),propylene[1][5].slice(5)).length.should.be.equal(4)
-    const propylene_carbon = CAtom(propylene[1][2], 2, [propylene, 1])
-    propylene_carbon.doubleBondCount().should.be.equal(1)
-    VMolecule([propylene, 1]).canonicalSMILES().should.be.equal("C=C")
-
-    const dimethyl_ether = MoleculeFactory("COC")
-    dimethyl_ether[1].should.be.an.Array()
-    dimethyl_ether[1].length.should.be.equal(9)
-    dimethyl_ether[1][0][0].should.be.equal("H")
-    dimethyl_ether[1][1][0].should.be.equal("H")
-    dimethyl_ether[1][2][0].should.be.equal("H")
-    dimethyl_ether[1][3][0].should.be.equal("C")
-    dimethyl_ether[1][4][0].should.be.equal("O")
-    dimethyl_ether[1][5][0].should.be.equal("H")
-    dimethyl_ether[1][6][0].should.be.equal("H")
-    dimethyl_ether[1][7][0].should.be.equal("H")
-    dimethyl_ether[1][8][0].should.be.equal("C")
-    Set().intersection(dimethyl_ether[1][0].slice(5), dimethyl_ether[1][3].slice(5)).length.should.be.equal(2)
-    Set().intersection(dimethyl_ether[1][1].slice(5), dimethyl_ether[1][3].slice(5)).length.should.be.equal(2)
-    Set().intersection(dimethyl_ether[1][2].slice(5), dimethyl_ether[1][3].slice(5)).length.should.be.equal(2)
-    Set().intersection(dimethyl_ether[1][3].slice(5), dimethyl_ether[1][4].slice(5)).length.should.be.equal(2)
-    Set().intersection(dimethyl_ether[1][8].slice(5), dimethyl_ether[1][4].slice(5)).length.should.be.equal(2)
-    Set().intersection(dimethyl_ether[1][8].slice(5), dimethyl_ether[1][5].slice(5)).length.should.be.equal(2)
-    Set().intersection(dimethyl_ether[1][8].slice(5), dimethyl_ether[1][6].slice(5)).length.should.be.equal(2)
-    Set().intersection(dimethyl_ether[1][8].slice(5), dimethyl_ether[1][7].slice(5)).length.should.be.equal(2)
-    _.cloneDeep(dimethyl_ether[1][3]).slice(5).length.should.be.equal(8)
-    _.cloneDeep(dimethyl_ether[1][4]).slice(5).length.should.be.equal(8)
-    _.cloneDeep(dimethyl_ether[1][8]).slice(5).length.should.be.equal(8)
-    const dimethyl_ether_oxygen = CAtom(dimethyl_ether[1][4], 4, [dimethyl_ether, 1])
-    dimethyl_ether_oxygen.doubleBondCount().should.be.equal(0)
-    dimethyl_ether_oxygen.hydrogens().length.should.be.equal(0)
-    dimethyl_ether_oxygen.carbons().length.should.be.equal(2)
-    dimethyl_ether_oxygen.bondCount().should.be.equal(2)
-    dimethyl_ether_oxygen.freeSlots().should.be.equal(0)
-    dimethyl_ether_oxygen.lonePairs().length.should.be.equal(4)
-    dimethyl_ether_oxygen.isNegativelyCharged().should.be.false()
-    dimethyl_ether_oxygen.isPositivelyCharged().should.be.false()
-    VMolecule([dimethyl_ether, 1]).canonicalSMILES().should.be.equal("COC")
-    MoleculeController([dimethyl_ether, 1]).nucleophileIndex().should.be.equal(4)
-
-    const aluminium_chloride = MoleculeFactory("[Al](Cl)(Cl)Cl")
-    aluminium_chloride[1].should.be.an.Array()
-    aluminium_chloride[1].length.should.be.equal(4)
-    aluminium_chloride[1][0][0].should.be.equal("Al")
-    aluminium_chloride[1][1][0].should.be.equal("Cl")
-    aluminium_chloride[1][2][0].should.be.equal("Cl")
-    aluminium_chloride[1][3][0].should.be.equal("Cl")
-    Set().intersection(aluminium_chloride[1][1].slice(5), aluminium_chloride[1][0].slice(5)).length.should.be.equal(2)
-    Set().intersection(aluminium_chloride[1][2].slice(5), aluminium_chloride[1][0].slice(5)).length.should.be.equal(2)
-    Set().intersection(aluminium_chloride[1][3].slice(5), aluminium_chloride[1][0].slice(5)).length.should.be.equal(2)
-    Set().intersection(aluminium_chloride[1][1].slice(5), aluminium_chloride[1][2].slice(5)).length.should.be.equal(0)
-    Set().intersection(aluminium_chloride[1][1].slice(5), aluminium_chloride[1][3].slice(5)).length.should.be.equal(0)
-    Set().intersection(aluminium_chloride[1][2].slice(5), aluminium_chloride[1][3].slice(5)).length.should.be.equal(0)
-    aluminium_chloride[1][0].slice(5).length.should.be.equal(6)
-    aluminium_chloride[1][1].slice(5).length.should.be.equal(8)
-    aluminium_chloride[1][2].slice(5).length.should.be.equal(8)
-    aluminium_chloride[1][3].slice(5).length.should.be.equal(8)
-    const al = CAtom(aluminium_chloride[1][0], 0, [aluminium_chloride, 1])
-    al.hydrogens().length.should.be.equal(0)
-    al.carbons().length.should.be.equal(0)
-    al.freeSlots().should.be.equal(12)
-    al.bondCount().should.be.equal(3)
-    al.doubleBondCount().should.be.equal(0)
-    al.isNegativelyCharged().should.be.false()
-    al.isPositivelyCharged().should.be.false()
-    VMolecule([aluminium_chloride, 1]).canonicalSMILES().should.be.equal("[Al](Cl)(Cl)Cl")
-    MoleculeController([aluminium_chloride, 1]).electrophileIndex().should.be.equal(0)
-
-    const w = MoleculeFactory("O") // water H2O
-    w[0].should.be.equal(14) // pKa
-    w[1].should.be.an.Array()
-    w[1].length.should.be.equal(3)
-    w[1][2][0].should.be.equal("O")
-    w[1][2].slice(5).length.should.be.equal(8) // oxygen has 6 valence electrons plus one electron from each of the two hydrogens
-    const oxygen = CAtom(w[1][2], 2, [w, 1])
-    oxygen.hydrogens().length.should.be.equal(2)
-    oxygen.carbons().length.should.be.equal(0)
-    oxygen.freeSlots().should.be.equal(0)
-    oxygen.bondCount().should.be.equal(2)
-    oxygen.doubleBondCount().should.be.equal(0)
-    oxygen.isNegativelyCharged().should.be.false()
-    oxygen.isPositivelyCharged().should.be.false()
-    VMolecule([w, 1]).canonicalSMILES().should.be.equal("O")
-
-
-
-
-    const hydrochloric_acid = MoleculeFactory("Cl") // HCl
-    hydrochloric_acid[0].should.be.equal(-6.3) // pKa
-    hydrochloric_acid[1].should.be.an.Array()
-    hydrochloric_acid[1].length.should.be.equal(2)
-    hydrochloric_acid[1][0][0].should.be.equal("H")
-    hydrochloric_acid[1][1][0].should.be.equal("Cl")
-    const hydrochloric_acid_chlorine = CAtom(hydrochloric_acid[1][1], 0, [hydrochloric_acid, 1])
-    hydrochloric_acid[1][1].slice(5).length.should.be.equal(8) // number of electrons - should be 8
-    hydrochloric_acid_chlorine.hydrogens().length.should.be.equal(1) // Cl- has no hydrogens
-    hydrochloric_acid_chlorine.carbons().length.should.be.equal(0)
-    hydrochloric_acid_chlorine.freeSlots().should.be.equal(10)
-    hydrochloric_acid_chlorine.bondCount().should.be.equal(1)
-    hydrochloric_acid_chlorine.doubleBondCount().should.be.equal(0)
-    hydrochloric_acid_chlorine.isNegativelyCharged().should.be.false()
-    hydrochloric_acid_chlorine.isPositivelyCharged().should.be.false()
-    const hydrochloric_acid_hydrogen = CAtom(hydrochloric_acid[1][0], 0, [hydrochloric_acid, 1])
-    hydrochloric_acid[1][0].slice(5).length.should.be.equal(2) // number of electrons - should be 2
-    hydrochloric_acid_hydrogen.hydrogens().length.should.be.equal(1) // Cl- has no hydrogens
-    hydrochloric_acid_hydrogen.carbons().length.should.be.equal(0)
-    hydrochloric_acid_hydrogen.freeSlots().should.be.equal(0)
-    hydrochloric_acid_hydrogen.bondCount().should.be.equal(1)
-    hydrochloric_acid_hydrogen.doubleBondCount().should.be.equal(0)
-    hydrochloric_acid_hydrogen.isNegativelyCharged().should.be.false()
-    hydrochloric_acid_hydrogen.isPositivelyCharged().should.be.false()
-    VMolecule([hydrochloric_acid, 1]).canonicalSMILES().should.be.equal("Cl")
-
-
-
-
-    console.log("Initial tests ok, now running main tests ...")
-
-}
-
+console.log("Initial tests ok, now running main tests ...")
 
 // Tests start
 const uri = "mongodb+srv://" + process.env.MONGODBUSER + ":" + process.env.MONGODBPASSWORD + "@cluster0.awqh6.mongodb.net/chemistry?retryWrites=true&w=majority";
@@ -311,77 +183,16 @@ client.connect(err => {
         FetchReactions(
             true,
             db,
+            // 2-Methoxy-2-methylpropan-1-o
             [MoleculeFactory("COC(C)(C)CO"), 1],
             "",
             (reactions, product, rule) => {
-                // console.log('test.js: product ')
-                // console.log(VMolecule(product).canonicalSMILES())
-                // console.log("Reactions:")
-                /*
-                reactions.map((r)=>{
-                    console.log(r.command)
-                    console.log("Substrate:" + VMolecule(r.substrate).canonicalSMILES())
-                    console.log("Reagent:" + VMolecule(r.reagent).canonicalSMILES())
-                    console.log("Products:")
-                    console.log(VMolecule(r.products[0]).canonicalSMILES())
-                    console.log(VMolecule(r.products[1]).canonicalSMILES())
-                })
-                */
                 VReactions(db, reactions, product, rule).render()
-
-
             },
             (Err) => {
 
             }
         )
-
-        if (false) {
-            FetchReactions(
-                true,
-                db,
-                [MoleculeFactory("C(O)C"), 1],
-                "",
-                (reactions, product, rule) => {
-                    // console.log('test.js: product ')
-                    // console.log(VMolecule(product).canonicalSMILES())
-                    // console.log("Reactions:")
-                    /*
-                    reactions.map((r)=>{
-                        console.log(r.command)
-                        console.log("Substrate:" + VMolecule(r.substrate).canonicalSMILES())
-                        console.log("Reagent:" + VMolecule(r.reagent).canonicalSMILES())
-                        console.log("Products:")
-                        console.log(VMolecule(r.products[0]).canonicalSMILES())
-                        console.log(VMolecule(r.products[1]).canonicalSMILES())
-                    })
-                    */
-                    VReactions(db, reactions, product, rule).render()
-
-
-                },
-                (Err) => {
-
-                }
-            )
-        }
-
-// CC(O)CCNC
-        /*
-        FetchReactions(
-            true,
-            db,
-            [MoleculeFactory("CO"),1],
-            "",
-            ()=>{
-
-            },
-            (Err) => {
-
-            }
-        )
-*/
-
     }
 
 
@@ -437,6 +248,7 @@ client.connect(err => {
     // Bond disassociation
     // Methylammonium C[N+]
     if (false) {
+
         MoleculeLookup(db, "C[N+]", "SMILES", true).then(
             // "resolves" callback
             (methylammonium_molecule) => {

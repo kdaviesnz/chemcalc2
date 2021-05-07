@@ -15,8 +15,14 @@ const VMolecule = (mmolecule) => {
         __getIndexOfNextAtom(current_atom, current_atom_index)
     }
 
-    const __determineIfEndOfBranch = (i, current_atom, on_branch, ring_bond_ids) => {
-        if (on_branch == false) {
+    const __determineIfEndOfBranch = (i, current_atom, branch_depth, ring_bond_ids, branch_tracker, testing) => {
+        if (testing) {
+            console.log("Determining if end of branch")
+            console.log(current_atom)
+            console.log(branch_depth)
+            console.log(branch_tracker)
+        }
+        if (branch_depth === -1 || branch_tracker[branch_depth] === 1) {
             return false
         }
         if (i !==0 &&  current_atom[4].length + current_atom[5].length + current_atom[6].length===1) {
@@ -614,17 +620,63 @@ const VMolecule = (mmolecule) => {
                 console.log(ring_bond_ids)
                 console.log("Branches")
                 console.log(start_of_branches_ids)
-                process.error()
             }
 
 
             let single_bond_indexes = []
             let bond_indexes = []
-            let on_branch = false
+            let branch_depth = -1
+            let previous_branch_depth = 0
+            let branch_tracker = []
+            let previous_atom = null
             const smiles = compressedMolecule.reduce((s, current_atom, i)=> {
+
                 if (start_of_branches_ids.indexOf(current_atom[1]) > -1) {
-                    s = s + "("
-                    on_branch = true
+                    // Get the number of branches the previous atom has
+                    if (previous_atom !== null) {
+                        if (testing) {
+                            console.log("PREVIOUS ATOM ID:" + previous_atom[1])
+                        }
+                        const previous_atom_bond_ids = __getBondIds(previous_atom[4]).concat(__getBondIds(previous_atom[5])).concat(__getBondIds(previous_atom[6]))
+                        const previous_atom_branch_ids = Set().intersection(start_of_branches_ids, previous_atom_bond_ids).filter((b_id)=>{
+                            return b_id > previous_atom[1]
+                        })
+                        if (testing) {
+                            console.log("previous atom branch ids")
+                            console.log(previous_atom_branch_ids)
+                        }
+                        if (undefined === branch_tracker[branch_depth+1]) {
+                            branch_tracker[branch_depth+1] = previous_atom_branch_ids.length // [0=>3]
+                            s = s + "("
+                            if (testing) {
+                                console.log("Incrementing branch depth 1")
+                            }
+                            previous_branch_depth = branch_depth
+                            branch_depth = branch_depth + 1
+                        } else {
+                            const branch_number = branch_tracker[branch_depth + 1]
+                            if (branch_number > 1) {
+                                s = s + "("
+                                if (testing) {
+                                    console.log("Incrementing branch depth 2")
+                                }
+                                previous_branch_depth = branch_depth
+                                branch_depth = branch_depth + 1
+                            }
+                        }
+                        if (testing) {
+                            console.log("Branch tracker")
+                            console.log(branch_tracker)
+                        }
+                    } else {
+                        s = s + "("
+                        if (testing) {
+                            console.log("Incrementing branch depth 3")
+                        }
+                        previous_branch_depth = branch_depth
+                        branch_depth = branch_depth + 1
+                    }
+
                 }
                 // Determine bond type
                 let bond_type = ""
@@ -668,10 +720,7 @@ const VMolecule = (mmolecule) => {
                         break
                 }
                 const charge = current_atom[3].replace("Charge: ", "")
-                if (testing) {
-                    console.log("Charge:")
-                    console.log(charge)
-                }
+
                 if (charge !== "0") {
                     current_atom[0] = current_atom[0] + charge
                     add_square_brackets = true
@@ -686,12 +735,33 @@ const VMolecule = (mmolecule) => {
                     s = s + ring_bond_ids[current_atom[1]+""]
                 }
 
+
                 // End of branch
-                if (__determineIfEndOfBranch(i, current_atom, on_branch, ring_bond_ids)) {
+                if (__determineIfEndOfBranch(i, current_atom, branch_depth, ring_bond_ids, branch_tracker, testing)) {
+                    if (testing) {
+                        console.log("End of branch, atom: " + current_atom[1])
+                    }
                     s = s + ")"
-                    on_branch = false
+                    branch_tracker[branch_depth] =  branch_tracker[branch_depth] - 1
+                    previous_branch_depth = branch_depth
+                    branch_depth = branch_depth - 1
+                    if (testing) {
+                        console.log("previous branch depth = " + previous_branch_depth)
+                        console.log("currrent branch depth = " + branch_depth)
+                    }
+                } else {
+                    if (testing) {
+                        console.log("Not end of branch, atom: " + current_atom[1] + ". branch_depth=" + branch_depth)
+                    }
                 }
 
+                if (testing) {
+                    console.log("branch tracker")
+                    console.log("branch depth=" + branch_depth + ", current atom id=" + current_atom[1])
+                    console.log(branch_tracker)
+                }
+
+                previous_atom = current_atom
 
                 return s
 
