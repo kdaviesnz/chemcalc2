@@ -15,7 +15,7 @@ const uniqid = require('uniqid');
 // protonateOxygenOnDoubleBond()
 // protonateReverse()
 // deprotonateNitrogen()
-// protonate()
+// deprotonate()
 // removeProtonFromWater()
 // removeProtonFromOxygen()
 // addProtonFromReagentToHydroxylGroup()
@@ -887,13 +887,13 @@ class ProtonationAI {
     addProtonFromReagentToHydroxylGroupReverse() {
 
 
-        console.log("ProtonationAI: addProtonFromReagentToHydroxylGroupReverse ")
-        console.log(abc)
-        const water_oxygen_index = this.reaction.MoleculeAI.findWaterOxygenIndex()
+        const water_oxygen_index = this.reaction.MoleculeAI.findHydroxylOxygenIndex()
 
-        ////// console.log(VMolecule(this.reaction.container_substrate).compressed())
+        console.log(VMolecule(this.reaction.container_substrate).formatted())
         ////// console.log("ProtonationAI addProtonFromReagentToHydroxylGroupReverse() water oxygen index:" + water_oxygen_index)
 
+        console.log(water_oxygen_index)
+        console.log(lll)
         if (water_oxygen_index === -1) {
             return false
         }

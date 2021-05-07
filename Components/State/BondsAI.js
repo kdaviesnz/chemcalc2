@@ -971,8 +971,15 @@ class BondsAI {
 
         this.reaction.__setSubstrateGroups(groups)
         if (this.reaction.leaving_groups.length > 0) {
+            console.log("Groups:")
+            console.log(this.reaction.leaving_groups[0][0][1].length)
+            console.log(this.reaction.container_substrate[0][1].length)
             this.reaction.container_reagent = this.reaction.leaving_groups[0]
-           // console.log("Substrate")
+            console.log(VMolecule(this.reaction.container_reagent).formatted())
+            console.log(aaaaa)
+            process.exit()
+
+            // console.log("Substrate")
            // console.log(VMolecule(this.reaction.container_substrate).formatted())
            // console.log("Reagent")
            // console.log(VMolecule(this.reaction.container_reagent).formatted())
