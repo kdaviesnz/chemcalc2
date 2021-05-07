@@ -64,6 +64,7 @@ const ReactionTest = require('./Components/Stateless/ReactionTest')
 const uri = "mongodb+srv://" + process.env.MONGODBUSER + ":" + process.env.MONGODBPASSWORD + "@cluster0.awqh6.mongodb.net/chemistry?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
+
 client.connect(err => {
     
     assert.equal(err, null);
@@ -76,7 +77,7 @@ client.connect(err => {
         }
         if (rules !== null) {
             const rule = rules.pop()
-            console.log(rule)
+            console.log("testrule.js: Testing " + rule)
             // "C(O)C", "COC(C)(C)CO"
             FindSubstrates(
                 false,

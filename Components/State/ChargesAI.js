@@ -54,7 +54,7 @@ class ChargesAI {
 
         if (atom[0] === "Br") {
             // 7 is the number of valence electrons when there are no bonds
-             b = (7 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length)
+             b = (7 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length *2)+ (a_obj.indexedTripleBonds("").length*3))
 /*
             if (7 + b_count === electrons.length && container_molecule[0][1][index][4] !== "" && container_molecule[0][1][index][4] !== 0) {
                // console.log("validateMolecule Br")
@@ -82,34 +82,12 @@ class ChargesAI {
 
         if (atom[0] === "O") {
             // 6 is the number of valence electrons when there are no bonds
-             b = (6 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length)
-/*
-            if (6 + b_count === electrons.length && container_molecule[0][1][index][4] !== "" && container_molecule[0][1][index][4] !== 0) {
-               // console.log("validateMolecule O")
-               // console.log(index)
-               // console.log('Atom should have neutral charge')
-                throw new Error("Atom should have a neutral charge")
-            }
-            if (electrons.length > (6 + b_count) && container_molecule[0][1][index][4] !== "-") {
-               // console.log("validateMolecule O")
-               // console.log(index)
-               // console.log('Atom should have negative charge')
-                return true
-            }
-            if (electrons.length < (6 + b_count) && container_molecule[0][1][index][4] !== "+") {
-               // console.log("validateMolecule O")
-               // console.log(electrons.length)
-               // console.log(b_count)
-               // console.log(index)
-               // console.log('Atom should have positive charge!')
-                return true
-            }
-            */
+             b = (6 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length *2)+ (a_obj.indexedTripleBonds("").length*3))
         }
 
         if (atom[0] === "N") {
             // 5 is the number of valence electrons when there are no bonds
-             b = (5 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length)
+             b = (5 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
 /*
             if (5 + b_count === electrons.length && container_molecule[0][1][index][4] !== "" && container_molecule[0][1][index][4] !== 0) {
                // console.log("validateMolecule N")
@@ -138,7 +116,7 @@ class ChargesAI {
             // https://chemistry.stackexchange.com/questions/22032/how-does-a-carbocation-have-a-positive-charge
             // Formal Charge= (No.of valence electrons in unbonded state - no of lone pair electrons ) - (no. of bond pair electrons/2)
             // In this case the charge comes out to be (4-0) - (6/2) =+1
-             b = (4 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length)
+             b = (4 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
             // this.reaction.container_substrate[0][1][index][4] = b  > 0? "+": (b < 0?"-":"")
 
 
@@ -176,11 +154,24 @@ class ChargesAI {
         }
 
         if (b > 0 && container_molecule[0][1][index][4] !=="+") {
-           // console.log("DEBUG: Atom should have positive charge")
-           // console.log("DEBUG: Atom " + atom[0])
-           // console.log("DEBUG: Charge " + atom[4])
-           // console.log("DEBUG: Index " + index)
-           // console.log(VMolecule(container_molecule).compressed())
+            //              b = (6 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length)
+            console.log("DEBUG: Atom should have positive charge")
+            console.log("b="+b, ". index = " + index) //1
+            console.log("DEBUG: Actual charge: " + container_molecule[0][1][index][4])
+            console.log("DEBUG: Atom")
+            console.log(atom)
+            console.log("DEBUG: Atom " + atom[0])
+            console.log("DEBUG: Charge " + atom[4])
+            console.log("DEBUG: Index " + index)
+            console.log("DEBUG: Free electrons:")
+            console.log(a_obj.freeElectrons())
+            console.log("DEBUG: Single bonds:")
+            console.log(a_obj.indexedBonds(""))
+            console.log("DEBUG: Double bonds:")
+            console.log(a_obj.indexedDoubleBonds(""))
+            console.log("DEBUG: Triple bonds:")
+            console.log(a_obj.indexedTripleBonds(""))
+            console.log(VMolecule(container_molecule).compressed())
             throw new Error("Atom should have a positive charge")
         }
 
