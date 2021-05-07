@@ -89,7 +89,7 @@ const FindSubstrates = (Err, verbose,  db, rule, mmolecule, child_reaction_as_st
             "BOND atoms": "Break bond",
             "BREAK bond": "Bond atoms",
             "PROTONATE": "Deprotonate",
-            "REMOVE proton from water": "Add proton to hydroxyl group",
+            "REMOVE proton from water": "Add proton from reagent to hydroxyl group",
             "HYDRATE": Dehydrate,
             "DEPROTONATE nonhydroxyl oxygen": "Protonate non hydroxyl oxygen",
             "TRANSFER proton": "Transfer proton",

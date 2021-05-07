@@ -705,6 +705,9 @@ const VMolecule = (mmolecule) => {
                         if (number_of_hydrogens !== 4) {
                             add_square_brackets = true
                             current_atom[0] = current_atom[0] + "H" + number_of_hydrogens
+                            if (number_of_hydrogens > 4) {
+                                current_atom[0] = current_atom[0] + "+"
+                            }
                         }
                         break
                     case "O":
@@ -723,12 +726,18 @@ const VMolecule = (mmolecule) => {
                         if (number_of_hydrogens !== 3) {
                             add_square_brackets = true
                             current_atom[0] = current_atom[0] + "H" + number_of_hydrogens
+                            if (number_of_hydrogens > 3) {
+                                current_atom[0] = current_atom[0] + "+"
+                            }
+                            if (number_of_hydrogens < 3) {
+                                current_atom[0] = current_atom[0] + "-"
+                            }
                         }
                         break
                 }
                 const charge = current_atom[3].replace("Charge: ", "")
 
-                if (charge !== "0") {
+                if (charge !== "0" && current_atom[0][current_atom[0].length -1] != "+" &&  current_atom[0][current_atom[0].length -1] != "-") {
                     current_atom[0] = current_atom[0] + charge
                     add_square_brackets = true
                 }
