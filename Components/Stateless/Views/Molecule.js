@@ -737,7 +737,7 @@ const VMolecule = (mmolecule) => {
                 }
                 const charge = current_atom[3].replace("Charge: ", "")
 
-                if (charge !== "0" && current_atom[0][current_atom[0].length -1] != "+" &&  current_atom[0][current_atom[0].length -1] != "-") {
+                if (charge !== " " && charge !== "0" && current_atom[0][current_atom[0].length -1] != "+" &&  current_atom[0][current_atom[0].length -1] != "-") {
                     current_atom[0] = current_atom[0] + charge
                     add_square_brackets = true
                 }
@@ -781,7 +781,7 @@ const VMolecule = (mmolecule) => {
 
                 return s
 
-            }, "")
+            }, "").replace(/\[C\]/g, "C").replace(/\[O\]/g, "O").replace(/\[N\]/g, "O")
 
             if (testing) {
                 console.log(smiles)
