@@ -1,8 +1,17 @@
 const Reaction = require("../Components/State/Reaction")
 
-const BondAtoms = (mmolecule, reagent, rule) => {
+const BondAtoms = (mmolecule, reagent, rule, DEBUG) => {
 
-    const reaction = new Reaction(mmolecule, reagent, rule)
+    if (DEBUG) {
+        console.log("Commands/Deprotonate.js -> Running command reaction.addProtonFromReagentToHydroxylGroup")
+        console.log("Container molecule:")
+        //console.log(VMolecule([container_molecule[0], 1]).compressed())
+        console.log(VMolecule([container_molecule[0], 1]).canonicalSMILES(false))
+        console.log("Container reagent:")
+        //console.log(VMolecule([container_reagent[0], 1]).compressed())
+        console.log(VMolecule([container_reagent[0], 1]).canonicalSMILES(false))
+    }
+    const reaction = new Reaction(mmolecule, reagent, rule, DEBUG)
 
     const result = reaction.bondAtoms()
 

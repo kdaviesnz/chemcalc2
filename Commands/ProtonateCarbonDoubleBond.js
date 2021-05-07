@@ -1,8 +1,8 @@
 const Reaction = require("../Components/State/Reaction")
 
-const ProtonateCarbonDoubleBond = (mmolecule, reagent, rule) => {
+const ProtonateCarbonDoubleBond = (mmolecule, reagent, rule, DEBUG) => {
 
-    const reaction = new Reaction(mmolecule, reagent, rule)
+    const reaction = new Reaction(mmolecule, reagent, rule, DEBUG)
 
     reaction.protonateCarbonDoubleBond()
 

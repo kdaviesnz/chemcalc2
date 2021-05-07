@@ -84,14 +84,28 @@ const FindSubstrates = (Err, verbose,  db, rule, mmolecule, child_reaction_as_st
             "DEREDUCE": Reduce
         }
 
+        const commands_reversed_descriptions_map = {
+            "DEPROTONATE": "Protonate",
+            "BOND atoms": "Break bond",
+            "BREAK bond": "Bond atoms",
+            "PROTONATE": "Deprotonate",
+            "REMOVE proton from water": "Add proton to hydroxyl group",
+            "HYDRATE": Dehydrate,
+            "DEPROTONATE nonhydroxyl oxygen": "Protonate non hydroxyl oxygen",
+            "TRANSFER proton": "Transfer proton",
+            "PROTONATE carbonyl": "Deprotonate carbonyl",
+            "DEPROTONATE carbonyl": "Protonate carbonyl",
+            "REDUCE": "Dereduce",
+            "DEREDUCE": "Reduce"
+        }
+
         const getProductsRecursive = (commands_reversed, index, results, products, reagents_reversed, DEBUG) => {
             if (undefined === commands_reversed[index]) {
                 return results
             }
             const command_reversed = commands_reversed[index]
             if (DEBUG) {
-                console.log("DEBUG FindSubstrates.js -> Command:")
-                console.log(command_reversed.yellow)
+                console.log("DEBUG FindSubstrates.js -> Command: " + commands_reversed_descriptions_map[command_reversed].yellow)
             }
             if (undefined !== commands_reversed_map[command_reversed]) {
                 const container_substrate = _.cloneDeep(products[0])
@@ -99,10 +113,8 @@ const FindSubstrates = (Err, verbose,  db, rule, mmolecule, child_reaction_as_st
                 container_substrate[0].length.should.be.equal(2) // pKa, atoms
                 container_substrate[0][1].should.be.an.Array()
                 const container_reagent = [MoleculeFactory(_.cloneDeep(reagents_reversed[index])), 1]
-                if (DEBUG) {
-                    console.log("DEBUG Models/FindSubstrates.js -> Running Command:" + commands_reversed_map[command_reversed])
-                }
                 products = commands_reversed_map[command_reversed](_.cloneDeep(container_substrate), _.cloneDeep(container_reagent), rule, DEBUG)
+                process.error()
                 if (products === false) {
                     console.log("Returning false")
                     return false

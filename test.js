@@ -68,6 +68,7 @@ const md = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)NC")
 VMolecule([md, 1]).canonicalSMILES(false).should.be.equal("CC(CC1=CC2=C(C=C1)OCO2)NC")
 
 const sulphuric_acid = MoleculeFactory("OS(=O)(=O)O")
+//console.log(sulphuric_acid)
 VMolecule([sulphuric_acid, 1]).canonicalSMILES(false).should.be.equal("OS(=O)(=O)O")
 
 // benzene

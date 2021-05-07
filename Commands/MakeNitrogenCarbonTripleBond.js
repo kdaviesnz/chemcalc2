@@ -1,8 +1,8 @@
 const Reaction = require("../Components/State/Reaction")
 
-const MakeNitrogenCarbonTripleBond = (mmolecule, reagent, rule) => {
+const MakeNitrogenCarbonTripleBond = (mmolecule, reagent, rule, DEBUG) => {
 
-    const reaction = new Reaction(mmolecule, reagent, rule)
+    const reaction = new Reaction(mmolecule, reagent, rule, DEBUG)
 
     const result = reaction.makeNitrogenCarbonTripleBond()
 
