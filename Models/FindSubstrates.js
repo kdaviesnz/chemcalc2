@@ -90,9 +90,8 @@ const FindSubstrates = (Err, verbose,  db, rule, mmolecule, child_reaction_as_st
             }
             const command_reversed = commands_reversed[index]
             if (DEBUG) {
-                console.log("DEBUG FindSubstrates.js -> Command reversed:")
+                console.log("DEBUG FindSubstrates.js -> Command:")
                 console.log(command_reversed.yellow)
-                process.error()
             }
             if (undefined !== commands_reversed_map[command_reversed]) {
                 const container_substrate = _.cloneDeep(products[0])
@@ -100,9 +99,10 @@ const FindSubstrates = (Err, verbose,  db, rule, mmolecule, child_reaction_as_st
                 container_substrate[0].length.should.be.equal(2) // pKa, atoms
                 container_substrate[0][1].should.be.an.Array()
                 const container_reagent = [MoleculeFactory(_.cloneDeep(reagents_reversed[index])), 1]
-                console.log("Command:")
-                console.log(commands_reversed_map[command_reversed])
-                products = commands_reversed_map[command_reversed](_.cloneDeep(container_substrate), _.cloneDeep(container_reagent), rule)
+                if (DEBUG) {
+                    console.log("DEBUG Models/FindSubstrates.js -> Running Command:" + commands_reversed_map[command_reversed])
+                }
+                products = commands_reversed_map[command_reversed](_.cloneDeep(container_substrate), _.cloneDeep(container_reagent), rule, DEBUG)
                 if (products === false) {
                     console.log("Returning false")
                     return false
@@ -118,7 +118,9 @@ const FindSubstrates = (Err, verbose,  db, rule, mmolecule, child_reaction_as_st
                 })
                 return getProductsRecursive(commands_reversed, index + 1, results, products, reagents_reversed, DEBUG)
             } else {
-                console.log("Skipping as command not found")
+                if (DEBUG) {
+                    console.log("DEBUG FetchSubstrates.js -> Skipping " + command_reversed + " as command not found")
+                }
                 return results
             }
         }
