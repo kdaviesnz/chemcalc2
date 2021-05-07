@@ -699,23 +699,30 @@ const VMolecule = (mmolecule) => {
                 let add_square_brackets = false
                 // Charge
                 // Hydrogens
+                const number_of_hydrogens = current_atom[2].replace(/H /, "") * 1 + current_atom[4].length + (current_atom[5].length*2)
                 switch(current_atom[0]) {
                     case "C":
-                        if (current_atom[2].replace(/H /, "") * 1 + current_atom[4].length + (current_atom[5].length*2) !== 4) {
+                        if (number_of_hydrogens !== 4) {
                             add_square_brackets = true
-                            current_atom[0] = current_atom[0] + "H" + current_atom[1]
+                            current_atom[0] = current_atom[0] + "H" + number_of_hydrogens
                         }
                         break
                     case "O":
-                        if (current_atom[2].replace(/H /, "") * 1 + current_atom[4].length + (current_atom[5].length*2) !== 2) {
+                        if (number_of_hydrogens !== 2) {
                             add_square_brackets = true
-                            current_atom[0] = current_atom[0] + "H" + current_atom[1]
+                            current_atom[0] = current_atom[0] + "H" + number_of_hydrogens
+                            if (number_of_hydrogens > 2) {
+                                current_atom[0] = current_atom[0] + "+"
+                            }
+                            if (number_of_hydrogens < 2) {
+                                current_atom[0] = current_atom[0] + "-"
+                            }
                         }
                         break
                     case "N":
-                        if (current_atom[2].replace(/H /, "") * 1 + current_atom[4].length + (current_atom[5].length*2) !== 3) {
+                        if (number_of_hydrogens !== 3) {
                             add_square_brackets = true
-                            current_atom[0] = current_atom[0] + "H" + current_atom[1]
+                            current_atom[0] = current_atom[0] + "H" + number_of_hydrogens
                         }
                         break
                 }
