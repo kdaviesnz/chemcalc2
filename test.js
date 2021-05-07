@@ -36,6 +36,7 @@ const uniqid = require('uniqid');
 const MongoClient = require('mongodb').MongoClient
 const assert = require('assert');
 
+const DEBUG = true
 const verbose = false
 
 // Install using npm install dotenv
@@ -61,108 +62,63 @@ const onErrorLookingUpMoleculeInDB = (Err) => {
 
 const Families = require('./Models/Families')
 
-console.log("Testing md CC(CC1=CC2=C(C=C1)OCO2)NC")
+console.log("Running initial tests")
+
 const md = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)NC")
-console.log(VMolecule([md, 1]).compressed())
 VMolecule([md, 1]).canonicalSMILES(false).should.be.equal("CC(CC1=CC2=C(C=C1)OCO2)NC")
 
-
-console.log("Testing sulphuric acid OS(=O)(=O)O")
 const sulphuric_acid = MoleculeFactory("OS(=O)(=O)O")
-// return [atom[0], index, "H " + h.length, 'Charge: '+ atom[4],  bonds, double_bonds, triple_bonds, electrons.length, free_electrons.length]
-console.log("Atomic symbol / Hydrogens / Charge / Single bonds / Double bonds / Triple bonds/ # of electrons / # of free electrons")
-console.log("Neutral sulphur atoms have six bonds in total including hydrogen bonds.")
-console.log("Compressed:")
-console.log(VMolecule([sulphuric_acid, 1]).compressed())
 VMolecule([sulphuric_acid, 1]).canonicalSMILES(false).should.be.equal("OS(=O)(=O)O")
-
 
 // benzene
 // C1=CC=CC=C1
-console.log("Testing benzene C1=CC=CC=C1")
 const benzene = MoleculeFactory("C1=CC=CC=C1")
-console.log("Benzene compressed: C1=CC=CC=C1")
-console.log(VMolecule([benzene, 1]).compressed())
 VMolecule([benzene, 1]).canonicalSMILES(false).should.be.equal("C1=CC=CC=C1") // actual C1=CC=C=C=C1
 
-console.log("Testing benyzl_alcohol C1=CC=C(C=C1)CO")
 const benzyl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
-console.log(VMolecule([benzyl_alcohol,1]).compressed())
 VMolecule([benzyl_alcohol, 1]).canonicalSMILES(false).should.be.equal("C1=CC=C(C=C1)CO")
 
-
-
-console.log("Testing ethanol C(O)C")
 const ethanol = MoleculeFactory("C(O)C")
-console.log(VMolecule([ethanol,1]).compressed())
 VMolecule([ethanol, 1]).canonicalSMILES(false).should.be.equal("C(O)C")
 
-console.log("Testing methylene [CH2]")
 const methylene = MoleculeFactory("[CH2]")
-console.log("methylene compressed: [CH2]")
-console.log(VMolecule([methylene, 1]).compressed())
 VMolecule([methylene, 1]).canonicalSMILES(false).should.be.equal("[CH2]") // actual
 
 // epoxide acidic ring opening
 // 2-Methoxy-2-methylpropan-1-ol
-console.log("Testing 2-Methoxy-2-methylpropan-1-ol COC(C)(C)CO")
 const Two_Methoxy_2_methylpropan_1_ol = MoleculeFactory("COC(C)(C)CO")
-console.log(VMolecule([Two_Methoxy_2_methylpropan_1_ol,1]).compressed())
 VMolecule([Two_Methoxy_2_methylpropan_1_ol, 1]).canonicalSMILES(false).should.be.equal("COC(C)(C)CO")
 
-console.log("Testing bromide [Br-]")
 const bromide_neg = MoleculeFactory("[Br-]")
-console.log(VMolecule([bromide_neg, 1]).compressed())
 VMolecule([bromide_neg, 1]).canonicalSMILES(false).should.be.equal("[Br-]")
 
-console.log("Testing oxonium [OH3+]")
 const oxonium = MoleculeFactory("[OH3+]")
-console.log(VMolecule([oxonium, 1]).compressed())
 VMolecule([oxonium, 1]).canonicalSMILES(false).should.be.equal("[OH3+]")
 
-console.log("Testing ammonium [NH4+]")
 const ammonium = MoleculeFactory("[NH4+]")
-console.log(VMolecule([ammonium, 1]).compressed())
 VMolecule([ammonium, 1]).canonicalSMILES(false).should.be.equal("[NH4+]")
 
-console.log("Testing chloride [Cl-]")
 const chloride = MoleculeFactory("[Cl-]")
-console.log(VMolecule([chloride, 1]).compressed())
 VMolecule([chloride, 1]).canonicalSMILES(false).should.be.equal("[Cl-]")
 
-console.log("Testing chloranium [Cl+]")
 const chloranium = MoleculeFactory("[Cl+]")
-console.log(VMolecule([chloranium, 1]).compressed())
 VMolecule([chloranium, 1]).canonicalSMILES(false).should.be.equal("[Cl+]")
 
-console.log("Testing m CC(CC1=CC=CC=C1)NC")
 const m = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
-console.log(VMolecule([m, 1]).compressed())
 VMolecule([m, 1]).canonicalSMILES(false).should.be.equal("CC(CC1=CC=CC=C1)NC")
 
 
-
-
-
 // Test families:
-if (true) {
-
-    // Alcohol
-    const alcohol = MoleculeFactory("CO")
-
-    // Alkene
-    const alkene = MoleculeFactory("C=C")
-
-    Families([alkene, 1]).families.alkene().should.be.true()
-    Families([alcohol, 1]).families.alcohol().should.be.true()
-    Families([alcohol, 1]).families.alkene().should.be.false()
-    Families([alkene, 1]).families.alcohol().should.be.false()
-
-    //console.log(Families([alkene, 1]).families_as_array())
-    //console.log(Families([alcohol, 1]).families_as_array())
+// Alcohol
+const alcohol = MoleculeFactory("CO")
+// Alkene
+const alkene = MoleculeFactory("C=C")
+Families([alkene, 1]).families.alkene().should.be.true()
+Families([alcohol, 1]).families.alcohol().should.be.true()
+Families([alcohol, 1]).families.alkene().should.be.false()
+Families([alkene, 1]).families.alcohol().should.be.false()
 
 
-}
 
 console.log("Initial tests ok, now running main tests ...")
 
@@ -171,30 +127,25 @@ const uri = "mongodb+srv://" + process.env.MONGODBUSER + ":" + process.env.MONGO
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 client.connect(err => {
-    
     assert.equal(err, null);
     const db = client.db("chemistry")
-
     const VContainerWithDB = VContainer(client)
 
     // Test fetch reactions
-    if (true) {
+    FetchReactions(
+        (Err) => {
 
-        FetchReactions(
-            true,
-            db,
-            // 2-Methoxy-2-methylpropan-1-o
-            [MoleculeFactory("COC(C)(C)CO"), 1],
-            "",
-            (reactions, product, rule) => {
-                VReactions(db, reactions, product, rule).render()
-            },
-            (Err) => {
-
-            }
-        )
-    }
-
+        },
+        true,
+        db,
+        // 2-Methoxy-2-methylpropan-1-o
+        [MoleculeFactory("COC(C)(C)CO"), 1],
+        "",
+        (reactions, product, rule) => {
+            VReactions(db, reactions, product, rule, DEBUG).render()
+        },
+        DEBUG
+    )
 
     // @todo searchBySmiles should have callback passed in.
     const onMoleculeNotFound =  (onMoleculeAddedToDBCallback) => {

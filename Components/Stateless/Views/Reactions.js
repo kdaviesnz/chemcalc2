@@ -8,8 +8,7 @@ const MoleculeFactory = require('../../../Models/MoleculeFactory')
 const pubchem = require("pubchem-access").domain("compound");
 
 
-const VReaction = (reactions, container_end_product, rule) => {
-
+const VReaction = (reactions, container_end_product, rule, DEBUG) => {
 
     const onErrorLookingUpMoleculeInDB = (Err) => {
         console.log(Err)

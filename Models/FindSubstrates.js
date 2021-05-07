@@ -36,20 +36,18 @@ const ProtonateCarbonyl = require('../Commands/ProtonateCarbonyl')
 const _ = require('lodash');
 const colors = require('colors')
 
-const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string, render, Err) => {
-
-
-
-  //  console.log("Calling FindSubstrates")
-   // console.log(VMolecule(_.cloneDeep(mmolecule)).canonicalSMILES())
-    //const end_product_functional_groups = Families(mmolecule).families_as_array()
+const FindSubstrates = (Err, verbose,  db, rule, mmolecule, child_reaction_as_string, render, DEBUG) => {
 
     const commands_reversed = _.cloneDeep(rule.commands).reverse()
     const reagents_reversed = undefined !== rule.synthesis_reagents ? rule.synthesis_reagents: _.cloneDeep(rule.reagents).reverse()
 
-    console.log(rule.mechanism.green.bold)
-   // console.log(rule.links)
-    console.log(commands_reversed)
+    if (DEBUG) {
+        console.log("DEBUG Models/FindsSubstrates.js -> Mechanism: " + rule.mechanism.green.bold)
+        console.log("DEBUG Models/FindSubstrates.js -> Commands:")
+        console.log(rule.commands)
+        console.log("DEBUG Models/FindSubstrates.js -> Commands reversed:")
+        console.log(commands_reversed)
+    }
 
     // https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Map%3A_Organic_Chemistry_(McMurry)/18%3A_Ethers_and_Epoxides_Thiols_and_Sulfides/18.06%3A_Reactions_of_Epoxides_-_Ring-opening
     let results = []
@@ -86,13 +84,16 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
             "DEREDUCE": Reduce
         }
 
-        const getProductsRecursive = (commands_reversed, index, results, products, reagents_reversed) => {
+        const getProductsRecursive = (commands_reversed, index, results, products, reagents_reversed, DEBUG) => {
             if (undefined === commands_reversed[index]) {
                 return results
             }
             const command_reversed = commands_reversed[index]
-            console.log("Command reversed:")
-            console.log(command_reversed.yellow)
+            if (DEBUG) {
+                console.log("DEBUG FindSubstrates.js -> Command reversed:")
+                console.log(command_reversed.yellow)
+                process.error()
+            }
             if (undefined !== commands_reversed_map[command_reversed]) {
                 const container_substrate = _.cloneDeep(products[0])
                 container_substrate.length.should.be.equal(2) // molecule, units
@@ -115,7 +116,7 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
                     "substrate": _.cloneDeep(container_substrate),
                     "products": _.cloneDeep(products)
                 })
-                return getProductsRecursive(commands_reversed, index + 1, results, products, reagents_reversed)
+                return getProductsRecursive(commands_reversed, index + 1, results, products, reagents_reversed, DEBUG)
             } else {
                 console.log("Skipping as command not found")
                 return results
@@ -123,10 +124,13 @@ const FindSubstrates = (verbose,  db, rule, mmolecule, child_reaction_as_string,
         }
 
         let products = [_.cloneDeep(mmolecule), _.cloneDeep(rule.products[1])] // substrate should aways be first element
-        results = getProductsRecursive(commands_reversed, 0, results, products, reagents_reversed)
+        results = getProductsRecursive(commands_reversed, 0, results, products, reagents_reversed, DEBUG)
 
+    } else {
+        if (DEBUG) {
+            console.log("DEBUG FindSubstrates.js Number of commands is greater than number of reagents therefore not processing.")
+        }
     }
-
 
     if (results !== false && results.length > 0) {
         render(results, mmolecule, rule)
