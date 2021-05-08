@@ -133,6 +133,7 @@ client.connect(err => {
     const VContainerWithDB = VContainer(client)
 
     // Test fetch reactions
+    console.log("Synthesing COC(C)(C)CO" )
     FetchReactions(
         (Err) => {
 

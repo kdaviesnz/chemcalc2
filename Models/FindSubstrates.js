@@ -61,6 +61,7 @@ const FindSubstrates = (Err, verbose,  db, rule, mmolecule, child_reaction_as_st
             "PROTONATE": Protonate,
             "REMOVE proton from water": RemoveProtonFromWater,
             "HYDRATE": Hydrate,
+            "DEHYDRATE": Dehydrate,
             "DEPROTONATE nonhydroxyl oxygen": DeprotonateNonHydroxylOxygen,
             "TRANSFER proton": TransferProton,
             "PROTONATE carbonyl": ProtonateCarbonyl,
@@ -69,6 +70,23 @@ const FindSubstrates = (Err, verbose,  db, rule, mmolecule, child_reaction_as_st
             "DEREDUCE": Dereduce
         }
 
+
+        const commands_descriptions_map = {
+            "DEPROTONATE": "Deprotonate",
+            "BOND atoms": "BondAtoms",
+            "BREAK bond": "BreakBond",
+            "PROTONATE": "Protonate",
+            "REMOVE proton from water": "RemoveProtonFromWater",
+            "HYDRATE": "Hydrate",
+            "DEHYDRATE": "Dehydrate",
+            "DEPROTONATE nonhydroxyl oxygen": "DeprotonateNonHydroxylOxygen",
+            "TRANSFER proton": "TransferProton",
+            "PROTONATE carbonyl": "ProtonateCarbonyl",
+            "DEPROTONATE carbonyl": "DeprotonateCarbonyl",
+            "REDUCE": "Reduce",
+            "DEREDUCE": "Dereduce"
+        }
+        
         const commands_reversed_map = {
             "DEPROTONATE": Protonate,
             "BOND atoms": BreakBond,
@@ -76,6 +94,7 @@ const FindSubstrates = (Err, verbose,  db, rule, mmolecule, child_reaction_as_st
             "PROTONATE": Deprotonate,
             "REMOVE proton from water": AddProtonToHydroxylGroup,
             "HYDRATE": Dehydrate,
+            "DEHYDRATE": Hydrate,
             "DEPROTONATE nonhydroxyl oxygen": ProtonateNonHydroxylOxygen,
             "TRANSFER proton": TransferProton,
             "PROTONATE carbonyl": DeprotonateCarbonyl,
@@ -90,7 +109,8 @@ const FindSubstrates = (Err, verbose,  db, rule, mmolecule, child_reaction_as_st
             "BREAK bond": "Bond atoms",
             "PROTONATE": "Deprotonate",
             "REMOVE proton from water": "Add proton from reagent to hydroxyl group",
-            "HYDRATE": Dehydrate,
+            "HYDRATE": "Dehydrate",
+            "DEHYDRATE": "Hydrate",
             "DEPROTONATE nonhydroxyl oxygen": "Protonate non hydroxyl oxygen",
             "TRANSFER proton": "Transfer proton",
             "PROTONATE carbonyl": "Deprotonate carbonyl",
@@ -100,12 +120,16 @@ const FindSubstrates = (Err, verbose,  db, rule, mmolecule, child_reaction_as_st
         }
 
         const getProductsRecursive = (commands_reversed, index, results, products, reagents_reversed, DEBUG) => {
+
+            console.log("\n\n")
+
             if (undefined === commands_reversed[index]) {
                 return results
             }
             const command_reversed = commands_reversed[index]
             if (DEBUG) {
-                console.log("DEBUG FindSubstrates.js -> Command: " + commands_reversed_descriptions_map[command_reversed].yellow)
+                console.log(("DEBUG FindSubstrates.js -> Command: " + commands_descriptions_map[command_reversed]).yellow)
+                console.log(("DEBUG FindSubstrates.js -> Command (reversed): " + commands_reversed_descriptions_map[command_reversed]).yellow)
             }
             if (undefined !== commands_reversed_map[command_reversed]) {
                 const container_substrate = _.cloneDeep(products[0])
@@ -114,14 +138,14 @@ const FindSubstrates = (Err, verbose,  db, rule, mmolecule, child_reaction_as_st
                 container_substrate[0][1].should.be.an.Array()
                 const container_reagent = [MoleculeFactory(_.cloneDeep(reagents_reversed[index])), 1]
                 products = commands_reversed_map[command_reversed](_.cloneDeep(container_substrate), _.cloneDeep(container_reagent), rule, DEBUG)
-                process.error()
                 if (products === false) {
                     console.log("Returning false")
                     return false
                 }
-                console.log("Products:" + rule._id + ' ' + rule.mechanism)
-                console.log(commands_reversed_map[command_reversed])
-                console.log(VMolecule(products[0]).canonicalSMILES())
+                if (DEBUG) {
+                    console.log(("Products:" + rule._id + ' ' + rule.mechanism).red)
+                    console.log(VMolecule(products[0]).canonicalSMILES())
+                }
                 results.push({
                     "command": _.cloneDeep(command_reversed),
                     "reagent": _.cloneDeep( container_reagent),
@@ -135,6 +159,7 @@ const FindSubstrates = (Err, verbose,  db, rule, mmolecule, child_reaction_as_st
                 }
                 return results
             }
+
         }
 
         let products = [_.cloneDeep(mmolecule), _.cloneDeep(rule.products[1])] // substrate should aways be first element
