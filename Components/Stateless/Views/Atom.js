@@ -6,6 +6,29 @@ const Set = require('../../../Models/Set')
 const VAtom = (CAtom) => {
 
     return {
+
+        'json': () => {
+            return {
+                "atomic_symbol": CAtom.symbol,
+                "id": CAtom.atomIndex,
+                "hydrogens": hydrogens.map((h)=>{
+                    return {"id":h.atomIndex, "atomic_symbol":h.atomic_symbol}
+                }),
+                "charge": CAtom.charge,
+                "single_bonds": CAtom.indexedBonds("").map((b)=>{
+                    return {"id":b.atom_index, "atomic_symbol":b.atomic_symbol}
+                }),
+                "double_bonds": CAtom.indexedDoubleBonds("").map((b)=>{
+                    return {"id":b.atom_index, "atomic_symbol":b.atomic_symbol}
+                }),
+                "triple_bonds": CAtom.indexedTripleBonds("").map((b)=>{
+                    return {"id":b.atom_index, "atomic_symbol":b.atomic_symbol}
+                }),
+                "free_electrons": CAtom.freeElectrons(),
+                "free_slots": CAtom.freeSlots()
+            }
+        },
+
         'render': () => {
 
             // b = (5 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length)

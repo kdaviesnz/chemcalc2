@@ -335,11 +335,32 @@ const VMolecule = (mmolecule) => {
 
     return {
 
+        'JSON': () => {
+
+            /*
+                mmolecule.length.should.be.equal(2) // molecule, units
+    mmolecule[0].length.should.be.equal(2) // pKa, atoms
+             */
+
+            return {
+                "id": "",
+                "SMILES": "",
+                "atoms": _.cloneDeep(mmolecule[0][1]).map((atom, index) => {
+                        const c = CAtom(atom, index, _.cloneDeep(mmolecule))
+                        return VAtom(c)
+                    }
+                ),
+                "name": ""
+            }
+
+        },
+
         'compressed': () => {
 
             return _.cloneDeep(mmolecule[0][1]).map(
                 (atom, index) => {
                     const c = CAtom(atom, index, _.cloneDeep(mmolecule))
+
                     const h = c.indexedBonds("").filter((bond)=>{
                         return bond.atom[0] === "H"
                     })
@@ -376,6 +397,7 @@ const VMolecule = (mmolecule) => {
                 }
             )
         },
+
         'formatted': () => {
 
             return _.cloneDeep(mmolecule[0][1]).map(
