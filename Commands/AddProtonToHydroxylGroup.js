@@ -19,7 +19,7 @@ const AddProtonToHydroxylGroup = (container_molecule, container_reagent, rule, D
 
     if (DEBUG) {
         console.log(("DEBUG Commands/AddProtonToHydroxylGroup.js -> Starting substrate " + VMolecule([reaction.container_substrate[0], 1]).canonicalSMILES(false)).red)
-        //console.log(VMolecule([reaction.container_substrate[0], 1]).compressed())
+//        console.log(VMolecule([reaction.container_substrate[0], 1]).compressed())
         console.log(("DEBUG Commands/AddProtonToHydroxylGroup.js -> Starting reagent " + VMolecule([reaction.container_reagent[0], 1]).canonicalSMILES(false)).green)
     }
 

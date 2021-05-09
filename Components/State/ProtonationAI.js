@@ -951,6 +951,8 @@ class ProtonationAI {
 
         this.reaction.container_substrate[0][1].length.should.not.equal(substrate_atoms.length)
 
+        VMolecule([this.reaction.container_substrate[0], 1]).JSON().atoms[hydroxylOxygenIndex].hydrogens.length.should.be.equal(2)
+
         this.reaction.setChargesOnSubstrate()
         this.reaction.setMoleculeAI()
         this.reaction.setReagentAI()
