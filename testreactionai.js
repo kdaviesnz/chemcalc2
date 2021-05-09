@@ -10,8 +10,56 @@ const formate = MoleculeFactory("C(=O)[O-]")
 const formaldehyde = MoleculeFactory("C=O")
 const water = MoleculeFactory("O")
 
+
+console.log("Running initial tests")
+
+const md = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)NC")
+VMolecule([md, 1]).canonicalSMILES(false).should.be.equal("CC(CC1=CC2=C(C=C1)OCO2)NC")
+
+const sulphuric_acid = MoleculeFactory("OS(=O)(=O)O")
+//console.log(VMolecule([sulphuric_acid, 10]).JSON())
+//process.error()
+VMolecule([sulphuric_acid, 1]).canonicalSMILES(false).should.be.equal("OS(=O)(=O)O")
+
+// benzene
+// C1=CC=CC=C1
+const benzene = MoleculeFactory("C1=CC=CC=C1")
+VMolecule([benzene, 1]).canonicalSMILES(false).should.be.equal("C1=CC=CC=C1") // actual C1=CC=C=C=C1
+
+const benzyl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
+VMolecule([benzyl_alcohol, 1]).canonicalSMILES(false).should.be.equal("C1=CC=C(C=C1)CO")
+
+const ethanol = MoleculeFactory("C(O)C")
+VMolecule([ethanol, 1]).canonicalSMILES(false).should.be.equal("C(O)C")
+
+const methylene = MoleculeFactory("[CH2]")
+VMolecule([methylene, 1]).canonicalSMILES(false).should.be.equal("[CH2]") // actual
+
+// epoxide acidic ring opening
+// 2-Methoxy-2-methylpropan-1-ol
+const Two_Methoxy_2_methylpropan_1_ol = MoleculeFactory("COC(C)(C)CO")
+VMolecule([Two_Methoxy_2_methylpropan_1_ol, 1]).canonicalSMILES(false).should.be.equal("COC(C)(C)CO")
+
+const bromide_neg = MoleculeFactory("[Br-]")
+VMolecule([bromide_neg, 1]).canonicalSMILES(false).should.be.equal("[Br-]")
+
+const oxonium = MoleculeFactory("[OH3+]")
+VMolecule([oxonium, 1]).canonicalSMILES(false).should.be.equal("[OH3+]")
+
+const ammonium = MoleculeFactory("[NH4+]")
+VMolecule([ammonium, 1]).canonicalSMILES(false).should.be.equal("[NH4+]")
+
+const chloride = MoleculeFactory("[Cl-]")
+VMolecule([chloride, 1]).canonicalSMILES(false).should.be.equal("[Cl-]")
+
+const chloranium = MoleculeFactory("[Cl+]")
+VMolecule([chloranium, 1]).canonicalSMILES(false).should.be.equal("[Cl+]")
+
+const m = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
+VMolecule([m, 1]).canonicalSMILES(false).should.be.equal("CC(CC1=CC=CC=C1)NC")
+
 const pinacolone = MoleculeFactory("CC(=O)C(C)(C)C")
-VMolecule([pinacolone,1]).canonicalSMILES().should.equal("CC(=O)C(C)(C)C")
+VMolecule([pinacolone,1]).canonicalSMILES(false).should.equal("CC(=O)C(C)(C)C")
 
 VMolecule([formate,1]).canonicalSMILES().should.equal("C(=O)[O-]")
 const MD = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)NC")

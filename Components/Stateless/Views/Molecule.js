@@ -729,7 +729,7 @@ const VMolecule = (mmolecule) => {
                     case "C":
                         if (number_of_hydrogens !== 4) {
                             add_square_brackets = true
-                            current_atom[0] = current_atom[0] + "H" + current_atom[2].replace(/H /, "") * 1
+                            current_atom[0] = current_atom[0] + ((current_atom[2].replace(/H /, "") * 1 ===0?"":"H"+current_atom[2].replace(/H /, "") * 1))
                             if (number_of_hydrogens > 4) {
                                 current_atom[0] = current_atom[0] + "+"
                             }
@@ -738,7 +738,7 @@ const VMolecule = (mmolecule) => {
                     case "O":
                         if (number_of_hydrogens !== 2) {
                             add_square_brackets = true
-                            current_atom[0] = current_atom[0] + "H" + current_atom[2].replace(/H /, "") * 1
+                            current_atom[0] = current_atom[0] + ((current_atom[2].replace(/H /, "") * 1 ===0?"":"H"+current_atom[2].replace(/H /, "") * 1))
                             if (number_of_hydrogens > 2) {
                                 current_atom[0] = current_atom[0] + "+"
                             }
@@ -750,7 +750,7 @@ const VMolecule = (mmolecule) => {
                     case "N":
                         if (number_of_hydrogens !== 3) {
                             add_square_brackets = true
-                            current_atom[0] = current_atom[0] + "H" + current_atom[2].replace(/H /, "") * 1
+                            current_atom[0] = current_atom[0] + ((current_atom[2].replace(/H /, "") * 1 ===0?"":"H"+current_atom[2].replace(/H /, "") * 1))
                             if (number_of_hydrogens > 3) {
                                 current_atom[0] = current_atom[0] + "+"
                             }
