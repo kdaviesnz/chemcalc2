@@ -1,5 +1,6 @@
 const CMolecule = require('../../../Controllers/Molecule')
 const CAtom = require('../../../Controllers/Atom')
+const VAtom = require('../../../Components/Stateless/Views/Atom')
 const _ = require('lodash');
 const Set = require('../../../Models/Set')
 
@@ -335,7 +336,7 @@ const VMolecule = (mmolecule) => {
 
     return {
 
-        'JSON': () => {
+        'JSON': function()  {
 
             /*
                 mmolecule.length.should.be.equal(2) // molecule, units
@@ -344,13 +345,15 @@ const VMolecule = (mmolecule) => {
 
             return {
                 "id": "",
-                "SMILES": "",
+                "SMILES": this.canonicalSMILES(false),
                 "atoms": _.cloneDeep(mmolecule[0][1]).map((atom, index) => {
                         const c = CAtom(atom, index, _.cloneDeep(mmolecule))
                         return VAtom(c)
                     }
                 ),
-                "name": ""
+                "name": "",
+                "units":mmolecule[1],
+                "pKa":mmolecule[0][0]
             }
 
         },

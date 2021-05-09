@@ -7,15 +7,19 @@ const VAtom = (CAtom) => {
 
     return {
 
-        'json': () => {
+        'JSON': () => {
             return {
                 "atomic_symbol": CAtom.symbol,
                 "id": CAtom.atomIndex,
-                "hydrogens": hydrogens.map((h)=>{
+                "hydrogens": CAtom.hydrogens().map((h)=>{
+                    console.log("hydrogen:")
+                    console.log(h)
                     return {"id":h.atomIndex, "atomic_symbol":h.atomic_symbol}
                 }),
                 "charge": CAtom.charge,
                 "single_bonds": CAtom.indexedBonds("").map((b)=>{
+                    console.log("bond:")
+                    console.log(b)
                     return {"id":b.atom_index, "atomic_symbol":b.atomic_symbol}
                 }),
                 "double_bonds": CAtom.indexedDoubleBonds("").map((b)=>{
