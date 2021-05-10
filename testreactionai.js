@@ -13,6 +13,10 @@ const water = MoleculeFactory("O")
 
 console.log("Running initial tests")
 
+const pinacolone = MoleculeFactory("CC(=O)C(C)(C)C")
+console.log(VMolecule([pinacolone,1]).compressed())
+VMolecule([pinacolone,1]).canonicalSMILES(true).should.equal("CC(=O)C(C)(C)C")
+
 const md = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)NC")
 VMolecule([md, 1]).canonicalSMILES(false).should.be.equal("CC(CC1=CC2=C(C=C1)OCO2)NC")
 
@@ -58,9 +62,7 @@ VMolecule([chloranium, 1]).canonicalSMILES(false).should.be.equal("[Cl+]")
 const m = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 VMolecule([m, 1]).canonicalSMILES(false).should.be.equal("CC(CC1=CC=CC=C1)NC")
 
-const pinacolone = MoleculeFactory("CC(=O)C(C)(C)C")
-console.log(VMolecule([pinacolone,1]).compressed())
-VMolecule([pinacolone,1]).canonicalSMILES(true).should.equal("CC(=O)C(C)(C)C")
+
 
 VMolecule([formate,1]).canonicalSMILES().should.equal("C(=O)[O-]")
 const MD = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)NC")
