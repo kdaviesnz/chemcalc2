@@ -13,12 +13,14 @@ const water = MoleculeFactory("O")
 
 console.log("Running initial tests")
 
+const md = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)NC")
+VMolecule([md, 1]).canonicalSMILES(true).should.be.equal("CC(CC1=CC2=C(C=C1)OCO2)NC")
+
 const pinacolone = MoleculeFactory("CC(=O)C(C)(C)C")
 console.log(VMolecule([pinacolone,1]).compressed())
 VMolecule([pinacolone,1]).canonicalSMILES(true).should.equal("CC(=O)C(C)(C)C")
 
-const md = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)NC")
-VMolecule([md, 1]).canonicalSMILES(false).should.be.equal("CC(CC1=CC2=C(C=C1)OCO2)NC")
+
 
 const sulphuric_acid = MoleculeFactory("OS(=O)(=O)O")
 //console.log(VMolecule([sulphuric_acid, 10]).JSON())

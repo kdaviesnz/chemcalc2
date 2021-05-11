@@ -628,10 +628,11 @@ const VMolecule = (mmolecule) => {
                 // Get ids of bonded atoms
                 const bond_ids = __getBondIds(current_atom[4]).concat(__getBondIds(current_atom[5])).concat(__getBondIds(current_atom[6]))
 
-                if (current_atom[1]===3) {
-//                    console.log(bond_ids)
+                if (current_atom[1]===4) {
+                    //console.log(bond_ids)
+                    //process.error()
                 }
-                const min_number_of_bonds = ring_bond_ids[current_atom[1]+""] === undefined?2:1
+                const min_number_of_bonds = ring_bond_ids[current_atom[1]+""] === undefined?1:1
 
                 // Remove ring bond ids
                 /*
@@ -645,6 +646,8 @@ const VMolecule = (mmolecule) => {
                     return bond_id > current_atom[1]
                 })
 
+                bond_ids_final.sort()
+
                 if (testing) {
                         console.log("Branches -bond_ids_final, current atom = " + current_atom[1])
                         console.log(bond_ids_final)
@@ -652,12 +655,17 @@ const VMolecule = (mmolecule) => {
 
                 if (bond_ids_final.length > min_number_of_bonds) {
                     bond_ids_final.map((bond_id, k) => {
-                        if (bond_id !== last_atom[1] && k !== bond_ids_final.length) { // not last branch on the current atom and bond is not last atom on the molecule
+                        if (bond_id !== last_atom[1] && k !== bond_ids_final.length -1) { // not last branch on the current atom and bond is not last atom on the molecule
                             start_of_branches_ids.push(bond_id)
                         }
                     })
                 }
 
+
+                // End of bond ids
+                if (bond_ids.length === 1 && i !==0 && i < compressedMolecule.length -1) {
+                    end_of_branches_ids.push(current_atom[1])
+                }
                 // First atom
                 /*
                 if (i === 0) {
@@ -687,7 +695,9 @@ const VMolecule = (mmolecule) => {
                 console.log(ring_bond_ids)
                 console.log("Branches")
                 console.log(start_of_branches_ids)
-                process.error()
+                console.log("end")
+                console.log(end_of_branches_ids)
+                //process.error()
             }
 
 
@@ -699,70 +709,11 @@ const VMolecule = (mmolecule) => {
             let previous_atom = null
             const smiles = compressedMolecule.reduce((s, current_atom, i)=> {
 
+                // Start of branch
                 if (start_of_branches_ids.indexOf(current_atom[1]) > -1) {
-                    // Get the number of branches the previous atom has
-                    if (previous_atom !== null) {
-                        if (testing) {
-                            console.log("PREVIOUS ATOM ID:" + previous_atom[1] + " CURRENT ATOM ID: " + current_atom[1])
-                        }
-                        const previous_atom_bond_ids = __getBondIds(previous_atom[4]).concat(__getBondIds(previous_atom[5])).concat(__getBondIds(previous_atom[6]))
-                        const previous_atom_branch_ids = Set().intersection(start_of_branches_ids, previous_atom_bond_ids).filter((b_id)=>{
-                            return b_id > previous_atom[1]
-                        })
-                        if (testing) {
-                            console.log("previous atom branch ids")
-                            console.log(previous_atom_branch_ids)
-                        }
-                        if (undefined === branch_tracker[branch_depth+1]) {
-                            branch_tracker[branch_depth+1] = previous_atom_branch_ids.length // [0=>3]
-                            if (testing) {
-                                console.log("Starting new branch 1")
-                            }
-                            s = s + "("
-                            if (testing) {
-                                console.log("Incrementing branch depth 1")
-                            }
-                            previous_branch_depth = branch_depth
-                            branch_depth = branch_depth + 1
-                        } else {
-                            const branch_number = branch_tracker[branch_depth + 1]
-                            if (branch_number > 1) {
-                                if (testing) {
-                                    console.log("Starting new branch 2")
-                                }
-                                s = s + "("
-                                if (testing) {
-                                    console.log("Incrementing branch depth 2")
-                                }
-                                previous_branch_depth = branch_depth
-                                branch_depth = branch_depth + 1
-                            } else {
-                                if (testing) {
-                                    console.log("Not starting new branch 2 as branch number not > 1 (branch_number=" + branch_number + ")")
-                                }
-                            }
-                        }
-                        if (testing) {
-                            console.log("Branch tracker")
-                            console.log(branch_tracker)
-                        }
-                    } else {
-                        if (testing) {
-                            console.log("Starting new branch 3")
-                        }
-                        s = s + "("
-                        if (testing) {
-                            console.log("Incrementing branch depth 3")
-                        }
-                        previous_branch_depth = branch_depth
-                        branch_depth = branch_depth + 1
-                    }
-
-                } else {
-                    if (testing) {
-                        console.log("Not starting new branch 3")
-                    }
+                    s = s + "("
                 }
+
                 // Determine bond type
                 let bond_type = ""
                 const double_parent_bond_ids = current_atom[5].filter((id)=>{
@@ -836,36 +787,10 @@ const VMolecule = (mmolecule) => {
                     s = s + ring_bond_ids[current_atom[1]+""]
                 }
 
-
-                // End of branch
-                const end_of_branch = __determineIfEndOfBranch(i, current_atom, branch_depth, ring_bond_ids, branch_tracker, testing)
-                if (end_of_branch) {
-                    if (testing) {
-                        console.log("End of branch, atom: " + current_atom[1])
-                    }
+                if (end_of_branches_ids.indexOf(current_atom[1]) > -1) {
                     s = s + ")"
-                    branch_tracker[branch_depth] =  branch_tracker[branch_depth] - 1
-                    previous_branch_depth = branch_depth
-                    branch_depth = branch_depth - 1
-                    if (testing) {
-                        console.log("previous branch depth = " + previous_branch_depth)
-                        console.log("currrent branch depth = " + branch_depth)
-                    }
-                } else {
-                    if (testing) {
-                        console.log("Not end of branch, atom: " + current_atom[1] + ". branch_depth=" + branch_depth)
-                    }
                 }
-
-                if (testing) {
-                    console.log("branch tracker")
-                    console.log("branch depth=" + branch_depth + ", current atom id=" + current_atom[1])
-                    console.log(branch_tracker)
-                }
-
-                if (!end_of_branch) {
-                    previous_atom = current_atom
-                }
+                // End of branch
 
                 return s
 
