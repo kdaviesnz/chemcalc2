@@ -628,6 +628,7 @@ const VMolecule = (mmolecule) => {
                 // Get ids of bonded atoms
                 const bond_ids = __getBondIds(current_atom[4]).concat(__getBondIds(current_atom[5])).concat(__getBondIds(current_atom[6]))
 
+
                 if (current_atom[1]===4) {
                     //console.log(bond_ids)
                     //process.error()
@@ -635,37 +636,55 @@ const VMolecule = (mmolecule) => {
                 const min_number_of_bonds = ring_bond_ids[current_atom[1]+""] === undefined?1:1
 
                 // Remove ring bond ids
-                /*
                 const bond_ids_no_ring_bond_ids = bond_ids.filter((bond_id)=>{
                     return ring_bond_ids[bond_id+""] === undefined
                 })
-                 */
 
-                // Remove bond ids < current atom bond id
-                const bond_ids_final = bond_ids.filter((bond_id)=>{
-                    return bond_id > current_atom[1]
+                // Remove bond ids < current atom bond id and if last atom in the molecule
+                const bond_ids_final = bond_ids_no_ring_bond_ids.filter((bond_id)=>{
+                    return bond_id > current_atom[1] && last_atom[1] !== bond_id
                 })
 
-                bond_ids_final.sort()
+                // Sort and pop last bond_id as this is the last branch attached to the current atom
+                bond_ids_final.sort((a, b) => a - b).pop()
 
-                if (testing) {
-                        console.log("Branches -bond_ids_final, current atom = " + current_atom[1])
-                        console.log(bond_ids_final)
-                }
 
-                if (bond_ids_final.length > min_number_of_bonds) {
+                if (bond_ids_final.length > (min_number_of_bonds - 1)) { // we've removed the last bond_id
                     bond_ids_final.map((bond_id, k) => {
-                        if (bond_id !== last_atom[1] && k !== bond_ids_final.length -1) { // not last branch on the current atom and bond is not last atom on the molecule
+                        if (bond_id !== last_atom[1]) { // not last branch on the current atom and bond is not last atom on the molecule
                             start_of_branches_ids.push(bond_id)
                         }
                     })
                 }
 
+                if (current_atom[1] === 5) {
+                    console.log(bond_ids_final)
+                    //process.error()
+                }
+
+
+                if (testing) {
+                    console.log("Start of branches -bond_ids_final, current atom = " + current_atom[1])
+                    console.log(bond_ids_final)
+                }
 
                 // End of bond ids
                 if (bond_ids.length === 1 && i !==0 && i < compressedMolecule.length -1) {
                     end_of_branches_ids.push(current_atom[1])
                 }
+
+                // Ring bond atoms
+                if(undefined !==ring_bond_ids[current_atom[1] +'']) {
+                    const bond_ids_filtered = bond_ids.filter((b_id)=>{
+                        return b_id < current_atom[1] && undefined !== ring_bond_ids[b_id+""]
+                    })
+                    if (bond_ids_filtered.length ==1) {
+                        end_of_branches_ids.push(current_atom[1])
+                        console.log(end_of_branches_ids)
+                    }
+                }
+
+
                 // First atom
                 /*
                 if (i === 0) {
@@ -687,6 +706,7 @@ const VMolecule = (mmolecule) => {
                  */
 
             })
+
 
             if (testing) {
                 console.log("compressedMolecule")
