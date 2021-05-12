@@ -4,15 +4,59 @@ const VMolecule = require('../../Components/Stateless/Views/Molecule')
 const Set = require('../../Models/Set')
 const ChargesAI = require('../../Components/State/ChargesAI')
 /*
+   findCarbonylCarbonIndexOnDoubleBond()
+   isStrongAcid()
+   findCarbocationIndex()
+   findCarbocationIndexReverse()
+   findImineCarbonIndex()
+   validateMolecule(trace, trace_id)
+   findIndexOfCarbocationAttachedtoCarbon()
+   findIndexOfCarbonAtomBondedToNonCarbonBySymbol(symbol)
+   findNitrogenAttachedToCarbonAttachedToOxygenDoubleBondIndex()
 
-findHydroxylOxygenIndex()
-findOxygenAttachedToCarbonIndex()
-findOxygenOnDoubleBondIndex()
-findNonWaterOxygenIndex()
-findIndexOfCarbonAtomDoubledBondedToNonCarbonBySymbol(symbol)
-findNitrogenAttachedToCarbonAttachedToOxygenDoubleBondIndex()
-findCarbocationIndexReverse
- */
+   findIndexOfCarbonAtomDoubledBondedToNonCarbonBySymbol(symbol) - find index of carbon atom with double bond to non carbon atom. "symbol" is the
+   atomic symbol of the non carbon atom. eg if we have CC=O then this method will return the index of second carbon.
+
+   findIndexOfOxygenAtomDoubleBondedToCarbonByCarbonIndex(carbon_index) - find index of oxygen double bonded to a specific carbon atom. "carbon_index"
+   is the index of the specific carbon.
+
+   findIndexOfCarbonAtomBondedToCarbonByCarbonIndex(carbon_index) - find index of carbon atom bonded to a specific carbon atom. "carbon_index"
+   is the index of the specific carbon.
+
+   findAtomWithFreeElectronsIndexBySymbol(symbol)
+   checkForBondedAtomsRecursive(groups, group_index, current_atom_index, atom_object, atoms, atom_indexes_added)
+   checkForBondedAtomsRecursiveReverse(groups, group_index, current_atom_index, atom_object, atoms, atom_indexes_added)
+   extractGroupsRecursive(groups, group_index, atoms, atom_indexes_added, current_atom_index)
+   extractGroupsRecursiveReverse(groups, group_index, atoms, atom_indexes_added, current_atom_index)
+   extractGroups()
+   extractGroupsReverse()
+   findOxygenAttachedToCarbonIndex()
+   findOxygenAttachedToCarbonIndexNoDoubleBonds()
+   findNitrogenAttachedToCarbonIndexNoDoubleBonds()
+   chains(previous_atom_index, root_atom_index, chains, chain_index, col, depth)
+   chains2(previous_atom_index, root_atom_index, chains, chain_index, col, depth)
+   isWater()
+   findNitrogenWithHydrogenIndex()
+   findNucleophileIndex()
+   findOverloadedAtoms()
+   findMostSubstitutedOxygenIndex()
+   findMostSubstitutedCarbon(carbons)
+   findMostSubstitutedCarbonIndex()
+   findOxygenElectrophileIndex()
+   findIndexOfAtomToDeprotonate(filterBy, mustBe)
+   findElectrophileIndex(filterBy, mustBe)
+   findProtonIndexOnAtom()
+   findIndexOfCarbonAtomAttachedToHydroxylGroup()
+   findProtonIndex()
+   findNonHydroxylOxygenIndex()
+   findWaterOxygenIndex()
+   findOxygenOnDoubleBondIndex()
+   findNitrogenOnTripleBondIndex()
+   findNitrogenOnDoubleBondIndex()
+   findNonWaterOxygenIndex()
+   findMetalAtomIndex()
+   */
+
 
 const MoleculeAI = (container_molecule) => {
 
@@ -25,6 +69,39 @@ const MoleculeAI = (container_molecule) => {
             container_molecule[0][1][0].should.be.an.Array()
             container_molecule[0][1][0][0].should.be.an.String()
         }
+    }
+
+    const __findIndexOfOxygenAtomDoubleBondedToCarbonByCarbonIndex = (carbon_index) => {
+        const carbon_atom_object = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, container_molecule)
+        const oxygen_carbon_double_bonds = carbon_atom_object.indexedDoubleBonds("").filter((bond)=>{
+            return bond.atom.atomic_symbol === "O"
+        })
+        return oxygen_carbon_double_bonds.length === 0?-1:oxygen_carbon_double_bonds[0].atomIndex
+    }
+
+    const __findIndexOfCarbonAtomBondedToCarbonByCarbonIndex = (carbon_index) => {
+        const carbon_atom_object = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, container_molecule)
+        const carbon_bonds = carbon_atom_object.indexedBonds("").filter((bond)=>{
+            return bond.atom.atomic_symbol === "C"
+        })
+        return carbon_bonds.length === 0?-1:carbon_bonds[0].atomIndex
+    }
+
+    const __findCarbonylCarbonIndexOnDoubleBond = () => {
+        const carbonyl_carbon_index = _.findIndex(this.container_reagent[0][1], (atom, index)=>{
+            const atom_object = CAtom(atom, index, container_molecule)
+            if (atom_object.symbol !== "C") {
+                return false
+            }
+            const double_bonds = atom_object.indexedDoubleBonds("").filter((bond)=>{
+                if(bond.atom[0] !=="O") {
+                    return false
+                }
+                return true
+            })
+            return atom[0] === "O"
+        })
+        return carbonyl_carbon_index
     }
 
     const __findHydroxylOxygenIndex = () => {
@@ -201,6 +278,11 @@ const MoleculeAI = (container_molecule) => {
     // No method should change state of container_molecule
     return {
 
+        "findCarbonylCarbonIndexOnDoubleBond":() => {
+            return __findCarbonylCarbonIndexOnDoubleBond()
+        },
+
+
         isStrongAcid: () => {
             const map = ["Cl", "OS(=O)(=O)O"] // hydrochloric acid, sulphuric acid
             //return map.indexOf(VMolecule(container_molecule).canonicalSMILES()) !== -1
@@ -236,6 +318,7 @@ const MoleculeAI = (container_molecule) => {
                 return c_h_bonds.length === 1
             })
         },
+
 
         findImineCarbonIndex: () =>{
             return _.findIndex(container_molecule[0][1], (atom, index)=>{
@@ -310,6 +393,7 @@ const MoleculeAI = (container_molecule) => {
             }) === -1
         },
 
+
         findIndexOfCarbocationAttachedtoCarbon: ()=>{
          // console.log("MoleculeAI findIndexOfCarbocationAttachedtoCarbon()")
          // console.log(VMolecule(container_molecule).compressed())
@@ -330,6 +414,7 @@ const MoleculeAI = (container_molecule) => {
                 return bonds.length > 0
             })
         },
+
 
         findIndexOfCarbonAtomBondedToNonCarbonBySymbol: function(symbol) {
             return _.findIndex(container_molecule[0][1], (atom, index)=>{
@@ -376,9 +461,6 @@ const MoleculeAI = (container_molecule) => {
                 const double_bonds = carbon_atom_object.indexedDoubleBonds("")
 
                 if (carbon_atom_object.doubleBondCount() !== 1) {
-                // console.log(('Wrong number of double bonds')
-                 // console.log(("Index: " + index)
-                 // console.log(('Double bonds length:' + double_bonds.length)
                     return false
                 }
 
@@ -388,6 +470,7 @@ const MoleculeAI = (container_molecule) => {
                 return true
             })
         },
+
 
         findAtomWithFreeElectronsIndexBySymbol: (symbol) => {
             return _.findIndex(container_molecule[0][1], (atom, index)=>{
@@ -401,6 +484,7 @@ const MoleculeAI = (container_molecule) => {
                 return true
             })
         },
+
 
         checkForBondedAtomsRecursive: function(groups, group_index, current_atom_index, atom_object, atoms, atom_indexes_added) {
 
@@ -429,6 +513,8 @@ const MoleculeAI = (container_molecule) => {
                 return a
             })
         },
+
+
 
         extractGroupsRecursive: function(groups, group_index, atoms, atom_indexes_added, current_atom_index) {
 
@@ -517,6 +603,8 @@ const MoleculeAI = (container_molecule) => {
 
         },
 
+
+
         extractGroups: function() {
 
           // console.log((VMolecule(container_molecule).compressed())
@@ -555,6 +643,7 @@ const MoleculeAI = (container_molecule) => {
 
             return groups_filtered
         },
+
 
         findOxygenAttachedToCarbonIndex: function() {
             return _.findIndex(container_molecule[0][1], (atom, index) => {
@@ -607,6 +696,7 @@ const MoleculeAI = (container_molecule) => {
                 return carbon_bonds.length > 0
             })
         },
+
 
         "chains": function(previous_atom_index, root_atom_index, chains, chain_index, col, depth) {
 
@@ -775,6 +865,7 @@ VMolecule
 
             return chains
         },
+
 
         "chains2": function(previous_atom_index, root_atom_index, chains, chain_index, col, depth) {
             if (undefined === chains[chain_index]) {
@@ -950,6 +1041,7 @@ VMolecule
 
         },
 
+
         "isWater":() => {
             if  (container_molecule[0][1].length !== 3) {
                 return false
@@ -981,6 +1073,7 @@ VMolecule
                 }).length === 1
             })
         },
+
 
 
         "findNucleophileIndex": function() {
@@ -1121,6 +1214,7 @@ VMolecule
 
         },
 
+
         "findOverloadedAtoms": () => {
             // Check for atom with too many bonds  and return one of the bonds
             return atoms_with_too_many_bonds = container_molecule[0][1].map((atom, atom_index)=> {
@@ -1193,9 +1287,9 @@ VMolecule
             return __findLeastSubstitutedCarbon(carbons).atomIndex
         },
 
+
+
         "findMostSubstitutedCarbonIndex": () => {
-
-
 
             const carbons = container_molecule[0][1].map((atom, index) => {
                 return CAtom(atom, index, container_molecule)
@@ -1207,6 +1301,7 @@ VMolecule
 
             return __findMostSubstitutedCarbon(carbons).atomIndex
         },
+
 
         "findOxygenElectrophileIndex": () => {
 
@@ -1228,6 +1323,7 @@ VMolecule
 
 
         },
+
 
         "findIndexOfAtomToDeprotonate": (filterBy, mustBe) => {
 
@@ -1303,6 +1399,7 @@ VMolecule
             return i
 
         },
+
 
 
         "findElectrophileIndex": (filterBy, mustBe) => {
@@ -1412,12 +1509,22 @@ VMolecule
 
         },
 
+
         "findProtonIndexOnAtom": (atom) => {
             const protons =  atom.indexedBonds("").filter((bond)=>{
                 return bond.atom[0] === "H"
             })
 
             return protons.length > 0 ? protons.pop().atom_index: -1
+        },
+
+
+        "findIndexOfOxygenAtomDoubleBondedToCarbonByCarbonIndex": (carbon_index) => {
+            return __findIndexOfOxygenAtomDoubleBondedToCarbonByCarbonIndex(carbon_index)
+        },
+
+        "findIndexOfCarbonAtomBondedToCarbonByCarbonIndex": (carbon_index) =>{
+            return __indIndexOfCarbonAtomBondedToCarbonByCarbonIndex(carbon_index)
         },
 
         findIndexOfCarbonAtomAttachedToHydroxylGroup: () => {
@@ -1503,6 +1610,7 @@ VMolecule
             })
         },
 
+
         "findNonHydroxylOxygenIndex":() => {
 
             return _.findIndex(container_molecule[0][1], (oxygen_atom, oxygen_atom_index)=>{
@@ -1537,6 +1645,7 @@ VMolecule
             return __findHydroxylOxygenIndex()
 
         },
+
 
         "findWaterOxygenIndex": function() {
 
@@ -1576,6 +1685,7 @@ VMolecule
 
 
         },
+
 
         "findOxygenOnDoubleBondIndex":() => {
             return _.findIndex(container_molecule[0][1], (oxygen_atom, oxygen_atom_index)=>{
@@ -1624,6 +1734,8 @@ VMolecule
                 return true
             })
         },
+
+
 
         "findNonWaterOxygenIndex":(override_charge) => {
 

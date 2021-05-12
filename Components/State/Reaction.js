@@ -15,6 +15,11 @@ const ChargesAI = require('../../Components/State/ChargesAI')
 const SubstitutionAI = require('../../Components/State/SubstitutionAI')
 const range = require("range");
 
+/*
+createEnolate()
+
+ */
+
 class Reaction {
 
     constructor(container_substrate, container_reagent, rule) {
@@ -59,6 +64,41 @@ class Reaction {
         }
 
         this.bondsAI = new BondsAI(this)
+
+    }
+
+
+    createEnolate() {
+
+        // @see https://chem.libretexts.org/Courses/Oregon_Institute_of_Technology/OIT%3A_CHE_332_--_Organic_Chemistry_II_(Lund)/7%3A_Acid-base_Reactions/07%3A_Carbon_Acids
+        // C2C1=O1
+        // Look for oxygen atom (O1) with a double bond to a carbon atom (C1)
+        // Check that C1 atom is bonded to a carbon atom (C2)
+        // Remove proton from C2. C2 should now have a negative charge.
+        // Create double bond between C2 and C1. C1 should now have neutral charge.
+        // Remove double bond between C1 and O1 and replace with single bond. O1 should now have a negative charge.
+        this.setMoleculeAI()
+
+        const c1_carbon_index = this.MoleculeAI.findIndexOfCarbonAtomDoubledBondedToNonCarbonBySymbol("O")
+        if (c1_carbon_index === -1) {
+            return false
+        }
+
+        const o1_oxygen_index = this.MoleculeAI.findIndexOfOxygenAtomDoubleBondedToCarbonByCarbonIndex(c1_carbon_index)
+        if (o1_oxygen_index === -1) {
+            return false
+        }
+
+        const c2_carbon_index = this.MoleculeAI.findIndexOfCarbonAtomBondedToCarbonByCarbonIndex(c1_carbon_index)
+        if (c2_carbon_index === -1) {
+            return false
+        }
+
+        const bondsAI = new BondsAI(this)
+
+
+
+        this.breakCarbonOxygenDoubleBond()
 
     }
 

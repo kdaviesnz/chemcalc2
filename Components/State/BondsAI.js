@@ -8,6 +8,9 @@ const AtomFactory = require('../../Models/AtomFactory')
 const Set = require('../../Models/Set')
 const uniqid = require('uniqid');
 
+// removeProton(molecule, atom_index, electrons, proton)
+// removeAtom(molecule, atom) {
+// removeBond(molecule, atom_index, electrons)
 // makeNitrogenCarbonTripleBond()
 // makeNitrogenCarbonDoubleBond()
 // makeOxygenCarbonDoubleBond()

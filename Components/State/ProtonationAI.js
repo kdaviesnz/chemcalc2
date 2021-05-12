@@ -8,7 +8,8 @@ const should = require('should')
 const Set = require('../../Models/Set')
 const uniqid = require('uniqid');
 
-// protonateCarboncation()
+//
+// protonateCarbocation()
 // deprotonateCarbonyl()
 // protonateCarbonyl()
 // deprotonateOxygenOnDoubleBond()
@@ -28,6 +29,42 @@ class ProtonationAI {
     constructor(reaction) {
         this.reaction = reaction
     }
+
+    addProtonFromSubstrateToReagentByIndexes(substrate_atom_index, reagent_atom_index) {
+
+        const proton_index = this.reaction.ReagentAI.findProtonIndex()
+
+        proton_index.should.be.greaterThan(-1)
+
+        const reagent_atoms = _.cloneDeep(this.reaction.container_reagent[0][1])
+
+        const proton = CAtom(this.reaction.container_reagent[0][1][proton_index], proton_index, this.reaction.container_reagent)
+        const reagent_atom_index = proton.indexedBonds("").pop().atom_index
+        this.reaction.container_reagent[0][1][reagent_atom_index][4] = this.reaction.container_reagent[0][1][reagent_atom_index][4] === "+"?"":"-"
+        this.reaction.removeProtonFromReagent(proton_index)
+        this.reaction.container_reagent[0][1].length.should.not.equal(reagent_atoms.length)
+        const hydroxylOxygenIndex = this.reaction.MoleculeAI.findHydroxylOxygenIndex()
+
+        if (this.reaction.container_substrate[0][1][hydroxylOxygenIndex]===undefined) {
+            // console.log(hydroxylOxygenIndex)
+            // console.log(VMolecule(this.reaction.container_substrate).compressed())
+            // console.log(jjjg)
+        }
+
+        this.reaction.container_substrate[0][1][hydroxylOxygenIndex][0].should.be.equal("O")
+        const substrate_atoms = _.cloneDeep(this.reaction.container_substrate[0][1])
+        this.reaction.addProtonToSubstrate(this.reaction.container_substrate[0][1][hydroxylOxygenIndex], hydroxylOxygenIndex) // changes this.reaction.container_substrate
+
+        this.reaction.container_substrate[0][1].length.should.not.equal(substrate_atoms.length)
+
+        VMolecule([this.reaction.container_substrate[0], 1]).JSON().atoms[hydroxylOxygenIndex].hydrogens.length.should.be.equal(2)
+
+        this.reaction.setChargesOnSubstrate()
+        this.reaction.setMoleculeAI()
+        this.reaction.setReagentAI()
+
+    }
+
 
     removeProtonFromOxygen() {
 
