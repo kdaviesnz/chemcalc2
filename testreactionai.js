@@ -16,11 +16,9 @@ console.log("Running initial tests")
 const md = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)NC")
 VMolecule([md, 1]).canonicalSMILES(false).should.be.equal("CC(CC1=CC2=C(C=C1)OCO2)NC")
 
-const pinacolone = MoleculeFactory("CC(=O)C(C)(C)C")
-console.log(VMolecule([pinacolone,1]).compressed())
-VMolecule([pinacolone,1]).canonicalSMILES(false).should.equal("CC(=O)C(C)(C)C")
 
-process.error()
+const pinacolone = MoleculeFactory("CC(=O)C(C)(C)C")
+VMolecule([pinacolone,1]).canonicalSMILES(false).should.equal("CC(=O)C(C)(C)C")
 
 const sulphuric_acid = MoleculeFactory("OS(=O)(=O)O")
 //console.log(VMolecule([sulphuric_acid, 10]).JSON())
@@ -31,6 +29,7 @@ VMolecule([sulphuric_acid, 1]).canonicalSMILES(false).should.be.equal("OS(=O)(=O
 // C1=CC=CC=C1
 const benzene = MoleculeFactory("C1=CC=CC=C1")
 VMolecule([benzene, 1]).canonicalSMILES(false).should.be.equal("C1=CC=CC=C1") // actual C1=CC=C=C=C1
+
 
 const benzyl_alcohol = MoleculeFactory("C1=CC=C(C=C1)CO")
 VMolecule([benzyl_alcohol, 1]).canonicalSMILES(false).should.be.equal("C1=CC=C(C=C1)CO")
@@ -78,6 +77,8 @@ const me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 const me2Compare = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 VMolecule([me,1]).canonicalSMILES().should.equal("CC(CC1=CC=CC=C1)NC")
 VMolecule([me2Compare,1]).canonicalSMILES().should.equal("CC(CC1=CC=CC=C1)NC")
+
+console.log("Initial tests passed. Now synthesising ...")
 
 
 // Chemicals to synthesise

@@ -555,8 +555,8 @@ const VMolecule = (mmolecule) => {
 
             const ring_bond_ids = {}
             let ring_bond_id = 1
-            const start_of_branches_ids = []
-            const end_of_branches_ids = []
+            let start_of_branches_ids = []
+            let end_of_branches_ids = []
 
             const compressedMolecule = this.compressed()
 
@@ -667,6 +667,7 @@ const VMolecule = (mmolecule) => {
                 }
 
                 // End of bond ids
+                bond_ids.sort((a, b) => a - b)
                 if (bond_ids.length === 1 && i !==0 && i < compressedMolecule.length -1) {
                     end_of_branches_ids.push(current_atom[1])
                 }
@@ -678,10 +679,13 @@ const VMolecule = (mmolecule) => {
                     })
                     if (bond_ids_filtered.length ==1) {
                         end_of_branches_ids.push(current_atom[1])
-                        console.log(end_of_branches_ids)
                     }
                 }
 
+                // Last atom
+                end_of_branches_ids = end_of_branches_ids.filter((b_id)=>{
+                    return b_id !== last_atom[1]
+                })
 
                 // First atom
                 /*
