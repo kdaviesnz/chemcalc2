@@ -366,17 +366,26 @@ class ReactionAI {
 
 
         if (caller === command_name) {
+            if (this.debugger_on) {
+                console.log("Components/State/ReactionAI.js -> returning without processing reaction (1)")
+            }
             return
         }
 
 
         if (!r) {
+            if (this.debugger_on) {
+                console.log("Components/State/ReactionAI.js -> returning without processing reaction (2)")
+            }
             return
         } else {
 
 
             if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
                 // this.result(target, reagent, commands, command_name)
+                if (this.debugger_on) {
+                    console.log("Components/State/ReactionAI.js -> returning without processing reaction (3)")
+                }
                 return
             }
 
