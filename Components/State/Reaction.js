@@ -113,9 +113,9 @@ class Reaction {
         return chargesAI.setChargeOnSubstrateAtom(index, trace, trace_id)
     }
 
-    setChargesOnSubstrate() {
+    setChargesOnSubstrate(DEBUG) {
         const chargesAI = new ChargesAI(this)
-        return chargesAI.setChargesOnSubstrate()
+        return chargesAI.setChargesOnSubstrate(DEBUG)
     }
 
     setChargesOnReagent() {
@@ -218,7 +218,8 @@ class Reaction {
         return true
     }
 
-    reduceImineToAmineOnNitrogenMethylCarbonReverse(check_mode) {
+    reduceImineToAmineOnNitrogenMethylCarbonReverse(DEBUG) {
+
         /*
        Sodium cyanoborohydride (NaBH3CN) is a mild reducing agent that is commonly used in reductive aminations. The presence of the electron-withdrawing cyano (CN) group makes it less reactive
        than sodium borohydride (NaBH4). This reduced reactivity allows NaBH3CN to be employed at neutral or slightly acidic conditions for the selective reduction of iminium ions in the presence of ketones and aldehydes.
@@ -257,13 +258,16 @@ class Reaction {
 
         })
 
+        if (DEBUG) {
+            console.log("Components/State/Reaction.js reduceImineToAmineOnNitrogenMethylCarbonReverse() -> Got substrate nitrogen index " + n_index)
+        }
 
         if (n_index === -1) {
             return false
         }
 
-       //xs console.log('Reaction.js ' + n_index)
-        return this.__reduceImineToAmineReverse(check_mode, n_atom, c_atom, n_index, c_index)
+       //console.log('Reaction.js ' + n_index)
+        return this.__reduceImineToAmineReverse(DEBUG, n_atom, c_atom, n_index, c_index)
     }
 
     reduceImineToAmineReverse(check_mode) {
@@ -300,7 +304,11 @@ class Reaction {
 
     }
 
-    __reduceImineToAmineReverse(check_mode, n_atom, carbon, n_index, c_index) {
+    __reduceImineToAmineReverse(DEBUG, n_atom, carbon, n_index, c_index) {
+
+        if (DEBUG) {
+            console.log("Components/State/Reaction.js __reduceImineToAmineReverse() -> Got substrate nitrogen index " + n_index)
+        }
 
         if (!this.CommandLogic.check('reduceImineToAmineReverse')) {
             return false
@@ -308,14 +316,6 @@ class Reaction {
 
 
         const substrate = _.cloneDeep(this.container_substrate)
-
-       // console.log("Starting substrate:")
-       // console.log(VMolecule(substrate).formatted())
-
-        /*
-        Sodium cyanoborohydride (NaBH3CN) is a mild reducing agent that is commonly used in reductive aminations. The presence of the electron-withdrawing cyano (CN) group makes it less reactive
-        than sodium borohydride (NaBH4). This reduced reactivity allows NaBH3CN to be employed at neutral or slightly acidic conditions for the selective reduction of iminium ions in the presence of ketones and aldehydes.
-         */
 
         // Add double bond
         const h_n_hydrogen_bonds = n_atom.indexedBonds("").filter((bond)=>{
@@ -336,20 +336,13 @@ class Reaction {
         if (electrons_to_share.length === 0) {
             return false
         }
-        if (check_mode) {
-            return true
-        }
+
+
+
         // Remove the H-N bond
         // Remove the H-C bond
         const h_c_shared_electrons = h_c_hydrogen_bonds[0].shared_electrons
-        /*
-        _.remove(this.container_substrate[0][1][c_index], (electron, index)=>{
-            return electron === h_c_shared_electrons[0] || electron === h_c_shared_electrons[1]
-        })
-        */
         this.container_substrate = this.bondsAI.removeBond(this.container_substrate, c_index, h_c_shared_electrons)
-
-
 
         // Check that the C now has a free electron pair
         carbon.freeSlots().should.be.greaterThan(0)
@@ -373,19 +366,23 @@ class Reaction {
        // const hydrogen_atom_on_nitrogen = this.container_substrate[0][1][h_n_hydrogen_bonds[0].atom_index]
         //this.container_substrate = this.bondsAI.removeAtom(this.container_substrate, hydrogen_atom_on_nitrogen)
 
+        if (DEBUG) {
+            console.log("Substrate after adding double bond:")
+            console.log(VMolecule([this.container_substrate[0],1]).compressed())
+        }
+
         n_atom.doubleBondCount().should.be.greaterThan(0)
 
-        this.setChargesOnSubstrate()
+        this.setChargesOnSubstrate(DEBUG)
+
+        if (DEBUG) {
+            console.log("Substrate after adding charges:")
+            console.log(VMolecule([this.container_substrate[0],1]).compressed())
+        }
 
         this.setMoleculeAI()
 
-        // VAtom(n_atom).render()
 
-//        console.log(VMolecule(this.container_substrate).compressed())
-  //      console.log('reduceImineToAmineReverse')
-    //    console.log(bbbb)
-//        process.exit()
-        //console.log(reductimeinetoaminereverse)
 
         return true
     }

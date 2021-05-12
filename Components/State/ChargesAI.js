@@ -25,10 +25,10 @@ class ChargesAI {
         )
     }
 
-    setChargesOnSubstrate() {
+    setChargesOnSubstrate(DEBUG) {
         this.reaction.container_substrate[0][1].map(
             (atom, index) => {
-                this.setChargeOnSubstrateAtom(index, 'chargesai', uniqid())
+                this.setChargeOnSubstrateAtom(index, 'chargesai', uniqid(), DEBUG)
                 return atom
             }
         )
@@ -196,7 +196,7 @@ class ChargesAI {
 
     }
 
-    setChargeOnSubstrateAtom(index, trace, trace_id) {
+    setChargeOnSubstrateAtom(index, trace, trace_id, DEBUG) {
 
         // https://chemistry.stackexchange.com/questions/22032/how-does-a-carbocation-have-a-positive-charge
         // Formal Charge= (No.of valence electrons in unbonded state - no of lone pair electrons ) - (no. of bond pair electrons/2)
@@ -205,7 +205,7 @@ class ChargesAI {
         const electrons = _.cloneDeep(this.reaction.container_substrate[0][1][index].slice(5))
         let  b = ""
         if (this.reaction.container_substrate[0][1][index][0] === "Br") {
-             b = (7 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length)
+             b = (7 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length +  (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
 
 /*
             if (7 + b_count === electrons.length) {
@@ -222,34 +222,15 @@ class ChargesAI {
         if (this.reaction.container_substrate[0][1][index][0] === "O") {
 
             // Formal Charge= (No.of valence electrons in unbonded state - no of lone pair electrons ) - (no. of bond pair electrons/2)
-             b = (6 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length)
-
-            /*
-            if (6 + b_count === electrons.length) {
-                this.reaction.container_substrate[0][1][index][4] = ""
-            }
-            if (6 + b_count < electrons.length) {
-                this.reaction.container_substrate[0][1][index][4] = "-"
-            }
-            if (6 + b_count > electrons.length) {
-                this.reaction.container_substrate[0][1][index][4] = "+"
-            }
-            */
+             b = (6 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length +  (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
         }
         if (this.reaction.container_substrate[0][1][index][0] === "N") {
-             b = (5 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length)
-
-           /*
-            if (5 + b_count === electrons.length) {
-                this.reaction.container_substrate[0][1][index][4] = ""
+            if (DEBUG) {
+                console.log("ChargesAI.js setChargeOnSubstrateAtom -> Free electrons:")
+                console.log(a_obj.freeElectrons().length)
+                console.log("ChargesAI.js setChargeOnSubstrateAtom -> No of double bonds:" + a_obj.indexedDoubleBonds("").length)
             }
-            if (5 + b_count < electrons.length) {
-                this.reaction.container_substrate[0][1][index][4] = "-"
-            }
-            if (5 + b_count > electrons.length) {
-                this.reaction.container_substrate[0][1][index][4] = "+"
-            }
-            */
+             b = (5 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
         }
         if (this.reaction.container_substrate[0][1][index][0] === "C") {
             //console.log("ChargesAI.js setChargeOnSubstrateAtom()")
@@ -259,35 +240,14 @@ class ChargesAI {
             // https://chemistry.stackexchange.com/questions/22032/how-does-a-carbocation-have-a-positive-charge
             // Formal Charge= (No.of valence electrons in unbonded state - no of lone pair electrons ) - (no. of bond pair electrons/2)
             // In this case the charge comes out to be (4-0) - (6/2) =+1
-             b = (4 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length)
+             b = (4 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
 
-            /*
-            if (4 + b_count === electrons.length) {
-                this.reaction.container_substrate[0][1][index][4] = ""
-            }
-            // 4 bonds, 9 electrons = negative charge
-            if (4 + b_count < electrons.length) {
-                this.reaction.container_substrate[0][1][index][4] = "-"
-            }
-            // 5 bonds, 8 electrons = positive charge
-            if (4 + b_count > electrons.length) {
-                this.reaction.container_substrate[0][1][index][4] = "+"
-            }
-            */
         }
 
 
         // this.reaction.container_substrate[0][1][index][4] is the charge
         this.reaction.container_substrate[0][1][index][4] = b  > 0? "+": (b < 0?"-":"")
 
-        /*
-        if (trace === "chargesai" || trace === "addprotontosubstrate") {
-           // console.log("(trace) " + trace + " ChargesAI setting charge: " + this.reaction.container_substrate[0][1][index][0] + " index:" + index + " b:" + b + " free electrons:" + a_obj.freeElectrons().length + " bonds:" + (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length))
-        }
-        */
-
-        // this.reaction.setMoleculeAI(null, null, null, trace, trace_id)
-        // this.checkCharge(this.reaction.container_substrate, this.reaction.container_substrate[0][1][index], index)
 
 
     }
@@ -301,17 +261,17 @@ class ChargesAI {
         const electrons = _.cloneDeep(this.reaction.container_reagent[0][1][index].slice(5))
         let b = ""
         if (this.reaction.container_reagent[0][1][index][0] === "Br") {
-             b = (7 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length)
+             b = (7 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
 
         }
 
         if (this.reaction.container_reagent[0][1][index][0] === "O") {
-             b = (6 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length)
+             b = (6 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
 
         }
 
         if (this.reaction.container_reagent[0][1][index][0] === "N") {
-             b = (5 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length)
+             b = (5 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
 
         }
 
@@ -319,7 +279,7 @@ class ChargesAI {
             // https://chemistry.stackexchange.com/questions/22032/how-does-a-carbocation-have-a-positive-charge
             // Formal Charge= (No.of valence electrons in unbonded state - no of lone pair electrons ) - (no. of bond pair electrons/2)
             // In this case the charge comes out to be (4-0) - (6/2) =+1
-             b = (4 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + a_obj.indexedDoubleBonds("").length + a_obj.indexedTripleBonds("").length)
+             b = (4 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
 
         }
 

@@ -17,12 +17,14 @@ findCarbocationIndexReverse
 const MoleculeAI = (container_molecule) => {
 
     container_molecule.length.should.be.equal(2) // molecule, units
-    container_molecule[0].length.should.be.equal(2) // pKa, atoms
-    container_molecule[0][0].should.be.an.Number() // pka
-    container_molecule[0][1].should.be.an.Array()
-    if (undefined !== container_molecule[0][1][0]) {
-        container_molecule[0][1][0].should.be.an.Array()
-        container_molecule[0][1][0][0].should.be.an.String()
+    if (container_molecule[0] !== "B") {
+        container_molecule[0].length.should.be.equal(2) // pKa, atoms
+        container_molecule[0][0].should.be.an.Number() // pka
+        container_molecule[0][1].should.be.an.Array()
+        if (undefined !== container_molecule[0][1][0]) {
+            container_molecule[0][1][0].should.be.an.Array()
+            container_molecule[0][1][0][0].should.be.an.String()
+        }
     }
 
     const __findHydroxylOxygenIndex = () => {

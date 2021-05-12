@@ -8,7 +8,9 @@ const VMolecule = (mmolecule) => {
 
 
     mmolecule.length.should.be.equal(2) // molecule, units
-    mmolecule[0].length.should.be.equal(2) // pKa, atoms
+    if (mmolecule[0] !=="B") {
+        mmolecule[0].length.should.be.equal(2) // pKa, atoms
+    }
 
     const MoleculeAI = require("../../../Components/Stateless/MoleculeAI")(mmolecule)
 
@@ -383,6 +385,10 @@ const VMolecule = (mmolecule) => {
 
         'compressed': () => {
 
+            if (mmolecule[0] ==="B") {
+                return mmolecule
+            }
+
             return _.cloneDeep(mmolecule[0][1]).map(
                 (atom, index) => {
                     const c = CAtom(atom, index, _.cloneDeep(mmolecule))
@@ -552,6 +558,10 @@ const VMolecule = (mmolecule) => {
             return is_branch
         },
         canonicalSMILES: function(testing) {
+
+            if (mmolecule[0] ==="B") {
+                return "B"
+            }
 
             const ring_bond_ids = {}
             let ring_bond_id = 1

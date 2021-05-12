@@ -115,6 +115,8 @@ client.connect(err => {
 
  //   console.log(VMolecule([me,0]).formatted())
 
+    // const me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
+    // const methylamine = MoleculeFactory("CN")
     r.synthesise(me, [methylamine])
 
     /*

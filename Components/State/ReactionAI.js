@@ -21,7 +21,7 @@ class ReactionAI {
 
         this.callback = null
 
-        this.debugger_on = false
+        this.debugger_on = true
 
         this.commands_filter = []
 
@@ -187,8 +187,8 @@ class ReactionAI {
 
                         MoleculeLookup(this.db, typeof reagent === "string"?reagent:VMolecule([reagent, 1]).canonicalSMILES()).then(
                             (reagent_json_obj) => {
-                                const reagent_name = undefined === reagent_json_obj.IUPACName?reagent_json_obj.search:reagent_json_obj.IUPACName
-                                this.render("Synthesising " + target_name + " using reagent: " + reagent_name)
+                                const reagent_name = undefined === reagent_json_obj.IUPACName?reagent_json_obj.search:reagent_json_obj.IUPACNam
+                                this.debugger("Components/State/ReactionAI.js: Synthesising " + target_name + " using reagent: " + reagent_name)
                                 this._synthesise([_.cloneDeep(target), 1], [_.cloneDeep(reagent), 1], _.cloneDeep(commands), 'synthesise', 0, moleculeAI, reagentAI)
                             },
                             (Err) => {
@@ -287,15 +287,6 @@ class ReactionAI {
                     console.log(command_name)
                 }
 
-                // testing
-                if (command_name === "addProtonToReagent") {
-                    // O on reagent should have an oxygen
-                    console.log(commands)
-                    reagent = commands[commands.length-1]['starting reagent']
-                    console.log(VMolecule(reagent).compressed())
-                    console.log(bbbb)
-                }
-
                 if (caller !== command_name + 'Reversal') {
 
                     /*
@@ -338,17 +329,15 @@ class ReactionAI {
     runReverseCommand(reverse_reaction, command_name, target, reagent, moleculeAI, commands, caller, depth, reagentAI) {
 
 
-        if (command_name === 'addProtonToReagent') {
-            console.log('Substrate')
-            console.log(VMolecule(target).compressed())
-           console.log('reagent')
-            console.log(reagent)
-            console.log(jjjj)
+        this.debugger("Components/State/ReactionAI.js -> command " + command_name)
+        this.debugger("Components/State/ReactionAI.js -> reaction substrate:")
+        this.debugger(VMolecule([reverse_reaction.container_substrate[0],1]).compressed())
+        this.debugger("Components/State/ReactionAI.js -> reaction reagent:")
+        if (reverse_reaction.container_reagent === null) {
+            this.debugger("NULL")
+        } else {
+            this.debugger(VMolecule([reverse_reaction.container_reagent[0],1]).compressed())
         }
-
-
-        this.debugger(caller + "  reverse reaction result")
-        this.debugger("command " + command_name)
 
 
         // Check if the command has already been called and returned true
@@ -369,29 +358,11 @@ class ReactionAI {
         let r = null
 
 
-        r = reverse_reaction[command_name + 'Reverse']()
-
-        // testing
-        if (commands.length>5 && caller==="bondNitrogenToCarboxylCarbonReversal" && command_name==="addProtonFromReagentToHydroxylGroup") {
-            console.log("Caller:" + caller)
-            console.log(commands.length)
-            console.log(command_name)
-            console.log(r)
-            console.log(hjhhhhh)
+        if (this.debugger_on) {
+            console.log("Components/State/ReactionAI.js -> running reverse reaction " + command_name + 'Reverse')
         }
 
-
-        this.debugger(r)
-
-        /*
-        if (command_name === "reduceImineToAmine") {
-            console.log(r)
-            console.log(VMolecule(reverse_reaction.container_substrate).compressed())
-            console.log(VMolecule(reverse_reaction.container_substrate).canonicalSMILES())
-            console.log(reduceiminetoaminereevesre)
-        }
-        */
-
+        r = reverse_reaction[command_name + 'Reverse'](this.debugger_on)
 
 
         if (caller === command_name) {
@@ -404,8 +375,6 @@ class ReactionAI {
         } else {
 
 
-
-
             if (this._substrate_already_synthesised(_.cloneDeep(reverse_reaction.container_substrate), _.cloneDeep(commands))) {
                 // this.result(target, reagent, commands, command_name)
                 return
@@ -415,9 +384,15 @@ class ReactionAI {
             const reverse_reaction_substrate = _.cloneDeep(reverse_reaction.container_substrate)
             const reverse_reaction_reagent = _.cloneDeep(reverse_reaction.container_reagent)
 
-            //console.log(VMolecule(reverse_reaction_substrate).compressed())
-            //console.log(aaaa)
-            //process.exit()
+
+            this.debugger("Components/State/ReactionAI.js ->  reverse reaction result, substrate:")
+            this.debugger(VMolecule([reverse_reaction_substrate[0],1]).compressed())
+            this.debugger("Components/State/ReactionAI.js -> reverse reaction result, reagent:")
+            if (reverse_reaction_reagent === null) {
+                this.debugger("NULL")
+            } else {
+                this.debugger(VMolecule([reverse_reaction_reagent[0],1]).compressed())
+            }
 
             const reverse_reaction_substrateAI = require("../Stateless/MoleculeAI")(_.cloneDeep(_.cloneDeep(reverse_reaction.container_substrate)))
             const reverse_reaction_reagentAI = reverse_reaction.container_reagent === null || typeof reverse_reaction.container_reagent[0] === "string"?null:require("../Stateless/MoleculeAI")(_.cloneDeep(_.cloneDeep(reverse_reaction.container_reagent)))
@@ -429,7 +404,6 @@ class ReactionAI {
             if (reverse_reaction_reagentAI !== null) {
                 reverse_reaction_reagentAI.validateMolecule()
             }
-
 
             commands.push({
                 'name':command_name,
