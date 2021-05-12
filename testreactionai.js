@@ -18,7 +18,7 @@ VMolecule([md, 1]).canonicalSMILES(false).should.be.equal("CC(CC1=CC2=C(C=C1)OCO
 
 const pinacolone = MoleculeFactory("CC(=O)C(C)(C)C")
 console.log(VMolecule([pinacolone,1]).compressed())
-VMolecule([pinacolone,1]).canonicalSMILES(true).should.equal("CC(=O)C(C)(C)C")
+VMolecule([pinacolone,1]).canonicalSMILES(false).should.equal("CC(=O)C(C)(C)C")
 
 process.error()
 

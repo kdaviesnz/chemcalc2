@@ -629,10 +629,6 @@ const VMolecule = (mmolecule) => {
                 const bond_ids = __getBondIds(current_atom[4]).concat(__getBondIds(current_atom[5])).concat(__getBondIds(current_atom[6]))
 
 
-                if (current_atom[1]===4) {
-                    //console.log(bond_ids)
-                    //process.error()
-                }
                 const min_number_of_bonds = ring_bond_ids[current_atom[1]+""] === undefined?1:1
 
                 // Remove ring bond ids
@@ -640,14 +636,16 @@ const VMolecule = (mmolecule) => {
                     return ring_bond_ids[bond_id+""] === undefined
                 })
 
+
+
                 // Remove bond ids < current atom bond id and if last atom in the molecule
                 const bond_ids_final = bond_ids_no_ring_bond_ids.filter((bond_id)=>{
-                    return bond_id > current_atom[1] && last_atom[1] !== bond_id
+                    return bond_id > current_atom[1]
                 })
+
 
                 // Sort and pop last bond_id as this is the last branch attached to the current atom
                 bond_ids_final.sort((a, b) => a - b).pop()
-
 
                 if (bond_ids_final.length > (min_number_of_bonds - 1)) { // we've removed the last bond_id
                     bond_ids_final.map((bond_id, k) => {
@@ -657,10 +655,10 @@ const VMolecule = (mmolecule) => {
                     })
                 }
 
-                if (current_atom[1] === 5) {
+                if (testing && current_atom[1] === 6) {
                     console.log(bond_ids_final)
-                    //process.error()
                 }
+
 
 
                 if (testing) {
