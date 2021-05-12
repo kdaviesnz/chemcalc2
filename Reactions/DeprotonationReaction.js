@@ -24,13 +24,13 @@ const DeprotonationReaction =
 // target molecule is the molecule the arrow points to and is the molecule that donates the proton. It is the Brønsted-Lowry acid.
 // source molecule is the molecule the arrow points from and is the molecule that accepts the proton. It is the Brønsted-Lowry base.
 
-            const target _molecule_controller = MoleculeController(target_molecule)
+            const target_molecule_controller = MoleculeController(target_molecule)
 
 // Get the hydrogen atom
 // This will be the hydrogen atom in the target molecule that is bonded to a atom with too many bonds.
 // @todo this should get the hydrogen bonded to an atom with too many bonds and should return the modified target atom
 // reaction object
-            const proton = target _molecule_controller.proton()
+            const proton = target_molecule_controller.proton()
             const target_molecule_minus_proton = proton[0]
             const hydrogen_atom = proton[1]
 

@@ -308,12 +308,19 @@ class ReactionAI {
                         reagent = "Brønsted–Lowry acid"
                     }
                     if (command_name === 'addProtonToReagent') {
-                        substrate = reagent
+                        //substrate = reagent
                         reagent = "Brønsted–Lowry acid"
                     }
 
                     if (command_name==='breakCarbonOxygenDoubleBond') {
                         reagent = null
+                    }
+
+                    if (this.debugger_on) {
+                        console.log("Components/State/ReactionAI -> _synthesise() substrate")
+                        console.log(substrate)
+                        console.log("Components/State/ReactionAI -> _synthesise() reagent")
+                        console.log(reagent)
                     }
                     this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), command_name, _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth, reagentAI)
                 }
