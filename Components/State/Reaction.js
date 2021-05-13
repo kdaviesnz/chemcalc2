@@ -77,14 +77,22 @@ class Reaction {
         // Remove proton from C2. C2 should now have a negative charge.
         // Create double bond between C2 and C1. C1 should now have neutral charge.
         // Remove double bond between C1 and O1 and replace with single bond. O1 should now have a negative charge.
+
+
         this.setMoleculeAI()
 
         const c1_carbon_index = this.MoleculeAI.findIndexOfCarbonAtomDoubledBondedToNonCarbonBySymbol("O")
+
+        console.log("reaction.createEnolate() -> c1_carbon_index = " + c1_carbon_index)
+
         if (c1_carbon_index === -1) {
             return false
         }
 
         const o1_oxygen_index = this.MoleculeAI.findIndexOfOxygenAtomDoubleBondedToCarbonByCarbonIndex(c1_carbon_index)
+
+        console.log("reaction.createEnolate() -> o1_oxygen_index = " + o1_oxygen_index)
+
         if (o1_oxygen_index === -1) {
             return false
         }
@@ -94,14 +102,38 @@ class Reaction {
             return false
         }
 
-        const protonationAI = new ProtonationAI(this.reaction)
+        console.log("reaction.createEnolate() -> c2_carbon_index = " + c2_carbon_index)
+
+        const protonationAI = new ProtonationAI(this)
         protonationAI.addProtonFromSubstrateToReagentBySubstrateAtomIndex(c2_carbon_index)
 
-        this.setChargesOnSubstrate()
-        this.setChargesOnReagent()
+        console.log("reaction.createEnolate() -> Substrate after deprotonating carboxyl atom")
+        console.log(VMolecule(this.container_substrate).compressed())
+
+        this.setMoleculeAI()
 
         const bondsAI = new BondsAI(this)
-        bondsAI.makeCarbonCarbonDoubleBond(c1_carbon_index, c2_carbon_index)
+
+        const c2_carbon_index_after_removing_proton = this.MoleculeAI.findIndexOfCarbonAtomBondedToCarbonByCarbonIndex(c1_carbon_index)
+
+        if (c2_carbon_index_after_removing_proton === -1) {
+            console.log("carbon 2 index is negative 2")
+            process.error()
+            return false
+        }
+
+        const c1_carbon_index_after_removing_proton = this.MoleculeAI.findIndexOfCarbonAtomDoubledBondedToNonCarbonBySymbol("O")
+        if (c1_carbon_index_after_removing_proton === -1) {
+            console.log("carbon `1 index is negative 2")
+            process.error()
+            return false
+        }
+        bondsAI.makeCarbonCarbonDoubleBond(c1_carbon_index_after_removing_proton, c2_carbon_index_after_removing_proton)
+
+        console.log("reaction.createEnolate() -> Substrate after making carbon carbon double bond")
+        console.log(VMolecule(this.container_substrate).compressed())
+        process.error()
+
 
         this.breakCarbonOxygenDoubleBond()
 

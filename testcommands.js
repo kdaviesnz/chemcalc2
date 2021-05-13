@@ -9,10 +9,19 @@ const CAtom = require('./Controllers/Atom')
 
 const CommandTest = require('./Components/Stateless/CommandTest')
 
-
 const sulphuric_acid = MoleculeFactory("OS(=O)(=O)O")
 VMolecule([sulphuric_acid,1]).canonicalSMILES().should.be.oneOf(["OS(O)(=O)=O", "OS(=O)(=O)O"])
 const sulphuric_acid_ai = require("./Components/Stateless/MoleculeAI")([sulphuric_acid,1])
+
+const mol = MoleculeFactory("CC=O")
+const base = MoleculeFactory("[O-]")
+console.log(VMolecule([mol,1]).compressed())
+const mol_ai = require("./Components/Stateless/MoleculeAI")([mol,1])
+const create_enolate_products = CommandTest("CREATEENOLATE", _.cloneDeep([mol,1]), _.cloneDeep([base, 1]))
+process.error()
+
+
+
 
 const methanol = MoleculeFactory("CO")
 VMolecule([methanol,1]).canonicalSMILES().should.be.equal("CO")

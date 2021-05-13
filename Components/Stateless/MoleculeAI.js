@@ -3,6 +3,7 @@ const _ = require('lodash');
 const VMolecule = require('../../Components/Stateless/Views/Molecule')
 const Set = require('../../Models/Set')
 const ChargesAI = require('../../Components/State/ChargesAI')
+const ProtonationAI = require('../../Components/State/ProtonationAI')
 /*
    findCarbonylCarbonIndexOnDoubleBond()
    isStrongAcid()
@@ -75,19 +76,19 @@ const MoleculeAI = (container_molecule) => {
     }
 
     const __findIndexOfOxygenAtomDoubleBondedToCarbonByCarbonIndex = (carbon_index) => {
-        const carbon_atom_object = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, container_molecule)
+        const carbon_atom_object = CAtom(container_molecule[0][1][carbon_index], carbon_index, container_molecule)
         const oxygen_carbon_double_bonds = carbon_atom_object.indexedDoubleBonds("").filter((bond)=>{
-            return bond.atom.atomic_symbol === "O"
+            return bond.atom[0] === "O"
         })
-        return oxygen_carbon_double_bonds.length === 0?-1:oxygen_carbon_double_bonds[0].atomIndex
+        return oxygen_carbon_double_bonds.length === 0?-1:oxygen_carbon_double_bonds[0].atom_index
     }
 
     const __findIndexOfCarbonAtomBondedToCarbonByCarbonIndex = (carbon_index) => {
-        const carbon_atom_object = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, container_molecule)
+        const carbon_atom_object = CAtom(container_molecule[0][1][carbon_index], carbon_index, container_molecule)
         const carbon_bonds = carbon_atom_object.indexedBonds("").filter((bond)=>{
-            return bond.atom.atomic_symbol === "C"
+            return bond.atom[0] === "C"
         })
-        return carbon_bonds.length === 0?-1:carbon_bonds[0].atomIndex
+        return carbon_bonds.length === 0?-1:carbon_bonds[0].atom_index
     }
 
     const __findCarbonylCarbonIndexOnDoubleBond = () => {
@@ -1524,7 +1525,7 @@ VMolecule
         },
 
         "findIndexOfCarbonAtomBondedToCarbonByCarbonIndex": (carbon_index) =>{
-            return __indIndexOfCarbonAtomBondedToCarbonByCarbonIndex(carbon_index)
+            return __findIndexOfCarbonAtomBondedToCarbonByCarbonIndex(carbon_index)
         },
 
         findIndexOfCarbonAtomAttachedToHydroxylGroup: () => {

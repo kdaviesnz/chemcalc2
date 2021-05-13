@@ -171,6 +171,8 @@ class BondsAI {
 
     makeCarbonCarbonDoubleBond(c1_carbon_index, c2_carbon_index) {
 
+        console.log("makeCarbonCarbonDoubleBond()")
+        process.error()
         // @see makeOxygenCarbonDoubleBond
         // c2_carbon_index === oxygen index
         // c1_carbon_index === carbon index
@@ -179,16 +181,24 @@ class BondsAI {
 //            return false
         }
 
-        // c2CarbonAtom === oxygen atom
         const c2CarbonAtom = CAtom(this.reaction.container_substrate[0][1][c2_carbon_index], c2_carbon_index, this.reaction.container_substrate)
+        console.log(c2CarbonAtom)
+        process.error()
         const c1CarbonAtom = CAtom(this.reaction.container_substrate[0][1][c1_carbon_index], c1_carbon_index, this.reaction.container_substrate)
         // c1CarbonAtom == c_atom
-        const double_bond = c1CarbonAtom.indexedDoubleBonds("").filter((bond)=>{
-            return bond.atomIndex = c2_carbon_index
+        console.log(c2_carbon_index)
+        console.log(c2CarbonAtom.indexedBonds(""))
+        const single_carbon_carbon_bond = c1CarbonAtom.indexedBonds("").filter((bond)=>{
+            console.log(bond.atom_index)
+            process.error()
+            return bond.atom_index = c2_carbon_index
         }).pop()
 
-        if (double_bond !== undefined) {
-            this.reaction.__changeDoubleBondToSingleBond(c2_carbon_index, c1_carbon_index)
+        console.log(single_carbon_carbon_bond)
+        process.error()
+
+        if (single_carbon_carbon_bond !== undefined) {
+            this.reaction.double(c2_carbon_index, c1_carbon_index)
         }
 
         // Proton if applicable
