@@ -45,7 +45,10 @@ const ChargesAI = require('../../Components/State/ChargesAI')
    findOxygenElectrophileIndex()
    findIndexOfAtomToDeprotonate(filterBy, mustBe)
    findElectrophileIndex(filterBy, mustBe)
-   findProtonIndexOnAtom()
+
+   findProtonIndexOnAtom() - find the index of a proton on specific atom.
+
+
    findIndexOfCarbonAtomAttachedToHydroxylGroup()
    findProtonIndex()
    findNonHydroxylOxygenIndex()
@@ -1511,11 +1514,8 @@ VMolecule
 
 
         "findProtonIndexOnAtom": (atom) => {
-            const protons =  atom.indexedBonds("").filter((bond)=>{
-                return bond.atom[0] === "H"
-            })
-
-            return protons.length > 0 ? protons.pop().atom_index: -1
+            const protonationAI = new ProtonationAI(this.reaction)
+            return protonationAI.findProtonIndexOnAtom(atom)
         },
 
 

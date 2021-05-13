@@ -25,6 +25,7 @@ const uniqid = require('uniqid');
 // breakCarbonOxygenDoubleBondReverse()
 // bondSubstrateToReagentReverse()
 // removeHalideReverse()
+// makeCarbonCarbonDoubleBond(c1_carbon_index, c2_carbon_index)
 
 class BondsAI {
 
@@ -168,6 +169,72 @@ class BondsAI {
 
     }
 
+    makeCarbonCarbonDoubleBond(c1_carbon_index, c2_carbon_index) {
+
+        // @see makeOxygenCarbonDoubleBond
+        // c2_carbon_index === oxygen index
+        // c1_carbon_index === carbon index
+        // Should have negative charge - added
+        if (this.reaction.container_substrate[0][1][c2_carbon_index] !== "-") {
+//            return false
+        }
+
+        // c2CarbonAtom === oxygen atom
+        const c2CarbonAtom = CAtom(this.reaction.container_substrate[0][1][c2_carbon_index], c2_carbon_index, this.reaction.container_substrate)
+        const c1CarbonAtom = CAtom(this.reaction.container_substrate[0][1][c1_carbon_index], c1_carbon_index, this.reaction.container_substrate)
+        // c1CarbonAtom == c_atom
+        const double_bond = c1CarbonAtom.indexedDoubleBonds("").filter((bond)=>{
+            return bond.atomIndex = c2_carbon_index
+        }).pop()
+
+        if (double_bond !== undefined) {
+            this.reaction.__changeDoubleBondToSingleBond(c2_carbon_index, c1_carbon_index)
+        }
+
+        // Proton if applicable
+        const proton_c2Carbon_bond = c2CarbonAtom.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "H"
+        }).pop()
+
+        if (proton_c2Carbon_bond !== undefined) {
+            const proton_shared_electrons = proton_c2Carbon_bond.shared_electrons
+            const proton_index = proton_c2Carbon_bond.atom_index
+            // Remove electrons from proton
+            _.remove(this.reaction.container_substrate[0][1][proton_index], (e) => {
+                return e === proton_shared_electrons[0] || e === proton_shared_electrons[1]
+            })
+            // Add electrons to carbon
+            this.reaction.container_substrate[0][1][c1_carbon_index].push(proton_shared_electrons[0])
+            this.reaction.container_substrate[0][1][c1_carbon_index].push(proton_shared_electrons[1])
+        } else {
+            const freeElectrons = c2CarbonAtom.freeElectrons()
+            // Add electrons to carbon
+            this.reaction.container_substrate[0][1][c1_carbon_index].push(freeElectrons[0])
+            this.reaction.container_substrate[0][1][c1_carbon_index].push(freeElectrons[1])
+        }
+
+        // Charges
+        this.reaction.container_substrate[0][1][carbon_index][4] = this.reaction.container_substrate[0][1][c1_carbon_index][4] === "+" ? "": "-"
+        this.reaction.container_substrate[0][1][oxygen_index][4] = this.reaction.container_substrate[0][1][c2_carbon_index][4] === "-"?"":"+"
+
+        if (c2_carbon_index.hydrogens().length ===0) {
+            this.reaction.container_substrate[0][1][c2_carbon_index][4] = ""
+        }
+
+        this.reaction.setMoleculeAI()
+
+        if (this.reaction.MoleculeAI.validateMolecule() === false) {
+            console.log('BondsAI.js molecule is not valid (makeOxygenCarbonDoubleBond())')
+            console.log('Method: makeOxygenCarbonDoubleBond()')
+            console.log(VMolecule(this.reaction.container_substrate).compressed())
+            console.log(i)
+        }
+
+        return true
+
+    }
+
+
     makeOxygenCarbonDoubleBond() {
 
         // This should NOT remove H from the oxygen
@@ -243,12 +310,6 @@ class BondsAI {
         }
 
         this.reaction.setMoleculeAI()
-
-        // console.log("BondsAI makeOxygenCarbonDoubleBond() oxygen_index:" + oxygen_index)
-        // console.log(carbon_bonds.length)
-        // console.log(qju)
-
-
 
         if (this.reaction.MoleculeAI.validateMolecule() === false) {
             console.log('BondsAI.js molecule is not valid (makeOxygenCarbonDoubleBond())')
