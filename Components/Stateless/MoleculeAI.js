@@ -83,7 +83,12 @@ const MoleculeAI = (container_molecule) => {
         return oxygen_carbon_double_bonds.length === 0?-1:oxygen_carbon_double_bonds[0].atom_index
     }
 
-    const __findIndexOfCarbonAtomBondedToCarbonByCarbonIndex = (carbon_index) => {
+    const __findIndexOfCarbonAtomBondedToCarbonByCarbonIndex = (carbon_index, DEBUG) => {
+        if (DEBUG) {
+            console.log(VMolecule([container_molecule[0],1]).compressed())
+            console.log("Carbon index:" + carbon_index)
+        }
+
         const carbon_atom_object = CAtom(container_molecule[0][1][carbon_index], carbon_index, container_molecule)
         const carbon_bonds = carbon_atom_object.indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "C"
@@ -1524,8 +1529,8 @@ VMolecule
             return __findIndexOfOxygenAtomDoubleBondedToCarbonByCarbonIndex(carbon_index)
         },
 
-        "findIndexOfCarbonAtomBondedToCarbonByCarbonIndex": (carbon_index) =>{
-            return __findIndexOfCarbonAtomBondedToCarbonByCarbonIndex(carbon_index)
+        "findIndexOfCarbonAtomBondedToCarbonByCarbonIndex": (carbon_index, DEBUG) =>{
+            return __findIndexOfCarbonAtomBondedToCarbonByCarbonIndex(carbon_index, DEBUG)
         },
 
         findIndexOfCarbonAtomAttachedToHydroxylGroup: () => {

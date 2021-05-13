@@ -114,20 +114,27 @@ class Reaction {
 
         const bondsAI = new BondsAI(this)
 
-        const c2_carbon_index_after_removing_proton = this.MoleculeAI.findIndexOfCarbonAtomBondedToCarbonByCarbonIndex(c1_carbon_index)
 
+        const c1_carbon_index_after_removing_proton = this.MoleculeAI.findIndexOfCarbonAtomDoubledBondedToNonCarbonBySymbol("O")
+        if (c1_carbon_index_after_removing_proton === -1) {
+            console.log("carbon 1 index is negative 2")
+            process.error()
+            return false
+        }
+
+        const c2_carbon_index_after_removing_proton = this.MoleculeAI.findIndexOfCarbonAtomBondedToCarbonByCarbonIndex(c1_carbon_index_after_removing_proton, false)
         if (c2_carbon_index_after_removing_proton === -1) {
             console.log("carbon 2 index is negative 2")
             process.error()
             return false
         }
 
-        const c1_carbon_index_after_removing_proton = this.MoleculeAI.findIndexOfCarbonAtomDoubledBondedToNonCarbonBySymbol("O")
-        if (c1_carbon_index_after_removing_proton === -1) {
-            console.log("carbon `1 index is negative 2")
-            process.error()
-            return false
-        }
+        console.log("reaction.createEnolate() -> Substrate after breaking carbon oxygen double bond")
+        this.breakCarbonOxygenDoubleBond(true)
+        this.setMoleculeAI()
+        this.setChargesOnSubstrate()
+        console.log(VMolecule(this.container_substrate).compressed())
+
         bondsAI.makeCarbonCarbonDoubleBond(c1_carbon_index_after_removing_proton, c2_carbon_index_after_removing_proton)
 
         console.log("reaction.createEnolate() -> Substrate after making carbon carbon double bond")
@@ -135,7 +142,7 @@ class Reaction {
         process.error()
 
 
-        this.breakCarbonOxygenDoubleBond()
+
 
         this.setChargesOnSubstrate()
         this.setChargesOnReagent()
@@ -178,7 +185,6 @@ class Reaction {
 
         this.MoleculeAI = require("../Stateless/MoleculeAI")(this.container_substrate)
 
-        this.MoleculeAI.validateMolecule(trace, trace_id)
     }
 
     bondNitrogenToCarboxylCarbonReverse() {
@@ -2086,9 +2092,9 @@ class Reaction {
 
     }
 
-    breakCarbonOxygenDoubleBond() {
+    breakCarbonOxygenDoubleBond(DEBUG) {
         const bondsAI = new BondsAI(this)
-        return bondsAI.breakCarbonOxygenDoubleBond()
+        return bondsAI.breakCarbonOxygenDoubleBond(DEBUG)
     }
 
     breakCarbonDoubleBond() {

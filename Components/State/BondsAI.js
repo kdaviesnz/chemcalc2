@@ -171,8 +171,6 @@ class BondsAI {
 
     makeCarbonCarbonDoubleBond(c1_carbon_index, c2_carbon_index) {
 
-        console.log("makeCarbonCarbonDoubleBond()")
-        process.error()
         // @see makeOxygenCarbonDoubleBond
         // c2_carbon_index === oxygen index
         // c1_carbon_index === carbon index
@@ -182,24 +180,19 @@ class BondsAI {
         }
 
         const c2CarbonAtom = CAtom(this.reaction.container_substrate[0][1][c2_carbon_index], c2_carbon_index, this.reaction.container_substrate)
-        console.log(c2CarbonAtom)
-        process.error()
+        //console.log(c2CarbonAtom)
         const c1CarbonAtom = CAtom(this.reaction.container_substrate[0][1][c1_carbon_index], c1_carbon_index, this.reaction.container_substrate)
-        // c1CarbonAtom == c_atom
-        console.log(c2_carbon_index)
-        console.log(c2CarbonAtom.indexedBonds(""))
+        //console.log(c1CarbonAtom)
         const single_carbon_carbon_bond = c1CarbonAtom.indexedBonds("").filter((bond)=>{
-            console.log(bond.atom_index)
-            process.error()
-            return bond.atom_index = c2_carbon_index
+            return bond.atom_index === c2_carbon_index
         }).pop()
 
-        console.log(single_carbon_carbon_bond)
-        process.error()
 
         if (single_carbon_carbon_bond !== undefined) {
             this.reaction.double(c2_carbon_index, c1_carbon_index)
         }
+
+        process.error()
 
         // Proton if applicable
         const proton_c2Carbon_bond = c2CarbonAtom.indexedBonds("").filter((bond)=>{
@@ -415,7 +408,7 @@ class BondsAI {
 
     }
 
-    breakCarbonOxygenDoubleBond() {
+    breakCarbonOxygenDoubleBond(DEBUG) {
 
         const oxygen_index = this.reaction.MoleculeAI.findOxygenOnDoubleBondIndex()
         //   // console.log('breakCarbonOxygenDoubleBond')
@@ -423,6 +416,8 @@ class BondsAI {
         if (oxygen_index === -1) {
             return false
         }
+
+
         const oxygen_atom = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
         const double_bonds = oxygen_atom.indexedDoubleBonds("")
 
@@ -434,12 +429,8 @@ class BondsAI {
             return v === shared_electrons[0] || v === shared_electrons[1]
         })
 
-        this.reaction.setChargeOnSubstrateAtom(double_bonds[0].atom_index)
-        this.reaction.setChargeOnSubstrateAtom(oxygen_index)
-
-
-        this.reaction.setMoleculeAI()
-        // carbon atom
+        // Check that there no double bonds
+        oxygen_atom.indexedDoubleBonds("").length.should.be.equal(0)
 
         this.reaction.setMoleculeAI()
 
@@ -458,6 +449,8 @@ class BondsAI {
                 return bond.atom[0] !== 'H' && bond.atom[0] !== 'O' && bond.atom[4] === '-'
             })
 
+
+/*
             if (carbon_atom_negative_bonds.length > 0) {
                 // Add and readd electrons
                 this.reaction.container_substrate[0][1][carbon_atom_negative_bonds[0].atom_index].push(shared_electrons[0])
@@ -476,17 +469,12 @@ class BondsAI {
                 //  this.reaction.container_substrate[0][1][oxygen_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][oxygen_index], shared_electrons)
                 this.reaction.setChargeOnSubstrateAtom(oxygen_index)
             }
+*/
 
         }
 
         this.reaction.setMoleculeAI()
 
-        if (this.reaction.MoleculeAI.validateMolecule() === false) {
-            console.log('BondsAI.js molecule is not valid (breakCarbonOxygenDoubleBond())')
-            console.log('Method: breakCarbonOxygenDoubleBond()')
-            console.log(VMolecule(this.reaction.container_substrate).compressed())
-            console.log(i)
-        }
 
         return true
 
