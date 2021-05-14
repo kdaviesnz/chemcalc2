@@ -15,10 +15,6 @@ const ChargesAI = require('../../Components/State/ChargesAI')
 const SubstitutionAI = require('../../Components/State/SubstitutionAI')
 const range = require("range");
 
-/*
-createEnolate()
-
- */
 
 class Reaction {
 
@@ -83,7 +79,6 @@ class Reaction {
 
         const c1_carbon_index = this.MoleculeAI.findIndexOfCarbonAtomDoubledBondedToNonCarbonBySymbol("O")
 
-        console.log("reaction.createEnolate() -> c1_carbon_index = " + c1_carbon_index)
 
         if (c1_carbon_index === -1) {
             return false
@@ -91,7 +86,6 @@ class Reaction {
 
         const o1_oxygen_index = this.MoleculeAI.findIndexOfOxygenAtomDoubleBondedToCarbonByCarbonIndex(c1_carbon_index)
 
-        console.log("reaction.createEnolate() -> o1_oxygen_index = " + o1_oxygen_index)
 
         if (o1_oxygen_index === -1) {
             return false
@@ -102,13 +96,10 @@ class Reaction {
             return false
         }
 
-        console.log("reaction.createEnolate() -> c2_carbon_index = " + c2_carbon_index)
 
         const protonationAI = new ProtonationAI(this)
         protonationAI.addProtonFromSubstrateToReagentBySubstrateAtomIndex(c2_carbon_index)
 
-        console.log("reaction.createEnolate() -> Substrate after deprotonating carboxyl atom")
-        console.log(VMolecule(this.container_substrate).compressed())
 
         this.setMoleculeAI()
 
@@ -129,28 +120,22 @@ class Reaction {
             return false
         }
 
-        console.log("reaction.createEnolate() -> Substrate after breaking carbon oxygen double bond")
         this.breakCarbonOxygenDoubleBond(true)
         this.setMoleculeAI()
         this.setChargesOnSubstrate()
-        console.log(VMolecule(this.container_substrate).compressed())
 
-        bondsAI.makeCarbonCarbonDoubleBond(c1_carbon_index_after_removing_proton, c2_carbon_index_after_removing_proton)
+        bondsAI.makeCarbonCarbonDoubleBondByAtomIndex(c2_carbon_index_after_removing_proton, c1_carbon_index_after_removing_proton, true)
 
         console.log("reaction.createEnolate() -> Substrate after making carbon carbon double bond")
         console.log(VMolecule(this.container_substrate).compressed())
-        process.error()
-
-
-
 
         this.setChargesOnSubstrate()
         this.setChargesOnReagent()
-
         this.setMoleculeAI()
         this.setReagentAI()
 
     }
+
 
     setReagentAI() {
         if (this.container_reagent !== null && this.container_reagent !== undefined && typeof this.container_reagent[0] !== "string") {
@@ -174,6 +159,8 @@ class Reaction {
         }
     }
 
+
+
     setMoleculeAI(command_names, command_index, electrophile_index, trace, trace_id) {
 
         this.container_substrate.length.should.be.equal(2) // molecule, units
@@ -196,6 +183,7 @@ class Reaction {
         const bondsAI = new BondsAI(this)
         return bondsAI.makeCarbonNitrogenDoubleBondReverse()
     }
+
 
     oxygenCarbonDoubleBondReverse() {
         const bondsAI = new BondsAI(this)
@@ -227,6 +215,7 @@ class Reaction {
         return substitutionAI.substituteHalideForAmineReverse(index)
     }
 
+
     substituteOxygenCarbonDoubleBondForAmineReverse() {
         const substitutionAI = new SubstitutionAI(this)
         return substitutionAI.substituteOxygenCarbonDoubleBondForAmineReverse()
@@ -236,6 +225,7 @@ class Reaction {
         const substitutionAI = new SubstitutionAI(this)
         return substitutionAI.substituteOxygenCarbonDoubleBondForAmine()
     }
+
 
     substituteHalideForAmine(index) {
         const substitutionAI = new SubstitutionAI(this)
@@ -272,6 +262,8 @@ class Reaction {
         const bondsAI = new BondsAI(this)
         return bondsAI.makeOxygenCarbonDoubleBond()
     }
+
+
 
     makeNitrogenCarbonDoubleBond() {
         const bondsAI = new BondsAI(this)
@@ -311,6 +303,8 @@ class Reaction {
         //console.log(fgggg)
         return true
     }
+
+
 
     reduceImineToAmineOnNitrogenMethylCarbonReverse(DEBUG) {
 
@@ -364,6 +358,7 @@ class Reaction {
         return this.__reduceImineToAmineReverse(DEBUG, n_atom, c_atom, n_index, c_index)
     }
 
+
     reduceImineToAmineReverse(check_mode) {
 
 
@@ -397,6 +392,8 @@ class Reaction {
         return this.__reduceImineToAmineReverse(check_mode, n_atom, carbon, n_index, c_n_carbon_bonds[0].atom_index)
 
     }
+
+
 
     __reduceImineToAmineReverse(DEBUG, n_atom, carbon, n_index, c_index) {
 
@@ -481,6 +478,32 @@ class Reaction {
         return true
     }
 
+    /*
+createEnolate()
+setReagentAI() {
+setMoleculeAI(command_names, command_index, electrophile_index, trace, trace_id) {
+bondNitrogenToCarboxylCarbonReverse() {
+makeCarbonNitrogenDoubleBondReverse() {
+oxygenCarbonDoubleBondReverse() {
+ setChargeOnSubstrateAtom(index, trace, trace_id) {
+     setChargesOnReagent() {
+         setChargeOnReagentAtom(index) {
+             substituteHalideForAmineReverse(index) {
+                 substituteOxygenCarbonDoubleBondForAmineReverse() {
+                 substituteHalideForAmine(index) {
+                     breakCarbonOxygenDoubleBondReverse() {
+                         __changeDoubleBondToSingleBond(nucleophile_index, electrophile_index) {
+                             makeNitrogenCarbonTripleBond() {
+
+oxygenCarbonDoubleBond() {
+  makeNitrogenCarbonDoubleBond() {
+      reduceImineToAmine() {
+
+          reduceImineToAmineOnNitrogenMethylCarbonReverse(DEBUG) {
+              reduceImineToAmineReverse(check_mode) {
+              __reduceImineToAmineReverse(DEBUG, n_atom, carbon, n_index, c_index) {
+                  remercurify() {
+*/
     remercurify() {
 
         // @see https://www.chemistrysteps.com/oxymercuration-demercuration/
