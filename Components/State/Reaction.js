@@ -126,8 +126,8 @@ class Reaction {
 
         bondsAI.makeCarbonCarbonDoubleBondByAtomIndex(c2_carbon_index_after_removing_proton, c1_carbon_index_after_removing_proton, true)
 
-        console.log("reaction.createEnolate() -> Substrate after making carbon carbon double bond")
-        console.log(VMolecule(this.container_substrate).compressed())
+        //console.log("reaction.createEnolate() -> Substrate after making carbon carbon double bond")
+        //console.log(VMolecule(this.container_substrate).compressed())
 
         this.setChargesOnSubstrate()
         this.setChargesOnReagent()
@@ -136,6 +136,37 @@ class Reaction {
 
     }
 
+    createEnolateReverse() {
+
+        // @see https://chem.libretexts.org/Courses/Oregon_Institute_of_Technology/OIT%3A_CHE_332_--_Organic_Chemistry_II_(Lund)/7%3A_Acid-base_Reactions/07%3A_Carbon_Acids
+        // Make O=C double bond
+        const substrateSaved = this.container_substrate
+        this.setMoleculeAI()
+        const bondsAI = new BondsAI(this)
+
+        if (bondsAI.makeOxygenCarbonDoubleBond(false)) {
+
+            this.setMoleculeAI()
+
+            // Change O=C bond to single bond
+            if (bondsAI.breakCarbonDoubleBond(false)) {
+                this.setMoleculeAI()
+                this.setChargesOnSubstrate()
+                // Protonate carbon atom
+                const protonationAI = new ProtonationAI(this)
+                if (protonationAI.deprotonateCarbonReverse(false)){
+                    this.setMoleculeAI()
+                    this.setChargesOnSubstrate()
+                    return true
+                }
+            }
+        }
+
+        this.container_substrate = substrateSaved
+
+        return false
+
+    }
 
     setReagentAI() {
         if (this.container_reagent !== null && this.container_reagent !== undefined && typeof this.container_reagent[0] !== "string") {
@@ -478,32 +509,7 @@ class Reaction {
         return true
     }
 
-    /*
-createEnolate()
-setReagentAI() {
-setMoleculeAI(command_names, command_index, electrophile_index, trace, trace_id) {
-bondNitrogenToCarboxylCarbonReverse() {
-makeCarbonNitrogenDoubleBondReverse() {
-oxygenCarbonDoubleBondReverse() {
- setChargeOnSubstrateAtom(index, trace, trace_id) {
-     setChargesOnReagent() {
-         setChargeOnReagentAtom(index) {
-             substituteHalideForAmineReverse(index) {
-                 substituteOxygenCarbonDoubleBondForAmineReverse() {
-                 substituteHalideForAmine(index) {
-                     breakCarbonOxygenDoubleBondReverse() {
-                         __changeDoubleBondToSingleBond(nucleophile_index, electrophile_index) {
-                             makeNitrogenCarbonTripleBond() {
 
-oxygenCarbonDoubleBond() {
-  makeNitrogenCarbonDoubleBond() {
-      reduceImineToAmine() {
-
-          reduceImineToAmineOnNitrogenMethylCarbonReverse(DEBUG) {
-              reduceImineToAmineReverse(check_mode) {
-              __reduceImineToAmineReverse(DEBUG, n_atom, carbon, n_index, c_index) {
-                  remercurify() {
-*/
     remercurify() {
 
         // @see https://www.chemistrysteps.com/oxymercuration-demercuration/
@@ -775,6 +781,7 @@ oxygenCarbonDoubleBond() {
         this.setMoleculeAI()
     }
 
+
     dereduce() {
         return false
     }
@@ -782,6 +789,7 @@ oxygenCarbonDoubleBond() {
     reduce() {
         return false
     }
+
 
     hydrateMostSubstitutedCarbon() {
         const electrophile_index = this.MoleculeAI.findMostSubstitutedCarbonIndex()
@@ -836,6 +844,45 @@ oxygenCarbonDoubleBond() {
         }
         */
     }
+
+    /*
+      createEnolate()
+      setReagentAI() {
+      setMoleculeAI(command_names, command_index, electrophile_index, trace, trace_id) {
+      bondNitrogenToCarboxylCarbonReverse() {
+      makeCarbonNitrogenDoubleBondReverse() {
+      oxygenCarbonDoubleBondReverse() {
+       setChargeOnSubstrateAtom(index, trace, trace_id) {
+           setChargesOnReagent() {
+               setChargeOnReagentAtom(index) {
+                   substituteHalideForAmineReverse(index) {
+                       substituteOxygenCarbonDoubleBondForAmineReverse() {
+                       substituteHalideForAmine(index) {
+                           breakCarbonOxygenDoubleBondReverse() {
+                               __changeDoubleBondToSingleBond(nucleophile_index, electrophile_index) {
+                                   makeNitrogenCarbonTripleBond() {
+
+      oxygenCarbonDoubleBond() {
+        makeNitrogenCarbonDoubleBond() {
+            reduceImineToAmine() {
+
+                reduceImineToAmineOnNitrogenMethylCarbonReverse(DEBUG) {
+                    reduceImineToAmineReverse(check_mode) {
+                    __reduceImineToAmineReverse(DEBUG, n_atom, carbon, n_index, c_index) {
+                        remercurify() {
+                        demercurify()
+                        transferProtonReverse(check_mode) {
+                        transferProton()
+                        dereduce()
+                        reduce()
+                        hydrateMostSubsitutedCarbon()
+                        hydrate(electrophile_index)
+                        dehydrate(check_mode)
+                        dehydrateReverse
+                          __removeGroup(nucleophile_index, electrophile_index, moleculeAI, substrate) {
+                          removeMethanol()
+
+      */
     removeMethanol() {
 
         const nucleophile_index = this.MoleculeAI.findNucleophileIndex()
@@ -1661,19 +1708,8 @@ oxygenCarbonDoubleBond() {
     }
 
     addProtonToSubstrate(target_atom, target_atom_index) {
-        const proton = AtomFactory("H")
-        proton.pop()
-        const free_electrons = CAtom(target_atom, target_atom_index, this.container_substrate).freeElectrons()
-        if (free_electrons.length > 1) {
-            proton.push(free_electrons[0])
-            proton.push(free_electrons[1])
-            this.container_substrate[0][1].push(proton)
-            this.container_substrate[0][1][target_atom_index][4] =
-                this.container_substrate[0][1][target_atom_index][4]=== "-"
-                || this.container_substrate[0][1][target_atom_index][4] < 0? 0:"+"
-        }
-        this.setChargesOnSubstrate()
-        this.setMoleculeAI(null, null, null, "addprotontosubstrate", uniqid())
+        const protationAI = new ProtonationAI(this)
+        return protationAI.addProtonToSubstrate(target_atom, target_atom_index)
     }
 
     protonateReverse() {

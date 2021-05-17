@@ -204,6 +204,16 @@ class ChargesAI {
         const b_count = a_obj.bondCount() + a_obj.doubleBondCount()
         const electrons = _.cloneDeep(this.reaction.container_substrate[0][1][index].slice(5))
         let  b = ""
+        const single_bonds = a_obj.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] !== "H"
+        })
+        const double_bonds = a_obj.indexedDoubleBonds("").filter((bond)=>{
+            return bond.atom[0] !== "H"
+        })
+        const triple_bonds = a_obj.indexedTripleBonds("").filter((bond)=>{
+            return bond.atom[0] !== "H"
+        })
+
         if (this.reaction.container_substrate[0][1][index][0] === "Br") {
              b = (7 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length +  (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
 
@@ -233,14 +243,11 @@ class ChargesAI {
              b = (5 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
         }
         if (this.reaction.container_substrate[0][1][index][0] === "C") {
-            //console.log("ChargesAI.js setChargeOnSubstrateAtom()")
-            //console.log(this.reaction.container_substrate[0][1][index])
             // 9 electrons, 5 bonds = neutral charge
-            //console.log("bond c:"+b_count + " e " + electrons.length)
             // https://chemistry.stackexchange.com/questions/22032/how-does-a-carbocation-have-a-positive-charge
             // Formal Charge= (No.of valence electrons in unbonded state - no of lone pair electrons ) - (no. of bond pair electrons/2)
             // In this case the charge comes out to be (4-0) - (6/2) =+1
-             b = (4 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
+            b = 4 - (a_obj.hydrogens().length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
 
         }
 

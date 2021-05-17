@@ -13,6 +13,12 @@ const sulphuric_acid = MoleculeFactory("OS(=O)(=O)O")
 VMolecule([sulphuric_acid,1]).canonicalSMILES().should.be.oneOf(["OS(O)(=O)=O", "OS(=O)(=O)O"])
 const sulphuric_acid_ai = require("./Components/Stateless/MoleculeAI")([sulphuric_acid,1])
 
+const molReverse = MoleculeFactory("CC([O-])=C")
+const create_enolate_products_reverse = CommandTest("CREATEENOLATEREVERSE", _.cloneDeep([molReverse,1]), null)
+create_enolate_products_reverse[1].should.be.equal("B")
+VMolecule(create_enolate_products_reverse[0], 1).canonicalSMILES().should.be.equal("CC(=O)C")
+process.error()
+
 const mol = MoleculeFactory("CC=O")
 const base = MoleculeFactory("[O-]")
 console.log(VMolecule([mol,1]).compressed())

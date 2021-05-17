@@ -2,6 +2,7 @@ const CAtom = require('../../Controllers/Atom')
 const _ = require('lodash');
 
 const CreateEnolate = require('../../Commands/CreateEnolate')
+const CreateEnolateReverse = require('../../Commands/CreateEnolateReverse')
 const AddProtonToHydroxylGroup = require('../../Commands/AddProtonToHydroxylGroup')
 const BreakBond = require('../../Commands/BreakBond')
 const BreakMetalBond = require('../../Commands/BreakMetalBond')
@@ -57,6 +58,7 @@ const MakeNitrogenCarbonTripleBond = require('../../Commands/MakeNitrogenCarbonT
 const CommandTest = (command, substrate, reagent, rule) => {
 
     const commands_map = {
+        "CREATEENOLATEREVERSE": CreateEnolateReverse,
         "CREATEENOLATE": CreateEnolate,
         "DEPROTONATE": Deprotonate,
         "BOND atoms": BondAtoms,

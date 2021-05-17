@@ -75,6 +75,33 @@ const MoleculeAI = (container_molecule) => {
         }
     }
 
+    const __findIndexOfCarbonWithNegativeCharge = (DEBUG) => {
+
+        const carbon_index = _.findIndex(container_molecule[0][1], (atom, index)=>{
+            const atom_object = CAtom(atom, index, container_molecule)
+            if (atom_object.symbol !== "C") {
+                return false
+            }
+
+            const single_bonds = atom_object.indexedBonds("").filter((bond)=>{
+                return bond.atom[0] !== "H"
+            })
+
+            const double_bonds = atom_object.indexedDoubleBonds("").filter((bond)=>{
+                return bond.atom[0] !== "H"
+            })
+
+            const triple_bonds = atom_object.indexedTripleBonds("").filter((bond)=>{
+                return bond.atom[0] !== "H"
+            })
+
+            const bonds_count = atom_object.hydrogens().length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3
+
+            return bonds_count < 4
+        })
+        return carbon_index
+    }
+
     const __findIndexOfOxygenAtomDoubleBondedToCarbonByCarbonIndex = (carbon_index) => {
         const carbon_atom_object = CAtom(container_molecule[0][1][carbon_index], carbon_index, container_molecule)
         const oxygen_carbon_double_bonds = carbon_atom_object.indexedDoubleBonds("").filter((bond)=>{
@@ -1524,6 +1551,9 @@ VMolecule
             return protonationAI.findProtonIndexOnAtom(atom)
         },
 
+        "findIndexOfCarbonWithNegativeCharge": (DEBUG) => {
+            return __findIndexOfCarbonWithNegativeCharge(DEBUG)
+        },
 
         "findIndexOfOxygenAtomDoubleBondedToCarbonByCarbonIndex": (carbon_index) => {
             return __findIndexOfOxygenAtomDoubleBondedToCarbonByCarbonIndex(carbon_index)

@@ -10,7 +10,7 @@ const uniqid = require('uniqid');
 
 // addProtonFromSubstrateToReagentBySubstrateAtomIndex(substrate_atom_index) - remove proton from specific substrate atom and
 // add to reagent
-
+// deprotonateCarbonReverse(DEBUG)
 // protonateCarbocation()
 // deprotonateCarbonyl()
 // protonateCarbonyl()
@@ -30,12 +30,41 @@ const uniqid = require('uniqid');
 // addProtonFromSubstrateToReagentBySubstrateAtomIndex(substrate_atom_index)
 // removeProtonFromAtom(moleculeAI, molecule, atom_index)
 // addProtonToReagent(index_of_reagent_atom_to_protonate )
+// addProtonToSubstrate(target_atom, target_atom_index)
 
 
 class ProtonationAI {
 
     constructor(reaction) {
         this.reaction = reaction
+    }
+
+    deprotonateCarbonReverse(DEBUG){
+        this.reaction.setMoleculeAI()
+        const carbon_index = this.reaction.MoleculeAI.findIndexOfCarbonWithNegativeCharge(DEBUG)
+
+        if (carbon_index===-1) {
+            if (DEBUG) {
+                console.log("ProtonationAI protonateCarbon -> carbon with negative charge not found")
+            }
+            return false
+        }
+
+        const target_atom = CAtom(this.reaction.container_substrate[0][1][carbon_index], carbon_index, this.reaction.container_substrate)
+
+        if (this.addProtonToSubstrate(target_atom, carbon_index)) {
+            if (this.reaction.container_reagent === null || this.reaction.container_reagent === "A") {
+                this.reaction.container_reagent = "B"
+            }
+        } else {
+            if (DEBUG) {
+                console.log("ProtonationAI protonateCarbon ->failed adding proton to substrate")
+            }
+            return false
+        }
+
+        return true
+
     }
 
     removeProtonFromAtom(moleculeAI, molecule_atoms, atom_index) {
@@ -319,7 +348,6 @@ class ProtonationAI {
       // console.log(VMolecule(this.reaction.container_reagent).compressed())
         this.reaction.setMoleculeAI()
         this.reaction.setReagentAI()
-        this.reaction.MoleculeAI.validateMolecule()
 
         return true
 
@@ -1039,7 +1067,7 @@ class ProtonationAI {
 
         this.reaction.container_substrate[0][1][hydroxylOxygenIndex][0].should.be.equal("O")
         const substrate_atoms = _.cloneDeep(this.reaction.container_substrate[0][1])
-        this.reaction.addProtonToSubstrate(this.reaction.container_substrate[0][1][hydroxylOxygenIndex], hydroxylOxygenIndex) // changes this.reaction.container_substrate
+        this.addProtonToSubstrate(this.reaction.container_substrate[0][1][hydroxylOxygenIndex], hydroxylOxygenIndex) // changes this.reaction.container_substrate
 
         this.reaction.container_substrate[0][1].length.should.not.equal(substrate_atoms.length)
 
@@ -1049,6 +1077,21 @@ class ProtonationAI {
         this.reaction.setMoleculeAI()
         this.reaction.setReagentAI()
 
+    }
+
+    addProtonToSubstrate(target_atom, target_atom_index) {
+        const proton = AtomFactory("H")
+        proton.pop()
+
+        const free_electrons = target_atom.freeElectrons()
+
+        if (free_electrons.length > 1) {
+            proton.push(free_electrons[0])
+            proton.push(free_electrons[1])
+            this.reaction.container_substrate[0][1].push(proton)
+        }
+
+        return true
     }
 
 
