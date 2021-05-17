@@ -59,6 +59,7 @@ const ProtonationAI = require('../../Components/State/ProtonationAI')
    findNitrogenOnDoubleBondIndex()
    findNonWaterOxygenIndex()
    findMetalAtomIndex()
+   findCarbonylOxygenIndex
    */
 
 
@@ -73,6 +74,22 @@ const MoleculeAI = (container_molecule) => {
             container_molecule[0][1][0].should.be.an.Array()
             container_molecule[0][1][0][0].should.be.an.String()
         }
+    }
+
+    const __findCarbonylOxygenIndex = (DEBUG) => {
+       return _.findIndex(container_molecule[0][1], (atom, index)=>{
+           const atom_object = CAtom(atom, index, container_molecule)
+           if (atom_object.symbol !== "O") {
+               return false
+           }
+           if (atom_object.isPositivelyCharged() || atom_object.isNegativelyCharged() ){
+               return false
+           }
+           const double_bonds = atom_object.indexedDoubleBonds("").filter((bond)=>{
+               return bond.atom[0] === "C"
+           })
+           return double_bonds.length ===1
+        })
     }
 
     const __findIndexOfCarbonWithNegativeCharge = (DEBUG) => {
@@ -1549,6 +1566,10 @@ VMolecule
         "findProtonIndexOnAtom": (atom) => {
             const protonationAI = new ProtonationAI(this.reaction)
             return protonationAI.findProtonIndexOnAtom(atom)
+        },
+
+        "findCarbonylOxygenIndex": (DEBUG) => {
+            return __findCarbonylOxygenIndex(DEBUG)
         },
 
         "findIndexOfCarbonWithNegativeCharge": (DEBUG) => {

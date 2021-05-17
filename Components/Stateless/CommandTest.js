@@ -54,10 +54,12 @@ const CarbocationShift = require('../../Commands/CarbocationShift')
 const BreakCarbonNitrogenTripleBond =  require('../../Commands/BreakCarbonNitrogenTripleBond')
 const BreakCarbonNitrogenDoubleBond =  require('../../Commands/BreakCarbonNitrogenDoubleBond')
 const MakeNitrogenCarbonTripleBond = require('../../Commands/MakeNitrogenCarbonTripleBond')
+const ReductiveAmination = require('../../Commands/ReductiveAmination')
 
 const CommandTest = (command, substrate, reagent, rule) => {
 
     const commands_map = {
+        "REDUCTIVEAMINATION": ReductiveAmination,
         "CREATEENOLATEREVERSE": CreateEnolateReverse,
         "CREATEENOLATE": CreateEnolate,
         "DEPROTONATE": Deprotonate,

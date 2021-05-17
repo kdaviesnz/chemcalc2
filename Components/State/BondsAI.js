@@ -691,16 +691,17 @@ class BondsAI {
         // The substrate is the electrophile
         //  console.log('BondsAI.js bondSubstrateToReagent')
         // Check for Nitrogen atom  on reagent and C=O bond on substrate
-        if (nucleophile_index === null) {
-            nucleophile_index = _.findIndex(this.reaction.container_reagent[0][1], (atom, index) => {
-                if (atom[0] !== "N") {
-                    return false
-                }
-                const n = CAtom(this.reaction.container_reagent[0][1][index], index, this.reaction.container_reagent)
-                return n.indexedDoubleBonds("").length === 0
-            })
+        if (typeof this.reaction.container_reagent !=="string") {
+            if (nucleophile_index === null) {
+                nucleophile_index = _.findIndex(this.reaction.container_reagent[0][1], (atom, index) => {
+                    if (atom[0] !== "N") {
+                        return false
+                    }
+                    const n = CAtom(this.reaction.container_reagent[0][1][index], index, this.reaction.container_reagent)
+                    return n.indexedDoubleBonds("").length === 0
+                })
+            }
         }
-
 
         if (nucleophile_index !== -1) { // Nitrogen atom on reagent
 
@@ -748,7 +749,7 @@ class BondsAI {
             return false
         }
 
-        if (nucleophile_index === -1) {
+        if (nucleophile_index === -1 && nucleophile_index !==null) {
             nucleophile_index = this.reaction.ReagentAI.findNucleophileIndex()
         }
 
@@ -756,51 +757,57 @@ class BondsAI {
             return false
         }
 
-        const nucleophile = CAtom(this.reaction.container_reagent[0][1][nucleophile_index], nucleophile_index, this.reaction.container_reagent)
+        const nucleophile = typeof this.reaction.container_reagent === "string"?this.reaction.container_reagent:CAtom(this.reaction.container_reagent[0][1][nucleophile_index], nucleophile_index, this.reaction.container_reagent)
 
+        if (typeof this.reaction.container_reagent === "string") {
+            // Amine?
+            if (this.reaction.container_reagent[0] === "N") {
+                const nitrogen = AtomFactory("N", 0)
+                nitrogen.push("R")
+                console.log(nitrogen)
 
-        let freeElectrons = nucleophile.freeElectrons()
-
-        if (freeElectrons.length === 0) {
-            const freeSlots = nucleophile.freeSlots()
-            if (freeSlots > 0) {
-                // Workaround
-                const uniqid = require('uniqid');
-                freeElectrons.push(uniqid())
-                freeElectrons.push(uniqid())
-                this.reaction.container_reagent[0][1][nucleophile_index].push(freeElectrons[0])
-                this.reaction.container_reagent[0][1][nucleophile_index].push(freeElectrons[1])
+                process.error()
             }
-        }
-        this.reaction.container_substrate[0][1][electrophile_index].push(freeElectrons[0])
-        this.reaction.container_substrate[0][1][electrophile_index].push(freeElectrons[1])
+        } else {
 
+            let freeElectrons = nucleophile.freeElectrons()
 
-        // Add reagent atoms to substrate
-        this.reaction.container_reagent[0][1].map(
-            (atom)=>{
-                this.reaction.container_substrate[0][1].push(atom)
-                return atom
+            if (freeElectrons.length === 0) {
+                const freeSlots = nucleophile.freeSlots()
+                if (freeSlots > 0) {
+                    // Workaround
+                    const uniqid = require('uniqid');
+                    freeElectrons.push(uniqid())
+                    freeElectrons.push(uniqid())
+                    this.reaction.container_reagent[0][1][nucleophile_index].push(freeElectrons[0])
+                    this.reaction.container_reagent[0][1][nucleophile_index].push(freeElectrons[1])
+                }
             }
-        )
+            this.reaction.container_substrate[0][1][electrophile_index].push(freeElectrons[0])
+            this.reaction.container_substrate[0][1][electrophile_index].push(freeElectrons[1])
 
-//        this.reaction.setMoleculeAI()
-        //      this.reaction.setReagentAI()
+            // Add reagent atoms to substrate
+            this.reaction.container_reagent[0][1].map(
+                (atom) => {
+                    this.reaction.container_substrate[0][1].push(atom)
+                    return atom
+                }
+            )
 
-        // Charges
-        // this.reaction.container_substrate[0][1][electrophile_index][4] = this.reaction.container_substrate[0][1][electrophile_index][4] === "+"?"":"-"
-        this.reaction.setChargeOnSubstrateAtom(electrophile_index)
-        this.reaction.container_reagent[0][1][nucleophile_index][4] = this.reaction.container_reagent[0][1][nucleophile_index][4] === "-"?"":"+"
+            this.reaction.setChargeOnSubstrateAtom(electrophile_index)
+            this.reaction.container_reagent[0][1][nucleophile_index][4] = this.reaction.container_reagent[0][1][nucleophile_index][4] === "-" ? "" : "+"
 
 
-        this.reaction.setMoleculeAI()
-        this.reaction.setReagentAI()
+            this.reaction.setMoleculeAI()
+            this.reaction.setReagentAI()
 
-        if (this.reaction.MoleculeAI.validateMolecule() === false) {
-            console.log('BondsAI.js molecule is not valid (bondSubstrateToReagent())')
-            console.log('Method: bondSubstrateToReagent()')
-            console.log(VMolecule(this.reaction.container_substrate).compressed())
-            console.log(bbbbbbond)
+            if (this.reaction.MoleculeAI.validateMolecule() === false) {
+                console.log('BondsAI.js molecule is not valid (bondSubstrateToReagent())')
+                console.log('Method: bondSubstrateToReagent()')
+                console.log(VMolecule(this.reaction.container_substrate).compressed())
+                console.log(bbbbbbond)
+            }
+
         }
 
         return true

@@ -9,6 +9,11 @@ const CAtom = require('./Controllers/Atom')
 
 const CommandTest = require('./Components/Stateless/CommandTest')
 
+const acetone = MoleculeFactory("CC(=O)C")
+console.log(VMolecule([acetone,1]).compressed())
+const reductive_amination = CommandTest("REDUCTIVEAMINATION", _.cloneDeep([acetone,1]), null)
+process.error()
+
 const sulphuric_acid = MoleculeFactory("OS(=O)(=O)O")
 VMolecule([sulphuric_acid,1]).canonicalSMILES().should.be.oneOf(["OS(O)(=O)=O", "OS(=O)(=O)O"])
 const sulphuric_acid_ai = require("./Components/Stateless/MoleculeAI")([sulphuric_acid,1])
@@ -499,7 +504,6 @@ const ammonium_formate = MoleculeFactory("C(=O)[O-].[NH4+]")
 // ammonium formate dissassociates into formic acid and ammonia
 const formic_acid = MoleculeFactory("C(=O)O")
 const ammonia = MoleculeFactory("N") // NH3
-const acetone = MoleculeFactory("CC(=O)C") // ketone (substrate)
 const propionaldehyde = MoleculeFactory("CCC=O") // aldehyde (substrate)
 
 // 1. N atom on ammonia (nucleophile) attacks carbonyl carbon (C=O) on substrate, attaching itself to the carbon

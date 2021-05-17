@@ -162,7 +162,8 @@ class Reaction {
         // Look for carbonyl oxygen (C=O) and nitrogen atom index
         let carbonyl = null
         let amine = null
-        let carbonyl_oxygen_index = this.MoleculeAI.findCarbonylOxygenIndex()
+        this.setMoleculeAI()
+        let carbonyl_oxygen_index = this.MoleculeAI.findCarbonylOxygenIndex(true)
         let amine_nitrogen_index = null
         if (carbonyl_oxygen_index === -1) {
             // Use reagent as the carbonyl
@@ -188,10 +189,12 @@ class Reaction {
             // The reagent is the nucleophile and is attacking the substrate
             // The substrate is the electrophile
             // nucleophile, electrophile
+
             this.bondSubstrateToReagent(amine_nitrogen_index, carbonyl_oxygen_index)
 
 
         } else {
+
             carbonyl = this.container_substrate
             if (this.container_reagent === null) {
                 this.container_reagent = "NR"
@@ -201,16 +204,21 @@ class Reaction {
                     return false
                 }
             }
+
             amine = this.container_reagent
 
+            this.setMoleculeAI()
+
+            this.setMoleculeAI()
+            this.setReagentAI()
+
             // Bond amine to carbonyl by replacing carbonyl oxygen with nitrogen atom (amine)
-            // Important:
-            // The reagent is the nucleophile and is attacking the substrate
-            // The substrate is the electrophile
-            // nucleophile, electrophile
-            this.bondReagentToSubstrate(amine_nitrogen_index, carbonyl_oxygen_index)
+            // nucleophile -> electrophile
+            this.substituteSubstrateAtomForReagent(carbonyl_oxygen_index, amine)
 
 
+            console.log(VMolecule([this.container_substrate[0],1]).compressed())
+            process.error()
 
         }
 
@@ -223,6 +231,10 @@ class Reaction {
         const bondsAI = new BondsAI(this)
         return bondsAI.changeNitrogenCarbonDoubleBondToSingleBond()
 
+
+    }
+
+    substituteSubstrateAtomForReagent(carbonyl_oxygen_index, ) {
 
     }
 
@@ -1655,12 +1667,13 @@ class Reaction {
     }
 
 
-    bondSubstrateToReagent(nucleophile_index = null, electrophile_index = null) {
+    bondSubstrateToReagent(reagent_nucleophile_index = null, substrate_electrophile_index = null) {
         // Important:
         // The reagent is the nucleophile and is attacking the substrate
         // The substrate is the electrophile
         const bondsAI = new BondsAI(this)
-        return bondsAI.bondSubstrateToReagent(nucleophile_index, electrophile_index)
+        // Reagent ---> Substrate
+        return bondsAI.bondSubstrateToReagent(reagent_nucleophile_index, substrate_electrophile_index)
     }
 
     removeHalide() {
