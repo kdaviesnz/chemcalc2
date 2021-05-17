@@ -76,7 +76,8 @@ class ReactionAI {
             'bondNitrogenToCarboxylCarbon': 'Nitrogen atom (Lewis base, nucleophile) on reagent attacks the carboxyl carbon, forming a bond, and breaking one of the C=O bonds.',
             'breakCarbonOxygenDoubleBond': 'Change C=O bond to a single bond',
             'addProtonToReagent': 'Reagent attacks a proton on an acid catalyst.',
-            'createEnolate':'Negative charge on the conjugate base (carbon atom) is delocalized to an electronegative atom such as an oxygen'
+            'createEnolate':'Negative charge on the conjugate base (carbon atom) is delocalized to an electronegative atom such as an oxygen',
+            'reductiveAmination':'Carbonyl oxygen is replace by amine group'
         }
 
         /*
@@ -112,7 +113,8 @@ class ReactionAI {
             'breakCarbonOxygenDoubleBond': 'Break oxygen-carbon double bond',
             'bondNitrogenToCarboxylCarbon': 'Bond nitrogen on reagent to carboxyl carbon on substrate',
             'addProtonToReagent': 'Protonate reagent using acid catalyst',
-            'createEnolate':'Shift negative charge on conjugate base (carbon atom) to carbonyl oxygen'
+            'createEnolate':'Shift negative charge on conjugate base (carbon atom) to carbonyl oxygen',
+            'reductiveAmination':'Convert carbonyl group to amine'
         }
 
         //     'addProtonFromReagentToHydroxylGroup': 'Add proton from reagent to hydroxyl group on substrate'

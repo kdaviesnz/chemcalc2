@@ -16,6 +16,7 @@ const SubstitutionAI = require('../../Components/State/SubstitutionAI')
 const range = require("range");
 
 /*
+reductiveAmination()
 createEnolate()
 createEnolateReverse()
 setReagentAI()
@@ -156,6 +157,74 @@ class Reaction {
 
     }
 
+    reductiveAmination() {
+
+        // Look for carbonyl oxygen (C=O) and nitrogen atom index
+        let carbonyl = null
+        let amine = null
+        let carbonyl_oxygen_index = this.MoleculeAI.findCarbonylOxygenIndex()
+        let amine_nitrogen_index = null
+        if (carbonyl_oxygen_index === -1) {
+            // Use reagent as the carbonyl
+            if (this.container_reagent === null) {
+                this.container_reagent = "O=CR"
+            } else {
+                carbonyl_oxygen_index = this.ReagentAI.findCarbonylOxygenIndex()
+                if (carbonyl_oxygen_index === -1) {
+                    return false
+                }
+            }
+            carbonyl = this.container_reagent
+            // Look for N amine atom
+            amine_nitrogen_index = this.MoleculeAI.findNitrogenAttachedToCarbonIndexNoDoubleBonds()
+            if (amine_nitrogen_index !==-1) {
+                amine = this.container_substrate
+            } else {
+                return false
+            }
+
+            // Bond amine to carbonyl by replacing carbonyl oxygen with nitrogen atom (amine)
+            // Important:
+            // The reagent is the nucleophile and is attacking the substrate
+            // The substrate is the electrophile
+            // nucleophile, electrophile
+            this.bondSubstrateToReagent(amine_nitrogen_index, carbonyl_oxygen_index)
+
+
+        } else {
+            carbonyl = this.container_substrate
+            if (this.container_reagent === null) {
+                this.container_reagent = "NR"
+            } else {
+                amine_nitrogen_index = this.ReagentAI.findNitrogenAttachedToCarbonIndexNoDoubleBonds()
+                if (amine_nitrogen_index === -1) {
+                    return false
+                }
+            }
+            amine = this.container_reagent
+
+            // Bond amine to carbonyl by replacing carbonyl oxygen with nitrogen atom (amine)
+            // Important:
+            // The reagent is the nucleophile and is attacking the substrate
+            // The substrate is the electrophile
+            // nucleophile, electrophile
+            this.bondReagentToSubstrate(amine_nitrogen_index, carbonyl_oxygen_index)
+
+
+
+        }
+
+        // Change C=N double bond to single bond
+
+        // amine
+        // carbonyl
+        // amine_nitrogen_index
+        // carbonyl_oxygen_index
+        const bondsAI = new BondsAI(this)
+        return bondsAI.changeNitrogenCarbonDoubleBondToSingleBond()
+
+
+    }
 
     createEnolate() {
 
