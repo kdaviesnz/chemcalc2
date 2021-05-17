@@ -15,6 +15,99 @@ const ChargesAI = require('../../Components/State/ChargesAI')
 const SubstitutionAI = require('../../Components/State/SubstitutionAI')
 const range = require("range");
 
+/*
+createEnolate()
+createEnolateReverse()
+setReagentAI()
+setMoleculeAI(command_names, command_index, electrophile_index, trace, trace_id)
+bondNitrogenToCarboxylCarbonReverse()
+makeCarbonNitrogenDoubleBondReverse()
+oxygenCarbonDoubleBondReverse()
+setChargeOnSubstrateAtom(index, trace, trace_id)
+setChargesOnReagent()
+setChargeOnReagentAtom(index)
+substituteHalideForAmineReverse(index)
+substituteOxygenCarbonDoubleBondForAmineReverse()
+substituteHalideForAmine(index)
+breakCarbonOxygenDoubleBondReverse()
+__changeDoubleBondToSingleBond(nucleophile_index, electrophile_index)
+makeNitrogenCarbonTripleBond()
+oxygenCarbonDoubleBond()
+makeNitrogenCarbonDoubleBond()
+reduceImineToAmine()
+reduceImineToAmineOnNitrogenMethylCarbonReverse(DEBUG)
+reduceImineToAmineReverse(check_mode)
+__reduceImineToAmineReverse(DEBUG, n_atom, carbon, n_index, c_index)
+remercurify()
+demercurify()
+transferProtonReverse(check_mode)
+transferProton()
+dereduce()
+reduce()
+hydrateMostSubsitutedCarbon()
+hydrate(electrophile_index)
+dehydrate(check_mode)
+dehydrateReverse()
+__removeGroup(nucleophile_index, electrophile_index, moleculeAI, substrate)
+removeMethanol()
+removeFormideGroup()
+removeFormateGroup()
+__removeHydroxylGroup(moleculeAI, substrate)
+__setSubstrateGroups(groups)
+setSubstrateGroupsReverse(groups)
+removeHydroxylGroup()
+bondSubstrateToReagentReverse()
+breakBond(break_type="heterolysis")
+bondMetal()
+removeProtonFromOxygenReverse()
+removeProtonFromOxygen()
+deprotonateOxygenOnDoubleBond()
+protonateCarbocation()
+protonateCarbocationReverse()
+protonateOxygenOnDoubleBond()
+removeMetal()
+breakMetalBond()
+bondReagentToSubstrate()
+bondSubstrateToReagent(nucleophile_index = null, electrophile_index = null)
+removeHalide()
+breakBondReverse()
+bondAtoms()
+addProtonToSubstrate(target_atom, target_atom_index)
+protonateReverse()
+removeHalideReverse()
+deprotonateNitrogen(command_names, command_index)
+deprotonateNitrogenReverse()
+removeProtonFromReagent(proton_index)
+removeProtonFromSubstrate(proton_index)
+protonate()
+addProtonToReagent(index_of_reagent_atom_to_protonate)
+deprotonateNonHydroxylOxygen()
+removeProtonFromWater()
+addProtonFromReagentToHydroxylGroupReverse()
+addProtonFromReagentToSubstrate()
+addProtonFromReagentToSubstrateReverse()
+addProtonFromSubstrateToReagent()
+hydrolysis()
+removeProtonFromAtom(moleculeAI, molecule, atom_index)
+hydrolysisReverse()
+__doubleBondReagentToSubstrate(substrate_atom_index, reagent_atom_index)
+__bondReagentToSubstrate(substrate_atom_index, reagent_atom_index)
+deprotonateWater()
+hydrideShift()
+carbocationShiftReverse(check_mode)
+carbocationShift()
+hydrideShiftOnCarbonNitrogenBondReverse()
+breakCarbonDoubleBond()
+breakCarbonOxygenDoubleBond(DEBUG)
+addProtonToAtom(atom_index, proton)
+breakCarbonNitrogenDoubleBond()
+breakCarbonNitrogenTripleBond()
+oxygenToOxygenProtonTransfer()
+protonateCarbonDoubleBond()
+addProtonFromReagentToNonHydroxylGroup()
+addProtonFromReagentToHydroxylGroup
+*/
+
 
 class Reaction {
 
@@ -845,44 +938,7 @@ class Reaction {
         */
     }
 
-    /*
-      createEnolate()
-      setReagentAI() {
-      setMoleculeAI(command_names, command_index, electrophile_index, trace, trace_id) {
-      bondNitrogenToCarboxylCarbonReverse() {
-      makeCarbonNitrogenDoubleBondReverse() {
-      oxygenCarbonDoubleBondReverse() {
-       setChargeOnSubstrateAtom(index, trace, trace_id) {
-           setChargesOnReagent() {
-               setChargeOnReagentAtom(index) {
-                   substituteHalideForAmineReverse(index) {
-                       substituteOxygenCarbonDoubleBondForAmineReverse() {
-                       substituteHalideForAmine(index) {
-                           breakCarbonOxygenDoubleBondReverse() {
-                               __changeDoubleBondToSingleBond(nucleophile_index, electrophile_index) {
-                                   makeNitrogenCarbonTripleBond() {
 
-      oxygenCarbonDoubleBond() {
-        makeNitrogenCarbonDoubleBond() {
-            reduceImineToAmine() {
-
-                reduceImineToAmineOnNitrogenMethylCarbonReverse(DEBUG) {
-                    reduceImineToAmineReverse(check_mode) {
-                    __reduceImineToAmineReverse(DEBUG, n_atom, carbon, n_index, c_index) {
-                        remercurify() {
-                        demercurify()
-                        transferProtonReverse(check_mode) {
-                        transferProton()
-                        dereduce()
-                        reduce()
-                        hydrateMostSubsitutedCarbon()
-                        hydrate(electrophile_index)
-                        dehydrate(check_mode)
-                        dehydrateReverse
-                          __removeGroup(nucleophile_index, electrophile_index, moleculeAI, substrate) {
-                          removeMethanol()
-
-      */
     removeMethanol() {
 
         const nucleophile_index = this.MoleculeAI.findNucleophileIndex()
@@ -915,6 +971,7 @@ class Reaction {
 
     }
 
+  
     removeFormamideGroup() {
 
      //      // console.log("removeFormamideGroup")
@@ -962,6 +1019,7 @@ class Reaction {
 
     }
 
+   
 
     removeFormateGroup() {
         const formate_double_bond_oxygen_index = this.MoleculeAI.findOxygenOnDoubleBondIndex()
@@ -997,6 +1055,8 @@ class Reaction {
 
     }
 
+
+    
     __removeHydroxylGroup(moleculeAI, substrate) {
         const electrophile_index = moleculeAI.findHydroxylOxygenIndex()
         const nucleophile_index = moleculeAI.findIndexOfCarbonAtomAttachedToHydroxylGroup()
@@ -1005,6 +1065,7 @@ class Reaction {
 
     }
 
+   
     __setSubstrateGroups(groups){
         if (groups.length > 1) {
             this.container_substrate = [[-1, _.cloneDeep(groups[0])], 1]
@@ -1039,6 +1100,7 @@ class Reaction {
 
     }
 
+   
 
     breakBond(break_type="heterolysis") {
 
@@ -1283,6 +1345,7 @@ class Reaction {
 
     }
 
+   
     bondMetal() {
 
         const metal_atom_index = this.MoleculeAI.findMetalAtomIndex()
@@ -1353,6 +1416,8 @@ class Reaction {
 
 
     }
+
+   
 
     removeProtonFromOxygenReverse() {
         const protationAI = new ProtonationAI(this)
@@ -1427,6 +1492,7 @@ class Reaction {
         this.setMoleculeAI()
     }
 
+    
     breakMetalBond() {
 
 
@@ -1471,6 +1537,8 @@ class Reaction {
 
     }
 
+
+   
     bondReagentToSubstrate() {
 
         // Important:
@@ -1516,6 +1584,7 @@ class Reaction {
         this.setMoleculeAI()
         this.setReagentAI()
     }
+
 
     bondSubstrateToReagent(nucleophile_index = null, electrophile_index = null) {
         // Important:
@@ -1582,6 +1651,9 @@ class Reaction {
 
     }
 
+
+
+    
     bondAtoms() {
 
         let electrophile_index = this.MoleculeAI.findElectrophileIndex()
@@ -1707,6 +1779,7 @@ class Reaction {
 
     }
 
+    
     addProtonToSubstrate(target_atom, target_atom_index) {
         const protationAI = new ProtonationAI(this)
         return protationAI.addProtonToSubstrate(target_atom, target_atom_index)
@@ -1732,6 +1805,8 @@ class Reaction {
         const protationAI = new ProtonationAI(this)
         return protationAI.deprotonateNitrogenReverse()
     }
+
+    
 
 
     removeProtonFromReagent(proton_index) {
@@ -1794,6 +1869,7 @@ class Reaction {
 
     }
 
+    
     deprotonateHydroxylOxygen() {
 
 
@@ -1822,6 +1898,7 @@ class Reaction {
         return protationAI.removeProtonFromWater()
     }
 
+    
     addProtonFromReagentToHydroxylGroupReverse() {
         const protationAI = new ProtonationAI(this)
         return protationAI.addProtonFromReagentToHydroxylGroupReverse()
@@ -1862,6 +1939,9 @@ class Reaction {
         return true
 
     }
+
+    
+
 
     addProtonFromReagentToSubstrateReverse() {
 
@@ -1922,6 +2002,7 @@ class Reaction {
         return true
     }
 
+   
     addProtonFromSubstrateToReagent() {
 
         const electrophile_index = this.ReagentAI.findElectrophileIndex()
@@ -1971,6 +2052,8 @@ class Reaction {
         const protonationAI = new ProtonationAI(this)
         return protonationAI.addProtonFromReagentToHydroxylGroup()
     }
+
+   
 
     addProtonFromReagentToNonHydroxylGroup() {
 
@@ -2025,6 +2108,8 @@ class Reaction {
 
 
     }
+
+    
 
     protonateCarbonDoubleBond() {
 
@@ -2130,6 +2215,8 @@ class Reaction {
 
     }
 
+   
+
     breakCarbonNitrogenTripleBond() {
         const bondsAI = new BondsAI(this)
         return bondsAI.makeOxygenCarbonDoubleBond()
@@ -2140,6 +2227,7 @@ class Reaction {
         return bondsAI.breakCarbonNitrogenDoubleBond()
     }
 
+    
     addProtonToAtom(atom_index, proton) {
 
         this.container_substrate[0][1][atom_index].push(proton[5]) // add electron
@@ -2160,6 +2248,9 @@ class Reaction {
         const bondsAI = new BondsAI(this)
         return bondsAI.breakCarbonDoubleBond()
     }
+
+   
+
 
     hydrideShiftOnCarbonNitrogenBondReverse() {
         // formate
@@ -2182,6 +2273,7 @@ class Reaction {
         //   // console.log(VMolecule(this.container_substrate).compressed())
     }
 
+   
     carbocationShift() {
 
         const carbocation_index = this.MoleculeAI.findIndexOfCarbocationAttachedtoCarbon()
@@ -2248,6 +2340,7 @@ class Reaction {
 
     }
 
+   
     carbocationShiftReverse(check_mode) {
 
         this.setMoleculeAI()
@@ -2388,6 +2481,9 @@ class Reaction {
 
     }
 
+   
+
+
     hydrideShift() {
 
         let carbon_atom_object = null
@@ -2498,6 +2594,7 @@ class Reaction {
     }
 
 
+   
     deprotonateWater() {
 
             // console.log('deprotonateWater()')
@@ -2529,6 +2626,8 @@ class Reaction {
         this.setReagentAI()
 
     }
+
+   
 
     __bondReagentToSubstrate(substrate_atom_index, reagent_atom_index) {
 
@@ -2587,7 +2686,7 @@ class Reaction {
         this.setReagentAI()
     }
 
-
+    
     __doubleBondReagentToSubstrate(substrate_atom_index, reagent_atom_index) {
 
         const reagent_atom_object = CAtom(this.container_reagent[0][1][reagent_atom_index], reagent_atom_index, this.container_reagent)
@@ -2640,6 +2739,7 @@ class Reaction {
         this.setMoleculeAI()
     }
 
+    
     hydrolysisReverse() {
         // @see https://en.wikipedia.org/wiki/Leuckart_reaction/
            // console.log("hydrolysisReverse()")
@@ -2726,6 +2826,8 @@ class Reaction {
         const protonationAI = new ProtonationAI(this)
         return protonationAI.removeProtonFromAtom(moleculeAI, molecule, atom_index) // returns molecule
     }
+    
+   
 
     hydrolysis() {
         // @see https://en.wikipedia.org/wiki/Leuckart_reaction/
