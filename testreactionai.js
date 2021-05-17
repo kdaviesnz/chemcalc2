@@ -117,7 +117,8 @@ client.connect(err => {
 
     // const me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
     // const methylamine = MoleculeFactory("CN")
-    r.synthesise(me, [methylamine])
+    const max_number_of_steps = 1
+    r.synthesise(me, [methylamine], null, max_number_of_steps, true)
 
     /*
     r.synthesise(formate, null)

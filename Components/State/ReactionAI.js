@@ -21,7 +21,7 @@ class ReactionAI {
 
         this.callback = null
 
-        this.debugger_on = true
+        this.debugger_on = false
 
         this.commands_filter = []
 
@@ -146,7 +146,7 @@ class ReactionAI {
         })
     }
 
-    synthesise(target, reagents, callback) {
+    synthesise(target, reagents, callback, max_number_of_steps, DEBUG) {
 
         if (reagents === undefined || reagents === null) {
             const water = MoleculeFactory("O")
@@ -157,16 +157,8 @@ class ReactionAI {
             const hydrochloric_acid = MoleculeFactory("Cl")
             const ammonia = MoleculeFactory("N")
             const formaldehyde = MoleculeFactory("C=O")
-            reagents = [water, methylamine, methylamide, deprotonated_methylamide, hydrochloric_acid, formate, formaldehyde, ammonia]
+            reagents = ["A", "B", water, methylamine, methylamide, deprotonated_methylamide, hydrochloric_acid, formate, formaldehyde, ammonia]
         }
-
-        //const reagents = reagent === null || reagent === undefined? [formate, methylamide, methylamine, water, deprotonated_methylamide,hydrochloric_acid, ammonia] : [reagent]
-        //const reagents = [hydrochloric_acid]
-        // Important: Reagent is the last reagent (as result of reaction step) used in the reaction.
-        // eg for pinacol–pinacolone rearrangement the reagent is "Brønsted–Lowry conjugate base" as
-        // we protonating a hydroxyl group in reverse
-        //const reagents = ["Brønsted–Lowry acid"] // Brønsted–Lowry conjugate base, Brønsted–Lowry acid, formaldehyde
-        //const reagents = [ammonia] // MDA
 
         this.callback = callback
         this.target = _.cloneDeep(target)
@@ -191,7 +183,10 @@ class ReactionAI {
                             (reagent_json_obj) => {
                                 const reagent_name = undefined === reagent_json_obj.IUPACName?reagent_json_obj.search:reagent_json_obj.IUPACNam
                                 this.debugger("Components/State/ReactionAI.js: Synthesising " + target_name + " using reagent: " + reagent_name)
-                                this._synthesise([_.cloneDeep(target), 1], [_.cloneDeep(reagent), 1], _.cloneDeep(commands), 'synthesise', 0, moleculeAI, reagentAI)
+                                if (DEBUG) {
+                                    console.log("Synthesising " +  target_name + " using " + (typeof reagent === "string"?reagent:VMolecule([reagent,1]).canonicalSMILES()))
+                                }
+                                this._synthesise([_.cloneDeep(target), 1], [_.cloneDeep(reagent), 1], _.cloneDeep(commands), 'synthesise', 0, moleculeAI, reagentAI, max_number_of_steps, DEBUG)
                             },
                             (Err) => {
                                 console.log(Err)
@@ -216,23 +211,15 @@ class ReactionAI {
 
     results(commands) {
 
-        console.log('results()')
-        //  process.exit()
-
         commands.reverse()
+
 
         if (VMolecule(commands[0]['starting substrate']).canonicalSMILES() === VMolecule(commands[commands.length-1]['finish substrate']).canonicalSMILES() ) {
             console.log("Starting substrate same as finish substrate")
             return
         }
 
-
-
         if (true) {
-            //if (commands.length > 0 && this.hasCharge(commands[0]['starting substrate']) === -1) {
-
-            // Final command should result in the substrate we are trying to synthesise
-            // VMolecule([this.target, 1]).canonicalSMILES().should.equal(VMolecule(commands[commands.length - 1]['finish substrate']).canonicalSMILES())
 
             const reaction_steps = commands.map(
                 (command, command_index) => {
@@ -253,8 +240,8 @@ class ReactionAI {
             if (this.callback !== undefined && this.callback !== null) {
                 this.callback(null, reaction_steps)
             } else {
-                console.log('ReactionAIgothere')
-                console.log(reaction_steps)
+                //console.log('ReactionAIgothere')
+                //console.log(reaction_steps)
                 VReaction(reaction_steps).render(this.db)
             }
 
@@ -262,7 +249,7 @@ class ReactionAI {
 
     }
 
-    _synthesise(substrate, reagent, commands, caller, depth, moleculeAI, reagentAI) {
+    _synthesise(substrate, reagent, commands, caller, depth, moleculeAI, reagentAI, max_number_of_steps, DEBUG) {
 
 
         moleculeAI.validateMolecule()
@@ -291,15 +278,6 @@ class ReactionAI {
 
                 if (caller !== command_name + 'Reversal') {
 
-                    /*
-                    ProtonateAI.js::deprotonateNitrogenReverse
-        if (this.reaction.container_reagent[0] === "Brønsted–Lowry acid") {
-               this.reaction.container_reagent[0] = "Brønsted–Lowry conjugate base"
-           } else {
-               console.log("Warning: reagent is not an acid ProtonationAI > deprotonateNitrogenReverse(), returning false")
-               return false
-           }
-        */
                     // If command_name is deprotonateNitrogen then pass in Brønsted–Lowry acid as the reagent"
                     // testing
                     //console.log(command_name)
@@ -324,7 +302,7 @@ class ReactionAI {
                         console.log("Components/State/ReactionAI -> _synthesise() reagent")
                         console.log(reagent)
                     }
-                    this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), command_name, _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth, reagentAI)
+                    this.runReverseCommand(new Reaction(_.cloneDeep(substrate), _.cloneDeep(reagent), {}), command_name, _.cloneDeep(substrate), _.cloneDeep(reagent), moleculeAI, _.cloneDeep(commands), caller, depth, reagentAI, max_number_of_steps, DEBUG)
                 }
 
             }
@@ -335,7 +313,7 @@ class ReactionAI {
 
 
 
-    runReverseCommand(reverse_reaction, command_name, target, reagent, moleculeAI, commands, caller, depth, reagentAI) {
+    runReverseCommand(reverse_reaction, command_name, target, reagent, moleculeAI, commands, caller, depth, reagentAI, max_number_of_steps, DEBUG) {
 
 
         this.debugger("Components/State/ReactionAI.js -> command " + command_name)
@@ -371,6 +349,11 @@ class ReactionAI {
             console.log("Components/State/ReactionAI.js -> running reverse reaction " + command_name + 'Reverse')
         }
 
+        if (undefined === reverse_reaction[command_name + 'Reverse']) {
+            console.log("Reverse command not found: " + command_name + 'Reverse')
+            process.error()
+        }
+        console.log(typeof reverse_reaction[command_name + 'Reverse'] + command_name)
         r = reverse_reaction[command_name + 'Reverse'](this.debugger_on)
 
 
@@ -453,16 +436,22 @@ class ReactionAI {
                     this.results(_.cloneDeep(commands))
                 } else {
 
+                    if ((depth+1) === max_number_of_steps) {
+                        this.results(_.cloneDeep(commands))
+                    } else {
 
-                    this._synthesise(
-                        _.cloneDeep(reverse_reaction.container_substrate),
-                        _.cloneDeep(reverse_reaction.container_reagent),
-                        _.cloneDeep(commands),
-                        command_name + 'Reversal',
-                        depth + 1,
-                        reverse_reaction_substrateAI,
-                        reverse_reaction_reagentAI
-                    )
+                        this._synthesise(
+                            _.cloneDeep(reverse_reaction.container_substrate),
+                            _.cloneDeep(reverse_reaction.container_reagent),
+                            _.cloneDeep(commands),
+                            command_name + 'Reversal',
+                            depth + 1,
+                            reverse_reaction_substrateAI,
+                            reverse_reaction_reagentAI,
+                            max_number_of_steps,
+                            DEBUG
+                        )
+                    }
 
                 }
             }

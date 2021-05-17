@@ -67,10 +67,6 @@ const VReaction = (reactions, container_end_product, rule, DEBUG) => {
 
         const reaction = reactions[index]
 
-        console.log('renderReactionsRecursive')
-        console.log(reaction)
-
-
         if (reaction !== undefined) {
 
             if (reaction.command === "Dehydrate") {
@@ -113,17 +109,7 @@ const VReaction = (reactions, container_end_product, rule, DEBUG) => {
                                     addFinishReagent(db, lines, reactions, index, reaction, substrate, product, reagent)
                                 } else {
 
-                                    /*
-                                    (async () => {
-                                        // await
-                                        let response =  MoleculeLookup(db, VMolecule(reaction.reagent).canonicalSMILES(), "SMILES", true)
-                                        return response
-                                    })().then((reagent_json_obj)=>{
-                                        const reagent = undefined === reagent_json_obj.IUPACName?reagent_json_obj.search:reagent_json_obj.IUPACName
-                                        addFinishReagent(db, lines, reactions, index, reaction, substrate, product, reagent)
-                                    }).catch( onErrorLookingUpMoleculeInDB
-                                    )
-    */
+
 
                                     MoleculeLookup(db, VMolecule(reaction.reagent).canonicalSMILES(), "SMILES", true).then(
                                         (reagent_json_obj) => {
