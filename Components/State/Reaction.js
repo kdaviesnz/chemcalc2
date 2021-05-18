@@ -159,66 +159,109 @@ class Reaction {
 
     reductiveAmination() {
 
+        const bondsAI = new BondsAI(this)
+
         // Look for carbonyl oxygen (C=O) and nitrogen atom index
-        let carbonyl = null
-        let amine = null
         this.setMoleculeAI()
+        let carbonyl_carbon_index = null
+
         let carbonyl_oxygen_index = this.MoleculeAI.findCarbonylOxygenIndex(true)
         let amine_nitrogen_index = null
         if (carbonyl_oxygen_index === -1) {
+
+            // Reagent is the molecule with O=C group
+            // Substrate is the amine (N-R) and attacks the carbon atom on the O=C group
+
             // Use reagent as the carbonyl
-            if (this.container_reagent === null) {
-                this.container_reagent = "O=CR"
+            if (this.container_reagent === null || this.container_reagent === "O=CR") {
+                this.container_reagent = [MoleculeFactory("O=CR"),1]
+                carbonyl_oxygen_index = 0
+                carbonyl_carbon_index = 1
             } else {
                 carbonyl_oxygen_index = this.ReagentAI.findCarbonylOxygenIndex()
                 if (carbonyl_oxygen_index === -1) {
                     return false
                 }
+                carbonyl_carbon_index  = this.MoleculeAI.findCarbonylCarbonIndexOnDoubleBond(carbonyl_oxygen_index)
             }
-            carbonyl = this.container_reagent
+
             // Look for N amine atom
+            // Substrate is the amine
             amine_nitrogen_index = this.MoleculeAI.findNitrogenAttachedToCarbonIndexNoDoubleBonds()
-            if (amine_nitrogen_index !==-1) {
-                amine = this.container_substrate
-            } else {
-                return false
-            }
 
             // Bond amine to carbonyl by replacing carbonyl oxygen with nitrogen atom (amine)
-            // Important:
-            // The reagent is the nucleophile and is attacking the substrate
-            // The substrate is the electrophile
-            // nucleophile, electrophile
-
-            this.bondSubstrateToReagent(amine_nitrogen_index, carbonyl_oxygen_index)
+            // N atom (substrate) attacks the carbonyl carbonyl carbon (reagent)
+            this.bondReagentToSubstrate(carbonyl_carbon_index, amine_nitrogen_index)
 
 
         } else {
 
-            carbonyl = this.container_substrate
+            // Substrate is the molecule with O=C group
+            // Reagent is the amine (N-R) and attacks the carbon atom on the O=C group
+
+            // Get carbonyl carbon index
+            carbonyl_carbon_index  = this.MoleculeAI.findCarbonylCarbonIndexOnDoubleBond(carbonyl_oxygen_index)
+
             if (this.container_reagent === null) {
-                this.container_reagent = "NR"
+                this.container_reagent = [MoleculeFactory("NR"),1]
+                amine_nitrogen_index = 0
             } else {
-                amine_nitrogen_index = this.ReagentAI.findNitrogenAttachedToCarbonIndexNoDoubleBonds()
+                amine_nitrogen_index = amine_ai.findNitrogenAttachedToCarbonIndexNoDoubleBonds()
                 if (amine_nitrogen_index === -1) {
                     return false
                 }
             }
 
-            amine = this.container_reagent
+            // Protonate the carbonyl oxygen using acid reagent
+            const protonationAI = new ProtonationAI(this)
+            protonationAI.protonateOxygenOnDoubleBond(carbonyl_oxygen_index, "A", true)
+            console.log("reductiveAmination() After protonation")
+            console.log(VMolecule([this.container_substrate[0],1]).compressed())
 
+            // Change O=C bond to single bond
+            bondsAI.breakCarbonOxygenDoubleBond()
+            console.log("reductiveAmination() After adding breaking C=O bond")
+            console.log(VMolecule([this.container_substrate[0],1]).compressed())
+
+            // N on amine (reagent) attacks the carbonyl carbonyl carbon (substrate)
+            this.bondSubstrateToReagent(amine_nitrogen_index , carbonyl_carbon_index )
+            console.log("reductiveAmination() After adding amine")
+            console.log(VMolecule([this.container_substrate[0],1]).compressed())
+
+            // Proton is transferred from N amine atom to carbonyl oxygen
+            amine_nitrogen_index = this.MoleculeAI.findNitrogenAttachedToCarbonIndexNoDoubleBonds()
+            carbonyl_oxygen_index = this.MoleculeAI.findHydroxylOxygenIndex()
+            protonationAI.transferProton(carbonyl_oxygen_index, amine_nitrogen_index)
+            console.log("reductiveAmination() After proton transfer")
+            console.log(VMolecule([this.container_substrate[0],1]).compressed())
+
+            // Water group leaves
             this.setMoleculeAI()
+            this.setChargesOnSubstrate()
+            const hydrationAI = new HydrationAI(this)
+            hydrationAI.dehydrate(false, carbonyl_oxygen_index)
+            console.log("reductiveAmination() After dehydration")
+            console.log(VMolecule([this.container_substrate[0],1]).compressed())
+
+            // Double bond is formed between N and carbonyl carbon
+            amine_nitrogen_index = this.MoleculeAI.findNitrogenAttachedToCarbonIndexNoDoubleBonds()
+            const carbon_index  = this.MoleculeAI.findCarbonAttachedToNitrogenIndex(amine_nitrogen_index)
+            bondsAI.makeNitrogenCarbonDoubleBond(amine_nitrogen_index, carbon_index)
+            console.log("reductiveAmination() After making N=C bond")
+            console.log(VMolecule([this.container_substrate[0],1]).compressed())
+
+            // Deprotonate N
+            const nitrogen = CAtom(this.container_substrate[0][1][amine_nitrogen_index], amine_nitrogen_index, this.container_substrate)
+            if(nitrogen.hydrogens().length>0) {
+                protonationAI.deprotonateNitrogen(amine_nitrogen_index)
+            }
+            console.log("reductiveAmination() After deprotonating nitrogen")
+            console.log(VMolecule([this.container_substrate[0],1]).compressed())
 
             this.setMoleculeAI()
             this.setReagentAI()
-
-            // Bond amine to carbonyl by replacing carbonyl oxygen with nitrogen atom (amine)
-            // nucleophile -> electrophile
-            this.substituteSubstrateAtomForReagent(carbonyl_oxygen_index, amine)
-
-
-            console.log(VMolecule([this.container_substrate[0],1]).compressed())
-            process.error()
+            this.setChargesOnSubstrate()
+            this.setChargesOnReagent()
 
         }
 
@@ -228,8 +271,17 @@ class Reaction {
         // carbonyl
         // amine_nitrogen_index
         // carbonyl_oxygen_index
-        const bondsAI = new BondsAI(this)
-        return bondsAI.changeNitrogenCarbonDoubleBondToSingleBond()
+        bondsAI.breakCarbonNitrogenDoubleBond()
+
+        this.setMoleculeAI()
+        this.setReagentAI()
+        this.setChargesOnSubstrate()
+        this.setChargesOnReagent()
+
+        console.log("reductiveAmination() After changing N=C bond to NC bond")
+
+        console.log(VMolecule([this.container_substrate[0],1]).compressed())
+        process.error()
 
 
     }
@@ -904,55 +956,9 @@ class Reaction {
     }
 
 
-    transferProton() {
-
-        // console.log("Reaction.js transferProton()")
-        // console.log(VMolecule(this.container_substrate).compressed())
-
-        // Get nucleophile  - this is the atom that is getting the proton
-        const nucleophile_index = this.MoleculeAI.findNucleophileIndex() // eg [O-]
-        //// console.log(nucleophile_index)
-        //// console.log(kkk)
-        if (nucleophile_index == -1) {
-            return false
-        }
-
-        // Get electrophile - this is the atom we are getting the proton from
-        const electrophile_index = this.MoleculeAI.findElectrophileIndex()
-        // console.log('transferProton() electrophile_index index: ' + electrophile_index)
-        // console.log(jnc)
-        if (electrophile_index === -1) {
-            return false
-        }
-
-        // Get proton from electrophile
-        const electrophile_atom_object = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
-        const proton_bond = electrophile_atom_object.indexedBonds("").filter((bond)=>{
-            return bond.atom[0] === 'H'
-        }).pop()
-
-        // Remove electrons from proton
-        const shared_electrons = proton_bond.shared_electrons
-        this.container_substrate[0][1][proton_bond.atom_index] = Set().removeFromArray(
-            this.container_substrate[0][1][proton_bond.atom_index],
-            shared_electrons
-        )
-
-        // Add proton to nucleophile (eg [O-]
-        const nucleophile_atom_object = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate)
-        const n_free_electrons = nucleophile_atom_object.freeElectrons()
-
-        if (n_free_electrons.length === 0) {
-            return false
-        }
-
-        // Bond proton to nucleophile
-        this.container_substrate[0][1][proton_bond.atom_index].push(n_free_electrons[0])
-        this.container_substrate[0][1][proton_bond.atom_index].push(n_free_electrons[1])
-        this.setChargeOnSubstrateAtom(nucleophile_index)
-        this.setChargeOnSubstrateAtom(electrophile_index)
-
-        this.setMoleculeAI()
+    transferProton(nucleophile_index=null, electrophile_index = null) {
+        const protonationAI = new ProtonationAI(this)
+        return protonationAI.transferProton(nucleophile_index, electrophile_index)
     }
 
 

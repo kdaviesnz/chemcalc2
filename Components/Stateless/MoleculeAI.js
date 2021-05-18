@@ -60,6 +60,7 @@ const ProtonationAI = require('../../Components/State/ProtonationAI')
    findNonWaterOxygenIndex()
    findMetalAtomIndex()
    findCarbonylOxygenIndex
+   findCarbonAttachedToNitrogenIndex(nitrogen_index)
    */
 
 
@@ -74,6 +75,14 @@ const MoleculeAI = (container_molecule) => {
             container_molecule[0][1][0].should.be.an.Array()
             container_molecule[0][1][0][0].should.be.an.String()
         }
+    }
+
+    const __findCarbonAttachedToNitrogenIndex = (nitrogen_index) => {
+        const nitrogen_atom = CAtom(container_molecule[0][1][nitrogen_index], nitrogen_index, container_molecule)
+        const carbon_bonds = nitrogen_atom.indexedBonds("").filter((bond) => {
+            return bond.atom[0] === "C"
+        })
+        return carbon_bonds[0].atom_index
     }
 
     const __findCarbonylOxygenIndex = (DEBUG) => {
@@ -140,20 +149,33 @@ const MoleculeAI = (container_molecule) => {
         return carbon_bonds.length === 0?-1:carbon_bonds[0].atom_index
     }
 
-    const __findCarbonylCarbonIndexOnDoubleBond = () => {
-        const carbonyl_carbon_index = _.findIndex(this.container_reagent[0][1], (atom, index)=>{
-            const atom_object = CAtom(atom, index, container_molecule)
-            if (atom_object.symbol !== "C") {
-                return false
-            }
-            const double_bonds = atom_object.indexedDoubleBonds("").filter((bond)=>{
-                if(bond.atom[0] !=="O") {
+    const __findCarbonylCarbonIndexOnDoubleBond = (carbonyl_oxygen_index) => {
+
+        let carbonyl_carbon_index = -1
+        if (undefined !== carbonyl_oxygen_index) {
+            const carbonyl_oxygen_object = CAtom(container_molecule[0][1][carbonyl_oxygen_index], carbonyl_oxygen_index, container_molecule)
+            const double_bonds = carbonyl_oxygen_object.indexedDoubleBonds("").filter((bond) => {
+                if (bond.atom[0] !== "C") {
                     return false
                 }
                 return true
             })
-            return atom[0] === "O"
-        })
+            carbonyl_carbon_index = double_bonds.length === 0?  -1: double_bonds[0].atom_index
+        } else {
+            carbonyl_carbon_index = _.findIndex(container_molecule[0][1], (atom, index) => {
+                const atom_object = CAtom(atom, index, container_molecule)
+                if (atom_object.symbol !== "C") {
+                    return false
+                }
+                const double_bonds = atom_object.indexedDoubleBonds("").filter((bond) => {
+                    if (bond.atom[0] !== "C") {
+                        return false
+                    }
+                    return true
+                })
+                return double_bonds.length > 0
+            })
+        }
         return carbonyl_carbon_index
     }
 
@@ -331,8 +353,8 @@ const MoleculeAI = (container_molecule) => {
     // No method should change state of container_molecule
     return {
 
-        "findCarbonylCarbonIndexOnDoubleBond":() => {
-            return __findCarbonylCarbonIndexOnDoubleBond()
+        "findCarbonylCarbonIndexOnDoubleBond":(carbonyl_oxygen_index) => {
+            return __findCarbonylCarbonIndexOnDoubleBond(carbonyl_oxygen_index)
         },
 
 
@@ -1566,6 +1588,10 @@ VMolecule
         "findProtonIndexOnAtom": (atom) => {
             const protonationAI = new ProtonationAI(this.reaction)
             return protonationAI.findProtonIndexOnAtom(atom)
+        },
+
+        "findCarbonAttachedToNitrogenIndex": (nitrogen_index) =>{
+            return __findCarbonAttachedToNitrogenIndex(nitrogen_index)
         },
 
         "findCarbonylOxygenIndex": (DEBUG) => {

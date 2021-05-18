@@ -12,7 +12,7 @@ const uniqid = require('uniqid');
 // removeAtom(molecule, atom) {
 // removeBond(molecule, atom_index, electrons)
 // makeNitrogenCarbonTripleBond()
-// makeNitrogenCarbonDoubleBond()
+// makeNitrogenCarbonDoubleBond(n_index=null, carbon_index=null)
 // makeOxygenCarbonDoubleBond()
 // breakCarbonNitrogenTripleBond()
 // breakCarbonNitrogenDoubleBond()
@@ -26,13 +26,16 @@ const uniqid = require('uniqid');
 // bondSubstrateToReagentReverse()
 // removeHalideReverse()
 // makeCarbonCarbonDoubleBondByAtomIndex(c2_negative_carbon_index, c1_positive_carbon_index, DEBUG)
-// makeDoubleBond(negativeAtom, positiveAtom, DEBUG) {
+// makeDoubleBond(negativeAtom, positiveAtom, DEBUG)
+
 
 class BondsAI {
 
     constructor(reaction) {
         this.reaction = reaction
     }
+
+
 
     removeProton(molecule, atom_index, electrons, proton) {
 
@@ -92,33 +95,31 @@ class BondsAI {
 
     }
 
-    makeNitrogenCarbonDoubleBond() {
+    makeNitrogenCarbonDoubleBond(n_index=null, carbon_index=null) {
 
-        const n_index = this.reaction.MoleculeAI.findNitrogenAttachedToCarbonIndexNoDoubleBonds()
+        n_index = n_index===null?this.reaction.MoleculeAI.findNitrogenAttachedToCarbonIndexNoDoubleBonds():n_index
         if (n_index === -1) {
             return false
         }
 
         const n = CAtom(this.reaction.container_substrate[0][1][n_index], n_index, this.reaction.container_substrate)
 
-        const carbon_bonds = n.indexedBonds("").filter((bond)=>{
-            if (bond.atom[0] !== "C") {
+        if (carbon_index === null) {
+            const carbon_bonds = n.indexedBonds("").filter((bond) => {
+                if (bond.atom[0] !== "C") {
+                    return false
+                }
+                const c = CAtom(this.reaction.container_substrate[0][1][bond.atom_index], bond.atom_index, this.reaction.container_substrate)
+                return c.indexedBonds("").filter((bond) => {
+                    return bond.atom[0] === "O"
+                }).length > 0
+            })
+
+            if (carbon_bonds.length === 0) {
                 return false
             }
-            const c = CAtom(this.reaction.container_substrate[0][1][bond.atom_index], bond.atom_index, this.reaction.container_substrate)
-            return c.indexedBonds("").filter((bond)=>{
-                return bond.atom[0] === "O"
-            }).length > 0
-        })
-
-
-
-        if (carbon_bonds.length === 0) {
-            return false
+            const carbon_index = carbon_bonds[0].atom_index
         }
-
-
-        const carbon_index = carbon_bonds[0].atom_index
 
 
         // Check for C=X bonds and change to single bond (not N)
@@ -763,6 +764,7 @@ class BondsAI {
             // Amine?
             if (this.reaction.container_reagent[0] === "N") {
                 const nitrogen = AtomFactory("N", 0)
+                const r = AtomFactory("N", 0)
                 nitrogen.push("R")
                 console.log(nitrogen)
 
@@ -800,13 +802,6 @@ class BondsAI {
 
             this.reaction.setMoleculeAI()
             this.reaction.setReagentAI()
-
-            if (this.reaction.MoleculeAI.validateMolecule() === false) {
-                console.log('BondsAI.js molecule is not valid (bondSubstrateToReagent())')
-                console.log('Method: bondSubstrateToReagent()')
-                console.log(VMolecule(this.reaction.container_substrate).compressed())
-                console.log(bbbbbbond)
-            }
 
         }
 

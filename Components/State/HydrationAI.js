@@ -8,17 +8,18 @@ const uniqid = require('uniqid');
 const SubstitutionAI = require('../../Components/State/SubstitutionAI')
 
 // dehydrateReverse()
+// dehydrate(check_mode, oxygen_atom_index=null)
 class HydrationAI {
 
     constructor(reaction) {
         this.reaction = reaction
     }
 
-    dehydrate(check_mode) {
+    dehydrate(check_mode, oxygen_atom_index=null) {
 
         // console.log("HydrationAI dehydrate()")
 
-        const oxygen_atom_index = this.reaction.MoleculeAI.findWaterOxygenIndex()
+        oxygen_atom_index = oxygen_atom_index===null?this.reaction.MoleculeAI.findWaterOxygenIndex():oxygen_atom_index
 
         if (oxygen_atom_index === -1) {
             return false
@@ -59,8 +60,6 @@ class HydrationAI {
             return i === oxygen_atom_index || i === hydrogen_bonds[0].atom_index || i === hydrogen_bonds[1].atom_index
         })
 
-        // Charges
-        this.reaction.setChargesOnSubstrate()
 
         this.reaction.leaving_groups.push([MoleculeFactory("O"),1])
 

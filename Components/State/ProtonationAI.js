@@ -31,12 +31,80 @@ const uniqid = require('uniqid');
 // removeProtonFromAtom(moleculeAI, molecule, atom_index)
 // addProtonToReagent(index_of_reagent_atom_to_protonate )
 // addProtonToSubstrate(target_atom, target_atom_index)
-
+// transferProton(nucleophile_index=null, electrophile_index = null)
 
 class ProtonationAI {
 
     constructor(reaction) {
         this.reaction = reaction
+    }
+
+    transferProton(nucleophile_index=null, electrophile_index = null) {
+
+        // console.log("Reaction.js transferProton()")
+        // console.log(VMolecule(this.container_substrate).compressed())
+
+        // Get nucleophile  - this is the atom that is getting the proton
+        if (nucleophile_index===null) {
+            nucleophile_index = this.MoleculeAI.findNucleophileIndex() // eg [O-]
+            if (nucleophile_index == -1) {
+                return false
+            }
+        }
+
+        // Get electrophile - this is the atom we are getting the proton from
+        if (electrophile_index===null) {
+            electrophile_index = this.MoleculeAI.findElectrophileIndex()
+            if (electrophile_index === -1) {
+                return false
+            }
+        }
+
+        // Get proton from electrophile
+        const electrophile_atom_object = CAtom(this.reaction.container_substrate[0][1][electrophile_index], electrophile_index, this.reaction.container_substrate)
+        let proton_bond = null
+        proton_bond = electrophile_atom_object.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === 'H'
+        }).pop()
+
+        if (proton_bond === undefined) {
+            // Check if electrophile is attached to "R"
+            let r_bonds = electrophile_atom_object.indexedBonds("").filter((bond)=>{
+                return bond.atom[0] === 'R'
+            })
+            if (r_bonds.length > 0) {
+                // Create a proton and add it to the electrophile
+                const proton = AtomFactory("H", "")
+                const proton_electron = proton[proton.length-1]
+                const electrophile_electron = electrophile_atom_object.freeElectrons()[0]
+                proton.push(electrophile_electron)
+                this.reaction.container_substrate[0][1][electrophile_index].push(proton_electron)
+                this.reaction.container_substrate[0][1].push(proton)
+            }
+            proton_bond = electrophile_atom_object.indexedBonds("").filter((bond)=>{
+                return bond.atom[0] === 'H'
+            }).pop()
+        }
+
+        // Remove electrons from proton
+        const shared_electrons = proton_bond.shared_electrons
+        this.reaction.container_substrate[0][1][proton_bond.atom_index] = Set().removeFromArray(
+            this.reaction.container_substrate[0][1][proton_bond.atom_index],
+            shared_electrons
+        )
+
+        // Add proton to nucleophile (eg [O-]
+        const nucleophile_atom_object = CAtom(this.reaction.container_substrate[0][1][nucleophile_index], nucleophile_index, this.reaction.container_substrate)
+        const n_free_electrons = nucleophile_atom_object.freeElectrons()
+
+        if (n_free_electrons.length === 0) {
+            return false
+        }
+
+        // Bond proton to nucleophile
+        this.reaction.container_substrate[0][1][proton_bond.atom_index].push(n_free_electrons[0])
+        this.reaction.container_substrate[0][1][proton_bond.atom_index].push(n_free_electrons[1])
+
     }
 
     deprotonateCarbonReverse(DEBUG){
@@ -457,20 +525,32 @@ class ProtonationAI {
         return true
     }
 
-    protonateOxygenOnDoubleBond() {
+    protonateOxygenOnDoubleBond(carbonyl_oxygen_index, reagent, DEBUG) {
 
         // Find index of oxygen
-        const oxygen_index = this.reaction.MoleculeAI.findOxygenOnDoubleBondIndex()
+        const oxygen_index = undefined !== carbonyl_oxygen_index? carbonyl_oxygen_index: this.reaction.MoleculeAI.findOxygenOnDoubleBondIndex()
 
-        const reagent_proton_index = this.reaction.ReagentAI.findProtonIndex()
-        const proton = _.cloneDeep(this.reaction.container_reagent[0][1][reagent_proton_index])
-
-        // Remove proton from reagent
-        const reagent_bonds = CAtom(this.reaction.container_reagent[0][1][reagent_proton_index], reagent_proton_index, this.reaction.container_reagent).indexedBonds("").filter(
-            (bond) => {
-                return bond.atom[0] !== "H"
+        let reagent_proton_index = null
+        let proton = null
+        if (typeof reagent === "string") {
+            if (reagent !== "A") {
+                console.log("ProtonationAI protonateOxygenOnDoubleBond() -> Reagent must be acid (A)")
+                process.exit()
             }
-        )
+            proton = AtomFactory("H", 0)
+            reagent = "CB"
+        } else {
+            reagent_proton_index = this.reaction.ReagentAI.findProtonIndex()
+            const proton = _.cloneDeep(this.reaction.container_reagent[0][1][reagent_proton_index])
+
+            // Remove proton from reagent
+            const reagent_bonds = CAtom(this.reaction.container_reagent[0][1][reagent_proton_index], reagent_proton_index, this.reaction.container_reagent).indexedBonds("").filter(
+                (bond) => {
+                    return bond.atom[0] !== "H"
+                }
+            )
+
+        }
 
         let free_slots = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate).freeSlots()
         if (free_slots > 0) {
@@ -480,12 +560,6 @@ class ProtonationAI {
             this.reaction.container_substrate[0][1].push(proton)
             this.reaction.container_substrate[0][1][oxygen_index][4] = "+"
         }
-
-        this.container_reagent[0][1][reagent_bonds[0].atom_index][4] === "+"
-        ||  this.container_reagent[0][1][reagent_bonds[0].atom_index][4] < 0? 0: "-"
-        _.remove(this.reaction.container_reagent[0][1], (v, i) => {
-            return i === reagent_proton_index
-        })
 
         this.reaction.setMoleculeAI()
         this.reaction.setReagentAI()
@@ -520,16 +594,18 @@ class ProtonationAI {
         return false
     }
 
-    deprotonateNitrogen(command_names, command_index) {
+    deprotonateNitrogen(nitrogen_index = null) {
 
-        this.reaction.setMoleculeAI(command_names, command_index, -1)
+        // nitrogen is the electrophile
 
         let electrophile = null
-        let h_bonds = null
+        let nitrogen_hydrogen_bonds = null
 
+        if (typeof this.reaction.container_reagent === "string") {
+
+        }
         // look for [N+]
-      // console.log(VMolecule(this.reaction.container_substrate).compressed())
-        let electrophile_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index) => {
+        nitrogen_index = nitrogen_index !==null? nitrogen_index:_.findIndex(this.reaction.container_substrate[0][1], (atom, index) => {
             if (atom[0] !== "N") {
                 return false
             }
@@ -539,83 +615,28 @@ class ProtonationAI {
 
             electrophile = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate)
 
-            h_bonds = electrophile.indexedBonds("").filter((bond)=>{
+            nitrogen_hydrogen_bonds = electrophile.indexedBonds("").filter((bond)=>{
                 return bond.atom[0] === 'H'
             })
 
-            return h_bonds.length > 0
+            return nitrogen_hydrogen_bonds.length > 0
         })
 
 
-        if (electrophile_index === -1) {
+        if (nitrogen_index === -1) {
             return false
         }
 
-        const hydrogen_bond = h_bonds.pop()
-
-        if (this.reaction.container_substrate[0][1][electrophile_index][0]!== "C"){
-            ////// console.log("ProtatonAI 1111")
-            // Charge should be set before calling this.addProtonToReagent()
-            this.reaction.container_substrate[0][1][electrophile_index][4] = this.reaction.container_substrate[0][1][electrophile_index][4] === "+"? "" : "-"
-            const r = this.reaction.addProtonToReagent()
-            if (r === false) {
-                return false
-            }
-            this.reaction.container_substrate[0][1].splice(hydrogen_bond.atom_index, 1)
+        if (typeof this.reaction.container_reagent === "string") {
+            this.reaction.container_reagent = "CA"
         } else {
 
-            // Check for carbons bonds
-            ////// console.log("ProtonationAI 2222")
+            const protonationAI = new ProtonationAI(this.reaction)
 
-            const non_carbon_bond = electrophile_bonds.filter((bond) => {
-                return bond.atom[0] !== "C" && bond.atom[0] !== "H"
-            }).pop()
-
-            if (non_carbon_bond !== undefined) {
-                ////// console.log("Protonation AI3333")
-                const c_atom = CAtom(this.reaction.container_substrate[0][1][electrophile_index], electrophile_index, this.reaction.container_substrate)
-                // 5 bonds, 10 electrons
-                this.reaction.addProtonToReagent()
-                this.reaction.container_substrate[0][1].splice(hydrogen_bond.atom_index, 1)
-              // console.log("After splicing hydrogen")
-                if (hydrogen_bond.atom_index < electrophile_index) {
-                    electrophile_index = electrophile_index - 1
-                }
-
-            } else {
-
-                const carbon_bond = electrophile_bonds.filter((bond) => {
-                    return bond.atom[0] === "C"
-                }).pop()
-
-                if (undefined === carbon_bond) {
-                    this.reaction.addProtonToReagent()
-                    this.reaction.container_substrate[0][1][electrophile_index][4] = 0
-                    this.reaction.container_substrate[0][1].splice(hydrogen_bond.atom_index, 1)
-                } else {
-                    // Change bond to double bond
-                    const shared_electrons = hydrogen_bond.shared_electrons // electrons shared between electrophile and hydrogen
-                    this.reaction.container_substrate[0][1][carbon_bond.atom_index].push(shared_electrons[0])
-                    this.reaction.container_substrate[0][1][carbon_bond.atom_index].push(shared_electrons[1])
-                    this.reaction.addProtonToReagent()
-                    this.reaction.container_substrate[0][1][electrophile_index][4] = 0
-                }
-
-            }
+            protonationAI.addProtonToReagent()
+            this.reaction.container_substrate[0][1].splice(nitrogen_index, 1)
 
         }
-
-
-        if (this.reaction.ReagentAI === null) {
-            console.log("ProtonationAI > deprotonateNitrogen()" + this.reaction.container_reagent[0] )
-            if (this.reaction.container_reagent[0] === "Brønsted–Lowry conjugate base") {
-                this.reaction.container_reagent[0] = "Brønsted–Lowry acid"
-            }
-        } else {
-            this.reaction.setReagentAI()
-        }
-
-        this.reaction.setMoleculeAI(command_names, command_index, electrophile_index)
 
         return true
 
