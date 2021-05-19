@@ -160,6 +160,7 @@ class Reaction {
     reductiveAmination() {
 
         const bondsAI = new BondsAI(this)
+        const protonationAI = new ProtonationAI(this)
 
         // Look for carbonyl oxygen (C=O) and nitrogen atom index
         this.setMoleculeAI()
@@ -167,6 +168,8 @@ class Reaction {
 
         let carbonyl_oxygen_index = this.MoleculeAI.findCarbonylOxygenIndex(true)
         let amine_nitrogen_index = null
+
+
         if (carbonyl_oxygen_index === -1) {
 
             // Reagent is the molecule with O=C group
@@ -175,6 +178,8 @@ class Reaction {
             // Use reagent as the carbonyl
             if (this.container_reagent === null || this.container_reagent === "O=CR") {
                 this.container_reagent = [MoleculeFactory("O=CR"),1]
+                //console.log(VMolecule([this.container_reagent[0],1]).compressed())
+                //process.error()
                 carbonyl_oxygen_index = 0
                 carbonyl_carbon_index = 1
             } else {
@@ -189,7 +194,16 @@ class Reaction {
             // Substrate is the amine
             amine_nitrogen_index = this.MoleculeAI.findNitrogenAttachedToCarbonIndexNoDoubleBonds()
 
-            // Bond amine to carbonyl by replacing carbonyl oxygen with nitrogen atom (amine)
+            // Protonate the carbonyl oxygen using acid reagent
+
+            protonationAI.protonateOxygenOnDoubleBond(carbonyl_oxygen_index, "A", true)
+            console.log("reductiveAmination() After protonation")
+            console.log(VMolecule([this.container_substrate[0],1]).compressed())
+
+            // Change O=C bond to single bond
+            bondsAI.breakCarbonOxygenDoubleBond()
+            console.log("reductiveAmination() After adding breaking C=O bond")
+            console.log(VMolecule([this.container_substrate[0],1]).compressed())
             // N atom (substrate) attacks the carbonyl carbonyl carbon (reagent)
             this.bondReagentToSubstrate(carbonyl_carbon_index, amine_nitrogen_index)
 
@@ -213,7 +227,6 @@ class Reaction {
             }
 
             // Protonate the carbonyl oxygen using acid reagent
-            const protonationAI = new ProtonationAI(this)
             protonationAI.protonateOxygenOnDoubleBond(carbonyl_oxygen_index, "A", true)
             console.log("reductiveAmination() After protonation")
             console.log(VMolecule([this.container_substrate[0],1]).compressed())

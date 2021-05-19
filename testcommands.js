@@ -9,9 +9,13 @@ const CAtom = require('./Controllers/Atom')
 
 const CommandTest = require('./Components/Stateless/CommandTest')
 
+const methylamine = MoleculeFactory("CN")
+const reductive_amination = CommandTest("REDUCTIVEAMINATION", _.cloneDeep([methylamine,1]), null)
+process.error()
+
 const acetone = MoleculeFactory("CC(=O)C")
 console.log(VMolecule([acetone,1]).compressed())
-const reductive_amination = CommandTest("REDUCTIVEAMINATION", _.cloneDeep([acetone,1]), null)
+const reductive_amination_test_2 = CommandTest("REDUCTIVEAMINATION", _.cloneDeep([acetone,1]), null)
 process.error()
 
 const sulphuric_acid = MoleculeFactory("OS(=O)(=O)O")
