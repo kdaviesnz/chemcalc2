@@ -4,6 +4,9 @@ const Reaction = require("../Components/State/Reaction")
 
 const TransferProtonReverse = (mmolecule, reagent, rule, DEBUG) => {
 
+    console.log("Calling TransferProtonReverse")
+    process.error()
+
     const reaction = new Reaction(mmolecule, reagent, rule, DEBUG)
 
     const result = reaction.transferProtonReverse()

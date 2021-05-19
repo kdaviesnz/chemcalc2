@@ -157,6 +157,11 @@ class Reaction {
 
     }
 
+    reductiveAminationReverse() {
+        console.log("Calling Reaction.js reductiveAminationReverse()")
+        return false
+    }
+
     reductiveAmination() {
 
         const bondsAI = new BondsAI(this)
