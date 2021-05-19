@@ -195,15 +195,15 @@ class Reaction {
             amine_nitrogen_index = this.MoleculeAI.findNitrogenAttachedToCarbonIndexNoDoubleBonds()
 
             // Protonate the carbonyl oxygen using acid reagent
-
+// @todo we are protonating the reagent
             protonationAI.protonateOxygenOnDoubleBond(carbonyl_oxygen_index, "A", true)
             console.log("reductiveAmination() After protonation")
-            console.log(VMolecule([this.container_substrate[0],1]).compressed())
+            console.log(VMolecule([this.container_reagent[0],1]).compressed())
 
             // Change O=C bond to single bond
             bondsAI.breakCarbonOxygenDoubleBond()
             console.log("reductiveAmination() After adding breaking C=O bond")
-            console.log(VMolecule([this.container_substrate[0],1]).compressed())
+            console.log(VMolecule([this.container_reagent[0],1]).compressed())
             // N atom (substrate) attacks the carbonyl carbonyl carbon (reagent)
             this.bondReagentToSubstrate(carbonyl_carbon_index, amine_nitrogen_index)
 
