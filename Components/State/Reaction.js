@@ -157,8 +157,27 @@ class Reaction {
 
     }
 
-    reductiveAminationReverse() {
+    reductiveAminationReverse(carbon_index) {
         console.log("Calling Reaction.js reductiveAminationReverse()")
+        this.setMoleculeAI()
+        // Find nitrogen index
+        const nitrogen_index = this.MoleculeAI.findNitrogenAttachedToCarbonIndexNoDoubleBonds()
+        if (nitrogen_index === -1) {
+            return false
+        }
+
+        if (undefined !== carbon_index) {
+
+        } else {
+            // Get all carbon atoms attached to the nitrogen
+            const carbon_atom_indexes = this.MoleculeAI.findAllCarbonIndexesAttachedToNitrogen(nitrogen_index)
+            carbon_atom_indexes.map((carbon_atom_index)=>{
+                // Change to double bond
+            })
+        }
+
+
+
         return false
     }
 

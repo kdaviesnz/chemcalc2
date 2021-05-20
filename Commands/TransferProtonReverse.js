@@ -24,10 +24,12 @@ const TransferProtonReverse =  (mmolecule, reagent, rule, DEBUG, horizontalCallb
         start(0, horizontalCallback)
     }
 
+    /*
     return result  === false? false : [
         reaction.container_substrate,
         reaction.container_reagent
     ]
+     */
 }
 
 module.exports = TransferProtonReverse

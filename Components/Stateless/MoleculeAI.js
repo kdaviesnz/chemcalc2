@@ -61,6 +61,8 @@ const ProtonationAI = require('../../Components/State/ProtonationAI')
    findMetalAtomIndex()
    findCarbonylOxygenIndex
    findCarbonAttachedToNitrogenIndex(nitrogen_index)
+   findAllCarbonIndexesAttachedToNitrogen(nitrogen_index) // single bonds
+   __getCarbonBondsAttachedToNitrogen
    */
 
 
@@ -77,11 +79,23 @@ const MoleculeAI = (container_molecule) => {
         }
     }
 
-    const __findCarbonAttachedToNitrogenIndex = (nitrogen_index) => {
+    const __getCarbonBondsAttachedToNitrogen = function(nitrogen_index) {
         const nitrogen_atom = CAtom(container_molecule[0][1][nitrogen_index], nitrogen_index, container_molecule)
         const carbon_bonds = nitrogen_atom.indexedBonds("").filter((bond) => {
             return bond.atom[0] === "C"
         })
+        return carbon_bonds
+    }
+
+    const __findAllCarbonIndexesAttachedToNitrogen = function(nitrogen_index) {
+        const carbon_bonds = this.__getCarbonBondsAttachedToNitrogen(nitrogen_index)
+        return carbon_bonds.map((bond)=>{
+            return bond.atom_index
+        })
+    }
+
+    const __findCarbonAttachedToNitrogenIndex = function(nitrogen_index) {
+        const carbon_bonds = this.__getCarbonBondsAttachedToNitrogen(nitrogen_index)
         return carbon_bonds[0].atom_index
     }
 
@@ -1596,6 +1610,10 @@ VMolecule
 
         "findCarbonylOxygenIndex": (DEBUG) => {
             return __findCarbonylOxygenIndex(DEBUG)
+        },
+
+        "findAllCarbonIndexesAttachedToNitrogen": function(nitrogen_index) {
+            return __findAllCarbonIndexesAttachedToNitrogen(nitrogen_index)
         },
 
         "findIndexOfCarbonWithNegativeCharge": (DEBUG) => {
