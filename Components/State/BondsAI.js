@@ -37,8 +37,19 @@ class BondsAI {
 
 
 
-    removeProton(molecule, atom_index, electrons, proton) {
+    removeProton(molecule, atom_index, electrons=null, proton=null) {
 
+        const nitrogen_atom = CAtom(this.reaction.container_substrate[0][1][atom_index], atom_index, this.reaction.container_substrate)
+        if (electrons === null && proton === null) {
+            const hydrogen_nitrogen_bonds = nitrogen_atom.indexedBonds("").filter((bond)=>{
+                return bond.atom[0] === "H"
+            })
+            if (hydrogen_nitrogen_bonds.length ===0) {
+                return false
+            }
+            electrons = _.cloneDeep(hydrogen_nitrogen_bonds[0].shared_electrons).slice(0,2)
+            proton = this.reaction.container_substrate[0][1][hydrogen_nitrogen_bonds[0].atom_index]
+        }
         molecule = this.removeBond(molecule, atom_index, electrons)
         molecule[0][1][atom_index].push(uniqid())
         molecule[0][1][atom_index].push(uniqid())

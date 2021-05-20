@@ -9,8 +9,25 @@ const CAtom = require('./Controllers/Atom')
 
 const CommandTest = require('./Components/Stateless/CommandTest')
 
+const reductiveAminationReverse = require('./Commands/ReductiveAminationReverse')
+const transferProtonReverse = require('./Commands/TransferProtonReverse')
+
+
+const commands = [
+    reductiveAminationReverse,
+    transferProtonReverse
+]
+
+const horizontalFn = (target, reagent, reaction_commands) => (i, horizontalCallback) => {
+    const rule = ""
+    commands[i](target, reagent, rule, DEBUG, horizontalCallback, horizontal, reaction_commands, i)
+}
+
 const methylamine = MoleculeFactory("CN")
-const reductive_amination = CommandTest("REDUCTIVEAMINATION", _.cloneDeep([methylamine,1]), null)
+const me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
+const horizontalCallback = horizontalFn(me, methylamine, commands)
+// const CommandTest = (command, substrate, reagent, rule,  horizontalCallback, horizontalFn, commands, i)
+const reductive_amination = CommandTest("REDUCTIVEAMINATIONREVERSE", _.cloneDeep(me), _.cloneDeep([methylamine,1]), "", horizontalCallback, horizontalFn, commands, 0)
 process.error()
 
 const acetone = MoleculeFactory("CC(=O)C")
