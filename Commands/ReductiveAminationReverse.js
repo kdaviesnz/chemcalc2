@@ -6,7 +6,11 @@ const ReductiveAminationReverse = (mmolecule, reagent, rule, DEBUG, horizontalCa
 
     console.log("Calling ReductiveAminationReverse")
 
-    const reaction = new Reaction([mmolecule,1], reagent, rule, DEBUG, horizontalCallback, horizontalFn, commands)
+    if (carbon_index !== undefined) {
+        console.log("Commands/ReductiveAminationReverse carbon index:" + carbon_index)
+    }
+
+    const reaction = new Reaction([mmolecule,1], reagent, rule, DEBUG, horizontalCallback, horizontalFn, commands, i)
     const result = reaction.reductiveAminationReverse(carbon_index)
 
     if(undefined !== commands[i+1]) {
@@ -15,7 +19,8 @@ const ReductiveAminationReverse = (mmolecule, reagent, rule, DEBUG, horizontalCa
         horizontalCallback(i+1, horizontalCallback)
     }
 
-    if (result !== false) {
+    if (result !== false && result !==undefined) {
+        console.log("Commands/ReductiveAminationReverse result:")
         const start = horizontalFn(result[0], result[1], commands)
         start(0, horizontalCallback)
     }

@@ -15,6 +15,7 @@ const ChargesAI = require('../../Components/State/ChargesAI')
 const SubstitutionAI = require('../../Components/State/SubstitutionAI')
 const range = require("range");
 
+
 /*
 reductiveAmination()
 createEnolate()
@@ -107,12 +108,13 @@ oxygenToOxygenProtonTransfer()
 protonateCarbonDoubleBond()
 addProtonFromReagentToNonHydroxylGroup()
 addProtonFromReagentToHydroxylGroup
+
 */
 
 
 class Reaction {
 
-    constructor(container_substrate, container_reagent, rule) {
+    constructor(container_substrate, container_reagent, rule, DEBUG, horizontalCallback, horizontalFn, commands, command_index) {
 
 
         if (container_substrate.length !==2) {
@@ -158,6 +160,12 @@ class Reaction {
 
         this.bondsAI = new BondsAI(this)
 
+        this.DEBUG = DEBUG
+        this.horizontalCallback = horizontalCallback
+        this.horizontalFn = horizontalFn
+        this.commands = commands
+        this.command_index = command_index
+
     }
 
     reductiveAminationReverse(carbon_index) {
@@ -172,23 +180,26 @@ class Reaction {
             return false
         }
 
-        if (undefined !== carbon_index) {
+        if (undefined !== carbon_index)  {
             // Change to double bond
             const nitrogen = CAtom(this.container_substrate[0][1][nitrogen_index], nitrogen_index, this.container_substrate)
             const carbon = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, this.container_substrate)
+            // Remove hydrogen from nitrogen to give it a negative charge
+            // this.container_substrate = this.bondsAI.removeProton(this.container_substrate, nitrogen_index, h_n_shared_electrons, this.container_substrate[0][1][h_n_hydrogen_bonds[0].atom_index])
+            this.container_substrate = this.bondsAI.removeProton(this.container_substrate, nitrogen_index)
             this.bondsAI.makeDoubleBond(nitrogen, carbon, false)
+            process.error()
             return true
         } else {
             // Get all carbon atoms attached to the nitrogen
             const carbon_atom_indexes = this.MoleculeAI.findAllCarbonIndexesAttachedToNitrogen(nitrogen_index)
+            console.log("Reaction.js reductiveAminationReverse carbon indexes:")
             console.log(carbon_atom_indexes)
-            process.error()
-            // Remove hydrogen from nitrogen to gice it a negative charge
-            // this.container_substrate = this.bondsAI.removeProton(this.container_substrate, nitrogen_index, h_n_shared_electrons, this.container_substrate[0][1][h_n_hydrogen_bonds[0].atom_index])
-            this.container_substrate = this.bondsAI.removeProton(this.container_substrate, nitrogen_index)
 
             carbon_atom_indexes.map((carbon_index)=>{
                 // Call the ReductiveAminationReverse command again, but this time pass in the carbon index
+                const reductiveAminationReverseCommand = require('../../Commands/ReductiveAminationReverse')
+                reductiveAminationReverseCommand(this.container_substrate, this.container_reagent, this.rule, this.DEBUG, this.horizontalCallback, this.horizontalFn, this.commands, this.command_index, carbon_index)
             })
         }
 

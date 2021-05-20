@@ -86,7 +86,7 @@ const MoleculeAI = (container_molecule) => {
         })
         return carbon_bonds
     }
-xs
+
     const __findAllCarbonIndexesAttachedToNitrogen = function(nitrogen_index) {
         const carbon_bonds = __getCarbonBondsAttachedToNitrogen(nitrogen_index)
         return carbon_bonds.map((bond)=>{
