@@ -199,7 +199,11 @@ class Reaction {
             console.log(VMolecule([this.container_substrate[0],1]).compressed())
 
             // Split substrate so that the oxygen is only bonded to the carbon ie O=C
-            this.bondSubstrateToReagentReverse()
+            this.bondSubstrateToReagentReverse(nitrogen_index, carbon_index)
+            console.log("Reaction.js reductiveAminationReverse Substrate after splitting")
+            console.log(VMolecule([this.container_substrate[0],1]).compressed())
+            console.log(VMolecule([this.container_reagent[0],1]).compressed())
+
 
             process.error()
 
@@ -1265,12 +1269,12 @@ class Reaction {
         this.__setSubstrateGroups(groups)
     }
 
-    bondSubstrateToReagentReverse() {
+    bondSubstrateToReagentReverse(n_index, c_index) {
         // Important (orginal reaction):
         // The reagent is the nucleophile and is attacking the substrate
         // The substrate is the electrophile
         const bondsAI = new BondsAI(this)
-        return bondsAI.bondSubstrateToReagentReverse()
+        return bondsAI.bondSubstrateToReagentReverse(n_index, c_index)
 
     }
 

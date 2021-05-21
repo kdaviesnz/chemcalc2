@@ -881,6 +881,7 @@ class BondsAI {
                      c_index = c_bonds[0].atom_index
                 }
             }
+
             if (c_index !== null) {
                 const target_atom = CAtom(this.reaction.container_substrate[0][1][c_index], c_index, this.reaction.container_substrate)
                 // Use dehydrate() instead
