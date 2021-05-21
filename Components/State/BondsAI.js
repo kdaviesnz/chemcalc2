@@ -27,7 +27,7 @@ const uniqid = require('uniqid');
 // removeHalideReverse()
 // makeCarbonCarbonDoubleBondByAtomIndex(c2_negative_carbon_index, c1_positive_carbon_index, DEBUG)
 // makeDoubleBond(negativeAtom, positiveAtom, DEBUG)
-
+// breakOxygenCarbonSingleBond
 
 class BondsAI {
 
@@ -817,6 +817,25 @@ class BondsAI {
         }
 
         return true
+
+    }
+
+    breakOxygenCarbonSingleBond(oxygen_index) {
+        const oxygen_atom = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
+        const bonds = oxygen_atom.indexedBonds("").filter((b)=>{
+            return b.atom[0] !== "H"
+        })
+        if (bonds.length === 0) {
+            return false
+        }
+        // Break each single bond
+        const carbon_index = carbon_bonds[0].atom_index
+        const electrons = _.cloneDeep(carbon_bonds[0].shared_electrons).slice(0,2)
+        console.log(electrons)
+
+        this.reaction.container_substrate = this.removeBond(this.reaction.container_substrate, oxygen_index, electrons)
+        console.log(VMolecule(this.reaction.container_substrate).compressed())
+        process.error()
 
     }
 

@@ -34,6 +34,7 @@ const ProtonationAI = require('../../Components/State/ProtonationAI')
    findOxygenAttachedToCarbonIndex()
    findOxygenAttachedToCarbonIndexNoDoubleBonds()
    findNitrogenAttachedToCarbonIndexNoDoubleBonds()
+   findNitrogenAttachedToCarbonIndexDoubleBonds()
    chains(previous_atom_index, root_atom_index, chains, chain_index, col, depth)
    chains2(previous_atom_index, root_atom_index, chains, chain_index, col, depth)
    isWater()
@@ -785,6 +786,26 @@ const MoleculeAI = (container_molecule) => {
                 return carbon_bonds.length > 0
             })
         },
+
+        findNitrogenAttachedToCarbonIndexDoubleBonds: function() {
+            return _.findIndex(container_molecule[0][1], (atom, index) => {
+                if (atom[0] !== "N") {
+                    return false
+                }
+                const n = CAtom(atom, index, container_molecule )
+
+                if (n.indexedDoubleBonds("").length === 0) {
+                    return false
+                }
+
+                // Check for carbon bonds
+                const carbon_bonds = n.indexedDoubleBonds("").filter((bond)=>{
+                    return bond.atom[0] === "C"
+                })
+                return carbon_bonds.length > 0
+            })
+        },
+
 
 
         "chains": function(previous_atom_index, root_atom_index, chains, chain_index, col, depth) {
