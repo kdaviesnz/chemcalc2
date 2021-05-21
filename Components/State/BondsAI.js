@@ -839,45 +839,49 @@ class BondsAI {
 
     }
 
-    bondSubstrateToReagentReverse() {
+
+    bondSubstrateToReagentReverse(n_index=null, c_index=null) {
         // Important (orginal reaction):
         // The reagent is the nucleophile and is attacking the substrate
         // The substrate is the electrophile
         // Look for N+=C+ bond
-        let n_index = null
         let n_atom = null
         let c_atom = null
-        n_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=>{
-            return atom[0] === "N" && atom[4] === "+"
-        })
-
+        if (n_index === null) {
+            n_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index) => {
+                return atom[0] === "N" && atom[4] === "+"
+            })
+        }
 
         if (n_index !== -1) {
 
             const source_atom = CAtom(this.reaction.container_substrate[0][1][n_index], n_index, this.reaction.container_substrate)
             n_atom = CAtom(this.reaction.container_substrate[0][1][n_index], n_index, this.reaction.container_substrate)
 
-            let c_bonds = source_atom.indexedBonds("").filter((bond)=>{
-                return bond.atom[0] === "C" && bond.atom[4] === "+"
-            })
-
-            if (c_bonds.length === 0 ) {
-                // Look for N+(C-)X bond
-                c_bonds = n_atom.indexedBonds("").filter((bond)=>{
-                    if (bond.atom[0]!=="C") {
-                        return false
-                    }
-                    c_atom = CAtom(this.reaction.container_substrate[0][1][bond.atom_index], bond.atom_index, this.reaction.container_substrate)
-                    const x_bonds = c_atom.indexedBonds("").filter((bond)=>{
-                        return bond.atom[0] === "Br"
-                    })
-                    return x_bonds.length > 0
+            if (c_index === null) {
+                let c_bonds = source_atom.indexedBonds("").filter((bond) => {
+                    return bond.atom[0] === "C" && bond.atom[4] === "+"
                 })
-                //console.log(hgf)
-            }
 
-            if (c_bonds.length > 0) {
-                const c_index = c_bonds[0].atom_index
+                if (c_bonds.length === 0) {
+                    // Look for N+(C-)X bond
+                    c_bonds = n_atom.indexedBonds("").filter((bond) => {
+                        if (bond.atom[0] !== "C") {
+                            return false
+                        }
+                        c_atom = CAtom(this.reaction.container_substrate[0][1][bond.atom_index], bond.atom_index, this.reaction.container_substrate)
+                        const x_bonds = c_atom.indexedBonds("").filter((bond) => {
+                            return bond.atom[0] === "Br"
+                        })
+                        return x_bonds.length > 0
+                    })
+                    //console.log(hgf)
+                }
+                if (c_bonds.length > 0) {
+                     c_index = c_bonds[0].atom_index
+                }
+            }
+            if (c_index !== null) {
                 const target_atom = CAtom(this.reaction.container_substrate[0][1][c_index], c_index, this.reaction.container_substrate)
                 // Use dehydrate() instead
                 if (target_atom.symbol === "O" && target_atom.hydrogens().length ===2 && this.reaction.container_substrate[0][1][electrophile_index][4] === "+") {

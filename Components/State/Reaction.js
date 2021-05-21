@@ -198,6 +198,11 @@ class Reaction {
             console.log("Reaction.js reductiveAminationReverse Substrate after changing CN bond to C=N:")
             console.log(VMolecule([this.container_substrate[0],1]).compressed())
 
+            // Split substrate so that the oxygen is only bonded to the carbon ie O=C
+            this.bondSubstrateToReagentReverse()
+
+            process.error()
+
             const oxygen = AtomFactory("O","")
 
             // Substitute N for O
@@ -206,8 +211,7 @@ class Reaction {
             console.log(VMolecule([this.container_substrate[0],1]).compressed())
 
             const oxygen_index = nitrogen_index
-            // Split substrate so that the oxygen is only bonded to the carbon ie O=C
-            this.bondsAI.breakOxygenCarbonSingleBond(oxygen_index)
+
 
             process.error()
 
