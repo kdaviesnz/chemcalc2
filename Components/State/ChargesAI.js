@@ -214,20 +214,12 @@ class ChargesAI {
             return bond.atom[0] !== "H"
         })
 
+        if (DEBUG && a_obj.symbol==="O") {
+            console.log(double_bonds)
+            process.error()
+        }
         if (this.reaction.container_substrate[0][1][index][0] === "Br") {
              b = (7 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length +  (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
-
-/*
-            if (7 + b_count === electrons.length) {
-                this.reaction.container_substrate[0][1][index][4] = ""
-            }
-            if (7 + b_count < electrons.length) {
-                this.reaction.container_substrate[0][1][index][4] = "-"
-            }
-            if (7 + b_count > electrons.length) {
-                this.reaction.container_substrate[0][1][index][4] = "+"
-            }
-            */
         }
         if (this.reaction.container_substrate[0][1][index][0] === "O") {
 

@@ -199,11 +199,24 @@ class Reaction {
             this.container_substrate = this.bondsAI.removeProton(this.container_substrate, nitrogen_index)
             this.bondsAI.makeDoubleBond(nitrogen, carbon, false)
             console.log("Reaction.js reductiveAminationReverse Substrate after changing CN bond to C=N:")
+            console.log(carbon_index)
+            console.log(VMolecule([this.container_substrate[0],1]).compressed())
+            // Check charges
+            if(carbon.isNegativelyCharged()){
+                // Check for a proton that we can remove
+                if (carbon.indexedBonds("").filter((b)=>{
+                    return b.atom[0] === "H"
+                }).length > 0) {
+                    // Remove the proton to give the carbon a neutral charge
+                    this.container_substrate = this.bondsAI.removeProton(this.container_substrate, carbon_index)
+                }
+            }
+            this.setChargesOnSubstrate(false)
+            console.log("Reaction.js reductiveAminationReverse Substrate after removing proton from C=N carbon:")
             console.log(VMolecule([this.container_substrate[0],1]).compressed())
 
             // Split substrate so that the oxygen is only bonded to the carbon ie O=C
             this.stateMoleculeAI.formKeytoneFromImine(nitrogen_index, carbon_index)
-
 
             process.error()
 

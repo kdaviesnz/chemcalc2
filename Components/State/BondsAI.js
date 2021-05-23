@@ -28,6 +28,7 @@ const uniqid = require('uniqid');
 // makeCarbonCarbonDoubleBondByAtomIndex(c2_negative_carbon_index, c1_positive_carbon_index, DEBUG)
 // makeDoubleBond(negativeAtom, positiveAtom, DEBUG)
 // breakOxygenCarbonSingleBond
+// isBond(atom1_controller, atom2_controller)
 
 class BondsAI {
 
@@ -36,6 +37,9 @@ class BondsAI {
     }
 
 
+    isBond(atom1_controller, atom2_controller) {
+        return atom1_controller.isBondedTo(atom2_controller.atom)
+    }
 
     removeProton(molecule, atom_index, electrons=null, proton=null) {
 
@@ -208,12 +212,18 @@ class BondsAI {
             console.log(freeElectrons)
         }
 
-        this.reaction.container_substrate[0][1][positiveAtom.atomIndex].push(freeElectrons[0])
-        this.reaction.container_substrate[0][1][positiveAtom.atomIndex].push(freeElectrons[1])
-        this.reaction.container_substrate[0][1][positiveAtom.atomIndex].push(freeElectrons[2])
-        this.reaction.container_substrate[0][1][positiveAtom.atomIndex].push(freeElectrons[3])
+        // If there was not already a bond between the atoms
+        if (this.isBond(negativeAtom, positiveAtom)=== false) {
+            this.reaction.container_substrate[0][1][positiveAtom.atomIndex].push(freeElectrons[0])
+            this.reaction.container_substrate[0][1][positiveAtom.atomIndex].push(freeElectrons[1])
+            this.reaction.container_substrate[0][1][positiveAtom.atomIndex].push(freeElectrons[2])
+            this.reaction.container_substrate[0][1][positiveAtom.atomIndex].push(freeElectrons[3])
+        } else {
+            this.reaction.container_substrate[0][1][positiveAtom.atomIndex].push(freeElectrons[0])
+            this.reaction.container_substrate[0][1][positiveAtom.atomIndex].push(freeElectrons[1])
+        }
         this.reaction.setMoleculeAI()
-        this.reaction.setChargesOnSubstrate()
+        this.reaction.setChargesOnSubstrate(DEBUG)
 
         if (DEBUG) {
             console.log("Substrate after adding double bond")

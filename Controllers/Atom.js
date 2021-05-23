@@ -708,6 +708,7 @@ We then return the total number of free slots minus the number of slots already 
         indexedBonds: __indexedBonds,
         indexedDoubleBonds: __indexedDoubleBonds,
         indexedTripleBonds: __indexedTripleBonds,
+        atom: atom,
         symbol:  atom[0],
         atomIndex: current_atom_index,
         charge: atom[4]
