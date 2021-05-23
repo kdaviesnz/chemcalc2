@@ -14,7 +14,7 @@ const BondsAI = require('../../Components/State/BondsAI')
 const ChargesAI = require('../../Components/State/ChargesAI')
 const SubstitutionAI = require('../../Components/State/SubstitutionAI')
 const range = require("range");
-
+const StateMoleculeAI = require('../../Components/State/MoleculeAI')
 
 /*
 reductiveAmination()
@@ -166,6 +166,7 @@ class Reaction {
         this.commands = commands
         this.command_index = command_index
 
+        this.stateMoleculeAI = new StateMoleculeAI(this)
     }
 
     substituteAtomForAtom(atom_to_substitute_index, replacement_atom) {
@@ -175,11 +176,7 @@ class Reaction {
         this.container_substrate[0][1][atom_to_substitute_index][1] = replacement_atom[4]
     }
 
-    formKeytoneFromImine(nitrogen_index) {
-        // Replace C=NR with C=O
-        // This gets the NR part of the substrate and makes it the reagent, but does not actually remove NR from the substrate.
 
-    }
 
     reductiveAminationReverse(carbon_index) {
         console.log("Calling Reaction.js reductiveAminationReverse()")
@@ -205,10 +202,7 @@ class Reaction {
             console.log(VMolecule([this.container_substrate[0],1]).compressed())
 
             // Split substrate so that the oxygen is only bonded to the carbon ie O=C
-            this.bondSubstrateToReagentReverse(nitrogen_index, carbon_index)
-            console.log("Reaction.js reductiveAminationReverse Substrate after splitting")
-            console.log(VMolecule([this.container_substrate[0],1]).compressed())
-            console.log(VMolecule([this.container_reagent[0],1]).compressed())
+            this.stateMoleculeAI.formKeytoneFromImine(nitrogen_index, carbon_index)
 
 
             process.error()
