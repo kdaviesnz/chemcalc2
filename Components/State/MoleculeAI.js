@@ -7,6 +7,8 @@ formKeytoneFromImine(nitrogen_index, carbon_index)
  */
 const BondsAI = require('../../Components/State/BondsAI')
 const VMolecule = require('../../Components/Stateless/Views/Molecule')
+const AtomFactory = require('../../Models/AtomFactory')
+const CAtom = require('../../Controllers/Atom')
 
 class MoleculeAI {
 
@@ -20,14 +22,37 @@ class MoleculeAI {
     }
 
     formKeytoneFromImine(nitrogen_index, carbon_index) {
-        // Replace C=NR with C=O
-        // This gets the NR part of the substrate and makes it the reagent, but does not actually remove NR from the substrate.
+
+        // Replace C=NR with C=O (NR becomes reagent)
         this.bondsAI.bondSubstrateToReagentReverse(nitrogen_index, carbon_index)
-        console.log("State/MoleculeAI.js reductiveAminationReverse Substrate after splitting")
+        console.log("State/MoleculeAI.js formKeytoneFromImine Substrate after splitting")
         console.log(VMolecule([this.reaction.container_substrate[0],1]).compressed())
         console.log(VMolecule([this.reaction.container_reagent[0],1]).compressed())
-        
-        // Remove NR part from the substrate
+
+        // If nitrogen index > carbon index then we substract one from the carbon index to get the new carbon index
+        if (nitrogen_index > carbon_index) {
+            carbon_index = carbon_index - 1
+        } else {
+            carbon_index = carbon_index + 1
+        }
+
+        // Add =O to carbon
+        // Carbon is positively charged
+        const oxygen_atom = AtomFactory("O", "")
+        this.reaction.container_substrate[0][1].push(oxygen_atom)
+        const oxygen_index = this.reaction.container_substrate[0][1].length -1
+
+        const carbon = CAtom(this.reaction.container_substrate[0][1][carbon_index], carbon_index, this.reaction.container_substrate)
+        const oxygen = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
+        console.log("creating double bond")
+
+        this.bondsAI.makeDoubleBond(oxygen, carbon, true)
+
+        process.error()
+
+        console.log("State/MoleculeAI.js formKeytoneFromImine Substrate after adding oxygen and creating double bond with nitrogen")
+        console.log(VMolecule([this.reaction.container_substrate[0],1]).compressed())
+
         process.error()
 
     }

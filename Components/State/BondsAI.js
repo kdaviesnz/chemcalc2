@@ -210,6 +210,8 @@ class BondsAI {
 
         this.reaction.container_substrate[0][1][positiveAtom.atomIndex].push(freeElectrons[0])
         this.reaction.container_substrate[0][1][positiveAtom.atomIndex].push(freeElectrons[1])
+        this.reaction.container_substrate[0][1][positiveAtom.atomIndex].push(freeElectrons[2])
+        this.reaction.container_substrate[0][1][positiveAtom.atomIndex].push(freeElectrons[3])
         this.reaction.setMoleculeAI()
         this.reaction.setChargesOnSubstrate()
 
