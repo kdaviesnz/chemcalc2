@@ -175,6 +175,12 @@ class Reaction {
         this.container_substrate[0][1][atom_to_substitute_index][1] = replacement_atom[4]
     }
 
+    formKeytoneFromImine(nitrogen_index) {
+        // Replace C=NR with C=O
+        // This gets the NR part of the substrate and makes it the reagent, but does not actually remove NR from the substrate.
+
+    }
+
     reductiveAminationReverse(carbon_index) {
         console.log("Calling Reaction.js reductiveAminationReverse()")
         this.setMoleculeAI()
