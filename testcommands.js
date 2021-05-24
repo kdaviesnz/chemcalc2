@@ -25,7 +25,7 @@ const horizontalFn = (target, reagent, reaction_commands) => (i, horizontalCallb
 
 const methylamine = MoleculeFactory("CN")
 const me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
-const horizontalCallback = horizontalFn(me, methylamine, commands)
+const horizontalCallback = horizontalFn(_.cloneDeep(me), _.cloneDeep(methylamine), _.cloneDeep(commands))
 // const CommandTest = (command, substrate, reagent, rule,  horizontalCallback, horizontalFn, commands, i)
 // return  commands_map[command](substrate, reagent, rule,  horizontalCallback, horizontalFn, commands, i)
 //const ReductiveAminationReverse = (mmolecule, reagent, rule, horizontalCallback, horizontalFn, commands, i, carbon_index) => {

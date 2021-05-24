@@ -1,10 +1,14 @@
 //const MoleculeController = require('../controllers/MoleculeController')
 //const FindDoubleBondPair = require('./FindDoubleBondPair')
 const Reaction = require("../Components/State/Reaction")
+const VMolecule = require('../Components/Stateless/Views/Molecule')
 
 const ReductiveAminationReverse = (mmolecule, reagent, rule, horizontalCallback, horizontalFn, commands, i, carbon_index) => {
 
     console.log("Calling ReductiveAminationReverse")
+    console.log("Commands/ReductiveAminationReverse substrate before calling reductiveAminationReverse")
+    console.log(VMolecule([mmolecule,1]).compressed())
+    console.log(i)
 
     if (carbon_index !== undefined) {
         console.log("Commands/ReductiveAminationReverse carbon index:" + carbon_index)
