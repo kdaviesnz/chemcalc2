@@ -214,17 +214,33 @@ class ChargesAI {
             return bond.atom[0] !== "H"
         })
 
-        if (DEBUG && a_obj.symbol==="O") {
-            console.log(double_bonds)
-            process.error()
-        }
+
         if (this.reaction.container_substrate[0][1][index][0] === "Br") {
-             b = (7 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length +  (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
+            // b = (7 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length +  (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
+            b = 1 - (a_obj.hydrogens().length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
         }
         if (this.reaction.container_substrate[0][1][index][0] === "O") {
 
             // Formal Charge= (No.of valence electrons in unbonded state - no of lone pair electrons ) - (no. of bond pair electrons/2)
-             b = (6 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length +  (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
+           //  b = (6 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length +  (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
+            b = 2 - (a_obj.hydrogens().length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
+            if (DEBUG && a_obj.symbol==="O") {
+                console.log("ChargesAI: Free electrons:")
+                console.log(a_obj.freeElectrons().length)
+                console.log("ChargesAi b:")
+                console.log(b) //2
+                console.log("Number of single bonds:")
+                console.log( single_bonds.length)
+                console.log("Number of double bonds:")
+                console.log( double_bonds.length)
+                console.log("Number of triple bonds:")
+                console.log( triple_bonds.length)
+                console.log("Number of hydrogens")
+                console.log(a_obj.hydrogens().length)
+                console.log(a_obj.hydrogens().length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
+
+            }
+
         }
         if (this.reaction.container_substrate[0][1][index][0] === "N") {
             if (DEBUG) {
@@ -232,7 +248,8 @@ class ChargesAI {
                 console.log(a_obj.freeElectrons().length)
                 console.log("ChargesAI.js setChargeOnSubstrateAtom -> No of double bonds:" + a_obj.indexedDoubleBonds("").length)
             }
-             b = (5 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
+             //b = (5 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
+            b = 3 - (a_obj.hydrogens().length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
         }
         if (this.reaction.container_substrate[0][1][index][0] === "C") {
             // 9 electrons, 5 bonds = neutral charge

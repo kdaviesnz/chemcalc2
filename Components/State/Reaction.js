@@ -178,13 +178,19 @@ class Reaction {
 
 
 
-    reductiveAminationReverse(carbon_index) {
-        console.log("Calling Reaction.js reductiveAminationReverse()")
+    reductiveAminationReverse(carbon_index, DEBUG) {
+
+
         this.setMoleculeAI()
-        console.log(VMolecule([this.container_substrate[0],1]).compressed())
+
         // Find nitrogen index
         const nitrogen_index = this.MoleculeAI.findNitrogenAttachedToCarbonIndexNoDoubleBonds()
-        console.log("Nitrogen index:" + nitrogen_index)
+        if (DEBUG) {
+            console.log("Calling Reaction.js reductiveAminationReverse()")
+            console.log("Nitrogen index:" + nitrogen_index)
+            console.log(VMolecule([this.container_substrate[0],1]).compressed())
+        }
+
 
         if (nitrogen_index === -1) {
             return false
@@ -198,9 +204,11 @@ class Reaction {
             // this.container_substrate = this.bondsAI.removeProton(this.container_substrate, nitrogen_index, h_n_shared_electrons, this.container_substrate[0][1][h_n_hydrogen_bonds[0].atom_index])
             this.container_substrate = this.bondsAI.removeProton(this.container_substrate, nitrogen_index)
             this.bondsAI.makeDoubleBond(nitrogen, carbon, false)
-            console.log("Reaction.js reductiveAminationReverse Substrate after changing CN bond to C=N:")
-            console.log(carbon_index)
-            console.log(VMolecule([this.container_substrate[0],1]).compressed())
+            if (DEBUG) {
+                console.log("Reaction.js reductiveAminationReverse Substrate after changing CN bond to C=N:")
+                console.log(carbon_index)
+                console.log(VMolecule([this.container_substrate[0], 1]).compressed())
+            }
             // Check charges
             if(carbon.isNegativelyCharged()){
                 // Check for a proton that we can remove
@@ -212,32 +220,32 @@ class Reaction {
                 }
             }
             this.setChargesOnSubstrate(false)
-            console.log("Reaction.js reductiveAminationReverse Substrate after removing proton from C=N carbon:")
-            console.log(VMolecule([this.container_substrate[0],1]).compressed())
+            if (DEBUG) {
+                console.log("Reaction.js reductiveAminationReverse Substrate after removing proton from C=N carbon:")
+                console.log(VMolecule([this.container_substrate[0], 1]).compressed())
+            }
 
             // Split substrate so that the oxygen is only bonded to the carbon ie O=C
             this.stateMoleculeAI.formKeytoneFromImine(nitrogen_index, carbon_index)
-
-            process.error()
 
             const oxygen = AtomFactory("O","")
 
             // Substitute N for O
             this.substituteAtomForAtom(nitrogen_index, oxygen)
-            console.log("Reaction.js reductiveAminationReverse Substrate after changing replacing nitrogen with oxygen:")
-            console.log(VMolecule([this.container_substrate[0],1]).compressed())
-
-            const oxygen_index = nitrogen_index
-
-
-            process.error()
+            if (DEBUG) {
+                console.log("Reaction.js reductiveAminationReverse Substrate after changing replacing nitrogen with oxygen:")
+                console.log(VMolecule([this.container_substrate[0], 1]).compressed())
+            }
 
             return true
         } else {
+
             // Get all carbon atoms attached to the nitrogen
             const carbon_atom_indexes = this.MoleculeAI.findAllCarbonIndexesAttachedToNitrogen(nitrogen_index)
-            console.log("Reaction.js reductiveAminationReverse carbon indexes:")
-            console.log(carbon_atom_indexes)
+            if (DEBUG) {
+                console.log("Reaction.js reductiveAminationReverse carbon indexes:")
+                console.log(carbon_atom_indexes)
+            }
 
             carbon_atom_indexes.map((carbon_index)=>{
                 // Call the ReductiveAminationReverse command again, but this time pass in the carbon index

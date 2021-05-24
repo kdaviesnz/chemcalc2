@@ -21,13 +21,16 @@ class MoleculeAI {
 
     }
 
-    formKeytoneFromImine(nitrogen_index, carbon_index) {
+    formKeytoneFromImine(nitrogen_index, carbon_index, DEBUG) {
 
         // Replace C=NR with C=O (NR becomes reagent)
         this.bondsAI.bondSubstrateToReagentReverse(nitrogen_index, carbon_index)
-        console.log("State/MoleculeAI.js formKeytoneFromImine Substrate after splitting")
-        console.log(VMolecule([this.reaction.container_substrate[0],1]).compressed())
-        console.log(VMolecule([this.reaction.container_reagent[0],1]).compressed())
+
+        if (DEBUG) {
+            console.log("State/MoleculeAI.js formKeytoneFromImine Substrate after splitting")
+            console.log(VMolecule([this.reaction.container_substrate[0], 1]).compressed())
+            console.log(VMolecule([this.reaction.container_reagent[0], 1]).compressed())
+        }
 
         // If nitrogen index > carbon index then we substract one from the carbon index to get the new carbon index
         if (nitrogen_index > carbon_index) {
@@ -44,16 +47,14 @@ class MoleculeAI {
 
         const carbon = CAtom(this.reaction.container_substrate[0][1][carbon_index], carbon_index, this.reaction.container_substrate)
         const oxygen = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
-        console.log("creating double bond")
 
-        this.bondsAI.makeDoubleBond(oxygen, carbon, true)
+        this.bondsAI.makeDoubleBond(oxygen, carbon, false)
 
-        process.error()
-
-        console.log("State/MoleculeAI.js formKeytoneFromImine Substrate after adding oxygen and creating double bond with nitrogen")
-        console.log(VMolecule([this.reaction.container_substrate[0],1]).compressed())
-
-        process.error()
+        if (DEBUG) {
+            console.log("State/MoleculeAI.js formKeytoneFromImine Substrate after adding oxygen and creating double bond with carbon")
+            console.log(VMolecule([this.reaction.container_substrate[0], 1]).compressed())
+            console.log(VMolecule([this.reaction.container_substrate[0], 1]).canonicalSMILES())
+        }
 
     }
 
