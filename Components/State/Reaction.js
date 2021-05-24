@@ -169,7 +169,12 @@ class Reaction {
         this.stateMoleculeAI = new StateMoleculeAI(this)
     }
 
-    substituteAtomForAtom(atom_to_substitute_index, replacement_atom) {
+    substituteAtomForAtom(atom_to_substitute_index, replacement_atom, DEBUG) {
+        if (DEBUG) {
+            console.log("Reaction.js substituteAtomAtom - atom_to_substitute_index")
+            console.log(atom_to_substitute_index)
+            console.log(VMolecule([this.container_substrate[0],1]).compressed())
+        }
         this.container_substrate[0][1][atom_to_substitute_index][0] = replacement_atom[0]
         this.container_substrate[0][1][atom_to_substitute_index][1] = replacement_atom[1]
         this.container_substrate[0][1][atom_to_substitute_index][1] = replacement_atom[2]
@@ -179,7 +184,6 @@ class Reaction {
 
 
     reductiveAminationReverse(carbon_index, DEBUG) {
-
 
         this.setMoleculeAI()
 
@@ -200,6 +204,13 @@ class Reaction {
             // Change to double bond
             const nitrogen = CAtom(this.container_substrate[0][1][nitrogen_index], nitrogen_index, this.container_substrate)
             const carbon = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, this.container_substrate)
+
+            if (DEBUG) {
+                console.log("Reaction.js reductiveAminationReverse Substrate before changing CN bond to C=N:")
+                console.log(carbon_index)
+                console.log(VMolecule([this.container_substrate[0], 1]).compressed())
+            }
+
             // Remove hydrogen from nitrogen to give it a negative charge
             // this.container_substrate = this.bondsAI.removeProton(this.container_substrate, nitrogen_index, h_n_shared_electrons, this.container_substrate[0][1][h_n_hydrogen_bonds[0].atom_index])
             this.container_substrate = this.bondsAI.removeProton(this.container_substrate, nitrogen_index)
@@ -231,13 +242,19 @@ class Reaction {
             const oxygen = AtomFactory("O","")
 
             // Substitute N for O
-            this.substituteAtomForAtom(nitrogen_index, oxygen)
+            if (this.container_substrate[0][1][nitrogen_index] === undefined) {
+                return false // N has already been substituted
+            }
+
+            this.substituteAtomForAtom(nitrogen_index, oxygen, DEBUG)
             if (DEBUG) {
                 console.log("Reaction.js reductiveAminationReverse Substrate after changing replacing nitrogen with oxygen:")
                 console.log(VMolecule([this.container_substrate[0], 1]).compressed())
+                process.error()
             }
 
             return true
+
         } else {
 
             // Get all carbon atoms attached to the nitrogen
