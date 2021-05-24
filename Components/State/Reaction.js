@@ -166,6 +166,11 @@ class Reaction {
         this.commands = commands
         this.command_index = command_index
 
+        if (command_index === undefined) {
+            console.log("command_index is not defined")
+            process.error()
+        }
+
         this.stateMoleculeAI = new StateMoleculeAI(this)
     }
 
@@ -267,7 +272,17 @@ class Reaction {
             carbon_atom_indexes.map((carbon_index)=>{
                 // Call the ReductiveAminationReverse command again, but this time pass in the carbon index
                 const reductiveAminationReverseCommand = require('../../Commands/ReductiveAminationReverse')
-                reductiveAminationReverseCommand(this.container_substrate[0], this.container_reagent, this.rule, this.DEBUG, this.horizontalCallback, this.horizontalFn, this.commands, this.command_index, carbon_index)
+                // const ReductiveAminationReverse = (mmolecule, reagent, rule, horizontalCallback, horizontalFn, commands, i, carbon_index)
+                reductiveAminationReverseCommand(
+                    this.container_substrate[0],
+                    this.container_reagent,
+                    this.rule,
+                    this.horizontalCallback,
+                    this.horizontalFn,
+                    this.commands,
+                    this.command_index, // i
+                    carbon_index
+                )
             })
         }
 

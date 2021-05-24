@@ -2,20 +2,16 @@
 //const FindDoubleBondPair = require('./FindDoubleBondPair')
 const Reaction = require("../Components/State/Reaction")
 
-const ReductiveAminationReverse = (mmolecule, reagent, rule, DEBUG, horizontalCallback, horizontalFn, commands, i, carbon_index) => {
+const ReductiveAminationReverse = (mmolecule, reagent, rule, horizontalCallback, horizontalFn, commands, i, carbon_index) => {
 
     console.log("Calling ReductiveAminationReverse")
-    console.log("ReductiveAminationReverse()")
-    console.log(commands)
-    console.log(i)
 
     if (carbon_index !== undefined) {
         console.log("Commands/ReductiveAminationReverse carbon index:" + carbon_index)
     }
 
-    const reaction = new Reaction([mmolecule,1], reagent, rule, DEBUG, horizontalCallback, horizontalFn, commands, i)
+    const reaction = new Reaction([mmolecule,1], reagent, rule, true, horizontalCallback, horizontalFn, commands, i)
     const result = reaction.reductiveAminationReverse(carbon_index, true)
-
 
 
     if(undefined !== commands[i+1]) {

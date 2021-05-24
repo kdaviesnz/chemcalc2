@@ -20,14 +20,16 @@ const commands = [
 
 const horizontalFn = (target, reagent, reaction_commands) => (i, horizontalCallback) => {
     const rule = ""
-    commands[i](target, reagent, rule, DEBUG, horizontalCallback, horizontal, reaction_commands, i)
+    commands[i](target, [reagent,1], rule, horizontalCallback, horizontalFn, reaction_commands, i)
 }
 
 const methylamine = MoleculeFactory("CN")
 const me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 const horizontalCallback = horizontalFn(me, methylamine, commands)
 // const CommandTest = (command, substrate, reagent, rule,  horizontalCallback, horizontalFn, commands, i)
-const reductive_amination = CommandTest("REDUCTIVEAMINATIONREVERSE", _.cloneDeep(me), _.cloneDeep([methylamine,1]), "", horizontalCallback, horizontalFn, commands, 0)
+// return  commands_map[command](substrate, reagent, rule,  horizontalCallback, horizontalFn, commands, i)
+//const ReductiveAminationReverse = (mmolecule, reagent, rule, horizontalCallback, horizontalFn, commands, i, carbon_index) => {
+const reductive_amination_reverse = CommandTest("REDUCTIVEAMINATIONREVERSE", _.cloneDeep(me), _.cloneDeep([methylamine,1]), "", horizontalCallback, horizontalFn, commands, 0)
 process.error()
 
 const acetone = MoleculeFactory("CC(=O)C")

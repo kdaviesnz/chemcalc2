@@ -23,6 +23,11 @@ class MoleculeAI {
 
     formKeytoneFromImine(nitrogen_index, carbon_index, DEBUG) {
 
+        if(true) {
+            console.log("State/MoleculeAI.js formKeytoneFromImine carbon index:")
+            console.log(carbon_index)
+        }
+
         // Replace C=NR with C=O (NR becomes reagent)
         this.bondsAI.bondSubstrateToReagentReverse(nitrogen_index, carbon_index)
 
@@ -44,6 +49,7 @@ class MoleculeAI {
         const oxygen_atom = AtomFactory("O", "")
         this.reaction.container_substrate[0][1].push(oxygen_atom)
         const oxygen_index = this.reaction.container_substrate[0][1].length -1
+
 
         const carbon = CAtom(this.reaction.container_substrate[0][1][carbon_index], carbon_index, this.reaction.container_substrate)
         const oxygen = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
