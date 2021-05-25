@@ -123,7 +123,7 @@ class Reaction {
             console.log(container_substrate)
             process.error()
         }
-        console.log(container_substrate)
+
         container_substrate.length.should.be.equal(2) // molecule, units
         container_substrate[0].length.should.be.equal(2) // pKa, atoms
 
@@ -199,7 +199,6 @@ class Reaction {
 
         //this.setMoleculeAI()
         const tracker = uniqid()
-        console.log("tracker sstart:"+tracker)
 
         const substrateProtected  = _.cloneDeep(this.container_substrate)
         const reagentProtected  = _.cloneDeep(this.container_reagent)
@@ -227,6 +226,7 @@ class Reaction {
         }
 
         if (undefined !== carbon_index)  {
+
             // Change to double bond
             const nitrogen = CAtom(this.container_substrate[0][1][nitrogen_index], nitrogen_index, this.container_substrate)
             const carbon = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, this.container_substrate)
@@ -246,6 +246,8 @@ class Reaction {
                 console.log(carbon_index)
                 console.log(VMolecule([this.container_substrate[0], 1]).compressed())
             }
+
+
             // Check charges
             if(carbon.isNegativelyCharged()){
                 // Check for a proton that we can remove
@@ -271,6 +273,7 @@ class Reaction {
                 console.log("tracker:" + tracker)
             }
 
+
             const oxygen = AtomFactory("O","")
 
             // Substitute N for O
@@ -291,38 +294,55 @@ class Reaction {
 
         } else {
 
-            console.log("tracker:"+tracker)
             // Get all carbon atoms attached to the nitrogen
             const carbon_atom_indexes = this.MoleculeAI.findAllCarbonIndexesAttachedToNitrogen(nitrogen_index)
             if (DEBUG) {
                 console.log("Reaction.js reductiveAminationReverse carbon indexes:")
                 console.log(carbon_atom_indexes)
+
             }
 
-            carbon_atom_indexes.map((carbon_index)=>{
-                // Call the ReductiveAminationReverse command again, but this time pass in the carbon index
-                const reductiveAminationReverseCommand = require('../../Commands/ReductiveAminationReverse')
-                // const ReductiveAminationReverse = (mmolecule, reagent, rule, horizontalCallback, horizontalFn, commands, i, carbon_index)
-                if (DEBUG && carbon_index ===25) {
-                    console.log("Reaction.js reductiveAminationReverse Substrate (carbon index is 25) tracker="+tracker)
-                    console.log("tracker:"+tracker)
-                    console.log(VMolecule([substrateProtected[0], 1]).compressed())
-                }
-                console.log("tracker (before calling command:"+tracker)
-                if (DEBUG) {
-                    console.log(VMolecule([substrateProtected[0], 1]).compressed())
-                }
-                reductiveAminationReverseCommand(
-                    _.cloneDeep(substrateProtected[0]),
-                    _.cloneDeep(reagentProtected),
-                    this.rule,
-                    this.horizontalCallback,
-                    this.horizontalFn,
-                    this.commands,
-                    command_index_protected, // i
-                    carbon_index
-                )
-            })
+
+            const reductiveAminationReverseCommand = require('../../Commands/ReductiveAminationReverse')
+            reductiveAminationReverseCommand(
+                _.cloneDeep(substrateProtected[0]),
+                _.cloneDeep(reagentProtected[0]),
+                this.rule,
+                this.horizontalCallback,
+                this.horizontalFn,
+                this.commands,
+                command_index_protected, // i
+                carbon_atom_indexes[0]
+            )
+
+            if (false) {
+
+                carbon_atom_indexes.map((carbon_index) => {
+                    // Call the ReductiveAminationReverse command again, but this time pass in the carbon index
+                    const reductiveAminationReverseCommand = require('../../Commands/ReductiveAminationReverse')
+                    // const ReductiveAminationReverse = (mmolecule, reagent, rule, horizontalCallback, horizontalFn, commands, i, carbon_index)
+                    if (DEBUG && carbon_index === 25) {
+                        console.log("Reaction.js reductiveAminationReverse Substrate (carbon index is 25) tracker=" + tracker)
+                        console.log("tracker:" + tracker)
+                        console.log(VMolecule([substrateProtected[0], 1]).compressed())
+                    }
+                    console.log("tracker (before calling command:" + tracker)
+                    if (DEBUG) {
+                        console.log(VMolecule([substrateProtected[0], 1]).compressed())
+                    }
+                    reductiveAminationReverseCommand(
+                        _.cloneDeep(substrateProtected[0]),
+                        _.cloneDeep(reagentProtected),
+                        this.rule,
+                        this.horizontalCallback,
+                        this.horizontalFn,
+                        this.commands,
+                        command_index_protected, // i
+                        carbon_index
+                    )
+                })
+
+            }
         }
 
     }

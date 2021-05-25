@@ -23,14 +23,13 @@ const horizontalFn = (target, reagent, reaction_commands) => (i, horizontalCallb
         console.log("target is undefined")
         process.error()
     }
-    console.log("testcommands target:")
-    console.log(target)
-    commands[i](target[0], [reagent[0],1], rule, horizontalCallback, horizontalFn, reaction_commands, i)
+    commands[i](target, reagent, rule, horizontalCallback, horizontalFn, reaction_commands, i)
 }
 
 const methylamine = MoleculeFactory("CN")
 const me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 const horizontalCallback = horizontalFn(_.cloneDeep(me), _.cloneDeep(methylamine), _.cloneDeep(commands))
+horizontalCallback(0, horizontalCallback)
 // const CommandTest = (command, substrate, reagent, rule,  horizontalCallback, horizontalFn, commands, i)
 // return  commands_map[command](substrate, reagent, rule,  horizontalCallback, horizontalFn, commands, i)
 //const ReductiveAminationReverse = (mmolecule, reagent, rule, horizontalCallback, horizontalFn, commands, i, carbon_index) => {

@@ -51,7 +51,6 @@ class MoleculeAI {
         let carbon = null
         let oxygen_index =null
 
-        console.log(this.reaction.container_substrate[0][1][carbon_index])
         if (undefined === this.reaction.container_substrate[0][1][carbon_index]) {
             // Swap reagent and substrate
             const substrate_saved  = _.cloneDeep(this.reaction.container_substrate)

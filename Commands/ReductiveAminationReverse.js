@@ -5,16 +5,11 @@ const VMolecule = require('../Components/Stateless/Views/Molecule')
 
 const ReductiveAminationReverse = (mmolecule, reagent, rule, horizontalCallback, horizontalFn, commands, i, carbon_index) => {
 
-    console.log("Calling ReductiveAminationReverse")
-    console.log("Commands/ReductiveAminationReverse substrate before calling reductiveAminationReverse")
+    console.log("Calling ReductiveAminationReverse - i " +i + " " + VMolecule([mmolecule,1]).canonicalSMILES())
 
-    if (carbon_index !== undefined) {
-        console.log("Commands/ReductiveAminationReverse carbon index:" + carbon_index)
-    }
 
-    const reaction = new Reaction([mmolecule,1], reagent, rule, true, horizontalCallback, horizontalFn, commands, i)
-    const result = reaction.reductiveAminationReverse(carbon_index, true)
-
+    const reaction = new Reaction([mmolecule,1], [reagent,1], rule, false, horizontalCallback, horizontalFn, commands, i)
+    const result = reaction.reductiveAminationReverse(carbon_index, false)
 
     if(undefined !== commands[i+1]) {
         console.log("ReductiveAminationReverse -> next command")
@@ -24,7 +19,8 @@ const ReductiveAminationReverse = (mmolecule, reagent, rule, horizontalCallback,
 
     if (result !== false && result !==undefined) {
         console.log("Commands/ReductiveAminationReverse result:")
-        console.log(result[0])
+        console.log(VMolecule(result[0]).canonicalSMILES())
+        process.error()
         const start = horizontalFn(result[0], result[1], commands)
         start(0, horizontalCallback)
     }
