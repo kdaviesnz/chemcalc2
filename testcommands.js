@@ -11,7 +11,29 @@ const CommandTest = require('./Components/Stateless/CommandTest')
 
 const reductiveAminationReverse = require('./Commands/ReductiveAminationReverse')
 const transferProtonReverse = require('./Commands/TransferProtonReverse')
+const StateMoleculeAI = require('./Components/State/MoleculeAI')
+const Reaction = require('./Components/State/Reaction')
 
+let reaction =null
+let stateMoleculeAI = null
+
+const me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
+const methylamine = MoleculeFactory("CN")
+
+// Preliminary tests
+console.log("Running preliminary tests")
+// Test reaction methods.
+console.log(VMolecule([me,1]).compressed())
+const me_nitrogen_index = 21
+const me_carbon_index = 5
+reaction = new Reaction([me, 1], [methylamine, 1], "", true, null, null, [], 0)
+// Used by reaction.reductiveAminationReverse
+stateMoleculeAI = new StateMoleculeAI(reaction)
+const imine_to_keytone_result = stateMoleculeAI.formKeytoneFromImine(me_nitrogen_index, me_carbon_index, true)
+
+VMolecule(imine_to_keytone_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=O")
+
+process.error()
 
 const commands = [
     reductiveAminationReverse
@@ -26,8 +48,7 @@ const horizontalFn = (target, reagent, reaction_commands) => (i, horizontalCallb
     commands[i](target, reagent, rule, horizontalCallback, horizontalFn, reaction_commands, i)
 }
 
-const methylamine = MoleculeFactory("CN")
-const me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
+
 const horizontalCallback = horizontalFn(_.cloneDeep(me), _.cloneDeep(methylamine), _.cloneDeep(commands))
 horizontalCallback(0, horizontalCallback)
 // const CommandTest = (command, substrate, reagent, rule,  horizontalCallback, horizontalFn, commands, i)

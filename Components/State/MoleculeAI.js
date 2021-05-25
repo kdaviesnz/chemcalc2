@@ -28,15 +28,21 @@ class MoleculeAI {
             console.log(carbon_index)
             console.log("Before splitting")
             console.log(VMolecule([this.reaction.container_substrate[0], 1]).compressed())
+            console.log(VMolecule([this.reaction.container_substrate[0], 1]).canonicalSMILES())
         }
 
+        const bondsAI = new BondsAI(this.reaction)
+        bondsAI.bondSubstrateToReagentReverse(nitrogen_index, carbon_index)
 
         if (DEBUG) {
             console.log("State/MoleculeAI.js formKeytoneFromImine Substrate after splitting")
             console.log(VMolecule([this.reaction.container_substrate[0], 1]).compressed())
+            console.log(VMolecule([this.reaction.container_substrate[0], 1]).canonicalSMILES())
+            console.log(VMolecule([this.reaction.container_reagent[0], 1]).canonicalSMILES())
             console.log(VMolecule([this.reaction.container_reagent[0], 1]).compressed())
         }
 
+        process.error()
         // If nitrogen index > carbon index then we substract one from the carbon index to get the new carbon index
         if (nitrogen_index > carbon_index) {
             carbon_index = carbon_index - 1
@@ -71,9 +77,13 @@ class MoleculeAI {
 
 
         // Replace C=NR with C=O (NR becomes reagent)
-        const bondsAI = new BondsAI(this.reaction)
-        bondsAI.bondSubstrateToReagentReverse(nitrogen_index, carbon_index)
 
+
+        console.log(VMolecule([this.reaction.container_substrate[0], 1]).canonicalSMILES())
+
+
+        console.log(VMolecule([this.reaction.container_substrate[0], 1]).canonicalSMILES())
+        process.error()
 
         this.bondsAI.makeDoubleBond(oxygen, carbon, false)
 
@@ -82,6 +92,13 @@ class MoleculeAI {
             console.log(VMolecule([this.reaction.container_substrate[0], 1]).compressed())
             console.log(VMolecule([this.reaction.container_substrate[0], 1]).canonicalSMILES())
         }
+
+        // For testing purposes
+        return [
+            this.reaction.container_substrate,
+            this.reaction.container_reagent
+        ]
+
 
     }
 
