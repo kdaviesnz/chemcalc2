@@ -23,7 +23,9 @@ const horizontalFn = (target, reagent, reaction_commands) => (i, horizontalCallb
         console.log("target is undefined")
         process.error()
     }
-    commands[i]([target,1], [reagent,1], rule, horizontalCallback, horizontalFn, reaction_commands, i)
+    console.log("testcommands target:")
+    console.log(target)
+    commands[i](target[0], [reagent[0],1], rule, horizontalCallback, horizontalFn, reaction_commands, i)
 }
 
 const methylamine = MoleculeFactory("CN")

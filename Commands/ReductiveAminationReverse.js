@@ -7,10 +7,6 @@ const ReductiveAminationReverse = (mmolecule, reagent, rule, horizontalCallback,
 
     console.log("Calling ReductiveAminationReverse")
     console.log("Commands/ReductiveAminationReverse substrate before calling reductiveAminationReverse")
-    if (carbon_index === 25) {
-        console.log(VMolecule([mmolecule, 1]).compressed())
-        console.log("i "+i)
-    }
 
     if (carbon_index !== undefined) {
         console.log("Commands/ReductiveAminationReverse carbon index:" + carbon_index)
@@ -28,7 +24,7 @@ const ReductiveAminationReverse = (mmolecule, reagent, rule, horizontalCallback,
 
     if (result !== false && result !==undefined) {
         console.log("Commands/ReductiveAminationReverse result:")
-        console.log(result)
+        console.log(result[0])
         const start = horizontalFn(result[0], result[1], commands)
         start(0, horizontalCallback)
     }

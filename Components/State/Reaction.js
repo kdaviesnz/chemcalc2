@@ -123,11 +123,14 @@ class Reaction {
             console.log(container_substrate)
             process.error()
         }
+        console.log(container_substrate)
         container_substrate.length.should.be.equal(2) // molecule, units
         container_substrate[0].length.should.be.equal(2) // pKa, atoms
 
         if (typeof container_substrate[0][0] !== "number") {
             console.log(container_substrate)
+            console.log(container_substrate[0])
+            console.log(typeof container_substrate[0][0])
             process.error()
         }
         container_substrate[0][0].should.be.an.Number() // pka
@@ -281,7 +284,10 @@ class Reaction {
                 console.log(VMolecule([this.container_substrate[0], 1]).compressed())
             }
 
-            return true
+            return [
+                this.container_substrate,
+                this.container_reagent
+            ]
 
         } else {
 
