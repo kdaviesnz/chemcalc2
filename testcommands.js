@@ -14,13 +14,16 @@ const transferProtonReverse = require('./Commands/TransferProtonReverse')
 
 
 const commands = [
-    reductiveAminationReverse,
-    transferProtonReverse
+    reductiveAminationReverse
 ]
 
 const horizontalFn = (target, reagent, reaction_commands) => (i, horizontalCallback) => {
     const rule = ""
-    commands[i](target, [reagent,1], rule, horizontalCallback, horizontalFn, reaction_commands, i)
+    if (target === undefined) {
+        console.log("target is undefined")
+        process.error()
+    }
+    commands[i]([target,1], [reagent,1], rule, horizontalCallback, horizontalFn, reaction_commands, i)
 }
 
 const methylamine = MoleculeFactory("CN")

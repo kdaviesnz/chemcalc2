@@ -26,6 +26,8 @@ const TransferProtonReverse =  (mmolecule, reagent, rule, horizontalCallback, ho
 
     // vertical callback
     if (result !== false) {
+        console.log("TransferProtonReverse -> result is not false")
+        process.error()
         const start = horizontalFn(result[0], result[1], commands)
         start(0, horizontalCallback)
     }

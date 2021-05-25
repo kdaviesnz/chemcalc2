@@ -23,13 +23,13 @@ class MoleculeAI {
 
     formKeytoneFromImine(nitrogen_index, carbon_index, DEBUG) {
 
-        if(true) {
+        if(DEBUG) {
             console.log("State/MoleculeAI.js formKeytoneFromImine carbon index:")
             console.log(carbon_index)
+            console.log("Before splitting")
+            console.log(VMolecule([this.reaction.container_substrate[0], 1]).compressed())
         }
 
-        // Replace C=NR with C=O (NR becomes reagent)
-        this.bondsAI.bondSubstrateToReagentReverse(nitrogen_index, carbon_index)
 
         if (DEBUG) {
             console.log("State/MoleculeAI.js formKeytoneFromImine Substrate after splitting")
@@ -47,12 +47,34 @@ class MoleculeAI {
         // Add =O to carbon
         // Carbon is positively charged
         const oxygen_atom = AtomFactory("O", "")
-        this.reaction.container_substrate[0][1].push(oxygen_atom)
-        const oxygen_index = this.reaction.container_substrate[0][1].length -1
+        let oxygen = null
+        let carbon = null
+        let oxygen_index =null
+
+        console.log(this.reaction.container_substrate[0][1][carbon_index])
+        if (undefined === this.reaction.container_substrate[0][1][carbon_index]) {
+            // Swap reagent and substrate
+            const substrate_saved  = _.cloneDeep(this.reaction.container_substrate)
+            this.reaction.container_substrate = this.reaction.container_reagent
+            this.reaction.container_reagent = substrate_saved
+            this.reaction.container_substrate[0][1].push(oxygen_atom)
+            oxygen_index = this.reaction.container_substrate[0][1].length -1
+            carbon = CAtom(this.reaction.container_substrate[0][1][0], 0, this.reaction.container_substrate)
+            oxygen = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
+        } else {
+
+            this.reaction.container_substrate[0][1].push(oxygen_atom)
+            oxygen_index = this.reaction.container_substrate[0][1].length -1
+            carbon = CAtom(this.reaction.container_substrate[0][1][carbon_index], carbon_index, this.reaction.container_substrate)
+            oxygen = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
+        }
 
 
-        const carbon = CAtom(this.reaction.container_substrate[0][1][carbon_index], carbon_index, this.reaction.container_substrate)
-        const oxygen = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
+
+        // Replace C=NR with C=O (NR becomes reagent)
+        const bondsAI = new BondsAI(this.reaction)
+        bondsAI.bondSubstrateToReagentReverse(nitrogen_index, carbon_index)
+
 
         this.bondsAI.makeDoubleBond(oxygen, carbon, false)
 
