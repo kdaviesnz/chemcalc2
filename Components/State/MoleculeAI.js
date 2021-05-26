@@ -3,7 +3,7 @@ Only methods that change the state of subtrate / reagent
 
 removeBranch(start_of_branch_index, replacement)
 formKeytoneFromImine(nitrogen_index, carbon_index)
-
+neutraliseMolecule()
  */
 const BondsAI = require('../../Components/State/BondsAI')
 const VMolecule = require('../../Components/Stateless/Views/Molecule')
@@ -15,6 +15,31 @@ class MoleculeAI {
     constructor(reaction) {
         this.reaction = reaction
         this.bondsAI = new BondsAI(this.reaction)
+    }
+
+    neutraliseMolecule(molecule_container) {
+        // Set all atoms in molecule to have a neutral charge
+        let bond_count = null
+        let number_of_hydrogens_to_add = null
+        let hydrogen = null
+        let i = 0
+        molecule_container[0][1].map((atom_arr, atom_index) =>{
+            if (atom_arr[0] !== "H") {
+                const atom = CAtom(molecule_container[0][1][atom_index], atom_index, molecule_container)
+                switch(atom.symbol) {
+                    case "N":{
+                        bond_count =  atom.hydrogens().length + (single_bonds.length) + (double_bonds.length*2) + (triple_bonds_length*3)
+                        if (bond_count < 4) {
+                            number_of_hydrogens_to_add = 4 - bond_count
+                            for (i=0; i < number_of_hydrogens_to_add; i++) {
+
+
+                            }
+                        }
+                    }
+                }
+            }
+        })
     }
 
     removeBranch(start_of_branch_index, replacement) {
@@ -42,7 +67,6 @@ class MoleculeAI {
             console.log(VMolecule([this.reaction.container_reagent[0], 1]).compressed())
         }
 
-        process.error()
         // If nitrogen index > carbon index then we substract one from the carbon index to get the new carbon index
         if (nitrogen_index > carbon_index) {
             carbon_index = carbon_index - 1
@@ -75,23 +99,23 @@ class MoleculeAI {
         }
 
 
-
         // Replace C=NR with C=O (NR becomes reagent)
-
-
-        console.log(VMolecule([this.reaction.container_substrate[0], 1]).canonicalSMILES())
-
-
-        console.log(VMolecule([this.reaction.container_substrate[0], 1]).canonicalSMILES())
-        process.error()
-
         this.bondsAI.makeDoubleBond(oxygen, carbon, false)
+
+        this.bondsAI.removeProton(this.reaction.container_substrate, carbon_index)
+
+        this.reaction.setChargesOnSubstrate()
+        this.reaction.setChargesOnReagent()
 
         if (DEBUG) {
             console.log("State/MoleculeAI.js formKeytoneFromImine Substrate after adding oxygen and creating double bond with carbon")
             console.log(VMolecule([this.reaction.container_substrate[0], 1]).compressed())
             console.log(VMolecule([this.reaction.container_substrate[0], 1]).canonicalSMILES())
+            console.log(VMolecule([this.reaction.container_reagent[0], 1]).compressed())
+            console.log(VMolecule([this.reaction.container_reagent[0], 1]).canonicalSMILES())
         }
+
+        process.error()
 
         // For testing purposes
         return [

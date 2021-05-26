@@ -41,6 +41,16 @@ class BondsAI {
         return atom1_controller.isBondedTo(atom2_controller.atom)
     }
 
+    addProton(molecule_container, atom_index) {
+        const proton = AtomFactory("H")
+        const atom = CAtom(molecule_container[0][1][atom_index], atom_index, molecule_container)
+        const free_electrons = atom.freeElectrons()
+        proton.pop()
+        proton.push(free_electrons[0])
+        proton.push(free_electrons[1])
+        molecule_container[0][1].push(proton)
+    }
+
     removeProton(molecule, atom_index, electrons=null, proton=null) {
 
         const nitrogen_atom = CAtom(this.reaction.container_substrate[0][1][atom_index], atom_index, this.reaction.container_substrate)
