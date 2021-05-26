@@ -3,7 +3,7 @@ Only methods that change the state of subtrate / reagent
 
 removeBranch(start_of_branch_index, replacement)
 formKeytoneFromImine(nitrogen_index, carbon_index)
-neutraliseMolecule()
+neutraliseMolecule(molecule_container)
  */
 const BondsAI = require('../../Components/State/BondsAI')
 const VMolecule = require('../../Components/Stateless/Views/Molecule')
@@ -21,6 +21,7 @@ class MoleculeAI {
         // Set all atoms in molecule to have a neutral charge
         let bond_count = null
         let number_of_hydrogens_to_add = null
+        let number_of_hydrogens_to_remove = null
         let hydrogen = null
         let i = 0
         molecule_container[0][1].map((atom_arr, atom_index) =>{
@@ -29,12 +30,13 @@ class MoleculeAI {
                 switch(atom.symbol) {
                     case "N":{
                         bond_count =  atom.hydrogens().length + (single_bonds.length) + (double_bonds.length*2) + (triple_bonds_length*3)
-                        if (bond_count < 4) {
-                            number_of_hydrogens_to_add = 4 - bond_count
+                        if (bond_count < 3) {
+                            number_of_hydrogens_to_add = 3 - bond_count
                             for (i=0; i < number_of_hydrogens_to_add; i++) {
-
-
+                                addProton(molecule_container, atom_index)
                             }
+                        } else if(bond_count > 3) {
+                            // remove protons
                         }
                     }
                 }
