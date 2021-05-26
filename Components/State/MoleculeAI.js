@@ -18,30 +18,74 @@ class MoleculeAI {
     }
 
     neutraliseMolecule(molecule_container) {
+        const bondsAI = new BondsAI(this.reaction)
         // Set all atoms in molecule to have a neutral charge
         let bond_count = null
         let number_of_hydrogens_to_add = null
         let number_of_hydrogens_to_remove = null
         let hydrogen = null
         let i = 0
+        let max_bond_count = null
         molecule_container[0][1].map((atom_arr, atom_index) =>{
             if (atom_arr[0] !== "H") {
+
                 const atom = CAtom(molecule_container[0][1][atom_index], atom_index, molecule_container)
+
+                const single_bonds = atom.indexedBonds("").filter((b)=>{
+                    return b.atom[0] !== "H"
+                })
+
+                const double_bonds = atom.indexedDoubleBonds("").filter((b)=>{
+                    return b.atom[0] !== "H"
+                })
+
+                const triple_bonds = atom.indexedTripleBonds("").filter((b)=>{
+                    return b.atom[0] !== "H"
+                })
+
                 switch(atom.symbol) {
-                    case "N":{
-                        bond_count =  atom.hydrogens().length + (single_bonds.length) + (double_bonds.length*2) + (triple_bonds_length*3)
-                        if (bond_count < 3) {
-                            number_of_hydrogens_to_add = 3 - bond_count
-                            for (i=0; i < number_of_hydrogens_to_add; i++) {
-                                addProton(molecule_container, atom_index)
+                    case "N":
+                        max_bond_count = 3
+                        break
+                    case "O":
+                        max_bond_count = 2
+                        break
+                    case "C":
+                        max_bond_count = 4
+                        break
+                }
+
+                if (max_bond_count !== null) {
+                    bond_count =  atom.hydrogens().length + (single_bonds.length) + (double_bonds.length*2) + (triple_bonds.length*3)
+
+                    if (bond_count < max_bond_count) {
+                        number_of_hydrogens_to_add = max_bond_count - bond_count
+
+                        for (i=0; i < number_of_hydrogens_to_add; i++) {
+                            molecule_container = bondsAI.addProton(molecule_container, atom_index)
+
+                            if (atom.symbol === "N") {
+                                console.log("added proton")
                             }
-                        } else if(bond_count > 3) {
-                            // remove protons
+                        }
+                        if (atom.symbol === "N") {
+                            console.log(VMolecule(molecule_container).compressed())
+                            process.error()
+                        }
+
+                    } else if(bond_count > max_bond_count) {
+                        // remove protons
+                        number_of_hydrogens_to_remove = bond_count - max_bond_count
+                        i = 0
+                        for (i=0; i < number_of_hydrogens_to_remove; i++) {
+                            bondsAI.removeProton(molecule_container, atom_index)
                         }
                     }
                 }
+
             }
         })
+        return molecule_container
     }
 
     removeBranch(start_of_branch_index, replacement) {
@@ -105,6 +149,7 @@ class MoleculeAI {
         this.bondsAI.makeDoubleBond(oxygen, carbon, false)
 
         this.bondsAI.removeProton(this.reaction.container_substrate, carbon_index)
+        //this.neutraliseMolecule(this.reaction.container_reagent)
 
         this.reaction.setChargesOnSubstrate()
         this.reaction.setChargesOnReagent()
@@ -114,10 +159,7 @@ class MoleculeAI {
             console.log(VMolecule([this.reaction.container_substrate[0], 1]).compressed())
             console.log(VMolecule([this.reaction.container_substrate[0], 1]).canonicalSMILES())
             console.log(VMolecule([this.reaction.container_reagent[0], 1]).compressed())
-            console.log(VMolecule([this.reaction.container_reagent[0], 1]).canonicalSMILES())
         }
-
-        process.error()
 
         // For testing purposes
         return [

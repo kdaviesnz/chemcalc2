@@ -266,25 +266,38 @@ class Reaction {
             }
 
             // Split substrate so that the oxygen is only bonded to the carbon ie O=C
-            this.stateMoleculeAI.formKeytoneFromImine(nitrogen_index, carbon_index, DEBUG)
+            const formKeytoneFromImine_result = this.stateMoleculeAI.formKeytoneFromImine(nitrogen_index, carbon_index, DEBUG)
+            if (DEBUG) {
+                console.log(VMolecule(formKeytoneFromImine_result[0]).canonicalSMILES())
+                console.log(VMolecule([this.container_substrate[0], 1]).canonicalSMILES())
+            }
+
             if (DEBUG) {
                 console.log("substrate after calling this.stateMoleculeAI.formKeytoneFromImine() tracker="+tracker)
                 console.log(VMolecule([substrateProtected[0], 1]).compressed())
                 console.log("tracker:" + tracker)
             }
 
-
             const oxygen = AtomFactory("O","")
 
-            // Substitute N for O
-            if (this.container_substrate[0][1][nitrogen_index] === undefined) {
-                return false // N has already been substituted
-            }
-
+            /*
             this.substituteAtomForAtom(nitrogen_index, oxygen, DEBUG)
             if (DEBUG) {
                 console.log("Reaction.js reductiveAminationReverse Substrate after changing replacing nitrogen with oxygen tracker="+tracker)
                 console.log(VMolecule([this.container_substrate[0], 1]).compressed())
+            }
+             */
+
+            const reagent_neutralised = this.stateMoleculeAI.neutraliseMolecule(this.container_reagent)
+            console.log(VMolecule(reagent_neutralised).compressed())
+            process.error()
+            this.stateMoleculeAI.neutraliseMolecule(this.container_substrate)
+
+            if (DEBUG) {
+                console.log(VMolecule(this.container_substrate).canonicalSMILES())
+                console.log(VMolecule(this.container_reagent).canonicalSMILES())
+                console.log("tracker:" + tracker)
+                process.error()
             }
 
             return [

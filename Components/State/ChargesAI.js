@@ -52,6 +52,17 @@ class ChargesAI {
 
         let b = 0
 
+        const single_bonds = a_obj.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] !== "H"
+        })
+        const double_bonds = a_obj.indexedDoubleBonds("").filter((bond)=>{
+            return bond.atom[0] !== "H"
+        })
+        const triple_bonds = a_obj.indexedTripleBonds("").filter((bond)=>{
+            return bond.atom[0] !== "H"
+        })
+
+
         if (atom[0] === "Br") {
             // 7 is the number of valence electrons when there are no bonds
              b = (7 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length *2)+ (a_obj.indexedTripleBonds("").length*3))
@@ -82,13 +93,15 @@ class ChargesAI {
 
         if (atom[0] === "O") {
             // 6 is the number of valence electrons when there are no bonds
-             b = (6 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length *2)+ (a_obj.indexedTripleBonds("").length*3))
+             //b = (6 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length *2)+ (a_obj.indexedTripleBonds("").length*3))
+            b = 2 - (a_obj.hydrogens().length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
         }
 
         if (atom[0] === "N") {
             // 5 is the number of valence electrons when there are no bonds
-             b = (5 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
-/*
+            // b = (5 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
+            b = 3 - (a_obj.hydrogens().length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
+            /*
             if (5 + b_count === electrons.length && container_molecule[0][1][index][4] !== "" && container_molecule[0][1][index][4] !== 0) {
                // console.log("validateMolecule N")
                // console.log(index)
@@ -116,7 +129,8 @@ class ChargesAI {
             // https://chemistry.stackexchange.com/questions/22032/how-does-a-carbocation-have-a-positive-charge
             // Formal Charge= (No.of valence electrons in unbonded state - no of lone pair electrons ) - (no. of bond pair electrons/2)
             // In this case the charge comes out to be (4-0) - (6/2) =+1
-             b = (4 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
+            // b = (4 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
+            b = 4 - (a_obj.hydrogens().length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
             // this.reaction.container_substrate[0][1][index][4] = b  > 0? "+": (b < 0?"-":"")
 
 
@@ -276,27 +290,38 @@ class ChargesAI {
         const b_count = a_obj.bondCount() + a_obj.doubleBondCount()
         const electrons = _.cloneDeep(this.reaction.container_reagent[0][1][index].slice(5))
         let b = ""
-        if (this.reaction.container_reagent[0][1][index][0] === "Br") {
-             b = (7 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
 
+        const single_bonds = a_obj.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] !== "H"
+        })
+        const double_bonds = a_obj.indexedDoubleBonds("").filter((bond)=>{
+            return bond.atom[0] !== "H"
+        })
+        const triple_bonds = a_obj.indexedTripleBonds("").filter((bond)=>{
+            return bond.atom[0] !== "H"
+        })
+
+        if (this.reaction.container_reagent[0][1][index][0] === "Br") {
+            // b = (7 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
+            b = 1 - (a_obj.hydrogens().length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
         }
 
         if (this.reaction.container_reagent[0][1][index][0] === "O") {
-             b = (6 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
-
+             //b = (6 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
+            b = 2 - (a_obj.hydrogens().length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
         }
 
         if (this.reaction.container_reagent[0][1][index][0] === "N") {
-             b = (5 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
-
+             //b = (5 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
+            b = 3 - (a_obj.hydrogens().length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
         }
 
         if (this.reaction.container_reagent[0][1][index][0] === "C") {
             // https://chemistry.stackexchange.com/questions/22032/how-does-a-carbocation-have-a-positive-charge
             // Formal Charge= (No.of valence electrons in unbonded state - no of lone pair electrons ) - (no. of bond pair electrons/2)
             // In this case the charge comes out to be (4-0) - (6/2) =+1
-             b = (4 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
-
+             //b = (4 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
+            b = 4 - (a_obj.hydrogens().length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
         }
 
         this.reaction.container_reagent[0][1][index][4] = b  > 0? "+": (b < 0?"-":"")

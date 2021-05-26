@@ -23,16 +23,24 @@ const methylamine = MoleculeFactory("CN")
 // Preliminary tests
 console.log("Running preliminary tests")
 // Test reaction methods.
-console.log(VMolecule([me,1]).compressed())
 const me_nitrogen_index = 21
 const me_carbon_index = 5
 reaction = new Reaction([me, 1], [methylamine, 1], "", true, null, null, [], 0)
-// Used by reaction.reductiveAminationReverse
+
 stateMoleculeAI = new StateMoleculeAI(reaction)
-const imine_to_keytone_result = stateMoleculeAI.formKeytoneFromImine(me_nitrogen_index, me_carbon_index, true)
 
+// Used by reaction.reductiveAminationReverse
+const imine_to_keytone_result = stateMoleculeAI.formKeytoneFromImine(me_nitrogen_index, me_carbon_index, false)
 VMolecule(imine_to_keytone_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=O")
+VMolecule(imine_to_keytone_result[1]).canonicalSMILES().should.be.equal("[NH1-]C")
 
+// reaction.reductiveAminationReverse
+const carbon_index = 5
+reaction = new Reaction([me, 1], [methylamine, 1], "", true, null, null, [], 0)
+const reductiveAminationReverse_result = reaction.reductiveAminationReverse(carbon_index, true)
+console.log(reductiveAminationReverse_result)
+process.error()
+console.log(VMolecule(reductiveAminationReverse_result[0]).compressed())
 process.error()
 
 const commands = [

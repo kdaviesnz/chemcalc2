@@ -42,13 +42,29 @@ class BondsAI {
     }
 
     addProton(molecule_container, atom_index) {
-        const proton = AtomFactory("H")
+        console.log(VMolecule(molecule_container).compressed())
+        const proton = AtomFactory("H", "")
         const atom = CAtom(molecule_container[0][1][atom_index], atom_index, molecule_container)
         const free_electrons = atom.freeElectrons()
-        proton.pop()
-        proton.push(free_electrons[0])
-        proton.push(free_electrons[1])
+        if (free_electrons.length ===0) {
+            molecule_container[0][1][atom_index].push(proton[proton.length-1])
+            /*
+            free_electrons.push(uniqid())
+            free_electrons.push(uniqid())
+            molecule_container[0][1][atom_index].push(free_electrons[0])
+            molecule_container[0][1][atom_index].push(free_electrons[1])
+                         */
+        }
+        console.log(proton)
+//        proton.push(free_electrons[0])
+  //      proton.push(free_electrons[1])
         molecule_container[0][1].push(proton)
+        console.log(proton)
+        console.log(molecule_container[0][1][atom_index])
+        console.log(VMolecule(molecule_container).compressed())
+        process.error()
+
+        return molecule_container
     }
 
     removeProton(molecule, atom_index, electrons=null, proton=null) {
