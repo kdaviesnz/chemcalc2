@@ -41,8 +41,21 @@ class BondsAI {
         return atom1_controller.isBondedTo(atom2_controller.atom)
     }
 
+    addHydrogen(molecule_container, atom_index) {
+        const hydrogen_arr = AtomFactory("H", "")
+        const atom = CAtom(molecule_container[0][1][atom_index], atom_index, molecule_container)
+        if (atom.numberOfElectronsV2() < 8) { // room for shared electrons
+            const electron_to_share = hydrogen_arr[hydrogen_arr.length-1]
+            console.log(electron_to_share)
+            process.error()
+            molecule_container[0][1][atom_index].push(electron_to_share)
+            molecule_container[0][1].push(hydrogen_arr)
+            return molecule_container
+        }
+        return molecule_container
+    }
+
     addProton(molecule_container, atom_index) {
-        console.log(VMolecule(molecule_container).compressed())
         const proton = AtomFactory("H", "")
         const atom = CAtom(molecule_container[0][1][atom_index], atom_index, molecule_container)
         const free_electrons = atom.freeElectrons()
@@ -55,14 +68,7 @@ class BondsAI {
             molecule_container[0][1][atom_index].push(free_electrons[1])
                          */
         }
-        console.log(proton)
-//        proton.push(free_electrons[0])
-  //      proton.push(free_electrons[1])
         molecule_container[0][1].push(proton)
-        console.log(proton)
-        console.log(molecule_container[0][1][atom_index])
-        console.log(VMolecule(molecule_container).compressed())
-        process.error()
 
         return molecule_container
     }

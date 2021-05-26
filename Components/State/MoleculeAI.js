@@ -9,6 +9,7 @@ const BondsAI = require('../../Components/State/BondsAI')
 const VMolecule = require('../../Components/Stateless/Views/Molecule')
 const AtomFactory = require('../../Models/AtomFactory')
 const CAtom = require('../../Controllers/Atom')
+const uniqid = require('uniqid');
 
 class MoleculeAI {
 
@@ -18,6 +19,9 @@ class MoleculeAI {
     }
 
     neutraliseMolecule(molecule_container) {
+
+        console.log("Molecule container b4 neutralising")
+        console.log(molecule_container)
         const bondsAI = new BondsAI(this.reaction)
         // Set all atoms in molecule to have a neutral charge
         let bond_count = null
@@ -60,16 +64,27 @@ class MoleculeAI {
 
                     if (bond_count < max_bond_count) {
                         number_of_hydrogens_to_add = max_bond_count - bond_count
+                        const required_number_of_valence_electrons = molecule_container[0][1][atom_index][2]
+
+                        // Valence electrons
+                        const number_of_electrons_to_add = required_number_of_valence_electrons - atom.freeElectrons().length
+                        for (i=0; i < number_of_electrons_to_add; i++) {
+                            molecule_container[0][1][atom_index].push(uniqid())
+                        }
 
                         for (i=0; i < number_of_hydrogens_to_add; i++) {
-                            molecule_container = bondsAI.addProton(molecule_container, atom_index)
-
+                            molecule_container = bondsAI.addHydrogen(molecule_container, atom_index)
                             if (atom.symbol === "N") {
-                                console.log("added proton")
+                                console.log("added hydrogen")
                             }
                         }
+
                         if (atom.symbol === "N") {
-                            console.log(VMolecule(molecule_container).compressed())
+                            console.log(molecule_container)
+                            const atom2 = CAtom(molecule_container[0][1][atom_index], atom_index, molecule_container)
+                            console.log(atom2.hydrogens().length)
+                            process.error()
+                            console.log(VMolecule([molecule_container[0], 1]).compressed())
                             process.error()
                         }
 

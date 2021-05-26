@@ -23,6 +23,24 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     atom.length.should.be.greaterThan(3)
     current_atom_index.should.be.Number()
 
+    const __shared_electrons = () => {
+
+        const atoms = mmolecule[0][1]
+        const atom_electrons = atom.slice(5)
+
+        const total_shared_electrons =  _.cloneDeep(atoms).reduce(
+
+            (shared_electrons, _atom, _atom_index) => {
+                shared_electrons = shared_electrons.concat(Set().intersection(atom_electrons, _atom.slice(5)))
+                return shared_electrons
+            },
+            []
+        )
+
+        return Set().unique(total_shared_electrons);
+
+    }
+
     const __indexedTripleBonds = (filter_by) => {
 
         const atoms = mmolecule[0][1]
@@ -332,6 +350,10 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         const info = PeriodicTable[atom[0]]
         return atom.slice(5).length + ((info["electrons_per_shell"].split("-")).slice(0, -1).reduce((a, b) => a*1 + b*1, 0)) * 1
 
+    }
+
+    const __numberOfElectronsV2 = () => {
+        return atom.slice(5).length
     }
 
     // Number of bonds atom can have and be neutral
@@ -705,13 +727,15 @@ We then return the total number of free slots minus the number of slots already 
         tripleBondCount:__tripleBondCount,
         numberOfProtons:__numberOfProtons,
         numberOfElectrons:__numberOfElectrons,
+        numberOfElectronsV2:__numberOfElectronsV2,
         indexedBonds: __indexedBonds,
         indexedDoubleBonds: __indexedDoubleBonds,
         indexedTripleBonds: __indexedTripleBonds,
         atom: atom,
         symbol:  atom[0],
         atomIndex: current_atom_index,
-        charge: atom[4]
+        charge: atom[4],
+        sharedElectrons: __shared_electrons
     }
 }
 

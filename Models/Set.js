@@ -1,6 +1,11 @@
+const _ = require('lodash')
+
 const Set = () => {
 
     return {
+        unique: (array) => {
+            return _.uniq(array)
+        },
         intersection: (array1, array2) => {
             return array1.filter((value) => array2.includes(value))
         },
