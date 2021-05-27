@@ -44,14 +44,11 @@ class BondsAI {
     addHydrogen(molecule_container, atom_index) {
         const hydrogen_arr = AtomFactory("H", "")
         const atom = CAtom(molecule_container[0][1][atom_index], atom_index, molecule_container)
-        if (atom.numberOfElectronsV2() < 8) { // room for shared electrons
-            const electron_to_share = hydrogen_arr[hydrogen_arr.length-1]
-            console.log(electron_to_share)
-            process.error()
-            molecule_container[0][1][atom_index].push(electron_to_share)
-            molecule_container[0][1].push(hydrogen_arr)
-            return molecule_container
-        }
+        const hydrogen_electron_to_share = hydrogen_arr[hydrogen_arr.length-1]
+        const atom_free_electrons = atom.freeElectrons()
+        molecule_container[0][1][atom_index].push(hydrogen_electron_to_share)
+        hydrogen_arr.push(atom_free_electrons[0])
+        molecule_container[0][1].push(hydrogen_arr)
         return molecule_container
     }
 

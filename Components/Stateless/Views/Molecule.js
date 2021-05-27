@@ -826,7 +826,7 @@ const VMolecule = (mmolecule) => {
 
                 return s
 
-            }, "").replace(/\[C\]/g, "C").replace(/\[O\]/g, "O").replace(/\[N\]/g, "O")
+            }, "").replace(/\[C\]/g, "C").replace(/\[O\]/g, "O").replace(/\[N\]/g, "N")
 
             if (testing) {
                 console.log(smiles)

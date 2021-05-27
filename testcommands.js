@@ -20,27 +20,48 @@ let stateMoleculeAI = null
 const me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 const methylamine = MoleculeFactory("CN")
 
+let me_nitrogen_index = null
+let me_carbon_index = null
+let imine_to_keytone_result = null
 // Preliminary tests
 console.log("Running preliminary tests")
 // Test reaction methods.
-const me_nitrogen_index = 21
-const me_carbon_index = 5
-reaction = new Reaction([me, 1], [methylamine, 1], "", true, null, null, [], 0)
+me_nitrogen_index = 21
+me_carbon_index = 5
+reaction = new Reaction([me, 1], [methylamine, 1], "", false, null, null, [], 0)
 
 stateMoleculeAI = new StateMoleculeAI(reaction)
 
 // Used by reaction.reductiveAminationReverse
-const imine_to_keytone_result = stateMoleculeAI.formKeytoneFromImine(me_nitrogen_index, me_carbon_index, false)
+imine_to_keytone_result = stateMoleculeAI.formKeytoneFromImine(me_nitrogen_index, me_carbon_index, false)
 VMolecule(imine_to_keytone_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=O")
 VMolecule(imine_to_keytone_result[1]).canonicalSMILES().should.be.equal("[NH1-]C")
 
+me_nitrogen_index = 21
+me_carbon_index = 25
+imine_to_keytone_result = stateMoleculeAI.formKeytoneFromImine(me_nitrogen_index, me_carbon_index, false)
+VMolecule(imine_to_keytone_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=O")
+VMolecule(imine_to_keytone_result[1]).canonicalSMILES().should.be.equal("[NH1-]C")
+
+process.error()
+
+let carbon_index = null
 // reaction.reductiveAminationReverse
-const carbon_index = 5
-reaction = new Reaction([me, 1], [methylamine, 1], "", true, null, null, [], 0)
-const reductiveAminationReverse_result = reaction.reductiveAminationReverse(carbon_index, true)
+carbon_index = 5
+let reductiveAminationReverse_result = null
+reaction = new Reaction([me, 1], [methylamine, 1], "", false, null, null, [], 0)
+reductiveAminationReverse_result = reaction.reductiveAminationReverse(carbon_index, false)
+VMolecule(reductiveAminationReverse_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=O")
+VMolecule(reductiveAminationReverse_result[1]).canonicalSMILES().should.be.equal("CN")
+
+carbon_index = 25
+reductiveAminationReverse_result = reaction.reductiveAminationReverse(carbon_index, false)
 console.log(reductiveAminationReverse_result)
 process.error()
-console.log(VMolecule(reductiveAminationReverse_result[0]).compressed())
+VMolecule(reductiveAminationReverse_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=O")
+VMolecule(reductiveAminationReverse_result[1]).canonicalSMILES().should.be.equal("CN")
+
+
 process.error()
 
 const commands = [

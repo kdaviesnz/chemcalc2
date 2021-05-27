@@ -288,16 +288,13 @@ class Reaction {
             }
              */
 
-            const reagent_neutralised = this.stateMoleculeAI.neutraliseMolecule(this.container_reagent)
-            console.log(VMolecule(reagent_neutralised).compressed())
-            process.error()
+            this.stateMoleculeAI.neutraliseMolecule(this.container_reagent)
             this.stateMoleculeAI.neutraliseMolecule(this.container_substrate)
 
             if (DEBUG) {
                 console.log(VMolecule(this.container_substrate).canonicalSMILES())
                 console.log(VMolecule(this.container_reagent).canonicalSMILES())
                 console.log("tracker:" + tracker)
-                process.error()
             }
 
             return [

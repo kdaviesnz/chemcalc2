@@ -20,8 +20,6 @@ class MoleculeAI {
 
     neutraliseMolecule(molecule_container) {
 
-        console.log("Molecule container b4 neutralising")
-        console.log(molecule_container)
         const bondsAI = new BondsAI(this.reaction)
         // Set all atoms in molecule to have a neutral charge
         let bond_count = null
@@ -30,6 +28,13 @@ class MoleculeAI {
         let hydrogen = null
         let i = 0
         let max_bond_count = null
+
+        /*
+        molecule_container[0][1].map((atom_arr)=>{
+            console.log(atom_arr)
+        })
+         */
+
         molecule_container[0][1].map((atom_arr, atom_index) =>{
             if (atom_arr[0] !== "H") {
 
@@ -74,19 +79,9 @@ class MoleculeAI {
 
                         for (i=0; i < number_of_hydrogens_to_add; i++) {
                             molecule_container = bondsAI.addHydrogen(molecule_container, atom_index)
-                            if (atom.symbol === "N") {
-                                console.log("added hydrogen")
-                            }
                         }
 
-                        if (atom.symbol === "N") {
-                            console.log(molecule_container)
-                            const atom2 = CAtom(molecule_container[0][1][atom_index], atom_index, molecule_container)
-                            console.log(atom2.hydrogens().length)
-                            process.error()
-                            console.log(VMolecule([molecule_container[0], 1]).compressed())
-                            process.error()
-                        }
+                        molecule_container[0][1][atom_index][4] = ""
 
                     } else if(bond_count > max_bond_count) {
                         // remove protons
@@ -100,6 +95,7 @@ class MoleculeAI {
 
             }
         })
+
         return molecule_container
     }
 
