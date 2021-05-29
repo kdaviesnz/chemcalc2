@@ -38,7 +38,7 @@ me_carbon_index = 23
 // CC(CC1=CC=CC=C1)NC <= CC(CC1=CC=CC=C1)
 imine_to_ketone_result = stateMoleculeAI.formKeytoneFromImine(me_nitrogen_index, me_carbon_index, true)
 VMolecule(imine_to_ketone_result[0]).canonicalSMILES().should.be.equal("C=O")
-VMolecule(imine_to_ketone_result[1]).canonicalSMILES().should.be.equal("[NH1-]C")
+VMolecule(imine_to_ketone_result[1]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=N")
 process.error()
 
 me_nitrogen_index = 21
