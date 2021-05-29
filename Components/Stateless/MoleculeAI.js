@@ -64,6 +64,8 @@ const ProtonationAI = require('../../Components/State/ProtonationAI')
    findCarbonAttachedToNitrogenIndex(nitrogen_index)
    findAllCarbonIndexesAttachedToNitrogen(nitrogen_index) // single bonds
    __getCarbonBondsAttachedToNitrogen
+
+   findKetoneCarbonIndex(DEBUG)
    */
 
 
@@ -78,6 +80,38 @@ const MoleculeAI = (container_molecule) => {
             container_molecule[0][1][0].should.be.an.Array()
             container_molecule[0][1][0][0].should.be.an.String()
         }
+    }
+
+    const __findKetoneCarbonIndex = function(DEBUG) {
+        return _.findIndex(container_molecule[0][1], (atom, index)=>{
+            if (DEBUG) {
+                console.log("__findKetoneCarbonIndex substrate:")
+                console.log(VMolecule(container_molecule).compressed())
+            }
+            const atom_object = CAtom(atom, index, container_molecule)
+            if (atom_object.symbol !== "C") {
+                return false
+            }
+            const single_bonds = atom_object.indexedBonds("").filter((b)=>{
+                return b.atom[0] !=="H"
+            })
+            const double_bonds = atom_object.indexedDoubleBonds("").filter((b)=>{
+                return b.atom[0] !=="H"
+            })
+            if (DEBUG) {
+                console.log("__findKetoneCarbonIndex number of single bonds: " + single_bonds.length)
+            }
+            if (DEBUG) {
+                console.log("__findKetoneCarbonIndex number of double bonds: " + double_bonds.length)
+            }
+            if (single_bonds.length > 0) {
+                return false
+            }
+            if (double_bonds.length !==1) {
+                return false
+            }
+            return double_bonds[0].atom[0] === "O"
+        })
     }
 
     const __getCarbonBondsAttachedToNitrogen = function(nitrogen_index) {
@@ -1881,6 +1915,10 @@ VMolecule
 
 
 
+        },
+
+        "findKetoneCarbonIndex": (DEBUG) => {
+            return __findKetoneCarbonIndex(DEBUG)
         },
 
         "findMetalAtomIndex":() => {

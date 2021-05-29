@@ -13,7 +13,7 @@ const uniqid = require('uniqid');
 // removeBond(molecule, atom_index, electrons)
 // makeNitrogenCarbonTripleBond()
 // makeNitrogenCarbonDoubleBond(n_index=null, carbon_index=null)
-// makeOxygenCarbonDoubleBond()
+// makeOxygenCarbonDoubleBond(DEBUG)
 // breakCarbonNitrogenTripleBond()
 // breakCarbonNitrogenDoubleBond()
 // breakCarbonOxygenDoubleBond()
@@ -274,19 +274,60 @@ class BondsAI {
 
         // This should NOT remove H from the oxygen
         //console.log('makeOxygenCarbonDoubleBond()')
-        const oxygen_index = this.reaction.MoleculeAI.findOxygenAttachedToCarbonIndexNoDoubleBonds()
-
+        let oxygen_index = this.reaction.MoleculeAI.findOxygenAttachedToCarbonIndexNoDoubleBonds()
+        let carbon_index = null
         if (DEBUG) {
-            console.log("makeOxygenCarbonDoubleBond -> oxygen index = " + oxygen_index)
+            console.log("BondsAI makeOxygenCarbonDoubleBond -> oxygen index = " + oxygen_index)
         }
 
         if (oxygen_index === -1) {
-            if(DEBUG) {
-                console.log("makeOxygenCarbonDoubleBond -> oxygen atom not found")
+            // Look for oxygen with no bonds
+            oxygen_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=> {
+                if ( atom[0] !== "O") {
+                    return false
+                }
+                const o = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate)
+                const single_bonds = o.indexedBonds("").filter((bond)=>{
+                    return bond.atom[0] !== "H"
+                })
+                const double_bonds = o.indexedDoubleBonds("").filter((bond)=>{
+                    return bond.atom[0] !== "H"
+                })
+                const triple_bonds = o.indexedTripleBonds("").filter((bond)=>{
+                    return bond.atom[0] !== "H"
+                })
+                return single_bonds.length + double_bonds.length + triple_bonds.length === 0
+            })
+            if(oxygen_index === -1) {
+                console.log("BondsAI makeOxygenCarbonDoubleBond -> oxygen atom not found")
+                return false
+            } else {
+                // Create single bond between carbon and oxygen that we will turn into a double bond
+                carbon_index = _.findIndex(this.reaction.container_substrate[0][1], (c_atom, c_index)=> {
+                    if (c_atom[0] !== "C") {
+                        return false
+                    }
+                    const c = CAtom(this.reaction.container_substrate[0][1][c_index], c_index, this.reaction.container_substrate)
+                    const single_bonds = c.indexedBonds("").filter((bond)=>{
+                        return bond.atom[0] !== "H"
+                    })
+                    const double_bonds = c.indexedDoubleBonds("").filter((bond)=>{
+                        return bond.atom[0] !== "H"
+                    })
+                    const triple_bonds = c.indexedTripleBonds("").filter((bond)=>{
+                        return bond.atom[0] !== "H"
+                    })
+                    return c.hydrogens().length === 3 && (single_bonds.length + double_bonds.length + triple_bonds.length) === 0
+                })
+                if (carbon_index === -1) {
+                    console.log("makeOxygenCarbonDoubleBond() -> carbon index not found")
+                }
+                const o = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
+                const c = CAtom(this.reaction.container_substrate[0][1][carbon_index], carbon_index, this.reaction.container_substrate)
+                this.makeDoubleBond(o,c)
+                return true
             }
-            return false
         }
-
 
         const oxygen = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
 
@@ -304,7 +345,7 @@ class BondsAI {
             return false
         }
 
-        const carbon_index = carbon_bonds[0].atom_index
+        carbon_index = carbon_bonds[0].atom_index
 
 
         if (DEBUG) {
