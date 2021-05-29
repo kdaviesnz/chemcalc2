@@ -94,10 +94,10 @@ const determineReagent = (schema, molecule_JSON_object) => {
         } else {
             const chemical_to_add = temp.trim()
             if (chemical_to_add === "O" || chemical_to_add.toLowerCase() === "oxygen") {
-                // For both alkene and keytone when we are adding an oxygen reagent we are adding an oxygen.
-                if (molecule_JSON_object.is_alkene || molecule_JSON_object.is_keytone) {
+                // For both alkene and ketone when we are adding an oxygen reagent we are adding an oxygen.
+                if (molecule_JSON_object.is_alkene || molecule_JSON_object.is_ketone) {
                     const oxidising_agents = ["OsO4", "CrO3", "O3", "KMnO4", "H2O2"]
-                    // if alkene get oxidising_agent or peroxy acid or if keytone get peroxy acid and log.
+                    // if alkene get oxidising_agent or peroxy acid or if ketone get peroxy acid and log.
                     reagent = molecule_JSON_object.is_alkene ? shuffle(oxidising_agents).pop() : "peroxy acid"
                 }
             }

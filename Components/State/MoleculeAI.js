@@ -10,6 +10,7 @@ const VMolecule = require('../../Components/Stateless/Views/Molecule')
 const AtomFactory = require('../../Models/AtomFactory')
 const CAtom = require('../../Controllers/Atom')
 const uniqid = require('uniqid');
+const _ = require('lodash');
 
 class MoleculeAI {
 
@@ -147,8 +148,11 @@ class MoleculeAI {
             oxygen_index = this.reaction.container_substrate[0][1].length -1
             carbon = CAtom(this.reaction.container_substrate[0][1][0], 0, this.reaction.container_substrate)
             oxygen = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
+            if (DEBUG) {
+                console.log("Swapped substrate and reagent")
+            }
+            carbon_index = this.reaction.MoleculeAI.findKetoneCarbonIndex()
         } else {
-
             this.reaction.container_substrate[0][1].push(oxygen_atom)
             oxygen_index = this.reaction.container_substrate[0][1].length -1
             carbon = CAtom(this.reaction.container_substrate[0][1][carbon_index], carbon_index, this.reaction.container_substrate)
@@ -159,7 +163,8 @@ class MoleculeAI {
         // Replace C=NR with C=O (NR becomes reagent)
         this.bondsAI.makeDoubleBond(oxygen, carbon, false)
 
-        this.bondsAI.removeProton(this.reaction.container_substrate, carbon_index)
+        this.reaction.setChargesOnSubstrate()
+        this.bondsAI.removeProton(this.reaction.container_substrate, carbon_index, null, null, DEBUG)
         //this.neutraliseMolecule(this.reaction.container_reagent)
 
         this.reaction.setChargesOnSubstrate()

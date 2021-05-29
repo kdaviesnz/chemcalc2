@@ -18,30 +18,37 @@ let reaction =null
 let stateMoleculeAI = null
 
 const me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
+const pnm = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
 const methylamine = MoleculeFactory("CN")
 
 let me_nitrogen_index = null
 let me_carbon_index = null
-let imine_to_keytone_result = null
+let imine_to_ketone_result = null
 // Preliminary tests
 console.log("Running preliminary tests")
 // Test reaction methods.
-me_nitrogen_index = 21
-me_carbon_index = 5
-reaction = new Reaction([me, 1], [methylamine, 1], "", false, null, null, [], 0)
+reaction = new Reaction([pnm, 1], [methylamine, 1], "", false, null, null, [], 0)
 
 stateMoleculeAI = new StateMoleculeAI(reaction)
 
 // Used by reaction.reductiveAminationReverse
-imine_to_keytone_result = stateMoleculeAI.formKeytoneFromImine(me_nitrogen_index, me_carbon_index, false)
-VMolecule(imine_to_keytone_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=O")
-VMolecule(imine_to_keytone_result[1]).canonicalSMILES().should.be.equal("[NH1-]C")
+
+me_nitrogen_index = 19
+me_carbon_index = 23
+// CC(CC1=CC=CC=C1)NC <= CC(CC1=CC=CC=C1)
+imine_to_ketone_result = stateMoleculeAI.formKeytoneFromImine(me_nitrogen_index, me_carbon_index, true)
+VMolecule(imine_to_ketone_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=O")
+VMolecule(imine_to_ketone_result[1]).canonicalSMILES().should.be.equal("[NH1-]C")
+process.error()
 
 me_nitrogen_index = 21
-me_carbon_index = 25
-imine_to_keytone_result = stateMoleculeAI.formKeytoneFromImine(me_nitrogen_index, me_carbon_index, false)
-VMolecule(imine_to_keytone_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=O")
-VMolecule(imine_to_keytone_result[1]).canonicalSMILES().should.be.equal("[NH1-]C")
+me_carbon_index = 5
+
+imine_to_ketone_result = stateMoleculeAI.formKeytoneFromImine(me_nitrogen_index, me_carbon_index, false)
+VMolecule(imine_to_ketone_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=O")
+VMolecule(imine_to_ketone_result[1]).canonicalSMILES().should.be.equal("[NH1-]C")
+
+
 
 process.error()
 

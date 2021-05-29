@@ -70,8 +70,15 @@ class BondsAI {
         return molecule_container
     }
 
-    removeProton(molecule, atom_index, electrons=null, proton=null) {
+    removeProton(molecule, atom_index, electrons=null, proton=null, DEBUG=false) {
 
+        if (DEBUG) {
+            console.log("BondsAI removeProton() - molecule")
+            console.log(VMolecule(this.reaction.container_substrate).compressed())
+            console.log("BondsAI removeProton() - nitrogen index")
+            console.log(atom_index)
+            process.error()
+        }
         const nitrogen_atom = CAtom(this.reaction.container_substrate[0][1][atom_index], atom_index, this.reaction.container_substrate)
         if (electrons === null && proton === null) {
             const hydrogen_nitrogen_bonds = nitrogen_atom.indexedBonds("").filter((bond)=>{

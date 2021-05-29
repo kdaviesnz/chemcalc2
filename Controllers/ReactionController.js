@@ -73,7 +73,7 @@ return {
         }
 
 
-        // For both alkene and keytone when we are adding an oxygen reagent we are adding an oxygen.
+        // For both alkene and ketone when we are adding an oxygen reagent we are adding an oxygen.
         if (molecule.is_alkene) {
 
             if (reagent.chemicalFormula == "OsO4") {
@@ -111,9 +111,9 @@ return {
 
         }
 
-        if (molecule.is_keytone) {
+        if (molecule.is_ketone) {
             if (reagent.isPeroxyAcid){
-                // Oxygen is inserted between C and CH3 on the keytone 
+                // Oxygen is inserted between C and CH3 on the ketone 
              // ReactionSchemaParser
             BaeyerVilligerOxidationReaction(molecule, reagent, solvent, product)
             }
