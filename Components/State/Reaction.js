@@ -268,8 +268,11 @@ class Reaction {
             // Split substrate so that the oxygen is only bonded to the carbon ie O=C
             const formKeytoneFromImine_result = this.stateMoleculeAI.formKeytoneFromImine(nitrogen_index, carbon_index, DEBUG)
             if (DEBUG) {
+                console.log(nitrogen_index)
+                console.log(carbon_index)
                 console.log(VMolecule(formKeytoneFromImine_result[0]).canonicalSMILES())
                 console.log(VMolecule([this.container_substrate[0], 1]).canonicalSMILES())
+                process.error()
             }
 
             if (DEBUG) {
@@ -303,6 +306,7 @@ class Reaction {
             ]
 
         } else {
+
 
             // Get all carbon atoms attached to the nitrogen
             const carbon_atom_indexes = this.MoleculeAI.findAllCarbonIndexesAttachedToNitrogen(nitrogen_index)

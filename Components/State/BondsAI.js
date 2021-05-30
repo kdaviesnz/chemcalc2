@@ -77,7 +77,6 @@ class BondsAI {
             console.log(VMolecule(this.reaction.container_substrate).compressed())
             console.log("BondsAI removeProton() - nitrogen index")
             console.log(atom_index)
-            process.error()
         }
         const nitrogen_atom = CAtom(this.reaction.container_substrate[0][1][atom_index], atom_index, this.reaction.container_substrate)
         if (electrons === null && proton === null) {
