@@ -128,9 +128,9 @@ class MoleculeAI {
 
         // If nitrogen index > carbon index then we substract one from the carbon index to get the new carbon index
         if (nitrogen_index > carbon_index) {
-            carbon_index = carbon_index - 1
+          //  carbon_index = carbon_index - 1
         } else {
-            carbon_index = carbon_index + 1
+          //  carbon_index = carbon_index + 1
         }
 
         // Add =O to carbon
@@ -184,18 +184,37 @@ class MoleculeAI {
 
         } else {
             this.reaction.container_substrate[0][1].push(oxygen_atom)
-            oxygen_index = this.reaction.container_substrate[0][1].length -1
+            const oxygen_index = this.reaction.container_substrate[0][1].length -1
+            this.neutraliseMolecule(this.reaction.container_substrate)
+            this.reaction.setChargesOnSubstrate()
+            const molecule_compressed = VMolecule(this.reaction.container_substrate).compressed()
+            if (DEBUG) {
+                console.log("Substrate:")
+                console.log(VMolecule(this.reaction.container_substrate).compressed())
+                console.log("oxygen index = " + oxygen_index)
+                console.log("carbon index = " + carbon_index)
+            }
             carbon = CAtom(this.reaction.container_substrate[0][1][carbon_index], carbon_index, this.reaction.container_substrate)
             oxygen = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
         }
 
 
+
+        if(DEBUG){
+            console.log("State/MoleculeAI.js formKeytoneFromImine Substrate before making dounble bond")
+            console.log(VMolecule([this.reaction.container_substrate[0], 1]).compressed())
+            console.log(VMolecule([this.reaction.container_substrate[0], 1]).canonicalSMILES())
+        }
         // Replace C=NR with C=O (NR becomes reagent)
-        this.bondsAI.makeDoubleBond(oxygen, carbon, false)
+        this.bondsAI.makeDoubleBond(oxygen, carbon, DEBUG)
+        if (DEBUG) {
+            console.log(VMolecule([this.reaction.container_substrate[0], 1]).compressed())
+        }
 
         this.reaction.setChargesOnSubstrate()
         this.bondsAI.removeProton(this.reaction.container_substrate, carbon_index, null, null, DEBUG)
-        //this.neutraliseMolecule(this.reaction.container_reagent)
+        this.neutraliseMolecule(this.reaction.container_reagent)
+        this.neutraliseMolecule(this.reaction.container_substrate)
 
         this.reaction.setChargesOnSubstrate()
         this.reaction.setChargesOnReagent()

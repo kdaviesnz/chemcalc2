@@ -29,6 +29,33 @@ let carbon_index = null
 
 // Preliminary tests
 console.log("Running preliminary tests")
+
+// formKeytoneFromImine
+me_nitrogen_index = 19
+me_carbon_index = 4
+reaction = new Reaction([pnm, 1], [methylamine, 1], "", true, null, null, [], 0)
+//console.log(VMolecule(reaction.container_substrate).compressed())
+stateMoleculeAI = new StateMoleculeAI(reaction)
+imine_to_ketone_result = stateMoleculeAI.formKeytoneFromImine(me_nitrogen_index, me_carbon_index, true)
+//console.log(VMolecule(imine_to_ketone_result[0]).compressed())
+//process.error()
+VMolecule(imine_to_ketone_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=O")
+VMolecule(imine_to_ketone_result[1]).canonicalSMILES().should.be.equal("CN")
+process.error()
+
+nitrogen_index = 21
+carbon_index = 25
+reaction = new Reaction([me, 1], [methylamine, 1], "", true, null, null, [], 0)
+stateMoleculeAI = new StateMoleculeAI(reaction)
+reductiveAminationReverse_result = reaction.reductiveAminationReverse(carbon_index, true)
+VMolecule(reductiveAminationReverse_result[0]).canonicalSMILES().should.be.equal("C=O")
+VMolecule(reductiveAminationReverse_result[1]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)N")
+
+
+
+
+process.error()
+
 // Test reaction methods.
 reaction = new Reaction([pnm, 1], [methylamine, 1], "", false, null, null, [], 0)
 
@@ -44,27 +71,6 @@ imine_to_ketone_result = stateMoleculeAI.formKeytoneFromImine(me_nitrogen_index,
 VMolecule(imine_to_ketone_result[0]).canonicalSMILES().should.be.equal("C=O")
 VMolecule(imine_to_ketone_result[1]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=N")
 
-nitrogen_index = 21
-carbon_index = 25
-reaction = new Reaction([me, 1], [methylamine, 1], "", true, null, null, [], 0)
-//console.log(VMolecule([me, 1]).compressed())
-//process.error()
-reductiveAminationReverse_result = reaction.reductiveAminationReverse(carbon_index, true)
-VMolecule(reductiveAminationReverse_result[0]).canonicalSMILES().should.be.equal("C=O")
-VMolecule(reductiveAminationReverse_result[1]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)N")
-
-process.error()
-
-me_nitrogen_index = 21
-me_carbon_index = 5
-
-imine_to_ketone_result = stateMoleculeAI.formKeytoneFromImine(me_nitrogen_index, me_carbon_index, false)
-VMolecule(imine_to_ketone_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=O")
-VMolecule(imine_to_ketone_result[1]).canonicalSMILES().should.be.equal("[NH1-]C")
-
-
-
-process.error()
 
 
 // reaction.reductiveAminationReverse
