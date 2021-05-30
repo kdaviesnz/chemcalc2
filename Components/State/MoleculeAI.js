@@ -175,7 +175,6 @@ class MoleculeAI {
                 console.log(VMolecule(this.reaction.container_substrate).compressed())
             }
 
-
             // For testing purposes
             return [
                 this.reaction.container_substrate,

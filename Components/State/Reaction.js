@@ -247,7 +247,6 @@ class Reaction {
                 console.log(VMolecule([this.container_substrate[0], 1]).compressed())
             }
 
-
             // Check charges
             if(carbon.isNegativelyCharged()){
                 // Check for a proton that we can remove
@@ -271,8 +270,6 @@ class Reaction {
                 console.log(nitrogen_index)
                 console.log(carbon_index)
                 console.log(VMolecule(formKeytoneFromImine_result[0]).canonicalSMILES())
-                console.log(VMolecule([this.container_substrate[0], 1]).canonicalSMILES())
-                process.error()
             }
 
             if (DEBUG) {

@@ -316,7 +316,7 @@ class BondsAI {
                     const triple_bonds = c.indexedTripleBonds("").filter((bond)=>{
                         return bond.atom[0] !== "H"
                     })
-                    return c.hydrogens().length === 3 && (single_bonds.length + double_bonds.length + triple_bonds.length) === 0
+                    return  (single_bonds.length + double_bonds.length + triple_bonds.length) === 0
                 })
                 if (carbon_index === -1) {
                     console.log("makeOxygenCarbonDoubleBond() -> carbon index not found")

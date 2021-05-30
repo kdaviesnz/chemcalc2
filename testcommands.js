@@ -45,11 +45,13 @@ VMolecule(imine_to_ketone_result[0]).canonicalSMILES().should.be.equal("C=O")
 VMolecule(imine_to_ketone_result[1]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=N")
 
 nitrogen_index = 21
-carbon_index = 24
+carbon_index = 25
 reaction = new Reaction([me, 1], [methylamine, 1], "", true, null, null, [], 0)
+//console.log(VMolecule([me, 1]).compressed())
+//process.error()
 reductiveAminationReverse_result = reaction.reductiveAminationReverse(carbon_index, true)
-VMolecule(reductiveAminationReverse_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=O")
-VMolecule(reductiveAminationReverse_result[1]).canonicalSMILES().should.be.equal("CN")
+VMolecule(reductiveAminationReverse_result[0]).canonicalSMILES().should.be.equal("C=O")
+VMolecule(reductiveAminationReverse_result[1]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)N")
 
 process.error()
 
