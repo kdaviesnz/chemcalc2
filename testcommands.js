@@ -17,9 +17,9 @@ const Reaction = require('./Components/State/Reaction')
 let reaction =null
 let stateMoleculeAI = null
 
-const me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
-const pnm = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
-const methylamine = MoleculeFactory("CN")
+let me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
+let pnm = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
+let methylamine = MoleculeFactory("CN")
 
 let me_nitrogen_index = null
 let me_carbon_index = null
@@ -30,87 +30,84 @@ let carbon_index = null
 // Preliminary tests
 console.log("Running preliminary tests")
 
-// formKeytoneFromImine
-me_nitrogen_index = 19
-me_carbon_index = 4
-reaction = new Reaction([pnm, 1], [methylamine, 1], "", true, null, null, [], 0)
-//console.log(VMolecule(reaction.container_substrate).compressed())
-stateMoleculeAI = new StateMoleculeAI(reaction)
-imine_to_ketone_result = stateMoleculeAI.formKeytoneFromImine(me_nitrogen_index, me_carbon_index, true)
-//console.log(VMolecule(imine_to_ketone_result[0]).compressed())
-//process.error()
-VMolecule(imine_to_ketone_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=O")
-VMolecule(imine_to_ketone_result[1]).canonicalSMILES().should.be.equal("CN")
-process.error()
-
+// reductiveAminationReverse
 nitrogen_index = 21
-carbon_index = 25
-reaction = new Reaction([me, 1], [methylamine, 1], "", true, null, null, [], 0)
+carbon_index = 5
+me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
+pnm = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
+methylamine = MoleculeFactory("CN")
+reaction = new Reaction([me, 1], [methylamine, 1], "", false, null, null, [], 0)
 stateMoleculeAI = new StateMoleculeAI(reaction)
 reductiveAminationReverse_result = reaction.reductiveAminationReverse(carbon_index, true)
+VMolecule(reductiveAminationReverse_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=O")
+VMolecule(reductiveAminationReverse_result[1]).canonicalSMILES().should.be.equal("CN")
+
+// Reductive amination
+nitrogen_index = 21
+carbon_index = 25
+me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
+methylamine = MoleculeFactory("CN")
+reaction = new Reaction([me, 1], [methylamine, 1], "", false, null, null, [], 0)
+stateMoleculeAI = new StateMoleculeAI(reaction)
+reductiveAminationReverse_result = reaction.reductiveAminationReverse(carbon_index, false)
 VMolecule(reductiveAminationReverse_result[0]).canonicalSMILES().should.be.equal("C=O")
 VMolecule(reductiveAminationReverse_result[1]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)N")
 
-
-
-
-process.error()
-
-// Test reaction methods.
-reaction = new Reaction([pnm, 1], [methylamine, 1], "", false, null, null, [], 0)
-
-stateMoleculeAI = new StateMoleculeAI(reaction)
-
-// Used by reaction.reductiveAminationReverse
-
+// formKetoneFromImine
 me_nitrogen_index = 19
 me_carbon_index = 23
-// CC(CC1=CC=CC=C1)NC <= CC(CC1=CC=CC=C1)
-console.log(VMolecule([pnm,1]).compressed())
-imine_to_ketone_result = stateMoleculeAI.formKeytoneFromImine(me_nitrogen_index, me_carbon_index, true)
+pnm = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
+methylamine = MoleculeFactory("CN")
+reaction = new Reaction([pnm, 1], [methylamine, 1], "", false, null, null, [], 0)
+stateMoleculeAI = new StateMoleculeAI(reaction)
+imine_to_ketone_result = stateMoleculeAI.formKetoneFromImine(me_nitrogen_index, me_carbon_index, false)
 VMolecule(imine_to_ketone_result[0]).canonicalSMILES().should.be.equal("C=O")
 VMolecule(imine_to_ketone_result[1]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=N")
 
-
-
-// reaction.reductiveAminationReverse
-carbon_index = 5
-
-reaction = new Reaction([me, 1], [methylamine, 1], "", false, null, null, [], 0)
-reductiveAminationReverse_result = reaction.reductiveAminationReverse(carbon_index, false)
-VMolecule(reductiveAminationReverse_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=O")
-VMolecule(reductiveAminationReverse_result[1]).canonicalSMILES().should.be.equal("CN")
-
-carbon_index = 25
-reductiveAminationReverse_result = reaction.reductiveAminationReverse(carbon_index, false)
-console.log(reductiveAminationReverse_result)
+console.log("Preliminary tests completed. Running main tests...")
 process.error()
-VMolecule(reductiveAminationReverse_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=O")
-VMolecule(reductiveAminationReverse_result[1]).canonicalSMILES().should.be.equal("CN")
 
 
-process.error()
+
+
+
+const renderCallback = () => {
+    console.log("testcommands: renderCallback()")
+}
+
+
 
 const commands = [
     reductiveAminationReverse
 ]
 
-const horizontalFn = (target, reagent, reaction_commands) => (i, horizontalCallback) => {
+const horizontalFn = (target, reagent, reaction_commands) => (i, horizontalCallback, renderCallback) => {
     const rule = ""
     if (target === undefined) {
         console.log("target is undefined")
         process.error()
     }
-    commands[i](target, reagent, rule, horizontalCallback, horizontalFn, reaction_commands, i)
+    commands[i](target, reagent, rule, horizontalCallback, horizontalFn, reaction_commands, i, renderCallback)
 }
 
-
+me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
+methylamine = MoleculeFactory("CN")
 const horizontalCallback = horizontalFn(_.cloneDeep(me), _.cloneDeep(methylamine), _.cloneDeep(commands))
-horizontalCallback(0, horizontalCallback)
-// const CommandTest = (command, substrate, reagent, rule,  horizontalCallback, horizontalFn, commands, i)
-// return  commands_map[command](substrate, reagent, rule,  horizontalCallback, horizontalFn, commands, i)
-//const ReductiveAminationReverse = (mmolecule, reagent, rule, horizontalCallback, horizontalFn, commands, i, carbon_index) => {
-const reductive_amination_reverse = CommandTest("REDUCTIVEAMINATIONREVERSE", _.cloneDeep(me), _.cloneDeep([methylamine,1]), "", horizontalCallback, horizontalFn, commands, 0)
+horizontalCallback(0, horizontalCallback, renderCallback)
+/*
+const reductive_amination_reverse = CommandTest(
+    "REDUCTIVEAMINATIONREVERSE",
+    _.cloneDeep(me),
+    _.cloneDeep([methylamine,1]),
+    "",
+    horizontalCallback,
+    horizontalFn,
+    commands,
+    0,
+    renderCallback
+)
+*/
+
 process.error()
 
 const acetone = MoleculeFactory("CC(=O)C")

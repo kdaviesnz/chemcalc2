@@ -57,7 +57,7 @@ const MakeNitrogenCarbonTripleBond = require('../../Commands/MakeNitrogenCarbonT
 const ReductiveAmination = require('../../Commands/ReductiveAmination')
 const ReductiveAminationReverse = require('../../Commands/ReductiveAminationReverse')
 
-const CommandTest = (command, substrate, reagent, rule, horizontalCallback, horizontalFn, commands, i) => {
+const CommandTest = (command, substrate, reagent, rule, horizontalCallback, horizontalFn, commands, i, renderCallback) => {
 
     const commands_map = {
         "REDUCTIVEAMINATIONREVERSE": ReductiveAminationReverse,
@@ -122,7 +122,7 @@ const CommandTest = (command, substrate, reagent, rule, horizontalCallback, hori
 
 
 
-    return  commands_map[command](substrate, reagent, rule,  horizontalCallback, horizontalFn, commands, i)
+    return  commands_map[command](substrate, reagent, rule,  horizontalCallback, horizontalFn, commands, i, renderCallback)
 
 
 
