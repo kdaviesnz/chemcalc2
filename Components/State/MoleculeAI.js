@@ -70,7 +70,7 @@ class MoleculeAI {
                     case "C":
                         max_bond_count = 4
                         number_of_electrons =  8
-                        number_of_free_electrons = 4
+                        number_of_free_electrons = 0
                         break
                 }
 
@@ -106,17 +106,15 @@ class MoleculeAI {
                 }
 
                 if (atom.freeElectrons().length !== number_of_free_electrons) {
-                    console.log("incorrect number of free electrons")
                     let number_of_electrons_to_remove = 0
                     let number_of_electrons_to_add = 0
                     if (atom.freeElectrons().length > number_of_free_electrons){
                         number_of_electrons_to_remove = atom.freeElectrons().length - number_of_free_electrons
-                        
+                        atom.removeElectrons(number_of_electrons_to_remove)
+                    } else {
+                        number_of_electrons_to_add = number_of_free_electrons - atom.freeElectrons().length
+                        atom.addElectrons(number_of_electrons_to_add)
                     }
-                    process.error()
-                    _.remove(atom, (electron)=>{
-                        return electron === h_bonds[0].shared_electrons[0] || electron === h_bonds[0].shared_electrons[1]
-                    })
                 }
 
             }

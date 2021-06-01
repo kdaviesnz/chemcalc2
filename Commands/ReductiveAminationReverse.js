@@ -44,6 +44,9 @@ horizontalCallback(0, horizontalCallback, renderCallback)
         start(0, horizontalCallback, renderCallback)
     }
 
+    if (result === false) {
+        console.log("Commands/ReductiveAminationReverse returning false")
+    }
     /*
     return result  === false? false : [
         reaction.container_substrate,

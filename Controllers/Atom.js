@@ -2,6 +2,7 @@ const PeriodicTable = require('../Models/PeriodicTable')
 const Set = require('../Models/Set')
 const _ = require('lodash');
 const AtomFactory = require('../Models/AtomFactory')
+const uniqid = require('uniqid')
 
 const CAtom = (atom, current_atom_index, mmolecule) => {
 
@@ -666,6 +667,22 @@ We then return the total number of free slots minus the number of slots already 
         return atom[0] === "C" && __isPositivelyCharged(test_number)
     }
 
+    const __removeFreeElectrons = (number_of_electrons_to_remove) => {
+        let i = 0
+        for (i=0;i<number_of_electrons_to_remove;i++) {
+            _.remove(atom, (electron) => {
+                const free_electrons = __freeElectrons()
+                return free_electrons.indexOf(electron) !==-1
+            })
+        }
+    }
+
+    const __addElectrons = (number_of_electrons_to_add) => {
+        let i = 0
+        for (i=0;i<number_of_electrons_to_add;i++) {
+            atom.push(uniqid())
+        }
+    }
 
     return {
         isBondedTo: (sibling_atom) => {
@@ -735,7 +752,9 @@ We then return the total number of free slots minus the number of slots already 
         symbol:  atom[0],
         atomIndex: current_atom_index,
         charge: atom[4],
-        sharedElectrons: __shared_electrons
+        sharedElectrons: __shared_electrons,
+        removeElectrons: __removeFreeElectrons,
+        addElectrons: __addElectrons
     }
 }
 
