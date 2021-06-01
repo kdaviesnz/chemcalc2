@@ -1,6 +1,7 @@
 const should = require('should')
 const _ = require('lodash');
 const Set = require('./Models/Set')
+const Typecheck = require('./Typecheck')
 
 const VMolecule = require('./Components/Stateless/Views/Molecule')
 const MoleculeFactory = require('./Models/MoleculeFactory')
@@ -36,7 +37,8 @@ carbon_index = 5
 me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 pnm = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
 methylamine = MoleculeFactory("CN")
-reaction = new Reaction([me, 1], [methylamine, 1], "", false, null, null, [], 0)
+//  constructor(container_substrate, container_reagent, rule, DEBUG, horizontalCallback, horizontalFn, commands, command_index, reactions, renderCallback)
+reaction = new Reaction([me, 1], [methylamine, 1], "", false, null, null, [], 0, [], {})
 stateMoleculeAI = new StateMoleculeAI(reaction)
 reductiveAminationReverse_result = reaction.reductiveAminationReverse(carbon_index, false)
 VMolecule(reductiveAminationReverse_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=O")
@@ -47,7 +49,8 @@ nitrogen_index = 21
 carbon_index = 25
 me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 methylamine = MoleculeFactory("CN")
-reaction = new Reaction([me, 1], [methylamine, 1], "", false, null, null, [], 0)
+reaction = new Reaction([me, 1], [methylamine, 1], "", false, null, null, [], 0, [], {})
+
 stateMoleculeAI = new StateMoleculeAI(reaction)
 reductiveAminationReverse_result = reaction.reductiveAminationReverse(carbon_index, false)
 VMolecule(reductiveAminationReverse_result[0]).canonicalSMILES().should.be.equal("C=O")
@@ -58,7 +61,7 @@ me_nitrogen_index = 19
 me_carbon_index = 23
 pnm = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
 methylamine = MoleculeFactory("CN")
-reaction = new Reaction([pnm, 1], [methylamine, 1], "", false, null, null, [], 0)
+reaction = new Reaction([pnm, 1], [methylamine, 1], "", false, null, null, [], 0, [], {})
 stateMoleculeAI = new StateMoleculeAI(reaction)
 imine_to_ketone_result = stateMoleculeAI.formKetoneFromImine(me_nitrogen_index, me_carbon_index, false)
 VMolecule(imine_to_ketone_result[0]).canonicalSMILES().should.be.equal("C=O")
@@ -80,19 +83,24 @@ const commands = [
     reductiveAminationReverse
 ]
 
-const horizontalFn = (target, reagent, reaction_commands) => (i, horizontalCallback, renderCallback) => {
+const horizontalFn = (target, reagent, reaction_commands) => (i, horizontalCallback, renderCallback, reactions) => {
+    Typecheck(
+        {name:"target", value:target, type:"object"},
+        {name:"reagent", value:reagent, type:"object"},
+        {name:"reaction_commands", value:reaction_commands, type:"array"},
+        {name:"i", value:i, type:"number"},
+        {name:"horizontalCallback", value:horizontalCallback, type:"function"},
+        {name:"renderCallback", value:renderCallback, type:"function"},
+        {name:"reactions", value:reactions, type:"array"},
+    )
     const rule = ""
-    if (target === undefined) {
-        console.log("target is undefined")
-        process.error()
-    }
-    commands[i](target, reagent, rule, horizontalCallback, horizontalFn, reaction_commands, i, renderCallback)
+    commands[i](target, reagent, rule, horizontalCallback, horizontalFn, reaction_commands, i, renderCallback, reactions)
 }
 
 me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 methylamine = MoleculeFactory("CN")
 const horizontalCallback = horizontalFn(_.cloneDeep(me), _.cloneDeep(methylamine), _.cloneDeep(commands))
-horizontalCallback(0, horizontalCallback, renderCallback)
+horizontalCallback(0, horizontalCallback, renderCallback, [])
 /*
 const reductive_amination_reverse = CommandTest(
     "REDUCTIVEAMINATIONREVERSE",

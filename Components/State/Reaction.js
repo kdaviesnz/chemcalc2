@@ -15,6 +15,7 @@ const ChargesAI = require('../../Components/State/ChargesAI')
 const SubstitutionAI = require('../../Components/State/SubstitutionAI')
 const range = require("range");
 const StateMoleculeAI = require('../../Components/State/MoleculeAI')
+const Typecheck = require('../../Typecheck')
 
 /*
 reductiveAminationReverse()
@@ -115,8 +116,20 @@ addProtonFromReagentToHydroxylGroup
 
 class Reaction {
 
-    constructor(container_substrate, container_reagent, rule, DEBUG, horizontalCallback, horizontalFn, commands, command_index, renderCallback) {
+    constructor(container_substrate, container_reagent, rule, DEBUG, horizontalCallback, horizontalFn, commands, command_index, reactions, renderCallback) {
 
+        Typecheck(
+            {name:"container_substrate", value:container_substrate, type:"array"},
+            {name:"container_reagent", value:container_reagent, type:"array"},
+            {name:"rule", value:rule, type:"string"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+            {name:"horizontalCallback", value:horizontalCallback, type:"object"},
+            {name:"horizontalFn", value:horizontalFn, type:"object"},
+            {name:"commands", value:commands, type:"array"},
+            {name:"command_index", value:command_index, type:"number"},
+            {name:"reactions", value:reactions, type:"array"},
+            {name:"renderCallback", value:renderCallback, type:"object"}
+        )
 
         if (container_substrate.length !==2) {
             console.log("Components/State/Reaction.js constructor -> Container substrate:")
@@ -180,6 +193,7 @@ class Reaction {
 
         this.stateMoleculeAI = new StateMoleculeAI(this)
         this.renderCallback = renderCallback
+        this.reactions = reactions
     }
 
     substituteAtomForAtom(atom_to_substitute_index, replacement_atom, DEBUG) {
@@ -197,6 +211,14 @@ class Reaction {
 
 
     reductiveAminationReverse(carbon_index, DEBUG) {
+
+        Typecheck(
+            {name:"carbon_index", value:carbon_index, type:"number"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+            {name:"this.container_substrate", value:this.container_substrate, type:"array"},
+            {name:"this.container_reagent", value:this.container_reagent, type:"array"},
+            {name:"this.reactions", value:this.reactions, type:"array"}
+        )
 
         //this.setMoleculeAI()
         const tracker = uniqid()
@@ -223,6 +245,9 @@ class Reaction {
         if (nitrogen_index === -1) {
             return false
         }
+
+
+
 
         if (undefined !== carbon_index)  {
 
@@ -281,6 +306,11 @@ class Reaction {
         } else {
 
 
+            if (Object.prototype.toString.call(this.reactions) !== '[object Array]') {
+                console.log(this.reactions)
+                throw new Error("reactions should be an array")
+            }
+
             // Get all carbon atoms attached to the nitrogen
             const carbon_atom_indexes = this.MoleculeAI.findAllCarbonIndexesAttachedToNitrogen(nitrogen_index)
             if (DEBUG) {
@@ -289,8 +319,13 @@ class Reaction {
 
             }
 
-
             const reductiveAminationReverseCommand = require('../../Commands/ReductiveAminationReverse')
+
+            if (Object.prototype.toString.call(this.reactions) !== '[object Array]') {
+                console.log(this.reactions)
+                throw new Error("reactions should be an array")
+            }
+
             reductiveAminationReverseCommand(
                 _.cloneDeep(substrateProtected[0]),
                 _.cloneDeep(reagentProtected[0]),
@@ -300,6 +335,7 @@ class Reaction {
                 this.commands,
                 command_index_protected, // i
                 this.renderCallback,
+                this.reactions,
                 carbon_atom_indexes[0]
             )
 
