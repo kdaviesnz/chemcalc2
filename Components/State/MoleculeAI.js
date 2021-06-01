@@ -29,12 +29,15 @@ class MoleculeAI {
         let hydrogen = null
         let i = 0
         let max_bond_count = null
+        let number_of_electrons = null
+        let number_of_free_electrons = null
 
         /*
         molecule_container[0][1].map((atom_arr)=>{
             console.log(atom_arr)
         })
          */
+        // return [atom[0], index, "H " + h.length, 'Charge: '+ atom[4],  bonds, double_bonds, triple_bonds, electrons.length, free_electrons.length]
 
         molecule_container[0][1].map((atom_arr, atom_index) =>{
             if (atom_arr[0] !== "H") {
@@ -56,12 +59,18 @@ class MoleculeAI {
                 switch(atom.symbol) {
                     case "N":
                         max_bond_count = 3
+                        number_of_electrons =  8
+                        number_of_free_electrons = 2
                         break
                     case "O":
                         max_bond_count = 2
+                        number_of_electrons =  8
+                        number_of_free_electrons = 4
                         break
                     case "C":
                         max_bond_count = 4
+                        number_of_electrons =  8
+                        number_of_free_electrons = 4
                         break
                 }
 
@@ -74,9 +83,11 @@ class MoleculeAI {
 
                         // Valence electrons
                         const number_of_electrons_to_add = required_number_of_valence_electrons - atom.freeElectrons().length
+                        /*
                         for (i=0; i < number_of_electrons_to_add; i++) {
                             molecule_container[0][1][atom_index].push(uniqid())
                         }
+                        */
 
                         for (i=0; i < number_of_hydrogens_to_add; i++) {
                             molecule_container = bondsAI.addHydrogen(molecule_container, atom_index)
@@ -94,7 +105,22 @@ class MoleculeAI {
                     }
                 }
 
+                if (atom.freeElectrons().length !== number_of_free_electrons) {
+                    console.log("incorrect number of free electrons")
+                    let number_of_electrons_to_remove = 0
+                    let number_of_electrons_to_add = 0
+                    if (atom.freeElectrons().length > number_of_free_electrons){
+                        number_of_electrons_to_remove = atom.freeElectrons().length - number_of_free_electrons
+                        
+                    }
+                    process.error()
+                    _.remove(atom, (electron)=>{
+                        return electron === h_bonds[0].shared_electrons[0] || electron === h_bonds[0].shared_electrons[1]
+                    })
+                }
+
             }
+
         })
 
         return molecule_container

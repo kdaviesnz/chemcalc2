@@ -273,6 +273,9 @@ class Reaction {
                 console.log("tracker:" + tracker)
             }
 
+            console.log(VMolecule(this.container_substrate).compressed())
+            process.error()
+
             return [
                 this.container_substrate,
                 this.container_reagent

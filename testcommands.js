@@ -38,7 +38,7 @@ pnm = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
 methylamine = MoleculeFactory("CN")
 reaction = new Reaction([me, 1], [methylamine, 1], "", false, null, null, [], 0)
 stateMoleculeAI = new StateMoleculeAI(reaction)
-reductiveAminationReverse_result = reaction.reductiveAminationReverse(carbon_index, true)
+reductiveAminationReverse_result = reaction.reductiveAminationReverse(carbon_index, false)
 VMolecule(reductiveAminationReverse_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=O")
 VMolecule(reductiveAminationReverse_result[1]).canonicalSMILES().should.be.equal("CN")
 
@@ -65,11 +65,10 @@ VMolecule(imine_to_ketone_result[0]).canonicalSMILES().should.be.equal("C=O")
 VMolecule(imine_to_ketone_result[1]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=N")
 
 console.log("Preliminary tests completed. Running main tests...")
-process.error()
 
 
 
-
+// ============================================================================================
 
 const renderCallback = () => {
     console.log("testcommands: renderCallback()")
