@@ -27,6 +27,17 @@ let me_carbon_index = null
 let imine_to_ketone_result = null
 let reductiveAminationReverse_result = null
 let carbon_index = null
+const colors = require('colors')
+
+const renderCallback = (reactions) => {
+    Typecheck(
+        {name:"reactions", value:reactions, type:"array"},
+    )
+    reactions.map((reaction)=> {
+        //  VMolecule(reaction.finish_reagent)
+        console.log(VMolecule(reaction.substrate).canonicalSMILES().red + " (" +  VMolecule(reaction.reagent).canonicalSMILES().green + ") --> (" + reaction.command + ") " + VMolecule(reaction.product).canonicalSMILES().green)
+    })
+}
 
 // Preliminary tests
 console.log("Running preliminary tests")
@@ -38,7 +49,7 @@ me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 pnm = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
 methylamine = MoleculeFactory("CN")
 //  constructor(container_substrate, container_reagent, rule, DEBUG, horizontalCallback, horizontalFn, commands, command_index, reactions, renderCallback)
-reaction = new Reaction([me, 1], [methylamine, 1], "", false, null, null, [], 0, [], {})
+reaction = new Reaction([me, 1], null, "", false, null, null, [], 0, [], renderCallback)
 stateMoleculeAI = new StateMoleculeAI(reaction)
 reductiveAminationReverse_result = reaction.reductiveAminationReverse(carbon_index, false)
 VMolecule(reductiveAminationReverse_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=O")
@@ -49,7 +60,7 @@ nitrogen_index = 21
 carbon_index = 25
 me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 methylamine = MoleculeFactory("CN")
-reaction = new Reaction([me, 1], [methylamine, 1], "", false, null, null, [], 0, [], {})
+reaction = new Reaction([me, 1], [methylamine, 1], "", false, null, null, [], 0, [], renderCallback)
 
 stateMoleculeAI = new StateMoleculeAI(reaction)
 reductiveAminationReverse_result = reaction.reductiveAminationReverse(carbon_index, false)
@@ -61,7 +72,7 @@ me_nitrogen_index = 19
 me_carbon_index = 23
 pnm = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
 methylamine = MoleculeFactory("CN")
-reaction = new Reaction([pnm, 1], [methylamine, 1], "", false, null, null, [], 0, [], {})
+reaction = new Reaction([pnm, 1], [methylamine, 1], "", false, null, null, [], 0, [], renderCallback)
 stateMoleculeAI = new StateMoleculeAI(reaction)
 imine_to_ketone_result = stateMoleculeAI.formKetoneFromImine(me_nitrogen_index, me_carbon_index, false)
 VMolecule(imine_to_ketone_result[0]).canonicalSMILES().should.be.equal("C=O")
@@ -73,9 +84,6 @@ console.log("Preliminary tests completed. Running main tests...")
 
 // ============================================================================================
 
-const renderCallback = () => {
-    console.log("testcommands: renderCallback()")
-}
 
 
 
@@ -99,7 +107,8 @@ const horizontalFn = (target, reagent, reaction_commands) => (i, horizontalCallb
 
 me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 methylamine = MoleculeFactory("CN")
-const horizontalCallback = horizontalFn(_.cloneDeep(me), _.cloneDeep(methylamine), _.cloneDeep(commands))
+// null = reagent - we are not passing in a reagent
+const horizontalCallback = horizontalFn(_.cloneDeep(me), null, _.cloneDeep(commands))
 horizontalCallback(0, horizontalCallback, renderCallback, [])
 /*
 const reductive_amination_reverse = CommandTest(

@@ -123,12 +123,12 @@ class Reaction {
             {name:"container_reagent", value:container_reagent, type:"array"},
             {name:"rule", value:rule, type:"string"},
             {name:"DEBUG", value:DEBUG, type:"boolean"},
-            {name:"horizontalCallback", value:horizontalCallback, type:"object"},
-            {name:"horizontalFn", value:horizontalFn, type:"object"},
+            {name:"horizontalCallback", value:horizontalCallback, type:"function"},
+            {name:"horizontalFn", value:horizontalFn, type:"function"},
             {name:"commands", value:commands, type:"array"},
             {name:"command_index", value:command_index, type:"number"},
             {name:"reactions", value:reactions, type:"array"},
-            {name:"renderCallback", value:renderCallback, type:"object"}
+            {name:"renderCallback", value:renderCallback, type:"function"}
         )
 
         if (container_substrate.length !==2) {
@@ -217,7 +217,13 @@ class Reaction {
             {name:"DEBUG", value:DEBUG, type:"boolean"},
             {name:"this.container_substrate", value:this.container_substrate, type:"array"},
             {name:"this.container_reagent", value:this.container_reagent, type:"array"},
-            {name:"this.reactions", value:this.reactions, type:"array"}
+            {name:"this.reactions", value:this.reactions, type:"array"},
+            {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
+            {name:"this.horizontalFn", value:this.horizontalFn, type:"function"},
+            {name:"this.commands", value:this.commands, type:"array"},
+            {name:"this.command_index", value:this.command_index, type:"number"},
+            {name:"this.renderCallback", value:this.renderCallback, type:"function"},
+            {name:"this.rule", value:this.rule, type:"string"}
         )
 
         //this.setMoleculeAI()
@@ -326,9 +332,10 @@ class Reaction {
                 throw new Error("reactions should be an array")
             }
 
+            // const ReductiveAminationReverse = (mmolecule, reagent, rule, horizontalCallback, horizontalFn, commands, i, renderCallback, reactions, carbon_index)
             reductiveAminationReverseCommand(
                 _.cloneDeep(substrateProtected[0]),
-                _.cloneDeep(reagentProtected[0]),
+                reagentProtected===null?null:cloneDeep(reagentProtected[0]),
                 this.rule,
                 this.horizontalCallback,
                 this.horizontalFn,

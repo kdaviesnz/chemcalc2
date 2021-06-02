@@ -11,6 +11,7 @@ const AtomFactory = require('../../Models/AtomFactory')
 const CAtom = require('../../Controllers/Atom')
 const uniqid = require('uniqid');
 const _ = require('lodash');
+const Typecheck = require('./../../Typecheck')
 
 class MoleculeAI {
 
@@ -129,6 +130,13 @@ class MoleculeAI {
     }
 
     formKetoneFromImine(nitrogen_index, carbon_index, DEBUG) {
+
+        Typecheck(
+            {name:"carbon_index", value:carbon_index, type:"number"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+            {name:"nitrogen_index", value:nitrogen_index, type:"number"},
+            {name:"this.reaction", value:this.reaction, type:"object"},
+        )
 
         if(DEBUG) {
             console.log("State/MoleculeAI.js formKetoneFromImine carbon index:")
