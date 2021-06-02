@@ -18,6 +18,7 @@ const StateMoleculeAI = require('../../Components/State/MoleculeAI')
 const Typecheck = require('../../Typecheck')
 
 /*
+reduceImineToAmineReverse()
 reductiveAminationReverse()
 reductiveAmination()
 createEnolate()
@@ -208,6 +209,99 @@ class Reaction {
         this.container_substrate[0][1][atom_to_substitute_index][1] = replacement_atom[4]
     }
 
+    reduceImineToAmineReverse(carbon_index, DEBUG) {
+        // substrate should be an imine (N=C bond)
+        Typecheck(
+            {name:"carbon_index", value:carbon_index, type:"number"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+            {name:"this.container_substrate", value:this.container_substrate, type:"array"},
+            {name:"this.container_reagent", value:this.container_reagent, type:"array"},
+            {name:"this.reactions", value:this.reactions, type:"array"},
+            {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
+            {name:"this.horizontalFn", value:this.horizontalFn, type:"function"},
+            {name:"this.commands", value:this.commands, type:"array"},
+            {name:"this.command_index", value:this.command_index, type:"number"},
+            {name:"this.renderCallback", value:this.renderCallback, type:"function"},
+            {name:"this.rule", value:this.rule, type:"string"}
+        )
+
+        // Determine nitrogen index
+        const nitrogen_index = this.MoleculeAI.findNitrogenAttachedToCarbonIndexNoDoubleBonds()
+        if (DEBUG) {
+            console.log("Reaction.js reduceImineToAmineReverse() nitrogen index="+nitrogen_index)
+        }
+
+        if (nitrogen_index === -1) {
+            return false
+        }
+
+        if (undefined !== carbon_index)  {
+
+            // Change to double bond
+            const nitrogen = CAtom(this.container_substrate[0][1][nitrogen_index], nitrogen_index, this.container_substrate)
+            const carbon = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, this.container_substrate)
+            if (DEBUG) {
+                console.log("Reaction.js reduceImineToAmineReverse Substrate before changing CN bond to C=N tracker="+tracker)
+                console.log(carbon_index)
+                console.log(VMolecule([this.container_substrate[0], 1]).compressed())
+                console.log(VMolecule([this.container_substrate[0], 1]).canonicalSMILES())
+            }
+
+            // Remove hydrogen from nitrogen to give it a negative charge
+            this.container_substrate = this.bondsAI.removeProton(this.container_substrate, nitrogen_index)
+            this.bondsAI.makeDoubleBond(nitrogen, carbon, DEBUG)
+            this.stateMoleculeAI.neutraliseMolecule(this.container_substrate)
+            this.setChargesOnSubstrate(false)
+            if (DEBUG) {
+                console.log("Reaction.js reduceImineToAmineReverse Substrate after changing CN bond to C=N:")
+                console.log(VMolecule([this.container_substrate[0], 1]).compressed())
+                console.log(VMolecule([this.container_substrate[0], 1]).canonicalSMILES())
+            }
+
+            this.stateMoleculeAI.neutraliseMolecule(this.container_reagent)
+            this.stateMoleculeAI.neutraliseMolecule(this.container_substrate)
+
+            if (DEBUG) {
+                console.log(VMolecule(this.container_substrate).canonicalSMILES())
+                console.log(VMolecule(this.container_reagent).canonicalSMILES())
+            }
+
+            return [
+                this.container_substrate,
+                this.container_reagent
+            ]
+
+        } else {
+
+            // Get all carbon atoms attached to the nitrogen
+            const carbon_atom_indexes = this.MoleculeAI.findAllCarbonIndexesAttachedToNitrogen(nitrogen_index)
+            if (DEBUG) {
+                console.log("Reaction.js reduceImineToAmineReverse carbon indexes:")
+                console.log(carbon_atom_indexes)
+            }
+
+            carbon_atom_indexes.map((carbon_index) => {
+                // Call the ReduceReverse command again, but this time pass in the carbon index
+                const reduceReverseCommand = require('../../Commands/reduceImineToAmineReverse')
+                if (DEBUG) {
+                    console.log(VMolecule([substrateProtected[0], 1]).compressed())
+                }
+                reduceReverseCommand(
+                    _.cloneDeep(substrateProtected[0]),
+                    _.cloneDeep(reagentProtected),
+                    this.rule,
+                    this.horizontalCallback,
+                    this.horizontalFn,
+                    this.commands,
+                    command_index_protected, // i
+                    this.renderCallback,
+                    this.reactions,
+                    carbon_index
+                )
+            })
+
+        }
+    }
 
 
     reductiveAminationReverse(carbon_index, DEBUG) {
@@ -325,14 +419,13 @@ class Reaction {
 
             }
 
-            const reductiveAminationReverseCommand = require('../../Commands/ReductiveAminationReverse')
-
             if (Object.prototype.toString.call(this.reactions) !== '[object Array]') {
                 console.log(this.reactions)
                 throw new Error("reactions should be an array")
             }
 
             // const ReductiveAminationReverse = (mmolecule, reagent, rule, horizontalCallback, horizontalFn, commands, i, renderCallback, reactions, carbon_index)
+            /*
             reductiveAminationReverseCommand(
                 _.cloneDeep(substrateProtected[0]),
                 reagentProtected===null?null:cloneDeep(reagentProtected[0]),
@@ -345,19 +438,14 @@ class Reaction {
                 this.reactions,
                 carbon_atom_indexes[0]
             )
+            */
 
-            if (false) {
+            if (true) {
 
                 carbon_atom_indexes.map((carbon_index) => {
                     // Call the ReductiveAminationReverse command again, but this time pass in the carbon index
                     const reductiveAminationReverseCommand = require('../../Commands/ReductiveAminationReverse')
                     // const ReductiveAminationReverse = (mmolecule, reagent, rule, horizontalCallback, horizontalFn, commands, i, carbon_index)
-                    if (DEBUG && carbon_index === 25) {
-                        console.log("Reaction.js reductiveAminationReverse Substrate (carbon index is 25) tracker=" + tracker)
-                        console.log("tracker:" + tracker)
-                        console.log(VMolecule([substrateProtected[0], 1]).compressed())
-                    }
-                    console.log("tracker (before calling command:" + tracker)
                     if (DEBUG) {
                         console.log(VMolecule([substrateProtected[0], 1]).compressed())
                     }
@@ -369,6 +457,8 @@ class Reaction {
                         this.horizontalFn,
                         this.commands,
                         command_index_protected, // i
+                        this.renderCallback,
+                        this.reactions,
                         carbon_index
                     )
                 })

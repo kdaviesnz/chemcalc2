@@ -58,6 +58,7 @@ VMolecule(reductiveAminationReverse_result[1]).canonicalSMILES().should.be.equal
 // Reductive amination
 nitrogen_index = 21
 carbon_index = 25
+// CC(C(O)C1=CC=CC=C1)=O 1-Hydroxy-1-phenylacetone
 me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 methylamine = MoleculeFactory("CN")
 reaction = new Reaction([me, 1], [methylamine, 1], "", false, null, null, [], 0, [], renderCallback)
