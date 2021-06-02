@@ -51,9 +51,11 @@ const ReductiveAminationReverse = (mmolecule, reagent, rule, horizontalCallback,
 
     // horizontal
     if(undefined !== commands[i+1]) {
+        // We are calling a different reverse command on the same substrate
         console.log("ReductiveAminationReverse -> next command")
         console.log(commands[i+1])
-        horizontalCallback(i+1, horizontalCallback)
+        // horizontalCallback(0, horizontalCallback, renderCallback, [])
+        horizontalCallback(i+1, horizontalCallback, renderCallback, [])
     }
 
 

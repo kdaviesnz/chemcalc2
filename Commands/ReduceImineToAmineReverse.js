@@ -9,7 +9,7 @@ const Typecheck = require('./../Typecheck')
 // commands[i](target, reagent, rule, horizontalCallback, horizontalFn, reaction_commands, i, renderCallback, reactions)
 const ReduceImineToAmineReverse = (mmolecule, reagent, rule, horizontalCallback, horizontalFn, commands, i, renderCallback, reactions, carbon_index) => {
 
-    console.log("Calling ReduceReverse- i " +i + " Starting " + VMolecule([mmolecule,1]).canonicalSMILES() + " Starting reagent:" + (reagent===null?"Not specified":VMolecule([reagent,1]).canonicalSMILES()))
+    console.log("Calling ReduceImineToAmineReverse- i " +i + " Starting " + VMolecule([mmolecule,1]).canonicalSMILES() + " Starting reagent:" + (reagent===null?"Not specified":VMolecule([reagent,1]).canonicalSMILES()))
 
     Typecheck(
         {name:"mmolecule", value:mmolecule, type:"object"},
@@ -59,9 +59,9 @@ const ReduceImineToAmineReverse = (mmolecule, reagent, rule, horizontalCallback,
 
     // Vertical
     if (result !== false && result !==undefined) {
-        console.log("Commands/ReduceReverse result:")
+        console.log("Commands/ReduceImineToAmineReverse result:")
         //console.log(result[0])
-        horizontalCallback = horizontalFn(_.cloneDeep(result[0][0]), _.cloneDeep(result[1][0]), _.cloneDeep(commands))
+        horizontalCallback = horizontalFn(_.cloneDeep(result[0][0]), result[1]===null?null:_.cloneDeep(result[1][0]), _.cloneDeep(commands))
         // const Reaction = (r_command, substrate, reagent, product, finish_reagent, description)
         reactions.push(
             StatelessReaction(
@@ -73,7 +73,7 @@ const ReduceImineToAmineReverse = (mmolecule, reagent, rule, horizontalCallback,
                 "reduce imine to amine"
             )
         )
-        const start = horizontalFn(result[0][0], result[1][0], commands)
+        const start = horizontalFn(result[0][0], (result[1]===null?null:_.cloneDeep(result[1][0])), commands)
         start(0, horizontalCallback, renderCallback, reactions)
     }
 

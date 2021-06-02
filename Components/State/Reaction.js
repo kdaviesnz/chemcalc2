@@ -41,8 +41,6 @@ oxygenCarbonDoubleBond()
 makeNitrogenCarbonDoubleBond()
 reduceImineToAmine()
 reduceImineToAmineOnNitrogenMethylCarbonReverse(DEBUG)
-reduceImineToAmineReverse(check_mode)
-__reduceImineToAmineReverse(DEBUG, n_atom, carbon, n_index, c_index)
 remercurify()
 demercurify()
 transferProtonReverse(check_mode)
@@ -241,7 +239,7 @@ class Reaction {
             const nitrogen = CAtom(this.container_substrate[0][1][nitrogen_index], nitrogen_index, this.container_substrate)
             const carbon = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, this.container_substrate)
             if (DEBUG) {
-                console.log("Reaction.js reduceImineToAmineReverse Substrate before changing CN bond to C=N tracker="+tracker)
+                console.log("Reaction.js reduceImineToAmineReverse Substrate before changing CN bond to C=N:")
                 console.log(carbon_index)
                 console.log(VMolecule([this.container_substrate[0], 1]).compressed())
                 console.log(VMolecule([this.container_substrate[0], 1]).canonicalSMILES())
@@ -258,12 +256,16 @@ class Reaction {
                 console.log(VMolecule([this.container_substrate[0], 1]).canonicalSMILES())
             }
 
-            this.stateMoleculeAI.neutraliseMolecule(this.container_reagent)
+            if (this.container_reagent !==null) {
+                this.stateMoleculeAI.neutraliseMolecule(this.container_reagent)
+            }
             this.stateMoleculeAI.neutraliseMolecule(this.container_substrate)
 
             if (DEBUG) {
                 console.log(VMolecule(this.container_substrate).canonicalSMILES())
-                console.log(VMolecule(this.container_reagent).canonicalSMILES())
+                if (this.container_reagent !==null) {
+                    console.log(VMolecule(this.container_reagent).canonicalSMILES())
+                }
             }
 
             return [
@@ -282,18 +284,18 @@ class Reaction {
 
             carbon_atom_indexes.map((carbon_index) => {
                 // Call the ReduceReverse command again, but this time pass in the carbon index
-                const reduceReverseCommand = require('../../Commands/reduceImineToAmineReverse')
+                const reduceReverseCommand = require('../../Commands/ReduceImineToAmineReverse')
                 if (DEBUG) {
-                    console.log(VMolecule([substrateProtected[0], 1]).compressed())
+                    console.log(VMolecule([this.container_substrate[0], 1]).compressed())
                 }
                 reduceReverseCommand(
-                    _.cloneDeep(substrateProtected[0]),
-                    _.cloneDeep(reagentProtected),
+                    _.cloneDeep(this.container_substrate[0]),
+                    _.cloneDeep(this.container_reagent),
                     this.rule,
                     this.horizontalCallback,
                     this.horizontalFn,
                     this.commands,
-                    command_index_protected, // i
+                    this.command_index, // i
                     this.renderCallback,
                     this.reactions,
                     carbon_index
@@ -389,13 +391,16 @@ class Reaction {
                 console.log(carbon_index)
             }
 
-            this.stateMoleculeAI.neutraliseMolecule(this.container_reagent)
+            if (this.container_reagent !==null) {
+                this.stateMoleculeAI.neutraliseMolecule(this.container_reagent)
+            }
             this.stateMoleculeAI.neutraliseMolecule(this.container_substrate)
 
             if (DEBUG) {
                 console.log(VMolecule(this.container_substrate).canonicalSMILES())
-                console.log(VMolecule(this.container_reagent).canonicalSMILES())
-                console.log("tracker:" + tracker)
+                if (this.container_reagent !==null) {
+                    console.log(VMolecule(this.container_reagent).canonicalSMILES())
+                }
             }
 
             return [
@@ -940,126 +945,10 @@ class Reaction {
     }
 
 
-    reduceImineToAmineReverse(check_mode) {
-
-
-        /*
-        Sodium cyanoborohydride (NaBH3CN) is a mild reducing agent that is commonly used in reductive aminations. The presence of the electron-withdrawing cyano (CN) group makes it less reactive
-        than sodium borohydride (NaBH4). This reduced reactivity allows NaBH3CN to be employed at neutral or slightly acidic conditions for the selective reduction of iminium ions in the presence of ketones and aldehydes.
-         */
-
-        let n_atom = null
-        // Look for N
-        const n_index = _.findIndex(this.container_substrate[0][1], (atom, index)=>{
-            if (atom[0] !== "N") {
-                return false
-            }
-            if (atom[4] === "+" || atom[4] === "-") {
-                return false
-            }
-            n_atom = CAtom(this.container_substrate[0][1][index], index, this.container_substrate)
-            return n_atom.doubleBondCount() === 0
-        })
-
-        if (n_index === -1) {
-            return false
-        }
-
-        const c_n_carbon_bonds = n_atom.indexedBonds("").filter((bond)=>{
-            return bond.atom[0] === "C"
-        })
-        const carbon = CAtom(this.container_substrate[0][1][c_n_carbon_bonds[0].atom_index], c_n_carbon_bonds[0].atom_index, this.container_substrate)
-
-        return this.__reduceImineToAmineReverse(check_mode, n_atom, carbon, n_index, c_n_carbon_bonds[0].atom_index)
-
-    }
 
 
 
-    __reduceImineToAmineReverse(DEBUG, n_atom, carbon, n_index, c_index) {
 
-        if (DEBUG) {
-            console.log("Components/State/Reaction.js __reduceImineToAmineReverse() -> Got substrate nitrogen index " + n_index)
-        }
-
-        if (!this.CommandLogic.check('reduceImineToAmineReverse')) {
-            return false
-        }
-
-
-        const substrate = _.cloneDeep(this.container_substrate)
-
-        // Add double bond
-        const h_n_hydrogen_bonds = n_atom.indexedBonds("").filter((bond)=>{
-            return bond.atom[0] === "H"
-        })
-        const h_c_hydrogen_bonds = carbon.indexedBonds("").filter((bond)=>{
-            return bond.atom[0] === "H"
-        })
-        // Check that there is at least on H-N bond that we can remove
-        if (h_n_hydrogen_bonds.length === 0) {
-            return false
-        }
-        // Check that there is at least on H-C on the C-N carbon that we can remove
-        if (h_c_hydrogen_bonds.length === 0) {
-            return false
-        }
-        const electrons_to_share = n_atom.freeElectrons()
-        if (electrons_to_share.length === 0) {
-            return false
-        }
-
-
-
-        // Remove the H-N bond
-        // Remove the H-C bond
-        const h_c_shared_electrons = h_c_hydrogen_bonds[0].shared_electrons
-        this.container_substrate = this.bondsAI.removeBond(this.container_substrate, c_index, h_c_shared_electrons)
-
-        // Check that the C now has a free electron pair
-        carbon.freeSlots().should.be.greaterThan(0)
-
-        // Add another bond to C-N bond
-        //const shared_electrons = [uniqid(), uniqid()]
-        this.container_substrate[0][1][c_index].push(electrons_to_share[0])
-        this.container_substrate[0][1][c_index].push(electrons_to_share[1])
-
-        // Remove H-C hydrogen
-        //this.container_substrate[0][1] = Set().removeFromArray(this.container_substrate[0][1], this.container_substrate[0][1][h_c_hydrogen_bonds[0].atom_index])
-        const hydrogen_atom_on_carbon = this.container_substrate[0][1][h_c_hydrogen_bonds[0].atom_index]
-        this.container_substrate = this.bondsAI.removeAtom(this.container_substrate, hydrogen_atom_on_carbon)
-
-        // h_n_hydrogen_bonds
-        // Remove hydrogen on nitrogen
-        const h_n_shared_electrons = h_n_hydrogen_bonds[0].shared_electrons
-        //const bonds_length_before = this.container_substrate[0][1][n_index].length
-        this.container_substrate = this.bondsAI.removeProton(this.container_substrate, n_index, h_n_shared_electrons, this.container_substrate[0][1][h_n_hydrogen_bonds[0].atom_index])
-        //this.container_substrate[0][1][n_index].length.should.be.lessThan(bonds_length_before)
-       // const hydrogen_atom_on_nitrogen = this.container_substrate[0][1][h_n_hydrogen_bonds[0].atom_index]
-        //this.container_substrate = this.bondsAI.removeAtom(this.container_substrate, hydrogen_atom_on_nitrogen)
-
-        if (DEBUG) {
-            console.log("Components/State/Reaction.js __reduceImineToAmineReverse() -> Substrate after adding double bond:")
-            console.log(VMolecule([this.container_substrate[0],1]).compressed())
-            console.log(VMolecule([this.container_substrate[0],1]).canonicalSMILES())
-            process.error()
-        }
-
-        n_atom.doubleBondCount().should.be.greaterThan(0)
-
-        this.setChargesOnSubstrate(DEBUG)
-
-        if (DEBUG) {
-            console.log("Substrate after adding charges:")
-            console.log(VMolecule([this.container_substrate[0],1]).compressed())
-        }
-
-        this.setMoleculeAI()
-
-
-
-        return true
-    }
 
 
     remercurify() {

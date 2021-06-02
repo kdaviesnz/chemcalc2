@@ -11,6 +11,7 @@ const CAtom = require('./Controllers/Atom')
 const CommandTest = require('./Components/Stateless/CommandTest')
 
 const reductiveAminationReverse = require('./Commands/ReductiveAminationReverse')
+const reduceImineToAmineReverse = require('./Commands/ReduceImineToAmineReverse')
 const transferProtonReverse = require('./Commands/TransferProtonReverse')
 const StateMoleculeAI = require('./Components/State/MoleculeAI')
 const Reaction = require('./Components/State/Reaction')
@@ -35,12 +36,37 @@ const renderCallback = (reactions) => {
     )
     reactions.map((reaction)=> {
         //  VMolecule(reaction.finish_reagent)
-        console.log(VMolecule(reaction.substrate).canonicalSMILES().red + " (" +  VMolecule(reaction.reagent).canonicalSMILES().green + ") --> (" + reaction.command + ") " + VMolecule(reaction.product).canonicalSMILES().green)
+        const reagent_smiles = reaction.reagent === null?"Reagent not specified":VMolecule(reaction.reagent).canonicalSMILES()
+        console.log(VMolecule(reaction.substrate).canonicalSMILES().red + " (" +  reagent_smiles.green + ") --> (" + reaction.command + ") " + VMolecule(reaction.product).canonicalSMILES().green)
     })
 }
 
 // Preliminary tests
 console.log("Running preliminary tests")
+
+// reduceImineToAmineReverse
+nitrogen_index = 21
+carbon_index = 5
+me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
+reaction = new Reaction([me, 1], null, "", false, null, null, [], 0, [], renderCallback)
+//console.log(VMolecule([me,1]).compressed())
+reduceImineToAmineReverse_result = reaction.reduceImineToAmineReverse(carbon_index, false)
+VMolecule(reduceImineToAmineReverse_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=NC")
+if (reduceImineToAmineReverse_result[1] !==null) {
+    throw new Error("Null expected")
+}
+
+// reduceImineToAmineReverse
+nitrogen_index = 21
+carbon_index = 25
+me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
+reaction = new Reaction([me, 1], null, "", false, null, null, [], 0, [], renderCallback)
+//console.log(VMolecule([me,1]).compressed())
+reduceImineToAmineReverse_result = reaction.reduceImineToAmineReverse(carbon_index, false)
+VMolecule(reduceImineToAmineReverse_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)N=C")
+if (reduceImineToAmineReverse_result[1] !==null) {
+    throw new Error("Null expected")
+}
 
 // reductiveAminationReverse
 nitrogen_index = 21
@@ -89,7 +115,8 @@ console.log("Preliminary tests completed. Running main tests...")
 
 
 const commands = [
-    reductiveAminationReverse
+    reductiveAminationReverse,
+    reduceImineToAmineReverse
 ]
 
 const horizontalFn = (target, reagent, reaction_commands) => (i, horizontalCallback, renderCallback, reactions) => {
