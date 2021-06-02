@@ -7,9 +7,9 @@ const StatelessReaction = require("../Components/Stateless/Reaction")
 const Typecheck = require('./../Typecheck')
 
 // commands[i](target, reagent, rule, horizontalCallback, horizontalFn, reaction_commands, i, renderCallback, reactions)
-const ReduceImineToAmineReverse = (mmolecule, reagent, rule, horizontalCallback, horizontalFn, commands, i, renderCallback, reactions, carbon_index) => {
+const DehydrateReverse = (mmolecule, reagent, rule, horizontalCallback, horizontalFn, commands, i, renderCallback, reactions, carbon_index) => {
 
-    console.log("Calling ReduceImineToAmineReverse- i " +i + " Starting " + VMolecule([mmolecule,1]).canonicalSMILES() + " Starting reagent:" + (reagent===null?"Not specified":VMolecule([reagent,1]).canonicalSMILES()))
+    console.log("Calling DehydrateReverse- i " +i + " Starting " + VMolecule([mmolecule,1]).canonicalSMILES() + " Starting reagent:" + (reagent===null?"Not specified":VMolecule([reagent,1]).canonicalSMILES()))
 
     Typecheck(
         {name:"mmolecule", value:mmolecule, type:"object"},
@@ -26,12 +26,7 @@ const ReduceImineToAmineReverse = (mmolecule, reagent, rule, horizontalCallback,
     //  constructor(container_substrate, container_reagent, rule, DEBUG, horizontalCallback, horizontalFn, commands, command_index, reactions, renderCallback)
     const reaction = new Reaction([_.cloneDeep(mmolecule),1], (reagent===null?reagent:[(reagent),1]), rule, false, horizontalCallback, horizontalFn, commands, i, reactions, renderCallback, carbon_index)
 
-    if (Object.prototype.toString.call(reactions) !== '[object Array]') {
-        console.log(reactions)
-        throw new Error("reactions should be an array")
-    }
-
-    const result = reaction.reduceImineToAmineReverse(carbon_index, false)
+    const result = reaction.DehydrateReverse(carbon_index, false)
 
     /*
     const horizontalFn = (target, reagent, reaction_commands) => (i, horizontalCallback, renderCallback, reactions) => {
@@ -51,7 +46,7 @@ const ReduceImineToAmineReverse = (mmolecule, reagent, rule, horizontalCallback,
 
     // horizontal
     if(undefined !== commands[i+1]) {
-        console.log("ReduceReverse-> next command")
+        console.log("DehydrateReverse-> next command")
         console.log(commands[i+1])
         horizontalCallback(i+1, horizontalCallback)
     }
@@ -59,7 +54,7 @@ const ReduceImineToAmineReverse = (mmolecule, reagent, rule, horizontalCallback,
 
     // Vertical
     if (result !== false && result !==undefined) {
-        console.log("Commands/ReduceImineToAmineReverse result:")
+        console.log("Commands/DehydrateReverse result:")
         //console.log(result[0])
         horizontalCallback = horizontalFn(_.cloneDeep(result[0][0]), result[1]===null?null:_.cloneDeep(result[1][0]), _.cloneDeep(commands))
         // const Reaction = (r_command, substrate, reagent, product, finish_reagent, description)
@@ -83,4 +78,4 @@ const ReduceImineToAmineReverse = (mmolecule, reagent, rule, horizontalCallback,
     }
 }
 
-module.exports = ReduceImineToAmineReverse
+module.exports = DehydrateReverse

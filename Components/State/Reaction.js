@@ -208,6 +208,7 @@ class Reaction {
     }
 
     reduceImineToAmineReverse(carbon_index, DEBUG) {
+       // DEBUG= false
         // substrate should be an imine (N=C bond)
         Typecheck(
             {name:"carbon_index", value:carbon_index, type:"number"},
@@ -1207,9 +1208,21 @@ class Reaction {
         return hydrationAI.dehydrate(check_mode)
     }
 
-    dehydrateReverse() {
+    dehydrateReverse(DEBUG) {
+        Typecheck(
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+            {name:"this.container_substrate", value:this.container_substrate, type:"array"},
+            {name:"this.container_reagent", value:this.container_reagent, type:"array"},
+            {name:"this.reactions", value:this.reactions, type:"array"},
+            {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
+            {name:"this.horizontalFn", value:this.horizontalFn, type:"function"},
+            {name:"this.commands", value:this.commands, type:"array"},
+            {name:"this.command_index", value:this.command_index, type:"number"},
+            {name:"this.renderCallback", value:this.renderCallback, type:"function"},
+            {name:"this.rule", value:this.rule, type:"string"}
+        )
         const hydrationAI = new HydrationAI(this)
-        return hydrationAI.dehydrateReverse()
+        return hydrationAI.dehydrateReverse(DEBUG)
     }
 
     __removeGroup(nucleophile_index, electrophile_index, moleculeAI, substrate) {

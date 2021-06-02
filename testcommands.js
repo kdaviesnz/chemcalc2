@@ -37,12 +37,21 @@ const renderCallback = (reactions) => {
     reactions.map((reaction)=> {
         //  VMolecule(reaction.finish_reagent)
         const reagent_smiles = reaction.reagent === null?"Reagent not specified":VMolecule(reaction.reagent).canonicalSMILES()
-        console.log(VMolecule(reaction.substrate).canonicalSMILES().red + " (" +  reagent_smiles.green + ") --> (" + reaction.command + ") " + VMolecule(reaction.product).canonicalSMILES().green)
+        console.log(VMolecule(reaction.substrate).canonicalSMILES().red + " (" +  reagent_smiles.green + ") --> (" + reaction.description + ") " + VMolecule(reaction.product).canonicalSMILES().green)
     })
 }
 
 // Preliminary tests
 console.log("Running preliminary tests")
+
+// dehydrateReverse
+NMethyl1phenylpropane2imine = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
+reaction = new Reaction([NMethyl1phenylpropane2imine, 1], null, "", false, null, null, [], 0, [], renderCallback)
+//console.log(VMolecule([me,1]).compressed())
+dehydrateReverse_result = reaction.dehydrateReverse(true)
+VMolecule(dehydrateReverse_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=NC")
+VMolecule(dehydrateReverse_result[1]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=NC")
+process.error()
 
 // reduceImineToAmineReverse
 nitrogen_index = 21
