@@ -19,6 +19,11 @@ const Reaction = require('./Components/State/Reaction')
 let reaction =null
 let stateMoleculeAI = null
 
+//NMethyl1phenylpropane2imine = MoleculeFactory("CC(CC1=CC=CC=C1)[NH1+]=C")
+NMethyl1phenylpropane2imine = MoleculeFactory("C[NH1+]=C")
+console.log(VMolecule([NMethyl1phenylpropane2imine,1]).compressed())
+process.error()
+
 let me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 let pnm = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
 let methylamine = MoleculeFactory("CN")
@@ -45,13 +50,22 @@ const renderCallback = (reactions) => {
 console.log("Running preliminary tests")
 
 // dehydrateReverse
-NMethyl1phenylpropane2imine = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
-reaction = new Reaction([NMethyl1phenylpropane2imine, 1], null, "", false, null, null, [], 0, [], renderCallback)
-//console.log(VMolecule([me,1]).compressed())
-dehydrateReverse_result = reaction.dehydrateReverse(true)
-VMolecule(dehydrateReverse_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=NC")
-VMolecule(dehydrateReverse_result[1]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=NC")
+//NMethyl1phenylpropane2imine = MoleculeFactory("CC(CC1=CC=CC=C1)[NH1+]=C")
+NMethyl1phenylpropane2imine = MoleculeFactory("C[NH1+]=C")
+console.log(VMolecule([NMethyl1phenylpropane2imine,1]).compressed())
 process.error()
+
+// reduceImineToAmineReverse
+nitrogen_index = 21
+carbon_index = 25 // terminal carbon
+me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
+reaction = new Reaction([me, 1], null, "", false, null, null, [], 0, [], renderCallback)
+//console.log(VMolecule([me,1]).compressed())
+reduceImineToAmineReverse_result = reaction.reduceImineToAmineReverse(carbon_index, false)
+VMolecule(reduceImineToAmineReverse_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)[NH1+]=C")
+if (reduceImineToAmineReverse_result[1] !==null) {
+    throw new Error("Null expected")
+}
 
 // reduceImineToAmineReverse
 nitrogen_index = 21
@@ -60,22 +74,27 @@ me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 reaction = new Reaction([me, 1], null, "", false, null, null, [], 0, [], renderCallback)
 //console.log(VMolecule([me,1]).compressed())
 reduceImineToAmineReverse_result = reaction.reduceImineToAmineReverse(carbon_index, false)
-VMolecule(reduceImineToAmineReverse_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=NC")
+VMolecule(reduceImineToAmineReverse_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=[NH1+]C")
 if (reduceImineToAmineReverse_result[1] !==null) {
     throw new Error("Null expected")
 }
 
-// reduceImineToAmineReverse
-nitrogen_index = 21
-carbon_index = 25
-me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
-reaction = new Reaction([me, 1], null, "", false, null, null, [], 0, [], renderCallback)
+
+// dehydrateReverse
+NMethyl1phenylpropane2imine = MoleculeFactory("CC(CC1=CC=CC=C1)[NH1+]=C")
+console.log(VMolecule([NMethyl1phenylpropane2imine,1]).compressed())
+
+reaction = new Reaction([NMethyl1phenylpropane2imine, 1], null, "", false, null, null, [], 0, [], renderCallback)
+process.error()
 //console.log(VMolecule([me,1]).compressed())
-reduceImineToAmineReverse_result = reaction.reduceImineToAmineReverse(carbon_index, false)
-VMolecule(reduceImineToAmineReverse_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)N=C")
-if (reduceImineToAmineReverse_result[1] !==null) {
-    throw new Error("Null expected")
-}
+dehydrateReverse_result = reaction.dehydrateReverse(true)
+VMolecule(dehydrateReverse_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=NC")
+VMolecule(dehydrateReverse_result[1]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=NC")
+
+process.error()
+
+
+
 
 // reductiveAminationReverse
 nitrogen_index = 21

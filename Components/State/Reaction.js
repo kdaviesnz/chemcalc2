@@ -208,8 +208,7 @@ class Reaction {
     }
 
     reduceImineToAmineReverse(carbon_index, DEBUG) {
-       // DEBUG= false
-        // substrate should be an imine (N=C bond)
+
         Typecheck(
             {name:"carbon_index", value:carbon_index, type:"number"},
             {name:"DEBUG", value:DEBUG, type:"boolean"},
@@ -241,26 +240,21 @@ class Reaction {
             const carbon = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, this.container_substrate)
             if (DEBUG) {
                 console.log("Reaction.js reduceImineToAmineReverse Substrate before changing CN bond to C=N:")
-                console.log(carbon_index)
+                console.log("carbon index:" + carbon_index)
                 console.log(VMolecule([this.container_substrate[0], 1]).compressed())
                 console.log(VMolecule([this.container_substrate[0], 1]).canonicalSMILES())
             }
 
-            // Remove hydrogen from nitrogen to give it a negative charge
-            this.container_substrate = this.bondsAI.removeProton(this.container_substrate, nitrogen_index)
-            this.bondsAI.makeDoubleBond(nitrogen, carbon, DEBUG)
-            this.stateMoleculeAI.neutraliseMolecule(this.container_substrate)
-            this.setChargesOnSubstrate(false)
             if (DEBUG) {
-                console.log("Reaction.js reduceImineToAmineReverse Substrate after changing CN bond to C=N:")
+                console.log("Reaction.js reduceImineToAmineReverse Creating double bond between carbon and nitrogen.")
+            }
+            this.bondsAI.breakCarbonNitrogenDoubleBondReverse(nitrogen_index, carbon_index, DEBUG )
+
+            if (DEBUG) {
+                console.log("Reaction.js reduceImineToAmineReverse Substrate after changing CN bond to C=N and setting charges")
                 console.log(VMolecule([this.container_substrate[0], 1]).compressed())
                 console.log(VMolecule([this.container_substrate[0], 1]).canonicalSMILES())
             }
-
-            if (this.container_reagent !==null) {
-                this.stateMoleculeAI.neutraliseMolecule(this.container_reagent)
-            }
-            this.stateMoleculeAI.neutraliseMolecule(this.container_substrate)
 
             if (DEBUG) {
                 console.log(VMolecule(this.container_substrate).canonicalSMILES())

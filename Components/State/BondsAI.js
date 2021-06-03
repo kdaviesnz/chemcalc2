@@ -12,7 +12,7 @@ const uniqid = require('uniqid');
 // removeAtom(molecule, atom) {
 // removeBond(molecule, atom_index, electrons)
 // makeNitrogenCarbonTripleBond()
-// makeNitrogenCarbonDoubleBond(n_index=null, carbon_index=null)
+// makeNitrogenCarbonDoubleBond(n_index=null, carbon_index=null, DEBUG)
 // makeOxygenCarbonDoubleBond(DEBUG)
 // breakCarbonNitrogenTripleBond()
 // breakCarbonNitrogenDoubleBond()
@@ -20,7 +20,7 @@ const uniqid = require('uniqid');
 // breakCarbonDoubleBond()
 // bondSubstrateToReagent()
 // removeHalide()
-// makeCarbonNitrogenDoubleBondReverse()
+// makeCarbonNitrogenDoubleBondReverse(nitrogen_index, carbon_index, DEBUG)
 // makeOxygenCarbonDoubleBondReverse()
 // breakCarbonOxygenDoubleBondReverse()
 // bondSubstrateToReagentReverse()
@@ -29,6 +29,7 @@ const uniqid = require('uniqid');
 // makeDoubleBond(negativeAtom, positiveAtom, DEBUG)
 // breakOxygenCarbonSingleBond
 // isBond(atom1_controller, atom2_controller)
+// breakCarbonNitrogenDoubleBondReverse(nitrogen_index, carbon_index, DEBUG)
 
 class BondsAI {
 
@@ -145,7 +146,7 @@ class BondsAI {
 
     }
 
-    makeNitrogenCarbonDoubleBond(n_index=null, carbon_index=null) {
+    makeNitrogenCarbonDoubleBond(n_index=null, carbon_index=null, DEBUG = false) {
 
         n_index = n_index===null?this.reaction.MoleculeAI.findNitrogenAttachedToCarbonIndexNoDoubleBonds():n_index
         if (n_index === -1) {
@@ -646,12 +647,11 @@ class BondsAI {
     }
 
 
-    makeCarbonNitrogenDoubleBondReverse() {
+    makeCarbonNitrogenDoubleBondReverse(nitrogen_index, carbon_index, DEBUG) {
 
-        const nitrogen_index = this.reaction.MoleculeAI.findNitrogenOnDoubleBondIndex()
-        //  console.log('makeCarbonNitrogenDoubleBondReverse()')
-        //  console.log(VMolecule(this.reaction.container_substrate).compressed())
-        //  console.log(nitrogen_index)
+        if (undefined === nitrogen_index) {
+            nitrogen_index = this.reaction.MoleculeAI.findNitrogenOnDoubleBondIndex()
+        }
 
         if (nitrogen_index === -1) {
             return false
@@ -660,32 +660,94 @@ class BondsAI {
         const nitrogen_atom = CAtom(this.reaction.container_substrate[0][1][nitrogen_index], nitrogen_index, this.reaction.container_substrate)
         const double_bonds = nitrogen_atom.indexedDoubleBonds("")
 
+
         const shared_electrons = _.cloneDeep(double_bonds[0].shared_electrons).slice(0,2)
+        if (undefined === carbon_index ) {
+            carbon_index = double_bonds[0].atom_index
+        }
 
         // Remove bond
         // Remove electrons from C
-        _.remove(this.reaction.container_substrate[0][1][double_bonds[0].atom_index], (v)=>{
+        _.remove(this.reaction.container_substrate[0][1][carbon_index], (v)=>{
             return v === shared_electrons[0] || v === shared_electrons[1]
         })
 
-        // carbon atom charge
-        this.reaction.setChargeOnSubstrateAtom(double_bonds[0].atom_index)
-        // Nitrogen atom charge
-        this.reaction.setChargeOnSubstrateAtom(nitrogen_index)
+        return true
 
-        this.reaction.setMoleculeAI()
+    }
 
-        if (this.reaction.MoleculeAI.validateMolecule() === false) {
-            console.log('BondsAI.js molecule is not valid (makeCarbonNitrogenDoubleBondReverse())')
-            console.log('Method: makeCarbonNitrogenDoubleBondReverse()')
-            console.log(VMolecule(this.reaction.container_substrate).compressed())
-            console.log(i)
+    breakCarbonNitrogenDoubleBondReverse(nitrogen_index, carbon_index, DEBUG) {
+
+        // Make C=O bond
+        if (nitrogen_index === undefined) {
+            nitrogen_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=> {
+                if ( atom[0] !== "N") {
+                    return false
+                }
+                const n = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate)
+                const c_bonds = o.indexedBonds("").filter((bond)=>{
+                    return bond.atom[0] === "C"
+                })
+                return c_bonds.length > 0
+            })
+        }
+        if (nitrogen_index === -1) {
+            return false
         }
 
-        //console.log(VMolecule(this.reaction.container_substrate).compressed())
-        //console.log(opo)
+        const nitrogen = CAtom(this.reaction.container_substrate[0][1][nitrogen_index], nitrogen_index, this.reaction.container_substrate)
+
+        if (carbon_index === undefined) {
+            const carbon_bonds = oxygen.indexedBonds("").filter((bond) => {
+                //return bond.atom[0] === "C" && bond.atom[4] !== "" && bond.atom[4] !== 0
+                if (bond.atom[0] !== "C") {
+                    return false
+                }
+                const c = CAtom(this.reaction.container_substrate[0][1][bond.atom_index], bond.atom_index, this.reaction.container_substrate)
+                if (c.doubleBondCount() > 0) {
+                    return false
+                }
+                if (c.bondCount() > 3) {
+                    //   return false
+                }
+                return true
+            })
+            if (carbon_bonds.length === 0) {
+                return false
+            }
+            carbon_index = carbon_bonds[0].atom_index
+        }
+
+        const freeElectrons = nitrogen.freeElectrons()
+
+        const carbon_atom = CAtom(this.reaction.container_substrate[0][1][carbon_index], carbon_index, this.reaction.container_substrate)
+        const carbon_atom_free_electrons = carbon_atom.freeElectrons()
+
+        // Make space for electrons
+        const carbon_electrons_before = this.reaction.container_substrate[0][1][carbon_index].length
+        _.remove(this.reaction.container_substrate[0][1][carbon_index], (e, i)=>{
+            return e === carbon_atom_free_electrons[0] || e === carbon_atom_free_electrons[1]
+        })
+        carbon_electrons_before.should.be.lessThan(this.reaction.container_substrate[0][1][carbon_index].length + 2)
+
+        // Add electrons from nitrogen to carbon
+        this.reaction.container_substrate[0][1][carbon_index].push(freeElectrons[0])
+        this.reaction.container_substrate[0][1][carbon_index].push(freeElectrons[1])
+
+        // Remove a hydrogen from the carbon atom
+        const h = carbon_atom.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "H"
+        })
+        if (h.length > 0) {
+            // Remove hydrogen atom
+            _.remove(this.reaction.container_substrate[0][1], (v, i) => {
+                    return i === h[0].atom_index
+                }
+            )
+        }
 
         return true
+
 
     }
 

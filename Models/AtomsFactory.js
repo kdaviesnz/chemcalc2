@@ -26,45 +26,78 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     // parse a SMILES string, returns an array of SMILES tokens [{type: '...', value: '...'}, ...]
     const smiles_tokens = smiles.parse(canonicalSMILES)
 
-    //[CH2]
-    // console.log(smiles_tokens)
+    //"C[NH1+]=C"
+  // console.log(smiles_tokens)
+   // process.error()
     /*
-    [
+[
+  { type: 'AliphaticOrganic', value: 'C' },
   { type: 'BracketAtom', value: 'begin' },
-  { type: 'ElementSymbol', value: 'C' },
-  { type: 'HydrogenCount', value: 2 },
-  { type: 'BracketAtom', value: 'end' }
+  { type: 'ElementSymbol', value: 'N' },
+  { type: 'HydrogenCount', value: 1 },
+  { type: 'Charge', value: 1 },
+  { type: 'BracketAtom', value: 'end' },
+  { type: 'Bond', value: '=' },
+  { type: 'AliphaticOrganic', value: 'C' }
 ]
+
 
      */
     const atoms_with_tokens = _.cloneDeep(smiles_tokens).map(
         (row, i, arr) => {
             if (row.type === "AliphaticOrganic" || row.type === "ElementSymbol") {
              //   const charge = undefined !== arr[i+1] && arr[i+1]['type']==='Charge'?arr[i+1]['value']*1:0
-                return AtomFactory(row.value, 0)
+                return AtomFactory(row.value, 0, i+1)
             }
             return row
         }
     )
 
-    // [CH2]
-    // console.log(atoms_with_tokens)
+    // "C[NH1+]=C"
+ //  console.log(atoms_with_tokens)
+//   process.error()
   /*
+
 [
-  { type: 'BracketAtom', value: 'begin' },
   [
     'C',
     6,
     4,
     4,
     0,
-    '2yyvqtf2aunko9hbud5',
-    '2yyvqtf2aunko9hbud6',
-    '2yyvqtf2aunko9hbud7',
-    '2yyvqtf2aunko9hbud8'
+    'C_1_1agfek3kpgftsdw',
+    'C_1_1agfek3kpgftsdx',
+    'C_1_1agfek3kpgftsdy',
+    'C_1_1agfek3kpgftsdz'
   ],
-  { type: 'HydrogenCount', value: 2 },
-  { type: 'BracketAtom', value: 'end' }
+  { type: 'BracketAtom', value: 'begin' },
+  [
+    'N',
+    7,
+    5,
+    3,
+    0,
+    'N_3_1agfek3kpgftse0',
+    'N_3_1agfek3kpgftse1',
+    'N_3_1agfek3kpgftse2',
+    'N_3_1agfek3kpgftse3',
+    'N_3_1agfek3kpgftse4'
+  ],
+  { type: 'HydrogenCount', value: 1 },
+  { type: 'Charge', value: 1 },
+  { type: 'BracketAtom', value: 'end' },
+  { type: 'Bond', value: '=' },
+  [
+    'C',
+    6,
+    4,
+    4,
+    0,
+    'C_8_1agfek3kpgftse5',
+    'C_8_1agfek3kpgftse6',
+    'C_8_1agfek3kpgftse7',
+    'C_8_1agfek3kpgftse8'
+  ]
 ]
    */
 
@@ -78,10 +111,10 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }
     )
 
-    // [CH2]
-    // console.log(atoms_with_tokens_no_brackets)
+    // "C[NH1+]=C")
+  //  console.log(atoms_with_tokens_no_brackets)
+   // process.error()
     /*
-     // atomic symbol, proton count, valence count,  number of bonds, velectron1, velectron2, velectron3 ...
 [
   [
     'C',
@@ -89,13 +122,39 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     4,
     4,
     0,
-    '2yyvqtf2axako9hdlq1',
-    '2yyvqtf2axako9hdlq2',
-    '2yyvqtf2axako9hdlq3',
-    '2yyvqtf2axako9hdlq4'
+    'C_1_1agfen1kpgfv807',
+    'C_1_1agfen1kpgfv808',
+    'C_1_1agfen1kpgfv809',
+    'C_1_1agfen1kpgfv80a'
   ],
-  { type: 'HydrogenCount', value: 2 }
+  [
+    'N',
+    7,
+    5,
+    3,
+    0,
+    'N_3_1agfen1kpgfv80b',
+    'N_3_1agfen1kpgfv80c',
+    'N_3_1agfen1kpgfv80d',
+    'N_3_1agfen1kpgfv80e',
+    'N_3_1agfen1kpgfv80f'
+  ],
+  { type: 'HydrogenCount', value: 1 },
+  { type: 'Charge', value: 1 },
+  { type: 'Bond', value: '=' },
+  [
+    'C',
+    6,
+    4,
+    4,
+    0,
+    'C_8_1agfen1kpgfv80g',
+    'C_8_1agfen1kpgfv80h',
+    'C_8_1agfen1kpgfv80i',
+    'C_8_1agfen1kpgfv80j'
+  ]
 ]
+
      */
 
     // Add the bonds and branches
@@ -240,9 +299,9 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     )
 
 
-
-    // [CH2]
-    // console.log(atoms_with_bonds)
+    // "C[NH1+]=C")
+   // console.log(atoms_with_bonds)
+    // process.error()
     /*
 [
   [
@@ -251,12 +310,43 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     4,
     4,
     0,
-    '2yyvqtf2b1eko9hjmzb',
-    '2yyvqtf2b1eko9hjmzc',
-    '2yyvqtf2b1eko9hjmzd',
-    '2yyvqtf2b1eko9hjmze'
+    'C_1_1agfenskpgfw77j',
+    'C_1_1agfenskpgfw77k',
+    'C_1_1agfenskpgfw77l',
+    'C_1_1agfenskpgfw77m',
+    'N_3_1agfenskpgfw77r'
   ],
-  { type: 'HydrogenCount', value: 2 }
+  [
+    'N',
+    7,
+    5,
+    3,
+    0,
+    'N_3_1agfenskpgfw77n',
+    'N_3_1agfenskpgfw77o',
+    'N_3_1agfenskpgfw77p',
+    'N_3_1agfenskpgfw77q',
+    'N_3_1agfenskpgfw77r',
+    'C_1_1agfenskpgfw77m',
+    'C_8_1agfenskpgfw77v',
+    'C_8_1agfenskpgfw77u'
+  ],
+  { type: 'HydrogenCount', value: 1 },
+  { type: 'Charge', value: 1 },
+  { type: 'Bond', value: '=' },
+  [
+    'C',
+    6,
+    4,
+    4,
+    0,
+    'C_8_1agfenskpgfw77s',
+    'C_8_1agfenskpgfw77t',
+    'C_8_1agfenskpgfw77u',
+    'C_8_1agfenskpgfw77v',
+    'N_3_1agfenskpgfw77q',
+    'N_3_1agfenskpgfw77p'
+  ]
 ]
 
      */
@@ -269,8 +359,9 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }
     )
 
-    // [CH2]
-    // console.log(atoms)
+    // "C[NH1+]=C")
+    //console.log(atoms)
+    //process.error()
     /*
 [
   [
@@ -279,12 +370,42 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     4,
     4,
     0,
-    '2yyvqtf2b1eko9hjmzb',
-    '2yyvqtf2b1eko9hjmzc',
-    '2yyvqtf2b1eko9hjmzd',
-    '2yyvqtf2b1eko9hjmze'
+    'C_1_1agfepvkpgg7awg',
+    'C_1_1agfepvkpgg7awh',
+    'C_1_1agfepvkpgg7awi',
+    'C_1_1agfepvkpgg7awj',
+    'N_3_1agfepvkpgg7awo'
   ],
-  { type: 'HydrogenCount', value: 2 }
+  [
+    'N',
+    7,
+    5,
+    3,
+    0,
+    'N_3_1agfepvkpgg7awk',
+    'N_3_1agfepvkpgg7awl',
+    'N_3_1agfepvkpgg7awm',
+    'N_3_1agfepvkpgg7awn',
+    'N_3_1agfepvkpgg7awo',
+    'C_1_1agfepvkpgg7awj',
+    'C_8_1agfepvkpgg7aws',
+    'C_8_1agfepvkpgg7awr'
+  ],
+  { type: 'HydrogenCount', value: 1 },
+  { type: 'Charge', value: 1 },
+  [
+    'C',
+    6,
+    4,
+    4,
+    0,
+    'C_8_1agfepvkpgg7awp',
+    'C_8_1agfepvkpgg7awq',
+    'C_8_1agfepvkpgg7awr',
+    'C_8_1agfepvkpgg7aws',
+    'N_3_1agfepvkpgg7awn',
+    'N_3_1agfepvkpgg7awm'
+  ]
 ]
 
      */
@@ -328,22 +449,53 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
        return atom.type !== "Ringbond"
     })
 
-    // [CH2]
-    // console.log(atoms_with_ring_bonds)
+    // "C[NH1+]=C"
+  //   console.log(atoms_with_ring_bonds)
+  //  process.error()
     /*
-    [
+[
   [
     'C',
     6,
     4,
     4,
     0,
-    '2yyvqtf2b36ko9hlpky',
-    '2yyvqtf2b36ko9hlpkz',
-    '2yyvqtf2b36ko9hlpl0',
-    '2yyvqtf2b36ko9hlpl1'
+    'C_1_1agfeqwkpgg8n3z',
+    'C_1_1agfeqwkpgg8n40',
+    'C_1_1agfeqwkpgg8n41',
+    'C_1_1agfeqwkpgg8n42',
+    'N_3_1agfeqwkpgg8n47'
   ],
-  { type: 'HydrogenCount', value: 2 }
+  [
+    'N',
+    7,
+    5,
+    3,
+    0,
+    'N_3_1agfeqwkpgg8n43',
+    'N_3_1agfeqwkpgg8n44',
+    'N_3_1agfeqwkpgg8n45',
+    'N_3_1agfeqwkpgg8n46',
+    'N_3_1agfeqwkpgg8n47',
+    'C_1_1agfeqwkpgg8n42',
+    'C_8_1agfeqwkpgg8n4b',
+    'C_8_1agfeqwkpgg8n4a'
+  ],
+  { type: 'HydrogenCount', value: 1 },
+  { type: 'Charge', value: 1 },
+  [
+    'C',
+    6,
+    4,
+    4,
+    0,
+    'C_8_1agfeqwkpgg8n48',
+    'C_8_1agfeqwkpgg8n49',
+    'C_8_1agfeqwkpgg8n4a',
+    'C_8_1agfeqwkpgg8n4b',
+    'N_3_1agfeqwkpgg8n46',
+    'N_3_1agfeqwkpgg8n45'
+  ]
 ]
 
      */
@@ -384,25 +536,52 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }, []
     )
 
-    //console.log(atoms_with_charges)
-    //process.error()
-    // [NH4+]
+   // console.log(atoms_with_charges)
+   // process.error()
+    // "C[NH1+]=C"
     /*
 [
   [
-    'O',
-    8,
+    'C',
     6,
-    2,
+    4,
+    4,
     0,
-    '2yyvqtf44gkoddrx1e',
-    '2yyvqtf44gkoddrx1f',
-    '2yyvqtf44gkoddrx1g',
-    '2yyvqtf44gkoddrx1h',
-    '2yyvqtf44gkoddrx1i',
-    '2yyvqtf44gkoddrx1j'
+    'C_1_1agferskpgga7f8',
+    'C_1_1agferskpgga7f9',
+    'C_1_1agferskpgga7fa',
+    'C_1_1agferskpgga7fb',
+    'N_3_1agferskpgga7fg'
   ],
-  { type: 'HydrogenCount', value: 3 }
+  [
+    'N',
+    7,
+    5,
+    3,
+    0,
+    'N_3_1agferskpgga7fc',
+    'N_3_1agferskpgga7fd',
+    'N_3_1agferskpgga7fe',
+    'N_3_1agferskpgga7ff',
+    'N_3_1agferskpgga7fg',
+    'C_1_1agferskpgga7fb',
+    'C_8_1agferskpgga7fk',
+    'C_8_1agferskpgga7fj'
+  ],
+  { type: 'HydrogenCount', value: 1 },
+  [
+    'C',
+    6,
+    4,
+    4,
+    0,
+    'C_8_1agferskpgga7fh',
+    'C_8_1agferskpgga7fi',
+    'C_8_1agferskpgga7fj',
+    'C_8_1agferskpgga7fk',
+    'N_3_1agferskpgga7ff',
+    'N_3_1agferskpgga7fe'
+  ]
 ]
 
      */
@@ -423,7 +602,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                     range.range(0, atoms_with_charges[index+1]['value'],1).map(
                         (e_index) => {
                             if (undefined !== free_electrons[e_index]) {
-                                const hydrogen = AtomFactory('H', "")
+                                const hydrogen = AtomFactory('H', "", e_index+1)
                                 hydrogen.push(free_electrons[e_index])
                                 current.push(hydrogen[hydrogen.length - 2])
                                 carry.push(hydrogen)
@@ -450,7 +629,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                         range.range(0, number_of_hydrogens_required - offset_map[current[0]],1).map(
                             (e_index) => {
                                 if (undefined !== free_electrons[e_index]) {
-                                    const hydrogen = AtomFactory('H', "")
+                                    const hydrogen = AtomFactory('H', "", e_index+1)
                                     hydrogen.push(free_electrons[e_index])
                                     current.push(hydrogen[hydrogen.length - 2])
                                     carry.push(hydrogen)
@@ -474,30 +653,63 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     )
 
 
-    // [NH4+]
-  //  console.log(atoms_with_hydrogens)
-//    process.error()
+    // "C[NH1+]=C"
+   // console.log(atoms_with_hydrogens)
+  //  process.error()
   /*
+
 [
-  [ 'H', 1, 1, 1, '', '2yyvqtf7eukodgfth2', '2yyvqtf7eukodgftgx' ],
-  [ 'H', 1, 1, 1, '', '2yyvqtf7eukodgfth3', '2yyvqtf7eukodgftgy' ],
-  [ 'H', 1, 1, 1, '', '2yyvqtf7eukodgfth4', '2yyvqtf7eukodgftgz' ],
-  [ 'H', 1, 1, 1, '', '2yyvqtf7eukodgfth5', '2yyvqtf7eukodgfth0' ],
+  [ 'H', 1, 1, 1, '', 'H_1_1agfeu5kpggdi6x', 'C_1_1agfeu5kpggdi6k' ],
+  [ 'H', 1, 1, 1, '', 'H_2_1agfeu5kpggdi6y', 'C_1_1agfeu5kpggdi6l' ],
+  [ 'H', 1, 1, 1, '', 'H_3_1agfeu5kpggdi6z', 'C_1_1agfeu5kpggdi6m' ],
+  [
+    'C',
+    6,
+    4,
+    4,
+    0,
+    'C_1_1agfeu5kpggdi6k',
+    'C_1_1agfeu5kpggdi6l',
+    'C_1_1agfeu5kpggdi6m',
+    'C_1_1agfeu5kpggdi6n',
+    'N_3_1agfeu5kpggdi6s',
+    'H_1_1agfeu5kpggdi6x',
+    'H_2_1agfeu5kpggdi6y',
+    'H_3_1agfeu5kpggdi6z'
+  ],
+  [ 'H', 1, 1, 1, '', 'H_1_1agfeu5kpggdi70', 'N_3_1agfeu5kpggdi6o' ],
   [
     'N',
     7,
     5,
     3,
     0,
-    '2yyvqtf7eukodgftgx',
-    '2yyvqtf7eukodgftgy',
-    '2yyvqtf7eukodgftgz',
-    '2yyvqtf7eukodgfth0',
-    '2yyvqtf7eukodgfth1',
-    '2yyvqtf7eukodgfth2',
-    '2yyvqtf7eukodgfth3',
-    '2yyvqtf7eukodgfth4',
-    '2yyvqtf7eukodgfth5'
+    'N_3_1agfeu5kpggdi6o',
+    'N_3_1agfeu5kpggdi6p',
+    'N_3_1agfeu5kpggdi6q',
+    'N_3_1agfeu5kpggdi6r',
+    'N_3_1agfeu5kpggdi6s',
+    'C_1_1agfeu5kpggdi6n',
+    'C_8_1agfeu5kpggdi6w',
+    'C_8_1agfeu5kpggdi6v',
+    'H_1_1agfeu5kpggdi70'
+  ],
+  [ 'H', 1, 1, 1, '', 'H_1_1agfeu5kpggdi71', 'C_8_1agfeu5kpggdi6t' ],
+  [ 'H', 1, 1, 1, '', 'H_2_1agfeu5kpggdi72', 'C_8_1agfeu5kpggdi6u' ],
+  [
+    'C',
+    6,
+    4,
+    4,
+    0,
+    'C_8_1agfeu5kpggdi6t',
+    'C_8_1agfeu5kpggdi6u',
+    'C_8_1agfeu5kpggdi6v',
+    'C_8_1agfeu5kpggdi6w',
+    'N_3_1agfeu5kpggdi6r',
+    'N_3_1agfeu5kpggdi6q',
+    'H_1_1agfeu5kpggdi71',
+    'H_2_1agfeu5kpggdi72'
   ]
 ]
 
