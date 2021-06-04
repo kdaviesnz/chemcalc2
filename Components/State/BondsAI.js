@@ -7,6 +7,7 @@ const CAtom = require('../../Controllers/Atom')
 const AtomFactory = require('../../Models/AtomFactory')
 const Set = require('../../Models/Set')
 const uniqid = require('uniqid');
+const Typecheck = require('./../../Typecheck')
 
 // removeProton(molecule, atom_index, electrons, proton)
 // removeAtom(molecule, atom) {
@@ -30,13 +31,68 @@ const uniqid = require('uniqid');
 // breakOxygenCarbonSingleBond
 // isBond(atom1_controller, atom2_controller)
 // breakCarbonNitrogenDoubleBondReverse(nitrogen_index, carbon_index, DEBUG)
-
+// bondAtoms
 class BondsAI {
 
     constructor(reaction) {
+        Typecheck(
+            {name:"reaction", value:reaction, type:"object"},
+        )
         this.reaction = reaction
     }
 
+    creatingCoordinateCovalentBond(atom) {
+
+        Typecheck(
+            {name:"atom", value:atom, type:"object"},
+        )
+
+        // A coordinate covalent bond is formed if the atom already has a full octet (max number of bonds when neutral)
+        // and can donate a lone pair
+        return atom.neutralAtomMaxNumberOfBonds() === atom.numberOfBonds() && atom.lonePairs().length > 0
+
+    }
+
+    bondAtoms(atom1, atom2, molecule_container) {
+
+        Typecheck(
+            {name:"atom1", value:atom1, type:"object"},
+            {name:"atom2", value:atom2, type:"object"},
+            {name:"molecule_container", value:molecule_container, type:"array"},
+        )
+
+        const atom1FreeElectrons = atom1.freeElectrons()
+        const atom2FreeElectrons = atom2.freeElectrons()
+
+        // Check if we are making a coordinate or standard covalent bond
+        // In a coordinate covalent bond one of the atoms donates both electrons.
+        // In a standard covalent bond each atom donates an electron.
+        // A coordinate covalent bond is formed if the atom already has a full octet
+        // and can donate a lone pair
+        if (this.creatingCoordinateCovalentBond(atom1)) {
+            // Check that the atom receiving the electrons has a free slot
+            if (atom2.freeSlots() > 0) {
+                molecule[atom2.atomIndex].push(atom1FreeElectrons[0])
+                molecule[atom2.atomIndex].push(atom1FreeElectrons[1])
+            }
+        } else if (this.creatingCoordinateCovalentBond(atom2)) {
+            // Check that the atom receiving the electrons has a free slot
+            if (atom1.freeSlots() > 0) {
+                molecule_container[0][1][atom1.atomIndex].push(atom2FreeElectrons[0])
+                molecule_container[0][1][atom1.atomIndex].push(atom2FreeElectrons[1])
+            }
+        } else {
+            // Standard covalent bond
+            const atom1FreeElectron = atom1FreeElectrons[0]
+            const atom2FreeElectron = atom2FreeElectrons[1]
+            molecule_container[0][1][atom1.atomIndex].push(atom2FreeElectron)
+            molecule_container[0][1][atom2.atomIndex].push(atom1FreeElectron)
+        }
+
+        atom1 = CAtom(molecule_container[0][1][atom1.atomIndex], atom1.atomIndex, molecule_container)
+        atom2 = CAtom(molecule_container[0][1][atom2.atomIndex], atom2.atomIndex, molecule_container)
+
+    }
 
     isBond(atom1_controller, atom2_controller) {
         return atom1_controller.isBondedTo(atom2_controller.atom)

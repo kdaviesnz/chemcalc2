@@ -20,8 +20,9 @@ let reaction =null
 let stateMoleculeAI = null
 
 //NMethyl1phenylpropane2imine = MoleculeFactory("CC(CC1=CC=CC=C1)[NH1+]=C")
-NMethyl1phenylpropane2imine = MoleculeFactory("C[NH1+]=C")
-console.log(VMolecule([NMethyl1phenylpropane2imine,1]).compressed())
+//const Tetramethylammonium = MoleculeFactory("C[N+](C)(C)C")
+const ammonium = MoleculeFactory("[NH4+]")
+console.log(VMolecule([ammonium,1]).compressed())
 process.error()
 
 let me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
@@ -807,7 +808,6 @@ console.log(VMolecule(leukart_wallach_reaction_formamide_step8[2][0]).compressed
 // const protonated_ether_products_methylated_deprotonated = CommandTest("PROTONATE nonhydroxyl oxygen", _.cloneDeep(protonated_ether_products_methylated[0]),
 //     _.cloneDeep([methanol,1]))
 // const result = reaction.addProtonFromReagentToNonHydroxylGroup()
-const ammonium = MoleculeFactory("[NH4+]")
 console.log("Leukart Wallach reaction (formamide) - PROTONATE nonhydroxyl oxygen. All atoms should now have no charge")
 const leukart_wallach_reaction_formamide_step9 = CommandTest("PROTONATE nonhydroxyl oxygen", _.cloneDeep(leukart_wallach_reaction_formamide_step8[0]), _.cloneDeep([ammonium,1]))
 console.log(VMolecule(leukart_wallach_reaction_formamide_step9[0]).compressed())

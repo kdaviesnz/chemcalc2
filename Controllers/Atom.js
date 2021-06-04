@@ -3,8 +3,16 @@ const Set = require('../Models/Set')
 const _ = require('lodash');
 const AtomFactory = require('../Models/AtomFactory')
 const uniqid = require('uniqid')
+const Typecheck = require('../Typecheck')
 
 const CAtom = (atom, current_atom_index, mmolecule) => {
+
+
+    Typecheck(
+        {name:"atom", value:atom, type:"array"},
+        {name:"current_atom_index", value:current_atom_index, type:"number"},
+        {name:"mmolecule", value:mmolecule, type:"object"},
+    )
 
     mmolecule.length.should.be.equal(2) // molecule, units
     mmolecule[0].length.should.be.equal(2) // pKa, atoms
@@ -12,7 +20,6 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     if (atom === undefined) {
         console.log("Atom.js Warning: atom is undefined")
     }
-    atom.should.be.an.Array()
 
     if (atom.length < 3) {
         console.log("Atom length is not greater than 3")
@@ -22,7 +29,6 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         process.exit()
     }
     atom.length.should.be.greaterThan(3)
-    current_atom_index.should.be.Number()
 
     const __shared_electrons = () => {
 
@@ -108,6 +114,14 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         let r =  _.cloneDeep(atoms).reduce(
 
             (bonds, _atom, _atom_index) => {
+
+                if(_atom.type !== undefined) {
+                    return bonds
+                }
+
+                if(atom.type !== undefined) {
+                    return bonds
+                }
 
                 if ((_.isEqual(_.cloneDeep(atom).sort(), _.cloneDeep(_atom).sort())) || _atom[0]=== filter_by) {
                     return bonds
@@ -684,6 +698,30 @@ We then return the total number of free slots minus the number of slots already 
         }
     }
 
+    const __neutralAtomMaxNumberOfBonds = () => {
+        const map = {
+            "H":1,
+            "O":2,
+            "N":3,
+            "C":4
+        }
+        return map[atom[0]]
+    }
+
+    const __numberOfBonds = () => {
+        const single_bonds = __indexedBonds("").filter((b)=> {
+            return b.atom[0] !== "H"
+        })
+        process.error()
+        const double_bonds = __indexedDoubleBonds("").filter((d)=> {
+            return d.atom[0] !== "H"
+        })
+        const triple_bonds = __indexedTripleBonds("").filter((t)=> {
+            return t.atom[0] !== "H"
+        })
+        return __hydrogens().length + single_bonds.length + (double_bonds.length*2) + (triple_bonds.length*3)
+    }
+
     return {
         isBondedTo: (sibling_atom) => {
             const shared_electrons = Set().intersection(atom.slice(5), sibling_atom.slice(5))
@@ -754,7 +792,9 @@ We then return the total number of free slots minus the number of slots already 
         charge: atom[4],
         sharedElectrons: __shared_electrons,
         removeElectrons: __removeFreeElectrons,
-        addElectrons: __addElectrons
+        addElectrons: __addElectrons,
+        numberOfBonds: __numberOfBonds,
+        neutralAtomMaxNumberOfBonds: __neutralAtomMaxNumberOfBonds
     }
 }
 
