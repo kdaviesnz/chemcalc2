@@ -20,10 +20,13 @@ let reaction =null
 let stateMoleculeAI = null
 
 //NMethyl1phenylpropane2imine = MoleculeFactory("CC(CC1=CC=CC=C1)[NH1+]=C")
-//const Tetramethylammonium = MoleculeFactory("C[N+](C)(C)C")
-const ammonium = MoleculeFactory("[NH4+]")
-console.log(VMolecule([ammonium,1]).compressed())
+/*
+console.log("C[N+](C)(C)C")
+const Tetramethylammonium = MoleculeFactory("C[N+](C)(C)C")
+//const ammonium = MoleculeFactory("[NH4+]")
+console.log(VMolecule([Tetramethylammonium,1]).compressed())
 process.error()
+ */
 
 let me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 let pnm = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
@@ -51,9 +54,10 @@ const renderCallback = (reactions) => {
 console.log("Running preliminary tests")
 
 // dehydrateReverse
-//NMethyl1phenylpropane2imine = MoleculeFactory("CC(CC1=CC=CC=C1)[NH1+]=C")
-NMethyl1phenylpropane2imine = MoleculeFactory("C[NH1+]=C")
+NMethyl1phenylpropane2imine = MoleculeFactory("CC(CC1=CC=CC=C1)[NH1+]=C")
+//NMethyl1phenylpropane2imine = MoleculeFactory("C[NH1+]=C")
 console.log(VMolecule([NMethyl1phenylpropane2imine,1]).compressed())
+VMolecule([NMethyl1phenylpropane2imine,1]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)[NH1+]=C")
 process.error()
 
 // reduceImineToAmineReverse

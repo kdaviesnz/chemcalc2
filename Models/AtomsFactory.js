@@ -367,7 +367,44 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                 processed_atoms[parent_atom_index].should.be.a.Array()
                 if (current_atom_electrons.length === Constants().max_valence_electrons[row[0]]) {
                     // coordinate covalent bond - current atom  (row) donates both electrons
-                    process.error()
+                    current_atom_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[current_atom_atom_index], index+1))
+                    used_electrons.push(current_atom_electrons_to_share[current_atom_electrons_to_share.length-1])
+                    if (bond_type === "=") {
+                        current_atom_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[current_atom_atom_index], index+2))
+                        used_electrons.push(current_atom_electrons_to_share[current_atom_electrons_to_share.length-1])
+                        current_atom_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[current_atom_atom_index], index+3))
+                        used_electrons.push(current_atom_electrons_to_share[current_atom_electrons_to_share.length-1])
+                    }
+                    if (bond_type === "#") {
+                        current_atom_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[current_atom_atom_index], index+2))
+                        used_electrons.push(current_atom_electrons_to_share[current_atom_electrons_to_share.length-1])
+                        current_atom_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[current_atom_atom_index], index+3))
+                        used_electrons.push(current_atom_electrons_to_share[current_atom_electrons_to_share.length-1])
+                        current_atom_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[current_atom_atom_index], index+4))
+                        used_electrons.push(current_atom_electrons_to_share[current_atom_electrons_to_share.length-1])
+                        current_atom_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[current_atom_atom_index], index+5))
+                        used_electrons.push(current_atom_electrons_to_share[current_atom_electrons_to_share.length-1])
+                    }
+
+
+                    if (current_atom_electrons_to_share.length < 2 || (bond_type === "=" && current_atom_electrons_to_share.length < 4 ) | (bond_type === "#" && current_atom_electrons_to_share.length < 6 )) {
+                        throw new Error("Parent electron does not have enough electrons to share")
+                    }
+
+                    row.push(current_atom_electrons_to_share[0])
+                    row.push(current_atom_electrons_to_share[1])
+                    if (bond_type === "=") {
+                        row.push(current_atom_electrons_to_share[2])
+                        row.push(current_atom_electrons_to_share[3])
+                    }
+
+                    if (bond_type === "#") {
+                        row.push(current_atom_electrons_to_share[2])
+                        row.push(current_atom_electrons_to_share[3])
+                        row.push(current_atom_electrons_to_share[4])
+                        row.push(current_atom_electrons_to_share[5])
+                    }
+
                 } else if(parent_atom_electrons.length === Constants().max_valence_electrons[processed_atoms[parent_atom_index][0]]) {
                     // coordinate covalent bond - parent donates both electrons
                     parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index+1))
@@ -901,8 +938,6 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                     )
                 }  else {
 
-                    process.error()
-
                     let number_of_hydrogens_required = 0
                     if (current[0] === "Hg" || current[0] === "Ac") {
                         number_of_hydrogens_required = 0
@@ -919,9 +954,12 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                         range.range(0, number_of_hydrogens_required - offset_map[current[0]],1).map(
                             (e_index) => {
                                 if (undefined !== free_electrons[e_index]) {
+                                    const current_electrons = electrons(current)
                                     const hydrogen = AtomFactory('H', "", e_index+1)
                                     hydrogen.push(free_electrons[e_index])
-                                    current.push(hydrogen[hydrogen.length - 2])
+                                    if (current_electrons.length < Constants().max_valence_electrons[current[0]]) {
+                                        current.push(hydrogen[hydrogen.length - 2])
+                                    }
                                     carry.push(hydrogen)
                                 } else {
                                 }
@@ -944,9 +982,30 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
 
 
     // "[NH1+]"
-   console.log(atoms_with_hydrogens)
-  process.error()
+//   console.log(atoms_with_hydrogens)
+//  process.error()
   /*
+  [
+  [ 'H', 1, 1, 1, '', 'H_1_1agfeaikphr2sey', 'N_2_1agfeaikphr2set' ],
+  [ 'H', 1, 1, 1, '', 'H_2_1agfeaikphr2sez', 'N_2_1agfeaikphr2seu' ],
+  [ 'H', 1, 1, 1, '', 'H_3_1agfeaikphr2sf0', 'N_2_1agfeaikphr2sev' ],
+  [ 'H', 1, 1, 1, '', 'H_4_1agfeaikphr2sf1', 'N_2_1agfeaikphr2sew' ],
+  [
+    'N',
+    7,
+    5,
+    3,
+    0,
+    'N_2_1agfeaikphr2set',
+    'N_2_1agfeaikphr2seu',
+    'N_2_1agfeaikphr2sev',
+    'N_2_1agfeaikphr2sew',
+    'N_2_1agfeaikphr2sex',
+    'H_1_1agfeaikphr2sey',
+    'H_2_1agfeaikphr2sez',
+    'H_3_1agfeaikphr2sf0'
+  ]
+]
      */
 
     const atoms_electrons_checked = atoms_with_hydrogens.map((atom, index)=>{

@@ -31,7 +31,8 @@ const Typecheck = require('./../../Typecheck')
 // breakOxygenCarbonSingleBond
 // isBond(atom1_controller, atom2_controller)
 // breakCarbonNitrogenDoubleBondReverse(nitrogen_index, carbon_index, DEBUG)
-// bondAtoms
+// bondAtoms(atom1, atom2)
+// bondAtomsReverse(atom1, atom2)
 class BondsAI {
 
     constructor(reaction) {
@@ -53,6 +54,15 @@ class BondsAI {
 
     }
 
+    bondAtomsReverse(atom1, atom2) {
+
+        // No bond between the two atoms
+        if (!is_bond(atom1, atom2)) {
+            return false
+        }
+
+    }
+    
     bondAtoms(atom1, atom2, molecule_container) {
 
         Typecheck(
