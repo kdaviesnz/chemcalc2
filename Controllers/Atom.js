@@ -8,11 +8,10 @@ const Constants = require("../Constants")
 
 const CAtom = (atom, current_atom_index, mmolecule) => {
 
-
     Typecheck(
         {name:"atom", value:atom, type:"array"},
         {name:"current_atom_index", value:current_atom_index, type:"number"},
-        {name:"mmolecule", value:mmolecule, type:"object"},
+        {name:"mmolecule", value:mmolecule, type:"array"},
     )
 
     mmolecule.length.should.be.equal(2) // molecule, units
@@ -739,19 +738,39 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
         Typecheck(
             {name:"sibling_atom", value:sibling_atom, type:"object"},
-            {name:"atom", value:atom, type:"array"}
+            {name:"atom", value:atom, type:"array"},
+            {name:"sibling_atom.atom", value:sibling_atom.atom, type:"array"}
         )
 
+        if (undefined === sibling_atom) {
+            throw new Error("sibling atom object is undefined")
+        }
+
+        if (undefined === sibling_atom.atom) {
+            throw new Error("sibling atom is undefined")
+        }
+
         return Set().intersection(atom.slice(Constants().electron_index), sibling_atom.atom.slice(Constants().electron_index))
+
     }
 
-    __isBondedTo = (sibling_atom) => {
+    __isBondedTo = function(sibling_atom) {
 
         Typecheck(
             {name:"sibling_atom", value:sibling_atom, type:"object"}
         )
 
-        const shared_electrons = atom.electronsSharedWithSibling(sibling_atom)
+        if (undefined === sibling_atom) {
+            throw new Error("sibling atom object is undefined")
+        }
+
+        if (undefined === sibling_atom.atom) {
+            console.log(sibling_atom)
+            console.log(typeof sibling_atom)
+            throw new Error("sibling atom is undefined")
+        }
+
+        const shared_electrons = this.electronsSharedWithSibling(sibling_atom)
         return shared_electrons.length > 0
     }
 

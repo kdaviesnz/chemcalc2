@@ -111,7 +111,7 @@ class MoleculeAI {
                     let number_of_electrons_to_add = 0
                     if (atom.freeElectrons().length > number_of_free_electrons){
                         number_of_electrons_to_remove = atom.freeElectrons().length - number_of_free_electrons
-                        atom.removeElectrons(number_of_electrons_to_remove)
+                        atom.removeElectrons(atom.freeElectrons().slice(0, number_of_electrons_to_remove))
                     } else {
                         number_of_electrons_to_add = number_of_free_electrons - atom.freeElectrons().length
                         atom.addElectrons(number_of_electrons_to_add)

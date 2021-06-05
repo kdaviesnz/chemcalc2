@@ -130,6 +130,9 @@ class Reaction {
             {name:"renderCallback", value:renderCallback, type:"function"}
         )
 
+
+
+
         if (container_substrate.length !==2) {
             console.log("Components/State/Reaction.js constructor -> Container substrate:")
             console.log(container_substrate)
@@ -774,8 +777,13 @@ class Reaction {
     setChargeOnSubstrateAtom(index, trace, trace_id, DEBUG) {
 
         Typecheck(
-            {name:"index", value:index, type:"number"}
+            {name:"index", value:index, type:"number"},
+            {name:"this.container_substrate[0][1][index]", value:this.container_substrate[0][1][index], type:"array"}
         )
+
+        if (undefined === this.container_substrate[0][1][index]) {
+            throw new Error("Atom array is undefined.")
+        }
 
         const chargesAI = new ChargesAI(this)
         return chargesAI.setChargeOnSubstrateAtom(index, trace, trace_id, DEBUG)

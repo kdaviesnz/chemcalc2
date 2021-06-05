@@ -4,6 +4,8 @@ const VMolecule = require('../../Components/Stateless/Views/Molecule')
 const Set = require('../../Models/Set')
 const ChargesAI = require('../../Components/State/ChargesAI')
 const ProtonationAI = require('../../Components/State/ProtonationAI')
+const Constants = require('../../Constants')
+const Typecheck = require('../../Typecheck')
 /*
    findCarbonylCarbonIndexOnDoubleBond()
    isStrongAcid()
@@ -72,6 +74,10 @@ const ProtonationAI = require('../../Components/State/ProtonationAI')
 
 const MoleculeAI = (container_molecule) => {
 
+    Typecheck(
+        {name:"container_molecule", value:container_molecule, type:"array"},
+    )
+
     container_molecule.length.should.be.equal(2) // molecule, units
     if (container_molecule[0] !== "B") {
         container_molecule[0].length.should.be.equal(2) // pKa, atoms
@@ -103,11 +109,11 @@ const MoleculeAI = (container_molecule) => {
     }
 
     const __findOxygenWithNoBondsIndex = function() {
-        return _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=> {
+        return _.findIndex(container_molecule[0][1], (atom, index)=> {
             if ( atom[0] !== "O") {
                 return false
             }
-            const o = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate)
+            const o = CAtom(container_molecule[0][1][index], index, container_molecule)
             const single_bonds = o.indexedBonds("").filter((bond)=>{
                 return bond.atom[0] !== "H"
             })
@@ -459,7 +465,7 @@ const MoleculeAI = (container_molecule) => {
             // https://socratic.org/questions/how-is-carbocation-formed
             // Look for carbon with 4 bonds and at least 1 hydrogen
             return _.findIndex(container_molecule[0][1], (atom, index) => {
-                return atom[0] === "C" && atom[4] === "+" && atom.slice(5).length === 6
+                return atom[0] === "C" && atom[4] === "+" && atom.slice(Constants().electron_index).length === 6
             })
         },
 
@@ -501,7 +507,10 @@ const MoleculeAI = (container_molecule) => {
             // Check atoms do not have more than 8 electrons and 2 electrons if H
             container_molecule[0][1].map((atom, index)=>{
                 //const atom_object = CAtom(container_molecule[0][1][index], index, container_molecule)
-                const electrons = atom.slice(5)
+                if (atom === undefined) {
+                    throw new Error('Atom is undefined')
+                }
+                const electrons = atom.slice(Constants().electron_index)
                 switch(atom[0]) {
                     case "H":
                         if (electrons.length > 2) {
@@ -651,13 +660,23 @@ const MoleculeAI = (container_molecule) => {
 
         checkForBondedAtomsRecursive: function(groups, group_index, current_atom_index, atom_object, atoms, atom_indexes_added) {
 
+            Typecheck(
+                {name:"groups", value:groups, type:"array"},
+                {name:"group_index", value:group_index, type:"number"},
+                {name:"current_atom_index", value:current_atom_index, type:"number"},
+                {name:"atom_object", value:atom_object, type:"object"},
+                {name:"atoms", value:atoms, type:"array"},
+                {name:"atom_indexes_added", value:atom_indexes_added, type:"array"},
+            )
+
             _.cloneDeep(atoms).map((a, i)=>{
-                if (i !== current_atom_index && _.indexOf(atom_indexes_added, i) ===-1 && atom_object.isBondedTo(a)) {
-                 // console.log(('Added atom')
-                    groups[group_index].push(a)
-                    atom_indexes_added.push(i)
-                    bonded_atom_object = CAtom(a, i, container_molecule)
-                    this.checkForBondedAtomsRecursive(groups, group_index, i, bonded_atom_object, _.cloneDeep(atoms), atom_indexes_added)
+                if (i !== current_atom_index && _.indexOf(atom_indexes_added, i) ===-1) {
+                    const a_object = CAtom(a, i, container_molecule)
+                    if (atom_object.isBondedTo(a_object)) {
+                        groups[group_index].push(a)
+                        atom_indexes_added.push(i)
+                        this.checkForBondedAtomsRecursive(groups, group_index, i, a_object, _.cloneDeep(atoms), atom_indexes_added)
+                    }
                 }
                 return a
             })
@@ -1660,7 +1679,7 @@ VMolecule
                     const c1 = bonds[0].atom
                     const c2 = bonds[1].atom
 
-                    if (Set().intersection(c1.slice(5), c2.slice(5)).length === 0) {
+                    if (Set().intersection(c1.slice(Constants().electron_index), c2.slice(Constants().electron_index)).length === 0) {
                         return false
                     }
 

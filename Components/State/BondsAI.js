@@ -369,9 +369,18 @@ class BondsAI {
 
         Typecheck(
             {name:"DEBUG", value:DEBUG, type:"boolean"},
+            {name:"this.reaction", value:this.reaction, type:"object"},
+            {name:"this.reaction.MoleculeAI", value:this.reaction.MoleculeAI, type:"object"},
         )
 
         // This should NOT remove H from the oxygen
+        this.reaction.setMoleculeAI()
+
+        if (DEBUG) {
+            console.log("BondsAI container substrate:")
+            console.log(VMolecule(this.reaction.container_substrate).compressed())
+        }
+
         let oxygen_index = this.reaction.MoleculeAI.findOxygenAttachedToCarbonIndexNoDoubleBonds()
         let carbon_index = null
         if (DEBUG) {
@@ -1059,6 +1068,8 @@ class BondsAI {
             {name:"c_index", value:c_index, type:"number"}
         )
 
+        this.reaction.MoleculeAI.validateMolecule()
+
         // Important (orginal reaction):
         // The reagent is the nucleophile and is attacking the substrate
         // The substrate is the electrophile
@@ -1095,14 +1106,25 @@ class BondsAI {
                 }
             }
 
+
             if (c_index !== null) {
+
                 const target_atom = CAtom(this.reaction.container_substrate[0][1][c_index], c_index, this.reaction.container_substrate)
                 // Use dehydrate() instead
                 if (target_atom.symbol === "O" && target_atom.hydrogens().length ===2 && this.reaction.container_substrate[0][1][electrophile_index][4] === "+") {
                     return false
                 }
+
+
                 const shared_electrons = n_atom.electronsSharedWithSibling(target_atom)
-                this.reaction.container_substrate[0][1][n_index] = n_atom.removeElectrons(shared_electrons)
+                n_atom.removeElectrons(shared_electrons)
+
+                this.reaction.container_substrate[0][1][n_index] = n_atom.atom
+
+                if (undefined === this.reaction.container_substrate[0][1][n_index]) {
+                    throw new Error("Atom array is undefined.")
+                }
+
                 this.reaction.setChargeOnSubstrateAtom(n_index)
                 this.reaction.setChargeOnSubstrateAtom(c_index)
                 this.reaction.setMoleculeAI()
