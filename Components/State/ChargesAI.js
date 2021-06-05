@@ -2,7 +2,7 @@ const _ = require('lodash');
 const CAtom = require('../../Controllers/Atom')
 const VMolecule = require('../Stateless/Views/Molecule')
 const uniqid = require('uniqid');
-
+const Typecheck = require('./../../Typecheck')
 class ChargesAI {
 
     constructor(reaction) {
@@ -211,6 +211,16 @@ class ChargesAI {
     }
 
     setChargeOnSubstrateAtom(index, trace, trace_id, DEBUG) {
+
+        Typecheck(
+            {name:"index", value:index, type:"number"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+            {name:"this.reaction.container_substrate[0][1][index]", value:this.reaction.container_substrate[0][1][index], type:"array"}
+        )
+
+        if (undefined === this.reaction.container_substrate[0][1][index]) {
+            throw new Error("Atom array is undefined.")
+        }
 
         // https://chemistry.stackexchange.com/questions/22032/how-does-a-carbocation-have-a-positive-charge
         // Formal Charge= (No.of valence electrons in unbonded state - no of lone pair electrons ) - (no. of bond pair electrons/2)

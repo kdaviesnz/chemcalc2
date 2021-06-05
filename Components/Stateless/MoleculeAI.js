@@ -64,7 +64,8 @@ const ProtonationAI = require('../../Components/State/ProtonationAI')
    findCarbonAttachedToNitrogenIndex(nitrogen_index)
    findAllCarbonIndexesAttachedToNitrogen(nitrogen_index) // single bonds
    __getCarbonBondsAttachedToNitrogen
-
+   findOxygenWithNoBondsIndex()
+   findCarbonWithNoBondsIndex()
    findKetoneCarbonIndex(DEBUG)
    */
 
@@ -80,6 +81,44 @@ const MoleculeAI = (container_molecule) => {
             container_molecule[0][1][0].should.be.an.Array()
             container_molecule[0][1][0][0].should.be.an.String()
         }
+    }
+
+    const __findCarbonWithNoBondsIndex = function() {
+        return _.findIndex(this.reaction.container_substrate[0][1], (c_atom, c_index)=> {
+            if (c_atom[0] !== "C") {
+                return false
+            }
+            const c = CAtom(this.reaction.container_substrate[0][1][c_index], c_index, this.reaction.container_substrate)
+            const single_bonds = c.indexedBonds("").filter((bond)=>{
+                return bond.atom[0] !== "H"
+            })
+            const double_bonds = c.indexedDoubleBonds("").filter((bond)=>{
+                return bond.atom[0] !== "H"
+            })
+            const triple_bonds = c.indexedTripleBonds("").filter((bond)=>{
+                return bond.atom[0] !== "H"
+            })
+            return  (single_bonds.length + double_bonds.length + triple_bonds.length) === 0
+        })
+    }
+
+    const __findOxygenWithNoBondsIndex = function() {
+        return _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=> {
+            if ( atom[0] !== "O") {
+                return false
+            }
+            const o = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate)
+            const single_bonds = o.indexedBonds("").filter((bond)=>{
+                return bond.atom[0] !== "H"
+            })
+            const double_bonds = o.indexedDoubleBonds("").filter((bond)=>{
+                return bond.atom[0] !== "H"
+            })
+            const triple_bonds = o.indexedTripleBonds("").filter((bond)=>{
+                return bond.atom[0] !== "H"
+            })
+            return single_bonds.length + double_bonds.length + triple_bonds.length === 0
+        })
     }
 
     const __findKetoneCarbonIndex = function(DEBUG) {
@@ -1917,6 +1956,8 @@ VMolecule
 
         },
 
+        "findOxygenWithNoBondsIndex": __findOxygenWithNoBondsIndex,
+        "findCarbonWithNoBondsIndex": __findCarbonWithNoBondsIndex,
         "findKetoneCarbonIndex": (DEBUG) => {
             return __findKetoneCarbonIndex(DEBUG)
         },

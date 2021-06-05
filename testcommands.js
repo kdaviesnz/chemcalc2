@@ -51,6 +51,17 @@ const renderCallback = (reactions) => {
 }
 
 // Preliminary tests
+
+// formKetoneFromImine
+me_nitrogen_index = 19
+me_carbon_index = 23
+pnm = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
+methylamine = MoleculeFactory("CN")
+reaction = new Reaction([pnm, 1], [methylamine, 1], "", false, null, null, [], 0, [], renderCallback)
+stateMoleculeAI = new StateMoleculeAI(reaction)
+imine_to_ketone_result = stateMoleculeAI.formKetoneFromImine(me_nitrogen_index, me_carbon_index, false)
+VMolecule(imine_to_ketone_result[0]).canonicalSMILES().should.be.equal("C=O")
+VMolecule(imine_to_ketone_result[1]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=N")
 console.log("Running preliminary tests")
 
 // dehydrateReverse
@@ -127,16 +138,7 @@ reductiveAminationReverse_result = reaction.reductiveAminationReverse(carbon_ind
 VMolecule(reductiveAminationReverse_result[0]).canonicalSMILES().should.be.equal("C=O")
 VMolecule(reductiveAminationReverse_result[1]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)N")
 
-// formKetoneFromImine
-me_nitrogen_index = 19
-me_carbon_index = 23
-pnm = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
-methylamine = MoleculeFactory("CN")
-reaction = new Reaction([pnm, 1], [methylamine, 1], "", false, null, null, [], 0, [], renderCallback)
-stateMoleculeAI = new StateMoleculeAI(reaction)
-imine_to_ketone_result = stateMoleculeAI.formKetoneFromImine(me_nitrogen_index, me_carbon_index, false)
-VMolecule(imine_to_ketone_result[0]).canonicalSMILES().should.be.equal("C=O")
-VMolecule(imine_to_ketone_result[1]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=N")
+
 
 console.log("Preliminary tests completed. Running main tests...")
 

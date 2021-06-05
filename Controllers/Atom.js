@@ -4,6 +4,7 @@ const _ = require('lodash');
 const AtomFactory = require('../Models/AtomFactory')
 const uniqid = require('uniqid')
 const Typecheck = require('../Typecheck')
+const Constants = require("../Constants")
 
 const CAtom = (atom, current_atom_index, mmolecule) => {
 
@@ -33,12 +34,12 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     const __shared_electrons = () => {
 
         const atoms = mmolecule[0][1]
-        const atom_electrons = atom.slice(5)
+        const atom_electrons = atom.slice(Constants().electron_index)
 
         const total_shared_electrons =  _.cloneDeep(atoms).reduce(
 
             (shared_electrons, _atom, _atom_index) => {
-                shared_electrons = shared_electrons.concat(Set().intersection(atom_electrons, _atom.slice(5)))
+                shared_electrons = shared_electrons.concat(Set().intersection(atom_electrons, _atom.slice(Constants().electron_index)))
                 return shared_electrons
             },
             []
@@ -51,7 +52,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     const __indexedTripleBonds = (filter_by) => {
 
         const atoms = mmolecule[0][1]
-        const atom_electrons = atom.slice(5)
+        const atom_electrons = atom.slice(Constants().electron_index)
 
         filter_by.should.be.an.String()
 
@@ -64,11 +65,11 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                     return bonds
                 }
 
-                const shared_electrons = Set().intersection(atom_electrons, _atom.slice(5))
+                const shared_electrons = Set().intersection(atom_electrons, _atom.slice(Constants().electron_index))
 
 
                 if (atom[0]==="N" && _atom[0]==="C") {
-                   // console.log('shared_electrons')
+                    // console.log('shared_electrons')
                     // console.log(shared_electrons)
                     // console.log('Atom.js')
                 }
@@ -86,9 +87,9 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
 
                 if (atom[0]==="N" && _atom[0]==="C") {
-                   // console.log(bonds)
-                 //   console.log('Atom.js')
-                   // process.exit()
+                    // console.log(bonds)
+                    //   console.log('Atom.js')
+                    // process.exit()
                 }
 
                 return bonds
@@ -107,7 +108,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     const __indexedDoubleBonds = (filter_by) => {
 
         const atoms = mmolecule[0][1]
-        const atom_electrons = atom.slice(5)
+        const atom_electrons = atom.slice(Constants().electron_index)
 
         filter_by.should.be.an.String()
 
@@ -127,7 +128,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                     return bonds
                 }
 
-                const shared_electrons = Set().intersection(atom_electrons, _atom.slice(5))
+                const shared_electrons = Set().intersection(atom_electrons, _atom.slice(Constants().electron_index))
 
 
                 if (shared_electrons.length !==4) {
@@ -146,13 +147,13 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             []
         )
 
-/*
-        if (r.length > 0) {
-            console.log("_indexedDoubleBonds()")
-            console.log(r)
-            process.error()
-        }
- */
+        /*
+                if (r.length > 0) {
+                    console.log("_indexedDoubleBonds()")
+                    console.log(r)
+                    process.error()
+                }
+         */
         /*
         r:
         [
@@ -233,7 +234,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     const __indexedBonds = function(filter_by)  {
 
         const atoms = mmolecule[0][1]
-        const atom_electrons = atom.slice(5)
+        const atom_electrons = atom.slice(Constants().electron_index)
 
         filter_by.should.be.an.String()
 
@@ -250,7 +251,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                     return bonds
                 }
 
-                const shared_electrons = Set().intersection(atom_electrons, _atom.slice(5))
+                const shared_electrons = Set().intersection(atom_electrons, _atom.slice(Constants().electron_index))
 
                 if (shared_electrons.length === 0) {
                     return bonds
@@ -310,17 +311,17 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     const __Bonds = () => {
 
         const atoms = mmolecule[0][1]
-        const atom_electrons = atom.slice(5)
-        
+        const atom_electrons = atom.slice(Constants().electron_index)
+
         const r =  atoms.map(
-            
+
             (_atom, _atom_index) => {
 
                 if (current_atom_index === _atom_index) {
                     return false
                 }
 
-                const shared_electrons = Set().intersection(atom_electrons, _atom.slice(5))
+                const shared_electrons = Set().intersection(atom_electrons, _atom.slice(Constants().electron_index))
 
                 return shared_electrons.reduce(
                     (carry, electron) => {
@@ -363,12 +364,12 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
         // Get number of electrons
         const info = PeriodicTable[atom[0]]
-        return atom.slice(5).length + ((info["electrons_per_shell"].split("-")).slice(0, -1).reduce((a, b) => a*1 + b*1, 0)) * 1
+        return atom.slice(Constants().electron_index).length + ((info["electrons_per_shell"].split("-")).slice(0, -1).reduce((a, b) => a*1 + b*1, 0)) * 1
 
     }
 
     const __numberOfElectronsV2 = () => {
-        return atom.slice(5).length
+        return atom.slice(Constants().electron_index).length
     }
 
     // Number of bonds atom can have and be neutral
@@ -413,30 +414,30 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         console.log('__numberOfHydrogens' + __hydrogens().length)
         console.log('__numberOfElectrons' + __numberOfElectrons())
 
-       // return __bondCount(test_number) + (number_of_double_bonds) < __neutralAtomMaxBondCount()
+        // return __bondCount(test_number) + (number_of_double_bonds) < __neutralAtomMaxBondCount()
 
         if ((__bondCount(test_number) + (number_of_double_bonds)) > __neutralAtomMaxBondCount() ) {
             return false
         }
         return __numberOfElectrons() - (__bondCount() + number_of_double_bonds )  > __numberOfProtons()
-        
+
     }
-    
+
     const __carbons = (test_number) => {
         const atoms = mmolecule[0][1]
         return atoms.filter(
             (__atom) => {
                 if (__atom[0] === "C") {
-                    return Set().intersection(__atom.slice(5), atom.slice(5)).length > 0
+                    return Set().intersection(__atom.slice(Constants().electron_index), atom.slice(Constants().electron_index)).length > 0
                 }
                 return false
             }
         )
     }
-    
+
     const __removeDoubleBond = (test_number) => {
         const atoms = mmolecule[0][1]
-        const atom_electrons = atom.slice(5)
+        const atom_electrons = atom.slice(Constants().electron_index)
         const atoms_double_bond_removed =  atoms.map(
             (__atom, __atom_index) => {
 
@@ -444,7 +445,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                     return __atom
                 }
 
-                const shared_electrons = Set().intersection(atom_electrons, __atom.slice(5))
+                const shared_electrons = Set().intersection(atom_electrons, __atom.slice(Constants().electron_index))
 
                 // Double bond not found
                 if (shared_electrons.length !== 4) {
@@ -468,7 +469,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         )
 
         // Atom we are removing the double bond from should still have the same number of electrons
-        atom.slice(5).length.should.be.equal(atom_electrons.length)
+        atom.slice(Constants().electron_index).length.should.be.equal(atom_electrons.length)
 
         // We should still have the same number of atoms
         atoms.length.should.be.equal(mmolecule[0][1].length)
@@ -480,7 +481,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     const __doubleBond = () => {
 
         const atoms = mmolecule[0][1]
-        const atom_electrons = atom.slice(5)
+        const atom_electrons = atom.slice(Constants().electron_index)
         const r =  atoms.map(
             (__atom, __atom_index) => {
 
@@ -488,7 +489,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                     return false
                 }
 
-                const shared_electrons = Set().intersection(atom_electrons, __atom.slice(5))
+                const shared_electrons = Set().intersection(atom_electrons, __atom.slice(Constants().electron_index))
 
                 if (shared_electrons.length !== 4) {
                     return false
@@ -510,7 +511,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     const __tripleBond = () => {
 
         const atoms = mmolecule[0][1]
-        const atom_electrons = atom.slice(5)
+        const atom_electrons = atom.slice(Constants().electron_index)
         const r =  atoms.map(
             (__atom, __atom_index) => {
 
@@ -518,7 +519,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                     return false
                 }
 
-                const shared_electrons = Set().intersection(atom_electrons, __atom.slice(5))
+                const shared_electrons = Set().intersection(atom_electrons, __atom.slice(Constants().electron_index))
 
                 if (shared_electrons.length !== 6) {
                     return false
@@ -560,7 +561,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         return atoms.filter(
             (__atom) => {
                 if (__atom[0] === "H") {
-                    return Set().intersection(__atom.slice(5), atom.slice(5)).length > 0
+                    return Set().intersection(__atom.slice(Constants().electron_index), atom.slice(Constants().electron_index)).length > 0
                 }
                 return false
             }
@@ -568,14 +569,14 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     }
 
     const __isProton = () => {
-        return atom[0] === "H" && atom.length === 5
+        return atom[0] === "H" && atom.length === Constants().electron_index
     }
 
 
 
     const __electron_haystack = (test_number) => {
         const atoms = mmolecule[0][1]
-        const atom_electrons = atom.slice(5)
+        const atom_electrons = atom.slice(Constants().electron_index)
         return atoms.reduce(
             (carry, __atom, __atom_index) => {
 
@@ -587,7 +588,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                 if (current_atom_index === __atom_index ) {
                     return carry
                 }
-                return [...carry, ...__atom.slice(5)]
+                return [...carry, ...__atom.slice(Constants().electron_index)]
             },
             []
         )
@@ -597,7 +598,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     const __freeElectrons = (test_number) => {
 
 
-        const atom_electrons = atom.slice(5)
+        const atom_electrons = atom.slice(Constants().electron_index)
         const electron_haystack = atom[0] === "Hg"?__electron_haystack(test_number).slice(0,3):__electron_haystack(test_number)
 
         return atom_electrons.filter(
@@ -609,7 +610,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
     const __usedElectrons = (test_number) => {
 
-        const atom_electrons = atom.slice(5)
+        const atom_electrons = atom.slice(Constants().electron_index)
         const electron_haystack = __electron_haystack(test_number)
 
         return atom_electrons.filter(
@@ -618,15 +619,15 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             }
         )
     }
-    
-    
-/*
-First we determine the number of electrons the atom has in its outer shell.
-Then we determine the maximum number of electrons the atom can have in its valence shell (2,8,18)
-We then get the total number of free slots by subtracting number of electrons the atom has
-in its outer shell * 2 from the maximum number of electrons the atom can have in its valence shell.
-We then return the total number of free slots minus the number of slots already taken
-*/
+
+
+    /*
+    First we determine the number of electrons the atom has in its outer shell.
+    Then we determine the maximum number of electrons the atom can have in its valence shell (2,8,18)
+    We then get the total number of free slots by subtracting number of electrons the atom has
+    in its outer shell * 2 from the maximum number of electrons the atom can have in its valence shell.
+    We then return the total number of free slots minus the number of slots already taken
+    */
     const __freeSlots = function(test_number)  {
 
         // Basic checks
@@ -675,7 +676,7 @@ We then return the total number of free slots minus the number of slots already 
         return max_possible_number_of_shared_electron_bonds - __bondCount()
 
     }
-    
+
     const __isCarbocation = (test_number) => {
         // atom, current_atom_index, mmolecule
         return atom[0] === "C" && __isPositivelyCharged(test_number)
@@ -708,25 +709,114 @@ We then return the total number of free slots minus the number of slots already 
         return map[atom[0]]
     }
 
-    const __numberOfBonds = () => {
+    const __numberOfBondsNoHydrogens = () => {
         const single_bonds = __indexedBonds("").filter((b)=> {
             return b.atom[0] !== "H"
         })
-        process.error()
         const double_bonds = __indexedDoubleBonds("").filter((d)=> {
             return d.atom[0] !== "H"
         })
         const triple_bonds = __indexedTripleBonds("").filter((t)=> {
             return t.atom[0] !== "H"
         })
-        return __hydrogens().length + single_bonds.length + (double_bonds.length*2) + (triple_bonds.length*3)
+        return single_bonds.length + (double_bonds.length*2) + (triple_bonds.length*3)
+    }
+
+    const __numberOfBonds = () => {
+        return __hydrogens().length + __numberOfBondsNoHydrogens()
+    }
+
+    __isCoordinateCovalentBond = (sibling_atom) => {
+        // In a coordinate covalent bond one of the atoms donates both of the shared electrons
+        const shared_electrons = atom.electronsSharedWithSibling(sibling_atom)
+        if (shared_electrons.length === 0) {
+            return false
+        }
+        return ((atom.neutralAtomMaxNumberOfBonds() > Constants().max_valence_electrons[atom.symbol]) || (sibling_atom.neutralAtomMaxNumberOfBonds() > Constants().max_valence_electrons[sibling_atom[atom.symbol]]))
+    }
+
+    __electronsSharedWithSibling = (sibling_atom) => {
+
+        Typecheck(
+            {name:"sibling_atom", value:sibling_atom, type:"object"},
+            {name:"atom", value:atom, type:"array"}
+        )
+
+        return Set().intersection(atom.slice(Constants().electron_index), sibling_atom.atom.slice(Constants().electron_index))
+    }
+
+    __isBondedTo = (sibling_atom) => {
+
+        Typecheck(
+            {name:"sibling_atom", value:sibling_atom, type:"object"}
+        )
+
+        const shared_electrons = atom.electronsSharedWithSibling(sibling_atom)
+        return shared_electrons.length > 0
+    }
+
+    __isCoordinateCovalentBondDonator = (sibling_atom)  => {
+
+        Typecheck(
+            {name:"sibling_atom", value:sibling_atom, type:"object"}
+        )
+
+        if(!atom.isCoordinateCovalentBond(sibling_atom)) {
+            return false
+        }
+        return atom.neutralAtomMaxNumberOfBonds() > Constants().max_valence_electrons[atom.symbol]
+    }
+
+    __removeElectrons = (electrons) => {
+
+        Typecheck(
+            {name: "electrons", value: electrons, type: "array"}
+        )
+
+        _.remove(atom, (electron) => {
+            return electrons.indexOf(electron) !== -1
+        })
+    }
+
+
+    __removeCovalentBond = (sibling_atom) => {
+
+        Typecheck(
+            {name:"sibling_atom", value:sibling_atom, type:"object"}
+        )
+
+        const shared_electrons = atom.electronsSharedWithSibling(sibling_atom)
+        atom.removeElectrons([shared_electrons[0]])
+        sibling_atom.removeElectrons([shared_electrons[1]])
+
+    }
+
+    __getPositiveCarbonBonds = () => {
+        return atom.indexedBonds("").filter((bond) => {
+            return bond.atom[0] === "C" && bond.atom[4] === "+"
+        })
+    }
+
+    __electrons = () => {
+        return atom.atom.slice(Constants().electron_index)
+    }
+
+    __carbonBonds = () => {
+        return atom.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "C"
+        })
     }
 
     return {
-        isBondedTo: (sibling_atom) => {
-            const shared_electrons = Set().intersection(atom.slice(5), sibling_atom.slice(5))
-            return shared_electrons.length > 0
-        },
+        carbonBonds: __carbonBonds,
+        electrons: __electrons,
+        getPositiveCarbonBonds: __getPositiveCarbonBonds,
+        removeCovalentBond: __removeCovalentBond,
+        removeElectrons:__removeElectrons,
+        isCoordinateCovalentBondDonator:__isCoordinateCovalentBondDonator,
+        isBondedTo: __isBondedTo,
+        electronsSharedWithSibling: __electronsSharedWithSibling,
+        isCoordinateCovalentBond: __isCoordinateCovalentBond,
         isCarbocation: __isCarbocation,
         isNegativelyCharged: __isNegativelyCharged,
         isPositivelyCharged: __isPositivelyCharged,
@@ -749,7 +839,7 @@ We then return the total number of free slots minus the number of slots already 
                     if (__atom === null || undefined === __atom.slice) {
                         return carry
                     }
-                    __atom.slice(5).map(
+                    __atom.slice(Constants().electron_index).map(
                         (electron) => {
                             carry.push(electron)
                             return electron
@@ -761,7 +851,7 @@ We then return the total number of free slots minus the number of slots already 
             )
 
             // Check current atom electrons to see if they're being used
-            const lone_electrons = atom.slice(5).filter(
+            const lone_electrons = atom.slice(Constants().electron_index).filter(
                 (electron, index) => {
                     return electrons_from_other_atoms.indexOf(electron) === -1
                 }
@@ -791,10 +881,12 @@ We then return the total number of free slots minus the number of slots already 
         atomIndex: current_atom_index,
         charge: atom[4],
         sharedElectrons: __shared_electrons,
-        removeElectrons: __removeFreeElectrons,
+        removeFreeElectrons: __removeFreeElectrons,
         addElectrons: __addElectrons,
         numberOfBonds: __numberOfBonds,
-        neutralAtomMaxNumberOfBonds: __neutralAtomMaxNumberOfBonds
+        numberOfBondsNoHydrogens: __numberOfBondsNoHydrogens,
+        neutralAtomMaxNumberOfBonds: __neutralAtomMaxNumberOfBonds,
+
     }
 }
 

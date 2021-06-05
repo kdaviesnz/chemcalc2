@@ -11,7 +11,7 @@ const Typecheck = require('./../../Typecheck')
 
 // removeProton(molecule, atom_index, electrons, proton)
 // removeAtom(molecule, atom) {
-// removeBond(molecule, atom_index, electrons)
+// removeBond(atom1, atom2, molecule_container)
 // makeNitrogenCarbonTripleBond()
 // makeNitrogenCarbonDoubleBond(n_index=null, carbon_index=null, DEBUG)
 // makeOxygenCarbonDoubleBond(DEBUG)
@@ -32,6 +32,8 @@ const Typecheck = require('./../../Typecheck')
 // isBond(atom1_controller, atom2_controller)
 // breakCarbonNitrogenDoubleBondReverse(nitrogen_index, carbon_index, DEBUG)
 // bondAtoms(atom1, atom2)
+// bondAtomsReverse(atom1, atom2)
+// removeCoordinateCovalentBond(atom1, atom2)
 // bondAtomsReverse(atom1, atom2)
 class BondsAI {
 
@@ -54,15 +56,52 @@ class BondsAI {
 
     }
 
-    bondAtomsReverse(atom1, atom2) {
+    removeCoordinateCovalentBond(atom1, atom2) {
+
+        Typecheck(
+            {name:"atom1", value:atom1, type:"object"},
+            {name:"atom2", value:atom2, type:"object"}
+        )
+
+        const shared_electrons = atom1.electronsSharedWithSibling(atom2)
+
+        if(atom1.isCoordinateCovalentBondDonator(atom2)) {
+            atom2.removeElectrons(shared_electrons)
+        } else if(atom2.isCoordinateCovalentBondDonator(atom1)) {
+            atom1.removeElectrons(shared_electrons)
+        }
+    }
+
+    removeBond(atom1, atom2, molecule_container) {
+
+        Typecheck(
+            {name:"molecule_container", value:molecule_container, type:"array"},
+            {name:"atom1", value:atom1, type:"object"},
+            {name:"atom2", value:atom2, type:"object"},
+        )
 
         // No bond between the two atoms
         if (!is_bond(atom1, atom2)) {
             return false
         }
 
+        // Check for coordinate bond
+        if (atom1.isCoordinateCovalentBond(atom2) || atom2.isCoordinateCovalentBond(atom1)) {
+            this.removeCoordinateCovalentBond(atom1, atom2)
+        } else {
+            // Standard covalent bond
+            atom1.removeCovalentBond(atom2)
+        }
+        molecule_container[0][1][atom1.atomIndex] = atom1
+        molecule_container[0][1][atom2.atomIndex] = atom2
+
+        return molecule_container
     }
-    
+
+    bondAtomsReverse(atom1, atom2, molecule_container) {
+        return this.removeBond(atom1, atom2, molecule_container)
+    }
+
     bondAtoms(atom1, atom2, molecule_container) {
 
         Typecheck(
@@ -163,13 +202,7 @@ class BondsAI {
         return molecule
     }
 
-    removeBond(molecule, atom_index, electrons) {
 
-        _.remove(molecule[0][1][atom_index], (electron, index)=>{
-            return electron === electrons[0] || electron === electrons[1]
-        })
-        return molecule
-    }
 
     removeAtom(molecule, atom) {
         //this.container_substrate[0][1] = Set().removeFromArray(this.container_substrate[0][1], this.container_substrate[0][1][h_c_hydrogen_bonds[0].atom_index])
@@ -307,22 +340,18 @@ class BondsAI {
 
     makeDoubleBond(negativeAtom, positiveAtom, DEBUG) {
 
-        const freeElectrons = negativeAtom.freeElectrons()
-
-        if (DEBUG) {
-            console.log("Free electrons")
-            console.log(freeElectrons)
-        }
+        Typecheck(
+            {name:"negativeAtom", value:negativeAtom, type:"object"},
+            {name:"positiveAtom", value:positiveAtom, type:"object"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"}
+        )
 
         // If there was not already a bond between the atoms
         if (this.isBond(negativeAtom, positiveAtom)=== false) {
-            this.reaction.container_substrate[0][1][positiveAtom.atomIndex].push(freeElectrons[0])
-            this.reaction.container_substrate[0][1][positiveAtom.atomIndex].push(freeElectrons[1])
-            this.reaction.container_substrate[0][1][positiveAtom.atomIndex].push(freeElectrons[2])
-            this.reaction.container_substrate[0][1][positiveAtom.atomIndex].push(freeElectrons[3])
+            this.bondAtoms(negativeAtom, positiveAtom, this.reaction.container_substrate)
+            this.bondAtoms(negativeAtom, positiveAtom, this.reaction.container_substrate)
         } else {
-            this.reaction.container_substrate[0][1][positiveAtom.atomIndex].push(freeElectrons[0])
-            this.reaction.container_substrate[0][1][positiveAtom.atomIndex].push(freeElectrons[1])
+            this.bondAtoms(negativeAtom, positiveAtom, this.reaction.container_substrate)
         }
         this.reaction.setMoleculeAI()
         this.reaction.setChargesOnSubstrate(DEBUG)
@@ -338,8 +367,11 @@ class BondsAI {
 
     makeOxygenCarbonDoubleBond(DEBUG) {
 
+        Typecheck(
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+        )
+
         // This should NOT remove H from the oxygen
-        //console.log('makeOxygenCarbonDoubleBond()')
         let oxygen_index = this.reaction.MoleculeAI.findOxygenAttachedToCarbonIndexNoDoubleBonds()
         let carbon_index = null
         if (DEBUG) {
@@ -348,43 +380,13 @@ class BondsAI {
 
         if (oxygen_index === -1) {
             // Look for oxygen with no bonds
-            oxygen_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=> {
-                if ( atom[0] !== "O") {
-                    return false
-                }
-                const o = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate)
-                const single_bonds = o.indexedBonds("").filter((bond)=>{
-                    return bond.atom[0] !== "H"
-                })
-                const double_bonds = o.indexedDoubleBonds("").filter((bond)=>{
-                    return bond.atom[0] !== "H"
-                })
-                const triple_bonds = o.indexedTripleBonds("").filter((bond)=>{
-                    return bond.atom[0] !== "H"
-                })
-                return single_bonds.length + double_bonds.length + triple_bonds.length === 0
-            })
+            oxygen_index = this.reaction.MoleculeAI.findOxygenWithNoBondsIndex()
             if(oxygen_index === -1) {
                 console.log("BondsAI makeOxygenCarbonDoubleBond -> oxygen atom not found")
                 return false
             } else {
                 // Create single bond between carbon and oxygen that we will turn into a double bond
-                carbon_index = _.findIndex(this.reaction.container_substrate[0][1], (c_atom, c_index)=> {
-                    if (c_atom[0] !== "C") {
-                        return false
-                    }
-                    const c = CAtom(this.reaction.container_substrate[0][1][c_index], c_index, this.reaction.container_substrate)
-                    const single_bonds = c.indexedBonds("").filter((bond)=>{
-                        return bond.atom[0] !== "H"
-                    })
-                    const double_bonds = c.indexedDoubleBonds("").filter((bond)=>{
-                        return bond.atom[0] !== "H"
-                    })
-                    const triple_bonds = c.indexedTripleBonds("").filter((bond)=>{
-                        return bond.atom[0] !== "H"
-                    })
-                    return  (single_bonds.length + double_bonds.length + triple_bonds.length) === 0
-                })
+                carbon_index =  this.reaction.MoleculeAI.findCarbonWithNoBondsIndex()
                 if (carbon_index === -1) {
                     console.log("makeOxygenCarbonDoubleBond() -> carbon index not found")
                 }
@@ -399,10 +401,7 @@ class BondsAI {
 
         // Added check for positive charge
         // https://en.wikipedia.org/wiki/Pinacol_rearrangement
-        const carbon_bonds = oxygen.indexedBonds("").filter((bond)=>{
-            return bond.atom[0] === "C"
-        })
-
+        const carbon_bonds = oxygen.carbonBonds()
 
         if (carbon_bonds.length === 0) {
             if(DEBUG) {
@@ -413,20 +412,13 @@ class BondsAI {
 
         carbon_index = carbon_bonds[0].atom_index
 
-
         if (DEBUG) {
             console.log("makeOxygenCarbonDoubleBond -> carbon index = " + carbon_index)
         }
 
-        const freeElectrons = oxygen.freeElectrons()
-        if (DEBUG){
-            console.log("makeOxygenCarbonDoubleBond -> oxygen free electrons")
-            console.log(freeElectrons)
-        }
-        // Add electrons to carbon
+        const carbon = CAtom(this.reaction.container_substrate[0][1][carbon_index], carbon_index, this.reaction.container_substrate)
 
-        this.reaction.container_substrate[0][1][carbon_index].push(freeElectrons[0])
-        this.reaction.container_substrate[0][1][carbon_index].push(freeElectrons[1])
+        this.makeDoubleBond(oxygen, carbon )
 
         this.reaction.setMoleculeAI()
 
@@ -434,7 +426,6 @@ class BondsAI {
             console.log("makeOxygenCarbonDoubleBond -> after adding double bond:")
             console.log(VMolecule(this.reaction.container_substrate).compressed())
         }
-
 
         return true
 
@@ -914,6 +905,11 @@ class BondsAI {
 
     bondSubstrateToReagent(nucleophile_index = null, electrophile_index = null) {
 
+        Typecheck(
+            {name:"electrophile_index", value:electrophile_index, type:"number"},
+            {name:"nucleophile_index", value:nucleophile_index, type:"number"}
+        )
+
         // Important:
         // The reagent is the nucleophile and is attacking the substrate
         // The substrate is the electrophile
@@ -1057,6 +1053,12 @@ class BondsAI {
 
 
     bondSubstrateToReagentReverse(n_index=null, c_index=null) {
+
+        Typecheck(
+            {name:"n_index", value:n_index, type:"number"},
+            {name:"c_index", value:c_index, type:"number"}
+        )
+
         // Important (orginal reaction):
         // The reagent is the nucleophile and is attacking the substrate
         // The substrate is the electrophile
@@ -1071,27 +1073,22 @@ class BondsAI {
 
         if (n_index !== -1) {
 
-            const source_atom = CAtom(this.reaction.container_substrate[0][1][n_index], n_index, this.reaction.container_substrate)
             n_atom = CAtom(this.reaction.container_substrate[0][1][n_index], n_index, this.reaction.container_substrate)
 
             if (c_index === null) {
-                let c_bonds = source_atom.indexedBonds("").filter((bond) => {
-                    return bond.atom[0] === "C" && bond.atom[4] === "+"
-                })
+                let c_bonds = n_atom.getPositiveCarbonBonds()
 
                 if (c_bonds.length === 0) {
-                    // Look for N+(C-)X bond
                     c_bonds = n_atom.indexedBonds("").filter((bond) => {
                         if (bond.atom[0] !== "C") {
                             return false
                         }
                         c_atom = CAtom(this.reaction.container_substrate[0][1][bond.atom_index], bond.atom_index, this.reaction.container_substrate)
                         const x_bonds = c_atom.indexedBonds("").filter((bond) => {
-                            return bond.atom[0] === "Br"
+                            return bond.atom[0] === "R"
                         })
                         return x_bonds.length > 0
                     })
-                    //console.log(hgf)
                 }
                 if (c_bonds.length > 0) {
                      c_index = c_bonds[0].atom_index
@@ -1104,9 +1101,8 @@ class BondsAI {
                 if (target_atom.symbol === "O" && target_atom.hydrogens().length ===2 && this.reaction.container_substrate[0][1][electrophile_index][4] === "+") {
                     return false
                 }
-                const shared_electrons = Set().intersection(_.cloneDeep(this.reaction.container_substrate[0][1][n_index].slice(5)), _.cloneDeep(this.reaction.container_substrate[0][1][c_index].slice(5)))
-                const electrons = _.cloneDeep(this.reaction.container_substrate[0][1][n_index]).slice(5)
-                this.reaction.container_substrate[0][1][n_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][n_index], shared_electrons)
+                const shared_electrons = n_atom.electronsSharedWithSibling(target_atom)
+                this.reaction.container_substrate[0][1][n_index] = n_atom.removeElectrons(shared_electrons)
                 this.reaction.setChargeOnSubstrateAtom(n_index)
                 this.reaction.setChargeOnSubstrateAtom(c_index)
                 this.reaction.setMoleculeAI()
@@ -1114,9 +1110,6 @@ class BondsAI {
                 this.reaction.__setSubstrateGroups(groups)
                 if(this.reaction.leaving_groups.length > 0) {
                     this.reaction.container_reagent = this.reaction.leaving_groups[0]
-//                    console.log(VMolecule(this.reaction.container_reagent).canonicalSMILES())
-                    //                  console.log(VMolecule(this.reaction.container_substrate).compressed())
-                    //                console.log(nnjjn)
                     return true
                 }
             }

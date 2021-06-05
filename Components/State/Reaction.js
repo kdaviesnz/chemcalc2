@@ -771,9 +771,14 @@ class Reaction {
         return bondsAI.makeOxygenCarbonDoubleBondReverse()
     }
 
-    setChargeOnSubstrateAtom(index, trace, trace_id) {
+    setChargeOnSubstrateAtom(index, trace, trace_id, DEBUG) {
+
+        Typecheck(
+            {name:"index", value:index, type:"number"}
+        )
+
         const chargesAI = new ChargesAI(this)
-        return chargesAI.setChargeOnSubstrateAtom(index, trace, trace_id)
+        return chargesAI.setChargeOnSubstrateAtom(index, trace, trace_id, DEBUG)
     }
 
     setChargesOnSubstrate(DEBUG) {

@@ -201,7 +201,6 @@ class MoleculeAI {
                 this.reaction.container_reagent
             ]
 
-
         } else {
             this.reaction.container_substrate[0][1].push(oxygen_atom)
             const oxygen_index = this.reaction.container_substrate[0][1].length -1
