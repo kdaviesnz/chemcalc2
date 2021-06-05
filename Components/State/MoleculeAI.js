@@ -179,14 +179,17 @@ class MoleculeAI {
             // Create double bond between oxygen and carbon
             this.reaction.container_substrate[0][1].push(oxygen_atom)
             bondsAI.makeOxygenCarbonDoubleBond(DEBUG)
+            // @todo check if a double bond has actually been created
+            process.error()
             oxygen_index = this.reaction.container_substrate[0][1].length -1
             carbon = CAtom(this.reaction.container_substrate[0][1][0], 0, this.reaction.container_substrate)
             oxygen = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
             this.reaction.setMoleculeAI()
             carbon_index = this.reaction.MoleculeAI.findKetoneCarbonIndex(DEBUG)
             if (DEBUG) {
-                console.log("Stateless/MoleculeAI formKetoneFromImine carbon index: " + carbon_index)
-                console.log("Stateless/MoleculeAI formKetoneFromImine oxygen index: " + oxygen_index)
+                console.log("State/MoleculeAI formKetoneFromImine ketone carbon index: " + carbon_index)
+                console.log("State/MoleculeAI formKetoneFromImine oxygen index: " + oxygen_index)
+                console.log(VMolecule([this.reaction.container_substrate[0], 1]).compressed())
             }
 
             this.reaction.container_substrate = this.neutraliseMolecule( this.reaction.container_substrate)

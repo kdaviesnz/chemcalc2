@@ -89,12 +89,17 @@ const MoleculeAI = (container_molecule) => {
         }
     }
 
-    const __findCarbonWithNoBondsIndex = function() {
-        return _.findIndex(this.reaction.container_substrate[0][1], (c_atom, c_index)=> {
+    const __findCarbonWithNoBondsIndex = function(DEBUG) {
+
+        Typecheck(
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+        )
+
+        return _.findIndex(container_molecule[0][1], (c_atom, c_index)=> {
             if (c_atom[0] !== "C") {
                 return false
             }
-            const c = CAtom(this.reaction.container_substrate[0][1][c_index], c_index, this.reaction.container_substrate)
+            const c = CAtom(container_molecule[0][1][c_index], c_index, container_molecule)
             const single_bonds = c.indexedBonds("").filter((bond)=>{
                 return bond.atom[0] !== "H"
             })
@@ -108,8 +113,17 @@ const MoleculeAI = (container_molecule) => {
         })
     }
 
-    const __findOxygenWithNoBondsIndex = function() {
-        return _.findIndex(container_molecule[0][1], (atom, index)=> {
+    const __findOxygenWithNoBondsIndex = function(DEBUG) {
+
+        Typecheck(
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+        )
+
+        if (DEBUG) {
+            console.log('stateless/MoleculeAI/__findOxygenWithNoBondsIndex() container_molecule:')
+            console.log(VMolecule(container_molecule).compressed())
+        }
+        const o_index = _.findIndex(container_molecule[0][1], (atom, index)=> {
             if ( atom[0] !== "O") {
                 return false
             }
@@ -123,8 +137,19 @@ const MoleculeAI = (container_molecule) => {
             const triple_bonds = o.indexedTripleBonds("").filter((bond)=>{
                 return bond.atom[0] !== "H"
             })
+            if (DEBUG) {
+                console.log('stateless/MoleculeAI/__findOxygenWithNoBondsIndex() number of bonds:')
+                console.log(single_bonds.length + double_bonds.length + triple_bonds.length)
+                console.log(single_bonds.length + double_bonds.length + triple_bonds.length === 0)
+            }
             return single_bonds.length + double_bonds.length + triple_bonds.length === 0
         })
+
+        if (DEBUG) {
+            console.log('stateless/MoleculeAI/__findOxygenWithNoBondsIndex() oxygen index:')
+            console.log(o_index)
+        }
+        return o_index
     }
 
     const __findKetoneCarbonIndex = function(DEBUG) {

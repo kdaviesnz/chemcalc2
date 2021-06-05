@@ -144,7 +144,7 @@ class BondsAI {
     }
 
     isBond(atom1_controller, atom2_controller) {
-        return atom1_controller.isBondedTo(atom2_controller.atom)
+        return atom1_controller.isBondedTo(atom2_controller)
     }
 
     addHydrogen(molecule_container, atom_index) {
@@ -338,6 +338,7 @@ class BondsAI {
 
     }
 
+    // Not working
     makeDoubleBond(negativeAtom, positiveAtom, DEBUG) {
 
         Typecheck(
@@ -349,6 +350,7 @@ class BondsAI {
         // If there was not already a bond between the atoms
         if (this.isBond(negativeAtom, positiveAtom)=== false) {
             this.bondAtoms(negativeAtom, positiveAtom, this.reaction.container_substrate)
+            this.reaction.setMoleculeAI()
             this.bondAtoms(negativeAtom, positiveAtom, this.reaction.container_substrate)
         } else {
             this.bondAtoms(negativeAtom, positiveAtom, this.reaction.container_substrate)
@@ -373,6 +375,7 @@ class BondsAI {
             {name:"this.reaction.MoleculeAI", value:this.reaction.MoleculeAI, type:"object"},
         )
 
+
         // This should NOT remove H from the oxygen
         this.reaction.setMoleculeAI()
 
@@ -389,9 +392,10 @@ class BondsAI {
 
         if (oxygen_index === -1) {
             // Look for oxygen with no bonds
-            oxygen_index = this.reaction.MoleculeAI.findOxygenWithNoBondsIndex()
+            oxygen_index = this.reaction.MoleculeAI.findOxygenWithNoBondsIndex(DEBUG)
             if(oxygen_index === -1) {
                 console.log("BondsAI makeOxygenCarbonDoubleBond -> oxygen atom not found")
+                process.error()
                 return false
             } else {
                 // Create single bond between carbon and oxygen that we will turn into a double bond
@@ -401,7 +405,17 @@ class BondsAI {
                 }
                 const o = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
                 const c = CAtom(this.reaction.container_substrate[0][1][carbon_index], carbon_index, this.reaction.container_substrate)
-                this.makeDoubleBond(o,c)
+                if (DEBUG) {
+                    console.log("BondsAI makeOxygenCarbonDoubleBond -> oxygen index = " + oxygen_index)
+                    console.log("BondsAI makeOxygenCarbonDoubleBond -> carbon index = " + carbon_index)
+                }
+                this.bondAtoms(o,c, this.reaction.container_substrate)
+                this.bondAtoms(o,c, this.reaction.container_substrate)
+                this.reaction.setMoleculeAI()
+                if (DEBUG) {
+                    console.log("BondsAI makeOxygenCarbonDoubleBond container substrate after adding double bond")
+                    console.log(VMolecule(this.reaction.container_substrate).compressed())
+                }
                 return true
             }
         }
@@ -427,7 +441,7 @@ class BondsAI {
 
         const carbon = CAtom(this.reaction.container_substrate[0][1][carbon_index], carbon_index, this.reaction.container_substrate)
 
-        this.makeDoubleBond(oxygen, carbon )
+        this.makeDoubleBond(oxygen, carbon)
 
         this.reaction.setMoleculeAI()
 
