@@ -725,21 +725,31 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         return __hydrogens().length + __numberOfBondsNoHydrogens()
     }
 
-    __isCoordinateCovalentBond = (sibling_atom) => {
-        // In a coordinate covalent bond one of the atoms donates both of the shared electrons
-        const shared_electrons = atom.electronsSharedWithSibling(sibling_atom)
-        if (shared_electrons.length === 0) {
-            return false
-        }
-        return ((atom.neutralAtomMaxNumberOfBonds() > Constants().max_valence_electrons[atom.symbol]) || (sibling_atom.neutralAtomMaxNumberOfBonds() > Constants().max_valence_electrons[sibling_atom[atom.symbol]]))
-    }
-
-    __electronsSharedWithSibling = (sibling_atom) => {
+    const __isCoordinateCovalentBond = function(sibling_atom, DEBUG) {
 
         Typecheck(
             {name:"sibling_atom", value:sibling_atom, type:"object"},
-            {name:"atom", value:atom, type:"array"},
-            {name:"sibling_atom.atom", value:sibling_atom.atom, type:"array"}
+            {name:"sibling_atom.atom", value:sibling_atom.atom, type:"array"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"}
+        )
+
+        // In a coordinate covalent bond one of the atoms donates both of the shared electrons
+        const shared_electrons = this.electronsSharedWithSibling(sibling_atom)
+        if (shared_electrons.length === 0) {
+            return false
+        }
+
+        // If there is a coordinate covalent bond then one of the atoms will have more than neutral number of electrons.
+        return ((this.neutralAtomMaxNumberOfBonds() > Constants().max_valence_electrons[this.symbol]) || (sibling_atom.neutralAtomMaxNumberOfBonds() > Constants().max_valence_electrons[sibling_atom[sibling_atom.symbol]]))
+
+    }
+
+    const __electronsSharedWithSibling = function(sibling_atom, DEBUG) {
+
+        Typecheck(
+            {name:"sibling_atom", value:sibling_atom, type:"object"},
+            {name:"sibling_atom.atom", value:sibling_atom.atom, type:"array"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"}
         )
 
         if (undefined === sibling_atom) {
@@ -750,14 +760,15 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             throw new Error("sibling atom is undefined")
         }
 
-        return Set().intersection(atom.slice(Constants().electron_index), sibling_atom.atom.slice(Constants().electron_index))
+        return Set().intersection(this.slice(Constants().electron_index), sibling_atom.atom.slice(Constants().electron_index))
 
     }
 
-    __isBondedTo = function(sibling_atom) {
+    const __isBondedTo = function(sibling_atom, DEBUG) {
 
         Typecheck(
-            {name:"sibling_atom", value:sibling_atom, type:"object"}
+            {name:"sibling_atom", value:sibling_atom, type:"object"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"}
         )
 
         if (undefined === sibling_atom) {
@@ -771,57 +782,87 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         }
 
         const shared_electrons = this.electronsSharedWithSibling(sibling_atom)
-        return shared_electrons.length > 0
+
+        if (DEBUG) {
+            console.log("CAtom __isBondedTo() Got " + shared_electrons.length + " shared electrons")
+        }
+
+        return shared_electrons.length === 2
+
     }
 
-    __isCoordinateCovalentBondDonator = (sibling_atom)  => {
+    const __isDoubleBondedTo = function(sibling_atom, DEBUG) {
+
+        Typecheck(
+            {name:"sibling_atom", value:sibling_atom, type:"object"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"}
+        )
+
+        if (undefined === sibling_atom) {
+            throw new Error("sibling atom object is undefined")
+        }
+
+        if (undefined === sibling_atom.atom) {
+            throw new Error("sibling atom is undefined")
+        }
+
+        const shared_electrons = this.electronsSharedWithSibling(sibling_atom)
+
+        if (DEBUG) {
+            console.log("CAtom __isDoubleBondedTo() Got " + shared_electrons.length + " shared electrons")
+        }
+
+        return shared_electrons.length === 4
+    }
+
+    const __isCoordinateCovalentBondDonator = function(sibling_atom)  {
 
         Typecheck(
             {name:"sibling_atom", value:sibling_atom, type:"object"}
         )
 
-        if(!atom.isCoordinateCovalentBond(sibling_atom)) {
+        if(!this.isCoordinateCovalentBond(sibling_atom)) {
             return false
         }
-        return atom.neutralAtomMaxNumberOfBonds() > Constants().max_valence_electrons[atom.symbol]
+        return this.neutralAtomMaxNumberOfBonds() > Constants().max_valence_electrons[this.symbol]
     }
 
-    __removeElectrons = (electrons) => {
+    const __removeElectrons = function(electrons) {
 
         Typecheck(
             {name: "electrons", value: electrons, type: "array"}
         )
 
-        _.remove(atom, (electron) => {
+        _.remove(this.atom, (electron) => {
             return electrons.indexOf(electron) !== -1
         })
     }
 
 
-    __removeCovalentBond = (sibling_atom) => {
+    const __removeCovalentBond = function(sibling_atom) {
 
         Typecheck(
             {name:"sibling_atom", value:sibling_atom, type:"object"}
         )
 
         const shared_electrons = atom.electronsSharedWithSibling(sibling_atom)
-        atom.removeElectrons([shared_electrons[0]])
+        this.removeElectrons([shared_electrons[0]])
         sibling_atom.removeElectrons([shared_electrons[1]])
 
     }
 
-    __getPositiveCarbonBonds = () => {
-        return atom.indexedBonds("").filter((bond) => {
+    const __getPositiveCarbonBonds = function()  {
+        return this.indexedBonds("").filter((bond) => {
             return bond.atom[0] === "C" && bond.atom[4] === "+"
         })
     }
 
-    __electrons = () => {
-        return atom.atom.slice(Constants().electron_index)
+    const __electrons = function() {
+        return this.atom.slice(Constants().electron_index)
     }
 
-    __carbonBonds = () => {
-        return atom.indexedBonds("").filter((bond)=>{
+    const __carbonBonds = function()  {
+        return this.indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "C"
         })
     }
@@ -834,6 +875,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         removeElectrons:__removeElectrons,
         isCoordinateCovalentBondDonator:__isCoordinateCovalentBondDonator,
         isBondedTo: __isBondedTo,
+        isDoubleBondedTo: __isDoubleBondedTo,
         electronsSharedWithSibling: __electronsSharedWithSibling,
         isCoordinateCovalentBond: __isCoordinateCovalentBond,
         isCarbocation: __isCarbocation,

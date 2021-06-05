@@ -72,16 +72,17 @@ class BondsAI {
         }
     }
 
-    removeBond(atom1, atom2, molecule_container) {
+    removeBond(atom1, atom2, molecule_container, DEBUG) {
 
         Typecheck(
             {name:"molecule_container", value:molecule_container, type:"array"},
             {name:"atom1", value:atom1, type:"object"},
             {name:"atom2", value:atom2, type:"object"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
         )
 
         // No bond between the two atoms
-        if (!is_bond(atom1, atom2)) {
+        if (!this.isBond(atom1, atom2, DEBUG) && !this.isDoubleBond(atom1, atom2, DEBUG)) {
             return false
         }
 
@@ -91,14 +92,32 @@ class BondsAI {
         } else {
             // Standard covalent bond
             atom1.removeCovalentBond(atom2)
+            if (this.isDoubleBond(atom1, atom2, DEBUG)) {
+                atom1.removeCovalentBond(atom2)
+            }
         }
+
         molecule_container[0][1][atom1.atomIndex] = atom1
         molecule_container[0][1][atom2.atomIndex] = atom2
+
+        if (this.isBond(atom1, atom2, DEBUG)) {
+            throw new Error("BondsAI removeBond() Failed to remove bond")
+        }
+
+        if (this.isDoubleBond(atom1, atom2, DEBUG)) {
+            throw new Error("BondsAI removeBond() Failed to remove double bond")
+        }
 
         return molecule_container
     }
 
-    bondAtomsReverse(atom1, atom2, molecule_container) {
+    bondAtomsReverse(atom1, atom2, molecule_container, DEBUG) {
+        Typecheck(
+            {name:"molecule_container", value:molecule_container, type:"array"},
+            {name:"atom1", value:atom1, type:"object"},
+            {name:"atom2", value:atom2, type:"object"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+        )
         return this.removeBond(atom1, atom2, molecule_container)
     }
 
@@ -141,10 +160,28 @@ class BondsAI {
         atom1 = CAtom(molecule_container[0][1][atom1.atomIndex], atom1.atomIndex, molecule_container)
         atom2 = CAtom(molecule_container[0][1][atom2.atomIndex], atom2.atomIndex, molecule_container)
 
+        // Confirm we have created a bond
+        if (!this.isBond(atom1, atom2)) {
+            throw new Error("Failed to create bond")
+        }
     }
 
-    isBond(atom1_controller, atom2_controller) {
-        return atom1_controller.isBondedTo(atom2_controller)
+    isBond(atom1_controller, atom2_controller, DEBUG) {
+        Typecheck(
+            {name:"atom1_controller", value:atom1_controller, type:"object"},
+            {name:"atom2_controller", value:atom2_controller, type:"object"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"}
+        )
+        return atom1_controller.isBondedTo(atom2_controller, DEBUG)
+    }
+
+    isDoubleBond(atom1_controller, atom2_controller, DEBUG) {
+        Typecheck(
+            {name:"atom1_controller", value:atom1_controller, type:"object"},
+            {name:"atom2_controller", value:atom2_controller, type:"object"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"}
+        )
+        return atom1_controller.isDoubleBondedTo(atom2_controller, DEBUG)
     }
 
     addHydrogen(molecule_container, atom_index) {
@@ -361,6 +398,14 @@ class BondsAI {
         if (DEBUG) {
             console.log("Substrate after adding double bond")
             console.log(VMolecule([this.reaction.container_substrate[0],1]).compressed())
+        }
+
+        negativeAtom = CAtom(molecule_container[0][1][negativeAtom.atomIndex], negativeAtom.atomIndex, molecule_container)
+        positiveAtom = CAtom(molecule_container[0][1][positiveAtom.atomIndex], positiveAtom.atomIndex, molecule_container)
+
+        // Confirm we have created a bond
+        if (!this.isDoubleBond(negativeAtom, positiveAtom)) {
+            throw new Error("Failed to create double bond")
         }
 
         return true
@@ -1075,11 +1120,12 @@ class BondsAI {
     }
 
 
-    bondSubstrateToReagentReverse(n_index=null, c_index=null) {
+    bondSubstrateToReagentReverse(n_index=null, c_index=null, DEBUG) {
 
         Typecheck(
             {name:"n_index", value:n_index, type:"number"},
-            {name:"c_index", value:c_index, type:"number"}
+            {name:"c_index", value:c_index, type:"number"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"}
         )
 
         this.reaction.MoleculeAI.validateMolecule()
@@ -1096,7 +1142,12 @@ class BondsAI {
             })
         }
 
-        if (n_index !== -1) {
+        if (n_index === -1) {
+            if (DEBUG) {
+                console.log("BondsAI bondSubstrateToReagentReverse() Could not find nitrogen atom")
+            }
+            return false
+        } else {
 
             n_atom = CAtom(this.reaction.container_substrate[0][1][n_index], n_index, this.reaction.container_substrate)
 
@@ -1121,17 +1172,41 @@ class BondsAI {
             }
 
 
-            if (c_index !== null) {
+            if (c_index === null || c_index === -1) {
+
+                if (DEBUG) {
+                    console.log("BondsAI bondSubstrateToReagentReverse() Could not find carbon atom")
+                }
+                return false
+
+            } else {
 
                 const target_atom = CAtom(this.reaction.container_substrate[0][1][c_index], c_index, this.reaction.container_substrate)
+
                 // Use dehydrate() instead
-                if (target_atom.symbol === "O" && target_atom.hydrogens().length ===2 && this.reaction.container_substrate[0][1][electrophile_index][4] === "+") {
+                if (target_atom.symbol === "O" && target_atom.hydrogens().length === 2 && this.reaction.container_substrate[0][1][electrophile_index][4] === "+") {
+                    if (DEBUG) {
+                        console.log("BondsAI bondSubstrateToReagentReverse() Use dehydrate()")
+                    }
                     return false
                 }
 
+                if (!this.isBond(n_atom, target_atom, DEBUG) && !this.isDoubleBond(n_atom, target_atom, DEBUG)) {
+                    if (DEBUG) {
+                        console.log("BondsAI bondSubstrateToReagentReverse() n_atom")
+                        console.log(n_atom.atom)
+                        console.log("BondsAI bondSubstrateToReagentReverse() carbon atom")
+                        console.log(target_atom.atom)
+                        console.log("BondsAI bondSubstrateToReagentReverse() shared_electrons")
+                        console.log(shared_electrons)
+                    }
+                    throw new Error("There should be a bond between the nitrogen atom and the carbon atom")
+                }
 
-                const shared_electrons = n_atom.electronsSharedWithSibling(target_atom)
-                n_atom.removeElectrons(shared_electrons)
+                if (this.isBond(n_atom, target_atom, DEBUG)) {
+                    this.removeBond(n_atom, target_atom, this.reaction.container_substrate, DEBUG)
+                }
+                //n_atom.removeElectrons(shared_electrons)
 
                 this.reaction.container_substrate[0][1][n_index] = n_atom.atom
 
@@ -1144,8 +1219,11 @@ class BondsAI {
                 this.reaction.setMoleculeAI()
                 const groups = this.reaction.MoleculeAI.extractGroups()
                 this.reaction.__setSubstrateGroups(groups)
+
                 if(this.reaction.leaving_groups.length > 0) {
                     this.reaction.container_reagent = this.reaction.leaving_groups[0]
+                    this.reaction.container_substrate[0][1].length.should.be.greaterThan(-1)
+                    this.reaction.container_reagent[0][1].length.should.be.greaterThan(-1)
                     return true
                 }
             }

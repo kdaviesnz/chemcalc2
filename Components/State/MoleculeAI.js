@@ -137,6 +137,8 @@ class MoleculeAI {
             {name:"nitrogen_index", value:nitrogen_index, type:"number"},
             {name:"this.reaction", value:this.reaction, type:"object"},
         )
+        carbon_index.should.be.greaterThan(-1)
+        nitrogen_index.should.be.greaterThan(-1)
 
         if(DEBUG) {
             console.log("State/MoleculeAI.js formKetoneFromImine carbon index:")
@@ -147,7 +149,9 @@ class MoleculeAI {
         }
 
         const bondsAI = new BondsAI(this.reaction)
-        bondsAI.bondSubstrateToReagentReverse(nitrogen_index, carbon_index)
+        bondsAI.bondSubstrateToReagentReverse(nitrogen_index, carbon_index, DEBUG)
+        this.reaction.container_substrate[0][1].length.should.be.greaterThan(0)
+        this.reaction.container_reagent[0][1].length.should.be.greaterThan(0)
 
         // If nitrogen index > carbon index then we substract one from the carbon index to get the new carbon index
         if (nitrogen_index > carbon_index) {
@@ -180,7 +184,6 @@ class MoleculeAI {
             this.reaction.container_substrate[0][1].push(oxygen_atom)
             bondsAI.makeOxygenCarbonDoubleBond(DEBUG)
             // @todo check if a double bond has actually been created
-            process.error()
             oxygen_index = this.reaction.container_substrate[0][1].length -1
             carbon = CAtom(this.reaction.container_substrate[0][1][0], 0, this.reaction.container_substrate)
             oxygen = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
