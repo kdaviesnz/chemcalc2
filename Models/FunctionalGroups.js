@@ -1,4 +1,5 @@
 const Set = require('./Set')
+const Constants = require("./../Constants")
 const FunctionalGroups = (fg_atoms) => {
 
 
@@ -8,7 +9,7 @@ const FunctionalGroups = (fg_atoms) => {
     //[[ atomic symbol, proton count, valence count,  number of bonds, velectron1, velectron2, velectron3 ]]
 
     const __lonePairs = (atom, current_atom_index) => {
-        const atom_electrons = atom.slice(5)
+        const atom_electrons = atom.slice(Constants().electron_index)
         return atom_electrons.filter(
             (atom_electron) => {                
                 return atoms.filter(
@@ -16,7 +17,7 @@ const FunctionalGroups = (fg_atoms) => {
                         if (current_atom_index === _atom_index) {
                             return true
                         }
-                        const _atom_electrons = _atom.slice(5)
+                        const _atom_electrons = _atom.slice(Constants().electron_index)
                         return _atom_electrons.indexOf(atom_electron) > -1
                     }
                 ).length === 1
@@ -26,7 +27,7 @@ const FunctionalGroups = (fg_atoms) => {
     }
     
     const __alcoholGroupBonds = (atom, current_atom_index) => {
-        const atom_electrons = atom.slice(5)
+        const atom_electrons = atom.slice(Constants().electron_index)
         return fg_atoms.map(
             (_atom, _atom_index) => {
                 
@@ -50,7 +51,7 @@ const FunctionalGroups = (fg_atoms) => {
     }
 
     const __Bonds = (atom, current_atom_index, atomic_symbol, bond_type) => {
-        const atom_electrons = atom.slice(5)
+        const atom_electrons = atom.slice(Constants().electron_index)
         const r =  fg_atoms.map(
             (_atom, _atom_index) => {
 
@@ -59,7 +60,7 @@ const FunctionalGroups = (fg_atoms) => {
                 }
 
 
-                const shared_electrons = Set().intersection(atom_electrons, _atom.slice(5))
+                const shared_electrons = Set().intersection(atom_electrons, _atom.slice(Constants().electron_index))
 
                 if (  shared_electrons.length === bond_type ) {
                     return [
@@ -104,7 +105,7 @@ const FunctionalGroups = (fg_atoms) => {
     }
 
     const __methylGroupBonds = (atom, current_atom_index) => {
-        const atom_electrons = atom.slice(5)
+        const atom_electrons = atom.slice(Constants().electron_index)
         return fg_atoms.map(
             (_atom, _atom_index) => {
 
@@ -116,7 +117,7 @@ const FunctionalGroups = (fg_atoms) => {
                     return false
                 }
 
-                const shared_electrons = Set().intersection(atom_electrons, _atom.slice(5))
+                const shared_electrons = Set().intersection(atom_electrons, _atom.slice(Constants().electron_index))
                 if (  shared_electrons.length === 1 ) {
                     return [
                         _atom_index,
@@ -142,10 +143,10 @@ const FunctionalGroups = (fg_atoms) => {
                 return atoms.filter(
                     (_atom, carbon_atom_index) => {
                         if (_atom[0] === "C") {
-                            const carbon_electrons = _atom.slice(5)
+                            const carbon_electrons = _atom.slice(Constants().electron_index)
                             // Get intersection of carbon electrons and atom electrons. If count
                             // is 2 then we have a double bond
-                            if (Set().intersection(carbon_electrons, atom.slice(5)).length === 2) {
+                            if (Set().intersection(carbon_electrons, atom.slice(Constants().electron_index)).length === 2) {
                                 // return indexed carbon and atom
                                 return {
                                     carbon_atom_index: _atom[0],

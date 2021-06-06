@@ -27,6 +27,7 @@ const VReactions = require('./Components/Stateless/Views/Reactions');
 const MoleculeLookup = require('./Controllers/MoleculeLookup')
 const PubChemLookup = require('./Controllers/PubChemLookup')
 
+const Constants = require('./Constants')
 
 // Install using npm install pubchem-access
 const pubchem = require("pubchem-access").domain("compound");
@@ -283,7 +284,7 @@ client.connect(err => {
             // bromine - check it has only one bond
             CAtom(ccontainer.container[1][0][1][0], 0, ccontainer.container[1]).bondCount().should.be.equal(1)
             // Check there is a bond between bromine and carbon atoms
-            Set().intersection(ccontainer.container[1][0][1][0].slice(5), ccontainer.container[1][0][1][8].slice(5)).length.should.be.equal(2)
+            Set().intersection(ccontainer.container[1][0][1][0].slice(Constants().electron_index), ccontainer.container[1][0][1][8].slice(Constants().electron_index)).length.should.be.equal(2)
             ccontainer.container[1][0][1].filter((a)=> {
               return a[0]==='C'
             }).length.should.be.equal(4)
@@ -307,9 +308,9 @@ client.connect(err => {
             console.log("Adding bromide to container")
             ccontainer.add(_.cloneDeep(bromide_molecule).json, 1, verbose)
             // Check there is a single bond between the first carbon and the oxygen
-         //   Set().intersection(ccontainer.container[1][0][1][3].slice(5), ccontainer.container[1][0][1][4].slice(5)).length.should.be.equal(2)
+         //   Set().intersection(ccontainer.container[1][0][1][3].slice(Constants().electron_index), ccontainer.container[1][0][1][4].slice(Constants().electron_index)).length.should.be.equal(2)
             // Check there is a single bond between the oxygen and the aluminium
-         //   Set().intersection(ccontainer.container[1][0][1][4].slice(5), ccontainer.container[1][0][1][9].slice(5)).length.should.be.equal(2)
+         //   Set().intersection(ccontainer.container[1][0][1][4].slice(Constants().electron_index), ccontainer.container[1][0][1][9].slice(Constants().electron_index)).length.should.be.equal(2)
             ccontainer.container.length.should.be.equal(3)
             ccontainer.container[1][0][1].length.should.be.equal(13)
             ccontainer.container[1][0][1][0][0].should.be.equal('H')
@@ -341,8 +342,8 @@ client.connect(err => {
             // Fourth carbon
             CAtom(ccontainer.container[1][0][1][11], 11, ccontainer.container[1]).bondCount().should.be.equal(4)
 
-            Set().intersection(ccontainer.container[1][0][1][3].slice(5), ccontainer.container[1][0][1][5].slice(5)).length.should.be.equal(2)
-            Set().intersection(ccontainer.container[1][0][1][5].slice(5), ccontainer.container[1][0][1][7].slice(5)).length.should.be.equal(2)
+            Set().intersection(ccontainer.container[1][0][1][3].slice(Constants().electron_index), ccontainer.container[1][0][1][5].slice(Constants().electron_index)).length.should.be.equal(2)
+            Set().intersection(ccontainer.container[1][0][1][5].slice(Constants().electron_index), ccontainer.container[1][0][1][7].slice(Constants().electron_index)).length.should.be.equal(2)
 
           //  console.log(VMolecule([ccontainer.container[1][0], 1]).canonicalSMILES())
            // console.log(VMolecule([ccontainer.container[2][0], 1]).canonicalSMILES())
@@ -401,9 +402,9 @@ client.connect(err => {
             console.log("Adding aluminium chloride to container")
             ccontainer.add(_.cloneDeep(aluminium_chloride_molecule).json, 1, verbose)
             // Check there is a single bond between the first carbon and the oxygen
-            Set().intersection(ccontainer.container[1][0][1][3].slice(5), ccontainer.container[1][0][1][4].slice(5)).length.should.be.equal(2)
+            Set().intersection(ccontainer.container[1][0][1][3].slice(Constants().electron_index), ccontainer.container[1][0][1][4].slice(Constants().electron_index)).length.should.be.equal(2)
             // Check there is a single bond between the oxygen and the aluminium
-            Set().intersection(ccontainer.container[1][0][1][4].slice(5), ccontainer.container[1][0][1][9].slice(5)).length.should.be.equal(2)
+            Set().intersection(ccontainer.container[1][0][1][4].slice(Constants().electron_index), ccontainer.container[1][0][1][9].slice(Constants().electron_index)).length.should.be.equal(2)
             VContainerWithDB(ccontainer).show(() => {
                 console.log("Test 4 complete: Container should show C[O+](C)([Al-](Cl)(Cl)(Cl)).\n\n")
                 lookUpButene()
@@ -466,7 +467,7 @@ client.connect(err => {
                     //console.log("oxidanium")
                     //console.log(oxidanium_molecule.json[1][3])
                     //process.exit()
-                    _.cloneDeep(oxidanium_molecule.json[1][3]).slice(5).length.should.be.equal(8)
+                    _.cloneDeep(oxidanium_molecule.json[1][3]).slice(Constants().electron_index).length.should.be.equal(8)
                     reactOxidaniumWithChloride(chloride_molecule, oxidanium_molecule)
                 },
                 // Nothing found callback
@@ -607,7 +608,7 @@ client.connect(err => {
             // pass in only .json
             ccontainer.add(_.cloneDeep(hcl_molecue).json, 1, verbose, 1)
             // Check H3O oxygen has 8 electrons and not 9
-            _.cloneDeep(ccontainer.container[1][0][1][2]).slice(5).length.should.be.equal(8)
+            _.cloneDeep(ccontainer.container[1][0][1][2]).slice(Constants().electron_index).length.should.be.equal(8)
             VContainerWithDB(ccontainer).show(() => {
                 console.log("Test 1 complete: Container should show chloride and oxidanium.\n")
                 lookupPropylene(_.cloneDeep(water_molecule))
@@ -618,7 +619,7 @@ client.connect(err => {
             MoleculeLookup(db, "O", "SMILES", true).then(
                 // "resolves" callback
                 (water_molecule) => {
-                    _.cloneDeep(water_molecule.json[1][2]).slice(5).length.should.be.equal(8)
+                    _.cloneDeep(water_molecule.json[1][2]).slice(Constants().electron_index).length.should.be.equal(8)
                     reactHClWithWater(hcl_molecule, water_molecule)
                 },
                 // Nothing found callback

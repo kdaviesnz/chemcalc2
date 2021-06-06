@@ -1,12 +1,13 @@
 const MoleculeLookup = require('../Controllers/MoleculeLookup')
 const should = require('should')
 const _ = require('lodash');
+const Constants = require("../Constants")
 
 const Hydrate = (db, ccontainer, callback) => {
 
     MoleculeLookup(db, "O", "SMILES", true).then(
         (water_molecule) => {
-            _.cloneDeep(water_molecule.json[1][2]).slice(5).length.should.be.equal(8)
+            _.cloneDeep(water_molecule.json[1][2]).slice(Constants().electron_index).length.should.be.equal(8)
             ccontainer.add(_.cloneDeep(water_molecule).json, 1, false, 1)
             callback(ccontainer)
         },

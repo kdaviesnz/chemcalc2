@@ -1,6 +1,7 @@
 const CAtom = require('../Controllers/Atom')
 const Families = require('../Models/Families')
 const _ = require('lodash');
+const Constants = require('./../Constants')
 
 // @see Organic Chemistry 8th Editiion P245
 const DehydrationReaction = (container, MoleculeController) => {
@@ -57,11 +58,11 @@ const DehydrationReaction = (container, MoleculeController) => {
             }
 
             // Remove electrons from non hydrogen atom
-            const number_of_electrons_at_start = _.cloneDeep(mmolecule[0][1][non_hydrogen_bond.atom_index]).slice(5).length
+            const number_of_electrons_at_start = _.cloneDeep(mmolecule[0][1][non_hydrogen_bond.atom_index]).slice(Constants().electron_index).length
             _.remove(mmolecule[0][1][non_hydrogen_bond.atom_index], (v, i)=> {
                 return shared_electrons[1] === v || shared_electrons[0] === v
             })
-            _.cloneDeep(mmolecule[0][1][non_hydrogen_bond.atom_index]).slice(5).length.should.be.equal(number_of_electrons_at_start - 2)
+            _.cloneDeep(mmolecule[0][1][non_hydrogen_bond.atom_index]).slice(Constants().electron_index).length.should.be.equal(number_of_electrons_at_start - 2)
 
             const number_of_atoms_at_start = _.cloneDeep(mmolecule[0][1]).length
             _.remove(mmolecule[0][1], (v,i) => {

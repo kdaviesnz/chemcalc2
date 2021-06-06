@@ -7,6 +7,7 @@ const AtomFactory = require('../../Models/AtomFactory')
 const should = require('should')
 const Set = require('../../Models/Set')
 const uniqid = require('uniqid');
+const Constants = require('../../Constants')
 
 // addProtonFromSubstrateToReagentBySubstrateAtomIndex(substrate_atom_index) - remove proton from specific substrate atom and
 // add to reagent
@@ -983,7 +984,7 @@ class ProtonationAI {
         this.reaction.ReagentAI.validateMolecule()
 
         // console.log(VMolecule(this.reaction.container_reagent).compressed())
-        const shared_electrons = this.reaction.container_reagent[0][1][proton_bond.atom_index].slice(5)
+        const shared_electrons = this.reaction.container_reagent[0][1][proton_bond.atom_index].slice(Constants().electron_index)
         const proton = _.cloneDeep(this.reaction.container_reagent[0][1][proton_bond.atom_index])
         this.reaction.container_reagent[0][1][proton_atom_index] = Set().removeFromArray(
             this.reaction.container_reagent[0][1][proton_atom_index],

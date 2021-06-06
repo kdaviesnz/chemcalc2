@@ -2,6 +2,7 @@ const CAtom = require('../Controllers/Atom')
 const Families = require('../Models/Families')
 const _ = require('lodash');
 const MoleculeFactory = require('./MoleculeFactory')
+const Constants = require('../Constants')
 
 // @see Organic Chemistry 8th Editiion P245
 const BondDisassociationReaction = (container, MoleculeController) => {
@@ -41,11 +42,11 @@ const BondDisassociationReaction = (container, MoleculeController) => {
             const shared_electrons = bond_to_break.shared_electrons
 
             // Remove electrons from bonded atom
-            const number_of_electrons_at_start = _.cloneDeep(mmolecule[0][1][bond_to_break.atom_index]).slice(5).length
+            const number_of_electrons_at_start = _.cloneDeep(mmolecule[0][1][bond_to_break.atom_index]).slice(Constants().electron_index).length
             _.remove(mmolecule[0][1][bond_to_break.atom_index], (v, i)=> {
                 return shared_electrons[1] === v || shared_electrons[0] === v
             })
-            _.cloneDeep(mmolecule[0][1][bond_to_break.atom_index]).slice(5).length.should.be.equal(number_of_electrons_at_start - 2)
+            _.cloneDeep(mmolecule[0][1][bond_to_break.atom_index]).slice(Constants().electron_index).length.should.be.equal(number_of_electrons_at_start - 2)
 
 
             mmolecule[0][1][atom_index][4] = 0

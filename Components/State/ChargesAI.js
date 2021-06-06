@@ -3,6 +3,7 @@ const CAtom = require('../../Controllers/Atom')
 const VMolecule = require('../Stateless/Views/Molecule')
 const uniqid = require('uniqid');
 const Typecheck = require('./../../Typecheck')
+const Constants = require("../../Constants")
 class ChargesAI {
 
     constructor(reaction) {
@@ -67,7 +68,7 @@ class ChargesAI {
         */
 
         const b_count = a_obj.bondCount() + a_obj.doubleBondCount()
-        const electrons = _.cloneDeep(container_molecule[0][1][index].slice(5))
+        const electrons = _.cloneDeep(container_molecule[0][1][index].slice(Constants().electron_index))
         const freeElectrons = a_obj.freeElectrons()
 
         let b = 0
@@ -253,7 +254,7 @@ class ChargesAI {
         // Formal Charge= (No.of valence electrons in unbonded state - no of lone pair electrons ) - (no. of bond pair electrons/2)
         const a_obj = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate)
         const b_count = a_obj.bondCount() + a_obj.doubleBondCount()
-        const electrons = _.cloneDeep(this.reaction.container_substrate[0][1][index].slice(5))
+        const electrons = _.cloneDeep(this.reaction.container_substrate[0][1][index].slice(Constants().electron_index))
         let  b = ""
         const single_bonds = a_obj.indexedBonds("").filter((bond)=>{
             return bond.atom[0] !== "H"
@@ -325,7 +326,7 @@ class ChargesAI {
         // Formal Charge= (No.of valence electrons in unbonded state - no of lone pair electrons ) - (no. of bond pair electrons/2)
         const a_obj = CAtom(this.reaction.container_reagent[0][1][index], index, this.reaction.container_reagent)
         const b_count = a_obj.bondCount() + a_obj.doubleBondCount()
-        const electrons = _.cloneDeep(this.reaction.container_reagent[0][1][index].slice(5))
+        const electrons = _.cloneDeep(this.reaction.container_reagent[0][1][index].slice(Constants().electron_index))
         let b = ""
 
         const single_bonds = a_obj.indexedBonds("").filter((bond)=>{

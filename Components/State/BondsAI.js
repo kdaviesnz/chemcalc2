@@ -8,6 +8,7 @@ const AtomFactory = require('../../Models/AtomFactory')
 const Set = require('../../Models/Set')
 const uniqid = require('uniqid');
 const Typecheck = require('./../../Typecheck')
+const Constants = require("../../Constants")
 
 // removeProton(molecule, atom_index, electrons, proton)
 // removeAtom(molecule, atom) {
@@ -462,9 +463,13 @@ class BondsAI {
                 return false
             } else {
                 // Create single bond between carbon and oxygen that we will turn into a double bond
-                carbon_index =  this.reaction.MoleculeAI.findCarbonWithNoBondsIndex()
+                this.reaction.setMoleculeAI()
+                carbon_index =  this.reaction.MoleculeAI.findCarbonWithNoBondsIndex(DEBUG)
                 if (carbon_index === -1) {
-                    console.log("makeOxygenCarbonDoubleBond() -> carbon index not found")
+                    if (DEBUG) {
+                        console.log(VMolecule(this.reaction.container_substrate).compressed())
+                        console.log("BondsAI makeOxygenCarbonDoubleBond() -> carbon index not found")
+                    }
                 }
                 const o = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
                 const c = CAtom(this.reaction.container_substrate[0][1][carbon_index], carbon_index, this.reaction.container_substrate)
@@ -1324,7 +1329,7 @@ class BondsAI {
         //console.log(VMolecule(this.reaction.container_substrate).formatted())
         //console.log(VAtom(nitrogen_atom).render())
         // Break bond between carbon atom and nitrogen atom
-        const shared_electrons = Set().intersection(_.cloneDeep(this.reaction.container_substrate[0][1][nitrogen_index].slice(5)), _.cloneDeep(this.reaction.container_substrate[0][1][carbon_atom_index].slice(5)))
+        const shared_electrons = Set().intersection(_.cloneDeep(this.reaction.container_substrate[0][1][nitrogen_index].slice(Constants().electron_index)), _.cloneDeep(this.reaction.container_substrate[0][1][carbon_atom_index].slice(Constants().electron_index)))
 
 
 

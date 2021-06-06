@@ -16,6 +16,7 @@ const SubstitutionAI = require('../../Components/State/SubstitutionAI')
 const range = require("range");
 const StateMoleculeAI = require('../../Components/State/MoleculeAI')
 const Typecheck = require('../../Typecheck')
+const Constants = require("../../Constants")
 
 /*
 reduceImineToAmineReverse()
@@ -1257,8 +1258,8 @@ class Reaction {
 
     __removeGroup(nucleophile_index, electrophile_index, moleculeAI, substrate) {
 
-        const shared_electrons = Set().intersection(substrate[0][1][nucleophile_index].slice(5), substrate[0][1][electrophile_index].slice(5))
-        const electrons = _.cloneDeep(substrate[0][1][nucleophile_index]).slice(5)
+        const shared_electrons = Set().intersection(substrate[0][1][nucleophile_index].slice(Constants().electron_index), substrate[0][1][electrophile_index].slice(Constants().electron_index))
+        const electrons = _.cloneDeep(substrate[0][1][nucleophile_index]).slice(Constants().electron_index)
         _.remove(substrate[0][1][nucleophile_index], (v, i) => {
             return shared_electrons[0] === v || shared_electrons[1] === v
         })
@@ -1612,7 +1613,7 @@ class Reaction {
         }
 
 
-        const shared_electrons = Set().intersection(_.cloneDeep(this.container_substrate[0][1][nucleophile_index].slice(5)), _.cloneDeep(this.container_substrate[0][1][electrophile_index].slice(5)))
+        const shared_electrons = Set().intersection(_.cloneDeep(this.container_substrate[0][1][nucleophile_index].slice(Constants().electron_index)), _.cloneDeep(this.container_substrate[0][1][electrophile_index].slice(Constants().electron_index)))
 
         /*
         https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Map%3A_Organic_Chemistry_(Smith)/Chapter_06%3A_Understanding_Organic_Reactions/6.03_Bond_Breaking_and_Bond_Making
@@ -1632,7 +1633,7 @@ class Reaction {
 
             // Remove shared electrons from nucleophile
             //   // console.log('Removing electrons:')
-            const electrons = _.cloneDeep(this.container_substrate[0][1][nucleophile_index]).slice(5)
+            const electrons = _.cloneDeep(this.container_substrate[0][1][nucleophile_index]).slice(Constants().electron_index)
                // console.log(this.container_substrate[0][1][nucleophile_index])
             /*
             _.remove(this.container_substrate[0][1][nucleophile_index], (v, i) => {
@@ -1645,7 +1646,7 @@ class Reaction {
             */
             this.container_substrate[0][1][nucleophile_index] = Set().removeFromArray(this.container_substrate[0][1][nucleophile_index], shared_electrons)
             //   // console.log(this.container_substrate[0][1][nucleophile_index])
-            this.container_substrate[0][1][nucleophile_index].slice(5).length.should.not.be.equal(electrons.length)
+            this.container_substrate[0][1][nucleophile_index].slice(Constants().electron_index).length.should.not.be.equal(electrons.length)
 
             // nucleophile should now be positively charged
             // electrophile should be negatively charged
@@ -1662,7 +1663,7 @@ class Reaction {
             }
 
 
-            Set().intersection(_.cloneDeep(this.container_substrate[0][1][nucleophile_index].slice(5)), _.cloneDeep(this.container_substrate[0][1][electrophile_index].slice(5))).length.should.be.equal(0)
+            Set().intersection(_.cloneDeep(this.container_substrate[0][1][nucleophile_index].slice(Constants().electron_index)), _.cloneDeep(this.container_substrate[0][1][electrophile_index].slice(Constants().electron_index))).length.should.be.equal(0)
 
 
         } else {
@@ -1867,19 +1868,19 @@ class Reaction {
         const source_atom = CAtom(this.container_substrate[0][1][metal_atom_index], metal_atom_index, this.container_substrate)
         const target_atom = CAtom(this.container_substrate[0][1][electrophile_index], electrophile_index, this.container_substrate)
 
-        const shared_electrons = Set().intersection(this.container_substrate[0][1][metal_atom_index].slice(5), this.container_substrate[0][1][electrophile_index].slice(5))
+        const shared_electrons = Set().intersection(this.container_substrate[0][1][metal_atom_index].slice(Constants().electron_index), this.container_substrate[0][1][electrophile_index].slice(Constants().electron_index))
 
         // Remove shared electrons from metal atom
-        const electrons = _.cloneDeep(this.container_substrate[0][1][metal_atom_index]).slice(5)
+        const electrons = _.cloneDeep(this.container_substrate[0][1][metal_atom_index]).slice(Constants().electron_index)
         _.remove(this.container_substrate[0][1][metal_atom_index], (v, i) => {
             return shared_electrons[0] === v || shared_electrons[1] === v
         })
 
-        this.container_substrate[0][1][metal_atom_index].slice(5).length.should.not.be.equal(electrons.length)
+        this.container_substrate[0][1][metal_atom_index].slice(Constants().electron_index).length.should.not.be.equal(electrons.length)
         this.container_substrate[0][1][metal_atom_index][4] = ""
         this.container_substrate[0][1][electrophile_index][4] = ""
 
-        Set().intersection(this.container_substrate[0][1][metal_atom_index].slice(5), this.container_substrate[0][1][electrophile_index].slice(5)).length.should.be.equal(0)
+        Set().intersection(this.container_substrate[0][1][metal_atom_index].slice(Constants().electron_index), this.container_substrate[0][1][electrophile_index].slice(Constants().electron_index)).length.should.be.equal(0)
 
 
         this.setMoleculeAI()
@@ -2277,7 +2278,7 @@ class Reaction {
         this.removeProtonFromReagent(proton_index)
 
         // Add proton to substrate
-        const electrons = _.cloneDeep(proton).slice(5)
+        const electrons = _.cloneDeep(proton).slice(Constants().electron_index)
         this.container_substrate[0][1][electrophile_index].push(electrons[0])
         this.container_substrate[0][1][electrophile_index].push(electrons[1])
         this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4] === '+' ? "": "-"
@@ -2675,7 +2676,7 @@ class Reaction {
             return false
         }
 
-        const carbon_methyl_shared_electrons = Set().intersection(this.container_substrate[0][1][carbon_index].slice(5), this.container_substrate[0][1][atom_to_shift_index].slice(5))
+        const carbon_methyl_shared_electrons = Set().intersection(this.container_substrate[0][1][carbon_index].slice(Constants().electron_index), this.container_substrate[0][1][atom_to_shift_index].slice(Constants().electron_index))
 
         this.container_substrate[0][1][carbon_index] = Set().removeFromArray(this.container_substrate[0][1][carbon_index], carbon_methyl_shared_electrons)
         // this.container_substrate[0][1][atom_to_shift_index] = Set().removeFromArray(this.container_substrate[0][1][atom_to_shift_index], carbon_methyl_shared_electrons)
@@ -2804,7 +2805,7 @@ class Reaction {
             return true
         }
 
-        const carbon_methyl_shared_electrons = Set().intersection(this.container_substrate[0][1][carbon_index].slice(5), this.container_substrate[0][1][atom_to_shift_index].slice(5))
+        const carbon_methyl_shared_electrons = Set().intersection(this.container_substrate[0][1][carbon_index].slice(Constants().electron_index), this.container_substrate[0][1][atom_to_shift_index].slice(Constants().electron_index))
 
        // console.log(carbon_methyl_shared_electrons)
       //  console.log(jjj)
@@ -2888,8 +2889,8 @@ class Reaction {
 
         // bond nucleophile (proton) to electrophile (protonate)
         const shared_electrons = Set().intersection(
-            _.cloneDeep(this.container_substrate[0][1][nucleophile_proton_index].slice(5)),
-            _.cloneDeep(this.container_substrate[0][1][carbon_atom_object.atomIndex].slice(5))
+            _.cloneDeep(this.container_substrate[0][1][nucleophile_proton_index].slice(Constants().electron_index)),
+            _.cloneDeep(this.container_substrate[0][1][carbon_atom_object.atomIndex].slice(Constants().electron_index))
         )
 
         this.container_substrate[0][1][carbon_atom_object.atomIndex] = Set().removeFromArray(
@@ -2904,8 +2905,8 @@ class Reaction {
 
         // break single bonded O, carbon bond
         const o_c_shared_electrons = Set().intersection(
-            _.cloneDeep(this.container_substrate[0][1][electrophile_index].slice(5)),
-            _.cloneDeep(this.container_substrate[0][1][oxygen_single_bond_index].slice(5))
+            _.cloneDeep(this.container_substrate[0][1][electrophile_index].slice(Constants().electron_index)),
+            _.cloneDeep(this.container_substrate[0][1][oxygen_single_bond_index].slice(Constants().electron_index))
         )
         this.container_substrate[0][1][electrophile_index] = Set().removeFromArray(
             _.cloneDeep(this.container_substrate[0][1][electrophile_index]),

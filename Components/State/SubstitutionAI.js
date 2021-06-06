@@ -5,6 +5,7 @@ const AtomFactory = require('../../Models/AtomFactory')
 const VMolecule = require('../Stateless/Views/Molecule')
 const uniqid = require('uniqid');
 const range = require("range");
+const Constants = require("../../Constants")
 
 // substituteHalideForAmine()
 // substituteOxygenCarbonDoubleBondForAmine()
@@ -375,8 +376,8 @@ class SubstitutionAI {
 
         const c_index = c_bonds[0].atom_index
         const target_atom = CAtom(this.reaction.container_substrate[0][1][c_index], c_index, this.reaction.container_substrate)
-        const shared_electrons = Set().intersection(_.cloneDeep(this.reaction.container_substrate[0][1][n_index].slice(5)), _.cloneDeep(this.reaction.container_substrate[0][1][c_index].slice(5)))
-        const electrons = _.cloneDeep(this.reaction.container_substrate[0][1][n_index]).slice(5)
+        const shared_electrons = Set().intersection(_.cloneDeep(this.reaction.container_substrate[0][1][n_index].slice(Constants().electron_index)), _.cloneDeep(this.reaction.container_substrate[0][1][c_index].slice(Constants().electron_index)))
+        const electrons = _.cloneDeep(this.reaction.container_substrate[0][1][n_index]).slice(Constants().electron_index)
 
         // Break NC bond but make sure nitrogen still has 8 electrons
         this.reaction.container_substrate[0][1][n_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][n_index], shared_electrons)

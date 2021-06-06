@@ -3,6 +3,7 @@ const CAtom = require('../../../Controllers/Atom')
 const VAtom = require('../../../Components/Stateless/Views/Atom')
 const _ = require('lodash');
 const Set = require('../../../Models/Set')
+const Constants = require("../../../Constants")
 
 const VMolecule = (mmolecule) => {
 
@@ -51,7 +52,7 @@ const VMolecule = (mmolecule) => {
             return ""
         }
 
-        const b = Set().intersection(current_atom.slice(5), previous_atom.slice(5))
+        const b = Set().intersection(current_atom.slice(Constants().electron_index), previous_atom.slice(Constants().electron_index))
         const m = ["", "", "", "", "="]
         return m[[b.length]]
     }
@@ -147,7 +148,7 @@ const VMolecule = (mmolecule) => {
             if (i === current_atom_index || _atom[0]==='H') {
                 return carry
             }
-            if (Set().intersection(_atom.slice(5),current_atom.slice(5) ).length > 1) {
+            if (Set().intersection(_atom.slice(Constants().electron_index),current_atom.slice(Constants().electron_index) ).length > 1) {
                 return i;
             }
             return carry
@@ -418,7 +419,7 @@ const VMolecule = (mmolecule) => {
                         }
                     )
 
-                    const electrons = atom.slice(5)
+                    const electrons = atom.slice(Constants().electron_index)
                     const free_electrons = c.freeElectrons()
 
                     return [atom[0], index, "H " + h.length, 'Charge: '+ atom[4],  bonds, double_bonds, triple_bonds, electrons.length, free_electrons.length]
@@ -460,7 +461,7 @@ const VMolecule = (mmolecule) => {
                         }
                     )
 
-                    const electrons = atom.slice(5)
+                    const electrons = atom.slice(Constants().electron_index)
                     const free_electrons = c.freeElectrons()
 
                     return [(atom[4]===0?"":"[") + atom[0]+(atom[4]===0?"":atom[4] + (atom[4]===0?"":"]")), index,  bonds, double_bonds, triple_bonds]

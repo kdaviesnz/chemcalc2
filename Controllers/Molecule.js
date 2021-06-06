@@ -7,6 +7,7 @@ const Set = require('../Models/Set')
 const Families = require('../Models/Families')
 const _ = require('lodash');
 const VMolecule = require('../Components/Stateless/Views/Molecule')
+const Constants = require("../Constants")
 
 const CMolecule = (mmolecule, verbose) => {
 
@@ -77,7 +78,7 @@ const CMolecule = (mmolecule, verbose) => {
 
     // get the type of bond between two atoms
     const __bondType = (atom1, atom2) => {
-        const shared_electrons = Set().intersection(atom1.slice(5), atom2.slice(5))
+        const shared_electrons = Set().intersection(atom1.slice(Constants().electron_index), atom2.slice(Constants().electron_index))
         // @todo triple bonds
         if (shared_electrons.length === 0) {
             return false
@@ -311,7 +312,7 @@ const CMolecule = (mmolecule, verbose) => {
 
         const molecule = mmolecule[0] // mmolecule[1] is the number of units
         
-        const atom_electrons = atom.slice(5)
+        const atom_electrons = atom.slice(Constants().electron_index)
         const lone_pairs = atom_electrons.filter(
             (atom_electron) => {
                 return atoms.filter(
@@ -319,7 +320,7 @@ const CMolecule = (mmolecule, verbose) => {
                         if (current_atom_index === _atom_index) {
                             return true
                         }
-                        const _atom_electrons = _atom.slice(5)
+                        const _atom_electrons = _atom.slice(Constants().electron_index)
                         return _atom_electrons.indexOf(atom_electron) > -1
                     }
                 ).length === 1
@@ -346,7 +347,7 @@ const CMolecule = (mmolecule, verbose) => {
 
     const __electronToShareIndex = (atom) => {
         atom.should.be.an.Array()
-        const atom_valence_electrons = atom.slice(5)
+        const atom_valence_electrons = atom.slice(Constants().electron_index)
         const atom_electron_to_share_index = atom_valence_electrons.reduce(
             (carry, atom_electron, index) => {
                 const is_shared = __isShared(atom_electron)
@@ -360,7 +361,7 @@ const CMolecule = (mmolecule, verbose) => {
 
     const __electronToRemoveIndex = (atom) => {
         const molecule = mmolecule[0] // mmolecule[1] is the number of units
-        const atom_valence_electrons = atom.slice(5)
+        const atom_valence_electrons = atom.slice(Constants().electron_index)
         const atom_electron_to_remove_index = atom_valence_electrons.reduce(
             (carry, atom_electron, index) => {
                 const is_shared = __isShared(atom_electron)
@@ -557,7 +558,7 @@ const CMolecule = (mmolecule, verbose) => {
 
         const molecule = mmolecule[0] // mmolecule[1] is the number of units
         
-        const valence_electrons = atom.slice(5).filter(
+        const valence_electrons = atom.slice(Constants().electron_index).filter(
             (electron) => {
                 return null !== electron
             }
@@ -613,14 +614,14 @@ const CMolecule = (mmolecule, verbose) => {
                             return carry // only count hydrogens not bounded to carbons
                         }
 
-                        const current_molecule_atom_valence_electrons = current_molecule_atom.slice(5)
+                        const current_molecule_atom_valence_electrons = current_molecule_atom.slice(Constants().electron_index)
 
                         // check current atom for hydrogens
                         // find the index of hydrogen atom bonded to the current molecule atom
                         const H_index = molecule.reduce((_carry, _current, _index) => {
                             if (_current[0] === "H") {
                                 const hydrogen_atom = _current
-                                const hydrogen_atom_valence_electrons = hydrogen_atom.slice(5)
+                                const hydrogen_atom_valence_electrons = hydrogen_atom.slice(Constants().electron_index)
                                 //if (hydrogen_atom_valence_electrons.intersect(current_molecule_atom_valence_electrons)>0) {
                                 const array_intersection = hydrogen_atom_valence_electrons.filter(function (x) {
                                     // checking second array contains the element "x"
@@ -904,7 +905,7 @@ const CMolecule = (mmolecule, verbose) => {
             let atom = container[target_molecule_index][0]
 
             // Get number electrons the source atom has
-            const source_atom_electrons = _.cloneDeep(container[source_molecule_index][0][1][source_atom_index]).slice(5).length
+            const source_atom_electrons = _.cloneDeep(container[source_molecule_index][0][1][source_atom_index]).slice(Constants().electron_index).length
 
             if (atom === undefined) {
                 // proton will be the last element in container
@@ -937,7 +938,7 @@ const CMolecule = (mmolecule, verbose) => {
             container[target_molecule_index][0][1].should.be.an.Array() // atoms
             container[target_molecule_index][0][1][target_atom_index].should.be.an.Array() // target atom
             container[target_molecule_index][0][1][target_atom_index][0].should.be.equal("H")
-            _.cloneDeep(container[target_molecule_index][0][1][target_atom_index]).slice(5).length.should.be.equal(0)
+            _.cloneDeep(container[target_molecule_index][0][1][target_atom_index]).slice(Constants().electron_index).length.should.be.equal(0)
 
             // add electrons from source atom to target atom (proton)
             // target atom is a proton and has no electrons
@@ -998,7 +999,7 @@ const CMolecule = (mmolecule, verbose) => {
             // Check source atom still has the same number of electrons
             //console.log(source_atom_index)
             //console.log(container[source_molecule_index][0][1])
-            _.cloneDeep(container[source_molecule_index][0][1][source_atom_index]).slice(5).length.should.equal(source_atom_electrons)
+            _.cloneDeep(container[source_molecule_index][0][1][source_atom_index]).slice(Constants().electron_index).length.should.equal(source_atom_electrons)
 
 
             return container
