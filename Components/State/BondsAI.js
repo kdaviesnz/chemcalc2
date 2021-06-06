@@ -1225,16 +1225,16 @@ class BondsAI {
                     return false
                 }
 
+                if (DEBUG) {
+                    console.log("BondsAI bondSubstrateToReagentReverse() substrate")
+                    console.log(VMolecule(this.reaction.container_substrate).compressed())
+                    console.log("BondsAI bondSubstrateToReagentReverse() n_atom")
+                    console.log(n_atom.atom)
+                    console.log("BondsAI bondSubstrateToReagentReverse() carbon atom")
+                    console.log(target_atom.atom)
+                }
 
                 if (!this.isBond(n_atom, target_atom, DEBUG) && !this.isDoubleBond(n_atom, target_atom, DEBUG)) {
-                    if (DEBUG) {
-                        console.log("BondsAI bondSubstrateToReagentReverse() n_atom")
-                        console.log(n_atom.atom)
-                        console.log("BondsAI bondSubstrateToReagentReverse() carbon atom")
-                        console.log(target_atom.atom)
-                        console.log("BondsAI bondSubstrateToReagentReverse() shared_electrons")
-                        console.log(shared_electrons)
-                    }
                     throw new Error("There should be a bond between the nitrogen atom and the carbon atom")
                 }
 
@@ -1243,17 +1243,29 @@ class BondsAI {
                     this.removeBond(n_atom, target_atom, this.reaction.container_substrate, DEBUG)
                 }
 
-                this.reaction.container_substrate[0][1][n_index] = n_atom.atom
+                if (DEBUG) {
+                    console.log("BondsAI bondSubstrateToReagentReverse() substrate after remove NC bond")
+                    console.log(VMolecule(this.reaction.container_substrate).compressed())
+                }
 
                 if (undefined === this.reaction.container_substrate[0][1][n_index]) {
                     throw new Error("Atom array is undefined.")
                 }
 
-
                 this.reaction.setChargeOnSubstrateAtom(n_index)
                 this.reaction.setChargeOnSubstrateAtom(c_index)
                 this.reaction.setMoleculeAI()
-                const groups = this.reaction.MoleculeAI.extractGroups()
+
+                const groups = this.reaction.MoleculeAI.extractGroups(n_atom, target_atom, DEBUG)
+                groups.length.should.not.be.greaterThan(2, "When reversing substrate to reagent bond the number of groups should not be greater than 2.")
+
+                if (DEBUG) {
+                    console.log("BondsAI bondSubstrateToReagentReverse() groups")
+                    console.log(groups.length)
+                    process.error()
+                }
+
+
                 this.reaction.__setSubstrateGroups(groups)
 
                 if(this.reaction.leaving_groups.length > 0) {

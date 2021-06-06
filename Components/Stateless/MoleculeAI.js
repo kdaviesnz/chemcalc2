@@ -736,7 +736,19 @@ const MoleculeAI = (container_molecule) => {
 
 
 
-        extractGroupsRecursive: function(groups, group_index, atoms, atom_indexes_added, current_atom_index) {
+        extractGroupsRecursive: function(groups, group_index, atoms, atom_indexes_added, current_atom_index, DEBUG) {
+
+            Typecheck(
+                {name:"DEBUG", value:DEBUG, type:"boolean"},
+                {name:"groups", value:groups, type:"array"},
+                {name:"group_index", value:group_index, type:"number"},
+                {name:"atoms", value:atoms, type:"array"},
+                {name:"atom_indexes_added", value:atom_indexes_added, type:"array"},
+                {name:"current_atom_index", value:current_atom_index, type:"number"},
+            )
+
+            console.log("/Stateless/MoleculeAI extractGroupsRecursive()")
+            process.error()
 
             if (atom_indexes_added.length === atoms.length) {
                 return groups
@@ -785,7 +797,16 @@ const MoleculeAI = (container_molecule) => {
 
         },
 
-        extractGroupsRecursiveReverse: function(groups, group_index, atoms, atom_indexes_added, current_atom_index) {
+        extractGroupsRecursiveReverse: function(groups, group_index, atoms, atom_indexes_added, current_atom_index, DEBUG) {
+
+            Typecheck(
+                {name:"DEBUG", value:DEBUG, type:"boolean"},
+                {name:"groups", value:groups, type:"array"},
+                {name:"group_index", value:group_index, type:"number"},
+                {name:"atoms", value:atoms, type:"array"},
+                {name:"atom_indexes_added", value:atom_indexes_added, type:"array"},
+                {name:"current_atom_index", value:current_atom_index, type:"number"},
+            )
 
             if (atom_indexes_added.length === atoms.length) {
                 return groups
@@ -803,54 +824,52 @@ const MoleculeAI = (container_molecule) => {
                 }
 
                 const atom = atoms[current_atom_index]
+
                 // Check for bonded atoms
-                atom_object = CAtom(atom, current_atom_index, container_molecule)
+                const atom_object = CAtom(atom, current_atom_index, container_molecule)
                 // Modifies group, atom_indexes_added
-                // groups, group_index, current_atom_index, atom_object, atoms, atom_indexes_added
-                const bonds = atom_object.indexedBonds("")
-                if (bonds.length === 0) {
+                const single_bonds =  atom_object.singleBondsNoHydrogens()
+                const double_bonds =  atom_object.doubleBondsNoHydrogens()
+                const triple_bonds =  atom_object.tripleBondsNoHydrogens()
+                if (single_bonds.length + double_bonds.length + triple_bonds.length === 0) {
                     groups[group_index].push(atom)
                 } else {
                     this.checkForBondedAtomsRecursiveReverse(groups, group_index, current_atom_index, atom_object, _.cloneDeep(atoms), atom_indexes_added)
                 }
-                return this.extractGroupsRecursiveReverse(groups, group_index +1, _.cloneDeep(atoms), atom_indexes_added, current_atom_index +1)
+                return this.extractGroupsRecursiveReverse(groups, group_index +1, _.cloneDeep(atoms), atom_indexes_added, current_atom_index +1, DEBUG)
 
             } else {
-                return this.extractGroupsRecursiveReverse(groups, group_index, _.cloneDeep(atoms), atom_indexes_added, current_atom_index +1)
+                return this.extractGroupsRecursiveReverse(groups, group_index, _.cloneDeep(atoms), atom_indexes_added, current_atom_index +1, DEBUG)
             }
 
 
 
         },
 
+        extractGroups: function(atom1, atom2, DEBUG) {
 
-
-        extractGroups: function() {
-
-          // console.log((VMolecule(container_molecule).compressed())
+            Typecheck(
+                {name:"DEBUG", value:DEBUG, type:"boolean"},
+                {name:"atom1", value:atom1, type:"object"},
+                {name:"atom2", value:atom2, type:"object"}
+            )
 
             const atom_indexes_added = []
             let atoms = _.cloneDeep(container_molecule[0][1])
-            // Temporary
-            /*
-            atoms = atoms.filter((atom)=>{
-                return atom[0] !== "H"
-            })
-            */
-//          // console.log((atoms.length)
-  //          process.exit()
-            const groups = this.extractGroupsRecursive([], 0, _.cloneDeep(atoms), atom_indexes_added, 0)
+            const groups = this.extractGroupsRecursive([], 0, _.cloneDeep(atoms), atom_indexes_added, 0, DEBUG)
 
             const groups_filtered = groups.filter((group)=>{
                 return group.length === 1 && group[0][0] === "H" ? false: true
             })
 
             return groups_filtered
+
         },
 
         extractGroupsReverse: function() {
 
           // console.log((VMolecule(container_molecule).compressed())
+
 
             const atom_indexes_added = []
             let atoms = _.cloneDeep(container_molecule[0][1])

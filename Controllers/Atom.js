@@ -899,6 +899,24 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         })
     }
 
+    const __singleBondsNoHydrogens  = function() {
+        return this.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] !== "H"
+        })
+    }
+
+    const __doubleBondsNoHydrogens  = function() {
+        return this.indexedDoubleBonds("").filter((bond)=>{
+            return bond.atom[0] !== "H"
+        })
+    }
+
+    const __tripleBondsNoHydrogens  = function() {
+        return this.indexedTripleBonds("").filter((bond)=>{
+            return bond.atom[0] !== "H"
+        })
+    }
+
     return {
         carbonBonds: __carbonBonds,
         electrons: __electrons,
@@ -979,7 +997,10 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         numberOfBonds: __numberOfBonds,
         numberOfBondsNoHydrogens: __numberOfBondsNoHydrogens,
         neutralAtomMaxNumberOfBonds: __neutralAtomMaxNumberOfBonds,
-        getAtomId: __getAtomId
+        getAtomId: __getAtomId,
+        singleBondsNoHydrogens: __singleBondsNoHydrogens,
+        doubleBondsNoHydrogens: __doubleBondsNoHydrogens,
+        tripleBondsNoHydrogens: __tripleBondsNoHydrogens
 
     }
 }
