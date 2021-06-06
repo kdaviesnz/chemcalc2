@@ -196,6 +196,21 @@ class Reaction {
         this.stateMoleculeAI = new StateMoleculeAI(this)
         this.renderCallback = renderCallback
         this.reactions = reactions
+
+        // Check each atom is an array
+        this.container_substrate[0][1].map((_atom)=>{
+            Typecheck(
+                {name:"_atom", value:_atom, type:"array"},
+            )
+        })
+
+        // Check each atom is an array
+        this.container_reagent[0][1].map((_atom)=>{
+            Typecheck(
+                {name:"_atom", value:_atom, type:"array"},
+            )
+        })
+
     }
 
     substituteAtomForAtom(atom_to_substitute_index, replacement_atom, DEBUG) {
@@ -785,7 +800,15 @@ class Reaction {
             throw new Error("Atom array is undefined.")
         }
 
+        // Check each atom is an array
+        this.container_substrate[0][1].map((_atom)=>{
+            Typecheck(
+                {name:"_atom", value:_atom, type:"array"},
+            )
+        })
+
         const chargesAI = new ChargesAI(this)
+
         return chargesAI.setChargeOnSubstrateAtom(index, trace, trace_id, DEBUG)
     }
 

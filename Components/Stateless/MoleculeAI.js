@@ -74,10 +74,6 @@ const Typecheck = require('../../Typecheck')
 
 const MoleculeAI = (container_molecule) => {
 
-    Typecheck(
-        {name:"container_molecule", value:container_molecule, type:"array"},
-    )
-
     container_molecule.length.should.be.equal(2) // molecule, units
     if (container_molecule[0] !== "B") {
         container_molecule[0].length.should.be.equal(2) // pKa, atoms
@@ -585,7 +581,7 @@ const MoleculeAI = (container_molecule) => {
             })
 
             return _.findIndex(container_molecule[0][1], (atom, index)=> {
-                const chargesAI = new ChargesAI(null)
+                const chargesAI = new ChargesAI(this.reaction)
                 return chargesAI.checkCharge(container_molecule, atom, index, trace, trace_id)
             }) === -1
         },

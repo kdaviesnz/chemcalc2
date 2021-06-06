@@ -307,10 +307,23 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
     }
 
-    const __Bonds = () => {
+     const __Bonds = function(DEBUG)  {
 
         const atoms = mmolecule[0][1]
-        const atom_electrons = atom.slice(Constants().electron_index)
+
+         atoms.map((_atom)=>{
+             Typecheck(
+                 {name:"_atom", value:_atom, type:"array"},
+             )
+         })
+
+        const atom_electrons = this.atom.slice(Constants().electron_index)
+
+        Typecheck(
+            {name:"atoms", value:atoms, type:"array"},
+            {name:"atom_electrons", value:atom_electrons, type:"array"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"}
+        )
 
         const r =  atoms.map(
 
@@ -320,7 +333,12 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
                     return false
                 }
 
-                const shared_electrons = Set().intersection(atom_electrons, _atom.slice(Constants().electron_index))
+                Typecheck(
+                    {name:"_atom", value:_atom, type:"array"}
+                )
+
+                const _atomObject = CAtom(_atom, _atom_index, mmolecule)
+                const shared_electrons = this.electronsSharedWithSibling(_atomObject, DEBUG)
 
                 return shared_electrons.reduce(
                     (carry, electron) => {
@@ -345,25 +363,31 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         return r
     }
 
-    const __bondCount = (test_number) => {
-        return __Bonds().filter((item)=>{
+    const __bondCount = function(test_number) {
+
+        mmolecule[0][1].map((_atom)=>{
+            Typecheck(
+                {name:"_atom", value:_atom, type:"array"},
+            )
+        })
+
+        return this.bonds().filter((item)=>{
             return item.length > 0
         }).length
+
     }
 
     const __numberOfProtons = () => {
-
         // Get number of protons
         const info = PeriodicTable[atom[0]]
         return number_of_protons = info['atomic_number'] * 1
-
     }
 
-    const __numberOfElectrons = () => {
+    const __numberOfElectrons = function() {
 
         // Get number of electrons
-        const info = PeriodicTable[atom[0]]
-        return atom.slice(Constants().electron_index).length + ((info["electrons_per_shell"].split("-")).slice(0, -1).reduce((a, b) => a*1 + b*1, 0)) * 1
+        const info = PeriodicTable[this.atom[0]]
+        return this.atom.slice(Constants().electron_index).length + ((info["electrons_per_shell"].split("-")).slice(0, -1).reduce((a, b) => a*1 + b*1, 0)) * 1
 
     }
 
@@ -760,7 +784,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             throw new Error("sibling atom is undefined")
         }
 
-        return Set().intersection(this.slice(Constants().electron_index), sibling_atom.atom.slice(Constants().electron_index))
+        return Set().intersection(this.atom.slice(Constants().electron_index), sibling_atom.atom.slice(Constants().electron_index))
 
     }
 
@@ -839,15 +863,20 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     }
 
 
-    const __removeCovalentBond = function(sibling_atom) {
+    const __removeCovalentBond = function(sibling_atom, DEBUG) {
 
         Typecheck(
-            {name:"sibling_atom", value:sibling_atom, type:"object"}
+            {name:"sibling_atom", value:sibling_atom, type:"object"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"}
         )
 
-        const shared_electrons = atom.electronsSharedWithSibling(sibling_atom)
-        this.removeElectrons([shared_electrons[0]])
-        sibling_atom.removeElectrons([shared_electrons[1]])
+        const shared_electrons = this.electronsSharedWithSibling(sibling_atom)
+        if (shared_electrons.length > 0) {
+            this.removeElectrons([shared_electrons[0]])
+            sibling_atom.removeElectrons([shared_electrons[1]])
+        } else if(DEBUG) {
+            console.log("CAtom __removeCovalentBond() No shared electrons found")
+        }
 
     }
 

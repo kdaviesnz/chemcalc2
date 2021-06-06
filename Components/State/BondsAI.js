@@ -38,9 +38,27 @@ const Typecheck = require('./../../Typecheck')
 class BondsAI {
 
     constructor(reaction) {
+
         Typecheck(
             {name:"reaction", value:reaction, type:"object"},
         )
+
+        if (reaction === null) {
+            throw new Error("Reaction should not null")
+        }
+
+        if (reaction === undefined) {
+            throw new Error("Reaction should not be undefined")
+        }
+
+        this.reaction = reaction
+
+        this.reaction.container_substrate[0][1].map((_atom) => {
+            Typecheck(
+                {name: "_atom", value: _atom, type: "array"},
+            )
+        })
+
         this.reaction = reaction
     }
 
@@ -97,8 +115,8 @@ class BondsAI {
             }
         }
 
-        molecule_container[0][1][atom1.atomIndex] = atom1
-        molecule_container[0][1][atom2.atomIndex] = atom2
+        molecule_container[0][1][atom1.atomIndex] = atom1.atom
+        molecule_container[0][1][atom2.atomIndex] = atom2.atom
 
         if (this.isBond(atom1, atom2, DEBUG)) {
             throw new Error("BondsAI removeBond() Failed to remove bond")
@@ -1128,6 +1146,18 @@ class BondsAI {
             {name:"DEBUG", value:DEBUG, type:"boolean"}
         )
 
+        // Check each atom is an array
+        this.reaction.container_substrate[0][1].map((_atom)=>{
+            Typecheck(
+                {name:"_atom", value:_atom, type:"array"},
+            )
+        })
+        this.reaction.container_reagent[0][1].map((_atom)=>{
+            Typecheck(
+                {name:"_atom", value:_atom, type:"array"},
+            )
+        })
+
         this.reaction.MoleculeAI.validateMolecule()
 
         // Important (orginal reaction):
@@ -1171,7 +1201,6 @@ class BondsAI {
                 }
             }
 
-
             if (c_index === null || c_index === -1) {
 
                 if (DEBUG) {
@@ -1191,6 +1220,7 @@ class BondsAI {
                     return false
                 }
 
+
                 if (!this.isBond(n_atom, target_atom, DEBUG) && !this.isDoubleBond(n_atom, target_atom, DEBUG)) {
                     if (DEBUG) {
                         console.log("BondsAI bondSubstrateToReagentReverse() n_atom")
@@ -1203,8 +1233,20 @@ class BondsAI {
                     throw new Error("There should be a bond between the nitrogen atom and the carbon atom")
                 }
 
+
                 if (this.isBond(n_atom, target_atom, DEBUG)) {
                     this.removeBond(n_atom, target_atom, this.reaction.container_substrate, DEBUG)
+                    // Check each atom is an array
+                    this.reaction.container_substrate[0][1].map((_atom)=>{
+                        Typecheck(
+                            {name:"_atom", value:_atom, type:"array"},
+                        )
+                    })
+                    this.reaction.container_reagent[0][1].map((_atom)=>{
+                        Typecheck(
+                            {name:"_atom", value:_atom, type:"array"},
+                        )
+                    })
                 }
                 //n_atom.removeElectrons(shared_electrons)
 
@@ -1213,6 +1255,7 @@ class BondsAI {
                 if (undefined === this.reaction.container_substrate[0][1][n_index]) {
                     throw new Error("Atom array is undefined.")
                 }
+
 
                 this.reaction.setChargeOnSubstrateAtom(n_index)
                 this.reaction.setChargeOnSubstrateAtom(c_index)

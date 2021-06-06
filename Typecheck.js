@@ -3,22 +3,33 @@ const Typecheck = (...params) => {
     params.forEach(param => {
 
         if (param.type === 'array' && Object.prototype.toString.call(param.value) !== '[object Array]') {
-            throw new Error(param.name + " should be an array, actual:" + typeof param.value)
+            console.log("Actual value:")
+            console.log(param.value)
+            throw new Error(param.name + " should be an array, actual type:" + typeof param.value)
         }
 
         if (param.value !== undefined && param.value !== null) {
             switch(param.type) {
-                case 'array':
-                    param.value.should.be.a.Array()
-                    break;
                 case 'number':
-                    param.value.should.be.a.Number()
+                    if (typeof param.value !== "number") {
+                        console.log("Actual value:")
+                        console.log(param.value)
+                        throw new Error(param.name + " should be a number, actual type:" + typeof param.value)
+                    }
                     break;
                 case 'string':
-                    param.value.should.be.a.String()
+                    if (typeof param.value !== "string") {
+                        console.log("Actual value:")
+                        console.log(param.value)
+                        throw new Error(param.name + " should be a string, actual type:" + typeof param.value)
+                    }
                     break;
                 case 'object':
-                    Object.prototype.toString.call(param.value).should.not.be.equal('[object Array]') && param.value.should.be.a.Object()
+                    if (param.type === 'object' && (typeof param.value !== "object" || Object.prototype.toString.call(param.value) === '[object Array]')) {
+                        console.log("Actual value:")
+                        console.log(param.value)
+                        throw new Error(param.name + " should be an object, actual type:" + typeof param.value)
+                    }
                     break;
             }
         }

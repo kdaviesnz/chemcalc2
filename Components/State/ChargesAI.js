@@ -6,8 +6,28 @@ const Typecheck = require('./../../Typecheck')
 class ChargesAI {
 
     constructor(reaction) {
+
+        Typecheck(
+            {name: "reaction", value: reaction, type: "object"},
+        )
+
         this.debugger_on = true
         this.reaction = reaction
+
+        // Check each atom is an array
+        if (this.reaction !== null && this.reaction !== undefined) {
+            this.reaction.container_substrate[0][1].map((_atom) => {
+                Typecheck(
+                    {name: "_atom", value: _atom, type: "array"},
+                )
+            })
+            this.reaction.container_reagent[0][1].map((_atom) => {
+                Typecheck(
+                    {name: "_atom", value: _atom, type: "array"},
+                )
+            })
+        }
+
     }
 
     debugger(o) {
@@ -221,6 +241,13 @@ class ChargesAI {
         if (undefined === this.reaction.container_substrate[0][1][index]) {
             throw new Error("Atom array is undefined.")
         }
+
+        // Check each atom is an array
+        this.reaction.container_substrate[0][1].map((_atom)=>{
+            Typecheck(
+                {name:"_atom", value:_atom, type:"array"},
+            )
+        })
 
         // https://chemistry.stackexchange.com/questions/22032/how-does-a-carbocation-have-a-positive-charge
         // Formal Charge= (No.of valence electrons in unbonded state - no of lone pair electrons ) - (no. of bond pair electrons/2)

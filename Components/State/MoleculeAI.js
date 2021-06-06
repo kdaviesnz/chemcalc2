@@ -16,7 +16,27 @@ const Typecheck = require('./../../Typecheck')
 class MoleculeAI {
 
     constructor(reaction) {
+
+        Typecheck(
+            {name:"reaction", value:reaction, type:"object"},
+        )
+
+        if (reaction === null) {
+            throw new Error("Reaction should not null")
+        }
+
+        if (reaction === undefined) {
+            throw new Error("Reaction should not be undefined")
+        }
+
         this.reaction = reaction
+
+        this.reaction.container_substrate[0][1].map((_atom) => {
+            Typecheck(
+                {name: "_atom", value: _atom, type: "array"},
+            )
+        })
+
         this.bondsAI = new BondsAI(this.reaction)
     }
 
