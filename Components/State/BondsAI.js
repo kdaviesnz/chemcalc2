@@ -33,6 +33,7 @@ const Constants = require("../../Constants")
 // isBond(atom1_controller, atom2_controller)
 // breakCarbonNitrogenDoubleBondReverse(nitrogen_index, carbon_index, DEBUG)
 // bondAtoms(atom1, atom2)
+// makeDoubleBond(atom1, atom2)
 // bondAtomsReverse(atom1, atom2)
 // removeCoordinateCovalentBond(atom1, atom2)
 // bondAtomsReverse(atom1, atom2)
@@ -140,12 +141,21 @@ class BondsAI {
         return this.removeBond(atom1, atom2, molecule_container)
     }
 
-    bondAtoms(atom1, atom2, molecule_container) {
+    createDoubleBond(atom1, atom2, molecule_container, check=true) {
+        this.bondAtoms(atom1, atom2, molecule_container, true)
+        this.bondAtoms(atom1, atom2, molecule_container, false)
+        if (check && !this.isDoubleBond(atom1, atom2)) {
+            throw new Error("Failed to create double bond")
+        }
+    }
+
+    bondAtoms(atom1, atom2, molecule_container, check=true) {
 
         Typecheck(
             {name:"atom1", value:atom1, type:"object"},
             {name:"atom2", value:atom2, type:"object"},
             {name:"molecule_container", value:molecule_container, type:"array"},
+            {name:"check", value:check, type:"boolean"},
         )
 
         const atom1FreeElectrons = atom1.freeElectrons()
@@ -180,7 +190,7 @@ class BondsAI {
         atom2 = CAtom(molecule_container[0][1][atom2.atomIndex], atom2.atomIndex, molecule_container)
 
         // Confirm we have created a bond
-        if (!this.isBond(atom1, atom2)) {
+        if (check && !this.isBond(atom1, atom2)) {
             throw new Error("Failed to create bond")
         }
     }
@@ -439,7 +449,6 @@ class BondsAI {
             {name:"this.reaction.MoleculeAI", value:this.reaction.MoleculeAI, type:"object"},
         )
 
-
         // This should NOT remove H from the oxygen
         this.reaction.setMoleculeAI()
 
@@ -459,7 +468,6 @@ class BondsAI {
             oxygen_index = this.reaction.MoleculeAI.findOxygenWithNoBondsIndex(DEBUG)
             if(oxygen_index === -1) {
                 console.log("BondsAI makeOxygenCarbonDoubleBond -> oxygen atom not found")
-                process.error()
                 return false
             } else {
                 // Create single bond between carbon and oxygen that we will turn into a double bond
@@ -477,8 +485,7 @@ class BondsAI {
                     console.log("BondsAI makeOxygenCarbonDoubleBond -> oxygen index = " + oxygen_index)
                     console.log("BondsAI makeOxygenCarbonDoubleBond -> carbon index = " + carbon_index)
                 }
-                this.bondAtoms(o,c, this.reaction.container_substrate)
-                this.bondAtoms(o,c, this.reaction.container_substrate)
+                this.createDoubleBond(o,c, this.reaction.container_substrate)
                 this.reaction.setMoleculeAI()
                 if (DEBUG) {
                     console.log("BondsAI makeOxygenCarbonDoubleBond container substrate after adding double bond")
@@ -1259,14 +1266,8 @@ class BondsAI {
                 const groups = this.reaction.MoleculeAI.extractGroups(n_atom, target_atom, DEBUG)
                 groups.length.should.not.be.greaterThan(2, "When reversing substrate to reagent bond the number of groups should not be greater than 2.")
 
-                if (DEBUG) {
-                    console.log("BondsAI bondSubstrateToReagentReverse() groups")
-                    console.log(groups.length)
-                    process.error()
-                }
-
-
                 this.reaction.__setSubstrateGroups(groups)
+                this.reaction.setMoleculeAI()
 
                 if(this.reaction.leaving_groups.length > 0) {
                     this.reaction.container_reagent = this.reaction.leaving_groups[0]
@@ -1274,6 +1275,7 @@ class BondsAI {
                     this.reaction.container_reagent[0][1].length.should.be.greaterThan(-1)
                     return true
                 }
+
             }
         }
 

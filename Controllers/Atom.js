@@ -842,6 +842,30 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         return shared_electrons.length === 4
     }
 
+    const __isTripleBondedTo = function(sibling_atom, DEBUG) {
+
+        Typecheck(
+            {name:"sibling_atom", value:sibling_atom, type:"object"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"}
+        )
+
+        if (undefined === sibling_atom) {
+            throw new Error("sibling atom object is undefined")
+        }
+
+        if (undefined === sibling_atom.atom) {
+            throw new Error("sibling atom is undefined")
+        }
+
+        const shared_electrons = this.electronsSharedWithSibling(sibling_atom)
+
+        if (DEBUG) {
+            console.log("CAtom __isDoubleBondedTo() Got " + shared_electrons.length + " shared electrons")
+        }
+
+        return shared_electrons.length === 6
+    }
+
     const __isCoordinateCovalentBondDonator = function(sibling_atom)  {
 
         Typecheck(
@@ -926,6 +950,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         isCoordinateCovalentBondDonator:__isCoordinateCovalentBondDonator,
         isBondedTo: __isBondedTo,
         isDoubleBondedTo: __isDoubleBondedTo,
+        isTripleBondedTo: __isTripleBondedTo,
         electronsSharedWithSibling: __electronsSharedWithSibling,
         isCoordinateCovalentBond: __isCoordinateCovalentBond,
         isCarbocation: __isCarbocation,
