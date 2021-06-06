@@ -69,6 +69,7 @@ const Typecheck = require('../../Typecheck')
    findOxygenWithNoBondsIndex()
    findCarbonWithNoBondsIndex()
    findKetoneCarbonIndex(DEBUG)
+   findAtomIndexByAtomId(atom_id, DEBUG)
    */
 
 
@@ -83,6 +84,22 @@ const MoleculeAI = (container_molecule) => {
             container_molecule[0][1][0].should.be.an.Array()
             container_molecule[0][1][0][0].should.be.an.String()
         }
+    }
+
+    const __findAtomIndexByAtomId = function(atom_id, DEBUG) {
+
+        Typecheck(
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+            {name:"atom_id", value:atom_id, type:"string"}
+        )
+
+        if (DEBUG) {
+            console.log('Stateless/MoleculeAI findAtomByAtomId Looking for atom with id ' + atom_id)
+        }
+        return _.findIndex(container_molecule[0][1], (atom)=> {
+            return atom[5] === atom_id
+        })
+
     }
 
     const __findCarbonWithNoBondsIndex = function(DEBUG) {
@@ -1998,6 +2015,7 @@ VMolecule
 
         "findOxygenWithNoBondsIndex": __findOxygenWithNoBondsIndex,
         "findCarbonWithNoBondsIndex": __findCarbonWithNoBondsIndex,
+        "findAtomIndexByAtomId": __findAtomIndexByAtomId,
         "findKetoneCarbonIndex": (DEBUG) => {
             return __findKetoneCarbonIndex(DEBUG)
         },

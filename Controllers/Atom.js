@@ -30,6 +30,9 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     }
     atom.length.should.be.greaterThan(3)
 
+    const __getAtomId =  function() {
+        return this.atom[5]
+    }
     const __shared_electrons = () => {
 
         const atoms = mmolecule[0][1]
@@ -976,6 +979,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         numberOfBonds: __numberOfBonds,
         numberOfBondsNoHydrogens: __numberOfBondsNoHydrogens,
         neutralAtomMaxNumberOfBonds: __neutralAtomMaxNumberOfBonds,
+        getAtomId: __getAtomId
 
     }
 }

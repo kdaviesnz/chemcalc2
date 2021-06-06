@@ -4,6 +4,7 @@ const VAtom = require('../../../Components/Stateless/Views/Atom')
 const _ = require('lodash');
 const Set = require('../../../Models/Set')
 const Constants = require("../../../Constants")
+const Typecheck = require("../../../Typecheck")
 
 const VMolecule = (mmolecule) => {
 
@@ -156,10 +157,16 @@ const VMolecule = (mmolecule) => {
     }
 
     const __getBondIds = function(bonds) {
+
+        Typecheck(
+            {name:"bonds", value:bonds, type:"array"},
+        )
+
         return bonds.map((b)=>{
             b = b.split(" ")
             return b[0] * 1
         })
+
     }
 
     const __getChildAtoms = (atoms, current_atom) => {
@@ -177,6 +184,7 @@ const VMolecule = (mmolecule) => {
         const current_atom_id = current_atom[1]
         // Get index of first atom that is not bonded to the current atom
         const start_index = _.findIndex(atoms, (atom, i)=>{
+            // Atom: [ 'C', 3, 'H 3', 0, '[ '4  C' ], [], [], 8, 0, pvep', ]
             const bonds_ids = __getBondIds(atom[4]).concat(__getBondIds(atom[5])).concat(__getBondIds(atom[6]))
             return bonds_ids.indexOf(current_atom_id) === -1 && atom[1] > current_atom_id
         })
@@ -422,7 +430,7 @@ const VMolecule = (mmolecule) => {
                     const electrons = atom.slice(Constants().electron_index)
                     const free_electrons = c.freeElectrons()
 
-                    return [atom[0], index, "H " + h.length, 'Charge: '+ atom[4],  bonds, double_bonds, triple_bonds, electrons.length, free_electrons.length]
+                    return [atom[0], index, "H " + h.length, "Charge: " + atom[4], bonds, double_bonds, triple_bonds, electrons.length, free_electrons.length, atom[5]]
                 }
             ).filter(
                 (atom) => {

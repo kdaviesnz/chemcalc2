@@ -1,6 +1,6 @@
 const Constants = () => {
     return {
-        "electron_index":5,
+        "electron_index":6,
         "max_valence_electrons":{
             "H":1,
             "O":8,

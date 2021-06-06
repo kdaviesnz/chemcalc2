@@ -1241,19 +1241,7 @@ class BondsAI {
 
                 if (this.isBond(n_atom, target_atom, DEBUG)) {
                     this.removeBond(n_atom, target_atom, this.reaction.container_substrate, DEBUG)
-                    // Check each atom is an array
-                    this.reaction.container_substrate[0][1].map((_atom)=>{
-                        Typecheck(
-                            {name:"_atom", value:_atom, type:"array"},
-                        )
-                    })
-                    this.reaction.container_reagent[0][1].map((_atom)=>{
-                        Typecheck(
-                            {name:"_atom", value:_atom, type:"array"},
-                        )
-                    })
                 }
-                //n_atom.removeElectrons(shared_electrons)
 
                 this.reaction.container_substrate[0][1][n_index] = n_atom.atom
 

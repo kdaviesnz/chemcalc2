@@ -157,12 +157,24 @@ class MoleculeAI {
             {name:"nitrogen_index", value:nitrogen_index, type:"number"},
             {name:"this.reaction", value:this.reaction, type:"object"},
         )
+
         carbon_index.should.be.greaterThan(-1)
         nitrogen_index.should.be.greaterThan(-1)
 
+        const carbon_atom_id = this.reaction.container_substrate[0][1][carbon_index][5]
+        const nitrogen_atom_id = this.reaction.container_substrate[0][1][nitrogen_index][5]
+
+        Typecheck(
+            {name:"carbon_atom_id", value:carbon_atom_id, type:"string"},
+            {name:"nitrogen_atom_id", value:nitrogen_atom_id, type:"string"}
+        )
+
         if(DEBUG) {
             console.log("State/MoleculeAI.js formKetoneFromImine carbon index:")
-            console.log(carbon_index)
+            console.log("Carbon index:" + carbon_index)
+            console.log("Nitrogen index:" + nitrogen_index)
+            console.log("Carbon atom id:" + carbon_atom_id)
+            console.log("Nitrogen atom id:" + nitrogen_atom_id)
             console.log("Before splitting")
             console.log(VMolecule([this.reaction.container_substrate[0], 1]).compressed())
             console.log(VMolecule([this.reaction.container_substrate[0], 1]).canonicalSMILES())
@@ -173,18 +185,22 @@ class MoleculeAI {
         this.reaction.container_substrate[0][1].length.should.be.greaterThan(0)
         this.reaction.container_reagent[0][1].length.should.be.greaterThan(0)
 
-        // If nitrogen index > carbon index then we substract one from the carbon index to get the new carbon index
-        if (nitrogen_index > carbon_index) {
-              carbon_index = carbon_index - 1 // required
-        } else {
-          //  carbon_index = carbon_index + 1
-        }
+        this.reaction.setMoleculeAI()
+        carbon_index = this.reaction.MoleculeAI.findAtomIndexByAtomId(carbon_atom_id, DEBUG)
+
+        carbon_index.should.be.greaterThan(-1, "Could not find carbon index by atom id")
 
         if (DEBUG) {
             console.log("State/MoleculeAI.js formKetoneFromImine after splitting")
+            console.log("Carbon index:" + carbon_index)
+            console.log("Carbon atom id:" + carbon_atom_id)
             console.log(VMolecule([this.reaction.container_substrate[0], 1]).compressed())
             console.log(VMolecule([this.reaction.container_substrate[0], 1]).canonicalSMILES())
+            console.log("Reagent")
+            console.log(VMolecule([this.reaction.container_reagent[0], 1]).compressed())
+            console.log(VMolecule([this.reaction.container_reagent[0], 1]).canonicalSMILES())
             console.log("State/MoleculeAI.js formKetoneFromImine new carbon index:" + carbon_index)
+            process.error()
         }
 
         // Add =O to carbon
