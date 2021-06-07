@@ -411,16 +411,10 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
         // Get number of bonds and if greater than the number of max bonds for a neutral atom
         // then return true
-        /*
-        if (atom[0] === 'C') {
-            console.log(atom)
-            console.log("atom.js Is positively charged bond count: " + __bondCount(test_number) + " neutral atom max bond count:" + __neutralAtomMaxBondCount() + " number of electrons " + __numberOfElectrons() + ' number of protons ' + __numberOfProtons())
-        }*/
-        //return atom[4] === '+' || (__bondCount(test_number) > __neutralAtomMaxBondCount() || __numberOfElectrons() < __numberOfProtons())
         return atom[4] === '+' || atom[4] === 1
     }
 
-    const __isNegativelyCharged = (test_number) => {
+    const __isNegativelyCharged = function(test_number) {
 
         if (atom[4] === -1 || atom[4] === "-") {
             return true
@@ -432,16 +426,6 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         const number_of_double_bonds = double_bonds.length > 3 ? double_bonds.length / 4 : 0
 
         // Get total number of electrons and if greater than the number of protons return true
-        console.log(current_atom_index)
-        console.log('Bond count' +__bondCount())
-        console.log('number_of_double_bonds' +number_of_double_bonds)
-        console.log('__neutralAtomMaxBondCount' + __neutralAtomMaxBondCount())
-        console.log('__numberOfProtons' + __numberOfProtons())
-        console.log('__numberOfHydrogens' + __hydrogens().length)
-        console.log('__numberOfElectrons' + __numberOfElectrons())
-
-        // return __bondCount(test_number) + (number_of_double_bonds) < __neutralAtomMaxBondCount()
-
         if ((__bondCount(test_number) + (number_of_double_bonds)) > __neutralAtomMaxBondCount() ) {
             return false
         }
@@ -667,22 +651,6 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             }
         }
 
-        // C, 2 - 4 , max 4 bonds 0 free slots
-        // N, 2-5  max 3 bonds, 1 free slot
-        //O, 2-6 2 max 2 bonds  2 free slots
-        // Al 2-8-3 ? max ?bonds free slots
-        // the third shell can hold up to 18
-        /*
-        { group: 17,
-  column: 'VIIA',
-  atomic_number: 17,
-  name: 'chlorine',
-  atomic_weight: 35.45,
-  electrons_per_shell: '2-8-7',
-  state_of_matter: 'gas',
-  subcategory: 'reactive nonmetal' }
-         */
-
         atom[0].should.be.an.String()
         const info = PeriodicTable[atom[0]]
 
@@ -699,7 +667,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         // eg oxygen m[1] - 6 = 8 - 6 so oxygen can form 2 bonds.
         const max_possible_number_of_shared_electron_bonds = m[electrons_per_shell.length-1] - electrons_per_shell.pop() * 1
 
-        return max_possible_number_of_shared_electron_bonds - __bondCount()
+        return max_possible_number_of_shared_electron_bonds - this.bondCount()
 
     }
 

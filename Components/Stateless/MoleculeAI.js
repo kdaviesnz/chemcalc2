@@ -713,8 +713,6 @@ const MoleculeAI = (container_molecule) => {
             _.cloneDeep(atoms).map((a, i)=>{
                 const a_object = CAtom(a, i, container_molecule)
                 if (a_object.getAtomId() !==  atom_object.getAtomId() &&_.indexOf(atom_ids_added, a_object.getAtomId()) ===-1) {
-                    console.log(a_object.getAtomId())
-                    console.log(atom_object.getAtomId())
                     if (atom_object.isBondedTo(a_object) || atom_object.isDoubleBondedTo(a_object) || atom_object.isTripleBondedTo(a_object)) {
                         groups[group_index].push(a)
                         atom_ids_added.push(a_object.getAtomId())

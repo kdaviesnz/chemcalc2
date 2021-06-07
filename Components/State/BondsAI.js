@@ -169,8 +169,8 @@ class BondsAI {
         if (this.creatingCoordinateCovalentBond(atom1)) {
             // Check that the atom receiving the electrons has a free slot
             if (atom2.freeSlots() > 0) {
-                molecule[atom2.atomIndex].push(atom1FreeElectrons[0])
-                molecule[atom2.atomIndex].push(atom1FreeElectrons[1])
+                molecule_container[0][1][atom2.atomIndex].push(atom1FreeElectrons[0])
+                molecule_container[0][1][atom2.atomIndex].push(atom1FreeElectrons[1])
             }
         } else if (this.creatingCoordinateCovalentBond(atom2)) {
             // Check that the atom receiving the electrons has a free slot
