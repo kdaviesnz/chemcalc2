@@ -278,7 +278,10 @@ class MoleculeAI {
         }
 
         // Replace C=NR with C=O (NR becomes reagent)
-        this.bondsAI.makeDoubleBond(oxygen, carbon, DEBUG)
+        this.reaction.setMoleculeAI()
+        this.reaction.setReagentAI()
+        this.reaction.MoleculeAI.validateMolecule() // check each atom does not have more than allowed number of valence electrons
+        this.bondsAI.createDoubleBond(oxygen, carbon, this.reaction.container_substrate, DEBUG)
 
         this.reaction.setChargesOnSubstrate()
         this.bondsAI.removeProton(this.reaction.container_substrate, carbon_index, null, null, DEBUG)

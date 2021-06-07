@@ -141,22 +141,37 @@ class BondsAI {
         return this.removeBond(atom1, atom2, molecule_container)
     }
 
-    createDoubleBond(atom1, atom2, molecule_container, check=true) {
-        this.bondAtoms(atom1, atom2, molecule_container, true)
-        this.bondAtoms(atom1, atom2, molecule_container, false)
-        if (check && !this.isDoubleBond(atom1, atom2)) {
+    createDoubleBond(atom1, atom2, molecule_container, DEBUG, check=true) {
+        Typecheck(
+            {name:"atom1", value:atom1, type:"object"},
+            {name:"atom2", value:atom2, type:"object"},
+            {name:"molecule_container", value:molecule_container, type:"array"},
+            {name:"DEBUG", value:check, type:"boolean"},
+            {name:"check", value:check, type:"boolean"},
+        )
+
+        atom1.checkNumberOfElectrons()
+        atom2.checkNumberOfElectrons()
+
+        this.bondAtoms(atom1, atom2, molecule_container, DEBUG, true)
+        this.bondAtoms(atom1, atom2, molecule_container, DEBUG, false)
+        if (check && !this.isDoubleBond(atom1, atom2, DEBUG)) {
             throw new Error("Failed to create double bond")
         }
     }
 
-    bondAtoms(atom1, atom2, molecule_container, check=true) {
+    bondAtoms(atom1, atom2, molecule_container, DEBUG, check=true) {
 
         Typecheck(
             {name:"atom1", value:atom1, type:"object"},
             {name:"atom2", value:atom2, type:"object"},
             {name:"molecule_container", value:molecule_container, type:"array"},
+            {name:"DEBUG", value:check, type:"boolean"},
             {name:"check", value:check, type:"boolean"},
         )
+
+        atom1.checkNumberOfElectrons()
+        atom2.checkNumberOfElectrons()
 
         const atom1FreeElectrons = atom1.freeElectrons()
         const atom2FreeElectrons = atom2.freeElectrons()
@@ -169,12 +184,14 @@ class BondsAI {
         if (this.creatingCoordinateCovalentBond(atom1)) {
             // Check that the atom receiving the electrons has a free slot
             if (atom2.freeSlots() > 0) {
+                process.error()
                 molecule_container[0][1][atom2.atomIndex].push(atom1FreeElectrons[0])
                 molecule_container[0][1][atom2.atomIndex].push(atom1FreeElectrons[1])
             }
         } else if (this.creatingCoordinateCovalentBond(atom2)) {
             // Check that the atom receiving the electrons has a free slot
             if (atom1.freeSlots() > 0) {
+                process.error()
                 molecule_container[0][1][atom1.atomIndex].push(atom2FreeElectrons[0])
                 molecule_container[0][1][atom1.atomIndex].push(atom2FreeElectrons[1])
             }
@@ -190,9 +207,13 @@ class BondsAI {
         atom2 = CAtom(molecule_container[0][1][atom2.atomIndex], atom2.atomIndex, molecule_container)
 
         // Confirm we have created a bond
-        if (check && !this.isBond(atom1, atom2)) {
+        if (check && !this.isBond(atom1, atom2, DEBUG)) {
+            console.log(VMolecule(molecule_container).compressed())
+            console.log(atom1.getAtomId())
+            console.log(atom2.getAtomId())
             throw new Error("Failed to create bond")
         }
+
     }
 
     isBond(atom1_controller, atom2_controller, DEBUG) {
@@ -400,44 +421,8 @@ class BondsAI {
         // Check for C=X bonds and change to single bond (not N)
         const positiveC1CarbonAtom = CAtom(this.reaction.container_substrate[0][1][c1_positive_carbon_index], c1_positive_carbon_index, this.reaction.container_substrate)
 
-        this.makeDoubleBond(negativeC2CarbonAtom, positiveC1CarbonAtom, DEBUG)
+        this.createDoubleBond(negativeC2CarbonAtom, positiveC1CarbonAtom, DEBUG)
 
-    }
-
-    // Not working
-    makeDoubleBond(negativeAtom, positiveAtom, DEBUG) {
-
-        Typecheck(
-            {name:"negativeAtom", value:negativeAtom, type:"object"},
-            {name:"positiveAtom", value:positiveAtom, type:"object"},
-            {name:"DEBUG", value:DEBUG, type:"boolean"}
-        )
-
-        // If there was not already a bond between the atoms
-        if (this.isBond(negativeAtom, positiveAtom)=== false) {
-            this.bondAtoms(negativeAtom, positiveAtom, this.reaction.container_substrate)
-            this.reaction.setMoleculeAI()
-            this.bondAtoms(negativeAtom, positiveAtom, this.reaction.container_substrate)
-        } else {
-            this.bondAtoms(negativeAtom, positiveAtom, this.reaction.container_substrate)
-        }
-        this.reaction.setMoleculeAI()
-        this.reaction.setChargesOnSubstrate(DEBUG)
-
-        if (DEBUG) {
-            console.log("Substrate after adding double bond")
-            console.log(VMolecule([this.reaction.container_substrate[0],1]).compressed())
-        }
-
-        negativeAtom = CAtom(molecule_container[0][1][negativeAtom.atomIndex], negativeAtom.atomIndex, molecule_container)
-        positiveAtom = CAtom(molecule_container[0][1][positiveAtom.atomIndex], positiveAtom.atomIndex, molecule_container)
-
-        // Confirm we have created a bond
-        if (!this.isDoubleBond(negativeAtom, positiveAtom)) {
-            throw new Error("Failed to create double bond")
-        }
-
-        return true
     }
 
 
@@ -485,7 +470,7 @@ class BondsAI {
                     console.log("BondsAI makeOxygenCarbonDoubleBond -> oxygen index = " + oxygen_index)
                     console.log("BondsAI makeOxygenCarbonDoubleBond -> carbon index = " + carbon_index)
                 }
-                this.createDoubleBond(o,c, this.reaction.container_substrate)
+                this.createDoubleBond(o,c, this.reaction.container_substrate, DEBUG)
                 this.reaction.setMoleculeAI()
                 if (DEBUG) {
                     console.log("BondsAI makeOxygenCarbonDoubleBond container substrate after adding double bond")

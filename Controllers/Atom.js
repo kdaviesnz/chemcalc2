@@ -21,18 +21,13 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         console.log("Atom.js Warning: atom is undefined")
     }
 
-    if (atom.length < 3) {
-        console.log("Atom length is not greater than 3")
-        console.log("Atom:")
-        console.log(atom)
-        throw new Error()
-        process.exit()
-    }
-    atom.length.should.be.greaterThan(3)
+    atom.slice(0, Constants().electron_index).length.should.be.greaterThan(4)
+    atom.slice(Constants().electron_index).length.should.be.lessThanOrEqual(Constants().max_valence_electrons[atom[0]])
 
     const __getAtomId =  function() {
         return this.atom[5]
     }
+
     const __shared_electrons = () => {
 
         const atoms = mmolecule[0][1]
@@ -779,6 +774,10 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         const shared_electrons = this.electronsSharedWithSibling(sibling_atom)
 
         if (DEBUG) {
+            console.log("Atom electrons:" + this.symbol)
+            console.log(this.electrons())
+            console.log("Sibling atom electrons:" + sibling_atom.symbol)
+            console.log(sibling_atom.electrons())
             console.log("CAtom __isBondedTo() Got " + shared_electrons.length + " shared electrons")
         }
 
@@ -909,6 +908,10 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         })
     }
 
+    const __checkNumberOfElectrons = function() {
+        return this.electrons.length <= Constants().max_valence_electrons[this.symbol]
+    }
+
     return {
         carbonBonds: __carbonBonds,
         electrons: __electrons,
@@ -993,7 +996,8 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         getAtomId: __getAtomId,
         singleBondsNoHydrogens: __singleBondsNoHydrogens,
         doubleBondsNoHydrogens: __doubleBondsNoHydrogens,
-        tripleBondsNoHydrogens: __tripleBondsNoHydrogens
+        tripleBondsNoHydrogens: __tripleBondsNoHydrogens,
+        checkNumberOfElectrons: __checkNumberOfElectrons
 
     }
 }
