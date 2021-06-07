@@ -9,6 +9,8 @@ const Set = require('../../Models/Set')
 const uniqid = require('uniqid');
 const Typecheck = require('./../../Typecheck')
 const Constants = require("../../Constants")
+const Prototypes = require("../../Prototypes")
+Prototypes()
 
 // removeProton(molecule, atom_index, electrons, proton)
 // removeAtom(molecule, atom) {
@@ -184,23 +186,22 @@ class BondsAI {
         if (this.creatingCoordinateCovalentBond(atom1)) {
             // Check that the atom receiving the electrons has a free slot
             if (atom2.freeSlots() > 0) {
-                process.error()
-                molecule_container[0][1][atom2.atomIndex].push(atom1FreeElectrons[0])
-                molecule_container[0][1][atom2.atomIndex].push(atom1FreeElectrons[1])
+                molecule_container[0][1][atom2.atomIndex].addElectron(atom1FreeElectrons[0])
+                molecule_container[0][1][atom2.atomIndex].addElectron(atom1FreeElectrons[1])
             }
         } else if (this.creatingCoordinateCovalentBond(atom2)) {
             // Check that the atom receiving the electrons has a free slot
             if (atom1.freeSlots() > 0) {
                 process.error()
-                molecule_container[0][1][atom1.atomIndex].push(atom2FreeElectrons[0])
-                molecule_container[0][1][atom1.atomIndex].push(atom2FreeElectrons[1])
+                molecule_container[0][1][atom1.atomIndex].addElectron(atom2FreeElectrons[0])
+                molecule_container[0][1][atom1.atomIndex].addElectron(atom2FreeElectrons[1])
             }
         } else {
             // Standard covalent bond
             const atom1FreeElectron = atom1FreeElectrons[0]
             const atom2FreeElectron = atom2FreeElectrons[1]
-            molecule_container[0][1][atom1.atomIndex].push(atom2FreeElectron)
-            molecule_container[0][1][atom2.atomIndex].push(atom1FreeElectron)
+            molecule_container[0][1][atom1.atomIndex].addElectron(atom2FreeElectron)
+            molecule_container[0][1][atom2.atomIndex].addElectron(atom1FreeElectron)
         }
 
         atom1 = CAtom(molecule_container[0][1][atom1.atomIndex], atom1.atomIndex, molecule_container)
@@ -239,9 +240,9 @@ class BondsAI {
         const atom = CAtom(molecule_container[0][1][atom_index], atom_index, molecule_container)
         const hydrogen_electron_to_share = hydrogen_arr[hydrogen_arr.length-1]
         const atom_free_electrons = atom.freeElectrons()
-        molecule_container[0][1][atom_index].push(hydrogen_electron_to_share)
-        hydrogen_arr.push(atom_free_electrons[0])
-        molecule_container[0][1].push(hydrogen_arr)
+        molecule_container[0][1][atom_index].addElectron(hydrogen_electron_to_share)
+        hydrogen_arr.addElectron(atom_free_electrons[0], "H")
+        molecule_container[0][1].addAtom(hydrogen_arr)
         return molecule_container
     }
 
@@ -250,15 +251,9 @@ class BondsAI {
         const atom = CAtom(molecule_container[0][1][atom_index], atom_index, molecule_container)
         const free_electrons = atom.freeElectrons()
         if (free_electrons.length ===0) {
-            molecule_container[0][1][atom_index].push(proton[proton.length-1])
-            /*
-            free_electrons.push(uniqid())
-            free_electrons.push(uniqid())
-            molecule_container[0][1][atom_index].push(free_electrons[0])
-            molecule_container[0][1][atom_index].push(free_electrons[1])
-                         */
+            molecule_container[0][1][atom_index].addElectron(proton[proton.length-1])
         }
-        molecule_container[0][1].push(proton)
+        molecule_container[0][1].addAtom(proton)
 
         return molecule_container
     }
@@ -283,8 +278,8 @@ class BondsAI {
             proton = this.reaction.container_substrate[0][1][hydrogen_nitrogen_bonds[0].atom_index]
         }
         molecule = this.removeBond(molecule, atom_index, electrons)
-        molecule[0][1][atom_index].push(uniqid())
-        molecule[0][1][atom_index].push(uniqid())
+        molecule[0][1][atom_index].addElectron(uniqid())
+        molecule[0][1][atom_index].addElectron(uniqid())
         molecule = this.removeAtom(molecule, proton)
         return molecule
     }
@@ -313,8 +308,8 @@ class BondsAI {
 
         const freeElectrons = nitrogen.freeElectrons()
         // Add electrons to carbon
-        this.reaction.container_substrate[0][1][carbon_index].push(freeElectrons[0])
-        this.reaction.container_substrate[0][1][carbon_index].push(freeElectrons[1])
+        this.reaction.container_substrate[0][1][carbon_index].addElectron(freeElectrons[0])
+        this.reaction.container_substrate[0][1][carbon_index].addElectron(freeElectrons[1])
 
         // Charges
         this.reaction.container_substrate[0][1][carbon_index][4] = this.reaction.container_substrate[0][1][carbon_index][4] === "+" ? "": "-"
@@ -382,13 +377,13 @@ class BondsAI {
                 return e === proton_shared_electrons[0] || e === proton_shared_electrons[1]
             })
             // Add electrons to carbon
-            this.reaction.container_substrate[0][1][carbon_index].push(proton_shared_electrons[0])
-            this.reaction.container_substrate[0][1][carbon_index].push(proton_shared_electrons[1])
+            this.reaction.container_substrate[0][1][carbon_index].addElectron(proton_shared_electrons[0])
+            this.reaction.container_substrate[0][1][carbon_index].addElectron(proton_shared_electrons[1])
         } else {
             const freeElectrons = n.freeElectrons()
             // Add electrons to carbon
-            this.reaction.container_substrate[0][1][carbon_index].push(freeElectrons[0])
-            this.reaction.container_substrate[0][1][carbon_index].push(freeElectrons[1])
+            this.reaction.container_substrate[0][1][carbon_index].addElectron(freeElectrons[0])
+            this.reaction.container_substrate[0][1][carbon_index].addElectron(freeElectrons[1])
         }
 
         // Charges
@@ -638,28 +633,6 @@ class BondsAI {
                 return bond.atom[0] !== 'H' && bond.atom[0] !== 'O' && bond.atom[4] === '-'
             })
 
-
-/*
-            if (carbon_atom_negative_bonds.length > 0) {
-                // Add and readd electrons
-                this.reaction.container_substrate[0][1][carbon_atom_negative_bonds[0].atom_index].push(shared_electrons[0])
-                this.reaction.container_substrate[0][1][carbon_atom_negative_bonds[0].atom_index].push(shared_electrons[1])
-                this.reaction.container_substrate[0][1][double_bonds[0].atom_index].push(shared_electrons[0])
-                this.reaction.container_substrate[0][1][double_bonds[0].atom_index].push(shared_electrons[1])
-
-                this.reaction.setMoleculeAI()
-
-                // this.reaction.container_substrate[0][1][double_bonds[0].atom_index][4] = this.reaction.container_substrate[0][1][double_bonds[0].atom_index][4] === "+" ? '' : '-'
-                this.reaction.setChargeOnSubstrateAtom(double_bonds[0].atom_index)
-
-                // this.reaction.container_substrate[0][1][carbon_atom_negative_bonds[0].atom_index][4] = this.reaction.container_substrate[0][1][carbon_atom_negative_bonds[0].atom_index][4] === "-" ? '' : '+'
-                this.reaction.setChargeOnSubstrateAtom(carbon_atom_negative_bonds[0].atom_index)
-
-                //  this.reaction.container_substrate[0][1][oxygen_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][oxygen_index], shared_electrons)
-                this.reaction.setChargeOnSubstrateAtom(oxygen_index)
-            }
-*/
-
         }
 
         this.reaction.setMoleculeAI()
@@ -742,15 +715,7 @@ class BondsAI {
         // Create proton and add it to the oxygen
         // See Leuckart Wallach
         // Pinacol Rearrangement doesn't add H
-        /*
-        const proton = AtomFactory("H")
-        proton.pop()
-        proton.push(shared_electrons[0])
-        proton.push(shared_electrons[1])
-        this.reaction.container_substrate[0][1].push(proton)
-        */
         // Charges
-        //this.reaction.container_substrate[0][1][oxygen_index][4] = ""
         this.reaction.setChargeOnSubstrateAtom(oxygen_index)
         /*
         if (undefined !== this.reaction.rule && this.reaction.rule.mechanism === "pinacol rearrangement") {
@@ -871,8 +836,8 @@ class BondsAI {
         carbon_electrons_before.should.be.lessThan(this.reaction.container_substrate[0][1][carbon_index].length + 2)
 
         // Add electrons from nitrogen to carbon
-        this.reaction.container_substrate[0][1][carbon_index].push(freeElectrons[0])
-        this.reaction.container_substrate[0][1][carbon_index].push(freeElectrons[1])
+        this.reaction.container_substrate[0][1][carbon_index].addElectron(freeElectrons[0])
+        this.reaction.container_substrate[0][1][carbon_index].addElectron(freeElectrons[1])
 
         // Remove a hydrogen from the carbon atom
         const h = carbon_atom.indexedBonds("").filter((bond)=>{
@@ -958,8 +923,8 @@ class BondsAI {
         carbon_electrons_before.should.be.lessThan(this.reaction.container_substrate[0][1][carbon_index].length + 2)
 
         // Add electrons from oxygen to carbon
-        this.reaction.container_substrate[0][1][carbon_index].push(freeElectrons[0])
-        this.reaction.container_substrate[0][1][carbon_index].push(freeElectrons[1])
+        this.reaction.container_substrate[0][1][carbon_index].addElectron(freeElectrons[0])
+        this.reaction.container_substrate[0][1][carbon_index].addElectron(freeElectrons[1])
 
         // Remove a hydrogen from the oxygen atom
         const h = oxygen.indexedBonds("").filter((bond)=>{
@@ -1087,17 +1052,17 @@ class BondsAI {
                     const uniqid = require('uniqid');
                     freeElectrons.push(uniqid())
                     freeElectrons.push(uniqid())
-                    this.reaction.container_reagent[0][1][nucleophile_index].push(freeElectrons[0])
-                    this.reaction.container_reagent[0][1][nucleophile_index].push(freeElectrons[1])
+                    this.reaction.container_reagent[0][1][nucleophile_index].addElectron(freeElectrons[0])
+                    this.reaction.container_reagent[0][1][nucleophile_index].addElectron(freeElectrons[1])
                 }
             }
-            this.reaction.container_substrate[0][1][electrophile_index].push(freeElectrons[0])
-            this.reaction.container_substrate[0][1][electrophile_index].push(freeElectrons[1])
+            this.reaction.container_substrate[0][1][electrophile_index].addElectron(freeElectrons[0])
+            this.reaction.container_substrate[0][1][electrophile_index].addElectron(freeElectrons[1])
 
             // Add reagent atoms to substrate
             this.reaction.container_reagent[0][1].map(
                 (atom) => {
-                    this.reaction.container_substrate[0][1].push(atom)
+                    this.reaction.container_substrate[0][1].addAtom(atom)
                     return atom
                 }
             )
@@ -1348,22 +1313,9 @@ class BondsAI {
             this.reaction.container_reagent = this.reaction.leaving_groups[0]
             console.log(VMolecule(this.reaction.container_reagent).formatted())
             console.log(aaaaa)
-            process.exit()
+            process.error()
 
-            // console.log("Substrate")
-           // console.log(VMolecule(this.reaction.container_substrate).formatted())
-           // console.log("Reagent")
-           // console.log(VMolecule(this.reaction.container_reagent).formatted())
-           // console.log(jjjkkppp)
-            /*
-            const carbon_free_electrons = carbon_atom.freeElectrons()
-            // Add electrons to oxygen
-            this.reaction.container_substrate[0][1][oxygen_index].push(carbon_free_electrons[0])
-            this.reaction.container_substrate[0][1][oxygen_index].push(carbon_free_electrons[1])
-             */
 
-           // this.reaction.setChargeOnSubstrateAtom(nitrogen_index)
-          //  this.reaction.setChargeOnSubstrateAtom(carbon_atom_index)
             this.reaction.setMoleculeAI()
 
             return true
@@ -1458,9 +1410,9 @@ class BondsAI {
             if (n_bonds[0].atom_index < c_index) {
                 c_index = c_index - 1
             }
-            this.reaction.container_substrate[0][1][c_index].push(halide_atom[halide_atom.length-1])
-            this.reaction.container_substrate[0][1][c_index].push(halide_atom[halide_atom.length-2])
-            this.reaction.container_substrate[0][1].push(halide_atom)
+            this.reaction.container_substrate[0][1][c_index].addElectron(halide_atom[halide_atom.length-1])
+            this.reaction.container_substrate[0][1][c_index].addElectron(halide_atom[halide_atom.length-2])
+            this.reaction.container_substrate[0][1].addAtom(halide_atom)
 
             //console.log("c index: "+c_index)
             this.reaction.setChargesOnSubstrate()

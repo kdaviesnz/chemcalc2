@@ -636,33 +636,16 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     const __freeSlots = function(test_number)  {
 
         // Basic checks
-        atom.should.not.be.null()
-        atom.length.should.not.be.equal(0)
-        current_atom_index.should.not.be.null()
+        this.atom.should.not.be.null()
+        this.atom.length.should.not.be.equal(0)
 
-        if (atom[0]==="N") {
-            if (this.indexedBonds("").length + this.indexedDoubleBonds("").length === 3) {
-                return 1
-            }
+        const maximum_number_of_electrons = Constants().max_valence_electrons[this.atom.symbol]
+
+        if (maximum_number_of_electrons - this.electrons().length === 0) {
+            return 0
+        } else {
+            return maximum_number_of_electrons - this.electrons().length / 2
         }
-
-        atom[0].should.be.an.String()
-        const info = PeriodicTable[atom[0]]
-
-        const number_of_shells = info["electrons_per_shell"].split("-").length
-        const m = [2,8,18,32,50,72,98]
-
-        // This is the maximum number of electrons the atom can have in its outer shell
-        // For chlorine this is 18
-        const max_possible_number_of_electrons = m[number_of_shells-1]
-
-        // This is the number of bonds where the atom shares one of its outershell electrons
-        // eg for oxygen this number is 2
-        const electrons_per_shell = info["electrons_per_shell"].split("-")
-        // eg oxygen m[1] - 6 = 8 - 6 so oxygen can form 2 bonds.
-        const max_possible_number_of_shared_electron_bonds = m[electrons_per_shell.length-1] - electrons_per_shell.pop() * 1
-
-        return max_possible_number_of_shared_electron_bonds - this.bondCount()
 
     }
 
