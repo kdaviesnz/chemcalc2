@@ -2,7 +2,7 @@
 Only methods that change the state of subtrate / reagent
 
 removeBranch(start_of_branch_index, replacement)
-formKetoneFromImine(nitrogen_index, carbon_index)
+formImineFromKetoneReverse(nitrogen_index, carbon_index)
 neutraliseMolecule(molecule_container)
  */
 const BondsAI = require('../../Components/State/BondsAI')
@@ -149,7 +149,7 @@ class MoleculeAI {
 
     }
 
-    formKetoneFromImine(nitrogen_index, carbon_index, DEBUG) {
+    formImineFromKetoneReverse(nitrogen_index, carbon_index, DEBUG) {
 
         Typecheck(
             {name:"carbon_index", value:carbon_index, type:"number"},
@@ -281,7 +281,7 @@ class MoleculeAI {
         this.reaction.setMoleculeAI()
         this.reaction.setReagentAI()
         this.reaction.MoleculeAI.validateMolecule() // check each atom does not have more than allowed number of valence electrons
-        this.bondsAI.createDoubleBond(oxygen, carbon, this.reaction.container_substrate, DEBUG)
+        this.bondsAI.breakCarbonOxygenDoubleBondReverse(oxygen, carbon, this.reaction.container_substrate, DEBUG)
 
         this.reaction.setChargesOnSubstrate()
         this.bondsAI.removeProton(this.reaction.container_substrate, carbon_index, null, null, DEBUG)

@@ -188,13 +188,16 @@ class BondsAI {
             if (atom2.freeSlots() > 0) {
                 molecule_container[0][1][atom2.atomIndex].addElectron(atom1FreeElectrons[0])
                 molecule_container[0][1][atom2.atomIndex].addElectron(atom1FreeElectrons[1])
+            } else {
+                throw new Error("Unable to create coordinate covalent bond as there are not enough free slots available.")
             }
         } else if (this.creatingCoordinateCovalentBond(atom2)) {
             // Check that the atom receiving the electrons has a free slot
             if (atom1.freeSlots() > 0) {
-                process.error()
                 molecule_container[0][1][atom1.atomIndex].addElectron(atom2FreeElectrons[0])
                 molecule_container[0][1][atom1.atomIndex].addElectron(atom2FreeElectrons[1])
+            } else {
+                throw new Error("Unable to create coordinate covalent bond as there are not enough free slots available.")
             }
         } else {
             // Standard covalent bond
@@ -856,88 +859,47 @@ class BondsAI {
 
     }
 
-    breakCarbonOxygenDoubleBondReverse() {
+    breakCarbonOxygenDoubleBondReverse(carbon, oxygen, DEBUG) {
+
+        Typecheck(
+            {name:"carbon", value:carbon, type:"object"},
+            {name:"oxygen", value:oxygen, type:"object"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"}
+        )
 
         this.reaction.setMoleculeAI()
 
         // Make C=O bond
-        const oxygen_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=> {
-            if ( atom[0] !== "O") {
+        if (oxygen === null || oxygen === undefined) {
+            const oxygen_index = this.reaction.MoleculeAI.findOxygenAttachedToCarbonIndex()
+            if (oxygen_index === -1) {
                 return false
             }
-            const o = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate)
-            const c_bonds = o.indexedBonds("").filter((bond)=>{
-                // Pinacol Rearrangement - add && bond.atom[4] === "+
-                // otherwise get into C=O CO C=O loop
-                // However Leukart requires neutral carbon
-                return bond.atom[0] === "C"
-            })
-            return c_bonds.length > 0
-
-        })
-
-
-        if (oxygen_index === -1) {
-            return false
+            oxygen = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
         }
 
-        const oxygen = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
-
-        const carbon_bonds = oxygen.indexedBonds("").filter((bond)=>{
-            //return bond.atom[0] === "C" && bond.atom[4] !== "" && bond.atom[4] !== 0
-            if (bond.atom[0] !== "C") {
+        if (carbon === null || carbon === undefined) {
+            const carbon_index = this.reaction.MoleculeAI.findCarbonAttachedToOxygenIndex(oxygen)
+            if (carbon_index === -1) {
                 return false
             }
-            const c = CAtom(this.reaction.container_substrate[0][1][bond.atom_index], bond.atom_index, this.reaction.container_substrate)
-            if (c.doubleBondCount() > 0 ) {
-                return false
-            }
-            if (c.bondCount() > 3) {
-             //   return false
-            }
-            return true
-        })
-
-
-
-        if (carbon_bonds.length === 0) {
-            return false
+            carbon = CAtom(this.reaction.container_substrate[0][1][carbon_index], carbon_index, this.reaction.container_substrate)
         }
 
-        const carbon_index = carbon_bonds[0].atom_index
-
-        const freeElectrons = oxygen.freeElectrons()
-
-        const carbon_atom = CAtom(this.reaction.container_substrate[0][1][carbon_index], carbon_index, this.reaction.container_substrate)
-        const carbon_atom_free_electrons = carbon_atom.freeElectrons()
-
-
-       // console.log(VMolecule(this.reaction.container_substrate).compressed())
-        //console.log(jjkjj)
+        const oxygen_atom_free_electrons = oxygen.freeElectrons()
+        const carbon_atom_free_electrons = carbon.freeElectrons()
 
         // Make space for electrons
-        const carbon_electrons_before = this.reaction.container_substrate[0][1][carbon_index].length
-        _.remove(this.reaction.container_substrate[0][1][carbon_index], (e, i)=>{
-            return e === carbon_atom_free_electrons[0] || e === carbon_atom_free_electrons[1]
-        })
-        carbon_electrons_before.should.be.lessThan(this.reaction.container_substrate[0][1][carbon_index].length + 2)
+        carbon.removeElectrons([carbon_atom_free_electrons[0], carbon_atom_free_electrons[1]])
 
         // Add electrons from oxygen to carbon
-        this.reaction.container_substrate[0][1][carbon_index].addElectron(freeElectrons[0])
-        this.reaction.container_substrate[0][1][carbon_index].addElectron(freeElectrons[1])
+        carbon.addElectronsFromOtherAtom([oxygen_atom_free_electrons[0], oxygen_atom_free_electrons[1]])
 
         // Remove a hydrogen from the oxygen atom
-        const h = oxygen.indexedBonds("").filter((bond)=>{
-            return bond.atom[0] === "H"
-        })
-        if (h.length > 0) {
-            // this.reaction.container_substrate[0][1][oxygen_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][oxygen_index], this.reaction.container_substrate[0][1][h[0].atom_index])
-            // Remove hydrogen atom
-            _.remove(this.reaction.container_substrate[0][1], (v, i) => {
-                    return i === h[0].atom_index
-                }
-            )
-        }
+        const oxygen_hydrogen = oxygen.getHydrogen()
+        this.reaction.container_substrate[0][1].removeAtom(oxygen_hydrogen)
+
+        process.error()
 
         // Charges
         this.reaction.setChargesOnSubstrate()

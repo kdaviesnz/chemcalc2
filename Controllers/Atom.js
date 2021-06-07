@@ -664,6 +664,18 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         }
     }
 
+    const __addElectronsFromOtherAtom = function(electrons) {
+
+        Typecheck(
+            {name:"electrons", value:electrons, type:"array"},
+        )
+
+        electrons.forEach((electron)=>{
+          this.atom.addElectron(electron)
+        })
+
+    }
+
     const __addElectrons = (number_of_electrons_to_add) => {
         let i = 0
         for (i=0;i<number_of_electrons_to_add;i++) {
@@ -895,6 +907,12 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         return this.electrons.length <= Constants().max_valence_electrons[this.symbol]
     }
 
+    const __getHydrogen = function() {
+        return this.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "H"
+        })
+    }
+
     return {
         carbonBonds: __carbonBonds,
         electrons: __electrons,
@@ -980,8 +998,9 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         singleBondsNoHydrogens: __singleBondsNoHydrogens,
         doubleBondsNoHydrogens: __doubleBondsNoHydrogens,
         tripleBondsNoHydrogens: __tripleBondsNoHydrogens,
-        checkNumberOfElectrons: __checkNumberOfElectrons
-
+        checkNumberOfElectrons: __checkNumberOfElectrons,
+        addElectronsFromOtherAtom: __addElectronsFromOtherAtom,
+        getHydrogen: __getHydrogen
     }
 }
 

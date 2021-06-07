@@ -903,6 +903,35 @@ const MoleculeAI = (container_molecule) => {
             })
         },
 
+        findCarbonAttachedToOxygenIndex: function(oxygen) {
+
+            Typecheck(
+                {name:"oxygen", value:oxygen, type:"object"}
+            )
+
+            const carbon_bonds = oxygen.indexedBonds("").filter((bond) => {
+                if (bond.atom[0] !== "C") {
+                    return false
+                }
+                const c = CAtom(container_molecule[0][1][bond.atom_index], bond.atom_index, container_molecule)
+                if (c.doubleBondCount() > 0) {
+                    return false
+                }
+                if (c.bondCount() > 3) {
+                    //   return false
+                }
+                return true
+            })
+
+
+            if (carbon_bonds.length === 0) {
+                return false
+            }
+
+            return carbon_bonds[0].atom_index
+
+        },
+
         findOxygenAttachedToCarbonIndexNoDoubleBonds: function() {
             return _.findIndex(container_molecule[0][1], (atom, index) => {
                 if (atom[0] !== "O") {

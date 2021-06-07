@@ -1,5 +1,6 @@
 const Constants = require("./Constants")
 const Typecheck = require("./Typecheck")
+const _ = require('lodash');
 
 const Prototypes = () => {
     Object.defineProperty(Array.prototype, 'addElectron', {
@@ -16,6 +17,17 @@ const Prototypes = () => {
                 {name:"atom", value:atom, type:"array"},
             )
             this.push(atom)
+        }
+    })
+    Object.defineProperty(Array.prototype, 'removeAtom', {
+        value: function(atom) {
+            Typecheck(
+                {name:"atom", value:atom, type:"array"},
+            )
+            _.remove(this, (v, i) => {
+                    return i === atom[0].atom_index
+                }
+            )
         }
     })
 }
