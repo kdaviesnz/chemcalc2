@@ -639,12 +639,13 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         this.atom.should.not.be.null()
         this.atom.length.should.not.be.equal(0)
 
-        const maximum_number_of_electrons = Constants().max_valence_electrons[this.atom.symbol]
+        const maximum_number_of_electrons = Constants().max_valence_electrons[this.symbol]
+        maximum_number_of_electrons.should.not.be.undefined()
 
         if (maximum_number_of_electrons - this.electrons().length === 0) {
             return 0
         } else {
-            return maximum_number_of_electrons - this.electrons().length / 2
+            return (maximum_number_of_electrons - this.electrons().length) / 2
         }
 
     }
@@ -670,9 +671,8 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             {name:"electrons", value:electrons, type:"array"},
         )
 
-        electrons.forEach((electron)=>{
-          this.atom.addElectron(electron)
-        })
+        electrons.typeCheck('electron', 'string')
+        this.atom.addElectrons(electrons)
 
     }
 
@@ -851,6 +851,27 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         })
     }
 
+    const __removeHydrogenBond = function(hydrogen_atom, DEBUG) {
+
+        Typecheck(
+            {name:"hydrogen_atom", value:hydrogen_atom, type:"object"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"}
+        )
+
+        const shared_electrons = this.electronsSharedWithSibling(hydrogen_atom).filter((electron) => {
+            Typecheck(
+                {name:"electron", value:electron, type: "string"},
+            )
+            return electron[0] === "H"
+        })
+        if (shared_electrons.length > 0) {
+            this.removeElectrons([shared_electrons[0]])
+            hydrogen_atom.removeElectrons([shared_electrons[1]])
+        } else if(DEBUG) {
+            console.log("CAtom __removeHydrogenBond() No shared electrons found")
+        }
+
+    }
 
     const __removeCovalentBond = function(sibling_atom, DEBUG) {
 
@@ -907,10 +928,15 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         return this.electrons.length <= Constants().max_valence_electrons[this.symbol]
     }
 
-    const __getHydrogen = function() {
+    const __getHydrogens = function() {
         return this.indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "H"
         })
+    }
+
+    const __getHydrogen = function() {
+        const hydrogens = this.getHydrogens()
+        return hydrogens[0].atom
     }
 
     return {
@@ -1000,7 +1026,9 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         tripleBondsNoHydrogens: __tripleBondsNoHydrogens,
         checkNumberOfElectrons: __checkNumberOfElectrons,
         addElectronsFromOtherAtom: __addElectronsFromOtherAtom,
-        getHydrogen: __getHydrogen
+        getHydrogen: __getHydrogen,
+        getHydrogens: __getHydrogens,
+        removeHydrogenBond:__removeHydrogenBond
     }
 }
 

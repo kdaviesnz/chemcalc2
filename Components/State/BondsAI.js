@@ -26,7 +26,7 @@ Prototypes()
 // removeHalide()
 // makeCarbonNitrogenDoubleBondReverse(nitrogen_index, carbon_index, DEBUG)
 // makeOxygenCarbonDoubleBondReverse()
-// breakCarbonOxygenDoubleBondReverse()
+// breakCarbonOxygenTerminalDoubleBondReverse()
 // bondSubstrateToReagentReverse()
 // removeHalideReverse()
 // makeCarbonCarbonDoubleBondByAtomIndex(c2_negative_carbon_index, c1_positive_carbon_index, DEBUG)
@@ -39,6 +39,7 @@ Prototypes()
 // bondAtomsReverse(atom1, atom2)
 // removeCoordinateCovalentBond(atom1, atom2)
 // bondAtomsReverse(atom1, atom2)
+// addHydrogen(molecule_container, atom_index)
 class BondsAI {
 
     constructor(reaction) {
@@ -92,6 +93,32 @@ class BondsAI {
         } else if(atom2.isCoordinateCovalentBondDonator(atom1)) {
             atom1.removeElectrons(shared_electrons)
         }
+    }
+
+    removeHydrogenBond(atom, hydrogen, molecule_container, DEBUG) {
+
+        Typecheck(
+            {name:"molecule_container", value:molecule_container, type:"array"},
+            {name:"atom", value:atom, type:"object"},
+            {name:"hydrogen", value:hydrogen, type:"object"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+        )
+
+        // No bond between the two atoms
+        if (!this.isBond(atom, hydrogen, DEBUG) && !this.isDoubleBond(atom, hydrogen, DEBUG)) {
+            return false
+        }
+
+        atom.removeHydrogenBond(hydrogen)
+
+        if (this.isBond(atom, hydrogen, DEBUG)) {
+            throw new Error("BondsAI removeHydrogenBond() Failed to remove bond")
+        }
+
+        if (this.isDoubleBond(atom, hydrogen, DEBUG)) {
+            throw new Error("BondsAI removeHydrogenBond() Failed to remove double bond")
+        }
+
     }
 
     removeBond(atom1, atom2, molecule_container, DEBUG) {
@@ -859,13 +886,24 @@ class BondsAI {
 
     }
 
-    breakCarbonOxygenDoubleBondReverse(carbon, oxygen, DEBUG) {
+    breakCarbonOxygenTerminalDoubleBondReverse(carbon, oxygen, DEBUG) {
+
+        // @todo if carbon has no free electrons then need to find terminal atom attached to carbon and remove it and replace electrons with new electrons
+        process.error()
 
         Typecheck(
             {name:"carbon", value:carbon, type:"object"},
             {name:"oxygen", value:oxygen, type:"object"},
             {name:"DEBUG", value:DEBUG, type:"boolean"}
         )
+
+        if (carbon !== null && carbon !== undefined) {
+            carbon.atom[0].should.be.equal("C")
+        }
+
+        if (oxygen !== null && oxygen !== undefined) {
+            oxygen.atom[0].should.be.equal("O")
+        }
 
         this.reaction.setMoleculeAI()
 
@@ -889,25 +927,63 @@ class BondsAI {
         const oxygen_atom_free_electrons = oxygen.freeElectrons()
         const carbon_atom_free_electrons = carbon.freeElectrons()
 
+        oxygen_atom_free_electrons.typeCheck('electron', 'string')
+        carbon_atom_free_electrons.typeCheck('electron', 'string')
+
+        oxygen_atom_free_electrons.length.should.be.greaterThan(3)
+
         // Make space for electrons
-        carbon.removeElectrons([carbon_atom_free_electrons[0], carbon_atom_free_electrons[1]])
+        if (carbon_atom_free_electrons.length === 0) {
+            carbon.atom.pop()
+            carbon.atom.pop()
+        } else {
+            carbon.removeElectrons([carbon_atom_free_electrons[carbon_atom_free_electrons.length-1], carbon_atom_free_electrons[carbon_atom_free_electrons.length-2]])
+        }
+
+        carbon.freeSlots().should.be.greaterThan(0)
+
+        carbon_atom_free_electrons.typeCheck('electron', 'string')
+        oxygen_atom_free_electrons.typeCheck('electron', 'string')
 
         // Add electrons from oxygen to carbon
         carbon.addElectronsFromOtherAtom([oxygen_atom_free_electrons[0], oxygen_atom_free_electrons[1]])
 
-        // Remove a hydrogen from the oxygen atom
-        const oxygen_hydrogen = oxygen.getHydrogen()
-        this.reaction.container_substrate[0][1].removeAtom(oxygen_hydrogen)
+        // Remove all hydrogens from the oxygen atom
+        const oxygen_hydrogens = oxygen.getHydrogens()
 
+        // Remove hydrogens from oxygen atom and from molecule
+        oxygen_hydrogens.map((oxygen_hydrogen)=>{
+            Typecheck(
+                {name:"oxygen_hydrogen", value:oxygen_hydrogen.atom, type:"array"},
+            )
+            const hydrogen = CAtom(this.reaction.container_substrate[0][1][oxygen_hydrogen.atom_index], oxygen_hydrogen.atom_index, this.reaction.container_substrate)
+            this.removeHydrogenBond(oxygen, hydrogen, this.reaction.container_substrate, DEBUG)
+            this.reaction.container_substrate[0][1].removeAtom(oxygen_hydrogen.atom)
+        })
+
+        if (carbon_atom_free_electrons.length === 0) {
+            carbon_atom_free_electrons.push("C_" + "0" + "_" + uniqid())
+            carbon_atom_free_electrons.push("C_" + "1" + "_" + uniqid())
+        }
+        console.log(carbon_atom_free_electrons)
+        console.log(carbon.atom)
+        console.log(oxygen.atom)
         process.error()
 
+        if (DEBUG) {
+            console.log(carbon.atom)
+            console.log(oxygen.atom)
+        }
+        process.error()
+
+        // Check that we now have a double bond between the carbon and the oxygen
+        this.isDoubleBond(carbon, oxygen, DEBUG).should.be.true("Failed to create double bond")
+        this.reaction.setMoleculeAI()
         // Charges
         this.reaction.setChargesOnSubstrate()
-
-        this.reaction.setMoleculeAI()
-
         this.reaction.MoleculeAI.validateMolecule()
 
+        process.error()
         return true
 
 
