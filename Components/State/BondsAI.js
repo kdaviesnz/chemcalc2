@@ -888,7 +888,12 @@ class BondsAI {
 
     breakCarbonOxygenTerminalDoubleBondReverse(carbon, oxygen, DEBUG) {
 
+        console.log(carbon)
+        process.error()
         // @todo if carbon has no free electrons then need to find terminal atom attached to carbon and remove it and replace electrons with new electrons
+        console.log(VMolecule(this.reaction.container_substrate).compressed())
+        const terminal_atom = carbon.getTerminalAtom()
+        console.log(terminal_atom)
         process.error()
 
         Typecheck(

@@ -939,7 +939,46 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         return hydrogens[0].atom
     }
 
+    const __getTerminalAtom = function() {
+
+        const terminal_atoms_single_bonds = this.singleBondsNoHydrogens().map((bond) => {
+            return CAtom(mmolecule[0][1][bond.atom_index], bond.atom_index, mmolecule)
+        }).filter((atom) => {
+            // Check that there is only one bond
+            return atom.singleBondsNoHydrogens().length === 1
+        })
+
+        if (terminal_atoms_single_bonds > 0) {
+            return terminal_atoms_single_bonds[0]
+        }
+
+        const terminal_atoms_double_bonds = this.doubleBondsNoHydrogens().map((bond) => {
+            return CAtom(mmolecule[0][1][bond.atom_index], bond.atom_index, mmolecule)
+        }).filter((atom) => {
+            // Check that there is only one bond
+            return atom.doubleBondsNoHydrogens().length === 1
+        })
+
+        if (terminal_atoms_double_bonds > 0) {
+            return terminal_atoms_double_bonds[0]
+        }
+
+        const terminal_atoms_triple_bonds = this.tripleBondsNoHydrogens().map((bond) => {
+            return CAtom(mmolecule[0][1][bond.atom_index], bond.atom_index, mmolecule)
+        }).filter((atom) => {
+            // Check that there is only one bond
+            return atom.tripleBondsNoHydrogens().length === 1
+        })
+
+        if (terminal_atoms_triple_bonds > 0) {
+            return terminal_atoms_triple_bonds[0]
+        }
+        
+    }
+
+
     return {
+
         carbonBonds: __carbonBonds,
         electrons: __electrons,
         getPositiveCarbonBonds: __getPositiveCarbonBonds,
@@ -1028,7 +1067,8 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         addElectronsFromOtherAtom: __addElectronsFromOtherAtom,
         getHydrogen: __getHydrogen,
         getHydrogens: __getHydrogens,
-        removeHydrogenBond:__removeHydrogenBond
+        removeHydrogenBond:__removeHydrogenBond,
+        getTerminalAtom: __getTerminalAtom
     }
 }
 

@@ -189,10 +189,13 @@ class MoleculeAI {
         this.reaction.setReagentAI()
 
         carbon_index = this.reaction.MoleculeAI.findAtomIndexByAtomId(carbon_atom_id, DEBUG)
+        nitrogen_index = this.reaction.MoleculeAI.findAtomIndexByAtomId(nitrogen_index_atom_id, DEBUG)
 
         if (carbon_index === -1) {
             carbon_index = this.reaction.ReagentAI.findAtomIndexByAtomId(carbon_atom_id, DEBUG)
         }
+
+        process.error()
 
         if (DEBUG) {
             console.log("State/MoleculeAI.js substrate after splitting:")
@@ -227,6 +230,7 @@ class MoleculeAI {
 
         if (this.reaction.MoleculeAI.findAtomIndexByAtomId(carbon_atom_id, DEBUG) === -1) {
 
+            process.error()
             // Swap reagent and substrate
             const substrate_saved  = _.cloneDeep(this.reaction.container_substrate)
             this.reaction.container_substrate = this.reaction.container_reagent
