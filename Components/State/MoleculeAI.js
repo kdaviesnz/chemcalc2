@@ -267,15 +267,19 @@ class MoleculeAI {
 
             this.reaction.container_substrate[0][1].push(oxygen_atom)
             const oxygen_index = this.reaction.container_substrate[0][1].length -1
+            carbon = CAtom(this.reaction.container_substrate[0][1][carbon_index], carbon_index, this.reaction.container_substrate)
+            oxygen = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
             if (DEBUG) {
                 console.log("Substrate:")
                 console.log(VMolecule(this.reaction.container_substrate).compressed())
+                console.log(VMolecule(this.reaction.container_substrate).canonicalSMILES())
                 console.log("oxygen index = " + oxygen_index)
                 console.log("carbon index = " + carbon_index)
                 console.log("carbon atom id=" + carbon_atom_id)
+                console.log("oxygen atom id=" + oxygen.atomId())
+                process.error()
+
             }
-            carbon = CAtom(this.reaction.container_substrate[0][1][carbon_index], carbon_index, this.reaction.container_substrate)
-            oxygen = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
             // Create C=O bond
             this.bondsAI.makeOxygenCarbonDoubleBond(oxygen, carbon, DEBUG)
             process.error()

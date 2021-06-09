@@ -252,6 +252,11 @@ class BondsAI {
         const atom1FreeElectrons = atom1.freeElectrons()
         const atom2FreeElectrons = atom2.freeElectrons()
 
+
+        console.log(atom1FreeElectrons)
+        console.log(atom2FreeElectrons)
+        process.error()
+
         // Check if we are making a coordinate or standard covalent bond
         // In a coordinate covalent bond one of the atoms donates both electrons.
         // In a standard covalent bond each atom donates an electron.
