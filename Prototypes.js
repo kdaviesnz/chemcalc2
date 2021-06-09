@@ -10,7 +10,7 @@ const Prototypes = () => {
                 {name:"symbol", value:symbol, type:"string"}
             )
             if (electron === undefined || electron === null) {
-                throw new Error("Atom is undefined or null")
+                throw new Error("Electron is undefined or null")
             }
             if (symbol === null) {
                 throw new Error("Symbol is null")
@@ -79,6 +79,28 @@ const Prototypes = () => {
                 }
             })
 
+        }
+    })
+    Object.defineProperty(Array.prototype, 'atomIds', {
+        value: function() {
+            return this.map((atom)=>{
+                Typecheck(
+                    {name:atom, value:atom, type:"array"},
+                )
+                return atom.atomId()
+            })
+        }
+    })
+    Object.defineProperty(Array.prototype, 'atomId', {
+        value: function() {
+            const atomId = this[5]
+            Typecheck(
+                {name:"atomId", value:atomId, type:"string"},
+            )
+            if (atomId === undefined || atomId === null) {
+                throw new Error("Atom id is undefined or null")
+            }
+            return atomId
         }
     })
 }

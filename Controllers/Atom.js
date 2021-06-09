@@ -24,8 +24,8 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     atom.slice(0, Constants().electron_index).length.should.be.greaterThan(4)
     atom.slice(Constants().electron_index).length.should.be.lessThanOrEqual(Constants().max_valence_electrons[atom[0]])
 
-    const __getAtomId =  function() {
-        return this.atom[5]
+    const __atomId =  function() {
+        return this.atom.atomId()
     }
 
     const __shared_electrons = () => {
@@ -1059,7 +1059,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         numberOfBonds: __numberOfBonds,
         numberOfBondsNoHydrogens: __numberOfBondsNoHydrogens,
         neutralAtomMaxNumberOfBonds: __neutralAtomMaxNumberOfBonds,
-        getAtomId: __getAtomId,
+        atomId: __atomId,
         singleBondsNoHydrogens: __singleBondsNoHydrogens,
         doubleBondsNoHydrogens: __doubleBondsNoHydrogens,
         tripleBondsNoHydrogens: __tripleBondsNoHydrogens,

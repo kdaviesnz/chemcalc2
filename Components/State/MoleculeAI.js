@@ -189,19 +189,19 @@ class MoleculeAI {
         this.reaction.setReagentAI()
 
         carbon_index = this.reaction.MoleculeAI.findAtomIndexByAtomId(carbon_atom_id, DEBUG)
-        nitrogen_index = this.reaction.MoleculeAI.findAtomIndexByAtomId(nitrogen_index_atom_id, DEBUG)
+        nitrogen_index = this.reaction.MoleculeAI.findAtomIndexByAtomId(nitrogen_atom_id, DEBUG)
 
         if (carbon_index === -1) {
             carbon_index = this.reaction.ReagentAI.findAtomIndexByAtomId(carbon_atom_id, DEBUG)
         }
 
-        process.error()
-
         if (DEBUG) {
             console.log("State/MoleculeAI.js substrate after splitting:")
             console.log(VMolecule([this.reaction.container_substrate[0], 1]).compressed())
+            console.log(VMolecule([this.reaction.container_substrate[0], 1]).canonicalSMILES())
             console.log("State/MoleculeAI.js reagent after splitting:")
             console.log(VMolecule([this.reaction.container_reagent[0], 1]).compressed())
+            console.log(VMolecule([this.reaction.container_reagent[0], 1]).canonicalSMILES())
         }
 
         carbon_index.should.be.greaterThan(-1, "Could not find carbon index by atom id in substrate or reagent " + carbon_atom_id)
@@ -230,7 +230,6 @@ class MoleculeAI {
 
         if (this.reaction.MoleculeAI.findAtomIndexByAtomId(carbon_atom_id, DEBUG) === -1) {
 
-            process.error()
             // Swap reagent and substrate
             const substrate_saved  = _.cloneDeep(this.reaction.container_substrate)
             this.reaction.container_substrate = this.reaction.container_reagent
@@ -238,7 +237,7 @@ class MoleculeAI {
 
             // Create double bond between oxygen and carbon
             this.reaction.container_substrate[0][1].push(oxygen_atom)
-            bondsAI.makeOxygenCarbonDoubleBond(DEBUG)
+            bondsAI.makeOxygenCarbonDoubleBond(null, null, DEBUG)
 
             oxygen_index = this.reaction.container_substrate[0][1].length -1
             carbon = CAtom(this.reaction.container_substrate[0][1][0], 0, this.reaction.container_substrate)
@@ -268,20 +267,20 @@ class MoleculeAI {
 
             this.reaction.container_substrate[0][1].push(oxygen_atom)
             const oxygen_index = this.reaction.container_substrate[0][1].length -1
-            this.neutraliseMolecule(this.reaction.container_substrate)
-            this.reaction.setChargesOnSubstrate()
-            const molecule_compressed = VMolecule(this.reaction.container_substrate).compressed()
             if (DEBUG) {
                 console.log("Substrate:")
                 console.log(VMolecule(this.reaction.container_substrate).compressed())
                 console.log("oxygen index = " + oxygen_index)
                 console.log("carbon index = " + carbon_index)
+                console.log("carbon atom id=" + carbon_atom_id)
             }
             carbon = CAtom(this.reaction.container_substrate[0][1][carbon_index], carbon_index, this.reaction.container_substrate)
             oxygen = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
+            // Create C=O bond
+            this.bondsAI.makeOxygenCarbonDoubleBond(oxygen, carbon, DEBUG)
+            process.error()
         }
 
-        // Replace C=NR with C=O (NR becomes reagent)
         this.reaction.setMoleculeAI()
         this.reaction.setReagentAI()
         this.reaction.MoleculeAI.validateMolecule() // check each atom does not have more than allowed number of valence electrons
