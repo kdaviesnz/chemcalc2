@@ -161,6 +161,11 @@ class MoleculeAI {
         carbon_index.should.be.greaterThan(-1)
         nitrogen_index.should.be.greaterThan(-1)
 
+        this.reaction.setMoleculeAI()
+        this.reaction.setReagentAI()
+        this.reaction.setChargesOnSubstrate()
+        this.reaction.setChargesOnReagent()
+
         const carbon_atom_id = this.reaction.container_substrate[0][1][carbon_index][5]
         const nitrogen_atom_id = this.reaction.container_substrate[0][1][nitrogen_index][5]
 
@@ -176,7 +181,6 @@ class MoleculeAI {
             console.log("Carbon atom id:" + carbon_atom_id)
             console.log("Nitrogen atom id:" + nitrogen_atom_id)
             console.log("Before splitting")
-            console.log(VMolecule([this.reaction.container_substrate[0], 1]).compressed())
             console.log(VMolecule([this.reaction.container_substrate[0], 1]).canonicalSMILES())
         }
 
@@ -187,6 +191,8 @@ class MoleculeAI {
 
         this.reaction.setMoleculeAI()
         this.reaction.setReagentAI()
+        this.reaction.setChargesOnSubstrate()
+        this.reaction.setChargesOnReagent()
 
         carbon_index = this.reaction.MoleculeAI.findAtomIndexByAtomId(carbon_atom_id, DEBUG)
         nitrogen_index = this.reaction.MoleculeAI.findAtomIndexByAtomId(nitrogen_atom_id, DEBUG)
@@ -206,18 +212,6 @@ class MoleculeAI {
 
         carbon_index.should.be.greaterThan(-1, "Could not find carbon index by atom id in substrate or reagent " + carbon_atom_id)
 
-        if (DEBUG) {
-            console.log("State/MoleculeAI.js formKetoneFromImine after splitting")
-            console.log("Carbon index:" + carbon_index)
-            console.log("Carbon atom id:" + carbon_atom_id)
-            console.log(VMolecule([this.reaction.container_substrate[0], 1]).compressed())
-            console.log(VMolecule([this.reaction.container_substrate[0], 1]).canonicalSMILES())
-            console.log("Reagent")
-            console.log(VMolecule([this.reaction.container_reagent[0], 1]).compressed())
-            console.log(VMolecule([this.reaction.container_reagent[0], 1]).canonicalSMILES())
-            console.log("Stateless/MoleculeAI.js formKetoneFromImine new carbon index:" + carbon_index)
-        }
-
         // Add =O to carbon
         // Carbon is positively charged
         const oxygen_atom = AtomFactory("O", "")
@@ -230,73 +224,74 @@ class MoleculeAI {
 
         if (this.reaction.MoleculeAI.findAtomIndexByAtomId(carbon_atom_id, DEBUG) === -1) {
 
+            // Carbon is terminal carbon (reagent is C[H3+])
             // Swap reagent and substrate
             const substrate_saved  = _.cloneDeep(this.reaction.container_substrate)
             this.reaction.container_substrate = this.reaction.container_reagent
             this.reaction.container_reagent = substrate_saved
 
-            // Create double bond between oxygen and carbon
+            this.reaction.setMoleculeAI()
+            carbon_index = this.reaction.MoleculeAI.findAtomIndexByAtomId(carbon_atom_id, DEBUG)
             this.reaction.container_substrate[0][1].push(oxygen_atom)
-            bondsAI.makeOxygenCarbonDoubleBond(null, null, DEBUG)
 
             oxygen_index = this.reaction.container_substrate[0][1].length -1
-            carbon = CAtom(this.reaction.container_substrate[0][1][0], 0, this.reaction.container_substrate)
+            carbon = CAtom(this.reaction.container_substrate[0][1][0], carbon_index, this.reaction.container_substrate)
             oxygen = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
-            this.reaction.setMoleculeAI()
-            carbon_index = this.reaction.MoleculeAI.findKetoneCarbonIndex(DEBUG)
 
-            if (DEBUG) {
-                console.log("State/MoleculeAI formKetoneFromImine ketone carbon index: " + carbon_index)
-                console.log("State/MoleculeAI formKetoneFromImine oxygen index: " + oxygen_index)
-                console.log(VMolecule([this.reaction.container_substrate[0], 1]).compressed())
+            // Create double bond between oxygen and carbon (reagent is C[H3+])
+            // If carbon has 3 hydrogens then we need to remove one of them
+            const hydrogen_bonds = carbon.getHydrogenBonds()
+            if (hydrogen_bonds.length === 3) {
+                const hydrogen =  CAtom(this.reaction.container_substrate[0][1][hydrogen_bonds[0].atom_index], hydrogen_bonds[0].atom_index, this.reaction.container_substrate)
+                carbon.removeHydrogenBond(hydrogen, DEBUG)
+                bondsAI.removeAtom(this.reaction.container_substrate, hydrogen.atom)
+                this.reaction.setMoleculeAI()
+                carbon = CAtom(this.reaction.container_substrate[0][1][0], carbon_index, this.reaction.container_substrate)
+                console.log(carbon.getHydrogenBonds().length)
+                process.error()
             }
+            bondsAI.makeOxygenCarbonDoubleBond(oxygen, carbon, DEBUG)
 
-            this.reaction.container_substrate = this.neutraliseMolecule( this.reaction.container_substrate)
-            this.neutraliseMolecule( this.reaction.container_reagent)
+            carbon_index = this.reaction.MoleculeAI.findKetoneCarbonIndex(DEBUG)
+            console.log(carbon_index)
+            process.error()
 
-            this.reaction.setChargesOnSubstrate()
-            this.reaction.setChargesOnReagent()
+            this.reaction.setMoleculeAI()
 
-            // For testing purposes
-            return [
-                this.reaction.container_substrate,
-                this.reaction.container_reagent
-            ]
 
         } else {
 
+            process.error()
             this.reaction.container_substrate[0][1].push(oxygen_atom)
             const oxygen_index = this.reaction.container_substrate[0][1].length -1
             carbon = CAtom(this.reaction.container_substrate[0][1][carbon_index], carbon_index, this.reaction.container_substrate)
+            carbon.electrons().length.should.be.equal(6)
+            carbon.freeSlots().should.be.equal(1)
+            carbon.freeElectrons().length.should.be.equal(2)
             oxygen = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
+            oxygen.electrons().length.should.be.equal(6)
+            oxygen.freeSlots().should.be.equal(1)
+            oxygen.freeElectrons().length.should.be.equal(6)
             if (DEBUG) {
-                console.log("Substrate:")
+                console.log("Substrate (after splitting:")
                 console.log(VMolecule(this.reaction.container_substrate).compressed())
                 console.log(VMolecule(this.reaction.container_substrate).canonicalSMILES())
-                console.log("oxygen index = " + oxygen_index)
-                console.log("carbon index = " + carbon_index)
-                console.log("carbon atom id=" + carbon_atom_id)
-                console.log("oxygen atom id=" + oxygen.atomId())
-                process.error()
-
             }
             // Create C=O bond
             this.bondsAI.makeOxygenCarbonDoubleBond(oxygen, carbon, DEBUG)
-            process.error()
         }
 
         this.reaction.setMoleculeAI()
         this.reaction.setReagentAI()
-        this.reaction.MoleculeAI.validateMolecule() // check each atom does not have more than allowed number of valence electrons
-        this.bondsAI.breakCarbonOxygenTerminalDoubleBondReverse(carbon, oxygen, this.reaction.container_substrate, DEBUG)
-
-        this.reaction.setChargesOnSubstrate()
-        this.bondsAI.removeProton(this.reaction.container_substrate, carbon_index, null, null, DEBUG)
-        this.neutraliseMolecule(this.reaction.container_reagent)
-        this.neutraliseMolecule(this.reaction.container_substrate)
-
         this.reaction.setChargesOnSubstrate()
         this.reaction.setChargesOnReagent()
+        this.reaction.MoleculeAI.validateMolecule() // check each atom does not have more than allowed number of valence electrons
+
+        if (DEBUG) {
+            console.log("Substrate (after splitting:")
+            console.log(VMolecule(this.reaction.container_substrate).canonicalSMILES())
+            console.log(VMolecule(this.reaction.container_reagent).canonicalSMILES())
+        }
 
         // For testing purposes
         return [

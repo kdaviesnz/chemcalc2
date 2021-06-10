@@ -865,7 +865,8 @@ const MoleculeAI = (container_molecule) => {
             )
 
             const atom_ids_added = []
-            let atoms = this.findNonHydrogenAtoms()
+            //let atoms = this.findNonHydrogenAtoms()
+            let atoms = _.cloneDeep(container_molecule[0][1])
             const groups = this.extractGroupsRecursive([], 0, _.cloneDeep(atoms), atom_ids_added, 0, DEBUG)
 
             const groups_filtered = groups.filter((group)=>{

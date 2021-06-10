@@ -9,8 +9,6 @@ const Set = require('../../Models/Set')
 const uniqid = require('uniqid');
 const Typecheck = require('./../../Typecheck')
 const Constants = require("../../Constants")
-const Prototypes = require("../../Prototypes")
-Prototypes()
 
 // removeProton(molecule, atom_index, electrons, proton)
 // removeAtom(molecule, atom) {
@@ -41,6 +39,8 @@ Prototypes()
 // removeCoordinateCovalentBond(atom1, atom2)
 // bondAtomsReverse(atom1, atom2)
 // addHydrogen(molecule_container, atom_index)
+// creatingCoordinateCovalentBond(atom)
+// removeCoordinateCovalentBond(atom1, atom2)
 class BondsAI {
 
     constructor(reaction) {
@@ -68,15 +68,29 @@ class BondsAI {
         this.reaction = reaction
     }
 
-    creatingCoordinateCovalentBond(atom) {
+    creatingCoordinateCovalentBond(donor_atom, base_atom) {
 
         Typecheck(
-            {name:"atom", value:atom, type:"object"},
+            {name:"donor_atom", value:donor_atom, type:"object"},
+            {name:"base_atom", value:base_atom, type:"object"},
         )
 
-        // A coordinate covalent bond is formed if the atom already has a full octet (max number of bonds when neutral)
-        // and can donate a lone pair
-        return atom.neutralAtomMaxNumberOfBonds() === atom.numberOfBonds() && atom.lonePairs().length > 0
+        if (donor_atom === null || donor_atom === undefined) {
+            throw new Error("Donor atom is null or undefined")
+        }
+
+        if (base_atom === null || base_atom === undefined) {
+            throw new Error("Base atom is null or undefined")
+        }
+
+        // If base atom still has at least one free electron it can share then not creating a coordinate covalent bond
+        // If base atom has no free slots then not creating a coordinate covalent bond
+        if (base_atom.freeElectrons().length > 0 || base_atom.freeSlots() === 0) {
+            return false
+        }
+
+        // Donor atom must have at least two free electrons
+        return donor_atom.freeElectrons() > 1
 
     }
 
@@ -212,20 +226,24 @@ class BondsAI {
             throw new Error("Atom is undefined or null")
         }
 
-        if (this.isBond(atom1, atom2, molecule_container, DEBUG)) {
-            this.removeBond(atom1, atom2, molecule_container, DEBUG)
-        }
         atom1.checkNumberOfElectrons()
         atom2.checkNumberOfElectrons()
 
-        this.bondAtoms(atom1, atom2, molecule_container, DEBUG, true)
-        this.bondAtoms(atom1, atom2, molecule_container, DEBUG, false)
+        if (this.isBond(atom1, atom2, molecule_container, DEBUG)) {
+            this.bondAtoms(atom1, atom2, molecule_container, DEBUG, false)
+        } else {
+            this.bondAtoms(atom1, atom2, molecule_container, DEBUG, true)
+            this.bondAtoms(atom1, atom2, molecule_container, DEBUG, false)
+        }
+
         if (check && !this.isDoubleBond(atom1, atom2, DEBUG)) {
             throw new Error("Failed to create double bond")
         }
+
     }
 
     bondAtoms(atom1, atom2, molecule_container, DEBUG, check=true) {
+
 
         Typecheck(
             {name:"atom1", value:atom1, type:"object"},
@@ -253,41 +271,25 @@ class BondsAI {
         const atom2FreeElectrons = atom2.freeElectrons()
 
 
-        console.log(atom1FreeElectrons)
-        console.log(atom2FreeElectrons)
-        process.error()
-
         // Check if we are making a coordinate or standard covalent bond
         // In a coordinate covalent bond one of the atoms donates both electrons.
         // In a standard covalent bond each atom donates an electron.
-        // A coordinate covalent bond is formed if the atom already has a full octet
-        // and can donate a lone pair
-        if (this.creatingCoordinateCovalentBond(atom1)) {
-            // Check that the atom receiving the electrons has a free slot
-            if (atom2.freeSlots() > 0) {
-                molecule_container[0][1][atom2.atomIndex].addElectron(atom1FreeElectrons[0])
-                molecule_container[0][1][atom2.atomIndex].addElectron(atom1FreeElectrons[1])
-            } else {
-                throw new Error("Unable to create coordinate covalent bond as there are not enough free slots available.")
-            }
-        } else if (this.creatingCoordinateCovalentBond(atom2)) {
-            // Check that the atom receiving the electrons has a free slot
-            if (atom1.freeSlots() > 0) {
-                molecule_container[0][1][atom1.atomIndex].addElectron(atom2FreeElectrons[0])
-                molecule_container[0][1][atom1.atomIndex].addElectron(atom2FreeElectrons[1])
-            } else {
-                throw new Error("Unable to create coordinate covalent bond as there are not enough free slots available.")
-            }
+        if (this.creatingCoordinateCovalentBond(atom1, atom2)) { // donor_atom, base_atom
+            molecule_container[0][1][atom2.atomIndex].addElectron(atom1FreeElectrons[0])
+            molecule_container[0][1][atom2.atomIndex].addElectron(atom1FreeElectrons[1])
+        } else if (this.creatingCoordinateCovalentBond(atom2, atom1)) { // donor_atom, base_atom
+            molecule_container[0][1][atom1.atomIndex].addElectron(atom2FreeElectrons[0])
+            molecule_container[0][1][atom1.atomIndex].addElectron(atom2FreeElectrons[1])
         } else {
             // Standard covalent bond
+            // atom1 is oxygen and has no bonds, 1 free slot and 6 free electrons
+            // atom2 is carbon and has 2 bonds, 1 free slot and 2 free electrons
+//            console.log(atom1.getHydrogens()) // oxygen, no hydrogens
             const atom1FreeElectron = atom1FreeElectrons[0]
-            const atom2FreeElectron = atom2FreeElectrons[1]
+            const atom2FreeElectron = atom2FreeElectrons[0]
             molecule_container[0][1][atom1.atomIndex].addElectron(atom2FreeElectron)
             molecule_container[0][1][atom2.atomIndex].addElectron(atom1FreeElectron)
         }
-
-        atom1 = CAtom(molecule_container[0][1][atom1.atomIndex], atom1.atomIndex, molecule_container)
-        atom2 = CAtom(molecule_container[0][1][atom2.atomIndex], atom2.atomIndex, molecule_container)
 
         // Confirm we have created a bond
         if (check && !this.isBond(atom1, atom2, DEBUG)) {
@@ -370,6 +372,9 @@ class BondsAI {
 
     removeAtom(molecule, atom) {
         //this.container_substrate[0][1] = Set().removeFromArray(this.container_substrate[0][1], this.container_substrate[0][1][h_c_hydrogen_bonds[0].atom_index])
+        Typecheck(
+            {name:"atom", value:atom, type:"array"}
+        )
         molecule[0][1] = Set().removeFromArray(molecule[0][1], atom)
         return molecule
     }
@@ -550,12 +555,12 @@ class BondsAI {
             throw new Error("Carbon atom is undefined or null")
         }
 
-        this.createDoubleBond(oxygen, carbon, this.reaction.container_substrate, DEBUG)
+        this.createDoubleBond(oxygen, carbon, this.reaction.container_substrate, DEBUG, true)
 
         this.reaction.setMoleculeAI()
 
         if (DEBUG) {
-            console.log("makeOxygenCarbonDoubleBond -> after adding double bond:")
+            console.log("BondsAI makeOxygenCarbonDoubleBond() -> after adding double bond:")
             console.log(VMolecule(this.reaction.container_substrate).compressed())
         }
 
@@ -1188,9 +1193,9 @@ class BondsAI {
             )
         })
 
-        this.reaction.MoleculeAI.validateMolecule()
 
-        // Look for N+=C+ bond
+
+        // Look for N+=C+ bond of indexes are null
         let n_atom = null
         let c_atom = null
         if (n_index === null) {
@@ -1206,8 +1211,8 @@ class BondsAI {
             return false
         } else {
 
-            n_atom = CAtom(this.reaction.container_substrate[0][1][n_index], n_index, this.reaction.container_substrate)
 
+            n_atom = CAtom(this.reaction.container_substrate[0][1][n_index], n_index, this.reaction.container_substrate)
 
             if (c_index === null) {
                 let c_bonds = n_atom.getPositiveCarbonBonds()
@@ -1228,6 +1233,7 @@ class BondsAI {
                      c_index = c_bonds[0].atom_index
                 }
             }
+
 
             if (c_index === null || c_index === -1) {
 
@@ -1287,13 +1293,9 @@ class BondsAI {
                     throw new Error("Atom array is undefined.")
                 }
 
-                this.reaction.setChargeOnSubstrateAtom(n_index)
-                this.reaction.setChargeOnSubstrateAtom(c_index)
-                this.reaction.setMoleculeAI()
 
                 const groups = this.reaction.MoleculeAI.extractGroups(n_atom, target_atom, DEBUG)
                 groups.length.should.be.equal(2, "When reversing substrate to reagent bond the number of groups should be 2.")
-
 
                 // Check that there are no shared atoms between the two groups
                 groups[0].should.be.an.Array()
@@ -1312,24 +1314,39 @@ class BondsAI {
                     console.log(VMolecule(this.reaction.container_substrate).compressed())
                 }
 
-
+                // Not sure why we need to do this
                 this.reaction.__setSubstrateGroups(groups)
-                this.reaction.setMoleculeAI()
-
-                if (DEBUG) {
-                    console.log("BondsAI bondSubstrateToReagentReverse() substrate:")
-                    console.log(VMolecule(this.reaction.container_substrate).compressed())
-                    console.log(VMolecule(this.reaction.container_substrate).canonicalSMILES())
-                    console.log("BondsAI bondSubstrateToReagentReverse() reagent:")
-                    console.log(VMolecule(this.reaction.container_reagent).compressed())
-                }
+                this.reaction.setChargesOnSubstrate()
 
                 if(this.reaction.leaving_groups.length > 0) {
                     this.reaction.container_reagent = this.reaction.leaving_groups[0]
                     this.reaction.container_substrate[0][1].length.should.be.greaterThan(-1)
                     this.reaction.container_reagent[0][1].length.should.be.greaterThan(-1)
-                    return true
+                } else {
+
+                    this.reaction.container_substrate = [[999, groups[0]], 1]
+                    this.reaction.setMoleculeAI()
+                    this.reaction.setChargesOnSubstrate()
+
+                    if (DEBUG) {
+                        console.log("BondsAI bondSubstrateToReagentReverse() substrate:")
+                        console.log(VMolecule(this.reaction.container_substrate).canonicalSMILES())
+                        console.log("BondsAI bondSubstrateToReagentReverse() reagent:")
+                        console.log(VMolecule(this.reaction.container_reagent).canonicalSMILES())
+                        process.error()
+                    }
+
+                    this.reaction.container_substrate.length.should.be.equal(2) // molecule, units
+                    this.reaction. container_substrate[0].length.should.be.equal(2) // pKa, atoms
+                    Typecheck(
+                        {name:"this.reaction.container_substrate[0][0]", value:this.reaction.container_substrate[0][0], type:"number"}, // pKa
+                        {name:"this.reaction.container_substrate[0][1]", value:this.reaction.container_substrate[0][1], type:"array"},
+                        {name:"this.reaction.container_substrate[0][1][0]", value:this.reaction.container_substrate[0][1][0], type:"array"},
+                        {name:"this.reaction.container_substrate[0][1][0][0]", value:this.reaction.container_substrate[0][1][0][0], type:"string"},
+                    )
+
                 }
+                return true
 
             }
         }

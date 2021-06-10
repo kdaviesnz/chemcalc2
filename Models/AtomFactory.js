@@ -22,6 +22,10 @@ const range = require("range");
 // range.range(1,10,2)
 
 const PeriodicTable = require('./PeriodicTable')
+const Prototypes = require("../Prototypes")
+Prototypes()
+const Typecheck = require("../Typecheck")
+const Constants = require("../Constants")
 
 // ATOM MODEL
 // atomic symbol, proton count, max valence count*, max number of bonds, velectron1, velectron2, velectron3
@@ -29,7 +33,20 @@ const PeriodicTable = require('./PeriodicTable')
 // * Maximum number of electrons in valence shell.
 const AtomFactory = (atomicSymbol, charge, index) => {
 
-    if (index===undefined) {
+    Typecheck(
+        {name: "atomicSymbol", value: atomicSymbol, type: "string"},
+        {name: "index", value: index, type: "number"}
+    )
+
+    if (atomicSymbol === undefined || atomicSymbol === null) {
+        throw new Error("Atomic symbol is undefined or null")
+    }
+
+    if (charge === undefined || charge === null) {
+        throw new Error("Charge is undefined or null")
+    }
+
+    if (index===undefined || index === null) {
         index = 0
     }
 /*
@@ -133,6 +150,11 @@ PeriodicTable:
                 atom.push(atomicSymbol + "_" + index + "_" + uniqid())
             }
         )
+    }
+
+    // Last minute checks
+    if (atom.electrons().length > (Constants().max_valence_electrons[atomicSymbol])) {
+        throw new Error("Atom has more than the allowed number of electrons")
     }
 
     return atom

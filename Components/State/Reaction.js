@@ -131,15 +131,6 @@ class Reaction {
             {name:"renderCallback", value:renderCallback, type:"function"}
         )
 
-
-
-
-        if (container_substrate.length !==2) {
-            console.log("Components/State/Reaction.js constructor -> Container substrate:")
-            console.log(container_substrate)
-            process.error()
-        }
-
         container_substrate.length.should.be.equal(2) // molecule, units
         container_substrate[0].length.should.be.equal(2) // pKa, atoms
 

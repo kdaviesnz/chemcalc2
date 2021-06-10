@@ -853,23 +853,36 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
     const __removeHydrogenBond = function(hydrogen_atom, DEBUG) {
 
+        const current_number_of_hydrogens = this.getHydrogenBonds().length
+
         Typecheck(
             {name:"hydrogen_atom", value:hydrogen_atom, type:"object"},
             {name:"DEBUG", value:DEBUG, type:"boolean"}
         )
 
-        const shared_electrons = this.electronsSharedWithSibling(hydrogen_atom).filter((electron) => {
+        const hydrogen_shared_electrons = this.electronsSharedWithSibling(hydrogen_atom).filter((electron) => {
             Typecheck(
                 {name:"electron", value:electron, type: "string"},
             )
             return electron[0] === "H"
         })
-        if (shared_electrons.length > 0) {
-            this.removeElectrons([shared_electrons[0]])
-            hydrogen_atom.removeElectrons([shared_electrons[1]])
+
+        const carbon_shared_electrons = this.electronsSharedWithSibling(hydrogen_atom).filter((electron) => {
+            Typecheck(
+                {name:"electron", value:electron, type: "string"},
+            )
+            return electron[0] === "C"
+        })
+
+
+        if (carbon_shared_electrons.length > 0) {
+            this.removeElectrons([hydrogen_shared_electrons[0]])
+            hydrogen_atom.removeElectrons([carbon_shared_electrons[0]])
         } else if(DEBUG) {
             console.log("CAtom __removeHydrogenBond() No shared electrons found")
         }
+
+        current_number_of_hydrogens.should.be.equal(this.getHydrogenBonds().length - 1)
 
     }
 
@@ -928,7 +941,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         return this.electrons.length <= Constants().max_valence_electrons[this.symbol]
     }
 
-    const __getHydrogens = function() {
+    const __getHydrogenBonds = function() {
         return this.indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "H"
         })
@@ -1066,7 +1079,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         checkNumberOfElectrons: __checkNumberOfElectrons,
         addElectronsFromOtherAtom: __addElectronsFromOtherAtom,
         getHydrogen: __getHydrogen,
-        getHydrogens: __getHydrogens,
+        getHydrogenBonds: __getHydrogenBonds,
         removeHydrogenBond:__removeHydrogenBond,
         getTerminalAtom: __getTerminalAtom
     }

@@ -3,6 +3,11 @@ const Typecheck = require("./Typecheck")
 const _ = require('lodash');
 
 const Prototypes = () => {
+    Object.defineProperty(Array.prototype, 'electrons', {
+        value: function() {
+            return this.slice(Constants().electron_index)
+        }
+    })
     Object.defineProperty(Array.prototype, 'addElectron', {
         value: function(electron, symbol) {
             Typecheck(
@@ -16,7 +21,7 @@ const Prototypes = () => {
                 throw new Error("Symbol is null")
             }
             this.push(electron)
-            if (this.slice(Constants().electron_index).length > (symbol === undefined?8:(Constants().max_valence_electrons[symbol]))) {
+            if (this.electrons().length > (symbol === undefined?8:(Constants().max_valence_electrons[symbol]))) {
                 throw new Error("Atom has more than the allowed number of electrons")
             }
         }
@@ -36,7 +41,7 @@ const Prototypes = () => {
                 )
                 // this should be an atom
                 this.push(electron)
-                if (this.slice(Constants().electron_index).length > (symbol === undefined?8:(Constants().max_valence_electrons[symbol]))) {
+                if (this.electrons().length > (symbol === undefined?8:(Constants().max_valence_electrons[symbol]))) {
                     throw new Error("Atom has more than the allowed number of electrons")
                 }
             })

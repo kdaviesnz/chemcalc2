@@ -1,5 +1,5 @@
 const _ = require('lodash')
-
+const Typecheck = require("../Typecheck")
 const Set = () => {
 
     return {
@@ -13,6 +13,10 @@ const Set = () => {
             return array1.filter((value) => !array2.includes(value))
         },
         removeFromArray: (array1, array2) => {
+            Typecheck(
+                {name:"array1", value:array1, type:"array"},
+                {name:"array2", value:array2, type:"array"}
+            )
             return array1.reduce((carry, current, index, arr)=>{
                 if (!array2.includes(current)) {
                     carry.push(current)
