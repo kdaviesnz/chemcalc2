@@ -258,7 +258,15 @@ class Reaction {
             if (DEBUG) {
                 console.log("Reaction.js reduceImineToAmineReverse Creating double bond between carbon and nitrogen.")
             }
+
+            this.setMoleculeAI()
+            if (DEBUG) {
+                console.log(VMolecule([this.container_substrate[0], 1]).compressed())
+            }
+            // Change NC bond to N=C
             this.bondsAI.breakCarbonNitrogenDoubleBondReverse(nitrogen_index, carbon_index, DEBUG )
+            // An imine is an organic compound containing the group —C=NH or —C=NR where R is an alkyl or other group.
+            this.stateMoleculeAI.formImineFromKetoneReverse(nitrogen_index, carbon_index, DEBUG)
 
             if (DEBUG) {
                 console.log("Reaction.js reduceImineToAmineReverse Substrate after changing CN bond to C=N and setting charges")

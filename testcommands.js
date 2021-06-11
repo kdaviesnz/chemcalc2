@@ -64,11 +64,9 @@ pnm = MoleculeFactory("CC(CC1=CC=CC=C1)=NC") // phenylacetone-N-methylimine
 methylamine = MoleculeFactory("CN")
 reaction = new Reaction([pnm, 1], [methylamine, 1], "", false, null, null, [], 0, [], renderCallback)
 stateMoleculeAI = new StateMoleculeAI(reaction)
-imine_to_ketone_result = stateMoleculeAI.formImineFromKetoneReverse(me_nitrogen_index, me_carbon_index, true)
+imine_to_ketone_result = stateMoleculeAI.formImineFromKetoneReverse(me_nitrogen_index, me_carbon_index, false)
 VMolecule(imine_to_ketone_result[0]).canonicalSMILES().should.be.equal("C=O")
-VMolecule(imine_to_ketone_result[1]).canonicalSMILES().should.be.equal("C(C)(CC1=CC=CC=C1)=N")
-
-process.error()
+VMolecule(imine_to_ketone_result[1]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=N")
 
 me_nitrogen_index = 19
 me_carbon_index = 4 // non-terminal carbon attached to nitrogen
@@ -78,28 +76,28 @@ pnm = MoleculeFactory("CC(CC1=CC=CC=C1)=NC") // phenylacetone-N-methylimine
 methylamine = MoleculeFactory("CN")
 reaction = new Reaction([pnm, 1], [methylamine, 1], "", false, null, null, [], 0, [], renderCallback)
 stateMoleculeAI = new StateMoleculeAI(reaction)
-imine_to_ketone_result = stateMoleculeAI.formImineFromKetoneReverse(me_nitrogen_index, me_carbon_index, true)
+imine_to_ketone_result = stateMoleculeAI.formImineFromKetoneReverse(me_nitrogen_index, me_carbon_index, false)
 VMolecule(imine_to_ketone_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=O")
-VMolecule(imine_to_ketone_result[1]).canonicalSMILES().should.be.equal("C[N-]")
-
-
-
-
-
-process.error()
-
+VMolecule(imine_to_ketone_result[1]).canonicalSMILES().should.be.equal("CN")
 
 
 // reduceImineToAmineReverse
 nitrogen_index = 21
 carbon_index = 5
 me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
-reaction = new Reaction([me, 1], null, "", false, null, null, [], 0, [], renderCallback)
-reduceImineToAmineReverse_result = reaction.reduceImineToAmineReverse(carbon_index, false)
+//console.log(VMolecule([me,1]).compressed())
+//process.error()
+reaction = new Reaction([me, 1], [methylamine, 1], "", false, null, null, [], 0, [], renderCallback)
+reduceImineToAmineReverse_result = reaction.reduceImineToAmineReverse(carbon_index, true)
 VMolecule(reduceImineToAmineReverse_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=[NH1+]C")
 if (reduceImineToAmineReverse_result[1] !==null) {
     throw new Error("Null expected")
 }
+
+
+process.error()
+
+
 
 
 

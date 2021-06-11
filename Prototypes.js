@@ -47,6 +47,22 @@ const Prototypes = () => {
             })
         }
     })
+    Object.defineProperty(Array.prototype, 'removeElectrons', {
+        value: function(electrons) {
+            Typecheck(
+                {name:"electrons", value:electrons, type:"array"},
+            )
+            if (electrons === undefined || electrons === null) {
+                throw new Error("Electrons are undefined or null")
+            }
+            const array_before_length = _.cloneDeep(this.length)
+            _.remove(this, (electron) => {
+                return electrons.indexOf(electron) !== -1
+            })
+            array_before_length.should.be.greaterThan(this.length)
+            return this
+        }
+    })
     Object.defineProperty(Array.prototype, 'addAtom', {
         value: function(atom) {
             Typecheck(

@@ -761,20 +761,11 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         }
 
         if (undefined === sibling_atom.atom) {
-            console.log(sibling_atom)
-            console.log(typeof sibling_atom)
             throw new Error("sibling atom is undefined")
         }
 
         const shared_electrons = this.electronsSharedWithSibling(sibling_atom)
 
-        if (DEBUG) {
-            console.log("Atom electrons:" + this.symbol)
-            console.log(this.electrons())
-            console.log("Sibling atom electrons:" + sibling_atom.symbol)
-            console.log(sibling_atom.electrons())
-            console.log("CAtom __isBondedTo() Got " + shared_electrons.length + " shared electrons")
-        }
 
         return shared_electrons.length === 2
 
@@ -843,22 +834,24 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     const __removeElectrons = function(electrons) {
 
         Typecheck(
-            {name: "electrons", value: electrons, type: "array"}
+            {name: "electrons", value: electrons, type: "array"},
+            {name: "this.atom", value: this.atom, type: "array"}
         )
 
-        _.remove(this.atom, (electron) => {
-            return electrons.indexOf(electron) !== -1
-        })
+        const atom_length_at_start = _.cloneDeep(this.atom.length)
+        this.atom.removeElectrons(electrons)
+        atom_length_at_start.should.be.greaterThan(this.atom.length, "Failed to remove electrons")
     }
 
-    const __removeHydrogenBond = function(hydrogen_atom, DEBUG) {
-
-        const current_number_of_hydrogens = this.getHydrogenBonds().length
+    const __removeHydrogenOnCarbonBond = function(hydrogen_atom, DEBUG) {
 
         Typecheck(
             {name:"hydrogen_atom", value:hydrogen_atom, type:"object"},
             {name:"DEBUG", value:DEBUG, type:"boolean"}
         )
+
+        const number_of_hydrogens_at_start = _.cloneDeep(this.getHydrogenBonds().length)
+        const number_of_carbons_on_hydrogen_at_start = _.cloneDeep(hydrogen_atom.carbonBonds().length)
 
         const hydrogen_shared_electrons = this.electronsSharedWithSibling(hydrogen_atom).filter((electron) => {
             Typecheck(
@@ -874,15 +867,75 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             return electron[0] === "C"
         })
 
+        const atom_starting_length = _.cloneDeep(this.atom.length)
 
-        if (carbon_shared_electrons.length > 0) {
+        if (DEBUG) {
+            console.log(this.atom)
+            console.log("Removing " + hydrogen_shared_electrons[0])
+        }
+
+        if (carbon_shared_electrons.length === 1 && hydrogen_shared_electrons.length === 1) {
             this.removeElectrons([hydrogen_shared_electrons[0]])
             hydrogen_atom.removeElectrons([carbon_shared_electrons[0]])
         } else if(DEBUG) {
             console.log("CAtom __removeHydrogenBond() No shared electrons found")
         }
 
-        current_number_of_hydrogens.should.be.equal(this.getHydrogenBonds().length - 1)
+        if (DEBUG) {
+            console.log(this.atom)
+        }
+
+        atom_starting_length.should.be.greaterThan(this.atom.length)
+        number_of_hydrogens_at_start.should.be.greaterThan(this.getHydrogenBonds().length)
+        number_of_carbons_on_hydrogen_at_start.should.be.greaterThan(hydrogen_atom.carbonBonds().length)
+
+    }
+
+    const __removeHydrogenOnNitrogenBond = function(hydrogen_atom, DEBUG) {
+
+        Typecheck(
+            {name:"hydrogen_atom", value:hydrogen_atom, type:"object"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"}
+        )
+
+        const number_of_hydrogens_at_start = _.cloneDeep(this.getHydrogenBonds().length)
+        const number_of_nitrogens_on_hydrogen_at_start = _.cloneDeep(hydrogen_atom.nitrogenBonds().length)
+
+        const hydrogen_shared_electrons = this.electronsSharedWithSibling(hydrogen_atom).filter((electron) => {
+            Typecheck(
+                {name:"electron", value:electron, type: "string"},
+            )
+            return electron[0] === "H"
+        })
+
+        const nitrogen_shared_electrons = this.electronsSharedWithSibling(hydrogen_atom).filter((electron) => {
+            Typecheck(
+                {name:"electron", value:electron, type: "string"},
+            )
+            return electron[0] === "N"
+        })
+
+        const atom_starting_length = _.cloneDeep(this.atom.length)
+
+        if (DEBUG) {
+            console.log(this.atom)
+            console.log("Removing " + hydrogen_shared_electrons[0])
+        }
+
+        if (nitrogen_shared_electrons.length === 1 && hydrogen_shared_electrons.length === 1) {
+            this.removeElectrons([hydrogen_shared_electrons[0]])
+            hydrogen_atom.removeElectrons([nitrogen_shared_electrons[0]])
+        } else if(DEBUG) {
+            console.log("CAtom __removeHydrogenBond() No shared electrons found")
+        }
+
+        if (DEBUG) {
+            console.log(this.atom)
+        }
+
+        atom_starting_length.should.be.greaterThan(this.atom.length)
+        number_of_hydrogens_at_start.should.be.greaterThan(this.getHydrogenBonds().length)
+        number_of_nitrogens_on_hydrogen_at_start.should.be.greaterThan(hydrogen_atom.nitrogenBonds().length)
 
     }
 
@@ -916,6 +969,12 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     const __carbonBonds = function()  {
         return this.indexedBonds("").filter((bond)=>{
             return bond.atom[0] === "C"
+        })
+    }
+
+    const __nitrogenBonds = function()  {
+        return this.indexedBonds("").filter((bond)=>{
+            return bond.atom[0] === "N"
         })
     }
 
@@ -989,10 +1048,24 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         
     }
 
+    __oxygenDoubleBonds =  function() {
+        return this.indexedDoubleBonds("").filter((b)=>{
+            return b.atom[0] === "O"
+        })
+    }
+
+    __carbonDoubleBonds =  function() {
+        return this.indexedDoubleBonds("").filter((b)=>{
+            return b.atom[0] === "C"
+        })
+    }
 
     return {
 
+        oxygenDoubleBonds: __oxygenDoubleBonds,
+        carbonDoubleBonds: __carbonDoubleBonds,
         carbonBonds: __carbonBonds,
+        nitrogenBonds: __nitrogenBonds,
         electrons: __electrons,
         getPositiveCarbonBonds: __getPositiveCarbonBonds,
         removeCovalentBond: __removeCovalentBond,
@@ -1080,7 +1153,8 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         addElectronsFromOtherAtom: __addElectronsFromOtherAtom,
         getHydrogen: __getHydrogen,
         getHydrogenBonds: __getHydrogenBonds,
-        removeHydrogenBond:__removeHydrogenBond,
+        removeHydrogenOnCarbonBond:__removeHydrogenOnCarbonBond,
+        removeHydrogenOnNitrogenBond:__removeHydrogenOnNitrogenBond,
         getTerminalAtom: __getTerminalAtom
     }
 }

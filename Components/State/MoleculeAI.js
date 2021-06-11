@@ -243,25 +243,38 @@ class MoleculeAI {
             const hydrogen_bonds = carbon.getHydrogenBonds()
             if (hydrogen_bonds.length === 3) {
                 const hydrogen =  CAtom(this.reaction.container_substrate[0][1][hydrogen_bonds[0].atom_index], hydrogen_bonds[0].atom_index, this.reaction.container_substrate)
-                carbon.removeHydrogenBond(hydrogen, DEBUG)
+                carbon.removeHydrogenOnCarbonBond(hydrogen, DEBUG)
                 bondsAI.removeAtom(this.reaction.container_substrate, hydrogen.atom)
                 this.reaction.setMoleculeAI()
                 carbon = CAtom(this.reaction.container_substrate[0][1][0], carbon_index, this.reaction.container_substrate)
-                console.log(carbon.getHydrogenBonds().length)
-                process.error()
+                carbon.getHydrogenBonds().length.should.be.equal(2)
             }
             bondsAI.makeOxygenCarbonDoubleBond(oxygen, carbon, DEBUG)
-
-            carbon_index = this.reaction.MoleculeAI.findKetoneCarbonIndex(DEBUG)
-            console.log(carbon_index)
-            process.error()
-
+//            carbon_index = this.reaction.MoleculeAI.findKetoneCarbonIndex(DEBUG)
+  //          console.log(carbon_index)
             this.reaction.setMoleculeAI()
+            carbon.oxygenDoubleBonds().length.should.be.equal(1)
+            oxygen.carbonDoubleBonds().length.should.be.equal(1)
+            this.reaction.setChargesOnSubstrate()
+            if (DEBUG) {
+                console.log(VMolecule([this.reaction.container_substrate[0], 1]).compressed())
+                console.log(VMolecule([this.reaction.container_substrate[0], 1]).canonicalSMILES())
+            }
+
+            // Add hydrogen to nitrogen atom on reagent to make up for loss of carbon atom
+            this.reaction.setReagentAI()
+            nitrogen_index = this.reaction.ReagentAI.findAtomIndexByAtomId(nitrogen_atom_id, DEBUG)
+            bondsAI.addHydrogen(this.reaction.container_reagent, nitrogen_index)
+            this.reaction.setChargesOnReagent()
+            if (DEBUG) {
+                console.log(VMolecule([this.reaction.container_reagent[0], 1]).compressed())
+                console.log(VMolecule([this.reaction.container_reagent[0], 1]).canonicalSMILES())
+            }
 
 
         } else {
 
-            process.error()
+
             this.reaction.container_substrate[0][1].push(oxygen_atom)
             const oxygen_index = this.reaction.container_substrate[0][1].length -1
             carbon = CAtom(this.reaction.container_substrate[0][1][carbon_index], carbon_index, this.reaction.container_substrate)
@@ -279,6 +292,17 @@ class MoleculeAI {
             }
             // Create C=O bond
             this.bondsAI.makeOxygenCarbonDoubleBond(oxygen, carbon, DEBUG)
+
+            // Add two hydrogens to nitrogen atom on substrate to make up for loss of double bond
+            this.reaction.setReagentAI()
+            nitrogen_index = this.reaction.ReagentAI.findAtomIndexByAtomId(nitrogen_atom_id, DEBUG)
+            bondsAI.addHydrogen(this.reaction.container_reagent, nitrogen_index)
+            bondsAI.addHydrogen(this.reaction.container_reagent, nitrogen_index)
+            this.reaction.setChargesOnReagent()
+            if (DEBUG) {
+                console.log(VMolecule([this.reaction.container_reagent[0], 1]).compressed())
+                console.log(VMolecule([this.reaction.container_reagent[0], 1]).canonicalSMILES())
+            }
         }
 
         this.reaction.setMoleculeAI()
@@ -290,6 +314,8 @@ class MoleculeAI {
         if (DEBUG) {
             console.log("Substrate (after splitting:")
             console.log(VMolecule(this.reaction.container_substrate).canonicalSMILES())
+            console.log("Reagent (after splitting:")
+            console.log(VMolecule(this.reaction.container_reagent).compressed())
             console.log(VMolecule(this.reaction.container_reagent).canonicalSMILES())
         }
 

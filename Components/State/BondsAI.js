@@ -320,6 +320,19 @@ class BondsAI {
     }
 
     addHydrogen(molecule_container, atom_index) {
+        Typecheck(
+            {name:"molecule_container", value:molecule_container, type:"array"},
+            {name:"atom_index", value:atom_index, type:"number"},
+        )
+
+        if(molecule_container === null || molecule_container === undefined) {
+            throw new Error("Molecule container is null or undefined")
+        }
+
+        if(atom_index === null || atom_index === undefined) {
+            throw new Error("Atom index is null or undefined")
+        }
+
         const hydrogen_arr = AtomFactory("H", "")
         const atom = CAtom(molecule_container[0][1][atom_index], atom_index, molecule_container)
         const hydrogen_electron_to_share = hydrogen_arr[hydrogen_arr.length-1]
@@ -842,8 +855,15 @@ class BondsAI {
 
     breakCarbonNitrogenDoubleBondReverse(nitrogen_index, carbon_index, DEBUG) {
 
+        Typecheck(
+            {name:"nitrogen_index", value:nitrogen_index, type:"number"},
+            {name:"carbon_index", value:carbon_index, type:"number"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"}
+        )
+
+
         // Make C=O bond
-        if (nitrogen_index === undefined) {
+        if (nitrogen_index === undefined || nitrogen_index === null) {
             nitrogen_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=> {
                 if ( atom[0] !== "N") {
                     return false
@@ -861,7 +881,7 @@ class BondsAI {
 
         const nitrogen = CAtom(this.reaction.container_substrate[0][1][nitrogen_index], nitrogen_index, this.reaction.container_substrate)
 
-        if (carbon_index === undefined) {
+        if (carbon_index === undefined || carbon_index === null) {
             const carbon_bonds = oxygen.indexedBonds("").filter((bond) => {
                 //return bond.atom[0] === "C" && bond.atom[4] !== "" && bond.atom[4] !== 0
                 if (bond.atom[0] !== "C") {
@@ -894,20 +914,36 @@ class BondsAI {
         })
         carbon_electrons_before.should.be.lessThan(this.reaction.container_substrate[0][1][carbon_index].length + 2)
 
-        // Add electrons from nitrogen to carbon
-        this.reaction.container_substrate[0][1][carbon_index].addElectron(freeElectrons[0])
-        this.reaction.container_substrate[0][1][carbon_index].addElectron(freeElectrons[1])
+        const nitrogen_hydrogen_bonds = nitrogen.getHydrogenBonds()
+        if (nitrogen_hydrogen_bonds.length > 0) {
+            const nitrogen_hydrogen =  CAtom(this.reaction.container_substrate[0][1][nitrogen_hydrogen_bonds[0].atom_index], nitrogen_hydrogen_bonds[0].atom_index, this.reaction.container_substrate)
+            nitrogen.removeHydrogenOnNitrogenBond(nitrogen_hydrogen, DEBUG)
+            this.removeAtom(this.reaction.container_substrate, nitrogen_hydrogen.atom)
+            this.reaction.setMoleculeAI()
+        }
 
-        // Remove a hydrogen from the carbon atom
-        const h = carbon_atom.indexedBonds("").filter((bond)=>{
-            return bond.atom[0] === "H"
-        })
-        if (h.length > 0) {
-            // Remove hydrogen atom
-            _.remove(this.reaction.container_substrate[0][1], (v, i) => {
-                    return i === h[0].atom_index
-                }
-            )
+        const carbon_hydrogen_bonds = carbon_atom.getHydrogenBonds()
+        if (carbon_hydrogen_bonds.length > 0) {
+            const carbon_hydrogen =  CAtom(this.reaction.container_substrate[0][1][carbon_hydrogen_bonds[0].atom_index], carbon_hydrogen_bonds[0].atom_index, this.reaction.container_substrate)
+            carbon_atom.removeHydrogenOnCarbonBond(carbon_hydrogen, DEBUG)
+            this.removeAtom(this.reaction.container_substrate, carbon_hydrogen.atom)
+            this.reaction.setMoleculeAI()
+        }
+
+        if (DEBUG) {
+            console.log(carbon_index)
+            console.log(VMolecule(this.reaction.container_substrate).compressed())
+        }
+
+        // Add electrons from nitrogen to carbon
+        this.reaction.setMoleculeAI()
+        this.createDoubleBond(carbon_atom, nitrogen, this.reaction.container_substrate, DEBUG)
+        //this.reaction.container_substrate[0][1][carbon_index].addElectron(freeElectrons[0])
+        //this.reaction.container_substrate[0][1][carbon_index].addElectron(freeElectrons[1])
+
+        if (DEBUG) {
+            console.log(carbon_index)
+            console.log(VMolecule(this.reaction.container_substrate).compressed())
         }
 
         return true
