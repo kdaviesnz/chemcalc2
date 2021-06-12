@@ -68,12 +68,17 @@ process.on('unhandledRejection', function(err) {
     console.log(err);
 })
 
-/*
-const reactions_map = {
-    "reductiveAminationReverse":reductiveAminationReverse,
-    "formImineFromKetoneReverse":formImineFromKetoneReverse
-}
-*/
+
+// Reductive amination
+nitrogen_index = 21
+carbon_index = 25
+me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
+methylamine = MoleculeFactory("CN")
+reaction = new Reaction([me, 1], [methylamine, 1], "", false, null, null, [], 0, [], renderCallback)
+reductiveAminationReverse_result = reaction.reductiveAminationReverse(carbon_index, false)
+VMolecule(reductiveAminationReverse_result[0]).canonicalSMILES().should.be.equal("C=O")
+VMolecule(reductiveAminationReverse_result[1]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)N")
+process.error()
 
 client.connect(err => {
 

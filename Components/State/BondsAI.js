@@ -355,7 +355,14 @@ class BondsAI {
         return molecule_container
     }
 
-    removeProton(molecule, atom_index, electrons=null, proton=null, DEBUG=false) {
+    removeProton(molecule, nitrogen_atom, electrons=null, proton=null, DEBUG=false) {
+
+        Typecheck(
+            {name:"molecule", value:molecule, type:"array"},
+            {name:"nitrogen_atom", value:nitrogen_atom, type:"object"},
+            {name:"electrons", value:electrons, type:"array"},
+            {name:"proton", value:proton, type:"object"}
+        )
 
         if (DEBUG) {
             console.log("BondsAI removeProton() - molecule")
@@ -363,20 +370,21 @@ class BondsAI {
             console.log("BondsAI removeProton() - nitrogen index")
             console.log(atom_index)
         }
-        const nitrogen_atom = CAtom(this.reaction.container_substrate[0][1][atom_index], atom_index, this.reaction.container_substrate)
-        if (electrons === null && proton === null) {
+        //const nitrogen_atom = CAtom(this.reaction.container_substrate[0][1][atom_index], atom_index, this.reaction.container_substrate)
+        if ((electrons === null || electrons.length ===0) && proton === null) {
             const hydrogen_nitrogen_bonds = nitrogen_atom.indexedBonds("").filter((bond)=>{
                 return bond.atom[0] === "H"
             })
             if (hydrogen_nitrogen_bonds.length ===0) {
                 return false
             }
-            electrons = _.cloneDeep(hydrogen_nitrogen_bonds[0].shared_electrons).slice(0,2)
-            proton = this.reaction.container_substrate[0][1][hydrogen_nitrogen_bonds[0].atom_index]
+            proton = CAtom(this.reaction.container_substrate[0][1][hydrogen_nitrogen_bonds[0].atom_index], hydrogen_nitrogen_bonds[0].atom_index, this.reaction.container_substrate)
         }
-        molecule = this.removeBond(molecule, atom_index, electrons)
-        molecule[0][1][atom_index].addElectron(uniqid())
-        molecule[0][1][atom_index].addElectron(uniqid())
+
+        // removeBond(atom1, atom2, molecule_container, DEBUG)
+        this.removeBond(nitrogen_atom, proton, molecule)
+        molecule[0][1][nitrogen_atom.atomIndex].addElectron(uniqid())
+        molecule[0][1][nitrogen_atom.atomIndex].addElectron(uniqid())
         molecule = this.removeAtom(molecule, proton)
         return molecule
     }
@@ -399,6 +407,7 @@ class BondsAI {
         if (nitrogen_index === -1) {
             return false
         }
+
 
         const nitrogen = CAtom(this.reaction.container_substrate[0][1][nitrogen_index], nitrogen_index, this.reaction.container_substrate)
         const carbon_bonds = nitrogen.indexedDoubleBonds("").filter((bond)=>{

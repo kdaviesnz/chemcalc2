@@ -408,7 +408,7 @@ class Reaction {
 
             // Remove hydrogen from nitrogen to give it a negative charge
             // this.container_substrate = this.bondsAI.removeProton(this.container_substrate, nitrogen_index, h_n_shared_electrons, this.container_substrate[0][1][h_n_hydrogen_bonds[0].atom_index])
-            this.container_substrate = this.bondsAI.removeProton(this.container_substrate, nitrogen_index)
+            this.bondsAI.removeProton(this.container_substrate, nitrogen, [], null, DEBUG)
             this.bondsAI.makeDoubleBond(nitrogen, carbon, DEBUG)
             this.stateMoleculeAI.neutraliseMolecule(this.container_substrate)
             this.setChargesOnSubstrate(false)

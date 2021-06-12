@@ -28,7 +28,7 @@ const Typecheck = (...params) => {
                     if (param.type === 'object' && (typeof param.value !== "object" || Object.prototype.toString.call(param.value) === '[object Array]')) {
                         console.log("Actual value:")
                         console.log(param.value)
-                        throw new Error(param.name + " should be an object, actual type:" + typeof param.value)
+                        throw new Error(param.name + " should be an object, actual type:" + (Object.prototype.toString.call(param.value) === '[object Array]'?'array':typeof param.value))
                     }
                     break;
             }
