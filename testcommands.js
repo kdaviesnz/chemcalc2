@@ -89,14 +89,13 @@ client.connect(err => {
                 const substrate = MoleculeFactory(reaction_test.starting_substrate)
                 const reagent = MoleculeFactory("CN")
                 const reaction = new Reaction([substrate, 1], [reagent, 1], "", false, null, null, [], 0, [], renderCallback)
-                const result = reaction[reaction_test.reaction](nitrogen_index,carbon_index, false)
+                const param_values = Object.values(reaction_test.params)
+                const result = reaction[reaction_test.reaction](...param_values, false)
                 VMolecule(result[0]).canonicalSMILES().should.be.equal(reaction_test.finishing_substrate)
                 VMolecule(result[1]).canonicalSMILES().should.be.equal(reaction_test.finishing_reagent)
                 console.log("*")
             }
         )
     })
-    
+
 })
-
-
