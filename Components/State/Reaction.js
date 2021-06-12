@@ -205,6 +205,33 @@ class Reaction {
 
     }
 
+    formImineFromKetoneReverse(nitrogen_index, carbon_index, DEBUG) {
+
+        Typecheck(
+            {name:"carbon_index", value:carbon_index, type:"number"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+            {name:"this.container_substrate", value:this.container_substrate, type:"array"},
+            {name:"this.container_reagent", value:this.container_reagent, type:"array"},
+            {name:"this.reactions", value:this.reactions, type:"array"},
+            {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
+            {name:"this.horizontalFn", value:this.horizontalFn, type:"function"},
+            {name:"this.commands", value:this.commands, type:"array"},
+            {name:"this.command_index", value:this.command_index, type:"number"},
+            {name:"nitrogen_index", value:this.nitrogen_index, type:"number"},
+            {name:"carbon_index", value:this.carbon_index, type:"number"},
+            {name:"this.renderCallback", value:this.renderCallback, type:"function"},
+            {name:"this.rule", value:this.rule, type:"string"},
+            {name:"this.stateMoleculeAI", value:this.stateMoleculeAI, type:"object"}
+        )
+
+        this.stateMoleculeAI.formImineFromKetoneReverse(nitrogen_index, carbon_index, DEBUG)
+
+        return [
+            this.container_substrate,
+            this.container_reagent
+        ]
+    }
+
     substituteAtomForAtom(atom_to_substitute_index, replacement_atom, DEBUG) {
         if (DEBUG) {
             console.log("Reaction.js substituteAtomAtom - atom_to_substitute_index")
@@ -217,7 +244,7 @@ class Reaction {
         this.container_substrate[0][1][atom_to_substitute_index][1] = replacement_atom[4]
     }
 
-    reduceImineToAmineReverse(carbon_index, DEBUG) {
+    reduceImineToAmineReverse(nitrogen_index, carbon_index, DEBUG) {
 
         Typecheck(
             {name:"carbon_index", value:carbon_index, type:"number"},
@@ -230,16 +257,18 @@ class Reaction {
             {name:"this.commands", value:this.commands, type:"array"},
             {name:"this.command_index", value:this.command_index, type:"number"},
             {name:"this.renderCallback", value:this.renderCallback, type:"function"},
-            {name:"this.rule", value:this.rule, type:"string"}
+            {name:"this.rule", value:this.rule, type:"string"},
+            {name:"this.MoleculeAI", value:this.MoleculeAI, type:"object"}
         )
 
         // Determine nitrogen index
-        const nitrogen_index = this.MoleculeAI.findNitrogenAttachedToCarbonIndexNoDoubleBonds()
+        nitrogen_index = this.MoleculeAI.findNitrogenAttachedToCarbonIndexNoDoubleBonds()
         if (DEBUG) {
             console.log("Reaction.js reduceImineToAmineReverse() nitrogen index="+nitrogen_index)
         }
 
         if (nitrogen_index === -1) {
+            process.error()
             return false
         }
 
@@ -280,6 +309,7 @@ class Reaction {
                     console.log(VMolecule(this.container_reagent).canonicalSMILES())
                 }
             }
+
 
             return [
                 this.container_substrate,
