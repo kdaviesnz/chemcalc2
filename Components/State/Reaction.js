@@ -166,6 +166,8 @@ class Reaction {
         this.setReagentAI()
         this.CommandLogic = require('../../Components/Stateless/CommandLogic')(this)
 
+        this.setChargesOnSubstrate(DEBUG)
+        this.setReagentAI(DEBUG)
 
         this.MoleculeAI.validateMolecule()
         if (this.ReagentAI !== null) {
@@ -391,9 +393,6 @@ class Reaction {
             return false
         }
 
-
-
-
         if (undefined !== carbon_index)  {
 
             // Change to double bond
@@ -407,9 +406,8 @@ class Reaction {
             }
 
             // Remove hydrogen from nitrogen to give it a negative charge
-            // this.container_substrate = this.bondsAI.removeProton(this.container_substrate, nitrogen_index, h_n_shared_electrons, this.container_substrate[0][1][h_n_hydrogen_bonds[0].atom_index])
             this.bondsAI.removeProton(this.container_substrate, nitrogen, [], null, DEBUG)
-            this.bondsAI.makeDoubleBond(nitrogen, carbon, DEBUG)
+            this.bondsAI.breakCarbonNitrogenDoubleBondReverse(nitrogen_index, carbon_index, DEBUG)
             this.stateMoleculeAI.neutraliseMolecule(this.container_substrate)
             this.setChargesOnSubstrate(false)
             if (DEBUG) {
@@ -424,13 +422,13 @@ class Reaction {
                 console.log(VMolecule([this.container_substrate[0], 1]).compressed())
                 console.log(VMolecule([this.container_substrate[0], 1]).canonicalSMILES())
             }
-            const stateMoleculeAI = new StateMoleculeAI(this)
-            const formKeytoneFromImine_result = this.stateMoleculeAI.formKetoneFromImine(nitrogen_index, carbon_index, DEBUG)
+
+            const formKetoneFromImine_result = this.stateMoleculeAI.formImineFromKetoneReverse(nitrogen_index, carbon_index, DEBUG)
             if (DEBUG) {
                 console.log("Reaction.js reductiveAminationReverse Substrate, reagent and carbon index after converting to imine")
-                console.log(VMolecule(formKeytoneFromImine_result[0]).compressed())
-                console.log(VMolecule(formKeytoneFromImine_result[0]).canonicalSMILES())
-                console.log(VMolecule(formKeytoneFromImine_result[1]).canonicalSMILES())
+                console.log(VMolecule(formKetoneFromImine_result[0]).compressed())
+                console.log(VMolecule(formKetoneFromImine_result[0]).canonicalSMILES())
+                console.log(VMolecule(formKetoneFromImine_result[1]).canonicalSMILES())
                 console.log(carbon_index)
             }
 
@@ -1282,7 +1280,12 @@ class Reaction {
             {name:"this.rule", value:this.rule, type:"string"}
         )
         const hydrationAI = new HydrationAI(this)
-        return hydrationAI.dehydrateReverse(DEBUG)
+        const result = hydrationAI.dehydrateReverse(DEBUG)
+
+        return result ===  false? false:[
+            this.container_substrate,
+            this.container_reagent
+        ]
     }
 
     __removeGroup(nucleophile_index, electrophile_index, moleculeAI, substrate) {

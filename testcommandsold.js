@@ -136,10 +136,7 @@ if (reduceImineToAmineReverse_result[1] !==null) {
 // dehydrateReverse
 NMethyl1phenylpropane2imine = MoleculeFactory("CC(CC1=CC=CC=C1)[NH1+]=C")
 console.log(VMolecule([NMethyl1phenylpropane2imine,1]).compressed())
-
 reaction = new Reaction([NMethyl1phenylpropane2imine, 1], null, "", false, null, null, [], 0, [], renderCallback)
-process.error()
-//console.log(VMolecule([me,1]).compressed())
 dehydrateReverse_result = reaction.dehydrateReverse(true)
 VMolecule(dehydrateReverse_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=NC")
 VMolecule(dehydrateReverse_result[1]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)=NC")

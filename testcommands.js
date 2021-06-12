@@ -69,16 +69,7 @@ process.on('unhandledRejection', function(err) {
 })
 
 
-// Reductive amination
-nitrogen_index = 21
-carbon_index = 25
-me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
-methylamine = MoleculeFactory("CN")
-reaction = new Reaction([me, 1], [methylamine, 1], "", false, null, null, [], 0, [], renderCallback)
-reductiveAminationReverse_result = reaction.reductiveAminationReverse(carbon_index, false)
-VMolecule(reductiveAminationReverse_result[0]).canonicalSMILES().should.be.equal("C=O")
-VMolecule(reductiveAminationReverse_result[1]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)N")
-process.error()
+
 
 client.connect(err => {
 
@@ -89,18 +80,23 @@ client.connect(err => {
     db.collection("synthesis_testing").find({}).toArray((err, reactions) => {
         reactions.map(
             (reaction_test) => {
-                const nitrogen_index = reaction_test.nitrogen_index
-                const carbon_index =  reaction_test.carbon_index
-                const substrate = MoleculeFactory(reaction_test.starting_substrate)
-                const reagent = MoleculeFactory("CN")
-                const reaction = new Reaction([substrate, 1], [reagent, 1], "", false, null, null, [], 0, [], renderCallback)
-                const param_values = Object.values(reaction_test.params)
-                const result = reaction[reaction_test.reaction](...param_values, false)
+                const reaction = new Reaction([MoleculeFactory(reaction_test.starting_substrate), 1], [MoleculeFactory("CN"), 1], "", false, null, null, [], 0, [], renderCallback)
+                const result = reaction[reaction_test.reaction](...Object.values(reaction_test.params), false)
                 VMolecule(result[0]).canonicalSMILES().should.be.equal(reaction_test.finishing_substrate)
                 VMolecule(result[1]).canonicalSMILES().should.be.equal(reaction_test.finishing_reagent)
-                console.log("*")
+                console.log(reaction_test.reaction +"()")
             }
         )
     })
 
+    // dehydrateReverse
+    NMethyl1phenylpropane2imine = MoleculeFactory("CC(CC1=CC=CC=C1)[NH1+]=C")
+    methylamine = MoleculeFactory("CN")
+    //console.log(VMolecule([NMethyl1phenylpropane2imine,1]).compressed())
+    reaction = new Reaction([NMethyl1phenylpropane2imine, 1], [methylamine,1], "", false, null, null, [], 0, [], renderCallback)
+    dehydrateReverse_result = reaction.dehydrateReverse(true)
+    VMolecule(dehydrateReverse_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)NC[OH2+]")
+    VMolecule(dehydrateReverse_result[1]).canonicalSMILES().should.be.equal("CN")
 })
+
+

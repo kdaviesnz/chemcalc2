@@ -6,6 +6,7 @@ const CAtom = require('../../Controllers/Atom')
 const Set = require('../../Models/Set')
 const uniqid = require('uniqid');
 const SubstitutionAI = require('../../Components/State/SubstitutionAI')
+const Typecheck = require('../../Typecheck')
 
 // dehydrateReverse()
 // dehydrate(check_mode, oxygen_atom_index=null)
@@ -61,7 +62,7 @@ class HydrationAI {
         })
 
 
-        this.reaction.leaving_groups.push([MoleculeFactory("O"),1])
+        this.reaction.leaving_groups.addAtom([MoleculeFactory("O"),1])
 
         //  this.setMoleculeAI()
         this.reaction.setReagentAI()
@@ -70,16 +71,13 @@ class HydrationAI {
 
     }
 
-    dehydrateReverse(check_mode) {
+    dehydrateReverse(DEBUG) {
 
-        //const id = uniqid()
-
-      //  console.log('dehydratereverse (start)' + id + ' ' + VMolecule(this.reaction.container_substrate).canonicalSMILES())
+        Typecheck(
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+        )
 
         this.reaction.MoleculeAI.validateMolecule()
-
-        //  console.log("HydrationAI() dehydrateReverse() molecule before:")
-        //  console.log(VMolecule(this.reaction.container_substrate).compressed())
 
         const water_molecule = MoleculeFactory("O")
         water_molecule[1][2][4] = "+"
@@ -103,8 +101,6 @@ class HydrationAI {
             return false
         }
 
-
-        // dehydrate reverse
         const e_atom = CAtom(this.reaction.container_substrate[0][1][electrophile_index], electrophile_index, this.reaction.container_substrate)
 
         const e_free_electrons = e_atom.freeElectrons()
@@ -119,30 +115,27 @@ class HydrationAI {
                     return v === shared_electrons[0] || v === shared_electrons[1]
                 })
                 // Replace electrons
-                this.reaction.container_substrate[0][1][d_bonds[0].atom_index].push(uniqid())
-                this.reaction.container_substrate[0][1][d_bonds[0].atom_index].push(uniqid())
+                this.reaction.container_substrate[0][1][d_bonds[0].atom_index].addElectron(uniqid())
+                this.reaction.container_substrate[0][1][d_bonds[0].atom_index].addElectron(uniqid())
                 this.reaction.setChargeOnSubstrateAtom(d_bonds[0].atom_index)
-                e_free_electrons.push(d_bonds[0].shared_electrons[0])
-                e_free_electrons.push(d_bonds[0].shared_electrons[1])
+                e_free_electrons.addElectron(d_bonds[0].shared_electrons[0])
+                e_free_electrons.addElectron(d_bonds[0].shared_electrons[1])
             }
         }
-        // console.log("HydrationAI electrophile free electrons:" + e_free_electrons.length)
-        // console.log(TESTING)
+
         // We do this so that the atom does not end up with more then 8 electrons
         this.reaction.container_substrate[0][1][electrophile_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][electrophile_index], e_free_electrons)
 
         // Create the C(O) bond
         // electrons are the free electrons on the oxygen water atom
-        this.reaction.container_substrate[0][1][electrophile_index].push(electrons[0])
-        this.reaction.container_substrate[0][1][electrophile_index].push(electrons[1])
+        this.reaction.container_substrate[0][1][electrophile_index].addElectron(electrons[0])
+        this.reaction.container_substrate[0][1][electrophile_index].addElectron(electrons[1])
 
-        this.reaction.container_substrate[0][1].push(water_molecule[1][0])
-        this.reaction.container_substrate[0][1].push(water_molecule[1][1])
-        this.reaction.container_substrate[0][1].push(water_molecule[1][2])
+        this.reaction.container_substrate[0][1].addAtom(water_molecule[1][0])
+        this.reaction.container_substrate[0][1].addAtom(water_molecule[1][1])
+        this.reaction.container_substrate[0][1].addAtom(water_molecule[1][2])
 
         this.reaction.setChargesOnSubstrate()
-        //console.log(VMolecule(this.reaction.container_substrate).compressed())
-        //console.log(aaa)
 
         this.reaction.setMoleculeAI()
 
@@ -150,8 +143,6 @@ class HydrationAI {
         this.reaction.MoleculeAI.findWaterOxygenIndex().should.be.greaterThan(-1)
 
         this.reaction.MoleculeAI.validateMolecule()
-
-        // console.log('dehydratereverse (end)'+ id +' ' + VMolecule(this.reaction.container_substrate).canonicalSMILES())
 
 
         return true
@@ -180,13 +171,13 @@ class HydrationAI {
             return false
         }
 
-        this.reaction.container_substrate[0][1][electrophile_index].push(electrons[0])
-        this.reaction.container_substrate[0][1][electrophile_index].push(electrons[1])
+        this.reaction.container_substrate[0][1][electrophile_index].addElectron(electrons[0])
+        this.reaction.container_substrate[0][1][electrophile_index].addElectron(electrons[1])
         this.reaction.container_substrate[0][1][electrophile_index][4] = 0
 
-        this.reaction.container_substrate[0][1].push(water_molecule[1][0])
-        this.reaction.container_substrate[0][1].push(water_molecule[1][1])
-        this.reaction.container_substrate[0][1].push(water_molecule[1][2])
+        this.reaction.container_substrate[0][1].addAtom(water_molecule[1][0])
+        this.reaction.container_substrate[0][1].addAtom(water_molecule[1][1])
+        this.reaction.container_substrate[0][1].addAtom(water_molecule[1][2])
 
         this.reaction.setMoleculeAI()
 

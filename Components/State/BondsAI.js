@@ -29,12 +29,10 @@ const Constants = require("../../Constants")
 // bondSubstrateToReagentReverse()
 // removeHalideReverse()
 // makeCarbonCarbonDoubleBondByAtomIndex(c2_negative_carbon_index, c1_positive_carbon_index, DEBUG)
-// makeDoubleBond(negativeAtom, positiveAtom, DEBUG)
 // breakOxygenCarbonSingleBond
 // isBond(atom1_controller, atom2_controller)
 // breakCarbonNitrogenDoubleBondReverse(nitrogen_index, carbon_index, DEBUG)
 // bondAtoms(atom1, atom2)
-// makeDoubleBond(atom1, atom2)
 // bondAtomsReverse(atom1, atom2)
 // removeCoordinateCovalentBond(atom1, atom2)
 // bondAtomsReverse(atom1, atom2)
@@ -378,14 +376,16 @@ class BondsAI {
             if (hydrogen_nitrogen_bonds.length ===0) {
                 return false
             }
-            proton = CAtom(this.reaction.container_substrate[0][1][hydrogen_nitrogen_bonds[0].atom_index], hydrogen_nitrogen_bonds[0].atom_index, this.reaction.container_substrate)
+            proton = CAtom(molecule[0][1][hydrogen_nitrogen_bonds[0].atom_index], hydrogen_nitrogen_bonds[0].atom_index, this.reaction.container_substrate)
         }
 
         // removeBond(atom1, atom2, molecule_container, DEBUG)
+        //console.log(VMolecule(molecule).compressed())
         this.removeBond(nitrogen_atom, proton, molecule)
-        molecule[0][1][nitrogen_atom.atomIndex].addElectron(uniqid())
-        molecule[0][1][nitrogen_atom.atomIndex].addElectron(uniqid())
-        molecule = this.removeAtom(molecule, proton)
+        //console.log(VMolecule(molecule).compressed())
+        //molecule[0][1][nitrogen_atom.atomIndex].addElectron(uniqid())
+        //molecule[0][1][nitrogen_atom.atomIndex].addElectron(uniqid())
+        molecule = this.removeAtom(molecule, molecule[0][1][proton.atomIndex])
         return molecule
     }
 
