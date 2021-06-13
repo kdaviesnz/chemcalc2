@@ -8,6 +8,13 @@ const Typecheck = require("../../../Typecheck")
 
 const VMolecule = (mmolecule) => {
 
+    Typecheck(
+        {name:"mmolecule", value:mmolecule, type:"array"},
+    )
+
+    if (mmolecule === undefined || mmolecule === undefined) {
+        throw new Error("Molecule is null or undefined")
+    }
 
     mmolecule.length.should.be.equal(2) // molecule, units
     if (mmolecule[0] !=="B") {

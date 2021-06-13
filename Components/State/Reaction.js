@@ -120,7 +120,6 @@ class Reaction {
 
         Typecheck(
             {name:"container_substrate", value:container_substrate, type:"array"},
-            {name:"container_reagent", value:container_reagent, type:"array"},
             {name:"rule", value:rule, type:"string"},
             {name:"DEBUG", value:DEBUG, type:"boolean"},
             {name:"horizontalCallback", value:horizontalCallback, type:"function"},
@@ -131,6 +130,9 @@ class Reaction {
             {name:"renderCallback", value:renderCallback, type:"function"}
         )
 
+        if (container_reagent !== "A") {
+            container_reagent.should.be.an.Array()
+        }
         container_substrate.length.should.be.equal(2) // molecule, units
         container_substrate[0].length.should.be.equal(2) // pKa, atoms
 
@@ -166,6 +168,7 @@ class Reaction {
         this.setReagentAI()
         this.CommandLogic = require('../../Components/Stateless/CommandLogic')(this)
 
+
         this.setChargesOnSubstrate(DEBUG)
         this.setReagentAI(DEBUG)
 
@@ -199,11 +202,13 @@ class Reaction {
         })
 
         // Check each atom is an array
-        this.container_reagent[0][1].map((_atom)=>{
-            Typecheck(
-                {name:"_atom", value:_atom, type:"array"},
-            )
-        })
+        if (this.container_reagent !== "A") {
+            this.container_reagent[0][1].map((_atom) => {
+                Typecheck(
+                    {name: "_atom", value: _atom, type: "array"},
+                )
+            })
+        }
 
     }
 
@@ -406,7 +411,7 @@ class Reaction {
             }
 
             // Remove hydrogen from nitrogen to give it a negative charge
-            this.bondsAI.removeProton(this.container_substrate, nitrogen, [], null, DEBUG)
+            this.bondsAI.removeHydrogen(this.container_substrate, nitrogen, [], null, DEBUG)
             this.bondsAI.breakCarbonNitrogenDoubleBondReverse(nitrogen_index, carbon_index, DEBUG)
             this.stateMoleculeAI.neutraliseMolecule(this.container_substrate)
             this.setChargesOnSubstrate(false)
@@ -1256,14 +1261,51 @@ class Reaction {
         this.setMoleculeAI()
     }
 
-    hydrate(electrophile_index) {
-        const hydrationAI = new HydrationAI(this)
-        return hydrationAI.hydrate(electrophile_index)
+    hydrate(DEBUG) {
+        Typecheck(
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+            {name:"this.container_substrate", value:this.container_substrate, type:"array"},
+            {name:"this.container_reagent", value:this.container_reagent, type:"array"},
+            {name:"this.reactions", value:this.reactions, type:"array"},
+            {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
+            {name:"this.horizontalFn", value:this.horizontalFn, type:"function"},
+            {name:"this.commands", value:this.commands, type:"array"},
+            {name:"this.command_index", value:this.command_index, type:"number"},
+            {name:"this.renderCallback", value:this.renderCallback, type:"function"},
+            {name:"this.rule", value:this.rule, type:"string"}
+        )
+        return this.dehydrateReverse(DEBUG)
     }
 
-    dehydrate(check_mode) {
+    dehydrate(oxygen_atom_index, DEBUG) {
+
+        Typecheck(
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+            {name:"oxygen_atom_index", value:oxygen_atom_index, type:"number"},
+            {name:"this.container_substrate", value:this.container_substrate, type:"array"},
+            {name:"this.container_reagent", value:this.container_reagent, type:"array"},
+            {name:"this.reactions", value:this.reactions, type:"array"},
+            {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
+            {name:"this.horizontalFn", value:this.horizontalFn, type:"function"},
+            {name:"this.commands", value:this.commands, type:"array"},
+            {name:"this.command_index", value:this.command_index, type:"number"},
+            {name:"this.renderCallback", value:this.renderCallback, type:"function"},
+            {name:"this.rule", value:this.rule, type:"string"}
+        )
+
         const hydrationAI = new HydrationAI(this)
-        return hydrationAI.dehydrate(check_mode)
+
+        const result = hydrationAI.dehydrate(oxygen_atom_index, DEBUG)
+
+        this.setReagentAI()
+        this.setMoleculeAI()
+        this.setChargesOnSubstrate(DEBUG)
+        this.setChargesOnReagent()
+
+        return result ===  false? false:[
+            this.container_substrate,
+            this.container_reagent
+        ]
     }
 
     dehydrateReverse(DEBUG) {
@@ -1811,9 +1853,26 @@ class Reaction {
         return protationAI.removeProtonFromOxygen()
     }
 
-    deprotonateOxygenOnDoubleBond() {
+    deprotonateOxygenOnDoubleBond(DEBUG) {
+
+        Typecheck(
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+            {name:"this.container_substrate", value:this.container_substrate, type:"array"},
+            {name:"this.container_reagent", value:this.container_reagent, type:"array"},
+            {name:"this.reactions", value:this.reactions, type:"array"},
+            {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
+            {name:"this.horizontalFn", value:this.horizontalFn, type:"function"},
+            {name:"this.commands", value:this.commands, type:"array"},
+            {name:"this.command_index", value:this.command_index, type:"number"},
+            {name:"nitrogen_index", value:this.nitrogen_index, type:"number"},
+            {name:"carbon_index", value:this.carbon_index, type:"number"},
+            {name:"this.renderCallback", value:this.renderCallback, type:"function"},
+            {name:"this.rule", value:this.rule, type:"string"},
+            {name:"this.stateMoleculeAI", value:this.stateMoleculeAI, type:"object"}
+        )
+
         const protationAI = new ProtonationAI(this)
-        return protationAI.deprotonateOxygenOnDoubleBond()
+        return protationAI.deprotonateOxygenOnDoubleBond(DEBUG)
     }
 
     protonateCarbocation() {
@@ -1826,9 +1885,25 @@ class Reaction {
         return protationAI.protonateCarbocationReverse()
     }
 
-    protonateOxygenOnDoubleBond() {
+    protonateOxygenOnDoubleBond(carbonyl_oxygen_index,  DEBUG) {
+
+        Typecheck(
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+            {name:"carbonyl_oxygen_index", value:carbonyl_oxygen_index, type:"number"},
+            {name:"this.container_substrate", value:this.container_substrate, type:"array"},
+            {name:"this.reactions", value:this.reactions, type:"array"},
+            {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
+            {name:"this.horizontalFn", value:this.horizontalFn, type:"function"},
+            {name:"this.commands", value:this.commands, type:"array"},
+            {name:"this.command_index", value:this.command_index, type:"number"},
+            {name:"nitrogen_index", value:this.nitrogen_index, type:"number"},
+            {name:"carbon_index", value:this.carbon_index, type:"number"},
+            {name:"this.renderCallback", value:this.renderCallback, type:"function"},
+            {name:"this.rule", value:this.rule, type:"string"},
+            {name:"this.stateMoleculeAI", value:this.stateMoleculeAI, type:"object"}
+        )
         const protationAI = new ProtonationAI(this)
-        return protationAI.protonateOxygenOnDoubleBond()
+        return protationAI.protonateOxygenOnDoubleBond(carbonyl_oxygen_index, this.container_reagent, DEBUG)
     }
 
     removeMetal() {

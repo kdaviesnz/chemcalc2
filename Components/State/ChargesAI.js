@@ -22,11 +22,13 @@ class ChargesAI {
                     {name: "_atom", value: _atom, type: "array"},
                 )
             })
-            this.reaction.container_reagent[0][1].map((_atom) => {
-                Typecheck(
-                    {name: "_atom", value: _atom, type: "array"},
-                )
-            })
+            if (this.reaction.container_reagent !== "A") {
+                this.reaction.container_reagent[0][1].map((_atom) => {
+                    Typecheck(
+                        {name: "_atom", value: _atom, type: "array"},
+                    )
+                })
+            }
         }
 
     }

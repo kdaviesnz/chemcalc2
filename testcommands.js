@@ -55,8 +55,6 @@ const renderCallback = (reactions) => {
 
 // formKetoneFromImine
 
-console.log("Running preliminary tests")
-
 const MongoClient = require('mongodb').MongoClient
 const assert = require('assert');
 
@@ -68,7 +66,7 @@ process.on('unhandledRejection', function(err) {
     console.log(err);
 })
 
-
+console.log("Connecting to database ...")
 
 
 client.connect(err => {
@@ -76,27 +74,33 @@ client.connect(err => {
     assert.equal(err, null)
     const db = client.db("chemistry")
 
+    console.log("Connected to database. Running preliminary tests ...")
 
     db.collection("synthesis_testing").find({}).toArray((err, reactions) => {
         reactions.map(
-            (reaction_test) => {
-                const reaction = new Reaction([MoleculeFactory(reaction_test.starting_substrate), 1], [MoleculeFactory("CN"), 1], "", false, null, null, [], 0, [], renderCallback)
+            (reaction_test, i) => {
+                let reagent_container = null
+                if (reaction_test.starting_reagent === "A") {
+                    reagent_container = "A"
+                } else {
+                    reagent_container = [MoleculeFactory("CN"), 1]
+                }
+                const reaction = new Reaction([MoleculeFactory(reaction_test.starting_substrate), 1], reagent_container, "", false, null, null, [], 0, [], renderCallback)
                 const result = reaction[reaction_test.reaction](...Object.values(reaction_test.params), false)
-                VMolecule(result[0]).canonicalSMILES().should.be.equal(reaction_test.finishing_substrate)
-                VMolecule(result[1]).canonicalSMILES().should.be.equal(reaction_test.finishing_reagent)
-                console.log(reaction_test.reaction +"()")
+                if (result === false) {
+                    console.log("Reaction returned false - " + reaction_test.reaction +"()")
+                } else {
+                    VMolecule(result[0]).canonicalSMILES().should.be.equal(reaction_test.finishing_substrate)
+                    if (reaction_test.finishing_reagent !=="" && reaction_test.finishing_reagent !== null)
+                    VMolecule(result[1]).canonicalSMILES().should.be.equal(reaction_test.finishing_reagent)
+                    console.log(reaction_test.reaction +"()")
+                }
             }
         )
+        console.log("Preliminary tests completed.")
+        process.exit()
     })
 
-    // dehydrateReverse
-    NMethyl1phenylpropane2imine = MoleculeFactory("CC(CC1=CC=CC=C1)[NH1+]=C")
-    methylamine = MoleculeFactory("CN")
-    //console.log(VMolecule([NMethyl1phenylpropane2imine,1]).compressed())
-    reaction = new Reaction([NMethyl1phenylpropane2imine, 1], [methylamine,1], "", false, null, null, [], 0, [], renderCallback)
-    dehydrateReverse_result = reaction.dehydrateReverse(true)
-    VMolecule(dehydrateReverse_result[0]).canonicalSMILES().should.be.equal("CC(CC1=CC=CC=C1)NC[OH2+]")
-    VMolecule(dehydrateReverse_result[1]).canonicalSMILES().should.be.equal("CN")
 })
 
 

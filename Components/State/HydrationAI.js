@@ -7,8 +7,9 @@ const Set = require('../../Models/Set')
 const uniqid = require('uniqid');
 const SubstitutionAI = require('../../Components/State/SubstitutionAI')
 const Typecheck = require('../../Typecheck')
+const BondsAI = require('../../Components/State/BondsAI')
 
-// dehydrateReverse()
+// dehydrateReverse(DEBUG, oxygen_atom_index=null)
 // dehydrate(check_mode, oxygen_atom_index=null)
 class HydrationAI {
 
@@ -16,58 +17,34 @@ class HydrationAI {
         this.reaction = reaction
     }
 
-    dehydrate(check_mode, oxygen_atom_index=null) {
+    dehydrate(oxygen_atom_index, DEBUG) {
 
-        // console.log("HydrationAI dehydrate()")
+        Typecheck(
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+            {name:"oxygen_atom_index", value:oxygen_atom_index, type:"number"}
+        )
 
-        oxygen_atom_index = oxygen_atom_index===null?this.reaction.MoleculeAI.findWaterOxygenIndex():oxygen_atom_index
+        const bondsAI = new BondsAI(this.reaction)
 
+        oxygen_atom_index = oxygen_atom_index===null || oxygen_atom_index === undefined?this.reaction.MoleculeAI.findWaterOxygenIndex():oxygen_atom_index
         if (oxygen_atom_index === -1) {
+            throw new Error("Unable to find oxygen atom index")
             return false
-        }
-
-        if (check_mode) {
-            return true
         }
 
         const oxygen_atom = CAtom(this.reaction.container_substrate[0][1][oxygen_atom_index], oxygen_atom_index, this.reaction.container_substrate)
 
-        const hydrogen_bonds = oxygen_atom.indexedBonds("").filter((bond) => {
-                return bond.atom[0] === "H"
-            }
-        )
-
-        // Get the bond that is NOT and oxygen - hydrogen bond
-        const non_hydrogen_bond = oxygen_atom.indexedBonds("").filter((bond) => {
-                return bond.atom[0] !== "H"
-            }
-        ).pop()
+        // Get the bond that is NOT hydrogen bond
+        const hydrogen_bonds = oxygen_atom.getHydrogenBonds()
 
         // Break the non_hydrogen bond
-        const shared_electrons = non_hydrogen_bond.shared_electrons
-
-       // console.log("HydrationAI dehydrate()")
-       // console.log(this.reaction.container_substrate[0][1][non_hydrogen_bond.atom_index])
-
-        _.remove(this.reaction.container_substrate[0][1][non_hydrogen_bond.atom_index], (v, i)=> {
-            return shared_electrons[1] === v || shared_electrons[0] === v
-        })
-
-       // console.log(this.reaction.container_substrate[0][1][non_hydrogen_bond.atom_index])
-       // console.log(fgh)
+        bondsAI.breakOxygenCarbonSingleBond(oxygen_atom_index, DEBUG)
 
         // Remove water atoms
-        _.remove(this.reaction.container_substrate[0][1], (v,i) => {
-            return i === oxygen_atom_index || i === hydrogen_bonds[0].atom_index || i === hydrogen_bonds[1].atom_index
-        })
+        this.reaction.container_substrate[0][1].removeAtomsByIndex([oxygen_atom_index, hydrogen_bonds[0].atom_index, hydrogen_bonds[1].atom_index])
 
-
+        // Add water to leaving group
         this.reaction.leaving_groups.addAtom([MoleculeFactory("O"),1])
-
-        //  this.setMoleculeAI()
-        this.reaction.setReagentAI()
-
-        return true
 
     }
 
@@ -148,7 +125,16 @@ class HydrationAI {
         return true
     }
 
-    hydrate(electrophile_index) {
+    hydrate(DEBUG) {
+
+        Typecheck(
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+        )
+
+        return this.dehydrateReverse(DEBUG)
+    }
+
+    hydrate_old(electrophile_index) {
         const water_molecule = MoleculeFactory("O")
         water_molecule[1][2][4]="+"
 

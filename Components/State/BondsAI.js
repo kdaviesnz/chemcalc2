@@ -29,7 +29,7 @@ const Constants = require("../../Constants")
 // bondSubstrateToReagentReverse()
 // removeHalideReverse()
 // makeCarbonCarbonDoubleBondByAtomIndex(c2_negative_carbon_index, c1_positive_carbon_index, DEBUG)
-// breakOxygenCarbonSingleBond
+// breakOxygenCarbonSingleBond(oxygen_atom_id)
 // isBond(atom1_controller, atom2_controller)
 // breakCarbonNitrogenDoubleBondReverse(nitrogen_index, carbon_index, DEBUG)
 // bondAtoms(atom1, atom2)
@@ -353,11 +353,11 @@ class BondsAI {
         return molecule_container
     }
 
-    removeProton(molecule, nitrogen_atom, electrons=null, proton=null, DEBUG=false) {
+    removeHydrogen(molecule, atom, electrons=null, proton=null, DEBUG=false) {
 
         Typecheck(
             {name:"molecule", value:molecule, type:"array"},
-            {name:"nitrogen_atom", value:nitrogen_atom, type:"object"},
+            {name:"atom", value:atom, type:"object"},
             {name:"electrons", value:electrons, type:"array"},
             {name:"proton", value:proton, type:"object"}
         )
@@ -370,18 +370,18 @@ class BondsAI {
         }
         //const nitrogen_atom = CAtom(this.reaction.container_substrate[0][1][atom_index], atom_index, this.reaction.container_substrate)
         if ((electrons === null || electrons.length ===0) && proton === null) {
-            const hydrogen_nitrogen_bonds = nitrogen_atom.indexedBonds("").filter((bond)=>{
+            const hydrogen_bonds = atom.indexedBonds("").filter((bond)=>{
                 return bond.atom[0] === "H"
             })
-            if (hydrogen_nitrogen_bonds.length ===0) {
+            if (hydrogen_bonds.length ===0) {
                 return false
             }
-            proton = CAtom(molecule[0][1][hydrogen_nitrogen_bonds[0].atom_index], hydrogen_nitrogen_bonds[0].atom_index, this.reaction.container_substrate)
+            proton = CAtom(molecule[0][1][hydrogen_bonds[0].atom_index], hydrogen_bonds[0].atom_index, this.reaction.container_substrate)
         }
 
         // removeBond(atom1, atom2, molecule_container, DEBUG)
         //console.log(VMolecule(molecule).compressed())
-        this.removeBond(nitrogen_atom, proton, molecule)
+        this.removeBond(atom, proton, molecule)
         //console.log(VMolecule(molecule).compressed())
         //molecule[0][1][nitrogen_atom.atomIndex].addElectron(uniqid())
         //molecule[0][1][nitrogen_atom.atomIndex].addElectron(uniqid())
@@ -1197,28 +1197,29 @@ class BondsAI {
 
     }
 
-    breakOxygenCarbonSingleBond(oxygen_index) {
+    breakOxygenCarbonSingleBond(oxygen_index, DEBUG) {
+
+        Typecheck(
+            {name:"oxygen_index", value:oxygen_index, type:"number"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"}
+        )
+
         const oxygen_atom = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
-        const bonds = oxygen_atom.indexedBonds("").filter((b)=>{
-            return b.atom[0] !== "H"
-        })
-        if (bonds.length === 0) {
+        const carbon_bonds = oxygen_atom.carbonBonds()
+        carbon_bonds.should.be.an.Array()
+        if (carbon_bonds.length === 0) {
             return false
         }
-        // Break each single bond
-        const carbon_index = carbon_bonds[0].atom_index
-        const electrons = _.cloneDeep(carbon_bonds[0].shared_electrons).slice(0,2)
-        console.log(electrons)
 
-        this.reaction.container_substrate = this.removeBond(this.reaction.container_substrate, oxygen_index, electrons)
-        console.log(VMolecule(this.reaction.container_substrate).compressed())
-        process.error()
+        const carbon_atom = CAtom(this.reaction.container_substrate[0][1][carbon_bonds[0].atom_index], carbon_bonds[0].atom_index, this.reaction.container_substrate)
+
+        //  removeBond(atom1, atom2, molecule_container, DEBUG)
+        this.reaction.container_substrate = this.removeBond(oxygen_atom, carbon_atom, this.reaction.container_substrate, DEBUG)
 
     }
 
 
     bondSubstrateToReagentReverse(n_index=null, c_index=null, DEBUG) {
-
 
         Typecheck(
             {name:"n_index", value:n_index, type:"number"},

@@ -89,6 +89,20 @@ const Prototypes = () => {
             )
         }
     })
+    Object.defineProperty(Array.prototype, 'removeAtomsByIndex', {
+        value: function(atoms) {
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"},
+            )
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("Atoms are  undefined or null")
+            }
+            // Remove atom from molecule
+            _.remove(this, (a, i) => {
+                return atoms.indexOf(i) > -1
+            })
+        }
+    })
     Object.defineProperty(Array.prototype, 'typeCheck', {
         value: function(name, type) {
             this.map((item)=>{
