@@ -9,6 +9,7 @@ const Set = require('../../Models/Set')
 const uniqid = require('uniqid');
 const Constants = require('../../Constants')
 const BondsAI = require('../State/BondsAI')
+const Typecheck = require('../../Typecheck')
 
 // addProtonFromSubstrateToReagentBySubstrateAtomIndex(substrate_atom_index) - remove proton from specific substrate atom and
 // add to reagent
@@ -527,12 +528,14 @@ class ProtonationAI {
         return true
     }
 
-    protonateOxygenOnDoubleBond(carbonyl_oxygen_index, reagent, DEBUG) {
+    protonateOxygenOnDoubleBond(carbonyl_oxygen_index, DEBUG) {
 
         Typecheck(
             {name:"DEBUG", value:DEBUG, type:"boolean"},
             {name:"carbonyl_oxygen_index", value:carbonyl_oxygen_index, type:"number"},
         )
+
+        const bondsAI = new BondsAI(this.reaction)
 
         // Find index of oxygen
         const oxygen_index = undefined !== carbonyl_oxygen_index && null !== carbonyl_oxygen_index? carbonyl_oxygen_index: this.reaction.MoleculeAI.findOxygenOnDoubleBondIndex()
@@ -543,31 +546,22 @@ class ProtonationAI {
 
      //   let reagent_proton_index = null
         let proton = null
-        if (typeof reagent === "string") {
-            if (reagent !== "A") {
+        if (typeof this.reaction.container_reagent === "string") {
+            if (this.reaction.container_reagent !== "A") {
                 throw new Error("ProtonationAI protonateOxygenOnDoubleBond() -> Reagent must be acid (A)")
             }
           //  proton = AtomFactory("H", 0)
-            reagent = "CB"
+            this.reaction.container_reagent = "CB"
         } else {
 //            reagent_proton_index = this.reaction.ReagentAI.findProtonIndex()
   //          const proton = _.cloneDeep(this.reaction.container_reagent[0][1][reagent_proton_index])
-            const bondsAI = new BondsAI(this.reaction)
+
             // Remove proton from reagent
             bondsAI.removeProton(this.reaction.container_reagent, oxygen, null, null, DEBUG)
 
         }
 
-        process.error()
-
-        let free_slots = oxygen.freeSlots()
-        if (free_slots > 0) {
-            // Add proton
-            this.reaction.container_substrate[0][1][oxygen_index].addAtom(proton[proton.length-1])
-            this.reaction.container_substrate[0][1][oxygen_index].addAtom(proton[proton.length-2])
-            this.reaction.container_substrate[0][1].addAtom(proton)
-            this.reaction.container_substrate[0][1][oxygen_index][4] = "+"
-        }
+        bondsAI.addProton(this.reaction.container_substrate, oxygen, DEBUG)
 
     }
 

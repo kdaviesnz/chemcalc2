@@ -162,7 +162,6 @@ class MoleculeAI {
         nitrogen_index.should.be.greaterThan(-1)
 
         this.reaction.setMoleculeAI()
-        this.reaction.setReagentAI()
         this.reaction.setChargesOnSubstrate()
         this.reaction.setChargesOnReagent()
 

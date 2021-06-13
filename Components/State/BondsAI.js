@@ -341,7 +341,7 @@ class BondsAI {
         return molecule_container
     }
 
-    addProton(molecule_container, atom_index) {
+    addHydrogenV2(molecule_container, atom_index) {
         const proton = AtomFactory("H", "")
         const atom = CAtom(molecule_container[0][1][atom_index], atom_index, molecule_container)
         const free_electrons = atom.freeElectrons()
@@ -353,13 +353,40 @@ class BondsAI {
         return molecule_container
     }
 
+    addProton(molecule_container, atom, DEBUG) {
+        Typecheck(
+            {name:"molecule_container", value:molecule_container, type:"array"},
+            {name:"atom", value:atom, type:"object"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"}
+        )
+        const proton = AtomFactory("H", "").removeAllElectrons()
+        proton.length.should.be.equal(Constants().electron_index)
+        // We can only add a proton if the target atom has at least one free pair
+        const free_electrons = atom.freeElectrons()
+        if (free_electrons.length > 1) {
+            // Add two electrons to proton to create coordinate covalent bond
+            proton.addElectron(free_electrons[0])
+            proton.addElectron(free_electrons[1])
+            // Add proton to molecule
+            molecule_container[0][1].addAtom(proton)
+        } else {
+            throw new Error('Unable to add proton as target atom does not have enough free electrons.')
+        }
+    }
+
+    removeProton() {
+        // When we remove a proton the number of electrons on the parent should not change.
+        throw new Error('Stubbed method - removeProton()')
+    }
+
     removeHydrogen(molecule, atom, electrons=null, proton=null, DEBUG=false) {
 
         Typecheck(
             {name:"molecule", value:molecule, type:"array"},
             {name:"atom", value:atom, type:"object"},
             {name:"electrons", value:electrons, type:"array"},
-            {name:"proton", value:proton, type:"object"}
+            {name:"proton", value:proton, type:"object"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"}
         )
 
         if (DEBUG) {
@@ -1233,13 +1260,14 @@ class BondsAI {
                 {name:"_atom", value:_atom, type:"array"},
             )
         })
-        this.reaction.container_reagent[0][1].map((_atom)=>{
-            Typecheck(
-                {name:"_atom", value:_atom, type:"array"},
-            )
-        })
 
-
+        if (typeof this.reaction.container_reagent !== "string") {
+            this.reaction.container_reagent[0][1].map((_atom) => {
+                Typecheck(
+                    {name: "_atom", value: _atom, type: "array"},
+                )
+            })
+        }
 
         // Look for N+=C+ bond of indexes are null
         let n_atom = null

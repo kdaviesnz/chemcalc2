@@ -80,8 +80,8 @@ client.connect(err => {
         reactions.map(
             (reaction_test, i) => {
                 let reagent_container = null
-                if (reaction_test.starting_reagent === "A") {
-                    reagent_container = "A"
+                if (reaction_test.starting_reagent === "A" || reaction_test.starting_reagent === "") {
+                    reagent_container = reaction_test.starting_reagent
                 } else {
                     reagent_container = [MoleculeFactory("CN"), 1]
                 }
@@ -91,8 +91,11 @@ client.connect(err => {
                     console.log("Reaction returned false - " + reaction_test.reaction +"()")
                 } else {
                     VMolecule(result[0]).canonicalSMILES().should.be.equal(reaction_test.finishing_substrate)
-                    if (reaction_test.finishing_reagent !=="" && reaction_test.finishing_reagent !== null)
-                    VMolecule(result[1]).canonicalSMILES().should.be.equal(reaction_test.finishing_reagent)
+                    if (typeof result[1] !=="string" && result[1] !== null) {
+                        VMolecule(result[1]).canonicalSMILES().should.be.equal(reaction_test.finishing_reagent)
+                    } else {
+                        result[1].should.be.equal(reaction_test.finishing_reagent)
+                    }
                     console.log(reaction_test.reaction +"()")
                 }
             }

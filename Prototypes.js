@@ -63,6 +63,11 @@ const Prototypes = () => {
             return this
         }
     })
+    Object.defineProperty(Array.prototype, 'removeAllElectrons', {
+        value: function() {
+            return this.slice(0,Constants().electron_index)
+        }
+    })
     Object.defineProperty(Array.prototype, 'addAtom', {
         value: function(atom) {
             Typecheck(

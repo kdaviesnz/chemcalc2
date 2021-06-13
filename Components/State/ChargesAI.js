@@ -22,7 +22,7 @@ class ChargesAI {
                     {name: "_atom", value: _atom, type: "array"},
                 )
             })
-            if (this.reaction.container_reagent !== "A") {
+            if (typeof this.reaction.container_reagent !== "string") {
                 this.reaction.container_reagent[0][1].map((_atom) => {
                     Typecheck(
                         {name: "_atom", value: _atom, type: "array"},
