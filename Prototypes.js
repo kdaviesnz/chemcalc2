@@ -79,6 +79,25 @@ const Prototypes = () => {
             this.push(atom)
         }
     })
+    Object.defineProperty(Array.prototype, 'addAtoms', {
+        value: function(atoms) {
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"},
+            )
+            if (atoms === undefined || atoms === null) {
+                throw new Error("Atoms are undefined or null")
+            }
+            atoms.map(
+                (atom) => {
+                    Typecheck(
+                        {name:"atom", value:atom, type:"array"},
+                    )
+                    this.addAtom(atom)
+                    return atom
+                }
+            )
+        }
+    })
     Object.defineProperty(Array.prototype, 'removeAtom', {
         value: function(atom) {
             Typecheck(

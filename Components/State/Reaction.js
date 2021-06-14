@@ -110,7 +110,7 @@ oxygenToOxygenProtonTransfer()
 protonateCarbonDoubleBond()
 addProtonFromReagentToNonHydroxylGroup()
 addProtonFromReagentToHydroxylGroup
-
+bondNitrogenOnReagentToCarbonOnSubstrate()
 */
 
 
@@ -209,6 +209,37 @@ class Reaction {
             })
         }
 
+    }
+
+    bondNitrogenOnReagentToCarbonylCarbonOnSubstrate(DEBUG) {
+
+        Typecheck(
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+            {name:"this.container_substrate", value:this.container_substrate, type:"array"},
+            {name:"this.reactions", value:this.reactions, type:"array"},
+            {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
+            {name:"this.horizontalFn", value:this.horizontalFn, type:"function"},
+            {name:"this.commands", value:this.commands, type:"array"},
+            {name:"this.command_index", value:this.command_index, type:"number"},
+            {name:"nitrogen_index", value:this.nitrogen_index, type:"number"},
+            {name:"this.renderCallback", value:this.renderCallback, type:"function"},
+            {name:"this.rule", value:this.rule, type:"string"},
+            {name:"this.stateMoleculeAI", value:this.stateMoleculeAI, type:"object"}
+        )
+
+        const result = this.bondsAI.bondNitrogenOnReagentToCarbonylCarbonOnSubstrate()
+
+        this.setChargesOnSubstrate()
+        this.setMoleculeAI()
+        if (typeof this.container_reagent !== "string") {
+            this.setChargesOnReagent()
+            this.setMoleculeAI()
+        }
+
+        return result ===  false? false:[
+            this.container_substrate,
+            this.container_reagent
+        ]
     }
 
     formImineFromKetoneReverse(nitrogen_index, carbon_index, DEBUG) {
