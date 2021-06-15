@@ -312,23 +312,30 @@ class BondsAI {
             {name:"check", value:check, type:"boolean"},
         )
 
-        molecule_container[0][1][atom1.atomIndex].should.be.an.Array()
-        molecule_container[0][1][atom2.atomIndex].should.be.an.Array()
-
         if (atom1 === null || atom1 === undefined) {
-            throw new Error("Atom is undefined or null")
+            throw new Error("Atom1 is undefined or null")
         }
 
         if (atom2 === null || atom2 === undefined) {
-            throw new Error("Atom is undefined or null")
+            throw new Error("Atom2 is undefined or null")
         }
+
+        if (atom1.length !== undefined) {
+            throw new Error("Atom1 must be an object")
+        }
+
+        if (atom2.length !== undefined) {
+            throw new Error("Atom2 must be an object")
+        }
+
+        molecule_container[0][1].getAtomById(atom1.atomId()).should.be.an.Array()
+        molecule_container[0][1].getAtomById(atom2.atomId()).should.be.an.Array()
 
         atom1.checkNumberOfElectrons()
         atom2.checkNumberOfElectrons()
 
         const atom1FreeElectrons = atom1.freeElectrons()
         const atom2FreeElectrons = atom2.freeElectrons()
-
 
         // Check if we are making a coordinate or standard covalent bond
         // In a coordinate covalent bond one of the atoms donates both electrons.
@@ -344,10 +351,12 @@ class BondsAI {
 //            console.log(atom1.getHydrogens()) // oxygen, no hydrogens
             const atom1FreeElectron = atom1FreeElectrons[0]
             const atom2FreeElectron = atom2FreeElectrons[0]
-            molecule_container[0][1][atom1.atomIndex].addElectron(atom2FreeElectron)
-            molecule_container[0][1][atom2.atomIndex].addElectron(atom1FreeElectron)
+            molecule_container[0][1].getAtomById(atom1.atomId()).addElectron(atom2FreeElectron)
+            molecule_container[0][1].getAtomById(atom2.atomId()).addElectron(atom1FreeElectron)
         }
 
+        console.log("atom id:")
+        console.log(molecule_container[0][1].getAtomById(atom1.atomId()))
         // Confirm we have created a bond
         if (check && !this.isBond(atom1, atom2, DEBUG)) {
             console.log(VMolecule(molecule_container).compressed())
@@ -400,7 +409,7 @@ class BondsAI {
         return molecule_container
     }
 
-    addHydrogenV2(molecule_container, atom_index) {
+    addHydrogenV1(molecule_container, atom_index) {
         const proton = AtomFactory("H", "")
         const atom = CAtom(molecule_container[0][1][atom_index], atom_index, molecule_container)
         const free_electrons = atom.freeElectrons()
@@ -434,9 +443,37 @@ class BondsAI {
         proton.length.should.be.equal(Constants().electron_index + 2)
     }
 
-    removeProton() {
+    removeProton(molecule_container, atom, DEBUG) {
+
         // When we remove a proton the number of electrons on the parent should not change.
-        throw new Error('Stubbed method - removeProton()')
+        Typecheck(
+            {name:"molecule_container", value:molecule_container, type:"array"},
+            {name:"atom", value:atom, type:"object"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"}
+        )
+
+        const atom_electrons = atom.electrons()
+
+        const hydrogens = atom.getHydrogenBonds()
+        if (hydrogens.length === 0) {
+            throw new Error("Unable to remove proton as no hydrogens found")
+        }
+
+        const hydrogen = CAtom(molecule_container[0][1][hydrogens[0].atom_index], hydrogens[0].atom_index, molecule_container)
+
+        // Remove shared electrons from hydrogen but keep them on the main atom as we are removing a proton..
+        const shared_electrons = hydrogen.sharedElectrons()
+        if (shared_electrons.length !==2) {
+            throw new Error("Cannot remove proton as hydrogen atom attached to atom has no shared electrons")
+        }
+        hydrogen.removeElectrons(shared_electrons)
+        hydrogen.electrons().length.should.be.equal(0)
+
+        const number_of_atoms = molecule_container[0][1].length
+        this.removeAtom(molecule_container, molecule_container[0][1][hydrogen.atomIndex])
+        number_of_atoms.should.be.equal(molecule_container[0][1].length -1)
+        atom_electrons.length.should.be.equal(atom.electrons().length)
+
     }
 
     removeHydrogen(molecule, atom, electrons=null, proton=null, DEBUG=false) {
@@ -479,11 +516,22 @@ class BondsAI {
 
 
     removeAtom(molecule, atom) {
-        //this.container_substrate[0][1] = Set().removeFromArray(this.container_substrate[0][1], this.container_substrate[0][1][h_c_hydrogen_bonds[0].atom_index])
+
         Typecheck(
-            {name:"atom", value:atom, type:"array"}
+            {name:"atom", value:atom, type:"object"}
         )
-        molecule[0][1] = Set().removeFromArray(molecule[0][1], atom)
+
+        if (atom === undefined || atom === null) {
+            throw new Error("Atom is undefined or null")
+        }
+
+        if (atom.length !== undefined) {
+            throw new Error("Atom must be an object")
+        }
+
+        const number_of_atoms = molecule[0][1].length
+        molecule[0][1].removeAtom(atom)
+        number_of_atoms.should.be.equal(molecule[0][1].length +1)
         return molecule
     }
 

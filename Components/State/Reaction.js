@@ -111,6 +111,8 @@ protonateCarbonDoubleBond()
 addProtonFromReagentToNonHydroxylGroup()
 addProtonFromReagentToHydroxylGroup
 bondNitrogenOnReagentToCarbonOnSubstrate()
+protonateOxygenOnDoubleBond()
+protonateOxygenOnDoubleBondReverse()
 */
 
 
@@ -1956,6 +1958,32 @@ class Reaction {
         )
         const protationAI = new ProtonationAI(this)
         const result = protationAI.protonateOxygenOnDoubleBond(carbonyl_oxygen_index, DEBUG)
+
+        return result ===  false? false:[
+            this.container_substrate,
+            this.container_reagent
+        ]
+    }
+
+    protonateOxygenOnDoubleBondReverse(carbonyl_oxygen_index,  DEBUG) {
+
+        Typecheck(
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+            {name:"carbonyl_oxygen_index", value:carbonyl_oxygen_index, type:"number"},
+            {name:"this.container_substrate", value:this.container_substrate, type:"array"},
+            {name:"this.reactions", value:this.reactions, type:"array"},
+            {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
+            {name:"this.horizontalFn", value:this.horizontalFn, type:"function"},
+            {name:"this.commands", value:this.commands, type:"array"},
+            {name:"this.command_index", value:this.command_index, type:"number"},
+            {name:"nitrogen_index", value:this.nitrogen_index, type:"number"},
+            {name:"carbon_index", value:this.carbon_index, type:"number"},
+            {name:"this.renderCallback", value:this.renderCallback, type:"function"},
+            {name:"this.rule", value:this.rule, type:"string"},
+            {name:"this.stateMoleculeAI", value:this.stateMoleculeAI, type:"object"}
+        )
+        const protationAI = new ProtonationAI(this)
+        const result = protationAI.protonateOxygenOnDoubleBondReverse(carbonyl_oxygen_index, DEBUG)
 
         return result ===  false? false:[
             this.container_substrate,
