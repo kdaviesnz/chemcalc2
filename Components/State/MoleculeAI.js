@@ -243,7 +243,7 @@ class MoleculeAI {
             if (hydrogen_bonds.length === 3) {
                 const hydrogen =  CAtom(this.reaction.container_substrate[0][1][hydrogen_bonds[0].atom_index], hydrogen_bonds[0].atom_index, this.reaction.container_substrate)
                 carbon.removeHydrogenOnCarbonBond(hydrogen, DEBUG)
-                bondsAI.removeAtom(this.reaction.container_substrate, hydrogen)
+                bondsAI.removeAtom(this.reaction.container_substrate, hydrogen.atom, hydrogen.atomIndex)
                 this.reaction.setMoleculeAI()
                 carbon = CAtom(this.reaction.container_substrate[0][1][0], carbon_index, this.reaction.container_substrate)
                 carbon.getHydrogenBonds().length.should.be.equal(2)

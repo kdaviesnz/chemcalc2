@@ -312,30 +312,21 @@ class BondsAI {
             {name:"check", value:check, type:"boolean"},
         )
 
+
         if (atom1 === null || atom1 === undefined) {
-            throw new Error("Atom1 is undefined or null")
+            throw new Error("Atom is undefined or null")
         }
 
         if (atom2 === null || atom2 === undefined) {
-            throw new Error("Atom2 is undefined or null")
+            throw new Error("Atom is undefined or null")
         }
-
-        if (atom1.length !== undefined) {
-            throw new Error("Atom1 must be an object")
-        }
-
-        if (atom2.length !== undefined) {
-            throw new Error("Atom2 must be an object")
-        }
-
-        molecule_container[0][1].getAtomById(atom1.atomId()).should.be.an.Array()
-        molecule_container[0][1].getAtomById(atom2.atomId()).should.be.an.Array()
 
         atom1.checkNumberOfElectrons()
         atom2.checkNumberOfElectrons()
 
         const atom1FreeElectrons = atom1.freeElectrons()
         const atom2FreeElectrons = atom2.freeElectrons()
+
 
         // Check if we are making a coordinate or standard covalent bond
         // In a coordinate covalent bond one of the atoms donates both electrons.
@@ -345,18 +336,27 @@ class BondsAI {
         } else if (this.creatingCoordinateCovalentBond(atom2, atom1)) { // donor_atom, base_atom
             this.createCoordinateCovalentBond(atom2, atom1, molecule_container, DEBUG)
         } else {
+
             // Standard covalent bond
-            // atom1 is oxygen and has no bonds, 1 free slot and 6 free electrons
-            // atom2 is carbon and has 2 bonds, 1 free slot and 2 free electrons
-//            console.log(atom1.getHydrogens()) // oxygen, no hydrogens
+            if (atom1FreeElectrons.length === 0) {
+                console.log(VMolecule(molecule_container).compressed())
+                throw new Error("Atom1 should have at least one free electron")
+            }
+
+            if (atom2FreeElectrons.length === 0) {
+                throw new Error("Atom2 should have at least one free electron")
+            }
+
+            atom1FreeElectrons.length.should.be.greaterThan(0)
+            atom2FreeElectrons.length.should.be.greaterThan(0)
+
             const atom1FreeElectron = atom1FreeElectrons[0]
             const atom2FreeElectron = atom2FreeElectrons[0]
+
             molecule_container[0][1].getAtomById(atom1.atomId()).addElectron(atom2FreeElectron)
             molecule_container[0][1].getAtomById(atom2.atomId()).addElectron(atom1FreeElectron)
         }
 
-        console.log("atom id:")
-        console.log(molecule_container[0][1].getAtomById(atom1.atomId()))
         // Confirm we have created a bond
         if (check && !this.isBond(atom1, atom2, DEBUG)) {
             console.log(VMolecule(molecule_container).compressed())
@@ -409,7 +409,7 @@ class BondsAI {
         return molecule_container
     }
 
-    addHydrogenV1(molecule_container, atom_index) {
+    addHydrogenV2(molecule_container, atom_index) {
         const proton = AtomFactory("H", "")
         const atom = CAtom(molecule_container[0][1][atom_index], atom_index, molecule_container)
         const free_electrons = atom.freeElectrons()
@@ -515,24 +515,25 @@ class BondsAI {
 
 
 
-    removeAtom(molecule, atom) {
-
+    removeAtom(molecule, atom, atom_index) {
+        //this.container_substrate[0][1] = Set().removeFromArray(this.container_substrate[0][1], this.container_substrate[0][1][h_c_hydrogen_bonds[0].atom_index])
         Typecheck(
-            {name:"atom", value:atom, type:"object"}
+            {name:"atom", value:atom, type:"array"},
+            {name:"atom_index", value:atom_index, type:"number"}
         )
 
-        if (atom === undefined || atom === null) {
-            throw new Error("Atom is undefined or null")
+        if (atom === null || atom === undefined) {
+            throw new Error("Atom is null or undefined")
         }
 
-        if (atom.length !== undefined) {
-            throw new Error("Atom must be an object")
+        if (atom_index === null || atom_index === undefined) {
+            throw new Error("Atom index is null or undefined")
         }
 
-        const number_of_atoms = molecule[0][1].length
-        molecule[0][1].removeAtom(atom)
-        number_of_atoms.should.be.equal(molecule[0][1].length +1)
-        return molecule
+        const number_of_atoms_at_start =  molecule[0][1].length
+        molecule[0][1].removeAtom(atom, atom_index)
+        molecule[0][1].length.should.be.equal(number_of_atoms_at_start -1)
+
     }
 
     makeNitrogenCarbonTripleBond() {

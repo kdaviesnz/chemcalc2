@@ -99,25 +99,30 @@ const Prototypes = () => {
         }
     })
     Object.defineProperty(Array.prototype, 'removeAtom', {
-        value: function(atom) {
+        value: function(atom, atom_index) {
 
             const number_of_atoms_at_start = this.length
 
             Typecheck(
-                {name:"atom", value:atom, type:"object"},
+                {name:"atom", value:atom, type:"array"},
+                {name:"atom_index", value:atom_index, type:"number"},
             )
 
             if (atom === undefined || atom === null) {
                 throw new Error("Atom is undefined or null")
             }
 
-            if (atom.length !== undefined) {
-                throw new Error("Atom must be an object")
+            if (atom_index === undefined || atom_index === null) {
+                throw new Error("atom_index is undefined or null")
+            }
+
+            if (atom.length === undefined) {
+                throw new Error("Atom must be an array")
             }
 
             // Remove atom from molecule
             _.remove(this, (a, i) => {
-                    return i === atom.atomIndex
+                    return i === atom_index
                 }
             )
             this.length.should.be.equal(number_of_atoms_at_start -1)
@@ -181,6 +186,9 @@ const Prototypes = () => {
             const atom_as_array =_.find(this, (v)=>{
                 return v[5] === atomId
             })
+            Typecheck(
+                {name:"atom_as_array", value:atom_as_array, type:"array"},
+            )
             return atom_as_array
         }
     })

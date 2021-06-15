@@ -579,17 +579,25 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
 
 
-    const __electron_haystack = (test_number) => {
-        const atoms = mmolecule[0][1]
-        const atom_electrons = atom.slice(Constants().electron_index)
+    const __electron_haystack = function(test_number, current_atom_id) {
+
+        Typecheck(
+            {name:"current_atom_id", value:current_atom_id, type:"string"},
+        )
+
+        if (current_atom_id === null || current_atom_id === undefined) {
+            throw new Error("Atom is null or undefined")
+        }
+
+        const atoms = mmolecule[0][1].filter((atom)=>{
+            return current_atom_id !== atom[5]
+        })
+
         return atoms.reduce(
             (carry, __atom, __atom_index) => {
-
-
                 if (undefined === __atom.slice) {
                     return carry
                 }
-
                 if (current_atom_index === __atom_index ) {
                     return carry
                 }
@@ -597,14 +605,14 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             },
             []
         )
+
     }
 
 
-    const __freeElectrons = (test_number) => {
-
+    const __freeElectrons = function(test_number)  {
 
         const atom_electrons = atom.slice(Constants().electron_index)
-        const electron_haystack = atom[0] === "Hg"?__electron_haystack(test_number).slice(0,3):__electron_haystack(test_number)
+        const electron_haystack = atom[0] === "Hg"?__electron_haystack(test_number, this.atomId()).slice(0,3):__electron_haystack(test_number, this.atomId())
 
         return atom_electrons.filter(
             (electron) => {
