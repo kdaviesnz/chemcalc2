@@ -192,6 +192,23 @@ const Prototypes = () => {
             return atom_as_array
         }
     })
+    Object.defineProperty(Array.prototype, 'getAtomIndexById', {
+        value: function(atom_id) {
+            Typecheck(
+                {name:"atomId", value:atom_id, type:"string"},
+            )
+            const atom_index =_.findIndex(this, (v, i )=>{
+                return v[5] === atom_id
+            })
+            Typecheck(
+                {name:"atom_index", value:atom_index, type:"number"},
+            )
+            if (atom_index === -1) {
+                throw new Error('Unable to find atom index using atom id ' + atom_id)
+            }
+            return atom_index
+        }
+    })
 }
 
 module.exports = Prototypes

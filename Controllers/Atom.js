@@ -579,25 +579,25 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
 
 
-    const __electron_haystack = function(test_number, current_atom_id) {
+    const __electron_haystack = function(test_number, current_atom_id, atomController) {
+
 
         Typecheck(
             {name:"current_atom_id", value:current_atom_id, type:"string"},
         )
 
         if (current_atom_id === null || current_atom_id === undefined) {
-            throw new Error("Atom is null or undefined")
+            throw new Error("Atom id is null or undefined")
         }
 
-        const atoms = mmolecule[0][1].filter((atom)=>{
-            return current_atom_id !== atom[5]
-        })
+        const atoms = mmolecule[0][1]
 
-        return atoms.reduce(
+        const electron_haystack = atoms.reduce(
             (carry, __atom, __atom_index) => {
                 if (undefined === __atom.slice) {
                     return carry
                 }
+
                 if (current_atom_index === __atom_index ) {
                     return carry
                 }
@@ -606,19 +606,31 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             []
         )
 
+        return electron_haystack
+
     }
 
 
     const __freeElectrons = function(test_number)  {
 
-        const atom_electrons = atom.slice(Constants().electron_index)
-        const electron_haystack = atom[0] === "Hg"?__electron_haystack(test_number, this.atomId()).slice(0,3):__electron_haystack(test_number, this.atomId())
+        const atom_cloned = _.cloneDeep(this.atom)
 
-        return atom_electrons.filter(
+        const atom_electrons = atom_cloned.slice(Constants().electron_index)
+        const electron_haystack = (
+            atom_cloned[0] === "Hg"?
+                _.cloneDeep(__electron_haystack(test_number, _.cloneDeep(this.atomId()), this).slice(0,3)):
+                _.cloneDeep(__electron_haystack(test_number, _.cloneDeep(this.atomId()), this))
+        )
+
+        const free_electrons = _.cloneDeep(atom_electrons.filter(
             (electron) => {
                 return electron_haystack.indexOf(electron) === -1
             }
-        )
+        ))
+
+
+        return _.cloneDeep(free_electrons)
+
     }
 
     const __usedElectrons = (test_number) => {

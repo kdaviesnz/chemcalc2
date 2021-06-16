@@ -266,7 +266,9 @@ class Reaction {
             this.container_reagent.should.be.an.Array()
         }
 
-        this.stateMoleculeAI.formImineFromKetoneReverse(nitrogen_index, carbon_index, DEBUG)
+        const nitrogen = CAtom(this.container_substrate[0][1][nitrogen_index], nitrogen_index, this.container_substrate)
+        const carbon = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, this.container_substrate)
+        const result = this.stateMoleculeAI.formImineFromKetoneReverse(nitrogen.atomId(), carbon.atomId(), DEBUG)
 
         return [
             this.container_substrate,
@@ -289,17 +291,18 @@ class Reaction {
     reduceImineToAmineReverse(nitrogen_index, carbon_index, DEBUG) {
 
         Typecheck(
-            {name:"carbon_index", value:carbon_index, type:"number"},
-            {name:"DEBUG", value:DEBUG, type:"boolean"},
-            {name:"this.container_substrate", value:this.container_substrate, type:"array"},
-            {name:"this.reactions", value:this.reactions, type:"array"},
-            {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
-            {name:"this.horizontalFn", value:this.horizontalFn, type:"function"},
-            {name:"this.commands", value:this.commands, type:"array"},
-            {name:"this.command_index", value:this.command_index, type:"number"},
-            {name:"this.renderCallback", value:this.renderCallback, type:"function"},
-            {name:"this.rule", value:this.rule, type:"string"},
-            {name:"this.MoleculeAI", value:this.MoleculeAI, type:"object"}
+            {name: "nitrogen_index", value: nitrogen_index, type: "number"},
+            {name: "carbon_index", value: carbon_index, type: "number"},
+            {name: "DEBUG", value: DEBUG, type: "boolean"},
+            {name: "this.container_substrate", value: this.container_substrate, type: "array"},
+            {name: "this.reactions", value: this.reactions, type: "array"},
+            {name: "this.horizontalCallback", value: this.horizontalCallback, type: "function"},
+            {name: "this.horizontalFn", value: this.horizontalFn, type: "function"},
+            {name: "this.commands", value: this.commands, type: "array"},
+            {name: "this.command_index", value: this.command_index, type: "number"},
+            {name: "this.renderCallback", value: this.renderCallback, type: "function"},
+            {name: "this.rule", value: this.rule, type: "string"},
+            {name: "this.MoleculeAI", value: this.MoleculeAI, type: "object"}
         )
 
         if (typeof this.container_reagent !== "string") {
@@ -307,21 +310,21 @@ class Reaction {
         }
 
         // Determine nitrogen index
-        nitrogen_index = this.MoleculeAI.findNitrogenAttachedToCarbonIndexNoDoubleBonds()
-        if (DEBUG) {
-            console.log("Reaction.js reduceImineToAmineReverse() nitrogen index="+nitrogen_index)
+        if (nitrogen_index === null || nitrogen_index === undefined) {
+            nitrogen_index = this.MoleculeAI.findNitrogenAttachedToCarbonIndexNoDoubleBonds()
+            if (DEBUG) {
+                console.log("Reaction.js reduceImineToAmineReverse() nitrogen index=" + nitrogen_index)
+            }
+
+            if (nitrogen_index === -1) {
+                throw new Error("Unable to determine nitrogen index")
+            }
         }
 
-        if (nitrogen_index === -1) {
-            process.error()
-            return false
-        }
-
-        if (undefined !== carbon_index)  {
+        if (undefined !== carbon_index && null !== carbon_index)  {
 
             // Change to double bond
-            const nitrogen = CAtom(this.container_substrate[0][1][nitrogen_index], nitrogen_index, this.container_substrate)
-            const carbon = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, this.container_substrate)
+
             if (DEBUG) {
                 console.log("Reaction.js reduceImineToAmineReverse Substrate before changing CN bond to C=N:")
                 console.log("carbon index:" + carbon_index)
@@ -337,8 +340,11 @@ class Reaction {
             if (DEBUG) {
                 console.log(VMolecule([this.container_substrate[0], 1]).compressed())
             }
+
             // Change NC bond to N=C
-            this.bondsAI.breakCarbonNitrogenDoubleBondReverse(nitrogen_index, carbon_index, DEBUG )
+            const nitrogen = CAtom(this.container_substrate[0][1][nitrogen_index], nitrogen_index, this.container_substrate)
+            const carbon = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, this.container_substrate)
+            this.bondsAI.breakCarbonNitrogenDoubleBondReverse(nitrogen.atomId(), carbon.atomId(), DEBUG )
             // An imine is an organic compound containing the group —C=NH or —C=NR where R is an alkyl or other group.
             this.stateMoleculeAI.formImineFromKetoneReverse(nitrogen_index, carbon_index, DEBUG)
 

@@ -149,34 +149,24 @@ class MoleculeAI {
 
     }
 
-    formImineFromKetoneReverse(nitrogen_index, carbon_index, DEBUG) {
+    formImineFromKetoneReverse(nitrogen_atom_id, carbon_atom_id, DEBUG) {
 
         Typecheck(
-            {name:"carbon_index", value:carbon_index, type:"number"},
+            {name:"carbon_atom_id", value:carbon_atom_id, type:"string"},
             {name:"DEBUG", value:DEBUG, type:"boolean"},
-            {name:"nitrogen_index", value:nitrogen_index, type:"number"},
+            {name:"nitrogen_atom_id", value:nitrogen_atom_id, type:"string"},
             {name:"this.reaction", value:this.reaction, type:"object"},
         )
 
-        carbon_index.should.be.greaterThan(-1)
-        nitrogen_index.should.be.greaterThan(-1)
+        let carbon_index = this.reaction.MoleculeAI.findAtomIndexByAtomId(carbon_atom_id, DEBUG)
+        let nitrogen_index = this.reaction.MoleculeAI.findAtomIndexByAtomId(nitrogen_atom_id, DEBUG)
 
         this.reaction.setMoleculeAI()
         this.reaction.setChargesOnSubstrate()
         this.reaction.setChargesOnReagent()
 
-        const carbon_atom_id = this.reaction.container_substrate[0][1][carbon_index][5]
-        const nitrogen_atom_id = this.reaction.container_substrate[0][1][nitrogen_index][5]
-
-        Typecheck(
-            {name:"carbon_atom_id", value:carbon_atom_id, type:"string"},
-            {name:"nitrogen_atom_id", value:nitrogen_atom_id, type:"string"}
-        )
-
         if(DEBUG) {
             console.log("State/MoleculeAI.js formKetoneFromImine carbon index:")
-            console.log("Carbon index:" + carbon_index)
-            console.log("Nitrogen index:" + nitrogen_index)
             console.log("Carbon atom id:" + carbon_atom_id)
             console.log("Nitrogen atom id:" + nitrogen_atom_id)
             console.log("Before splitting")
@@ -184,7 +174,7 @@ class MoleculeAI {
         }
 
         const bondsAI = new BondsAI(this.reaction)
-        bondsAI.bondSubstrateToReagentReverse(nitrogen_index, carbon_index, DEBUG)
+        bondsAI.bondSubstrateToReagentReverse(nitrogen_atom_id, carbon_atom_id, DEBUG)
         this.reaction.container_substrate[0][1].length.should.be.greaterThan(0)
         this.reaction.container_reagent[0][1].length.should.be.greaterThan(0)
 
@@ -193,12 +183,7 @@ class MoleculeAI {
         this.reaction.setChargesOnSubstrate()
         this.reaction.setChargesOnReagent()
 
-        carbon_index = this.reaction.MoleculeAI.findAtomIndexByAtomId(carbon_atom_id, DEBUG)
-        nitrogen_index = this.reaction.MoleculeAI.findAtomIndexByAtomId(nitrogen_atom_id, DEBUG)
 
-        if (carbon_index === -1) {
-            carbon_index = this.reaction.ReagentAI.findAtomIndexByAtomId(carbon_atom_id, DEBUG)
-        }
 
         if (DEBUG) {
             console.log("State/MoleculeAI.js substrate after splitting:")
@@ -249,8 +234,6 @@ class MoleculeAI {
                 carbon.getHydrogenBonds().length.should.be.equal(2)
             }
             bondsAI.makeOxygenCarbonDoubleBond(oxygen, carbon, DEBUG)
-//            carbon_index = this.reaction.MoleculeAI.findKetoneCarbonIndex(DEBUG)
-  //          console.log(carbon_index)
             this.reaction.setMoleculeAI()
             carbon.oxygenDoubleBonds().length.should.be.equal(1)
             oxygen.carbonDoubleBonds().length.should.be.equal(1)
@@ -272,7 +255,6 @@ class MoleculeAI {
 
 
         } else {
-
 
             this.reaction.container_substrate[0][1].push(oxygen_atom)
             const oxygen_index = this.reaction.container_substrate[0][1].length -1
