@@ -530,6 +530,7 @@ class BondsAI {
 
 
 
+     // this.removeAtom(this.reaction.container_substrate, nitrogen_hydrogen.atom)
     removeAtom(molecule, atom, atom_index) {
         //this.container_substrate[0][1] = Set().removeFromArray(this.container_substrate[0][1], this.container_substrate[0][1][h_c_hydrogen_bonds[0].atom_index])
         Typecheck(
@@ -1099,7 +1100,7 @@ class BondsAI {
         if (nitrogen_hydrogen_bonds.length > 0) {
             const nitrogen_hydrogen =  CAtom(this.reaction.container_substrate[0][1][nitrogen_hydrogen_bonds[0].atom_index], nitrogen_hydrogen_bonds[0].atom_index, this.reaction.container_substrate)
             nitrogen.removeHydrogenOnNitrogenBond(nitrogen_hydrogen, DEBUG)
-            this.removeAtom(this.reaction.container_substrate, nitrogen_hydrogen.atom)
+            this.removeAtom(this.reaction.container_substrate, nitrogen_hydrogen.atom, nitrogen_hydrogen_bonds[0].atom_index)
             this.reaction.setMoleculeAI()
         }
 
@@ -1107,7 +1108,7 @@ class BondsAI {
         if (carbon_hydrogen_bonds.length > 0) {
             const carbon_hydrogen =  CAtom(this.reaction.container_substrate[0][1][carbon_hydrogen_bonds[0].atom_index], carbon_hydrogen_bonds[0].atom_index, this.reaction.container_substrate)
             carbon_atom.removeHydrogenOnCarbonBond(carbon_hydrogen, DEBUG)
-            this.removeAtom(this.reaction.container_substrate, carbon_hydrogen.atom)
+            this.removeAtom(this.reaction.container_substrate, carbon_hydrogen.atom, carbon_hydrogen_bonds[0].atom_index)
             this.reaction.setMoleculeAI()
         }
 
@@ -1118,7 +1119,8 @@ class BondsAI {
 
         // Add electrons from nitrogen to carbon
         this.reaction.setMoleculeAI()
-        this.createDoubleBond(carbon_atom, nitrogen, this.reaction.container_substrate, DEBUG)
+        // createDoubleBond(atom1_id, atom2, molecule_container, DEBUG, check=true)
+        this.createDoubleBond(carbon_atom.atomId(), nitrogen, this.reaction.container_substrate, DEBUG)
         //this.reaction.container_substrate[0][1][carbon_index].addElectron(freeElectrons[0])
         //this.reaction.container_substrate[0][1][carbon_index].addElectron(freeElectrons[1])
 
