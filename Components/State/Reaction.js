@@ -138,12 +138,6 @@ class Reaction {
         container_substrate.length.should.be.equal(2) // molecule, units
         container_substrate[0].length.should.be.equal(2) // pKa, atoms
 
-        if (typeof container_substrate[0][0] !== "number") {
-            console.log(container_substrate)
-            console.log(container_substrate[0])
-            console.log(typeof container_substrate[0][0])
-            process.error()
-        }
         container_substrate[0][0].should.be.an.Number() // pka
         container_substrate[0][1].should.be.an.Array()
         container_substrate[0][1][0].should.be.an.Array()
@@ -168,7 +162,7 @@ class Reaction {
 
         this.setMoleculeAI()
 
-        this.CommandLogic = require('../../Components/Stateless/CommandLogic')(this)
+        this.CommandLogic = require('../../Components/Stateless/CommandLogic')(_.cloneDeep(this))
 
         if (undefined !== container_reagent && null !== container_reagent && typeof container_reagent !== "string") {
             this.setReagentAI()
@@ -177,7 +171,7 @@ class Reaction {
 
         this.setChargesOnSubstrate(DEBUG)
         this.MoleculeAI.validateMolecule()
-        this.bondsAI = new BondsAI(this)
+        this.bondsAI = new BondsAI(_.cloneDeep(this))
 
         this.DEBUG = DEBUG
 
@@ -187,11 +181,10 @@ class Reaction {
         this.command_index = command_index
 
         if (command_index === undefined) {
-            console.log("command_index is not defined")
-            process.error()
+            throw new Error("command_index is not defined")
         }
 
-        this.stateMoleculeAI = new StateMoleculeAI(this)
+        this.stateMoleculeAI = new StateMoleculeAI(_.cloneDeep(this))
         this.renderCallback = renderCallback
         this.reactions = reactions
 
@@ -238,6 +231,15 @@ class Reaction {
             this.setMoleculeAI()
         }
 
+        /*
+        result.should.be.an.Array()
+
+return result === false? false:[
+    result[0], // substrate container
+    result[1] // reagent container
+]
+ */
+
         return result ===  false? false:[
             this.container_substrate,
             this.container_reagent
@@ -270,9 +272,19 @@ class Reaction {
         const carbon = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, this.container_substrate)
         const result = this.stateMoleculeAI.formImineFromKetoneReverse(nitrogen.atomId(), carbon.atomId(), DEBUG)
 
-        return [
-            this.container_substrate,
-            this.container_reagent
+        result.should.be.an.Array()
+
+        /*
+        result.should.be.an.Array()
+
+return result === false? false:[
+    result[0], // substrate container
+    result[1] // reagent container
+]
+ */
+        return result === false? false:[
+            result[0], // substrate container
+            result[1] // reagent container
         ]
     }
 
@@ -568,8 +580,8 @@ class Reaction {
 
     reductiveAmination() {
 
-        const bondsAI = new BondsAI(this)
-        const protonationAI = new ProtonationAI(this)
+        const bondsAI = new BondsAI(_.cloneDeep(this))
+        const protonationAI = new ProtonationAI(_.cloneDeep(this))
 
         // Look for carbonyl oxygen (C=O) and nitrogen atom index
         this.setMoleculeAI()
@@ -660,7 +672,7 @@ class Reaction {
             // Water group leaves
             this.setMoleculeAI()
             this.setChargesOnSubstrate()
-            const hydrationAI = new HydrationAI(this)
+            const hydrationAI = new HydrationAI(_.cloneDeep(this))
             hydrationAI.dehydrate(false, carbonyl_oxygen_index)
             console.log("reductiveAmination() After dehydration")
             console.log(VMolecule([this.container_substrate[0],1]).compressed())
@@ -745,13 +757,13 @@ class Reaction {
         }
 
 
-        const protonationAI = new ProtonationAI(this)
+        const protonationAI = new ProtonationAI(_.cloneDeep(this))
         protonationAI.addProtonFromSubstrateToReagentBySubstrateAtomIndex(c2_carbon_index)
 
 
         this.setMoleculeAI()
 
-        const bondsAI = new BondsAI(this)
+        const bondsAI = new BondsAI(_.cloneDeep(this))
 
 
         const c1_carbon_index_after_removing_proton = this.MoleculeAI.findIndexOfCarbonAtomDoubledBondedToNonCarbonBySymbol("O")
@@ -790,7 +802,7 @@ class Reaction {
         // Make O=C double bond
         const substrateSaved = this.container_substrate
         this.setMoleculeAI()
-        const bondsAI = new BondsAI(this)
+        const bondsAI = new BondsAI(_.cloneDeep(this))
 
         if (bondsAI.makeOxygenCarbonDoubleBond(false)) {
 
@@ -801,7 +813,7 @@ class Reaction {
                 this.setMoleculeAI()
                 this.setChargesOnSubstrate()
                 // Protonate carbon atom
-                const protonationAI = new ProtonationAI(this)
+                const protonationAI = new ProtonationAI(_.cloneDeep(this))
                 if (protonationAI.deprotonateCarbonReverse(false)){
                     this.setMoleculeAI()
                     this.setChargesOnSubstrate()
@@ -826,7 +838,7 @@ class Reaction {
                 this.container_reagent[0][1][0].should.be.an.Array()
                 this.container_reagent[0][1][0][0].should.be.an.String()
             }
-            this.ReagentAI = require("../Stateless/MoleculeAI")(this.container_reagent)
+            this.ReagentAI = require("../Stateless/MoleculeAI")(_.cloneDeep(this.container_reagent))
         } else {
             this.ReagentAI = null
         }
@@ -849,23 +861,23 @@ class Reaction {
         this.container_substrate[0][1][0].should.be.an.Array()
         this.container_substrate[0][1][0][0].should.be.an.String()
 
-        this.MoleculeAI = require("../Stateless/MoleculeAI")(this.container_substrate)
+        this.MoleculeAI = require("../Stateless/MoleculeAI")(_.cloneDeep(this.container_substrate))
 
     }
 
     bondNitrogenToCarboxylCarbonReverse() {
-        const bondsAI = new BondsAI(this)
+        const bondsAI = new BondsAI(_.cloneDeep(this))
         return bondsAI.bondNitrogenToCarboxylCarbonReverse()
     }
 
     makeCarbonNitrogenDoubleBondReverse() {
-        const bondsAI = new BondsAI(this)
+        const bondsAI = new BondsAI(_.cloneDeep(this))
         return bondsAI.makeCarbonNitrogenDoubleBondReverse()
     }
 
 
     oxygenCarbonDoubleBondReverse() {
-        const bondsAI = new BondsAI(this)
+        const bondsAI = new BondsAI(_.cloneDeep(this))
         return bondsAI.makeOxygenCarbonDoubleBondReverse()
     }
 
@@ -887,53 +899,53 @@ class Reaction {
             )
         })
 
-        const chargesAI = new ChargesAI(this)
+        const chargesAI = new ChargesAI(_.cloneDeep(this))
 
         return chargesAI.setChargeOnSubstrateAtom(index, trace, trace_id, DEBUG)
     }
 
     setChargesOnSubstrate(DEBUG) {
-        const chargesAI = new ChargesAI(this)
+        const chargesAI = new ChargesAI(_.cloneDeep(this))
         return chargesAI.setChargesOnSubstrate(DEBUG)
     }
 
     setChargesOnReagent() {
         if (typeof this.container_reagent !== "string") {
-            const chargesAI = new ChargesAI(this)
+            const chargesAI = new ChargesAI(_.cloneDeep(this))
             return chargesAI.setChargesOnReagent()
         }
     }
 
     setChargeOnReagentAtom(index) {
-        const chargesAI = new ChargesAI(this)
+        const chargesAI = new ChargesAI(_.cloneDeep(this))
         return chargesAI.setChargeOnReagentAtom(index)
     }
 
     substituteHalideForAmineReverse(index) {
-        const substitutionAI = new SubstitutionAI(this)
+        const substitutionAI = new SubstitutionAI(_.cloneDeep(this))
         return substitutionAI.substituteHalideForAmineReverse(index)
     }
 
 
     substituteOxygenCarbonDoubleBondForAmineReverse() {
-        const substitutionAI = new SubstitutionAI(this)
+        const substitutionAI = new SubstitutionAI(_.cloneDeep(this))
         return substitutionAI.substituteOxygenCarbonDoubleBondForAmineReverse()
     }
 
     substituteOxygenCarbonDoubleBondForAmine() {
-        const substitutionAI = new SubstitutionAI(this)
+        const substitutionAI = new SubstitutionAI(_.cloneDeep(this))
         return substitutionAI.substituteOxygenCarbonDoubleBondForAmine()
     }
 
 
     substituteHalideForAmine(index) {
-        const substitutionAI = new SubstitutionAI(this)
+        const substitutionAI = new SubstitutionAI(_.cloneDeep(this))
         return substitutionAI.substituteHalideForAmine(index)
     }
 
 
     breakCarbonOxygenDoubleBondReverse() {
-        const bondsAI = new BondsAI(this)
+        const bondsAI = new BondsAI(_.cloneDeep(this))
         return bondsAI.breakCarbonOxygenDoubleBondReverse()
     }
 
@@ -952,20 +964,20 @@ class Reaction {
     }
 
     makeNitrogenCarbonTripleBond() {
-        const bondsAI = new BondsAI(this)
+        const bondsAI = new BondsAI(_.cloneDeep(this))
         return bondsAI.makeNitrogenCarbonTripleBond()
     }
 
 
     oxygenCarbonDoubleBond() {
-        const bondsAI = new BondsAI(this)
+        const bondsAI = new BondsAI(_.cloneDeep(this))
         return bondsAI.makeOxygenCarbonDoubleBond()
     }
 
 
 
     makeNitrogenCarbonDoubleBond() {
-        const bondsAI = new BondsAI(this)
+        const bondsAI = new BondsAI(_.cloneDeep(this))
         return bondsAI.makeNitrogenCarbonDoubleBond()
     }
 
@@ -1289,7 +1301,7 @@ class Reaction {
 
 
     transferProton(nucleophile_index=null, electrophile_index = null) {
-        const protonationAI = new ProtonationAI(this)
+        const protonationAI = new ProtonationAI(_.cloneDeep(this))
         return protonationAI.transferProton(nucleophile_index, electrophile_index)
     }
 
@@ -1349,7 +1361,7 @@ class Reaction {
             this.container_reagent.should.be.an.Array()
         }
 
-        const hydrationAI = new HydrationAI(this)
+        const hydrationAI = new HydrationAI(_.cloneDeep(this))
 
         const result = hydrationAI.dehydrate(oxygen_atom_index, DEBUG)
 
@@ -1358,6 +1370,14 @@ class Reaction {
         this.setChargesOnSubstrate(DEBUG)
         this.setChargesOnReagent()
 
+        /*
+                result.should.be.an.Array()
+
+        return result === false? false:[
+            result[0], // substrate container
+            result[1] // reagent container
+        ]
+         */
         return result ===  false? false:[
             this.container_substrate,
             this.container_reagent
@@ -1381,9 +1401,17 @@ class Reaction {
             this.container_reagent.should.be.an.Array()
         }
 
-        const hydrationAI = new HydrationAI(this)
+        const hydrationAI = new HydrationAI(_.cloneDeep(this))
         const result = hydrationAI.dehydrateReverse(DEBUG)
 
+        /*
+        result.should.be.an.Array()
+
+return result === false? false:[
+    result[0], // substrate container
+    result[1] // reagent container
+]
+ */
         return result ===  false? false:[
             this.container_substrate,
             this.container_reagent
@@ -1579,7 +1607,7 @@ class Reaction {
         // Important (orginal reaction):
         // The reagent is the nucleophile and is attacking the substrate
         // The substrate is the electrophile
-        const bondsAI = new BondsAI(this)
+        const bondsAI = new BondsAI(_.cloneDeep(this))
         return bondsAI.bondSubstrateToReagentReverse(n_index, c_index)
 
     }
@@ -1904,12 +1932,12 @@ class Reaction {
    
 
     removeProtonFromOxygenReverse() {
-        const protationAI = new ProtonationAI(this)
+        const protationAI = new ProtonationAI(_.cloneDeep(this))
         return protationAI.removeProtonFromOxygenReverse()
     }
 
     removeProtonFromOxygen() {
-        const protationAI = new ProtonationAI(this)
+        const protationAI = new ProtonationAI(_.cloneDeep(this))
         return protationAI.removeProtonFromOxygen()
     }
 
@@ -1931,17 +1959,17 @@ class Reaction {
             {name:"this.stateMoleculeAI", value:this.stateMoleculeAI, type:"object"}
         )
 
-        const protationAI = new ProtonationAI(this)
+        const protationAI = new ProtonationAI(_.cloneDeep(this))
         return protationAI.deprotonateOxygenOnDoubleBond(DEBUG)
     }
 
     protonateCarbocation() {
-        const protationAI = new ProtonationAI(this)
+        const protationAI = new ProtonationAI(_.cloneDeep(this))
         return protationAI.protonateCarbocation()
     }
 
     protonateCarbocationReverse() {
-        const protationAI = new ProtonationAI(this)
+        const protationAI = new ProtonationAI(_.cloneDeep(this))
         return protationAI.protonateCarbocationReverse()
     }
 
@@ -1962,9 +1990,17 @@ class Reaction {
             {name:"this.rule", value:this.rule, type:"string"},
             {name:"this.stateMoleculeAI", value:this.stateMoleculeAI, type:"object"}
         )
-        const protationAI = new ProtonationAI(this)
+        const protationAI = new ProtonationAI(_.cloneDeep(this))
         const result = protationAI.protonateOxygenOnDoubleBond(carbonyl_oxygen_index, DEBUG)
 
+        /*
+        result.should.be.an.Array()
+
+return result === false? false:[
+    result[0], // substrate container
+    result[1] // reagent container
+]
+ */
         return result ===  false? false:[
             this.container_substrate,
             this.container_reagent
@@ -1988,8 +2024,17 @@ class Reaction {
             {name:"this.rule", value:this.rule, type:"string"},
             {name:"this.stateMoleculeAI", value:this.stateMoleculeAI, type:"object"}
         )
-        const protationAI = new ProtonationAI(this)
+        const protationAI = new ProtonationAI(_.cloneDeep(this))
         const result = protationAI.protonateOxygenOnDoubleBondReverse(carbonyl_oxygen_index, DEBUG)
+
+        /*
+        result.should.be.an.Array()
+
+return result === false? false:[
+    result[0], // substrate container
+    result[1] // reagent container
+]
+ */
 
         return result ===  false? false:[
             this.container_substrate,
@@ -2138,13 +2183,13 @@ class Reaction {
         // Important:
         // The reagent is the nucleophile and is attacking the substrate
         // The substrate is the electrophile
-        const bondsAI = new BondsAI(this)
+        const bondsAI = new BondsAI(_.cloneDeep(this))
         // Reagent ---> Substrate
         return bondsAI.bondSubstrateToReagent(reagent_nucleophile_index, substrate_electrophile_index)
     }
 
     removeHalide() {
-        const bondsAI = new BondsAI(this)
+        const bondsAI = new BondsAI(_.cloneDeep(this))
         return bondsAI.removeHalide()
     }
 
@@ -2330,28 +2375,28 @@ class Reaction {
 
     
     addProtonToSubstrate(target_atom, target_atom_index) {
-        const protationAI = new ProtonationAI(this)
+        const protationAI = new ProtonationAI(_.cloneDeep(this))
         return protationAI.addProtonToSubstrate(target_atom, target_atom_index)
     }
 
     protonateReverse() {
-        const protationAI = new ProtonationAI(this)
+        const protationAI = new ProtonationAI(_.cloneDeep(this))
         return protationAI.protonateReverse()
     }
 
     removeHalideReverse() {
-        const bondsAI = new BondsAI(this)
+        const bondsAI = new BondsAI(_.cloneDeep(this))
         return bondsAI.removeHalideReverse()
 
     }
 
     deprotonateNitrogen(command_names, command_index) {
-        const protationAI = new ProtonationAI(this)
+        const protationAI = new ProtonationAI(_.cloneDeep(this))
         return protationAI.deprotonateNitrogen(command_names, command_index)
     }
 
     deprotonateNitrogenReverse() {
-        const protationAI = new ProtonationAI(this)
+        const protationAI = new ProtonationAI(_.cloneDeep(this))
         return protationAI.deprotonateNitrogenReverse()
     }
 
@@ -2378,7 +2423,7 @@ class Reaction {
 
 
     addProtonToReagent(index_of_reagent_atom_to_protonate ) {
-        const protonationAI = new ProtonationAI(this)
+        const protonationAI = new ProtonationAI(_.cloneDeep(this))
         return protonationAI.addProtonToReagent(index_of_reagent_atom_to_protonate)
     }
 
@@ -2443,13 +2488,13 @@ class Reaction {
     }
 
     removeProtonFromWater() {
-        const protationAI = new ProtonationAI(this)
+        const protationAI = new ProtonationAI(_.cloneDeep(this))
         return protationAI.removeProtonFromWater()
     }
 
     
     addProtonFromReagentToHydroxylGroupReverse() {
-        const protationAI = new ProtonationAI(this)
+        const protationAI = new ProtonationAI(_.cloneDeep(this))
         return protationAI.addProtonFromReagentToHydroxylGroupReverse()
     }
 
@@ -2598,7 +2643,7 @@ class Reaction {
     }
 
     addProtonFromReagentToHydroxylGroup() {
-        const protonationAI = new ProtonationAI(this)
+        const protonationAI = new ProtonationAI(_.cloneDeep(this))
         return protonationAI.addProtonFromReagentToHydroxylGroup()
     }
 
@@ -2767,12 +2812,12 @@ class Reaction {
    
 
     breakCarbonNitrogenTripleBond() {
-        const bondsAI = new BondsAI(this)
+        const bondsAI = new BondsAI(_.cloneDeep(this))
         return bondsAI.makeOxygenCarbonDoubleBond()
     }
 
     breakCarbonNitrogenDoubleBond() {
-        const bondsAI = new BondsAI(this)
+        const bondsAI = new BondsAI(_.cloneDeep(this))
         return bondsAI.breakCarbonNitrogenDoubleBond()
     }
 
@@ -2789,12 +2834,12 @@ class Reaction {
     }
 
     breakCarbonOxygenDoubleBond(DEBUG) {
-        const bondsAI = new BondsAI(this)
+        const bondsAI = new BondsAI(_.cloneDeep(this))
         return bondsAI.breakCarbonOxygenDoubleBond(DEBUG)
     }
 
     breakCarbonDoubleBond() {
-        const bondsAI = new BondsAI(this)
+        const bondsAI = new BondsAI(_.cloneDeep(this))
         return bondsAI.breakCarbonDoubleBond()
     }
 
@@ -3372,7 +3417,7 @@ class Reaction {
     }
 
     removeProtonFromAtom(moleculeAI, molecule, atom_index) {
-        const protonationAI = new ProtonationAI(this)
+        const protonationAI = new ProtonationAI(_.cloneDeep(this))
         return protonationAI.removeProtonFromAtom(moleculeAI, molecule, atom_index) // returns molecule
     }
     

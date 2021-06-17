@@ -89,6 +89,7 @@ client.connect(err => {
                 // reaction_test.starting_substrate is a string
                 const reaction = new Reaction([MoleculeFactory(reaction_test.starting_substrate), 1], reagent_container, "", false, null, null, [], 0, [], renderCallback)
                 const result = reaction[reaction_test.reaction](...Object.values(reaction_test.params), false)
+                console.log("Testing " + reaction_test.reaction +"() result")
                 if (result === false) {
                     console.log("Reaction returned false - " + reaction_test.reaction +"()")
                 } else {

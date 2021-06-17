@@ -809,7 +809,10 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         const shared_electrons = this.electronsSharedWithSibling(sibling_atom)
 
         if (DEBUG) {
+            console.log(this.symbol + ' ' + this.atomId())
+            console.log(sibling_atom.symbol + ' ' + sibling_atom.atomId())
             console.log("CAtom __isDoubleBondedTo() Got " + shared_electrons.length + " shared electrons")
+            console.log(shared_electrons.length === 4)
         }
 
         return shared_electrons.length === 4

@@ -227,9 +227,15 @@ class BondsAI {
             throw new Error("BondsAI removeBond() Failed to remove double bond")
         }
 
-        //molecule_container[0][1][atom1.atomIndex] = atom1.atom
-        //molecule_container[0][1][atom2.atomIndex] = atom2.atom
+        if (DEBUG) {
+            console.log("BondsAI removeDoubleBond() container after removing double bond:")
+            console.log(VMolecule(molecule_container).compressed())
+        }
 
+        molecule_container[0][1][atom1.atomIndex] = atom1.atom
+        molecule_container[0][1][atom2.atomIndex] = atom2.atom
+
+        return molecule_container
 
     }
 
@@ -389,7 +395,9 @@ class BondsAI {
             {name:"atom2_controller", value:atom2_controller, type:"object"},
             {name:"DEBUG", value:DEBUG, type:"boolean"}
         )
-        return atom1_controller.isDoubleBondedTo(atom2_controller, DEBUG)
+        const is_double_bonded_to = atom1_controller.isDoubleBondedTo(atom2_controller, DEBUG)
+        is_double_bonded_to.should.be.a.Boolean()
+        return is_double_bonded_to
     }
 
     addHydrogen(molecule_container, atom_index) {
@@ -738,8 +746,6 @@ class BondsAI {
             console.log("BondsAI makeOxygenCarbonDoubleBond() -> after adding double bond:")
             console.log(VMolecule(this.reaction.container_substrate).compressed())
         }
-
-        return true
 
     }
 
@@ -1448,11 +1454,11 @@ class BondsAI {
 
 
         if (DEBUG) {
-            console.log("BondsAI bondSubstrateToReagentReverse() substrate")
+            console.log("BondsAI bondSubstrateToReagentReverse() substrate (before splitting)")
             console.log(VMolecule(this.reaction.container_substrate).compressed())
-            console.log("BondsAI bondSubstrateToReagentReverse() n_atom")
+            console.log("BondsAI bondSubstrateToReagentReverse() n_atom (before splitting)" )
             console.log(n_atom.atom)
-            console.log("BondsAI bondSubstrateToReagentReverse() carbon atom")
+            console.log("BondsAI bondSubstrateToReagentReverse() carbon atom (before splitting)")
             console.log(target_atom.atom)
         }
 
@@ -1463,11 +1469,34 @@ class BondsAI {
 
         // @todo triple bonds
         if (this.isBond(n_atom, target_atom, DEBUG)) {
-            this.removeBond(n_atom, target_atom, this.reaction.container_substrate, DEBUG)
+            this.removeBond(n_atom, target_atom, (this.reaction.container_substrate), DEBUG)
+            const is_single_bond = this.isBond(n_atom, target_atom, DEBUG)
+            is_single_bond.should.be.a.Boolean()
+            if (is_single_bond) {
+                throw new Error("Failed to break single bond between nitrogen and carbon atoms")
+            }
         }
 
         if (this.isDoubleBond(n_atom, target_atom, DEBUG)) {
             this.removeDoubleBond(n_atom, target_atom, this.reaction.container_substrate, DEBUG)
+
+            if (DEBUG) {
+                console.log("BondsAI bondSubstrateToReagentReverse() container after removing double bond:")
+                console.log(VMolecule(this.reaction.container_substrate).compressed())
+            }
+
+            const is_double_bonded_to = this.isDoubleBond(n_atom, target_atom, DEBUG)
+            is_double_bonded_to.should.be.a.Boolean()
+
+            if (DEBUG) {
+                console.log("BondsAI bondSubstrateToReagentReverse() checking double double bond has been removed:")
+                console.log(is_double_bonded_to)
+            }
+
+            if (is_double_bonded_to) {
+                throw new Error("Failed to break double bond between nitrogen and carbon atoms")
+            }
+
         }
 
         // Check that there is no longer a bond between the nitrogen and the carbon
@@ -1475,18 +1504,31 @@ class BondsAI {
             throw new Error("There should no longer be a bond between the nitrogen atom and the carbon atom")
         }
 
-
         if (DEBUG) {
             console.log("BondsAI bondSubstrateToReagentReverse() substrate after remove NC bond")
             console.log(VMolecule(this.reaction.container_substrate).compressed())
+            console.log(VMolecule(this.reaction.container_substrate).canonicalSMILES())
+            console.log("BondsAI bondSubstrateToReagentReverse() reagent after remove NC bond")
+            if (typeof this.reaction.container_reagent === "string") {
+                console.log(this.reaction.container_reagent)
+            } else {
+                console.log(VMolecule(this.reaction.container_reagent).compressed())
+                console.log(VMolecule(this.reaction.container_reagent).canonicalSMILES())
+            }
         }
 
         if (undefined === this.reaction.container_substrate[0][1][n_index]) {
             throw new Error("Atom array is undefined.")
         }
 
-
+        // Required as otherwise extractGroups will use the old substrate values.
+        this.reaction.setMoleculeAI() /// this creates a new MoleculeAI object and sets it to use the new substrate value.
         const groups = this.reaction.MoleculeAI.extractGroups(n_atom, target_atom, DEBUG)
+        if (DEBUG) {
+            console.log("BondsAI bondSubstrateToReagentReverse() groups:")
+            console.log(groups)
+            console.log(groups.length)
+        }
         groups.length.should.be.equal(2, "When reversing substrate to reagent bond the number of groups should be 2.")
 
         // Check that there are no shared atoms between the two groups
@@ -1538,7 +1580,10 @@ class BondsAI {
             )
 
         }
-        return true
+
+        this.reaction.setMoleculeAI()
+        this.reaction.setReagentAI()
+        return this.reaction
 
     }
 

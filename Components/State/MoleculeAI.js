@@ -161,29 +161,20 @@ class MoleculeAI {
         let carbon_index = this.reaction.MoleculeAI.findAtomIndexByAtomId(carbon_atom_id, DEBUG)
         let nitrogen_index = this.reaction.MoleculeAI.findAtomIndexByAtomId(nitrogen_atom_id, DEBUG)
 
-        this.reaction.setMoleculeAI()
-        this.reaction.setChargesOnSubstrate()
-        this.reaction.setChargesOnReagent()
-
         if(DEBUG) {
             console.log("State/MoleculeAI.js formKetoneFromImine carbon index:")
-            console.log("Carbon atom id:" + carbon_atom_id)
-            console.log("Nitrogen atom id:" + nitrogen_atom_id)
-            console.log("Before splitting")
+            console.log("State/MoleculeAI.js formKetoneFromImine Carbon atom id :" + carbon_atom_id)
+            console.log("State/MoleculeAI.js formKetoneFromImine Nitrogen atom id:" + nitrogen_atom_id)
+            console.log("State/MoleculeAI.js formKetoneFromImine Before splitting")
+            console.log(VMolecule([this.reaction.container_substrate[0], 1]).compressed())
             console.log(VMolecule([this.reaction.container_substrate[0], 1]).canonicalSMILES())
         }
 
-        const bondsAI = new BondsAI(this.reaction)
-        bondsAI.bondSubstrateToReagentReverse(nitrogen_atom_id, carbon_atom_id, DEBUG)
+        const bondsAI = new BondsAI((this.reaction))
+        // We need to set this.reaction as we are using cloned values.
+        this.reaction = bondsAI.bondSubstrateToReagentReverse(nitrogen_atom_id, carbon_atom_id, DEBUG)
         this.reaction.container_substrate[0][1].length.should.be.greaterThan(0)
         this.reaction.container_reagent[0][1].length.should.be.greaterThan(0)
-
-        this.reaction.setMoleculeAI()
-        this.reaction.setReagentAI()
-        this.reaction.setChargesOnSubstrate()
-        this.reaction.setChargesOnReagent()
-
-
 
         if (DEBUG) {
             console.log("State/MoleculeAI.js substrate after splitting:")
@@ -277,6 +268,13 @@ class MoleculeAI {
             // Add two hydrogens to nitrogen atom on substrate to make up for loss of double bond
             this.reaction.setReagentAI()
             nitrogen_index = this.reaction.ReagentAI.findAtomIndexByAtomId(nitrogen_atom_id, DEBUG)
+            if (nitrogen_index === null || nitrogen_index === -1) {
+                if (DEBUG) {
+                    console.log(VMolecule([this.reaction.container_reagent[0], 1]).compressed())
+                    console.log(nitrogen_atom_id)
+                }
+                throw new Error("Unable to determine nitrogen index on reagent")
+            }
             bondsAI.addHydrogen(this.reaction.container_reagent, nitrogen_index)
             bondsAI.addHydrogen(this.reaction.container_reagent, nitrogen_index)
             this.reaction.setChargesOnReagent()

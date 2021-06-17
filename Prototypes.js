@@ -193,9 +193,10 @@ const Prototypes = () => {
         }
     })
     Object.defineProperty(Array.prototype, 'getAtomIndexById', {
-        value: function(atom_id) {
+        value: function(atom_id, allow_failed_searches) {
             Typecheck(
                 {name:"atomId", value:atom_id, type:"string"},
+                {name:"allow_failed_searches", value:allow_failed_searches, type:"booleanb"}
             )
             const atom_index =_.findIndex(this, (v, i )=>{
                 return v[5] === atom_id
@@ -203,10 +204,10 @@ const Prototypes = () => {
             Typecheck(
                 {name:"atom_index", value:atom_index, type:"number"},
             )
-            if (atom_index === -1) {
+            if (atom_index === -1 && (allow_failed_searches !==null && allow_failed_searches !==undefined)) {
                 throw new Error('Unable to find atom index using atom id ' + atom_id)
             }
-            return atom_index
+            return atom_index !==-1?atom_index:false
         }
     })
 }
