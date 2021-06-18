@@ -29,7 +29,7 @@ class MoleculeAI {
             throw new Error("Reaction should not be undefined")
         }
 
-        this.reaction = reaction
+        this.reaction = _.cloneDeep(reaction)
 
         this.reaction.container_substrate[0][1].map((_atom) => {
             Typecheck(
@@ -258,12 +258,20 @@ class MoleculeAI {
             oxygen.freeSlots().should.be.equal(1)
             oxygen.freeElectrons().length.should.be.equal(6)
             if (DEBUG) {
-                console.log("Substrate (after splitting:")
+                console.log("Substrate (after splitting):")
                 console.log(VMolecule(this.reaction.container_substrate).compressed())
                 console.log(VMolecule(this.reaction.container_substrate).canonicalSMILES())
             }
+
+            const bondsAI = new BondsAI(this.reaction)
+
             // Create C=O bond
-            this.bondsAI.makeOxygenCarbonDoubleBond(oxygen, carbon, DEBUG)
+            this.reaction = bondsAI.makeOxygenCarbonDoubleBond(oxygen, carbon, DEBUG)
+
+            if(true) {
+                console.log(VMolecule(this.reaction.container_substrate))
+                process.error()
+            }
 
             // Add two hydrogens to nitrogen atom on substrate to make up for loss of double bond
             this.reaction.setReagentAI()

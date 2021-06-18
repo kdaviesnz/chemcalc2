@@ -786,6 +786,8 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
         const shared_electrons = this.electronsSharedWithSibling(sibling_atom)
 
+        console.log("CAtom isBondedTo() shared electrons")
+        console.log(shared_electrons)
 
         return shared_electrons.length === 2
 

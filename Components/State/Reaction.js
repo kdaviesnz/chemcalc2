@@ -171,7 +171,7 @@ class Reaction {
 
         this.setChargesOnSubstrate(DEBUG)
         this.MoleculeAI.validateMolecule()
-        this.bondsAI = new BondsAI(_.cloneDeep(this))
+        this.bondsAI = (new BondsAI(_.cloneDeep(this)))
 
         this.DEBUG = DEBUG
 
@@ -274,14 +274,6 @@ return result === false? false:[
 
         result.should.be.an.Array()
 
-        /*
-        result.should.be.an.Array()
-
-return result === false? false:[
-    result[0], // substrate container
-    result[1] // reagent container
-]
- */
         return result === false? false:[
             result[0], // substrate container
             result[1] // reagent container
@@ -356,8 +348,9 @@ return result === false? false:[
             // Change NC bond to N=C
             const nitrogen = CAtom(this.container_substrate[0][1][nitrogen_index], nitrogen_index, this.container_substrate)
             const carbon = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, this.container_substrate)
-            this.bondsAI.breakCarbonNitrogenDoubleBondReverse(nitrogen.atomId(), carbon.atomId(), DEBUG )
+            this.bondsAI.breakCarbonNitrogenDoubleBondReverse((nitrogen.atomId()), (carbon.atomId()), DEBUG )
             // An imine is an organic compound containing the group —C=NH or —C=NR where R is an alkyl or other group.
+            this.setMoleculeAI()
             this.stateMoleculeAI.formImineFromKetoneReverse(nitrogen_index, carbon_index, DEBUG)
 
             if (DEBUG) {

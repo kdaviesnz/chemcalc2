@@ -57,7 +57,7 @@ class BondsAI {
             throw new Error("Reaction should not be undefined")
         }
 
-        this.reaction = reaction
+        this.reaction = _.cloneDeep(reaction)
 
         this.reaction.container_substrate[0][1].map((_atom) => {
             Typecheck(
@@ -65,7 +65,6 @@ class BondsAI {
             )
         })
 
-        this.reaction = reaction
     }
 
     bondAtomToCarbonylCarbon() {
@@ -250,6 +249,7 @@ class BondsAI {
     }
 
     createDoubleBond(atom1_id, atom2, molecule_container, DEBUG, check=true) {
+
         Typecheck(
             {name:"atom1_id", value:atom1_id, type:"string"},
             {name:"atom2", value:atom2, type:"object"},
@@ -257,6 +257,7 @@ class BondsAI {
             {name:"DEBUG", value:check, type:"boolean"},
             {name:"check", value:check, type:"boolean"},
         )
+
 
         if (atom1_id === null || atom1_id === undefined) {
             throw new Error("atom1_id is undefined or null")
@@ -268,7 +269,10 @@ class BondsAI {
 
         const atom1_index = molecule_container[0][1].getAtomIndexById(atom1_id)
 
+
+        molecule_container[0][1][atom1_index].should.be.an.Array()
         const atom1 = CAtom(molecule_container[0][1][atom1_index], atom1_index, molecule_container)
+
 
         atom1.checkNumberOfElectrons()
         atom2.checkNumberOfElectrons()
@@ -279,6 +283,12 @@ class BondsAI {
             this.bondAtoms(atom1, atom2, molecule_container, DEBUG, true)
             this.bondAtoms(atom1, atom2, molecule_container, DEBUG, false)
         }
+
+
+        processs.error()
+
+
+
 
         if (check && !this.isDoubleBond(atom1, atom2, DEBUG)) {
             throw new Error("Failed to create double bond")
@@ -322,7 +332,6 @@ class BondsAI {
             {name:"check", value:check, type:"boolean"},
         )
 
-
         if (atom1 === null || atom1 === undefined) {
             throw new Error("Atom is undefined or null")
         }
@@ -349,6 +358,8 @@ class BondsAI {
 
 
             if (atom2FreeElectrons.length === 0) {
+                console.log(VMolecule(molecule_container).compressed())
+                console.log(atom2.symbol + ' ' + atom2.atomId())
                 throw new Error("Atom2 should have at least one free electron")
             }
 
@@ -358,35 +369,45 @@ class BondsAI {
                 throw new Error("Atom1 should have at least one free electron")
             }
 
-
-
             atom1FreeElectrons.length.should.be.greaterThan(0)
             atom2FreeElectrons.length.should.be.greaterThan(0)
 
             const atom1FreeElectron = atom1FreeElectrons[0]
             const atom2FreeElectron = atom2FreeElectrons[0]
 
+            console.log("To do: confirm electrons have been added and that the electrons are not the same")
+            process.error()
             molecule_container[0][1].getAtomById(atom1.atomId()).addElectron(atom2FreeElectron)
             molecule_container[0][1].getAtomById(atom2.atomId()).addElectron(atom1FreeElectron)
+
         }
 
         // Confirm we have created a bond
         if (check && !this.isBond(atom1, atom2, DEBUG)) {
+            console.log('BondsAI bondAtoms()')
             console.log(VMolecule(molecule_container).compressed())
             console.log(atom1.atomId())
             console.log(atom2.atomId())
+            console.log(this.isBond(atom1, atom2, DEBUG))
             throw new Error("Failed to create bond")
         }
 
     }
 
-    isBond(atom1_controller, atom2_controller, DEBUG) {
+    isBond(atom1, atom2, DEBUG) {
         Typecheck(
-            {name:"atom1_controller", value:atom1_controller, type:"object"},
-            {name:"atom2_controller", value:atom2_controller, type:"object"},
+            {name:"atom1", value:atom1, type:"object"},
+            {name:"atom2", value:atom2, type:"object"},
             {name:"DEBUG", value:DEBUG, type:"boolean"}
         )
-        return atom1_controller.isBondedTo(atom2_controller, DEBUG)
+        console.log("BondsAI isBond()")
+        console.log(VMolecule(this.reaction.container_substrate).compressed())
+        console.log(atom1.atomId())
+        console.log(atom1.electrons())
+        console.log(atom2.atomId())
+        console.log(atom2.electrons())
+        console.log(atom1.isBondedTo(atom2, DEBUG))
+        return atom1.isBondedTo(atom2, DEBUG)
     }
 
     isDoubleBond(atom1_controller, atom2_controller, DEBUG) {
@@ -738,7 +759,6 @@ class BondsAI {
             throw new Error("Carbon atom is undefined or null")
         }
 
-
         this.createDoubleBond(oxygen_id, carbon, this.reaction.container_substrate, DEBUG, true)
 
         this.reaction.setMoleculeAI()
@@ -747,6 +767,8 @@ class BondsAI {
             console.log("BondsAI makeOxygenCarbonDoubleBond() -> after adding double bond:")
             console.log(VMolecule(this.reaction.container_substrate).compressed())
         }
+
+        return this.reaction
 
     }
 
@@ -1120,16 +1142,12 @@ class BondsAI {
         // Add electrons from nitrogen to carbon
         this.reaction.setMoleculeAI()
         // createDoubleBond(atom1_id, atom2, molecule_container, DEBUG, check=true)
-        this.createDoubleBond(carbon_atom.atomId(), nitrogen, this.reaction.container_substrate, DEBUG)
-        //this.reaction.container_substrate[0][1][carbon_index].addElectron(freeElectrons[0])
-        //this.reaction.container_substrate[0][1][carbon_index].addElectron(freeElectrons[1])
+        this.createDoubleBond(carbon_atom.atomId(), nitrogen, _.cloneDeep(this.reaction.container_substrate), DEBUG)
 
         if (DEBUG) {
             console.log(carbon_index)
             console.log(VMolecule(this.reaction.container_substrate).compressed())
         }
-
-        return true
 
 
     }
