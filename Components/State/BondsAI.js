@@ -344,6 +344,9 @@ class BondsAI {
         atom1.checkNumberOfElectrons()
         atom2.checkNumberOfElectrons()
 
+        let atom1_after_adding_electron = null
+        let atom2_after_adding_electron = null
+
         const atom2FreeElectrons = _.cloneDeep(atom2.freeElectrons())
         const atom1FreeElectrons = _.cloneDeep(atom1.freeElectrons())
 
@@ -390,25 +393,24 @@ class BondsAI {
             }
             molecule_container[0][1][atom1_index].addElectron(atom2FreeElectron)
             molecule_container[0][1][atom2_index].addElectron(atom1FreeElectron)
-            const atom1_after_adding_electron = CAtom(molecule_container[0][1][atom1_index], atom1_index, molecule_container)
-            const atom2_after_adding_electron = CAtom(molecule_container[0][1][atom2_index], atom2_index, molecule_container)
+            atom1_after_adding_electron = CAtom(molecule_container[0][1][atom1_index], atom1_index, molecule_container)
+            atom2_after_adding_electron = CAtom(molecule_container[0][1][atom2_index], atom2_index, molecule_container)
             atom1_electrons_length.should.be.equal(atom1_after_adding_electron.electrons().length - 1)
             atom2_electrons_length.should.be.equal(atom2_after_adding_electron.electrons().length - 1)
-
-            process.error()
-
 
         }
 
         // Confirm we have created a bond
-        if (check && !this.isBond(atom1, atom2, DEBUG)) {
+        if (check && !this.isBond(atom1_after_adding_electron, atom2_after_adding_electron, DEBUG)) {
             console.log('BondsAI bondAtoms()')
             console.log(VMolecule(molecule_container).compressed())
-            console.log(atom1.atomId())
-            console.log(atom2.atomId())
-            console.log(this.isBond(atom1, atom2, DEBUG))
+            console.log(atom1_after_adding_electron.atomId())
+            console.log(atom2_after_adding_electron.atomId())
+            console.log(this.isBond(atom1_after_adding_electron, atom2_after_adding_electron, DEBUG))
             throw new Error("Failed to create bond")
         }
+
+        process.error()
 
     }
 
