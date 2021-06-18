@@ -20,10 +20,12 @@ const Prototypes = () => {
             if (symbol === null) {
                 throw new Error("Symbol is null")
             }
+            const length_before = this.length
             this.push(electron)
             if (this.electrons().length > (symbol === undefined?8:(Constants().max_valence_electrons[symbol]))) {
                 throw new Error("Atom has more than the allowed number of electrons")
             }
+            this.length.should.be.equal(length_before + 1)
         }
     })
     Object.defineProperty(Array.prototype, 'addElectrons', {

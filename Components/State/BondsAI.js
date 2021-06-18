@@ -372,13 +372,31 @@ class BondsAI {
             atom1FreeElectrons.length.should.be.greaterThan(0)
             atom2FreeElectrons.length.should.be.greaterThan(0)
 
-            const atom1FreeElectron = atom1FreeElectrons[0]
-            const atom2FreeElectron = atom2FreeElectrons[0]
+            const atom1FreeElectron = _.cloneDeep(atom1FreeElectrons[0])
+            const atom2FreeElectron = _.cloneDeep(atom2FreeElectrons[0])
 
-            console.log("To do: confirm electrons have been added and that the electrons are not the same")
+            // Add electrons and confirm electrons have been added.
+            atom1FreeElectron.should.not.be.equal(atom2FreeElectron)
+            atom2FreeElectron.should.not.be.equal(atom1FreeElectron)
+            const atom1_index = atom1.atomIndex
+            const atom2_index = atom2.atomIndex
+            const atom1_electrons_length = atom1.electrons().length
+            const atom2_electrons_length = atom2.electrons().length
+            if (undefined === molecule_container[0][1][atom1_index]) {
+                throw new Error("Could not find atom with id " + atom1.atomId() + ', index ' + atom1.atomIndex)
+            }
+            if (undefined === molecule_container[0][1][atom2_index]) {
+                throw new Error("Could not find atom with id " + atom2.atomId() + ', index ' + atom2.atomIndex)
+            }
+            molecule_container[0][1][atom1_index].addElectron(atom2FreeElectron)
+            molecule_container[0][1][atom2_index].addElectron(atom1FreeElectron)
+            const atom1_after_adding_electron = CAtom(molecule_container[0][1][atom1_index], atom1_index, molecule_container)
+            const atom2_after_adding_electron = CAtom(molecule_container[0][1][atom2_index], atom2_index, molecule_container)
+            atom1_electrons_length.should.be.equal(atom1_after_adding_electron.electrons().length - 1)
+            atom2_electrons_length.should.be.equal(atom2_after_adding_electron.electrons().length - 1)
+
             process.error()
-            molecule_container[0][1].getAtomById(atom1.atomId()).addElectron(atom2FreeElectron)
-            molecule_container[0][1].getAtomById(atom2.atomId()).addElectron(atom1FreeElectron)
+
 
         }
 

@@ -988,7 +988,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
     }
 
     const __electrons = function() {
-        return this.atom.slice(Constants().electron_index)
+        return this.atom.electrons()
     }
 
     const __carbonBonds = function()  {
