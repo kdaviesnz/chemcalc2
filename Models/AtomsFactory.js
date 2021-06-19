@@ -695,16 +695,12 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         //// console.log(indexes)
         const e = uniqid()
         const m = [[12345,atoms],1]
-        const parent_atom = CAtom(m[0][1][indexes[0]], indexes[0], m)
-        const child_atom = CAtom(m[0][1][indexes[1]], indexes[1], m)
-        const parent_free_electrons = parent_atom.freeElectrons()
-        const child_free_electrons = child_atom.freeElectrons()
-        //// console.log(parent_free_electrons) // [ 'bqdtz0rmfkkhrfctm' ]
-        //// console.log(child_free_electrons) // [ 'bqdtz0rmfkkhrfcu6', 'bqdtz0rmfkkhrfcu7' ]
+        const parent_atom = m[0][1][indexes[0]]
+        const child_atom = m[0][1][indexes[1]]
+        const parent_free_electrons = parent_atom.freeElectrons(m[0][1])
+        const child_free_electrons = child_atom.freeElectrons(m[0][1])
         atoms[indexes[0]].push(child_free_electrons[0])
         atoms[indexes[1]].push(parent_free_electrons[0])
-        //// console.log(parent_atom.indexedBonds(""))
-        //// console.log(child_atom.indexedBonds(""))
         return indexes
     })
 
@@ -916,9 +912,9 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
 
             if (typeof current.length === "number" && current[0]!=='H') { // we have an atom
 
-                const catom = CAtom(_.cloneDeep(current), index, molecule)
+                const catom = current
 
-                const free_electrons = catom.freeElectrons()
+                const free_electrons = catom.freeElectrons(atoms_with_charges)
 
                 if (atoms_with_charges[index+1] !== undefined && atoms_with_charges[index+1]['type'] !== undefined && atoms_with_charges[index+1]['type'] === "HydrogenCount") {
 
@@ -1009,7 +1005,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
      */
 
     const atoms_electrons_checked = atoms_with_hydrogens.map((atom, index)=>{
-        const o_atom = CAtom(atom, index, [['12345', atoms_with_hydrogens], 1])
+        const o_atom = atom
 
         const bond_count = o_atom.indexedBonds("").length + o_atom.indexedDoubleBonds("").length + o_atom.indexedTripleBonds("").length
         const free_electrons = o_atom.freeElectrons()

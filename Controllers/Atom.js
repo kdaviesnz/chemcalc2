@@ -1169,7 +1169,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         numberOfProtons:__numberOfProtons,
         numberOfElectrons:__numberOfElectrons,
         numberOfElectronsV2:__numberOfElectronsV2,
-        indexedBonds: __indexedBonds,
+        indexedBondsDoNotUse: __indexedBonds,
         indexedDoubleBonds: __indexedDoubleBonds,
         indexedTripleBonds: __indexedTripleBonds,
         atom: atom,

@@ -35,19 +35,57 @@ const Prototypes = () => {
             }
         }
     })
+    Object.defineProperty(Array.prototype, 'electronHaystack', {
+        value: function(atoms, atom_id) {
+            Typecheck(
+                {name:"atom_id", value:atom_id, type:"string"},
+                {name:"atoms", value:atoms, type:"array"}
+            )
+
+            if (atom_id === null || atom_id === undefined) {
+                throw new Error("Atom id is null or undefined")
+            }
+
+            if (atoms === null || atoms === undefined) {
+                throw new Error("Atoms are null or undefined")
+            }
+
+            const electron_haystack = atoms.reduce(
+                (carry, __atom, __atom_index) => {
+                    if (undefined === __atom.slice) {
+                        return carry
+                    }
+
+                    if (atom_id === __atom_index ) {
+                        return carry
+                    }
+                    return [...carry, ...__atom.slice(Constants().electron_index)]
+                },
+                []
+            )
+
+            return electron_haystack
+        }
+    })
     Object.defineProperty(Array.prototype, 'freeElectrons', {
-        value: function() {
+        value: function(atoms) {
             Typecheck(
                 {name:"symbol", value:this[0], type:"string"},
                 {name:"atom_id", value:this[5], type:"string"},
+                {name:"atoms", value:atoms, type:"array"},
             )
+
+            if (atoms === null || atoms === undefined) {
+                throw new Error("Atoms are null or undefined")
+            }
+
             const symbol = this[0]
             const atom_id = this[5]
             const atom_electrons = this.electrons()
             const electron_haystack = (
                 symbol === "Hg"?
-                    __electron_haystack(test_number, atom_id, this).slice(0,3):
-                    __electron_haystack(test_number, atom_id, this)
+                    this.electronHaystack(atoms, atom_id, this).slice(0,3):
+                    this.electronHaystack(atoms, atom_id, this)
             )
 
             const free_electrons = atom_electrons.filter(
@@ -303,6 +341,82 @@ const Prototypes = () => {
                 throw new Error('Unable to find atom index using atom id ' + atom_id)
             }
             return atom_index !==-1?atom_index:false
+        }
+    })
+    Object.defineProperty(Array.prototype, 'indexedBonds', {
+        value: function(atoms) {
+
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"}
+            )
+
+            const atom_electrons = this.slice(Constants().electron_index)
+
+            let r =  atoms.reduce (
+
+                (bonds, _atom, _atom_index) => {
+
+                    if (undefined === _atom.sort) {
+                        return bonds
+                    }
+
+                    if ((_.isEqual(_.cloneDeep(atom).sort(), _.cloneDeep(_atom).sort())) || _atom[0]=== filter_by) {
+                        return bonds
+                    }
+
+                    const shared_electrons = Set().intersection(atom_electrons, _atom.slice(Constants().electron_index))
+
+                    if (shared_electrons.length === 0) {
+                        return bonds
+                    }
+
+                    bonds.push({
+                        'atom': _atom,
+                        'atom_index': _atom_index,
+                        'shared_electrons': shared_electrons,
+                        'bond_type': shared_electrons.length === 2? "":"="
+                    })
+
+                    return bonds
+
+                },
+                []
+            )
+
+            // Filter out "single" bonds that are actually double bonds
+            const d_bonds = __indexedDoubleBonds("H")
+            if (d_bonds.length>0) {
+                // Get indexes of the double bonds
+                const d_bond_indexes = d_bonds.map((b)=>{
+                    return b.atom_index
+                })
+                // Filter single bonds that have indexes in d_bond_indexes
+                //console.log(d_bond_indexes)
+                r = r.filter((sb)=>{
+                    //console.log(sb.atom_index)
+                    //console.log(d_bond_indexes.indexOf(sb.atom_index))
+                    //console.log(d_bond_indexes.indexOf(sb.atom_index)===-1)
+                    // 3,4 are double bond indexes
+                    return d_bond_indexes.indexOf(sb.atom_index)===-1
+                })
+                //process.error()
+            }
+
+            // Filter out "single" bonds that are actually triple bonds
+            const t_bonds = __indexedTripleBonds("H")
+            if (t_bonds.length>0) {
+                // Get indexes of the double bonds
+                const t_bond_indexes = t_bonds.map((b)=>{
+                    return b.atom_index
+                })
+                // Filter single bonds that have indexes in t_bont_indexes
+                //console.log(t_bond_indexes)
+                r = r.filter((sb)=>{
+                    return t_bond_indexes.indexOf(sb.atom_index)===-1
+                })
+            }
+
+            return r
         }
     })
 }
