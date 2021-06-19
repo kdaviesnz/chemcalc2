@@ -662,10 +662,10 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         const maximum_number_of_electrons = Constants().max_valence_electrons[this.symbol]
         maximum_number_of_electrons.should.not.be.undefined()
 
-        if (maximum_number_of_electrons - this.electrons().length === 0) {
+        if (maximum_number_of_electrons - mmolecule[0][1].electrons().length === 0) {
             return 0
         } else {
-            return (maximum_number_of_electrons - this.electrons().length) / 2
+            return (maximum_number_of_electrons - mmolecule[0][1].electrons().length) / 2
         }
 
     }
@@ -786,8 +786,8 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
 
         const shared_electrons = this.electronsSharedWithSibling(sibling_atom)
 
-        console.log("CAtom isBondedTo() shared electrons")
-        console.log(shared_electrons)
+       // console.log("CAtom isBondedTo() shared electrons")
+        //console.log(shared_electrons)
 
         return shared_electrons.length === 2
 
@@ -1103,13 +1103,13 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         carbonDoubleBonds: __carbonDoubleBonds,
         carbonBonds: __carbonBonds,
         nitrogenBonds: __nitrogenBonds,
-        electrons: __electrons,
+        electronsDonNotUse: __electrons,
         getPositiveCarbonBonds: __getPositiveCarbonBonds,
-        removeCovalentBond: __removeCovalentBond,
+        removeCovalentBondDoNotUse: __removeCovalentBond,
         removeElectrons:__removeElectrons,
         isCoordinateCovalentBondDonator:__isCoordinateCovalentBondDonator,
         isBondedTo: __isBondedTo,
-        isDoubleBondedTo: __isDoubleBondedTo,
+        isDoubleBondedToDoNotUse: __isDoubleBondedTo,
         isTripleBondedTo: __isTripleBondedTo,
         electronsSharedWithSibling: __electronsSharedWithSibling,
         isCoordinateCovalentBond: __isCoordinateCovalentBond,
@@ -1118,7 +1118,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         isPositivelyCharged: __isPositivelyCharged,
         isProton: __isProton,
         bonds: __Bonds,
-        freeElectrons:  __freeElectrons,
+        freeElectronsDoNotUse:  __freeElectrons,
         lonePairs: (test_number) => {
 
 
@@ -1162,7 +1162,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         removeDoubleBond: __removeDoubleBond,
         hydrogens: __hydrogens,
         carbons: __carbons,
-        freeSlots: __freeSlots,
+        freeSlotsDoNotUse: __freeSlots,
         bondCount:__bondCount,
         doubleBondCount:__doubleBondCount,
         tripleBondCount:__tripleBondCount,
@@ -1176,9 +1176,9 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         symbol:  atom[0],
         atomIndex: current_atom_index,
         charge: atom[4],
-        sharedElectrons: __shared_electrons,
+        sharedElectronsDoNotUse: __shared_electrons,
         removeFreeElectrons: __removeFreeElectrons,
-        addElectrons: __addElectrons,
+        addElectronsDoNotUse: __addElectrons,
         numberOfBonds: __numberOfBonds,
         numberOfBondsNoHydrogens: __numberOfBondsNoHydrogens,
         neutralAtomMaxNumberOfBonds: __neutralAtomMaxNumberOfBonds,

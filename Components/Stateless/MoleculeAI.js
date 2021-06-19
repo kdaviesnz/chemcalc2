@@ -709,14 +709,14 @@ const MoleculeAI = (container_molecule) => {
                 {name:"groups", value:groups, type:"array"},
                 {name:"group_index", value:group_index, type:"number"},
                 {name:"current_atom_index", value:current_atom_index, type:"number"},
-                {name:"atom_object", value:atom_object, type:"object"},
+                {name:"atom_object", value:atom_object, type:"array"},
                 {name:"atoms", value:atoms, type:"array"},
                 {name:"atom_ids_added", value:atom_ids_added, type:"array"},
                 {name:"DEBUG", value:DEBUG, type:"boolean"},
             )
 
             _.cloneDeep(atoms).map((a, i)=>{
-                const a_object = CAtom(a, i, container_molecule)
+                const a_object = a
                 if (a_object.atomId() !==  atom_object.atomId() &&_.indexOf(atom_ids_added, a_object.atomId()) ===-1) {
                     if (atom_object.isBondedTo(a_object) || atom_object.isDoubleBondedTo(a_object) || atom_object.isTripleBondedTo(a_object)) {
                         groups[group_index].push(a)
@@ -788,7 +788,7 @@ const MoleculeAI = (container_molecule) => {
                 if (single_bonds.length + double_bonds.length + triple_bonds.length === 0) {
                       groups[group_index].push(atom)
                 } else {
-                    this.checkForBondedAtomsRecursive(groups, group_index, current_atom_index, atom_object, _.cloneDeep(atoms), atom_ids_added, DEBUG)
+                    this.checkForBondedAtomsRecursive(groups, group_index, current_atom_index, atom, _.cloneDeep(atoms), atom_ids_added, DEBUG)
                 }
 
                 return this.extractGroupsRecursive(groups, group_index +1, _.cloneDeep(atoms), atom_ids_added, current_atom_index +1)

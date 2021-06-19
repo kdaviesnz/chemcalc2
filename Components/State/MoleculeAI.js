@@ -249,12 +249,12 @@ class MoleculeAI {
 
             this.reaction.container_substrate[0][1].push(oxygen_atom)
             const oxygen_index = this.reaction.container_substrate[0][1].length -1
-            carbon = CAtom(this.reaction.container_substrate[0][1][carbon_index], carbon_index, this.reaction.container_substrate)
-            carbon.electrons().length.should.be.equal(6)
+            carbon = this.reaction.container_substrate[0][1][carbon_index]
+            this.reaction.container_substrate[0][1][carbon_index].electrons().length.should.be.equal(6)
             carbon.freeSlots().should.be.equal(1)
             carbon.freeElectrons().length.should.be.equal(2)
             oxygen = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
-            oxygen.electrons().length.should.be.equal(6)
+            this.reaction.container_substrate[0][1][oxygen_index].electrons().length.should.be.equal(6)
             oxygen.freeSlots().should.be.equal(1)
             oxygen.freeElectrons().length.should.be.equal(6)
             if (DEBUG) {

@@ -1,11 +1,104 @@
 const Constants = require("./Constants")
 const Typecheck = require("./Typecheck")
 const _ = require('lodash');
+const Set = require('./Models/Set')
 
 const Prototypes = () => {
     Object.defineProperty(Array.prototype, 'electrons', {
         value: function() {
             return this.slice(Constants().electron_index)
+        }
+    })
+    Object.defineProperty(Array.prototype, 'sharedElectrons', {
+        value: function(atom) {
+            Typecheck(
+                {name:"atom", value:atom, type:"array"},
+            )
+            if (atom === undefined || atom === null) {
+                throw new Error("Atom is undefined or null")
+            }
+            return Set().intersection(this.electrons(), atom.electrons())
+        }
+    })
+    Object.defineProperty(Array.prototype, 'freeSlots', {
+        value: function() {
+            Typecheck(
+                {name:"symbol", value:this[0], type:"string"},
+            )
+            const symbol = this[0]
+            const maximum_number_of_electrons = Constants().max_valence_electrons[symbol]
+            maximum_number_of_electrons.should.not.be.undefined()
+            if (maximum_number_of_electrons - this.electrons().length === 0) {
+                return 0
+            } else {
+                return (maximum_number_of_electrons - this.electrons().length) / 2
+            }
+        }
+    })
+    Object.defineProperty(Array.prototype, 'freeElectrons', {
+        value: function() {
+            Typecheck(
+                {name:"symbol", value:this[0], type:"string"},
+                {name:"atom_id", value:this[5], type:"string"},
+            )
+            const symbol = this[0]
+            const atom_id = this[5]
+            const atom_electrons = this.electrons()
+            const electron_haystack = (
+                symbol === "Hg"?
+                    __electron_haystack(test_number, atom_id, this).slice(0,3):
+                    __electron_haystack(test_number, atom_id, this)
+            )
+
+            const free_electrons = atom_electrons.filter(
+                (electron) => {
+                    return electron_haystack.indexOf(electron) === -1
+                }
+            )
+
+            return free_electrons
+        }
+    })
+    Object.defineProperty(Array.prototype, 'isBondedTo', {
+        value: function(sibling_atom) {
+            Typecheck(
+                {name:"sibling_atom", value:sibling_atom, type:"array"},
+            )
+            if (sibling_atom === undefined || sibling_atom === null) {
+                throw new Error("sibling_atom is undefined or null")
+            }
+            return this.sharedElectrons(sibling_atom).length === 2
+        }
+    })
+    Object.defineProperty(Array.prototype, 'removeCovalentBond', {
+        value: function(sibling_atom) {
+            Typecheck(
+                {name:"sibling_atom", value:sibling_atom, type:"array"},
+            )
+            if (sibling_atom === undefined || sibling_atom === null) {
+                throw new Error("sibling_atom is undefined or null")
+            }
+            const shared_electrons = this.sharedElectrons(sibling_atom)
+            if (shared_electrons.length > 1) {
+                this.removeElectrons([shared_electrons[0]])
+                sibling_atom.removeElectrons([shared_electrons[1]])
+            }
+        }
+    })
+    Object.defineProperty(Array.prototype, 'isDoubleBondedTo', {
+        value: function(sibling_atom) {
+            Typecheck(
+                {name:"sibling_atom", value:sibling_atom, type:"array"},
+            )
+            return this.sharedElectrons(sibling_atom).length === 4
+        }
+    })
+    Object.defineProperty(Array.prototype, 'isTripleBondedTo', {
+        value: function(sibling_atom) {
+            Typecheck(
+                {name:"sibling_atom", value:sibling_atom, type:"array"},
+            )
+            return this.sharedElectrons(sibling_atom).length === 6
         }
     })
     Object.defineProperty(Array.prototype, 'addElectron', {
