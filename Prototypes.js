@@ -70,6 +70,9 @@ const Prototypes = () => {
     })
     Object.defineProperty(Array.prototype, 'freeElectrons', {
         value: function(atoms) {
+
+            console.log(this)
+
             Typecheck(
                 {name:"symbol", value:this[0], type:"string"},
                 {name:"atom_id", value:this[5], type:"string"},
@@ -83,6 +86,7 @@ const Prototypes = () => {
             const symbol = this[0]
             const atom_id = this[5]
             const atom_electrons = this.electrons()
+
             const electron_haystack = (
                 symbol === "Hg"?
                     this.electronHaystack(atoms, atom_id, this).slice(0,3):
@@ -351,7 +355,11 @@ const Prototypes = () => {
                 {name:"atoms", value:atoms, type:"array"}
             )
 
-            // this is an atom
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("Atoms are  undefined or null")
+            }
+
+            // "this" is an atom
             const atom_electrons = this.slice(Constants().electron_index)
 
             let r =  atoms.reduce (
@@ -362,7 +370,7 @@ const Prototypes = () => {
                         return bonds
                     }
 
-                    if ((_.isEqual(_.cloneDeep(this).sort(), _.cloneDeep(_atom).sort())) || _atom[0]=== filter_by) {
+                    if ((_.isEqual((this).sort(), (_atom).sort()))) {
                         return bonds
                     }
 
@@ -386,39 +394,129 @@ const Prototypes = () => {
             )
 
             // Filter out "single" bonds that are actually double bonds
-            const d_bonds = __indexedDoubleBonds("H")
+            const d_bonds = this.indexedDoubleBonds(atoms)
             if (d_bonds.length>0) {
                 // Get indexes of the double bonds
                 const d_bond_indexes = d_bonds.map((b)=>{
                     return b.atom_index
                 })
-                // Filter single bonds that have indexes in d_bond_indexes
-                //console.log(d_bond_indexes)
-                r = r.filter((sb)=>{
-                    //console.log(sb.atom_index)
-                    //console.log(d_bond_indexes.indexOf(sb.atom_index))
-                    //console.log(d_bond_indexes.indexOf(sb.atom_index)===-1)
-                    // 3,4 are double bond indexes
-                    return d_bond_indexes.indexOf(sb.atom_index)===-1
-                })
-                //process.error()
             }
 
             // Filter out "single" bonds that are actually triple bonds
-            const t_bonds = __indexedTripleBonds("H")
+            const t_bonds = this.indexedTripleBonds(atoms)
             if (t_bonds.length>0) {
                 // Get indexes of the double bonds
                 const t_bond_indexes = t_bonds.map((b)=>{
                     return b.atom_index
                 })
-                // Filter single bonds that have indexes in t_bont_indexes
-                //console.log(t_bond_indexes)
                 r = r.filter((sb)=>{
                     return t_bond_indexes.indexOf(sb.atom_index)===-1
                 })
             }
 
             return r
+        }
+    })
+    Object.defineProperty(Array.prototype, 'indexedDoubleBonds', {
+        value: function(atoms) {
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"},
+            )
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("Atoms are  undefined or null")
+            }
+            // "this" is an atom
+            const atom_electrons = this.slice(Constants().electron_index)
+
+            let r =  (atoms).reduce(
+
+                (bonds, _atom, _atom_index) => {
+
+
+                    if ((_.isEqual((this).sort(), (_atom).sort())) ) {
+                        return bonds
+                    }
+
+                    const shared_electrons = Set().intersection(atom_electrons, _atom.slice(Constants().electron_index))
+
+                    if (shared_electrons.length !==4) {
+                        return bonds
+                    }
+
+                    bonds.push({
+                        'atom': _atom,
+                        'atom_index': _atom_index,
+                        'shared_electrons': shared_electrons
+                    })
+
+                    return bonds
+
+                },
+                []
+            )
+
+
+            // Filter out "double" bonds that are actually triple bonds
+            const t_bonds = this.indexedTripleBonds(atoms)
+            if (t_bonds.length>0) {
+                // Get indexes of the double bonds
+                const t_bond_indexes = t_bonds.map((b)=>{
+                    return b.atom_index
+                })
+                // Filter doublke bonds that have indexes in t_bond_indexes
+                //console.log(t_bond_indexes)
+                r = r.filter((db)=>{
+                    return t_bond_indexes.indexOf(db.atom_index)===-1
+                })
+            }
+
+            return r
+        }
+    })
+    Object.defineProperty(Array.prototype, 'indexedTripleBonds', {
+        value: function(atoms) {
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"},
+            )
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("Atoms are  undefined or null")
+            }
+
+            // "this" is an atom
+            const atom_electrons = this.slice(Constants().electron_index)
+
+
+            const r =  (atoms).reduce(
+
+                (bonds, _atom, _atom_index) => {
+
+
+                    if ((_.isEqual(_.cloneDeep(this).sort(), _.cloneDeep(_atom).sort()))) {
+                        return bonds
+                    }
+
+                    const shared_electrons = Set().intersection(atom_electrons, _atom.slice(Constants().electron_index))
+
+                    if (shared_electrons.length !==6) {
+                        return bonds
+                    }
+
+                    bonds.push({
+                        'atom': _atom,
+                        'atom_index': _atom_index,
+                        'shared_electrons': shared_electrons
+                    })
+
+
+                    return bonds
+
+                },
+                []
+            )
+
+            return r
+
+
         }
     })
 }

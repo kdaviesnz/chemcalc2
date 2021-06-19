@@ -1008,7 +1008,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         const o_atom = atom
 
         const bond_count = o_atom.indexedBonds(atoms_with_hydrogens).length + o_atom.indexedDoubleBonds(atoms_with_hydrogens).length + o_atom.indexedTripleBonds(atoms_with_hydrogens).length
-        const free_electrons = o_atom.freeElectrons()
+        const free_electrons = o_atom.freeElectrons(atoms_with_hydrogens)
         const electrons = atom.slice(Constants().electron_index)
 
         if (atom[4] === "" || atom[4] === 0) {
