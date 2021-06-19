@@ -1007,7 +1007,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     const atoms_electrons_checked = atoms_with_hydrogens.map((atom, index)=>{
         const o_atom = atom
 
-        const bond_count = o_atom.indexedBonds("").length + o_atom.indexedDoubleBonds("").length + o_atom.indexedTripleBonds("").length
+        const bond_count = o_atom.indexedBonds(atoms_with_hydrogens).length + o_atom.indexedDoubleBonds(atoms_with_hydrogens).length + o_atom.indexedTripleBonds(atoms_with_hydrogens).length
         const free_electrons = o_atom.freeElectrons()
         const electrons = atom.slice(Constants().electron_index)
 

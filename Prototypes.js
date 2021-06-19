@@ -1,3 +1,4 @@
+
 const Constants = require("./Constants")
 const Typecheck = require("./Typecheck")
 const _ = require('lodash');
@@ -350,6 +351,7 @@ const Prototypes = () => {
                 {name:"atoms", value:atoms, type:"array"}
             )
 
+            // this is an atom
             const atom_electrons = this.slice(Constants().electron_index)
 
             let r =  atoms.reduce (
@@ -360,7 +362,7 @@ const Prototypes = () => {
                         return bonds
                     }
 
-                    if ((_.isEqual(_.cloneDeep(atom).sort(), _.cloneDeep(_atom).sort())) || _atom[0]=== filter_by) {
+                    if ((_.isEqual(_.cloneDeep(this).sort(), _.cloneDeep(_atom).sort())) || _atom[0]=== filter_by) {
                         return bonds
                     }
 
