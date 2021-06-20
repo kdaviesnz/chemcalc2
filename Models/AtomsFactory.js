@@ -45,25 +45,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     // parse a SMILES string, returns an array of SMILES tokens [{type: '...', value: '...'}, ...]
     const smiles_tokens = smiles.parse(canonicalSMILES)
 
-    //"C[N+](C)(C)C"
-   //console.log(smiles_tokens)
-    // process.error()
-    /*
-[
-  { type: 'AliphaticOrganic', value: 'C' },
-  { type: 'BracketAtom', value: 'begin' },
-  { type: 'ElementSymbol', value: 'N' },
-  { type: 'Charge', value: 1 },
-  { type: 'BracketAtom', value: 'end' },
-  { type: 'Branch', value: 'begin' },
-  { type: 'AliphaticOrganic', value: 'C' },
-  { type: 'Branch', value: 'end' },
-  { type: 'Branch', value: 'begin' },
-  { type: 'AliphaticOrganic', value: 'C' },
-  { type: 'Branch', value: 'end' },
-  { type: 'AliphaticOrganic', value: 'C' }
-]
-     */
+
     const atoms_with_tokens = _.cloneDeep(smiles_tokens).map(
         (row, i, arr) => {
             if (row.type === "AliphaticOrganic" || row.type === "ElementSymbol") {
@@ -72,78 +54,6 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
             return row
         }
     )
-
-    // "C[N+](C)(C)C"
-   //console.log(atoms_with_tokens)
-   //process.error()
-  /*
-[
-  [
-    'C',
-    6,
-    4,
-    4,
-    0,
-    'C_1_1agf7ywkphi0bxx',
-    'C_1_1agf7ywkphi0bxy',
-    'C_1_1agf7ywkphi0bxz',
-    'C_1_1agf7ywkphi0by0'
-  ],
-  { type: 'BracketAtom', value: 'begin' },
-  [
-    'N',
-    7,
-    5,
-    3,
-    0,
-    'N_3_1agf7ywkphi0by1',
-    'N_3_1agf7ywkphi0by2',
-    'N_3_1agf7ywkphi0by3',
-    'N_3_1agf7ywkphi0by4',
-    'N_3_1agf7ywkphi0by5'
-  ],
-  { type: 'Charge', value: 1 },
-  { type: 'BracketAtom', value: 'end' },
-  { type: 'Branch', value: 'begin' },
-  [
-    'C',
-    6,
-    4,
-    4,
-    0,
-    'C_7_1agf7ywkphi0by6',
-    'C_7_1agf7ywkphi0by7',
-    'C_7_1agf7ywkphi0by8',
-    'C_7_1agf7ywkphi0by9'
-  ],
-  { type: 'Branch', value: 'end' },
-  { type: 'Branch', value: 'begin' },
-  [
-    'C',
-    6,
-    4,
-    4,
-    0,
-    'C_10_1agf7ywkphi0bya',
-    'C_10_1agf7ywkphi0byb',
-    'C_10_1agf7ywkphi0byc',
-    'C_10_1agf7ywkphi0byd'
-  ],
-  { type: 'Branch', value: 'end' },
-  [
-    'C',
-    6,
-    4,
-    4,
-    0,
-    'C_12_1agf7ywkphi0bye',
-    'C_12_1agf7ywkphi0byf',
-    'C_12_1agf7ywkphi0byg',
-    'C_12_1agf7ywkphi0byh'
-  ]
-]
-
-   */
 
     // Filter out brackets
     const atoms_with_tokens_no_brackets = _.cloneDeep(atoms_with_tokens).filter(
@@ -155,75 +65,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }
     )
 
-    // "C[N+](C)(C)C")
-   // console.log(atoms_with_tokens_no_brackets)
-   //process.error()
-    /*
-[
-  [
-    'C',
-    6,
-    4,
-    4,
-    0,
-    'C_1_1agf80gkphi2s05',
-    'C_1_1agf80gkphi2s06',
-    'C_1_1agf80gkphi2s07',
-    'C_1_1agf80gkphi2s08'
-  ],
-  [
-    'N',
-    7,
-    5,
-    3,
-    0,
-    'N_3_1agf80gkphi2s09',
-    'N_3_1agf80gkphi2s0a',
-    'N_3_1agf80gkphi2s0b',
-    'N_3_1agf80gkphi2s0c',
-    'N_3_1agf80gkphi2s0d'
-  ],
-  { type: 'Charge', value: 1 },
-  { type: 'Branch', value: 'begin' },
-  [
-    'C',
-    6,
-    4,
-    4,
-    0,
-    'C_7_1agf80gkphi2s0e',
-    'C_7_1agf80gkphi2s0f',
-    'C_7_1agf80gkphi2s0g',
-    'C_7_1agf80gkphi2s0h'
-  ],
-  { type: 'Branch', value: 'end' },
-  { type: 'Branch', value: 'begin' },
-  [
-    'C',
-    6,
-    4,
-    4,
-    0,
-    'C_10_1agf80gkphi2s0i',
-    'C_10_1agf80gkphi2s0j',
-    'C_10_1agf80gkphi2s0k',
-    'C_10_1agf80gkphi2s0l'
-  ],
-  { type: 'Branch', value: 'end' },
-  [
-    'C',
-    6,
-    4,
-    4,
-    0,
-    'C_12_1agf80gkphi2s0m',
-    'C_12_1agf80gkphi2s0n',
-    'C_12_1agf80gkphi2s0o',
-    'C_12_1agf80gkphi2s0p'
-  ]
-]
 
-     */
 
     // Add the bonds and branches
     let branch_number = 0
@@ -238,22 +80,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     const atoms_with_bonds = _.cloneDeep(atoms_with_tokens_no_brackets).map(
         (row, index, processed_atoms) => {
             // Example rows:
-            /*
-            [
-  'C',
-  6,
-  4,
-  4,
-  0,
-  'C_1_1agf8bkkphi7u4f',
-  'C_1_1agf8bkkphi7u4g',
-  'C_1_1agf8bkkphi7u4h',
-  'C_1_1agf8bkkphi7u4i'
-]
 
-             { type: 'Branch', value: 'begin' }
-
-             */
             Typecheck(
                 {name:"index", value:index, type:"number"},
                 {name:"tracker", value:tracker, type:"array"},

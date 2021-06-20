@@ -148,9 +148,6 @@ const Prototypes = () => {
                 {name:"electron", value:electron, type:"string"},
                 {name:"symbol", value:symbol, type:"string"}
             )
-            if (electron === undefined || electron === null) {
-                throw new Error("Electron is undefined or null")
-            }
             if (symbol === null) {
                 throw new Error("Symbol is null")
             }
@@ -547,6 +544,38 @@ const Prototypes = () => {
                 throw new Error("Atoms are  undefined or null")
             }
             return this.indexedBonds(atoms).filter((bond)=>{
+                return bond.atom[0] !== "H"
+            })
+        }
+    })
+    Object.defineProperty(Array.prototype, 'doubleBondsNoHydrogens', {
+        value: function(atoms) {
+
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"},
+            )
+
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("Atoms are  undefined or null")
+            }
+
+            return this.indexedDoubleBonds(atoms).filter((bond)=>{
+                return bond.atom[0] !== "H"
+            })
+        }
+    })
+    Object.defineProperty(Array.prototype, 'tripleBondsNoHydrogens', {
+        value: function(atoms) {
+
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"},
+            )
+
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("Atoms are  undefined or null")
+            }
+
+            return this.indexedTripleBonds(atoms).filter((bond)=>{
                 return bond.atom[0] !== "H"
             })
         }

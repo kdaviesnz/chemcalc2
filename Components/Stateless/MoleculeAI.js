@@ -773,7 +773,8 @@ const MoleculeAI = (container_molecule) => {
             }
 
             const atom = atoms[current_atom_index]
-            const atom_object = CAtom(atom, current_atom_index, container_molecule)
+            //const atom_object = CAtom(atom, current_atom_index, container_molecule)
+            const atom_object = atom
 
             if (_.indexOf(atom_ids_added, atom_object.atomId()) ===-1) { // Don't process atom twice
 
@@ -781,9 +782,9 @@ const MoleculeAI = (container_molecule) => {
                     groups[group_index] = []
                 }
 
-                const single_bonds =  atom_object.singleBondsNoHydrogens()
-                const double_bonds =  atom_object.doubleBondsNoHydrogens()
-                const triple_bonds =  atom_object.tripleBondsNoHydrogens()
+                const single_bonds =  atom_object.singleBondsNoHydrogens(container_molecule[0][1])
+                const double_bonds =  atom_object.doubleBondsNoHydrogens(container_molecule[0][1])
+                const triple_bonds =  atom_object.tripleBondsNoHydrogens(container_molecule[0][1])
 
                 if (single_bonds.length + double_bonds.length + triple_bonds.length === 0) {
                       groups[group_index].push(atom)
