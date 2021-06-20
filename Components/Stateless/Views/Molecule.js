@@ -407,26 +407,26 @@ const VMolecule = (mmolecule) => {
 
             return _.cloneDeep(mmolecule[0][1]).map(
                 (atom, index) => {
-                    const c = CAtom(atom, index, _.cloneDeep(mmolecule))
-
-                    const h = c.indexedBonds("").filter((bond)=>{
+                    //const c = CAtom(atom, index, _.cloneDeep(mmolecule))
+                    const c = atom
+                    const h = c.indexedBonds(_.cloneDeep(mmolecule[0][1])).filter((bond)=>{
                         return bond.atom[0] === "H"
                     })
-                    const bonds = c.indexedBonds("").filter((bond)=>{
+                    const bonds = c.indexedBonds(_.cloneDeep(mmolecule[0][1])).filter((bond)=>{
                         return bond.atom[0] !== 'H'
                     }).map(
                         (bond)=>{
                             return bond.atom_index + "  " + bond.atom[0]
                         }
                     )
-                    const double_bonds = c.indexedDoubleBonds("").filter((bond)=>{
+                    const double_bonds = c.indexedDoubleBonds(_.cloneDeep(mmolecule[0][1])).filter((bond)=>{
                         return bond.atom[0] !== 'H'
                     }).map(
                         (bond)=>{
                             return bond.atom_index + "  " + bond.atom[0]
                         }
                     )
-                    const triple_bonds = c.indexedTripleBonds("").filter((bond)=>{
+                    const triple_bonds = c.indexedTripleBonds(_.cloneDeep(mmolecule[0][1])).filter((bond)=>{
                         return bond.atom[0] !== 'H'
                     }).map(
                         (bond)=>{
@@ -435,7 +435,7 @@ const VMolecule = (mmolecule) => {
                     )
 
                     const electrons = atom.slice(Constants().electron_index)
-                    const free_electrons = c.freeElectrons()
+                    const free_electrons = c.freeElectrons(_.cloneDeep(mmolecule[0][1]))
 
                     return [atom[0], index, "H " + h.length, "Charge: " + atom[4], bonds, double_bonds, triple_bonds, electrons.length, free_electrons.length, atom[5]]
                 }

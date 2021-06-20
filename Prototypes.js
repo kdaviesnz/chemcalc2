@@ -71,8 +71,6 @@ const Prototypes = () => {
     Object.defineProperty(Array.prototype, 'freeElectrons', {
         value: function(atoms) {
 
-            console.log(this)
-
             Typecheck(
                 {name:"symbol", value:this[0], type:"string"},
                 {name:"atom_id", value:this[5], type:"string"},
@@ -362,7 +360,7 @@ const Prototypes = () => {
             // "this" is an atom
             const atom_electrons = this.slice(Constants().electron_index)
 
-            let r =  atoms.reduce (
+            let r =  _.cloneDeep(atoms).reduce (
 
                 (bonds, _atom, _atom_index) => {
 
@@ -370,7 +368,7 @@ const Prototypes = () => {
                         return bonds
                     }
 
-                    if ((_.isEqual((this).sort(), (_atom).sort()))) {
+                    if ((_.isEqual(_.cloneDeep(this).sort(), _.cloneDeep(_atom).sort()))) {
                         return bonds
                     }
 
@@ -428,12 +426,12 @@ const Prototypes = () => {
             // "this" is an atom
             const atom_electrons = this.slice(Constants().electron_index)
 
-            let r =  (atoms).reduce(
+            let r =  _.cloneDeep(atoms).reduce(
 
                 (bonds, _atom, _atom_index) => {
 
 
-                    if ((_.isEqual((this).sort(), (_atom).sort())) ) {
+                    if ((_.isEqual(_.cloneDeep(this).sort(), _.cloneDeep(_atom).sort()))) {
                         return bonds
                     }
 
@@ -486,7 +484,7 @@ const Prototypes = () => {
             const atom_electrons = this.slice(Constants().electron_index)
 
 
-            const r =  (atoms).reduce(
+            const r =  _.cloneDeep(atoms).reduce(
 
                 (bonds, _atom, _atom_index) => {
 
@@ -517,6 +515,26 @@ const Prototypes = () => {
             return r
 
 
+        }
+    })
+    Object.defineProperty(Array.prototype, 'hydrogens', {
+        value: function(atoms) {
+
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"},
+            )
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("Atoms are  undefined or null")
+            }
+
+            return atoms.filter(
+                (__atom) => {
+                    if (__atom[0] === "H") {
+                        return Set().intersection(__atom.slice(Constants().electron_index), atom.slice(Constants().electron_index)).length > 0
+                    }
+                    return false
+                }
+            )
         }
     })
 }

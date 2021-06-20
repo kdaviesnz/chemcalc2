@@ -674,6 +674,8 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
 
      */
 
+
+
     let ring_bond_atom_index = null
 
     const ringbond_atom_indexes = atoms.reduce((carry, row, ring_bond_index) =>{
@@ -699,11 +701,14 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         const child_atom = m[0][1][indexes[1]]
         const parent_free_electrons = parent_atom.freeElectrons(m[0][1])
         const child_free_electrons = child_atom.freeElectrons(m[0][1])
-        atoms[indexes[0]].push(child_free_electrons[0])
-        atoms[indexes[1]].push(parent_free_electrons[0])
+        if (child_free_electrons[0] !== undefined) {
+            atoms[indexes[0]].addElectron(child_free_electrons[0])
+        }
+        if (parent_free_electrons[0] !== undefined) {
+            atoms[indexes[1]].addElectron(parent_free_electrons[0])
+        }
         return indexes
     })
-
 
     const atoms_with_ring_bonds = _.cloneDeep(atoms).filter((atom)=>{
        return atom.type !== "Ringbond"
@@ -781,6 +786,8 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
   ]
 ]
      */
+
+
 
     const atoms_with_hydrogen_counts = _.cloneDeep(atoms_with_ring_bonds)
     // "C[N+](C)(C)C"
@@ -861,6 +868,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
    // const molecule_with_hydrogen_counts = [[12345,atoms_with_hydrogen_counts],1]
 
 
+
     const atoms_with_charges = _.cloneDeep(atoms_with_hydrogen_counts).reduce(
         (carry, current, index, atoms) => {
             if (current['type'] !== undefined && current['type'] === "HydrogenCount") {
@@ -875,34 +883,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }, []
     )
 
-    // "C[N+](C)(C)C"
-   //console.log(atoms_with_charges)
-   //process.error()
-    /*
-[
-  [ 'H', 1, 1, 1, '', 'H_1_1agfce9kphnlkdw', 'N_2_1agfce9kphnlkdr' ],
-  [ 'H', 1, 1, 1, '', 'H_2_1agfce9kphnlkdx', 'N_2_1agfce9kphnlkds' ],
-  [ 'H', 1, 1, 1, '', 'H_3_1agfce9kphnlkdy', 'N_2_1agfce9kphnlkdt' ],
-  [ 'H', 1, 1, 1, '', 'H_4_1agfce9kphnlkdz', 'N_2_1agfce9kphnlkdu' ],
-  [
-    'N',
-    7,
-    5,
-    3,
-    0,
-    'N_2_1agfce9kphnlkdr',
-    'N_2_1agfce9kphnlkds',
-    'N_2_1agfce9kphnlkdt',
-    'N_2_1agfce9kphnlkdu',
-    'N_2_1agfce9kphnlkdv',
-    'H_1_1agfce9kphnlkdw',
-    'H_2_1agfce9kphnlkdx',
-    'H_3_1agfce9kphnlkdy',
-    'H_4_1agfce9kphnlkdz'
-  ]
-]
 
-     */
 
 
     // Add hydrogens
@@ -977,37 +958,15 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     )
 
 
-    // "[NH1+]"
-//   console.log(atoms_with_hydrogens)
-//  process.error()
-  /*
-  [
-  [ 'H', 1, 1, 1, '', 'H_1_1agfeaikphr2sey', 'N_2_1agfeaikphr2set' ],
-  [ 'H', 1, 1, 1, '', 'H_2_1agfeaikphr2sez', 'N_2_1agfeaikphr2seu' ],
-  [ 'H', 1, 1, 1, '', 'H_3_1agfeaikphr2sf0', 'N_2_1agfeaikphr2sev' ],
-  [ 'H', 1, 1, 1, '', 'H_4_1agfeaikphr2sf1', 'N_2_1agfeaikphr2sew' ],
-  [
-    'N',
-    7,
-    5,
-    3,
-    0,
-    'N_2_1agfeaikphr2set',
-    'N_2_1agfeaikphr2seu',
-    'N_2_1agfeaikphr2sev',
-    'N_2_1agfeaikphr2sew',
-    'N_2_1agfeaikphr2sex',
-    'H_1_1agfeaikphr2sey',
-    'H_2_1agfeaikphr2sez',
-    'H_3_1agfeaikphr2sf0'
-  ]
-]
-     */
+
+
 
     const atoms_electrons_checked = atoms_with_hydrogens.map((atom, index)=>{
         const o_atom = atom
 
-        const bond_count = o_atom.indexedBonds(atoms_with_hydrogens).length + o_atom.indexedDoubleBonds(atoms_with_hydrogens).length + o_atom.indexedTripleBonds(atoms_with_hydrogens).length
+        const bond_count = o_atom.indexedBonds(_.cloneDeep(atoms_with_hydrogens)).length
+            + o_atom.indexedDoubleBonds(_.cloneDeep(atoms_with_hydrogens)).length
+            + o_atom.indexedTripleBonds(_.cloneDeep(atoms_with_hydrogens)).length
         const free_electrons = o_atom.freeElectrons(atoms_with_hydrogens)
         const electrons = atom.slice(Constants().electron_index)
 
@@ -1062,9 +1021,9 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                         }
                     }
                     if (bond_count === 4) {
-                        if (o_atom.freeElectrons().length !== 0) {
+                        if (o_atom.freeElectrons(_.cloneDeep(atoms_with_hydrogens)).length !== 0) {
                             // // console.log(o_atom.indexedBonds(""))
-                            o_atom.indexedBonds("").map((bond)=>{
+                            o_atom.indexedBonds(_.cloneDeep(atoms_with_hydrogens)).map((bond)=>{
                                 // // console.log("Bond type:"+bond.bond_type)
                                 // // console.log(bond.shared_electrons)
                                 return bond

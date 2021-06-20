@@ -268,9 +268,28 @@ return result === false? false:[
             this.container_reagent.should.be.an.Array()
         }
 
-        const nitrogen = CAtom(this.container_substrate[0][1][nitrogen_index], nitrogen_index, this.container_substrate)
-        const carbon = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, this.container_substrate)
-        const result = this.stateMoleculeAI.formImineFromKetoneReverse(nitrogen.atomId(), carbon.atomId(), DEBUG)
+        if (nitrogen_index === null || nitrogen_index === undefined) {
+            throw new Error("Nitrogen index is null or undefined.")
+        }
+
+        if (carbon_index === null || carbon_index === undefined) {
+            throw new Error("Carbon index is null or undefined.")
+        }
+
+        if (this.container_substrate[0][1][nitrogen_index] === undefined) {
+            console.log(nitrogen_index)
+           // console.log(VMolecule(this.container_substrate).compressed())
+            throw new Error("Unable to find nitrogen atom")
+        }
+
+        if (this.container_substrate[0][1][carbon_index] === undefined) {
+            throw new Error("Unable to find carbon_index atom")
+        }
+
+        const nitrogen = this.container_substrate[0][1][nitrogen_index]
+        const carbon = this.container_substrate[0][1][carbon_index]
+
+        const result = this.stateMoleculeAI.formImineFromKetoneReverse(nitrogen[5], carbon[5], DEBUG)
 
         result.should.be.an.Array()
 
@@ -854,7 +873,7 @@ return result === false? false:[
         this.container_substrate[0][1][0].should.be.an.Array()
         this.container_substrate[0][1][0][0].should.be.an.String()
 
-        this.MoleculeAI = require("../Stateless/MoleculeAI")(_.cloneDeep(this.container_substrate))
+        this.MoleculeAI = require("../Stateless/MoleculeAI")((this.container_substrate))
 
     }
 
@@ -898,7 +917,7 @@ return result === false? false:[
     }
 
     setChargesOnSubstrate(DEBUG) {
-        const chargesAI = new ChargesAI(_.cloneDeep(this))
+        const chargesAI = new ChargesAI((this))
         return chargesAI.setChargesOnSubstrate(DEBUG)
     }
 
