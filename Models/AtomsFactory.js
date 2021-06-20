@@ -55,6 +55,8 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }
     )
 
+
+
     // Filter out brackets
     const atoms_with_tokens_no_brackets = _.cloneDeep(atoms_with_tokens).filter(
         (row) => {
@@ -344,80 +346,6 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     )
 
 
-    // "C[N+](C)(C)C"
-   // console.log(atoms_with_bonds)
-    // process.error()
-    /*
-[
-  [
-    'C',
-    6,
-    4,
-    4,
-    0,
-    'C_1_1agf82ckphi4jpb',
-    'C_1_1agf82ckphi4jpc',
-    'C_1_1agf82ckphi4jpd',
-    'C_1_1agf82ckphi4jpe',
-    'N_3_1agf82ckphi4jpj'
-  ],
-  [
-    'N',
-    7,
-    5,
-    3,
-    0,
-    'N_3_1agf82ckphi4jpf',
-    'N_3_1agf82ckphi4jpg',
-    'N_3_1agf82ckphi4jph',
-    'N_3_1agf82ckphi4jpi',
-    'N_3_1agf82ckphi4jpj',
-    'C_1_1agf82ckphi4jpe',
-    'C_7_1agf82ckphi4jpn',
-    'C_10_1agf82ckphi4jpr',
-    'C_12_1agf82ckphi4jpv'
-  ],
-  { type: 'Charge', value: 1 },
-  [
-    'C',
-    6,
-    4,
-    4,
-    0,
-    'C_7_1agf82ckphi4jpk',
-    'C_7_1agf82ckphi4jpl',
-    'C_7_1agf82ckphi4jpm',
-    'C_7_1agf82ckphi4jpn',
-    'N_3_1agf82ckphi4jpi'
-  ],
-  [
-    'C',
-    6,
-    4,
-    4,
-    0,
-    'C_10_1agf82ckphi4jpo',
-    'C_10_1agf82ckphi4jpp',
-    'C_10_1agf82ckphi4jpq',
-    'C_10_1agf82ckphi4jpr',
-    'N_3_1agf82ckphi4jph'
-  ],
-  [
-    'C',
-    6,
-    4,
-    4,
-    0,
-    'C_12_1agf82ckphi4jps',
-    'C_12_1agf82ckphi4jpt',
-    'C_12_1agf82ckphi4jpu',
-    'C_12_1agf82ckphi4jpv',
-    'N_3_1agf82ckphi4jpg'
-  ]
-]
-
-
-     */
 
     // Remove bonds using filter
 // @todo
@@ -427,79 +355,6 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }
     )
 
-    // "C[N+](C)(C)C"
-    //console.log(atoms)
-    //process.error()
-    /*
-[
-  [
-    'C',
-    6,
-    4,
-    4,
-    0,
-    'C_1_1agfbyakphn61bi',
-    'C_1_1agfbyakphn61bj',
-    'C_1_1agfbyakphn61bk',
-    'C_1_1agfbyakphn61bl',
-    'N_3_1agfbyakphn61bq'
-  ],
-  [
-    'N',
-    7,
-    5,
-    3,
-    0,
-    'N_3_1agfbyakphn61bm',
-    'N_3_1agfbyakphn61bn',
-    'N_3_1agfbyakphn61bo',
-    'N_3_1agfbyakphn61bp',
-    'N_3_1agfbyakphn61bq',
-    'C_1_1agfbyakphn61bl',
-    'C_7_1agfbyakphn61bu',
-    'C_10_1agfbyakphn61by'
-  ],
-  { type: 'Charge', value: 1 },
-  [
-    'C',
-    6,
-    4,
-    4,
-    0,
-    'C_7_1agfbyakphn61br',
-    'C_7_1agfbyakphn61bs',
-    'C_7_1agfbyakphn61bt',
-    'C_7_1agfbyakphn61bu',
-    'N_3_1agfbyakphn61bp'
-  ],
-  [
-    'C',
-    6,
-    4,
-    4,
-    0,
-    'C_10_1agfbyakphn61bv',
-    'C_10_1agfbyakphn61bw',
-    'C_10_1agfbyakphn61bx',
-    'C_10_1agfbyakphn61by',
-    'N_3_1agfbyakphn61bo'
-  ],
-  [
-    'C',
-    6,
-    4,
-    4,
-    0,
-    'C_12_1agfbyakphn61bz',
-    'C_12_1agfbyakphn61c0',
-    'C_12_1agfbyakphn61c1',
-    'C_12_1agfbyakphn61c2',
-    'N_3_1agfbyakphn61bn',
-    'N_3_1agfbyakphn61bm'
-  ]
-]
-
-     */
 
 
 
@@ -541,160 +396,11 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
        return atom.type !== "Ringbond"
     })
 
-    // "C[N+](C)(C)C"
-     //console.log(atoms_with_ring_bonds)
-    //process.error()
-    /*
-[
-  [
-    'C',
-    6,
-    4,
-    4,
-    0,
-    'C_1_1agfc2ikphn93c1',
-    'C_1_1agfc2ikphn93c2',
-    'C_1_1agfc2ikphn93c3',
-    'C_1_1agfc2ikphn93c4',
-    'N_3_1agfc2ikphn93c9'
-  ],
-  [
-    'N',
-    7,
-    5,
-    3,
-    0,
-    'N_3_1agfc2ikphn93c5',
-    'N_3_1agfc2ikphn93c6',
-    'N_3_1agfc2ikphn93c7',
-    'N_3_1agfc2ikphn93c8',
-    'N_3_1agfc2ikphn93c9',
-    'C_1_1agfc2ikphn93c4',
-    'C_7_1agfc2ikphn93cd',
-    'C_10_1agfc2ikphn93ch'
-  ],
-  { type: 'Charge', value: 1 },
-  [
-    'C',
-    6,
-    4,
-    4,
-    0,
-    'C_7_1agfc2ikphn93ca',
-    'C_7_1agfc2ikphn93cb',
-    'C_7_1agfc2ikphn93cc',
-    'C_7_1agfc2ikphn93cd',
-    'N_3_1agfc2ikphn93c8'
-  ],
-  [
-    'C',
-    6,
-    4,
-    4,
-    0,
-    'C_10_1agfc2ikphn93ce',
-    'C_10_1agfc2ikphn93cf',
-    'C_10_1agfc2ikphn93cg',
-    'C_10_1agfc2ikphn93ch',
-    'N_3_1agfc2ikphn93c7'
-  ],
-  [
-    'C',
-    6,
-    4,
-    4,
-    0,
-    'C_12_1agfc2ikphn93ci',
-    'C_12_1agfc2ikphn93cj',
-    'C_12_1agfc2ikphn93ck',
-    'C_12_1agfc2ikphn93cl',
-    'N_3_1agfc2ikphn93c6',
-    'N_3_1agfc2ikphn93c5'
-  ]
-]
-     */
+
 
 
 
     const atoms_with_hydrogen_counts = _.cloneDeep(atoms_with_ring_bonds)
-    // "C[N+](C)(C)C"
-    // console.log(atoms_with_hydrogen_counts)
-    // process.error()
-    /*
-    [
-  [
-    'C',
-    6,
-    4,
-    4,
-    0,
-    'C_1_1agfc4skphnbb10',
-    'C_1_1agfc4skphnbb11',
-    'C_1_1agfc4skphnbb12',
-    'C_1_1agfc4skphnbb13',
-    'N_3_1agfc4skphnbb18'
-  ],
-  [
-    'N',
-    7,
-    5,
-    3,
-    0,
-    'N_3_1agfc4skphnbb14',
-    'N_3_1agfc4skphnbb15',
-    'N_3_1agfc4skphnbb16',
-    'N_3_1agfc4skphnbb17',
-    'N_3_1agfc4skphnbb18',
-    'C_1_1agfc4skphnbb13',
-    'C_7_1agfc4skphnbb1c',
-    'C_10_1agfc4skphnbb1g'
-  ],
-  { type: 'Charge', value: 1 },
-  [
-    'C',
-    6,
-    4,
-    4,
-    0,
-    'C_7_1agfc4skphnbb19',
-    'C_7_1agfc4skphnbb1a',
-    'C_7_1agfc4skphnbb1b',
-    'C_7_1agfc4skphnbb1c',
-    'N_3_1agfc4skphnbb17'
-  ],
-  [
-    'C',
-    6,
-    4,
-    4,
-    0,
-    'C_10_1agfc4skphnbb1d',
-    'C_10_1agfc4skphnbb1e',
-    'C_10_1agfc4skphnbb1f',
-    'C_10_1agfc4skphnbb1g',
-    'N_3_1agfc4skphnbb16'
-  ],
-  [
-    'C',
-    6,
-    4,
-    4,
-    0,
-    'C_12_1agfc4skphnbb1h',
-    'C_12_1agfc4skphnbb1i',
-    'C_12_1agfc4skphnbb1j',
-    'C_12_1agfc4skphnbb1k',
-    'N_3_1agfc4skphnbb15',
-    'N_3_1agfc4skphnbb14'
-  ]
-]
-
-     */
-
-
-   // const molecule_with_hydrogen_counts = [[12345,atoms_with_hydrogen_counts],1]
-
-
 
     const atoms_with_charges = _.cloneDeep(atoms_with_hydrogen_counts).reduce(
         (carry, current, index, atoms) => {
@@ -718,6 +424,24 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     const atoms_with_hydrogens = _.cloneDeep(atoms_with_charges).reduce(
         (carry, current, index, arr) => {
 
+            /*
+            [
+  'C',
+  6,
+  4,
+  4,
+  0,
+  'zwv',
+  'C_1_3bdk46sbkq4rjzwx',
+  'C_1_3bdk46sbkq4rjzwy',
+  'C_1_3bdk46sbkq4rjzwz',
+  'C_1_3bdk46sbkq4rjzx0',
+  'C_2_3bdk46sbkq4rjzx6'
+]
+
+             */
+            process.error()
+
             if (typeof current.length === "number" && current[0]!=='H') { // we have an atom
 
                 const catom = current
@@ -731,7 +455,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                             if (undefined !== free_electrons[e_index]) { // free electrons from the current atom (not hydrogen)
                                 const current_electrons = electrons(current)
                                 const hydrogen = AtomFactory('H', "", e_index + 1)
-                                hydrogen.push(free_electrons[e_index])
+                                hydrogen.addElectron(free_electrons[e_index])
                                 if (current_electrons.length < Constants().max_valence_electrons[current[0]]) {
                                     current.push(hydrogen[hydrogen.length - 2])
                                 }
@@ -783,7 +507,6 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         },
         []
     )
-
 
 
 
