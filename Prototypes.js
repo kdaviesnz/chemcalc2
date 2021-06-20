@@ -537,6 +537,20 @@ const Prototypes = () => {
             )
         }
     })
+    Object.defineProperty(Array.prototype, 'singleBondsNoHydrogens', {
+        value: function(atoms) {
+
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"},
+            )
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("Atoms are  undefined or null")
+            }
+            return this.indexedBonds(atoms).filter((bond)=>{
+                return bond.atom[0] !== "H"
+            })
+        }
+    })
 }
 
 module.exports = Prototypes

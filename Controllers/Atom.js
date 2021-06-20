@@ -1183,7 +1183,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         numberOfBondsNoHydrogens: __numberOfBondsNoHydrogens,
         neutralAtomMaxNumberOfBonds: __neutralAtomMaxNumberOfBonds,
         atomId: __atomId,
-        singleBondsNoHydrogens: __singleBondsNoHydrogens,
+        singleBondsNoHydrogensDoNotUse: __singleBondsNoHydrogens,
         doubleBondsNoHydrogens: __doubleBondsNoHydrogens,
         tripleBondsNoHydrogens: __tripleBondsNoHydrogens,
         checkNumberOfElectrons: __checkNumberOfElectrons,
