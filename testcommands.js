@@ -28,7 +28,10 @@ console.log(VMolecule([Tetramethylammonium,1]).compressed())
 process.error()
  */
 
-// 2 hydrogens on N, 3 hydrogens on C, all neutral charges
+// N has 1 hydrogen, C has 2.
+const test2 = MoleculeFactory("C=N")
+console.log(VMolecule(test2,1).compressed())
+process.error()
 /*
 const m = MoleculeFactory("CN")
 const test2 = MoleculeFactory("[O+]")

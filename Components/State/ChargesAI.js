@@ -102,11 +102,12 @@ class ChargesAI {
         }
 
         if (b > 0 && container_molecule[0][1][index][4] !=="-") {
-            throw new Error("Atom should have a positive charge")
+            throw new Error("Atom should have a negative charge")
         }
 
         if (b < 0 && container_molecule[0][1][index][4] !=="+") {
-            throw new Error("Atom should have a negative charge")
+            console.log(container_molecule[0][1][index])
+            throw new Error("Atom should have a positive charge")
         }
 
         return false

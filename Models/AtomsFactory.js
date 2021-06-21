@@ -962,11 +962,11 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
    const molecule4 = [[12345,atoms_with_redundant_hydrogens_removed],1]
    //// console.log(VMolecule(molecule4).compressed())
 
-  //  const moleculeAI = require("../Components/Stateless/MoleculeAI")(molecule4)
+  //const moleculeAI = require("../Components/Stateless/MoleculeAI")(molecule4)
    // moleculeAI.validateMolecule()
 
-    // console.log(atoms_with_redundant_hydrogens_removed)
-    // process.error()
+     console.log(VMolecule(molecule4).compressed())
+      process.error()
 
     return atoms_with_redundant_hydrogens_removed
 

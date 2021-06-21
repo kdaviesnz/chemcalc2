@@ -346,6 +346,7 @@ const Prototypes = () => {
     Object.defineProperty(Array.prototype, 'indexedBonds', {
         value: function(atoms) {
 
+            //const atoms_no_hy
             Typecheck(
                 {name:"atoms", value:atoms, type:"array"}
             )
@@ -354,6 +355,7 @@ const Prototypes = () => {
                 throw new Error("Atoms are  undefined or null")
             }
 
+
             // "this" is an atom
             const atom_electrons = this.slice(Constants().electron_index)
 
@@ -361,6 +363,11 @@ const Prototypes = () => {
 
                 (bonds, _atom, _atom_index) => {
 
+                    /*
+                    if (_atom[0] === "H") {
+                        return bonds
+                    }
+                     */
                     if (undefined === _atom.sort) {
                         return bonds
                     }
@@ -376,6 +383,7 @@ const Prototypes = () => {
                     }
 
                     bonds.push({
+                        'parent': this[0],
                         'atom': _atom,
                         'atom_index': _atom_index,
                         'shared_electrons': shared_electrons,
@@ -394,6 +402,10 @@ const Prototypes = () => {
                 // Get indexes of the double bonds
                 const d_bond_indexes = d_bonds.map((b)=>{
                     return b.atom_index
+                })
+                r = r.filter((sb)=>{
+                    // 3,4 are double bond indexes
+                    return d_bond_indexes.indexOf(sb.atom_index)===-1
                 })
             }
 
@@ -449,6 +461,7 @@ const Prototypes = () => {
                 },
                 []
             )
+
 
 
             // Filter out "double" bonds that are actually triple bonds
