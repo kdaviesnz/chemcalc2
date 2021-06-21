@@ -45,6 +45,18 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     // parse a SMILES string, returns an array of SMILES tokens [{type: '...', value: '...'}, ...]
     const smiles_tokens = smiles.parse(canonicalSMILES)
 
+    /*
+    [O-]
+[
+  { type: 'BracketAtom', value: 'begin' },
+  { type: 'ElementSymbol', value: 'O' },
+  { type: 'Charge', value: -1 },
+  { type: 'BracketAtom', value: 'end' }
+]
+     */
+//    console.log(smiles_tokens)
+//    process.error()
+
 
     const atoms_with_tokens = _.cloneDeep(smiles_tokens).map(
         (row, i, arr) => {
@@ -54,7 +66,30 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
             return row
         }
     )
+/*
+[
+  { type: 'BracketAtom', value: 'begin' },
+  [
+    'O',
+    8,
+    6,
+    2,
+    0,
+    'bva',
+    'O_2_1agf568kq5qhbvc',
+    'O_2_1agf568kq5qhbvd',
+    'O_2_1agf568kq5qhbve',
+    'O_2_1agf568kq5qhbvf',
+    'O_2_1agf568kq5qhbvg',
+    'O_2_1agf568kq5qhbvh'
+  ],
+  { type: 'Charge', value: -1 },
+  { type: 'BracketAtom', value: 'end' }
+]
+ */
 
+//    console.log(atoms_with_tokens)
+ //   process.error()
 
 
     // Filter out brackets
@@ -66,6 +101,28 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
             return true
         }
     )
+
+    /*
+    [
+  [
+    'O',
+    8,
+    6,
+    2,
+    0,
+    '4sc',
+    'O_2_1agf5hekq5qm4se',
+    'O_2_1agf5hekq5qm4sf',
+    'O_2_1agf5hekq5qm4sg',
+    'O_2_1agf5hekq5qm4sh',
+    'O_2_1agf5hekq5qm4si',
+    'O_2_1agf5hekq5qm4sj'
+  ],
+  { type: 'Charge', value: -1 }
+]
+     */
+//    console.log(atoms_with_tokens_no_brackets)
+ //   process.error()
 
 
 
@@ -345,6 +402,30 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }
     )
 
+    /*
+    [O-]
+    [
+  [
+    'O',
+    8,
+    6,
+    2,
+    0,
+    '82b',
+    'O_2_1agf5jzkq5qo82d',
+    'O_2_1agf5jzkq5qo82e',
+    'O_2_1agf5jzkq5qo82f',
+    'O_2_1agf5jzkq5qo82g',
+    'O_2_1agf5jzkq5qo82h',
+    'O_2_1agf5jzkq5qo82i'
+  ],
+  { type: 'Charge', value: -1 }
+]
+
+     */
+    //console.log(atoms_with_bonds)
+    //process.error()
+
 
 
     // Remove bonds using filter
@@ -355,7 +436,30 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }
     )
 
+    /*
+    [O-]
+    [
+  [
+    'O',
+    8,
+    6,
+    2,
+    0,
+    '6m6',
+    'O_2_1agf5ogkq5qq6m8',
+    'O_2_1agf5ogkq5qq6m9',
+    'O_2_1agf5ogkq5qq6ma',
+    'O_2_1agf5ogkq5qq6mb',
+    'O_2_1agf5ogkq5qq6mc',
+    'O_2_1agf5ogkq5qq6md'
+  ],
+  { type: 'Charge', value: -1 }
+]
 
+     */
+
+    //console.log(atoms)
+    //process.error()
 
 
     let ring_bond_atom_index = null
@@ -397,12 +501,34 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     })
 
 
+    /*
+    [
+  [
+    'O',
+    8,
+    6,
+    2,
+    0,
+    'd8y',
+    'O_2_1agf5sdkq5qsd90',
+    'O_2_1agf5sdkq5qsd91',
+    'O_2_1agf5sdkq5qsd92',
+    'O_2_1agf5sdkq5qsd93',
+    'O_2_1agf5sdkq5qsd94',
+    'O_2_1agf5sdkq5qsd95'
+  ],
+  { type: 'Charge', value: -1 }
+]
+
+     */
+    //console.log(atoms_with_ring_bonds)
+    //process.error()
 
 
 
-    const atoms_with_hydrogen_counts = _.cloneDeep(atoms_with_ring_bonds)
+    const atoms_with_hydrogen_counts = atoms_with_ring_bonds
 
-    const atoms_with_charges = _.cloneDeep(atoms_with_hydrogen_counts).reduce(
+    const atoms_with_charges = atoms_with_hydrogen_counts.reduce(
         (carry, current, index, atoms) => {
             if (current['type'] !== undefined && current['type'] === "HydrogenCount") {
                 carry.push(current)
@@ -416,12 +542,32 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }, []
     )
 
+/*
+// [O-]
+[
+  [
+    'O',
+    8,
+    6,
+    2,
+    '-',
+    'te8',
+    'O_2_1agf665kq5qwtea',
+    'O_2_1agf665kq5qwteb',
+    'O_2_1agf665kq5qwtec',
+    'O_2_1agf665kq5qwted',
+    'O_2_1agf665kq5qwtee',
+    'O_2_1agf665kq5qwtef'
+  ]
+]
 
-
+ */
+    //console.log(atoms_with_charges)
+    //process.error()
 
     // Add hydrogens
     const molecule = [[12345,atoms_with_charges],1]
-    const atoms_with_hydrogens = _.cloneDeep(atoms_with_charges).reduce(
+    const atoms_with_hydrogens = atoms_with_charges.reduce(
         (carry, current, index, arr) => {
 
             /*
@@ -438,16 +584,18 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
   'C_1_3bdk46sbkq4rjzx0',
   'C_2_3bdk46sbkq4rjzx6'
 ]
-
              */
-            process.error()
+        //    process.error()
 
             if (typeof current.length === "number" && current[0]!=='H') { // we have an atom
+
+
 
                 const catom = current
 
                 const free_electrons = catom.freeElectrons(atoms_with_charges)
 
+                // Add hydrogens where we have a hydrogen count
                 if (atoms_with_charges[index+1] !== undefined && atoms_with_charges[index+1]['type'] !== undefined && atoms_with_charges[index+1]['type'] === "HydrogenCount") {
 
                     range.range(0, atoms_with_charges[index+1]['value'],1).map(
@@ -466,57 +614,138 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                     )
                 }  else {
 
-                    let number_of_hydrogens_required = 0
+                    // [O+]
+                    /*
+                    [
+  'O',
+  8,
+  6,
+  2,
+  '+',
+  'gns',
+  'O_2_1agf8uikq5rugnu',
+  'O_2_1agf8uikq5rugnv',
+  'O_2_1agf8uikq5rugnw',
+  'O_2_1agf8uikq5rugnx',
+  'O_2_1agf8uikq5rugny',
+  'O_2_1agf8uikq5rugnz'
+]
+3 hydrogens
+                     */
+                    //console.log(atoms_with_charges)
+                    //console.log(current)
+                    //console.log(free_electrons)
+                    //process.error()
+
+                    let base_number_of_hydrogens_required = 0
                     if (current[0] === "Hg" || current[0] === "Ac") {
-                        number_of_hydrogens_required = 0
+                        base_number_of_hydrogens_required = 0
                     } else {
-                        number_of_hydrogens_required = free_electrons.length
+                        base_number_of_hydrogens_required = free_electrons.length
                     }
 
-                    if (number_of_hydrogens_required > 0) {
+
+                    if (base_number_of_hydrogens_required > 0) {
                         const offset_map = {
                             "O":4,
                             "N":2,
                             "C":0,
                         }
-                        range.range(0, number_of_hydrogens_required - offset_map[current[0]],1).map(
+                        let number_of_hydrogens_required = base_number_of_hydrogens_required - offset_map[current[0]]
+                        if (current[4] === "+") {
+                            number_of_hydrogens_required = number_of_hydrogens_required + 1
+                        } else if(current[4] === "-") {
+                            number_of_hydrogens_required = number_of_hydrogens_required - 1
+                        }
+                        range.range(0, number_of_hydrogens_required,1).map(
                             (e_index) => {
                                 if (undefined !== free_electrons[e_index]) {
                                     const current_electrons = electrons(current)
                                     const hydrogen = AtomFactory('H', "", e_index+1)
-                                    hydrogen.push(free_electrons[e_index])
+                                    hydrogen.addElectron(free_electrons[e_index])
                                     if (current_electrons.length < Constants().max_valence_electrons[current[0]]) {
-                                        current.push(hydrogen[hydrogen.length - 2])
+                                        current.addElectron(hydrogen[hydrogen.length - 2])
                                     }
-                                    carry.push(hydrogen)
+                                    carry.addAtom(hydrogen)
                                 } else {
                                 }
                             }
                         )
                     }
 
-
                 }
 
             }
 
             if(current['type'] === undefined) {
-                carry.push(current)
+                carry.addAtom(current)
             }
             return carry
         },
         []
     )
 
+    /*
+[O+]
+[
+  [
+    'H',
+    1,
+    1,
+    1,
+    '',
+    'rzk',
+    'H_1_1agfey2kq5udrzm',
+    'O_2_1agfey2kq5udrze'
+  ],
+  [
+    'H',
+    1,
+    1,
+    1,
+    '',
+    'rzn',
+    'H_2_1agfey2kq5udrzp',
+    'O_2_1agfey2kq5udrzf'
+  ],
+  [
+    'H',
+    1,
+    1,
+    1,
+    '',
+    'rzq',
+    'H_3_1agfey2kq5udrzs',
+    'O_2_1agfey2kq5udrzg'
+  ],
+  [
+    'O',
+    8,
+    6,
+    2,
+    '+',
+    'rzc',
+    'O_2_1agfey2kq5udrze',
+    'O_2_1agfey2kq5udrzf',
+    'O_2_1agfey2kq5udrzg',
+    'O_2_1agfey2kq5udrzh',
+    'O_2_1agfey2kq5udrzi',
+    'O_2_1agfey2kq5udrzj',
+    'H_1_1agfey2kq5udrzm',
+    'H_2_1agfey2kq5udrzp'
+  ]
+]
 
-
+     */
+    //console.log(atoms_with_hydrogens)
+    //process.error()
 
     const atoms_electrons_checked = atoms_with_hydrogens.map((atom, index)=>{
         const o_atom = atom
 
-        const bond_count = o_atom.indexedBonds(_.cloneDeep(atoms_with_hydrogens)).length
-            + o_atom.indexedDoubleBonds(_.cloneDeep(atoms_with_hydrogens)).length
-            + o_atom.indexedTripleBonds(_.cloneDeep(atoms_with_hydrogens)).length
+        const bond_count = o_atom.indexedBonds((atoms_with_hydrogens)).length
+            + o_atom.indexedDoubleBonds((atoms_with_hydrogens)).length
+            + o_atom.indexedTripleBonds((atoms_with_hydrogens)).length
         const free_electrons = o_atom.freeElectrons(atoms_with_hydrogens)
         const electrons = atom.slice(Constants().electron_index)
 
@@ -663,36 +892,83 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         return atom
     })
 
+    /*
+[
+  [
+    'H',
+    1,
+    1,
+    1,
+    '',
+    'o2h',
+    'H_1_1agff7wkq5uio2j',
+    'O_2_1agff7wkq5uio2b'
+  ],
+  [
+    'H',
+    1,
+    1,
+    1,
+    '',
+    'o2k',
+    'H_2_1agff7wkq5uio2m',
+    'O_2_1agff7wkq5uio2c'
+  ],
+  [
+    'H',
+    1,
+    1,
+    1,
+    '',
+    'o2n',
+    'H_3_1agff7wkq5uio2p',
+    'O_2_1agff7wkq5uio2d'
+  ],
+  [
+    'O',
+    8,
+    6,
+    2,
+    '+',
+    'o29',
+    'O_2_1agff7wkq5uio2b',
+    'O_2_1agff7wkq5uio2c',
+    'O_2_1agff7wkq5uio2d',
+    'O_2_1agff7wkq5uio2e',
+    'O_2_1agff7wkq5uio2f',
+    'O_2_1agff7wkq5uio2g',
+    'H_1_1agff7wkq5uio2j',
+    'H_2_1agff7wkq5uio2m'
+  ]
+]
+
+     */
+  //  console.log(atoms_electrons_checked)
+   // process.error()
+
     // Remove hydrogens with no bonds
     const atoms_with_redundant_hydrogens_removed = _.remove(atoms_electrons_checked, (atom, i)=>{
         if (atom[0] !== "H") {
-            return false
+            return atom
         }
-        const h = CAtom(atom, i, [['12345', atoms_electrons_checked], 1])
-        return h.indexedBonds("").length === 0
+        //const h = CAtom(atom, i, [['12345', atoms_electrons_checked], 1])
+        const h = atom
+        return h.indexedBonds(atoms_electrons_checked).length > 0
     })
+
+//    console.log(atoms_with_redundant_hydrogens_removed)
+  //  process.error()
 
    const molecule4 = [[12345,atoms_with_redundant_hydrogens_removed],1]
    //// console.log(VMolecule(molecule4).compressed())
 
-    const moleculeAI = require("../Components/Stateless/MoleculeAI")(molecule4)
-    moleculeAI.validateMolecule()
+  //  const moleculeAI = require("../Components/Stateless/MoleculeAI")(molecule4)
+   // moleculeAI.validateMolecule()
 
-   //// console.log(atomsfactoryyy)
+    // console.log(atoms_with_redundant_hydrogens_removed)
+    // process.error()
 
-    /*
-    // // console.log(atoms_with_hydrogens.filter((atom)=>{
-        return atom[0] === "H"
-    }).length)
-    // // console.log("AtomsFactory.js")
-    process.exit()
-*/
-    //  atomic symbol, proton count, valence count, number of bonds, charge, velectron1, velectron2, velectron3
-    //console.log("[NH4+]")
-    //console.log(atoms_electrons_checked)
-    //process.error()
-
-    return atoms_electrons_checked
+    return atoms_with_redundant_hydrogens_removed
 
     // We can't do this
     // Sort atoms by atom and number of elements so that they return the same canonical smiles

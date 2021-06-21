@@ -85,7 +85,7 @@ class ChargesAI {
 
         if (atom[0] === "O") {
             // 6 is the number of valence electrons when there are no bonds
-            b = 2 - (a_obj.hydrogens(_.cloneDeep(container_molecule[0][1])).length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
+            b = 2 - (a_obj.hydrogens((container_molecule[0][1])).length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
         }
 
         if (atom[0] === "N") {
@@ -101,11 +101,11 @@ class ChargesAI {
             throw new Error("Atom should have a neutral charge - atom " + atom[5])
         }
 
-        if (b > 0 && container_molecule[0][1][index][4] !=="+") {
+        if (b > 0 && container_molecule[0][1][index][4] !=="-") {
             throw new Error("Atom should have a positive charge")
         }
 
-        if (b < 0 && container_molecule[0][1][index][4] !=="-") {
+        if (b < 0 && container_molecule[0][1][index][4] !=="+") {
             throw new Error("Atom should have a negative charge")
         }
 

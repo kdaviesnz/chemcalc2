@@ -57,7 +57,7 @@ const Prototypes = () => {
                         return carry
                     }
 
-                    if (atom_id === __atom_index ) {
+                    if (atom_id === __atom[5] ) {
                         return carry
                     }
                     return [...carry, ...__atom.slice(Constants().electron_index)]
@@ -523,11 +523,11 @@ const Prototypes = () => {
             if (atoms === undefined || atoms=== null) {
                 throw new Error("Atoms are  undefined or null")
             }
-
+            // "this" is an atom
             return atoms.filter(
                 (__atom) => {
                     if (__atom[0] === "H") {
-                        return Set().intersection(__atom.slice(Constants().electron_index), atom.slice(Constants().electron_index)).length > 0
+                        return Set().intersection(__atom.slice(Constants().electron_index), this.slice(Constants().electron_index)).length > 0
                     }
                     return false
                 }

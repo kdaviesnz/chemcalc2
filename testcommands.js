@@ -28,15 +28,20 @@ console.log(VMolecule([Tetramethylammonium,1]).compressed())
 process.error()
  */
 
+// 2 hydrogens on N, 3 hydrogens on C, all neutral charges
+/*
+const m = MoleculeFactory("CN")
+const test2 = MoleculeFactory("[O+]")
 let me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
 let pnm = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
 let methylamine = MoleculeFactory("CN")
-
 let me_nitrogen_index = null
 let me_carbon_index = null
 let imine_to_ketone_result = null
 let reductiveAminationReverse_result = null
 let carbon_index = null
+*/
+
 const colors = require('colors')
 require("dotenv").config()
 
