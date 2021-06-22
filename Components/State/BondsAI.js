@@ -71,11 +71,12 @@ class BondsAI {
 
     }
 
-    creatingCoordinateCovalentBond(donor_atom, base_atom) {
+    creatingCoordinateCovalentBond(donor_atom, base_atom, molecule_container) {
 
         Typecheck(
-            {name:"donor_atom", value:donor_atom, type:"object"},
-            {name:"base_atom", value:base_atom, type:"object"},
+            {name:"donor_atom", value:donor_atom, type:"array"},
+            {name:"base_atom", value:base_atom, type:"array"},
+            {name:"molecule_container", value:molecule_container, type:"array"},
         )
 
         if (donor_atom === null || donor_atom === undefined) {
@@ -86,9 +87,13 @@ class BondsAI {
             throw new Error("Base atom is null or undefined")
         }
 
+        if (molecule_container === null || molecule_container === undefined) {
+            throw new Error("Molecule container is null or undefined")
+        }
+
         // If base atom still has at least one free electron it can share then not creating a coordinate covalent bond
         // If base atom has no free slots then not creating a coordinate covalent bond
-        if (base_atom.freeElectrons().length > 0 || base_atom.freeSlots() === 0) {
+        if (base_atom.freeElectrons(molecule_container[0][1]).length > 0 || base_atom.freeSlots() === 0) {
             return false
         }
 
@@ -252,7 +257,7 @@ class BondsAI {
 
         Typecheck(
             {name:"atom1_id", value:atom1_id, type:"string"},
-            {name:"atom2", value:atom2, type:"object"},
+            {name:"atom2", value:atom2, type:"array"},
             {name:"molecule_container", value:molecule_container, type:"array"},
             {name:"DEBUG", value:check, type:"boolean"},
             {name:"check", value:check, type:"boolean"},
@@ -270,25 +275,24 @@ class BondsAI {
         const atom1_index = molecule_container[0][1].getAtomIndexById(atom1_id)
 
 
+        if (undefined === molecule_container[0][1][atom1_index] || null ===  molecule_container[0][1][atom1_index]) {
+            throw new Error("Could not find atom")
+        }
+
         molecule_container[0][1][atom1_index].should.be.an.Array()
-        const atom1 = CAtom(molecule_container[0][1][atom1_index], atom1_index, molecule_container)
+        const atom1 = molecule_container[0][1][atom1_index]
 
 
         atom1.checkNumberOfElectrons()
         atom2.checkNumberOfElectrons()
 
         if (this.isBond(atom1, atom2, molecule_container, DEBUG)) {
-            this.bondAtoms(atom1, atom2, molecule_container, DEBUG, false)
-        } else {
             this.bondAtoms(atom1, atom2, molecule_container, DEBUG, true)
-            this.bondAtoms(atom1, atom2, molecule_container, DEBUG, false)
+        } else {
+            console.log("BondsAI creating double bond")
+            this.bondAtoms(atom1, atom2, molecule_container, DEBUG, true)
+            this.bondAtoms(atom1, atom2, molecule_container, DEBUG, true)
         }
-
-
-        processs.error()
-
-
-
 
         if (check && !this.isDoubleBond(atom1, atom2, DEBUG)) {
             throw new Error("Failed to create double bond")
@@ -325,8 +329,8 @@ class BondsAI {
     bondAtoms(atom1, atom2, molecule_container, DEBUG, check=true) {
 
         Typecheck(
-            {name:"atom1", value:atom1, type:"object"},
-            {name:"atom2", value:atom2, type:"object"},
+            {name:"atom1", value:atom1, type:"array"},
+            {name:"atom2", value:atom2, type:"array"},
             {name:"molecule_container", value:molecule_container, type:"array"},
             {name:"DEBUG", value:check, type:"boolean"},
             {name:"check", value:check, type:"boolean"},
@@ -341,8 +345,16 @@ class BondsAI {
         }
 
 
-        const atom1_index = atom1.atomIndex
-        const atom2_index = atom2.atomIndex
+        const atom1_index = molecule_container[0][1].getAtomIndexById(atom1.atomId(), false)
+        const atom2_index = molecule_container[0][1].getAtomIndexById(atom2.atomId(), false)
+
+        if (atom1_index === undefined || atom1_index === null) {
+            throw new Error("Atom index is null or undefined")
+        }
+
+        if (atom2_index === undefined || atom2_index === null) {
+            throw new Error("Atom index is null or undefined")
+        }
 
         // Confirm that the number of electrons is 8 or less
         atom1.checkNumberOfElectrons()
@@ -351,15 +363,15 @@ class BondsAI {
         let atom1_after_adding_electron = null
         let atom2_after_adding_electron = null
 
-        const atom2FreeElectrons = _.cloneDeep(atom2.freeElectrons())
-        const atom1FreeElectrons = _.cloneDeep(atom1.freeElectrons())
+        const atom2FreeElectrons = (atom2.freeElectrons(molecule_container[0][1]))
+        const atom1FreeElectrons = (atom1.freeElectrons(molecule_container[0][1]))
 
         // Check if we are making a coordinate or standard covalent bond
         // In a coordinate covalent bond one of the atoms donates both electrons.
         // In a standard covalent bond each atom donates an electron.
-        if (this.creatingCoordinateCovalentBond(atom1, atom2)) { // donor_atom, base_atom
+        if (this.creatingCoordinateCovalentBond(atom1, atom2, molecule_container)) { // donor_atom, base_atom
             this.createCoordinateCovalentBond(atom1, atom2, molecule_container, DEBUG)
-        } else if (this.creatingCoordinateCovalentBond(atom2, atom1)) { // donor_atom, base_atom
+        } else if (this.creatingCoordinateCovalentBond(atom2, atom1, molecule_container)) { // donor_atom, base_atom
             this.createCoordinateCovalentBond(atom2, atom1, molecule_container, DEBUG)
         } else {
 
@@ -387,7 +399,8 @@ class BondsAI {
             atom2FreeElectron.should.not.be.equal(atom1FreeElectron)
 
             if (undefined === molecule_container[0][1][atom1_index]) {
-                throw new Error("Could not find atom with id " + atom1.atomId() + ', index ' + atom1.atomIndex)
+
+                throw new Error("Could not find atom with id " + atom1.atomId() + ', index ' + atom1_index)
             }
             if (undefined === molecule_container[0][1][atom2_index]) {
                 throw new Error("Could not find atom with id " + atom2.atomId() + ', index ' + atom2.atomIndex)
@@ -398,8 +411,6 @@ class BondsAI {
             molecule_container[0][1][atom2_index].addElectron(atom1FreeElectron)
             atom1_electrons_length.should.be.equal(molecule_container[0][1][atom1_index].electrons().length - 1)
             atom2_electrons_length.should.be.equal(molecule_container[0][1][atom2_index].electrons().length - 1)
-
-            process.error()
         }
 
         // Confirm we have created a bond
@@ -715,8 +726,8 @@ class BondsAI {
     makeOxygenCarbonDoubleBond(oxygen, carbon, DEBUG) {
 
         Typecheck(
-            {name:"oxygen", value:oxygen, type:"object"},
-            {name:"carbon", value:carbon, type:"object"},
+            {name:"oxygen", value:oxygen, type:"array"},
+            {name:"carbon", value:carbon, type:"array"},
             {name:"DEBUG", value:DEBUG, type:"boolean"},
             {name:"this.reaction", value:this.reaction, type:"object"},
             {name:"this.reaction.MoleculeAI", value:this.reaction.MoleculeAI, type:"object"},
@@ -1495,6 +1506,11 @@ class BondsAI {
             this.reaction.container_substrate[0][1][n_index],
             this.reaction.container_substrate[0][1][c_index], DEBUG)
             && !this.isDoubleBond(this.reaction.container_substrate[0][1][n_index], this.reaction.container_substrate[0][1][c_index], DEBUG)) {
+            console.log(this.reaction.container_substrate[0][1][n_index])
+            console.log(this.reaction.container_substrate[0][1][c_index])
+            console.log(VMolecule(this.reaction.container_substrate).compressed())
+            console.log(n_index)
+            console.log(c_index)
             throw new Error("There should be a bond between the nitrogen atom and the carbon atom")
         }
 

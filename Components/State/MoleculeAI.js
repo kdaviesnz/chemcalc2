@@ -250,17 +250,13 @@ class MoleculeAI {
             this.reaction.container_substrate[0][1].push(oxygen_atom)
             const oxygen_index = this.reaction.container_substrate[0][1].length -1
             carbon = this.reaction.container_substrate[0][1][carbon_index]
-            console.log(this.reaction.container_substrate[0][1])
-            console.log(carbon_index)
-            console.log("ERROR - NO HYDROGENS")
-            process.error()
             this.reaction.container_substrate[0][1][carbon_index].electrons().length.should.be.equal(6)
             carbon.freeSlots().should.be.equal(1)
-            carbon.freeElectrons().length.should.be.equal(2)
-            oxygen = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
+            carbon.freeElectrons(this.reaction.container_substrate[0][1]).length.should.be.equal(2)
+            oxygen = this.reaction.container_substrate[0][1][oxygen_index]
             this.reaction.container_substrate[0][1][oxygen_index].electrons().length.should.be.equal(6)
             oxygen.freeSlots().should.be.equal(1)
-            oxygen.freeElectrons().length.should.be.equal(6)
+            oxygen.freeElectrons(this.reaction.container_substrate[0][1]).length.should.be.equal(6)
             if (DEBUG) {
                 console.log("Substrate (after splitting):")
                 console.log(VMolecule(this.reaction.container_substrate).compressed())

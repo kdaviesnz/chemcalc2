@@ -28,11 +28,10 @@ console.log(VMolecule([Tetramethylammonium,1]).compressed())
 process.error()
  */
 
-// N has 1 hydrogen, C has 2.
-const test2 = MoleculeFactory("C=N")
-console.log(VMolecule(test2,1).compressed())
-process.error()
 /*
+// N has 1 hydrogen, C has 2.
+const test2 = MoleculeFactory("C=N") // [pka,atoms]
+console.log(VMolecule([test2,1]).compressed())
 const m = MoleculeFactory("CN")
 const test2 = MoleculeFactory("[O+]")
 let me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")

@@ -131,6 +131,10 @@ const Prototypes = () => {
             Typecheck(
                 {name:"sibling_atom", value:sibling_atom, type:"array"},
             )
+            console.log("Prototypes isDoubleBondedTo()")
+            console.log(this[0])
+            console.log(sibling_atom[0])
+            console.log(this.sharedElectrons(sibling_atom))
             return this.sharedElectrons(sibling_atom).length === 4
         }
     })
@@ -329,7 +333,7 @@ const Prototypes = () => {
         value: function(atom_id, allow_failed_searches) {
             Typecheck(
                 {name:"atomId", value:atom_id, type:"string"},
-                {name:"allow_failed_searches", value:allow_failed_searches, type:"booleanb"}
+                {name:"allow_failed_searches", value:allow_failed_searches, type:"boolean"}
             )
             const atom_index =_.findIndex(this, (v, i )=>{
                 return v[5] === atom_id
@@ -337,6 +341,7 @@ const Prototypes = () => {
             Typecheck(
                 {name:"atom_index", value:atom_index, type:"number"},
             )
+            // "this" is an array of atoms
             if (atom_index === -1 && (allow_failed_searches !==null && allow_failed_searches !==undefined)) {
                 throw new Error('Unable to find atom index using atom id ' + atom_id)
             }
@@ -471,7 +476,7 @@ const Prototypes = () => {
                 const t_bond_indexes = t_bonds.map((b)=>{
                     return b.atom_index
                 })
-                // Filter doublke bonds that have indexes in t_bond_indexes
+                // Filter double bonds that have indexes in t_bond_indexes
                 //console.log(t_bond_indexes)
                 r = r.filter((db)=>{
                     return t_bond_indexes.indexOf(db.atom_index)===-1
@@ -591,6 +596,12 @@ const Prototypes = () => {
             return this.indexedTripleBonds(atoms).filter((bond)=>{
                 return bond.atom[0] !== "H"
             })
+        }
+    })
+    Object.defineProperty(Array.prototype, 'checkNumberOfElectrons', {
+        value: function() {
+            // "this" is an atom
+            return this.electrons().length <= Constants().max_valence_electrons[this[0]]
         }
     })
 }

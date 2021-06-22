@@ -965,8 +965,8 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
   //const moleculeAI = require("../Components/Stateless/MoleculeAI")(molecule4)
    // moleculeAI.validateMolecule()
 
-     console.log(VMolecule(molecule4).compressed())
-      process.error()
+     //console.log(VMolecule(molecule4).compressed())
+      //process.error()
 
     return atoms_with_redundant_hydrogens_removed
 
