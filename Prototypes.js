@@ -345,7 +345,7 @@ const Prototypes = () => {
     })
     Object.defineProperty(Array.prototype, 'getAtomIndexById', {
         value: function(atom_id, allow_failed_searches) {
-            // "this" is a molecule
+            // "this" is a molecule (array of atoms)
             Typecheck(
                 {name:"atomId", value:atom_id, type:"string"},
                 {name:"allow_failed_searches", value:allow_failed_searches, type:"boolean"}
@@ -371,7 +371,6 @@ const Prototypes = () => {
     Object.defineProperty(Array.prototype, 'indexedBonds', {
         value: function(atoms) {
 
-            //const atoms_no_hy
             Typecheck(
                 {name:"atoms", value:atoms, type:"array"}
             )
@@ -561,6 +560,11 @@ const Prototypes = () => {
             if (atoms === undefined || atoms=== null) {
                 throw new Error("Atoms are  undefined or null")
             }
+
+            this[0].should.be.a.String()
+            atoms[0].should.be.an.Array()
+            atoms[0][0].should.be.a.String()
+
             // "this" is an atom
             return atoms.filter(
                 (__atom) => {
@@ -622,6 +626,175 @@ const Prototypes = () => {
         value: function() {
             // "this" is an atom
             return this.electrons().length <= Constants().max_valence_electrons[this[0]]
+        }
+    })
+    Object.defineProperty(Array.prototype, 'bondCount', {
+        value: function(atoms) {
+            // "this" is an atom
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"},
+            )
+
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("Atoms are  undefined or null")
+            }
+
+            return this.bonds(atoms).filter((item)=>{
+                return item.length > 0
+            }).length
+
+        }
+    })
+    Object.defineProperty(Array.prototype, 'doubleBondCount', {
+        value: function(atoms) {
+            // "this" is an atom
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"},
+            )
+
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("Atoms are  undefined or null")
+            }
+
+            atoms[0].should.be.an.Array()
+            atoms[0][0].should.be.a.String()
+
+            const double_bonds = this.doubleBond(atoms)
+
+            return double_bonds === false ? 0 : double_bonds.length / 4
+
+        }
+    })
+    Object.defineProperty(Array.prototype, 'doubleBond', {
+        value: function(atoms) {
+
+            // "this" is an atom
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"},
+            )
+
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("Atoms are  undefined or null")
+            }
+
+            this[0].should.be.a.String()
+            atoms[0].should.be.an.Array()
+            atoms[0][0].should.be.a.String()
+
+            const atom_electrons = this.slice(Constants().electron_index)
+            const current_atom_index = atoms.getAtomIndexById(this.atomId())
+
+            const r =  atoms.map(
+                (__atom, __atom_index) => {
+
+                    if (current_atom_index === __atom_index) {
+                        return false
+                    }
+
+                    const shared_electrons = Set().intersection(atom_electrons, __atom.slice(Constants().electron_index))
+
+                    if (shared_electrons.length !== 4) {
+                        return false
+                    }
+
+                    return shared_electrons
+
+                }
+            ).filter(
+                (item) => {
+                    return item !== false
+                }
+            )
+
+            return r.length > 0?r[0]:false
+
+
+        }
+    })
+    Object.defineProperty(Array.prototype, 'bonds', {
+        value: function(atoms) {
+
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"},
+            )
+
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("Atoms are  undefined or null")
+            }
+
+            atoms[0].should.be.an.Array()
+            atoms[0][0].should.be.a.String()
+            this[0].should.be.a.String()
+
+            // "this" is an atom
+            const atom_electrons = this.electrons()
+            const current_atom_index = atoms.getAtomIndexById(this.atomId())
+
+            const r =  atoms.map(
+
+                (_atom, _atom_index) => {
+
+                    if (current_atom_index === _atom_index) {
+                        return false
+                    }
+
+                    Typecheck(
+                        {name:"_atom", value:_atom, type:"array"}
+                    )
+
+                    const _atomObject = _atom
+                    const shared_electrons = this.electronsSharedWithSibling(_atomObject, atoms)
+
+                    return shared_electrons.reduce(
+                        (carry, electron) => {
+                            carry.push(
+                                [
+                                    electron
+                                ]
+                            )
+                            return carry;
+                        },
+                        []
+                    )
+
+                }
+            ).filter(
+                (item) => {
+                    return item !== false
+                }
+            )
+
+
+            return r
+
+
+        }
+    })
+    Object.defineProperty(Array.prototype, 'electronsSharedWithSibling', {
+        value: function(sibling_atom, atoms) {
+            // "this" is an atom
+            Typecheck(
+                {name:"sibling_atom", value:sibling_atom, type:"array"},
+                {name:"atoms", value:atoms, type:"array"},
+            )
+
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("Atoms are  undefined or null")
+            }
+
+            atoms[0].should.be.an.Array()
+            atoms[0][0].should.be.a.String()
+
+            if (undefined === sibling_atom) {
+                throw new Error("sibling atom object is undefined")
+            }
+
+            if (_.isEqual(this, sibling_atom)) {
+                throw new Error("Atom and sibling atom are the same.")
+            }
+
+            return Set().intersection(this.slice(Constants().electron_index), sibling_atom.slice(Constants().electron_index))
+
         }
     })
 }

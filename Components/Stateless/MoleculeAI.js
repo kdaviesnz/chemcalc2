@@ -861,14 +861,14 @@ const MoleculeAI = (container_molecule) => {
 
             Typecheck(
                 {name:"DEBUG", value:DEBUG, type:"boolean"},
-                {name:"atom1", value:atom1, type:"object"},
-                {name:"atom2", value:atom2, type:"object"},
+                {name:"atom1", value:atom1, type:"array"},
+                {name:"atom2", value:atom2, type:"array"},
                 {name:"container_molecule", value:container_molecule, type:"array"}
             )
 
             const atom_ids_added = []
             //let atoms = this.findNonHydrogenAtoms()
-            let atoms = _.cloneDeep(container_molecule[0][1])
+            let atoms = (container_molecule[0][1])
 
             if (DEBUG) {
                 console.log("stateless/MoleculeAI container before extracting groups:")

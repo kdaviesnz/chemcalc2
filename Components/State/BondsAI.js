@@ -162,8 +162,8 @@ class BondsAI {
 
         Typecheck(
             {name:"molecule_container", value:molecule_container, type:"array"},
-            {name:"atom1", value:atom1, type:"object"},
-            {name:"atom2", value:atom2, type:"object"},
+            {name:"atom1", value:atom1, type:"array"},
+            {name:"atom2", value:atom2, type:"array"},
             {name:"DEBUG", value:DEBUG, type:"boolean"},
         )
 
@@ -479,9 +479,9 @@ class BondsAI {
         }
 
         const hydrogen_arr = AtomFactory("H", "")
-        const atom = CAtom(molecule_container[0][1][atom_index], atom_index, molecule_container)
+        const atom = molecule_container[0][1][atom_index]
         const hydrogen_electron_to_share = hydrogen_arr[hydrogen_arr.length-1]
-        const atom_free_electrons = atom.freeElectrons()
+        const atom_free_electrons = atom.freeElectrons(molecule_container[0][1])
         molecule_container[0][1][atom_index].addElectron(hydrogen_electron_to_share)
         hydrogen_arr.addElectron(atom_free_electrons[0], "H")
         molecule_container[0][1].addAtom(hydrogen_arr)
@@ -1503,9 +1503,9 @@ class BondsAI {
 
 
         const n_index = this.reaction.container_substrate[0][1].getAtomIndexById(n_id)
-        const n_atom = CAtom(this.reaction.container_substrate[0][1][n_index], n_index, this.reaction.container_substrate)
+        const n_atom = this.reaction.container_substrate[0][1][n_index]
         const c_index = this.reaction.container_substrate[0][1].getAtomIndexById(c_id)
-        const target_atom = CAtom(this.reaction.container_substrate[0][1][c_index], c_index, this.reaction.container_substrate)
+        const target_atom = this.reaction.container_substrate[0][1][c_index]
 
         // Use dehydrate() instead
         if (target_atom.symbol === "O" && target_atom.hydrogens().length === 2 && this.reaction.container_substrate[0][1][electrophile_index][4] === "+") {
