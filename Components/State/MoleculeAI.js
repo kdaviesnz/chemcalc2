@@ -268,12 +268,11 @@ class MoleculeAI {
             // Create C=O bond
             this.reaction = bondsAI.makeOxygenCarbonDoubleBond(oxygen, carbon, DEBUG)
 
-            if(true) {
-                console.log(VMolecule(this.reaction.container_substrate))
-                process.error()
+            if(DEBUG) {
+                console.log(VMolecule(this.reaction.container_substrate).compressed())
             }
 
-            // Add two hydrogens to nitrogen atom on substrate to make up for loss of double bond
+            // Add two hydrogens to nitrogen atom on reagent to make up for loss of double bond
             this.reaction.setReagentAI()
             nitrogen_index = this.reaction.ReagentAI.findAtomIndexByAtomId(nitrogen_atom_id, DEBUG)
             if (nitrogen_index === null || nitrogen_index === -1) {

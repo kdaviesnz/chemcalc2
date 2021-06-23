@@ -108,6 +108,9 @@ const Prototypes = () => {
             if (sibling_atom === undefined || sibling_atom === null) {
                 throw new Error("sibling_atom is undefined or null")
             }
+            if (_.isEqual(this, sibling_atom)) {
+                throw new Error("Atom and sibling atom are the same.")
+            }
             return this.sharedElectrons(sibling_atom).length === 2
         }
     })
@@ -118,6 +121,9 @@ const Prototypes = () => {
             )
             if (sibling_atom === undefined || sibling_atom === null) {
                 throw new Error("sibling_atom is undefined or null")
+            }
+            if (_.isEqual(this, sibling_atom)) {
+                throw new Error("Atom and sibling atom are the same.")
             }
             const shared_electrons = this.sharedElectrons(sibling_atom)
             if (shared_electrons.length > 1) {
@@ -131,10 +137,12 @@ const Prototypes = () => {
             Typecheck(
                 {name:"sibling_atom", value:sibling_atom, type:"array"},
             )
-            console.log("Prototypes isDoubleBondedTo()")
-            console.log(this[0])
-            console.log(sibling_atom[0])
-            console.log(this.sharedElectrons(sibling_atom))
+            if (sibling_atom === undefined || sibling_atom === null) {
+                throw new Error("sibling_atom is undefined or null")
+            }
+            if (_.isEqual(this, sibling_atom)) {
+                throw new Error("Atom and sibling atom are the same.")
+            }
             return this.sharedElectrons(sibling_atom).length === 4
         }
     })
@@ -143,6 +151,12 @@ const Prototypes = () => {
             Typecheck(
                 {name:"sibling_atom", value:sibling_atom, type:"array"},
             )
+            if (sibling_atom === undefined || sibling_atom === null) {
+                throw new Error("sibling_atom is undefined or null")
+            }
+            if (_.isEqual(this, sibling_atom)) {
+                throw new Error("Atom and sibling atom are the same.")
+            }
             return this.sharedElectrons(sibling_atom).length === 6
         }
     })
@@ -331,13 +345,19 @@ const Prototypes = () => {
     })
     Object.defineProperty(Array.prototype, 'getAtomIndexById', {
         value: function(atom_id, allow_failed_searches) {
+            // "this" is a molecule
             Typecheck(
                 {name:"atomId", value:atom_id, type:"string"},
                 {name:"allow_failed_searches", value:allow_failed_searches, type:"boolean"}
             )
+            if (atom_id === null || atom_id === undefined) {
+                throw new Error("atom id is null or undefined")
+            }
             const atom_index =_.findIndex(this, (v, i )=>{
                 return v[5] === atom_id
             })
+            this[0].should.be.an.Array()
+            this[0][0].should.be.a.String()
             Typecheck(
                 {name:"atom_index", value:atom_index, type:"number"},
             )

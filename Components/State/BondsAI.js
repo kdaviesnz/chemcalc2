@@ -117,7 +117,7 @@ class BondsAI {
             throw new Error("Target atom is undefined or null")
         }
 
-        if (!this.isBond(target_atom, donor_atom) && !this.isDoubleBond(target_atom, donor_atom)) {
+        if (!this.isSingleBond(target_atom, donor_atom) && !this.isDoubleBond(target_atom, donor_atom)) {
             throw new Error("No bond exists")
         }
 
@@ -142,13 +142,13 @@ class BondsAI {
         )
 
         // No bond between the two atoms
-        if (!this.isBond(atom, hydrogen, DEBUG) && !this.isDoubleBond(atom, hydrogen, DEBUG)) {
+        if (!this.isSingleBond(atom, hydrogen, DEBUG) && !this.isDoubleBond(atom, hydrogen, DEBUG)) {
             return false
         }
 
         atom.removeHydrogenBond(hydrogen)
 
-        if (this.isBond(atom, hydrogen, DEBUG)) {
+        if (this.isSingleBond(atom, hydrogen, DEBUG)) {
             throw new Error("BondsAI removeHydrogenBond() Failed to remove bond")
         }
 
@@ -168,7 +168,7 @@ class BondsAI {
         )
 
         // No bond between the two atoms
-        if (!this.isBond(atom1, atom2, DEBUG)) {
+        if (!this.isSingleBond(atom1, atom2, DEBUG)) {
             throw new Error("Attempting to remove single bond where no bond exists")
         }
 
@@ -183,7 +183,7 @@ class BondsAI {
             }
         }
 
-        if (this.isBond(atom1, atom2, DEBUG)) {
+        if (this.isSingleBond(atom1, atom2, DEBUG)) {
             throw new Error("BondsAI removeBond() Failed to remove bond")
         }
 
@@ -253,27 +253,26 @@ class BondsAI {
         return this.removeBond(atom1, atom2, molecule_container)
     }
 
-    createDoubleBond(atom1_id, atom2, molecule_container, DEBUG, check=true) {
+    createDoubleBond(atom1_id, atom2_id, molecule_container, DEBUG, check=true) {
 
         Typecheck(
             {name:"atom1_id", value:atom1_id, type:"string"},
-            {name:"atom2", value:atom2, type:"array"},
+            {name:"atom2_id", value:atom2_id, type:"string"},
             {name:"molecule_container", value:molecule_container, type:"array"},
             {name:"DEBUG", value:check, type:"boolean"},
             {name:"check", value:check, type:"boolean"},
         )
 
-
         if (atom1_id === null || atom1_id === undefined) {
             throw new Error("atom1_id is undefined or null")
         }
 
-        if (atom2 === null || atom2 === undefined) {
-            throw new Error("Atom is undefined or null")
+        if (atom2_id === null || atom2_id === undefined) {
+            throw new Error("Atom2 id is undefined or null")
         }
 
         const atom1_index = molecule_container[0][1].getAtomIndexById(atom1_id)
-
+        const atom2_index = molecule_container[0][1].getAtomIndexById(atom2_id)
 
         if (undefined === molecule_container[0][1][atom1_index] || null ===  molecule_container[0][1][atom1_index]) {
             throw new Error("Could not find atom")
@@ -281,17 +280,35 @@ class BondsAI {
 
         molecule_container[0][1][atom1_index].should.be.an.Array()
         const atom1 = molecule_container[0][1][atom1_index]
+        const atom2 = molecule_container[0][1][atom2_index]
 
+        if (_.isEqual(atom1, atom2)) {
+            throw new Error("Atoms are the same")
+        }
 
         atom1.checkNumberOfElectrons()
         atom2.checkNumberOfElectrons()
 
-        if (this.isBond(atom1, atom2, molecule_container, DEBUG)) {
-            this.bondAtoms(atom1, atom2, molecule_container, DEBUG, true)
+        if (this.isSingleBond(atom1, atom2, molecule_container, DEBUG)) {
+            this.createSingleBond(atom1, atom2, molecule_container, DEBUG, true)
         } else {
-            console.log("BondsAI creating double bond")
-            this.bondAtoms(atom1, atom2, molecule_container, DEBUG, true)
-            this.bondAtoms(atom1, atom2, molecule_container, DEBUG, true)
+
+            const atom2FreeElectrons = (atom2.freeElectrons(molecule_container[0][1]))
+            const atom1FreeElectrons = (atom1.freeElectrons(molecule_container[0][1]))
+
+            if (atom2FreeElectrons.length < 2) {
+                throw new Error("Atom2 should have at least two free electrons")
+            }
+
+            if (atom1FreeElectrons.length < 2) {
+                throw new Error("Atom1 should have at least two free electron")
+            }
+
+            molecule_container[0][1][atom1_index].addElectron(atom2FreeElectrons[0])
+            molecule_container[0][1][atom1_index].addElectron(atom2FreeElectrons[1])
+            molecule_container[0][1][atom2_index].addElectron(atom1FreeElectrons[0])
+            molecule_container[0][1][atom2_index].addElectron(atom1FreeElectrons[1])
+
         }
 
         if (check && !this.isDoubleBond(atom1, atom2, DEBUG)) {
@@ -326,7 +343,7 @@ class BondsAI {
 
     }
 
-    bondAtoms(atom1, atom2, molecule_container, DEBUG, check=true) {
+    createSingleBond(atom1, atom2, molecule_container, DEBUG, check=true) {
 
         Typecheck(
             {name:"atom1", value:atom1, type:"array"},
@@ -414,19 +431,22 @@ class BondsAI {
         }
 
         // Confirm we have created a bond
-        if (check && !this.isBond(molecule_container[0][1][atom1_index], molecule_container[0][1][atom2_index], DEBUG)) {
+        if (check && !this.isSingleBond(molecule_container[0][1][atom1_index], molecule_container[0][1][atom2_index], DEBUG)) {
             throw new Error("Failed to create bond")
         }
 
 
     }
 
-    isBond(atom1, atom2, DEBUG) {
+    isSingleBond(atom1, atom2, DEBUG) {
         Typecheck(
             {name:"atom1", value:atom1, type:"array"},
             {name:"atom2", value:atom2, type:"array"},
             {name:"DEBUG", value:DEBUG, type:"boolean"}
         )
+        if (_.isEqual(atom1, atom2)) {
+            throw new Error("Atoms are the same")
+        }
         return atom1.isBondedTo(atom2)
     }
 
@@ -436,6 +456,9 @@ class BondsAI {
             {name:"atom2", value:atom2, type:"array"},
             {name:"DEBUG", value:DEBUG, type:"boolean"}
         )
+        if (_.isEqual(atom1, atom2)) {
+            throw new Error("Atoms are the same")
+        }
         const is_double_bonded_to = atom1.isDoubleBondedTo(atom2, DEBUG)
         is_double_bonded_to.should.be.a.Boolean()
         return is_double_bonded_to
@@ -767,7 +790,7 @@ class BondsAI {
             if (carbon_index === -1) {
                 throw new Error("BondsAI makeOxygenCarbonDoubleBond() -> carbon index not found")
             }
-            carbon = CAtom(this.reaction.container_substrate[0][1][carbon_index], carbon_index, this.reaction.container_substrate)
+            carbon = this.reaction.container_substrate[0][1][carbon_index]
         }
 
 
@@ -779,7 +802,7 @@ class BondsAI {
             throw new Error("Carbon atom is undefined or null")
         }
 
-        this.createDoubleBond(oxygen_id, carbon, this.reaction.container_substrate, DEBUG, true)
+        this.createDoubleBond(oxygen_id, carbon[5], this.reaction.container_substrate, DEBUG, true)
 
         this.reaction.setMoleculeAI()
 
@@ -1319,7 +1342,7 @@ class BondsAI {
         this.createCoordinateCovalentBond(nucleophile_atom_on_reagent, electrophile_atom_on_substrate, molecule_container, DEBUG, false)
 
         //console.log(VMolecule(molecule_container).compressed())
-        if (!this.isBond(nucleophile_atom_on_reagent, electrophile_atom_on_substrate)) {
+        if (!this.isSingleBond(nucleophile_atom_on_reagent, electrophile_atom_on_substrate)) {
             throw new Error("Failed to create coordinate covalent bond")
         }
 
@@ -1370,7 +1393,7 @@ class BondsAI {
 
         // Use bondAtoms() or OneTwoAddiction() depending on if the electrophile atom on substrate has a free slot pair
         if (electrophile_atom_on_substrate.freeSlots() !== 0) {
-            this.bondAtoms(nucleophile_atom_on_reagent, electrophile_atom_on_substrate, this.reaction.container_substrate, DEBUG, false)
+            this.createSingleBond(nucleophile_atom_on_reagent, electrophile_atom_on_substrate, this.reaction.container_substrate, DEBUG, false)
         } else {
             this.oneTwoAddiction(nucleophile_atom_on_reagent, electrophile_atom_on_substrate, this.reaction.container_substrate, DEBUG, false)
         }
@@ -1502,7 +1525,7 @@ class BondsAI {
             console.log(target_atom.atom)
         }
 
-        if (!this.isBond(
+        if (!this.isSingleBond(
             this.reaction.container_substrate[0][1][n_index],
             this.reaction.container_substrate[0][1][c_index], DEBUG)
             && !this.isDoubleBond(this.reaction.container_substrate[0][1][n_index], this.reaction.container_substrate[0][1][c_index], DEBUG)) {
@@ -1516,9 +1539,9 @@ class BondsAI {
 
 
         // @todo triple bonds
-        if (this.isBond(this.reaction.container_substrate[0][1][n_index], this.reaction.container_substrate[0][1][c_index], DEBUG)) {
+        if (this.isSingleBond(this.reaction.container_substrate[0][1][n_index], this.reaction.container_substrate[0][1][c_index], DEBUG)) {
             this.removeBond(n_atom, target_atom, (this.reaction.container_substrate), DEBUG)
-            const is_single_bond = this.isBond(n_atom, this.reaction.container_substrate[0][1][c_index], DEBUG)
+            const is_single_bond = this.isSingleBond(n_atom, this.reaction.container_substrate[0][1][c_index], DEBUG)
             is_single_bond.should.be.a.Boolean()
             if (is_single_bond) {
                 throw new Error("Failed to break single bond between nitrogen and carbon atoms")
@@ -1563,7 +1586,7 @@ class BondsAI {
         }
 
         // Check that there is no longer a bond between the nitrogen and the carbon
-        if (this.isBond(this.reaction.container_substrate[0][1][n_index], this.reaction.container_substrate[0][1][c_index], DEBUG)
+        if (this.isSingleBond(this.reaction.container_substrate[0][1][n_index], this.reaction.container_substrate[0][1][c_index], DEBUG)
             || this.isDoubleBond(this.reaction.container_substrate[0][1][n_index], this.reaction.container_substrate[0][1][c_index], DEBUG)) {
             throw new Error("There should no longer be a bond between the nitrogen atom and the carbon atom")
         }

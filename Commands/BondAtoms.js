@@ -13,7 +13,7 @@ const BondAtoms = (mmolecule, reagent, rule, DEBUG) => {
     }
     const reaction = new Reaction(mmolecule, reagent, rule, DEBUG)
 
-    const result = reaction.bondAtoms()
+    const result = reaction.createSingleBond()
 
     return result === false ? false: [
         reaction.container_substrate,
