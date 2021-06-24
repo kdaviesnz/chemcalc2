@@ -847,6 +847,142 @@ const Prototypes = () => {
 
         }
     })
+    Object.defineProperty(Array.prototype, 'getHydrogenBonds', {
+        value: function(atoms) {
+            // "this" is an atom
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"}
+            )
+
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("Atoms are  undefined or null")
+            }
+
+            atoms[0].should.be.an.Array()
+            atoms[0][0].should.be.a.String()
+            this[0].should.be.a.String()
+
+            return this.indexedBonds(atoms).filter((bond)=>{
+                return bond.atom[0] === "H"
+            })
+        }
+    })
+    Object.defineProperty(Array.prototype, 'removeHydrogenOnCarbonBond', {
+        value: function(hydrogen_atom, atoms) {
+
+            // "this" is an atom
+            Typecheck(
+                {name:"hydrogen", value:hydrogen_atom, type:"array"},
+                {name:"atoms", value:atoms, type:"array"}
+            )
+
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("Atoms are  undefined or null")
+            }
+
+            if (hydrogen_atom === undefined || hydrogen_atom === null) {
+                throw new Error("Hydrogen is  undefined or null")
+            }
+
+            if (_.isEqual(this, hydrogen_atom)) {
+                throw new Error("Atom and hydrogen atom are the same.")
+            }
+
+            atoms[0].should.be.an.Array()
+            atoms[0][0].should.be.a.String()
+            hydrogen_atom[0].should.be.equal("H")
+            this[0].should.be.a.String()
+
+            const number_of_hydrogens_at_start = (this.getHydrogenBonds(atoms).length)
+            const number_of_carbons_on_hydrogen_at_start = (hydrogen_atom.carbonBonds(atoms).length)
+
+            const hydrogen_shared_electrons = this.electronsSharedWithSibling(hydrogen_atom, atoms).filter((electron) => {
+                Typecheck(
+                    {name:"electron", value:electron, type: "string"},
+                )
+                return electron[0] === "H"
+            })
+
+            const carbon_shared_electrons = this.electronsSharedWithSibling(hydrogen_atom, atoms).filter((electron) => {
+                Typecheck(
+                    {name:"electron", value:electron, type: "string"},
+                )
+                return electron[0] === "C"
+            })
+
+            const atom_starting_length = (this.length)
+
+            if (carbon_shared_electrons.length === 1 && hydrogen_shared_electrons.length === 1) {
+                this.removeElectrons([hydrogen_shared_electrons[0]])
+                hydrogen_atom.removeElectrons([carbon_shared_electrons[0]])
+            }
+
+            atom_starting_length.should.be.greaterThan(this.length)
+            number_of_hydrogens_at_start.should.be.greaterThan(this.getHydrogenBonds(atoms).length)
+            number_of_carbons_on_hydrogen_at_start.should.be.greaterThan(hydrogen_atom.carbonBonds(atoms).length)
+
+        }
+    })
+    Object.defineProperty(Array.prototype, 'carbonBonds', {
+        value: function(atoms) {
+            // "this" is an atom
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"}
+            )
+
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("Atoms are  undefined or null")
+            }
+
+            atoms[0].should.be.an.Array()
+            atoms[0][0].should.be.a.String()
+            this[0].should.be.a.String()
+
+            return this.indexedBonds(atoms).filter((bond)=>{
+                return bond.atom[0] === "C"
+            })
+        }
+    })
+    Object.defineProperty(Array.prototype, 'oxygenDoubleBonds', {
+        value: function(atoms) {
+            // "this" is an atom
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"}
+            )
+
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("Atoms are  undefined or null")
+            }
+
+            atoms[0].should.be.an.Array()
+            atoms[0][0].should.be.a.String()
+            this[0].should.be.a.String()
+
+            return this.indexedDoubleBonds(atoms).filter((b)=>{
+                return b.atom[0] === "O"
+            })
+        }
+    })
+    Object.defineProperty(Array.prototype, 'carbonDoubleBonds', {
+        value: function(atoms) {
+            // "this" is an atom
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"}
+            )
+
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("Atoms are  undefined or null")
+            }
+
+            atoms[0].should.be.an.Array()
+            atoms[0][0].should.be.a.String()
+            this[0].should.be.a.String()
+
+            return this.indexedDoubleBonds(atoms).filter((b)=>{
+                return b.atom[0] === "C"
+            })
+        }
+    })
 }
 
 module.exports = Prototypes

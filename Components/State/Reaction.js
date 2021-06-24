@@ -365,8 +365,8 @@ return result === false? false:[
             }
 
             // Change NC bond to N=C
-            const nitrogen = CAtom(this.container_substrate[0][1][nitrogen_index], nitrogen_index, this.container_substrate)
-            const carbon = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, this.container_substrate)
+            const nitrogen =this.container_substrate[0][1][nitrogen_index]
+            const carbon = this.container_substrate[0][1][carbon_index]
             this.bondsAI.breakCarbonNitrogenDoubleBondReverse((nitrogen.atomId()), (carbon.atomId()), DEBUG )
             // An imine is an organic compound containing the group —C=NH or —C=NR where R is an alkyl or other group.
             this.setMoleculeAI()
@@ -923,7 +923,7 @@ return result === false? false:[
 
     setChargesOnReagent() {
         if (typeof this.container_reagent !== "string") {
-            const chargesAI = new ChargesAI(_.cloneDeep(this))
+            const chargesAI = new ChargesAI((this))
             return chargesAI.setChargesOnReagent()
         }
     }

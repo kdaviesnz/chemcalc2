@@ -210,24 +210,24 @@ class MoleculeAI {
             this.reaction.container_substrate[0][1].push(oxygen_atom)
 
             oxygen_index = this.reaction.container_substrate[0][1].length -1
-            carbon = CAtom(this.reaction.container_substrate[0][1][0], carbon_index, this.reaction.container_substrate)
-            oxygen = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
+            carbon = this.reaction.container_substrate[0][1][0]
+            oxygen = this.reaction.container_substrate[0][1][oxygen_index]
 
             // Create double bond between oxygen and carbon (reagent is C[H3+])
             // If carbon has 3 hydrogens then we need to remove one of them
-            const hydrogen_bonds = carbon.getHydrogenBonds()
+            const hydrogen_bonds = carbon.getHydrogenBonds(this.reaction.container_substrate[0][1])
             if (hydrogen_bonds.length === 3) {
-                const hydrogen =  CAtom(this.reaction.container_substrate[0][1][hydrogen_bonds[0].atom_index], hydrogen_bonds[0].atom_index, this.reaction.container_substrate)
-                carbon.removeHydrogenOnCarbonBond(hydrogen, DEBUG)
-                bondsAI.removeAtom(this.reaction.container_substrate, hydrogen.atom, hydrogen.atomIndex)
+                const hydrogen = this.reaction.container_substrate[0][1][hydrogen_bonds[0].atom_index]
+                carbon.removeHydrogenOnCarbonBond(hydrogen, this.reaction.container_substrate[0][1])
+                bondsAI.removeAtom(this.reaction.container_substrate, hydrogen, this.reaction.container_substrate[0][1].getAtomIndexById(hydrogen.atomId()))
                 this.reaction.setMoleculeAI()
-                carbon = CAtom(this.reaction.container_substrate[0][1][0], carbon_index, this.reaction.container_substrate)
-                carbon.getHydrogenBonds().length.should.be.equal(2)
+                carbon = this.reaction.container_substrate[0][1][0]
+                carbon.getHydrogenBonds(this.reaction.container_substrate[0][1]).length.should.be.equal(2)
             }
             bondsAI.makeOxygenCarbonDoubleBond(oxygen, carbon, DEBUG)
             this.reaction.setMoleculeAI()
-            carbon.oxygenDoubleBonds().length.should.be.equal(1)
-            oxygen.carbonDoubleBonds().length.should.be.equal(1)
+            carbon.oxygenDoubleBonds(this.reaction.container_substrate[0][1]).length.should.be.equal(1)
+            oxygen.carbonDoubleBonds(this.reaction.container_substrate[0][1]).length.should.be.equal(1)
             this.reaction.setChargesOnSubstrate()
             if (DEBUG) {
                 console.log(VMolecule([this.reaction.container_substrate[0], 1]).compressed())
@@ -296,6 +296,7 @@ class MoleculeAI {
         this.reaction.setChargesOnSubstrate()
         this.reaction.setChargesOnReagent()
         this.reaction.MoleculeAI.validateMolecule() // check each atom does not have more than allowed number of valence electrons
+        this.reaction.ReagentAI.validateMolecule() // check each atom does not have more than allowed number of valence electrons
 
         if (DEBUG) {
             console.log("Substrate (after splitting:")
