@@ -1538,6 +1538,8 @@ class BondsAI {
             throw new Error("There should be a bond between the nitrogen atom and the carbon atom")
         }
 
+      //  console.log(this.isSingleBond(this.reaction.container_substrate[0][1][n_index], this.reaction.container_substrate[0][1][c_index], DEBUG))
+       // console.log(this.isDoubleBond(this.reaction.container_substrate[0][1][n_index], this.reaction.container_substrate[0][1][c_index], DEBUG))
 
         // @todo triple bonds
         if (this.isSingleBond(this.reaction.container_substrate[0][1][n_index], this.reaction.container_substrate[0][1][c_index], DEBUG)) {
@@ -1565,7 +1567,7 @@ class BondsAI {
                 throw new Error("Could not find nitrogen atom")
             }
 
-            this.removeDoubleBond(this.reaction.container_substrate[0][1][n_index], this.reaction.container_substrate[0][1][c_index], this.reaction.container_substrate, DEBUG)
+            this.reaction.container_substrate = this.removeDoubleBond(this.reaction.container_substrate[0][1][n_index], this.reaction.container_substrate[0][1][c_index], this.reaction.container_substrate, DEBUG)
 
             if (DEBUG) {
                 console.log("BondsAI bondSubstrateToReagentReverse() container after removing double bond:")
@@ -1580,7 +1582,7 @@ class BondsAI {
                 console.log(is_double_bonded_to)
             }
 
-            if (is_double_bonded_to === false) {
+            if (is_double_bonded_to === true) {
                 console.log(VMolecule(this.reaction.container_substrate).compressed())
                 throw new Error("Failed to break double bond between nitrogen and carbon atoms")
             }
@@ -1613,6 +1615,7 @@ class BondsAI {
         // Required as otherwise extractGroups will use the old substrate values.
         this.reaction.setMoleculeAI() /// this creates a new MoleculeAI object and sets it to use the new substrate value.
         const groups = this.reaction.MoleculeAI.extractGroups(n_atom, target_atom, DEBUG)
+
         if (DEBUG) {
             console.log("BondsAI bondSubstrateToReagentReverse() groups:")
             console.log(groups)
@@ -1622,8 +1625,8 @@ class BondsAI {
         if (groups.length !==2) {
             //console.log(groups)
             //console.log(groups.length)
-            console.log(VMolecule(this.reaction.container_substrate).compressed())
-            throw new Error("When reversing substrate to reagent bond the number of groups should be 2. Got " + groups.length + " instead.")
+            //console.log(VMolecule(this.reaction.container_substrate).compressed())
+            throw new Error("When reversing substrate to reagent bond the number of groups should be 2. Got " + groups.length + " instead. Are the database record parameters correct?")
         }
 
         // Check that there are no shared atoms between the two groups

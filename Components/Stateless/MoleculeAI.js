@@ -773,7 +773,6 @@ const MoleculeAI = (container_molecule) => {
             }
 
             const atom = atoms[current_atom_index]
-            //const atom_object = CAtom(atom, current_atom_index, container_molecule)
             const atom_object = atom
 
             if (_.indexOf(atom_ids_added, atom_object.atomId()) ===-1) { // Don't process atom twice
@@ -787,15 +786,15 @@ const MoleculeAI = (container_molecule) => {
                 const triple_bonds =  atom_object.tripleBondsNoHydrogens(container_molecule[0][1])
 
                 if (single_bonds.length + double_bonds.length + triple_bonds.length === 0) {
-                      groups[group_index].push(atom)
+                      groups[group_index].addAtom(atom)
                 } else {
-                    this.checkForBondedAtomsRecursive(groups, group_index, current_atom_index, atom, _.cloneDeep(atoms), atom_ids_added, DEBUG)
+                    this.checkForBondedAtomsRecursive(groups, group_index, current_atom_index, atom, (atoms), atom_ids_added, DEBUG)
                 }
 
-                return this.extractGroupsRecursive(groups, group_index +1, _.cloneDeep(atoms), atom_ids_added, current_atom_index +1)
+                return this.extractGroupsRecursive(groups, group_index +1, (atoms), atom_ids_added, current_atom_index +1)
 
             } else {
-                return this.extractGroupsRecursive(groups, group_index, _.cloneDeep(atoms), atom_ids_added, current_atom_index +1)
+                return this.extractGroupsRecursive(groups, group_index, (atoms), atom_ids_added, current_atom_index +1)
             }
 
 
@@ -874,11 +873,13 @@ const MoleculeAI = (container_molecule) => {
                 console.log("stateless/MoleculeAI container before extracting groups:")
                 console.log(VMolecule(container_molecule).compressed())
             }
-            const groups = this.extractGroupsRecursive([], 0, _.cloneDeep(atoms), atom_ids_added, 0, DEBUG)
+            const groups = this.extractGroupsRecursive([], 0, (atoms), atom_ids_added, 0, DEBUG)
+
 
             const groups_filtered = groups.filter((group)=>{
                 return group.length === 1 && group[0][0] === "H" ? false: true
             })
+
 
             return groups_filtered
 
@@ -890,7 +891,7 @@ const MoleculeAI = (container_molecule) => {
 
 
             const atom_ids_added = []
-            let atoms = _.cloneDeep(container_molecule[0][1])
+            let atoms = (container_molecule[0][1])
             const groups = this.extractGroupsRecursiveReverse([], 0, _.cloneDeep(atoms), atom_ids_added, 0)
 
 
