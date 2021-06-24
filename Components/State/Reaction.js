@@ -346,18 +346,6 @@ return result === false? false:[
 
         if (undefined !== carbon_index && null !== carbon_index)  {
 
-            // Change to double bond
-
-            if (DEBUG) {
-                console.log("Reaction.js reduceImineToAmineReverse Substrate before changing CN bond to C=N:")
-                console.log("carbon index:" + carbon_index)
-                console.log(VMolecule([this.container_substrate[0], 1]).compressed())
-                console.log(VMolecule([this.container_substrate[0], 1]).canonicalSMILES())
-            }
-
-            if (DEBUG) {
-                console.log("Reaction.js reduceImineToAmineReverse Creating double bond between carbon and nitrogen.")
-            }
 
             this.setMoleculeAI()
             if (DEBUG) {
@@ -367,24 +355,14 @@ return result === false? false:[
             // Change NC bond to N=C
             const nitrogen =this.container_substrate[0][1][nitrogen_index]
             const carbon = this.container_substrate[0][1][carbon_index]
+            nitrogen[0].should.be.equal("N")
+            carbon[0].should.be.equal("C")
+
             this.bondsAI.breakCarbonNitrogenDoubleBondReverse((nitrogen.atomId()), (carbon.atomId()), DEBUG )
             // An imine is an organic compound containing the group —C=NH or —C=NR where R is an alkyl or other group.
             this.setMoleculeAI()
-            this.stateMoleculeAI.formImineFromKetoneReverse(nitrogen_index, carbon_index, DEBUG)
 
-            if (DEBUG) {
-                console.log("Reaction.js reduceImineToAmineReverse Substrate after changing CN bond to C=N and setting charges")
-                console.log(VMolecule([this.container_substrate[0], 1]).compressed())
-                console.log(VMolecule([this.container_substrate[0], 1]).canonicalSMILES())
-            }
-
-            if (DEBUG) {
-                console.log(VMolecule(this.container_substrate).canonicalSMILES())
-                if (this.container_reagent !==null) {
-                    console.log(VMolecule(this.container_reagent).canonicalSMILES())
-                }
-            }
-
+            this.stateMoleculeAI.formImineFromKetoneReverse(nitrogen.atomId(), carbon.atomId(), DEBUG)
 
             return [
                 this.container_substrate,

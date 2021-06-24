@@ -1102,7 +1102,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         oxygenDoubleBondsDoNotUse: __oxygenDoubleBonds,
         carbonDoubleBondsDoNotUse: __carbonDoubleBonds,
         carbonBondsDoNotUse: __carbonBonds,
-        nitrogenBonds: __nitrogenBonds,
+        nitrogenBondsDoNotUse: __nitrogenBonds,
         electronsDonNotUse: __electrons,
         getPositiveCarbonBonds: __getPositiveCarbonBonds,
         removeCovalentBondDoNotUse: __removeCovalentBond,
@@ -1193,7 +1193,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         getHydrogen: __getHydrogen,
         getHydrogenBondsDoNotUse: __getHydrogenBonds,
         removeHydrogenOnCarbonBondDoNotUse:__removeHydrogenOnCarbonBond,
-        removeHydrogenOnNitrogenBond:__removeHydrogenOnNitrogenBond,
+        removeHydrogenOnNitrogenBondDoNotUse:__removeHydrogenOnNitrogenBond,
         getTerminalAtom: __getTerminalAtom
     }
 }

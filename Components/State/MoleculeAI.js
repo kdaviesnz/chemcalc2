@@ -151,12 +151,14 @@ class MoleculeAI {
 
     formImineFromKetoneReverse(nitrogen_atom_id, carbon_atom_id, DEBUG) {
 
+
         Typecheck(
             {name:"carbon_atom_id", value:carbon_atom_id, type:"string"},
             {name:"DEBUG", value:DEBUG, type:"boolean"},
             {name:"nitrogen_atom_id", value:nitrogen_atom_id, type:"string"},
             {name:"this.reaction", value:this.reaction, type:"object"},
         )
+
 
         let carbon_index = this.reaction.MoleculeAI.findAtomIndexByAtomId(carbon_atom_id, DEBUG)
         let nitrogen_index = this.reaction.MoleculeAI.findAtomIndexByAtomId(nitrogen_atom_id, DEBUG)
@@ -197,6 +199,9 @@ class MoleculeAI {
         this.reaction.setMoleculeAI()
         this.reaction.setReagentAI()
 
+
+
+
         if (this.reaction.MoleculeAI.findAtomIndexByAtomId(carbon_atom_id, DEBUG) === -1) {
 
             // Carbon is terminal carbon (reagent is C[H3+])
@@ -224,6 +229,8 @@ class MoleculeAI {
                 carbon = this.reaction.container_substrate[0][1][0]
                 carbon.getHydrogenBonds(this.reaction.container_substrate[0][1]).length.should.be.equal(2)
             }
+
+
             bondsAI.makeOxygenCarbonDoubleBond(oxygen, carbon, DEBUG)
             this.reaction.setMoleculeAI()
             carbon.oxygenDoubleBonds(this.reaction.container_substrate[0][1]).length.should.be.equal(1)
@@ -245,11 +252,17 @@ class MoleculeAI {
             }
 
 
+
         } else {
 
-            this.reaction.container_substrate[0][1].push(oxygen_atom)
+            this.reaction.container_substrate[0][1].addAtom(oxygen_atom)
             const oxygen_index = this.reaction.container_substrate[0][1].length -1
+            carbon_index = this.reaction.MoleculeAI.findAtomIndexByAtomId(carbon_atom_id, DEBUG)
             carbon = this.reaction.container_substrate[0][1][carbon_index]
+            carbon[0].should.be.equal("C", "Carbon index "+carbon_index + " Check database record is correct.")
+            this.reaction.container_substrate[0][1][oxygen_index][0].should.be.equal("O")
+            console.log(VMolecule(this.reaction.container_substrate).compressed())
+            console.log(carbon_index)
             this.reaction.container_substrate[0][1][carbon_index].electrons().length.should.be.equal(6)
             carbon.freeSlots().should.be.equal(1)
             carbon.freeElectrons(this.reaction.container_substrate[0][1]).length.should.be.equal(2)
@@ -262,6 +275,7 @@ class MoleculeAI {
                 console.log(VMolecule(this.reaction.container_substrate).compressed())
                 console.log(VMolecule(this.reaction.container_substrate).canonicalSMILES())
             }
+
 
             const bondsAI = new BondsAI(this.reaction)
 

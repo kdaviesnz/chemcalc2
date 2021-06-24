@@ -290,26 +290,29 @@ class BondsAI {
         atom1.checkNumberOfElectrons()
         atom2.checkNumberOfElectrons()
 
+        const atom2FreeElectrons = (atom2.freeElectrons(molecule_container[0][1]))
+        const atom1FreeElectrons = (atom1.freeElectrons(molecule_container[0][1]))
+
         if (this.isSingleBond(atom1, atom2, molecule_container, DEBUG)) {
-            this.createSingleBond(atom1, atom2, molecule_container, DEBUG, true)
+            if (atom2FreeElectrons.length < 1) {
+                throw new Error("Atom2 should have at least one free electrons")
+            }
+            if (atom1FreeElectrons.length < 1) {
+                throw new Error("Atom1 should have at least two free electrons")
+            }
+            molecule_container[0][1][atom1_index].addElectron(atom2FreeElectrons[0])
+            molecule_container[0][1][atom2_index].addElectron(atom1FreeElectrons[0])
         } else {
-
-            const atom2FreeElectrons = (atom2.freeElectrons(molecule_container[0][1]))
-            const atom1FreeElectrons = (atom1.freeElectrons(molecule_container[0][1]))
-
             if (atom2FreeElectrons.length < 2) {
                 throw new Error("Atom2 should have at least two free electrons")
             }
-
             if (atom1FreeElectrons.length < 2) {
-                throw new Error("Atom1 should have at least two free electron")
+                throw new Error("Atom1 should have at least two free electrons")
             }
-
             molecule_container[0][1][atom1_index].addElectron(atom2FreeElectrons[0])
             molecule_container[0][1][atom1_index].addElectron(atom2FreeElectrons[1])
             molecule_container[0][1][atom2_index].addElectron(atom1FreeElectrons[0])
             molecule_container[0][1][atom2_index].addElectron(atom1FreeElectrons[1])
-
         }
 
         if (check && !this.isDoubleBond(atom1, atom2, DEBUG)) {
@@ -1104,32 +1107,15 @@ class BondsAI {
             throw new Error("carbon id is null or undefined")
         }
 
-
-        // Make C=O bond
-        /*
-        if (nitrogen_index === undefined || nitrogen_index === null) {
-            nitrogen_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index)=> {
-                if ( atom[0] !== "N") {
-                    return false
-                }
-                const n = CAtom(this.reaction.container_substrate[0][1][index], index, this.reaction.container_substrate)
-                const c_bonds = o.indexedBonds("").filter((bond)=>{
-                    return bond.atom[0] === "C"
-                })
-                return c_bonds.length > 0
-            })
-        }
-        if (nitrogen_index === -1) {
-            return false
-        }
-         */
         const nitrogen_index = this.reaction.container_substrate[0][1].getAtomIndexById(nitrogen_id)
         const nitrogen = this.reaction.container_substrate[0][1][nitrogen_index]
+        nitrogen[0].should.be.equal("N")
 
         const freeElectrons = nitrogen.freeElectrons(this.reaction.container_substrate[0][1])
 
         const carbon_index = this.reaction.container_substrate[0][1].getAtomIndexById(carbon_id)
         const carbon_atom = this.reaction.container_substrate[0][1][carbon_index]
+        carbon_atom[0].should.be.equal("C")
         const carbon_atom_free_electrons = carbon_atom.freeElectrons(this.reaction.container_substrate[0][1])
 
         // Make space for electrons
@@ -1140,19 +1126,21 @@ class BondsAI {
         carbon_electrons_before.should.be.lessThan(this.reaction.container_substrate[0][1][carbon_index].length + 2)
 
         const nitrogen_hydrogen_bonds = nitrogen.getHydrogenBonds(this.reaction.container_substrate[0][1])
+
         if (nitrogen_hydrogen_bonds.length > 0) {
             //const nitrogen_hydrogen =  this.reaction.container_substrate[0][1][nitrogen_hydrogen_bonds[0].atom_index], nitrogen_hydrogen_bonds[0].atom_index, this.reaction.container_substrate)
             const nitrogen_hydrogen =  this.reaction.container_substrate[0][1][nitrogen_hydrogen_bonds[0].atom_index]
-            nitrogen.removeHydrogenOnNitrogenBond(nitrogen_hydrogen)
-            this.removeAtom(this.reaction.container_substrate, nitrogen_hydrogen.atom, nitrogen_hydrogen_bonds[0].atom_index)
+            nitrogen.removeHydrogenOnNitrogenBond(nitrogen_hydrogen, this.reaction.container_substrate[0][1])
+            // removeAtom(molecule, atom, atom_index) {
+            this.removeAtom(this.reaction.container_substrate, nitrogen_hydrogen, nitrogen_hydrogen_bonds[0].atom_index)
             this.reaction.setMoleculeAI()
         }
 
         const carbon_hydrogen_bonds = carbon_atom.getHydrogenBonds(this.reaction.container_substrate[0][1])
         if (carbon_hydrogen_bonds.length > 0) {
             const carbon_hydrogen =  this.reaction.container_substrate[0][1][carbon_hydrogen_bonds[0].atom_index]
-            carbon_atom.removeHydrogenOnCarbonBond(carbon_hydrogen, DEBUG)
-            this.removeAtom(this.reaction.container_substrate, carbon_hydrogen.atom, carbon_hydrogen_bonds[0].atom_index)
+            carbon_atom.removeHydrogenOnCarbonBond(carbon_hydrogen, this.reaction.container_substrate[0][1])
+            this.removeAtom(this.reaction.container_substrate, carbon_hydrogen, carbon_hydrogen_bonds[0].atom_index)
             this.reaction.setMoleculeAI()
         }
 
