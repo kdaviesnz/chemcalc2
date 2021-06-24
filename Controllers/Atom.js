@@ -1112,7 +1112,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
         isDoubleBondedToDoNotUse: __isDoubleBondedTo,
         isTripleBondedTo: __isTripleBondedTo,
         electronsSharedWithSiblingDoNotUse: __electronsSharedWithSibling,
-        isCoordinateCovalentBond: __isCoordinateCovalentBond,
+        isCoordinateCovalentBondDoNotUse: __isCoordinateCovalentBond,
         isCarbocation: __isCarbocation,
         isNegativelyCharged: __isNegativelyCharged,
         isPositivelyCharged: __isPositivelyCharged,

@@ -797,6 +797,56 @@ const Prototypes = () => {
 
         }
     })
+    Object.defineProperty(Array.prototype, 'isCoordinateCovalentBond', {
+        value: function(sibling_atom, atoms) {
+            // "this" is an atom
+            Typecheck(
+                {name:"sibling_atom", value:sibling_atom, type:"array"},
+                {name:"atoms", value:atoms, type:"array"},
+            )
+
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("Atoms are  undefined or null")
+            }
+
+            atoms[0].should.be.an.Array()
+            atoms[0][0].should.be.a.String()
+            this[0].should.be.a.String()
+
+            if (undefined === sibling_atom) {
+                throw new Error("sibling atom object is undefined")
+            }
+
+            if (_.isEqual(this, sibling_atom)) {
+                throw new Error("Atom and sibling atom are the same.")
+            }
+
+            // In a coordinate covalent bond one of the atoms donates both of the shared electrons
+            const shared_electrons = this.electronsSharedWithSibling(sibling_atom, atoms)
+            if (shared_electrons.length === 0) {
+                return false
+            }
+
+            // If there is a coordinate covalent bond then one of the atoms will have more than neutral number of electrons.
+            return ((this.neutralAtomMaxNumberOfBonds() > Constants().max_valence_electrons[this.symbol]) || (sibling_atom.neutralAtomMaxNumberOfBonds() > Constants().max_valence_electrons[sibling_atom[sibling_atom.symbol]]))
+
+        }
+    })
+    Object.defineProperty(Array.prototype, 'neutralAtomMaxNumberOfBonds', {
+        value: function(sibling_atom, atoms) {
+
+            // "this" is an atom
+            this[0].should.be.a.String()
+            const map = {
+                "H":1,
+                "O":2,
+                "N":3,
+                "C":4
+            }
+            return map[this[0]]
+
+        }
+    })
 }
 
 module.exports = Prototypes

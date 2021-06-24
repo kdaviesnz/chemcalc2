@@ -173,10 +173,11 @@ class BondsAI {
         }
 
         // Check for coordinate bond
-        if (atom1.isCoordinateCovalentBond(atom2) || atom2.isCoordinateCovalentBond(atom1)) {
+        if (atom1.isCoordinateCovalentBond(atom2, molecule_container[0][1]) || atom2.isCoordinateCovalentBond(atom1, molecule_container[0][1])) {
             this.removeCoordinateCovalentBond(atom1, atom2)
         } else {
             // Standard covalent bond
+
             atom1.removeCovalentBond(atom2)
             if (this.isDoubleBond(atom1, atom2, DEBUG)) {
                 atom1.removeCovalentBond(atom2)
@@ -1579,7 +1580,8 @@ class BondsAI {
                 console.log(is_double_bonded_to)
             }
 
-            if (is_double_bonded_to) {
+            if (is_double_bonded_to === false) {
+                console.log(VMolecule(this.reaction.container_substrate).compressed())
                 throw new Error("Failed to break double bond between nitrogen and carbon atoms")
             }
 
@@ -1616,7 +1618,13 @@ class BondsAI {
             console.log(groups)
             console.log(groups.length)
         }
-        groups.length.should.be.equal(2, "When reversing substrate to reagent bond the number of groups should be 2.")
+
+        if (groups.length !==2) {
+            //console.log(groups)
+            //console.log(groups.length)
+            console.log(VMolecule(this.reaction.container_substrate).compressed())
+            throw new Error("When reversing substrate to reagent bond the number of groups should be 2. Got " + groups.length + " instead.")
+        }
 
         // Check that there are no shared atoms between the two groups
         groups[0].should.be.an.Array()
