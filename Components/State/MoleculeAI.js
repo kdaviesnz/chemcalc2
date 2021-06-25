@@ -163,6 +163,10 @@ class MoleculeAI {
         let carbon_index = this.reaction.MoleculeAI.findAtomIndexByAtomId(carbon_atom_id, DEBUG)
         let nitrogen_index = this.reaction.MoleculeAI.findAtomIndexByAtomId(nitrogen_atom_id, DEBUG)
 
+        console.log("State/MoleculeA 194")
+        console.log(VMolecule(this.reaction.container_substrate).compressed())
+        console.log("#########################")
+
         if(DEBUG) {
             console.log("State/MoleculeAI.js formKetoneFromImine carbon index:")
             console.log("State/MoleculeAI.js formKetoneFromImine Carbon atom id :" + carbon_atom_id)
@@ -171,6 +175,7 @@ class MoleculeAI {
             console.log(VMolecule([this.reaction.container_substrate[0], 1]).compressed())
             console.log(VMolecule([this.reaction.container_substrate[0], 1]).canonicalSMILES())
         }
+
 
         const bondsAI = new BondsAI((this.reaction))
         // We need to set this.reaction as we are using cloned values.
@@ -187,6 +192,11 @@ class MoleculeAI {
             console.log(VMolecule([this.reaction.container_reagent[0], 1]).canonicalSMILES())
         }
 
+
+        console.log("State/MoleculeA 194")
+        console.log(VMolecule(this.reaction.container_substrate).compressed())
+        console.log(carbon_atom_id)
+        console.log("----------------------------------------------------")
         carbon_index.should.be.greaterThan(-1, "Could not find carbon index by atom id in substrate or reagent " + carbon_atom_id)
 
         // Add =O to carbon
@@ -198,7 +208,6 @@ class MoleculeAI {
 
         this.reaction.setMoleculeAI()
         this.reaction.setReagentAI()
-
 
 
 
@@ -261,8 +270,9 @@ class MoleculeAI {
             carbon = this.reaction.container_substrate[0][1][carbon_index]
             carbon[0].should.be.equal("C", "Carbon index "+carbon_index + " Check database record is correct.")
             this.reaction.container_substrate[0][1][oxygen_index][0].should.be.equal("O")
-            console.log(VMolecule(this.reaction.container_substrate).compressed())
-            console.log(carbon_index)
+//            console.log("State/MoleculeAI 264")
+  //          console.log(VMolecule(this.reaction.container_substrate).compressed())
+    //        console.log(carbon_index)
             this.reaction.container_substrate[0][1][carbon_index].electrons().length.should.be.equal(6)
             carbon.freeSlots().should.be.equal(1)
             carbon.freeElectrons(this.reaction.container_substrate[0][1]).length.should.be.equal(2)

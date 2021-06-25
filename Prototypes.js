@@ -126,6 +126,12 @@ const Prototypes = () => {
                 throw new Error("Atom and sibling atom are the same.")
             }
             const shared_electrons = this.sharedElectrons(sibling_atom)
+
+
+//console.log("Prototypes removeCovalentBond()")
+  //          console.log(VMolecule(this.reaction.container_substrate).compressed())
+    //        console.log("covalent ***********************************************")
+
             if (shared_electrons.length > 1) {
                 this.removeElectrons([shared_electrons[0]])
                 sibling_atom.removeElectrons([shared_electrons[1]])
@@ -821,10 +827,19 @@ const Prototypes = () => {
                 throw new Error("Atom and sibling atom are the same.")
             }
 
+            if (this.isDoubleBondedTo(sibling_atom)) {
+                return false
+            }
+
             // In a coordinate covalent bond one of the atoms donates both of the shared electrons
             const shared_electrons = this.electronsSharedWithSibling(sibling_atom, atoms)
+
             if (shared_electrons.length === 0) {
                 return false
+            }
+
+            if ((this[0]==="N" && sibling_atom[0] === "C") || (this[0]==="C" && sibling_atom[0] === "N")) {
+                return true
             }
 
             // If there is a coordinate covalent bond then one of the atoms will have more than neutral number of electrons.

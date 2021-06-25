@@ -28,6 +28,10 @@ console.log(VMolecule([Tetramethylammonium,1]).compressed())
 process.error()
  */
 
+// coordinate covalent bond
+const m = MoleculeFactory("NC")
+process.error()
+
 /*
 // N has 1 hydrogen, C has 2.
 const test2 = MoleculeFactory("C=N") // [pka,atoms]

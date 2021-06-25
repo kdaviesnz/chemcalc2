@@ -102,11 +102,12 @@ class BondsAI {
 
     }
 
-    removeCoordinateCovalentBond(donor_atom, target_atom) {
+    removeCoordinateCovalentBond(donor_atom, target_atom, molecule_container) {
 
         Typecheck(
-            {name:"donor_atom", value:donor_atom, type:"object"},
-            {name:"target_atom", value:target_atom, type:"object"}
+            {name:"donor_atom", value:donor_atom, type:"array"},
+            {name:"target_atom", value:target_atom, type:"array"},
+            {name:"molecule_container", value:molecule_container, type:"array"}
         )
 
         if (donor_atom === undefined || donor_atom === null) {
@@ -117,6 +118,10 @@ class BondsAI {
             throw new Error("Target atom is undefined or null")
         }
 
+        if (molecule_container === undefined || molecule_container === null) {
+            throw new Error("molecule_container  is undefined or null")
+        }
+
         if (!this.isSingleBond(target_atom, donor_atom) && !this.isDoubleBond(target_atom, donor_atom)) {
             throw new Error("No bond exists")
         }
@@ -124,11 +129,11 @@ class BondsAI {
         const target_atom_electrons = target_atom.electrons()
         const donor_atom_electrons = donor_atom.electrons()
 
-        const shared_electrons = donor_atom.electronsSharedWithSibling(donor_atom).slice(0,2)
+        const shared_electrons = donor_atom.electronsSharedWithSibling(target_atom, molecule_container[0][1]).slice(0,2)
 
-        donor_atom.removeElectrons(shared_electrons)
-        target_atom.electrons().length.should.be.equal(target_atom_electrons.length)
-        donor_atom.electrons().length.should.be.equal(donor_atom_electrons.length -2)
+        target_atom.removeElectrons(shared_electrons)
+        target_atom.electrons().length.should.be.equal(target_atom_electrons.length - 2)
+        donor_atom.electrons().length.should.be.equal(donor_atom_electrons.length)
 
     }
 
@@ -173,8 +178,9 @@ class BondsAI {
         }
 
         // Check for coordinate bond
+        // If there is a coordinate covalent bond then one of the atoms will have more than neutral number of electrons.
         if (atom1.isCoordinateCovalentBond(atom2, molecule_container[0][1]) || atom2.isCoordinateCovalentBond(atom1, molecule_container[0][1])) {
-            this.removeCoordinateCovalentBond(atom1, atom2)
+            this.removeCoordinateCovalentBond(atom1, atom2, molecule_container)
         } else {
             // Standard covalent bond
 
@@ -304,6 +310,9 @@ class BondsAI {
             molecule_container[0][1][atom2_index].addElectron(atom1FreeElectrons[0])
         } else {
             if (atom2FreeElectrons.length < 2) {
+                console.log(VMolecule(molecule_container).compressed())
+                console.log(atom1[0] + ' ' + atom1.atomId())
+                console.log(atom2[0] + ' ' + atom2.atomId())
                 throw new Error("Atom2 should have at least two free electrons")
             }
             if (atom1FreeElectrons.length < 2) {
@@ -1483,6 +1492,8 @@ class BondsAI {
         }
 
 
+
+
         if (DEBUG) {
             console.log("BondsAI bondSubstrateToReagentReverse() substrate (before splitting)")
             console.log(VMolecule(this.reaction.container_substrate).compressed())
@@ -1506,6 +1517,7 @@ class BondsAI {
 
       //  console.log(this.isSingleBond(this.reaction.container_substrate[0][1][n_index], this.reaction.container_substrate[0][1][c_index], DEBUG))
        // console.log(this.isDoubleBond(this.reaction.container_substrate[0][1][n_index], this.reaction.container_substrate[0][1][c_index], DEBUG))
+
 
         // @todo triple bonds
         if (this.isSingleBond(this.reaction.container_substrate[0][1][n_index], this.reaction.container_substrate[0][1][c_index], DEBUG)) {
@@ -1645,8 +1657,13 @@ class BondsAI {
 
         }
 
+
+
         this.reaction.setMoleculeAI()
         this.reaction.setReagentAI()
+
+
+
         return this.reaction
 
     }

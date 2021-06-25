@@ -45,6 +45,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     // parse a SMILES string, returns an array of SMILES tokens [{type: '...', value: '...'}, ...]
     const smiles_tokens = smiles.parse(canonicalSMILES)
 
+
     /*
     [O-]
 [
@@ -66,6 +67,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
             return row
         }
     )
+
 /*
 [
   { type: 'BracketAtom', value: 'begin' },
@@ -90,7 +92,6 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
 
 //    console.log(atoms_with_tokens)
  //   process.error()
-
 
     // Filter out brackets
     const atoms_with_tokens_no_brackets = _.cloneDeep(atoms_with_tokens).filter(
@@ -136,6 +137,9 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     const branch_tracker = {}
     let is_new_branch = false
 
+
+
+
     const atoms_with_bonds = _.cloneDeep(atoms_with_tokens_no_brackets).map(
         (row, index, processed_atoms) => {
             // Example rows:
@@ -157,6 +161,8 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                 branch_tracker[0].push([0, row[0]])
                 // first atom, no branches
                 res = row
+
+
             } else if (undefined === row.type ) {
 
 
@@ -174,7 +180,9 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                 }
 
 
+
                 // Get electrons
+
                 const bond_type = processed_atoms[index -1].type === "Bond"
                 && processed_atoms[index -1].value === "="? "=":(processed_atoms[index -1].type === "Bond"
                     && processed_atoms[index -1].value === "#"?"#":"")
@@ -182,10 +190,9 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                 const current_atom_electrons_to_share = []
                 current_atom_electrons_to_share.push(getFreeElectron(used_electrons, row, index )) // row[row.length-1]
                 used_electrons.push(current_atom_electrons_to_share[0])
-                const  parent_electrons_to_share = []
+                let parent_electrons_to_share = []
                 parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index ))
                 used_electrons.push(parent_electrons_to_share[0])
-
 
                 if ( bond_type === "=" ) {
                     current_atom_electrons_to_share.push(getFreeElectron(used_electrons, row, index ))
@@ -291,44 +298,82 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                         row.push(current_atom_electrons_to_share[5])
                     }
 
-                } else if(parent_atom_electrons.length === Constants().max_valence_electrons[processed_atoms[parent_atom_index][0]]) {
-                    // coordinate covalent bond - parent donates both electrons
-                    parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index+1))
-                    used_electrons.push(parent_electrons_to_share[parent_electrons_to_share.length-1])
-                    if (bond_type === "=") {
-                        parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index+2))
-                        used_electrons.push(parent_electrons_to_share[parent_electrons_to_share.length-1])
-                        parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index+3))
-                        used_electrons.push(parent_electrons_to_share[parent_electrons_to_share.length-1])
-                    }
-                    if (bond_type === "#") {
-                        parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index+2))
-                        used_electrons.push(parent_electrons_to_share[parent_electrons_to_share.length-1])
-                        parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index+3))
-                        used_electrons.push(parent_electrons_to_share[parent_electrons_to_share.length-1])
-                        parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index+4))
-                        used_electrons.push(parent_electrons_to_share[parent_electrons_to_share.length-1])
-                        parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index+5))
-                        used_electrons.push(parent_electrons_to_share[parent_electrons_to_share.length-1])
-                    }
+                } else if((bond_type === "" && (processed_atoms[0][0] === "C" && processed_atoms[1][0] === "N") || (processed_atoms[0][0] === "N" && processed_atoms[1][0] === "C"))
+
+                    || parent_atom_electrons.length === Constants().max_valence_electrons[processed_atoms[parent_atom_index][0]]) {
+
+                    if (processed_atoms[0][0] === "C" && processed_atoms[1][0] === "N") {
+                       // console.log(index)
+                       // console.log(parent_atom_index)
+                        //console.log(processed_atoms)
+                        // Clear electrons
+                        parent_electrons_to_share = []
+                        parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[index], parent_atom_index))
+                        used_electrons.push(parent_electrons_to_share[parent_electrons_to_share.length - 1])
+                        parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[index], parent_atom_index))
+                        used_electrons.push(parent_electrons_to_share[parent_electrons_to_share.length - 1])
+                        //console.log(row)
+                        //console.log(parent_electrons_to_share)
+                        processed_atoms[0].push(parent_electrons_to_share[0])
+                        processed_atoms[0].push(parent_electrons_to_share[1])
+                       // process.error()
+
+                    } else if(processed_atoms[0][0] === "N" && processed_atoms[1][0] === "C") {
+                        // console.log(index)
+                        // console.log(parent_atom_index)
+                        //console.log(processed_atoms)
+                        // Clear electrons
+                        parent_electrons_to_share = []
+                        parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index))
+                        used_electrons.push(parent_electrons_to_share[parent_electrons_to_share.length - 1])
+                        parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index))
+                        used_electrons.push(parent_electrons_to_share[parent_electrons_to_share.length - 1])
+                        //console.log(row)
+                        //console.log(parent_electrons_to_share)
+                        processed_atoms[1].push(parent_electrons_to_share[0])
+                        processed_atoms[1].push(parent_electrons_to_share[1])
+                       // process.error()
+                    } else {
+
+                        // coordinate covalent bond - parent donates both electrons
+                        parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index + 1))
+                        used_electrons.push(parent_electrons_to_share[parent_electrons_to_share.length - 1])
+                        if (bond_type === "=") {
+                            parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index + 2))
+                            used_electrons.push(parent_electrons_to_share[parent_electrons_to_share.length - 1])
+                            parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index + 3))
+                            used_electrons.push(parent_electrons_to_share[parent_electrons_to_share.length - 1])
+                        }
+                        if (bond_type === "#") {
+                            parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index + 2))
+                            used_electrons.push(parent_electrons_to_share[parent_electrons_to_share.length - 1])
+                            parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index + 3))
+                            used_electrons.push(parent_electrons_to_share[parent_electrons_to_share.length - 1])
+                            parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index + 4))
+                            used_electrons.push(parent_electrons_to_share[parent_electrons_to_share.length - 1])
+                            parent_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[parent_atom_index], index + 5))
+                            used_electrons.push(parent_electrons_to_share[parent_electrons_to_share.length - 1])
+                        }
 
 
-                    if (parent_electrons_to_share.length < 2 || (bond_type === "=" && parent_electrons_to_share.length < 4 ) | (bond_type === "#" && parent_electrons_to_share.length < 6 )) {
-                        throw new Error("Parent electron does not have enough electrons to share")
-                    }
+                        if (parent_electrons_to_share.length < 2 || (bond_type === "=" && parent_electrons_to_share.length < 4) | (bond_type === "#" && parent_electrons_to_share.length < 6)) {
+                            throw new Error("Parent electron does not have enough electrons to share")
+                        }
 
-                    row.push(parent_electrons_to_share[0])
-                    row.push(parent_electrons_to_share[1])
-                    if (bond_type === "=") {
-                        row.push(parent_electrons_to_share[2])
-                        row.push(parent_electrons_to_share[3])
-                    }
+                        row.push(parent_electrons_to_share[0])
+                        row.push(parent_electrons_to_share[1])
+                        if (bond_type === "=") {
+                            row.push(parent_electrons_to_share[2])
+                            row.push(parent_electrons_to_share[3])
+                        }
 
-                    if (bond_type === "#") {
-                        row.push(parent_electrons_to_share[2])
-                        row.push(parent_electrons_to_share[3])
-                        row.push(parent_electrons_to_share[4])
-                        row.push(parent_electrons_to_share[5])
+                        if (bond_type === "#") {
+                            row.push(parent_electrons_to_share[2])
+                            row.push(parent_electrons_to_share[3])
+                            row.push(parent_electrons_to_share[4])
+                            row.push(parent_electrons_to_share[5])
+                        }
+
                     }
 
                 } else {
@@ -402,6 +447,8 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }
     )
 
+    console.log(atoms_with_bonds)
+    process.error()
     /*
     [O-]
     [

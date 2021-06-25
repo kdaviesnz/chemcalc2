@@ -127,6 +127,7 @@ PeriodicTable:
     } else {
 
         const electrons_per_shell = PeriodicTable[atomicSymbol].electrons_per_shell.split("-")
+        const atom_id = uniqid().substr(uniqid().length-3,3)
          atom = [
             atomicSymbol,
             PeriodicTable[atomicSymbol].atomic_number * 1,
@@ -135,9 +136,9 @@ PeriodicTable:
                 : atomicSymbol === "Al" ? 3 :
                 (atomicSymbol === "Hg" ? 3 : (atomicSymbol === "Ac" ? 2 : 8 - 1 * electrons_per_shell.pop())),
             charge,
-             uniqid().substr(uniqid().length-3,3),
+             atom_id,
             ...range.range(0, (PeriodicTable[atomicSymbol].electrons_per_shell.split("-").pop() * 1) + charge * -1, 1).map((i) => {
-                return atomicSymbol + "_" + index + "_" + uniqid()
+                return atom_id + "_" + index + "_" + uniqid()
             })
         ]
     }
