@@ -405,13 +405,12 @@ const VMolecule = (mmolecule) => {
                 return mmolecule
             }
 
-            return _.cloneDeep(mmolecule[0][1]).map(
+            return (mmolecule[0][1]).map(
                 (atom, index) => {
                     //const c = CAtom(atom, index, _.cloneDeep(mmolecule))
                     const c = atom
-                    const h = c.indexedBonds(_.cloneDeep(mmolecule[0][1])).filter((bond)=>{
-                        return bond.atom[0] === "H"
-                    })
+                    const h = c.hydrogens(mmolecule[0][1])
+
                     const bonds = c.indexedBonds(_.cloneDeep(mmolecule[0][1])).filter((bond)=>{
                         return bond.atom[0] !== 'H'
                     }).map(

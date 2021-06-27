@@ -29,7 +29,12 @@ process.error()
  */
 
 // coordinate covalent bond
-const m = MoleculeFactory("NC")
+// 2 hydrogens on nitrogen, 3 hydrogens on carbon
+// Both carbon and nitrogen have 1 non-hydrogen bond and should be bonded to each other.
+const m = MoleculeFactory("CN")
+console.log(m[1][5].hydrogens(m[1]))
+
+console.log(VMolecule([m,1]).compressed())
 process.error()
 
 /*
