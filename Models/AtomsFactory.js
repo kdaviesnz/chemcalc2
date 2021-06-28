@@ -68,30 +68,39 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }
     )
 
-/*
+/* CN
 [
-  { type: 'BracketAtom', value: 'begin' },
   [
-    'O',
-    8,
+    'C', - 4 valence electrons
     6,
-    2,
+    4,
+    4,
     0,
-    'bva',
-    'O_2_1agf568kq5qhbvc',
-    'O_2_1agf568kq5qhbvd',
-    'O_2_1agf568kq5qhbve',
-    'O_2_1agf568kq5qhbvf',
-    'O_2_1agf568kq5qhbvg',
-    'O_2_1agf568kq5qhbvh'
+    'rn1',
+    'rn1_1_1agfb3jkqfrjrn3',
+    'rn1_1_1agfb3jkqfrjrn4',
+    'rn1_1_1agfb3jkqfrjrn5',
+    'rn1_1_1agfb3jkqfrjrn6'
   ],
-  { type: 'Charge', value: -1 },
-  { type: 'BracketAtom', value: 'end' }
+  [
+    'N', - 5 valence electrons
+    7,
+    5,
+    3,
+    0,
+    'rn7',
+    'rn7_2_1agfb3jkqfrjrn9',
+    'rn7_2_1agfb3jkqfrjrna',
+    'rn7_2_1agfb3jkqfrjrnb',
+    'rn7_2_1agfb3jkqfrjrnc',
+    'rn7_2_1agfb3jkqfrjrnd'
+  ]
 ]
+
  */
 
-//    console.log(atoms_with_tokens)
- //   process.error()
+   // console.log(atoms_with_tokens)
+   // process.error()
 
     // Filter out brackets
     const atoms_with_tokens_no_brackets = _.cloneDeep(atoms_with_tokens).filter(
@@ -103,27 +112,38 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }
     )
 
-    /*
-    [
+    /* CN
+[
   [
-    'O',
-    8,
+    'C', - 4 valence electrons
     6,
-    2,
+    4,
+    4,
     0,
-    '4sc',
-    'O_2_1agf5hekq5qm4se',
-    'O_2_1agf5hekq5qm4sf',
-    'O_2_1agf5hekq5qm4sg',
-    'O_2_1agf5hekq5qm4sh',
-    'O_2_1agf5hekq5qm4si',
-    'O_2_1agf5hekq5qm4sj'
+    'nxy',
+    'nxy_1_1agfbe8kqfrnny0',
+    'nxy_1_1agfbe8kqfrnny1',
+    'nxy_1_1agfbe8kqfrnny2',
+    'nxy_1_1agfbe8kqfrnny3'
   ],
-  { type: 'Charge', value: -1 }
+  [
+    'N', - 5 valence electrson
+    7,
+    5,
+    3,
+    0,
+    'ny4',
+    'ny4_2_1agfbe8kqfrnny6',
+    'ny4_2_1agfbe8kqfrnny7',
+    'ny4_2_1agfbe8kqfrnny8',
+    'ny4_2_1agfbe8kqfrnny9',
+    'ny4_2_1agfbe8kqfrnnya'
+  ]
 ]
+
      */
-//    console.log(atoms_with_tokens_no_brackets)
- //   process.error()
+   // console.log(atoms_with_tokens_no_brackets)
+   // process.error()
 
 
 
@@ -140,7 +160,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
 
 
 
-    const atoms_with_bonds = _.cloneDeep(atoms_with_tokens_no_brackets).map(
+    const atoms_with_bonds = (atoms_with_tokens_no_brackets).map(
         (row, index, processed_atoms) => {
             // Example rows:
 
@@ -259,6 +279,8 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                 processed_atoms[parent_atom_index][0].should.be.a.String()  // O, N, etc
                 processed_atoms[parent_atom_index].should.be.a.Array()
                 if (current_atom_electrons.length === Constants().max_valence_electrons[row[0]]) {
+
+                    process.error()
                     // coordinate covalent bond - current atom  (row) donates both electrons
                     current_atom_electrons_to_share.push(getFreeElectron(used_electrons, atoms_with_tokens_no_brackets[current_atom_atom_index], index+1))
                     used_electrons.push(current_atom_electrons_to_share[current_atom_electrons_to_share.length-1])
@@ -299,8 +321,8 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                     }
 
                 } else if((bond_type === "" && (processed_atoms[0][0] === "C" && processed_atoms[1][0] === "N") || (processed_atoms[0][0] === "N" && processed_atoms[1][0] === "C"))
-
                     || parent_atom_electrons.length === Constants().max_valence_electrons[processed_atoms[parent_atom_index][0]]) {
+
 
                     if (processed_atoms[0][0] === "C" && processed_atoms[1][0] === "N") {
                        // console.log(index)
@@ -315,8 +337,8 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                         //console.log(row)
                         //console.log(parent_electrons_to_share)
                         processed_atoms[0].push(parent_electrons_to_share[0])
-                        processed_atoms[0].push(parent_electrons_to_share[1])
-                       // process.error()
+                      //  processed_atoms[0].push(parent_electrons_to_share[1])
+                      //  process.error()
 
                     } else if(processed_atoms[0][0] === "N" && processed_atoms[1][0] === "C") {
                         // console.log(index)
@@ -361,17 +383,17 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                         }
 
                         row.push(parent_electrons_to_share[0])
-                        row.push(parent_electrons_to_share[1])
+                       // row.push(parent_electrons_to_share[1])
                         if (bond_type === "=") {
                             row.push(parent_electrons_to_share[2])
-                            row.push(parent_electrons_to_share[3])
+                           // row.push(parent_electrons_to_share[3])
                         }
 
                         if (bond_type === "#") {
                             row.push(parent_electrons_to_share[2])
                             row.push(parent_electrons_to_share[3])
-                            row.push(parent_electrons_to_share[4])
-                            row.push(parent_electrons_to_share[5])
+                           // row.push(parent_electrons_to_share[4])
+                           // row.push(parent_electrons_to_share[5])
                         }
 
                     }
@@ -449,64 +471,84 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
 
     //console.log(atoms_with_bonds)
     //process.error()
-    /*
-    [O-]
-    [
+    /* CN, coordinate covalent bond
+[
   [
-    'O',
-    8,
+    'C', - 4 valence bonds + 1 from N
     6,
-    2,
+    4,
+    4,
     0,
-    '82b',
-    'O_2_1agf5jzkq5qo82d',
-    'O_2_1agf5jzkq5qo82e',
-    'O_2_1agf5jzkq5qo82f',
-    'O_2_1agf5jzkq5qo82g',
-    'O_2_1agf5jzkq5qo82h',
-    'O_2_1agf5jzkq5qo82i'
+    'dyh',
+    'dyh_1_1agfbllkqfrqdyj',
+    'dyh_1_1agfbllkqfrqdyk',
+    'dyh_1_1agfbllkqfrqdyl',
+    'dyh_1_1agfbllkqfrqdym',
+    'dyn_2_1agfbllkqfrqdys',
   ],
-  { type: 'Charge', value: -1 }
+  [
+    'N',
+    7,
+    5,
+    3,
+    0,
+    'dyn',
+    'dyn_2_1agfbllkqfrqdyp',
+    'dyn_2_1agfbllkqfrqdyq',
+    'dyn_2_1agfbllkqfrqdyr',
+    'dyn_2_1agfbllkqfrqdys',
+    'dyn_2_1agfbllkqfrqdyt'
+  ]
 ]
-
      */
-    //console.log(atoms_with_bonds)
-    //process.error()
+   // console.log(atoms_with_bonds)
+   // process.error()
 
 
 
     // Remove bonds using filter
 // @todo
-    const atoms = _.cloneDeep(atoms_with_bonds).filter(
+    const atoms = (atoms_with_bonds).filter(
         (row) => {
             return row.type !== 'Bond'
         }
     )
 
     /*
-    [O-]
-    [
+    CN coordinate covalent bond
+[
   [
-    'O',
-    8,
+    'C', - 4 valence electrons + 1 from N
     6,
-    2,
+    4,
+    4,
     0,
-    '6m6',
-    'O_2_1agf5ogkq5qq6m8',
-    'O_2_1agf5ogkq5qq6m9',
-    'O_2_1agf5ogkq5qq6ma',
-    'O_2_1agf5ogkq5qq6mb',
-    'O_2_1agf5ogkq5qq6mc',
-    'O_2_1agf5ogkq5qq6md'
+    'myr',
+    'myr_1_1agfbwokqfrumyt',
+    'myr_1_1agfbwokqfrumyu',
+    'myr_1_1agfbwokqfrumyv',
+    'myr_1_1agfbwokqfrumyw',
+    'myx_2_1agfbwokqfrumz2',
   ],
-  { type: 'Charge', value: -1 }
+  [
+    'N', - 5 valence electrons
+    7,
+    5,
+    3,
+    0,
+    'myx',
+    'myx_2_1agfbwokqfrumyz',
+    'myx_2_1agfbwokqfrumz0',
+    'myx_2_1agfbwokqfrumz1',
+    'myx_2_1agfbwokqfrumz2',
+    'myx_2_1agfbwokqfrumz3'
+  ]
 ]
 
      */
 
-    //console.log(atoms)
-    //process.error()
+  //  console.log(atoms)
+  //  process.error()
 
 
     let ring_bond_atom_index = null
@@ -548,26 +590,41 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     })
 
 
+
     /*
-    [
+    CN coordinate covalent bond
+[
   [
-    'O',
-    8,
+    'C', - 4 valence electrons + 1 from N
     6,
-    2,
+    4,
+    4,
     0,
-    'd8y',
-    'O_2_1agf5sdkq5qsd90',
-    'O_2_1agf5sdkq5qsd91',
-    'O_2_1agf5sdkq5qsd92',
-    'O_2_1agf5sdkq5qsd93',
-    'O_2_1agf5sdkq5qsd94',
-    'O_2_1agf5sdkq5qsd95'
+    'myr',
+    'myr_1_1agfbwokqfrumyt',
+    'myr_1_1agfbwokqfrumyu',
+    'myr_1_1agfbwokqfrumyv',
+    'myr_1_1agfbwokqfrumyw',
+    'myx_2_1agfbwokqfrumz2',
   ],
-  { type: 'Charge', value: -1 }
+  [
+    'N', - 5 valence electrons
+    7,
+    5,
+    3,
+    0,
+    'myx',
+    'myx_2_1agfbwokqfrumyz',
+    'myx_2_1agfbwokqfrumz0',
+    'myx_2_1agfbwokqfrumz1',
+    'myx_2_1agfbwokqfrumz2',
+    'myx_2_1agfbwokqfrumz3'
+  ]
 ]
 
      */
+
+
     //console.log(atoms_with_ring_bonds)
     //process.error()
 
@@ -590,27 +647,38 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     )
 
 /*
-// [O-]
+CN coordinate covalent bond
 [
   [
-    'O',
-    8,
+    'C', - 4 valence electrons + 1 from N
     6,
-    2,
-    '-',
-    'te8',
-    'O_2_1agf665kq5qwtea',
-    'O_2_1agf665kq5qwteb',
-    'O_2_1agf665kq5qwtec',
-    'O_2_1agf665kq5qwted',
-    'O_2_1agf665kq5qwtee',
-    'O_2_1agf665kq5qwtef'
+    4,
+    4,
+    0,
+    'myr',
+    'myr_1_1agfbwokqfrumyt',
+    'myr_1_1agfbwokqfrumyu',
+    'myr_1_1agfbwokqfrumyv',
+    'myr_1_1agfbwokqfrumyw',
+    'myx_2_1agfbwokqfrumz2',
+  ],
+  [
+    'N', - 5 valence electrons
+    7,
+    5,
+    3,
+    0,
+    'myx',
+    'myx_2_1agfbwokqfrumyz',
+    'myx_2_1agfbwokqfrumz0',
+    'myx_2_1agfbwokqfrumz1',
+    'myx_2_1agfbwokqfrumz2',
+    'myx_2_1agfbwokqfrumz3'
   ]
 ]
-
  */
-    //console.log(atoms_with_charges)
-    //process.error()
+   // console.log(atoms_with_charges)
+   // process.error()
 
     // Add hydrogens
     const molecule = [[12345,atoms_with_charges],1]
@@ -638,9 +706,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
 
 
 
-                const catom = current
-
-                const free_electrons = catom.freeElectrons(atoms_with_charges)
+                const free_electrons = current.freeElectrons(atoms_with_charges)
 
                 // Add hydrogens where we have a hydrogen count
                 if (atoms_with_charges[index+1] !== undefined && atoms_with_charges[index+1]['type'] !== undefined && atoms_with_charges[index+1]['type'] === "HydrogenCount") {
@@ -684,41 +750,81 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                     //console.log(free_electrons)
                     //process.error()
 
-                    let base_number_of_hydrogens_required = 0
-                    if (current[0] === "Hg" || current[0] === "Ac") {
-                        base_number_of_hydrogens_required = 0
-                    } else {
-                        base_number_of_hydrogens_required = free_electrons.length
+                    // ignore
+                    if (false) {
+                        let base_number_of_hydrogens_required = 0
+                        if (current[0] === "Hg" || current[0] === "Ac") {
+                            base_number_of_hydrogens_required = 0
+                        } else {
+                            base_number_of_hydrogens_required = free_electrons.length
+                        }
+                        //
                     }
 
+                    // @todo assumes atom is one of C,N,O
+                    const offset_map = {
+                        "O": 6,
+                        "N": 5,
+                        "C": 4,
+                    }
+                    let number_of_hydrogens_req = Constants().max_valence_electrons[current[0]] - (offset_map[current[0]] + current.indexedBonds(atoms_with_charges).length)
+                    if (current[4] === "+") {
+                        number_of_hydrogens_req = number_of_hydrogens_req + 1
+                    } else if (current[4] === "-") {
+                        number_of_hydrogens_req = number_of_hydrogens_req - 1
+                    }
 
-                    if (base_number_of_hydrogens_required > 0) {
-                        const offset_map = {
-                            "O":4,
-                            "N":2,
-                            "C":0,
-                        }
-                        let number_of_hydrogens_required = base_number_of_hydrogens_required - offset_map[current[0]]
-                        if (current[4] === "+") {
-                            number_of_hydrogens_required = number_of_hydrogens_required + 1
-                        } else if(current[4] === "-") {
-                            number_of_hydrogens_required = number_of_hydrogens_required - 1
-                        }
-                        range.range(0, number_of_hydrogens_required,1).map(
-                            (e_index) => {
-                                if (undefined !== free_electrons[e_index]) {
-                                    const current_electrons = electrons(current)
-                                    const hydrogen = AtomFactory('H', "", e_index+1)
-                                    hydrogen.addElectron(free_electrons[e_index])
-                                    if (current_electrons.length < Constants().max_valence_electrons[current[0]]) {
-                                        current.addElectron(hydrogen[hydrogen.length - 2])
-                                    }
-                                    carry.addAtom(hydrogen)
-                                } else {
+                    if (false && current[0] === "N") {
+                        console.log(current[0])
+                        console.log(number_of_hydrogens_req)
+                        process.error()
+                    }
+                    range.range(0, number_of_hydrogens_req, 1).map(
+                        (e_index) => {
+                            if (undefined !== free_electrons[e_index]) {
+                                const current_electrons =  current.electrons()
+                                const hydrogen = AtomFactory('H', "", e_index + 1)
+                                hydrogen.addElectron(free_electrons[e_index])
+                                if (current_electrons.length < Constants().max_valence_electrons[current[0]]) {
+                                    current.addElectron(hydrogen[hydrogen.length - 2])
                                 }
+                                carry.addAtom(hydrogen)
+                            } else {
                             }
-                        )
+                        }
+                    )
+
+                    // ignore
+                    if (false) {
+                        if (base_number_of_hydrogens_required > 0) {
+                            const offset_map = {
+                                "O": 4,
+                                "N": 2,
+                                "C": 0,
+                            }
+                            let number_of_hydrogens_required = base_number_of_hydrogens_required - offset_map[current[0]]
+                            if (current[4] === "+") {
+                                number_of_hydrogens_required = number_of_hydrogens_required + 1
+                            } else if (current[4] === "-") {
+                                number_of_hydrogens_required = number_of_hydrogens_required - 1
+                            }
+                            range.range(0, number_of_hydrogens_required, 1).map(
+                                (e_index) => {
+                                    if (undefined !== free_electrons[e_index]) {
+                                        const current_electrons = electrons(current)
+                                        const hydrogen = AtomFactory('H', "", e_index + 1)
+                                        hydrogen.addElectron(free_electrons[e_index])
+                                        if (current_electrons.length < Constants().max_valence_electrons[current[0]]) {
+                                            current.addElectron(hydrogen[hydrogen.length - 2])
+                                        }
+                                        carry.addAtom(hydrogen)
+                                    } else {
+                                    }
+                                }
+                            )
+                        }
                     }
+                    // ignore
 
                 }
 
@@ -732,8 +838,8 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         []
     )
 
-    /*
-[O+]
+    /* CN coordinate covalent bond
+    C = xs8, N = xse
 [
   [
     'H',
@@ -741,9 +847,9 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     1,
     1,
     '',
-    'rzk',
-    'H_1_1agfey2kq5udrzm',
-    'O_2_1agfey2kq5udrze'
+    'xsl',
+    'xsl_1_1agfcdakqfs0xsn',
+    'xs8_1_1agfcdakqfs0xsa' (C bond)
   ],
   [
     'H',
@@ -751,9 +857,9 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     1,
     1,
     '',
-    'rzn',
-    'H_2_1agfey2kq5udrzp',
-    'O_2_1agfey2kq5udrzf'
+    'xso',
+    'xso_2_1agfcdakqfs0xsq',
+    'xs8_1_1agfcdakqfs0xsb' (C bond)
   ],
   [
     'H',
@@ -761,31 +867,64 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     1,
     1,
     '',
-    'rzq',
-    'H_3_1agfey2kq5udrzs',
-    'O_2_1agfey2kq5udrzg'
+    'xsr',
+    'xsr_3_1agfcdakqfs0xst', * missing bond to C
+    'xs8_1_1agfcdakqfs0xsc' (C bond)
   ],
   [
-    'O',
-    8,
+    'H',
+    1,
+    1,
+    1,
+    '',
+    'xsu',
+    'xsu_4_1agfcdakqfs0xsw', * missing bond to C, additional H
+    'xs8_1_1agfcdakqfs0xsd' (C bond)
+  ],
+  [
+    'C', 4 valence electrons + 1 from N, 4 bonds (3 hydrogen, 1 Nitrogen)
     6,
-    2,
-    '+',
-    'rzc',
-    'O_2_1agfey2kq5udrze',
-    'O_2_1agfey2kq5udrzf',
-    'O_2_1agfey2kq5udrzg',
-    'O_2_1agfey2kq5udrzh',
-    'O_2_1agfey2kq5udrzi',
-    'O_2_1agfey2kq5udrzj',
-    'H_1_1agfey2kq5udrzm',
-    'H_2_1agfey2kq5udrzp'
+    4,
+    4,
+    0,
+    'xs8',
+    'xs8_1_1agfcdakqfs0xsa',
+    'xs8_1_1agfcdakqfs0xsb',
+    'xs8_1_1agfcdakqfs0xsc',
+    'xs8_1_1agfcdakqfs0xsd',
+    'xse_2_1agfcdakqfs0xsj',
+    'xsl_1_1agfcdakqfs0xsn', (H bond 1)
+    'xso_2_1agfcdakqfs0xsq' (H bond 2)
+  ],
+  [
+    'H',
+    1,
+    1,
+    1,
+    '',
+    'xsx',
+    'xsx_1_1agfcdakqfs0xsz',
+    'xse_2_1agfcdakqfs0xsg' (bond to N)
+  ],
+  [
+    'N',  5 valence electrons, 3 bonds (2 hydrogen, 1 C) - missing second carbon bond
+    7,
+    5,
+    3,
+    0,
+    'xse',
+    'xse_2_1agfcdakqfs0xsg',
+    'xse_2_1agfcdakqfs0xsh',
+    'xse_2_1agfcdakqfs0xsi',
+    'xse_2_1agfcdakqfs0xsj',
+    'xse_2_1agfcdakqfs0xsk',
+    'xsx_1_1agfcdakqfs0xsz' (Bond to H)
   ]
 ]
 
      */
-    //console.log(atoms_with_hydrogens)
-    //process.error()
+ //   console.log(atoms_with_hydrogens)
+ //   process.error()
     const atoms_electrons_checked = []
     let i = 0
     for(i in atoms_with_hydrogens) {
@@ -1131,6 +1270,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
 //    process.error()
 
     /*
+    CN - Nitrogen should have 7 electrons as coordinate bond with C + 2 hydrogens (5 + 0 + 2)
 [
   [
     'H',
@@ -1138,9 +1278,9 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     1,
     1,
     '',
-    'o2h',
-    'H_1_1agff7wkq5uio2j',
-    'O_2_1agff7wkq5uio2b'
+    'zhv',
+    'zhv_1_1agfj5akqfv4zhx',
+    'zhi_1_1agfj5akqfv4zhk'
   ],
   [
     'H',
@@ -1148,9 +1288,9 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     1,
     1,
     '',
-    'o2k',
-    'H_2_1agff7wkq5uio2m',
-    'O_2_1agff7wkq5uio2c'
+    'zhy',
+    'zhy_2_1agfj5akqfv4zi0',
+    'zhi_1_1agfj5akqfv4zhl'
   ],
   [
     'H',
@@ -1158,30 +1298,65 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     1,
     1,
     '',
-    'o2n',
-    'H_3_1agff7wkq5uio2p',
-    'O_2_1agff7wkq5uio2d'
+    'zi1',
+    'zi1_3_1agfj5akqfv4zi3',
+    'zhi_1_1agfj5akqfv4zhm'
   ],
   [
-    'O',
-    8,
+    'C',
     6,
-    2,
-    '+',
-    'o29',
-    'O_2_1agff7wkq5uio2b',
-    'O_2_1agff7wkq5uio2c',
-    'O_2_1agff7wkq5uio2d',
-    'O_2_1agff7wkq5uio2e',
-    'O_2_1agff7wkq5uio2f',
-    'O_2_1agff7wkq5uio2g',
-    'H_1_1agff7wkq5uio2j',
-    'H_2_1agff7wkq5uio2m'
+    4,
+    4,
+    0,
+    'zhi',
+    'zhi_1_1agfj5akqfv4zhk',
+    'zhi_1_1agfj5akqfv4zhl',
+    'zhi_1_1agfj5akqfv4zhm',
+    'zhi_1_1agfj5akqfv4zhn',
+    'zho_2_1agfj5akqfv4zht',
+    'zhv_1_1agfj5akqfv4zhx',
+    'zhy_2_1agfj5akqfv4zi0',
+    'zi1_3_1agfj5akqfv4zi3'
+  ],
+  [
+    'H',
+    1,
+    1,
+    1,
+    '',
+    'zi4',
+    'zi4_1_1agfj5akqfv4zi6',
+    'zho_2_1agfj5akqfv4zhq'
+  ],
+  [
+    'H',
+    1,
+    1,
+    1,
+    '',
+    'zi7',
+    'zi7_2_1agfj5akqfv4zi9',
+    'zho_2_1agfj5akqfv4zhr'
+  ],
+  [
+    'N',
+    7,
+    5,
+    3,
+    0,
+    'zho',
+    'zho_2_1agfj5akqfv4zhq',
+    'zho_2_1agfj5akqfv4zhr',
+    'zho_2_1agfj5akqfv4zhs',
+    'zho_2_1agfj5akqfv4zht',
+    'zho_2_1agfj5akqfv4zhu',
+    'zi4_1_1agfj5akqfv4zi6',
+    'zi7_2_1agfj5akqfv4zi9'
   ]
 ]
 
      */
-  //  console.log(atoms_electrons_checked)
+   //console.log(atoms_electrons_checked)
    // process.error()
 
     // Remove hydrogens with no bonds
@@ -1221,7 +1396,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         a.push(i)
         return a
     }))
-    // console.log(atomssorted)
+
 */
     //return atoms_sorted
 

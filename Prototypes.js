@@ -71,11 +71,22 @@ const Prototypes = () => {
     Object.defineProperty(Array.prototype, 'freeElectrons', {
         value: function(atoms) {
 
+
             Typecheck(
                 {name:"symbol", value:this[0], type:"string"},
                 {name:"atom_id", value:this[5], type:"string"},
                 {name:"atoms", value:atoms, type:"array"},
             )
+
+            if (false && this[0] !== "H" && this.hydrogens(atoms).length > 0) {
+                console.log(this[0])
+                console.log(this.hydrogens(atoms).length)
+                console.log("atoms")
+                console.log(atoms)
+                console.log("bonds")
+                console.log(this.bonds(atoms))
+                process.error()
+            }
 
             if (atoms === null || atoms === undefined) {
                 throw new Error("Atoms are null or undefined")
@@ -96,6 +107,7 @@ const Prototypes = () => {
                     return electron_haystack.indexOf(electron) === -1
                 }
             )
+
 
             return free_electrons
         }
