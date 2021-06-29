@@ -73,8 +73,11 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
             return true
         }
     )
-    //  console.log(atoms_with_tokens_no_brackets)
-  //  process.error()
+    /*
+    [ [ 'C', 6, 4, 4, 0, 'w13' ], [ 'N', 7, 5, 3, 0, 'w15' ] ]
+     */
+   //   console.log(atoms_with_tokens_no_brackets)
+   // process.error()
 
     // Add the bonds and branches
     let branch_number = 0
@@ -184,6 +187,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                     // Standard covalent bond - both atoms donate an electron
                     //row.push(parent_electrons_to_share[0])
                     row.bondAtomToAtom(processed_atoms[parent_atom_index], processed_atoms)
+                    row[0].should.be.a.String()
                     if (bond_type === "=") {
                         //row.push(parent_electrons_to_share[1])
                         row.bondAtomToAtom(processed_atoms[parent_atom_index])
@@ -209,6 +213,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                 }
                 branch_tracker[branch_number].push([index, row[0]])
                 is_new_branch = false
+                row[0].should.be.a.String()
                 res = row // is an atom
             } else if (row.type === 'Bond') {
                 res = row // remove row in the next phase as we still need it
@@ -246,11 +251,22 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     )
 
     /*
-
-
+    CN
+[
+  [
+    'C',   6, 4,
+    4,     0, '2t2',
+    '2t4'
+  ],
+  [
+    'N',   7, 5,
+    3,     0, '2t4',
+    '2t2'
+  ]
+]
      */
-    console.log(atoms_with_bonds)
-    process.error()
+    //console.log(atoms_with_bonds)
+    //process.error()
 
 
 
@@ -266,28 +282,19 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
    CN
 [
   [
-    'C'
-    6,
-    4,
-    4,
-    0,
-    'dyh',
-    'dyn'
+    'C',   6, 4,
+    4,     0, 'w2q',
+    'w2s'
   ],
   [
-    'N',
-    7,
-    5,
-    3,
-    0,
-    'dyn',
-    'dyh'
+    'N',   7, 5,
+    3,     0, 'w2s',
+    'w2q'
   ]
 ]
-
      */
-  //  console.log(atoms)
-  //  process.error()
+   //console.log(atoms)
+   //process.error()
 
 
     let ring_bond_atom_index = null
@@ -328,8 +335,24 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
        return atom.type !== "Ringbond"
     })
 
-    //console.log(atoms_with_ring_bonds)
-    //process.error()
+    /*
+    CN
+    [
+  [
+    'C',   6, 4,
+    4,     0, 'tol',
+    'ton'
+  ],
+  [
+    'N',   7, 5,
+    3,     0, 'ton',
+    'tol'
+  ]
+]
+
+     */
+   // console.log(atoms_with_ring_bonds)
+    // process.error()
 
 
 
@@ -351,38 +374,23 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     )
 
 /*
-CN coordinate covalent bond
+CN
 [
   [
-    'C', - 4 valence electrons + 1 from N
-    6,
-    4,
-    4,
-    0,
-    'myr',
-    'myr_1_1agfbwokqfrumyt',
-    'myr_1_1agfbwokqfrumyu',
-    'myr_1_1agfbwokqfrumyv',
-    'myr_1_1agfbwokqfrumyw',
-    'myx_2_1agfbwokqfrumz2',
+    'C',   6, 4,
+    4,     0, 'k6d',
+    'k6f'
   ],
   [
-    'N', - 5 valence electrons
-    7,
-    5,
-    3,
-    0,
-    'myx',
-    'myx_2_1agfbwokqfrumyz',
-    'myx_2_1agfbwokqfrumz0',
-    'myx_2_1agfbwokqfrumz1',
-    'myx_2_1agfbwokqfrumz2',
-    'myx_2_1agfbwokqfrumz3'
+    'N',   7, 5,
+    3,     0, 'k6f',
+    'k6d'
   ]
 ]
+
  */
-   // console.log(atoms_with_charges)
-   // process.error()
+   console.log(atoms_with_charges)
+    process.error()
 
     // Add hydrogens
     const molecule = [[12345,atoms_with_charges],1]

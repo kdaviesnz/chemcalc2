@@ -69,9 +69,14 @@ const Prototypes = () => {
             const target_atom_max_number_bonds_allowed = this.atomMaxNumberOfBonds() === undefined?this.neutralAtomMaxNumberOfBonds():this.atomMaxNumberOfBonds
             const source_atom_max_number_bonds_allowed = source_atom.atomMaxNumberOfBonds() === undefined?source_atom.neutralAtomMaxNumberOfBonds():source_atom.atomMaxNumberOfBonds
 
+            source_atom[0].should.be.a.String()
+            this[0].should.be.a.String()
+
             if (this.bondCount(atoms) + 1 > target_atom_max_number_bonds_allowed) {
                 throw new Error("Target atom already has enough bonds")
             }
+            source_atom[0].should.be.a.String()
+            this[0].should.be.a.String()
 
             if (source_atom.bondCount(atoms) + 1 > source_atom_max_number_bonds_allowed) {
                 throw new Error("Source atom already has enough bonds")
@@ -81,6 +86,9 @@ const Prototypes = () => {
             // Note: This will add a double or triple bond if there is already a bond.
             this.push(source_atom.atomId())
             source_atom.push(this.atomId())
+
+            source_atom[0].should.be.a.String()
+            this[0].should.be.a.String()
 
         }
     })
@@ -131,6 +139,9 @@ const Prototypes = () => {
             if (atoms === undefined || atoms=== null) {
                 throw new Error("Atoms are undefined or null")
             }
+
+            this[0].should.be.a.String()
+
             return this.indexedBonds(atoms).length + (this.indexedDoubleBonds(atoms).length * 2)  + (this.indexedTripleBonds(atoms).length * 3)
         }
     })
@@ -434,7 +445,7 @@ const Prototypes = () => {
                     }
 
                     // current atom is equal to parent atom (this)
-                    if ((_.isEqual((this).sort(), (_atom).sort()))) {
+                    if ((_.isEqual(_.cloneDeep(this).sort(), _.cloneDeep(_atom).sort()))) {
                         return bonds
                     }
 
@@ -482,7 +493,7 @@ const Prototypes = () => {
                     }
 
                     // current atom is equal to parent atom (this)
-                    if ((_.isEqual((this).sort(), (_atom).sort()))) {
+                    if ((_.isEqual(_.cloneDeep(this).sort(), _.cloneDeep(_atom).sort()))) {
                         return bonds
                     }
 
@@ -532,7 +543,7 @@ const Prototypes = () => {
                     }
 
                     // current atom is equal to parent atom (this)
-                    if ((_.isEqual((this).sort(), (_atom).sort()))) {
+                    if ((_.isEqual(_.cloneDeep(this).sort(), _.cloneDeep(_atom).sort()))) {
                         return bonds
                     }
 
@@ -550,12 +561,15 @@ const Prototypes = () => {
                         })
                     }
 
+                    this[0].should.be.a.String()
+
+
                     return bonds
 
                 },
                 []
             )
-
+            this[0].should.be.a.String()
             return r
         }
     })
