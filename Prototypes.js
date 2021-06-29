@@ -28,10 +28,8 @@ const Prototypes = () => {
                 throw new Error("Source atoms are undefined or null")
             }
 
-            target_atom[0].should.be.an.Array()
-            target_atom[0][0].should.be.a.String()
-            source_atom[0].should.be.an.Array()
-            source_atom[0][0].should.be.a.String()
+            target_atom[0].should.be.a.String()
+            source_atom[0].should.be.a.String()
 
             // Source atom should have at least one non hydrogen bond
             if(source_atom.singleBondsNoHydrogens(this).length === 0 && source_atom.doubleBondsNoHydrogens(this).length === 0 && source_atom.doubleBondsNoHydrogens(this).length === 0) {
@@ -53,32 +51,36 @@ const Prototypes = () => {
         }
     })
     Object.defineProperty(Array.prototype, 'bondAtomToAtom', {
-        value: function(source_atom) {
+        value: function(source_atom, atoms) {
             // "this" is target atom
             Typecheck(
                 {name:"source_atom", value:source_atom, type:"array"},
+                {name:"atoms", value:atoms, type:"array"}
             )
 
-            source_atom[0].should.be.an.Array()
-            source_atom[0][0].should.be.a.String()
-            this[0].should.be.an.Array()
-            this[0][0].should.be.a.String()
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("atoms are undefined or null")
+            }
+
+            source_atom[0].should.be.a.String()
+            this[0].should.be.a.String()
 
             // Check we can add a bond
             const target_atom_max_number_bonds_allowed = this.atomMaxNumberOfBonds() === undefined?this.neutralAtomMaxNumberOfBonds():this.atomMaxNumberOfBonds
             const source_atom_max_number_bonds_allowed = source_atom.atomMaxNumberOfBonds() === undefined?source_atom.neutralAtomMaxNumberOfBonds():source_atom.atomMaxNumberOfBonds
 
-            if (this.bondCount() + 1 > target_atom_max_number_bonds_allowed) {
+            if (this.bondCount(atoms) + 1 > target_atom_max_number_bonds_allowed) {
                 throw new Error("Target atom already has enough bonds")
             }
 
-            if (source_atom.bondCount() + 1 > source_atom_max_number_bonds_allowed) {
+            if (source_atom.bondCount(atoms) + 1 > source_atom_max_number_bonds_allowed) {
                 throw new Error("Source atom already has enough bonds")
             }
 
             // All checks done. Add source atom to "this".
             // Note: This will add a double or triple bond if there is already a bond.
             this.push(source_atom.atomId())
+            source_atom.push(this.atomId())
 
         }
     })
@@ -127,11 +129,9 @@ const Prototypes = () => {
             )
 
             if (atoms === undefined || atoms=== null) {
-                throw new Error("Atoms are  undefined or null")
+                throw new Error("Atoms are undefined or null")
             }
-
-            return this.indexedBonds().length + (this.indexedDoubleBonds().length * 2)  + (this.indexedTripleBonds().length * 3)
-
+            return this.indexedBonds(atoms).length + (this.indexedDoubleBonds(atoms).length * 2)  + (this.indexedTripleBonds(atoms).length * 3)
         }
     })
     Object.defineProperty(Array.prototype, 'removeHydrogenOnCarbonBond', {
@@ -414,7 +414,7 @@ const Prototypes = () => {
         }
     })
     Object.defineProperty(Array.prototype, 'indexedTripleBonds', {
-        value: function(sibling_atom) {
+        value: function(atoms) {
             Typecheck(
                 {name:"atoms", value:atoms, type:"array"}
             )
@@ -457,10 +457,12 @@ const Prototypes = () => {
                 },
                 []
             )
+
+            return r
         }
     })
     Object.defineProperty(Array.prototype, 'indexedDoubleBonds', {
-        value: function(sibling_atom) {
+        value: function(atoms) {
             Typecheck(
                 {name:"atoms", value:atoms, type:"array"}
             )
@@ -503,6 +505,8 @@ const Prototypes = () => {
                 },
                 []
             )
+
+            return r
 
         }
     })
