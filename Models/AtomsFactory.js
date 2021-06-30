@@ -200,12 +200,12 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
                     row[0].should.be.a.String()
                     if (bond_type === "=") {
                         //row.push(parent_electrons_to_share[1])
-                        row.bondAtomToAtom(processed_atoms[parent_atom_index])
+                        row.bondAtomToAtom(processed_atoms[parent_atom_index], processed_atoms)
                     }
                     if (bond_type === "#") {
                         //row.push(parent_electrons_to_share[1])
                         //row.push(parent_electrons_to_share[2])
-                        row.bondAtomToAtom(processed_atoms[parent_atom_index])
+                        row.bondAtomToAtom(processed_atoms[parent_atom_index], processed_atoms)
                     }
                     // Push electrons to parent atom
                     //processed_atoms[parent_atom_index].push(current_atom_electrons_to_share[0])

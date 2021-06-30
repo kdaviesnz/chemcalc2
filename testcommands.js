@@ -32,15 +32,16 @@ process.error()
 // 2 hydrogens on nitrogen, 3 hydrogens on carbon
 // Both carbon and nitrogen have 1 non-hydrogen bond and should be bonded to each other.
 const m = MoleculeFactory("CN")
-//console.log(m[1][5].hydrogens(m[1]))
-//process.error()
 console.log(VMolecule([m,1]).compressed())
+const test2 = MoleculeFactory("C=N") // [pka,atoms]
+console.log(test2[1][4])
+console.log(test2[1][8])
+test2[1][4].indexedDoubleBonds(test2[1]).length.should.be.equal(1)
+console.log(VMolecule([test2,1]).compressed())
 process.error()
 
 /*
 // N has 1 hydrogen, C has 2.
-const test2 = MoleculeFactory("C=N") // [pka,atoms]
-console.log(VMolecule([test2,1]).compressed())
 const m = MoleculeFactory("CN")
 const test2 = MoleculeFactory("[O+]")
 let me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
