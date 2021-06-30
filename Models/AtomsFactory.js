@@ -43,12 +43,22 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }
     )
 
+    // Check that there are no bonds
+    atoms_with_tokens.map((atom)=>{
+        if (atom.length !==undefined) {
+            if (atom.bondCount(atoms_with_tokens.filter((a)=>{
+                return a.length !==undefined
+            })) !==0) {
+                throw new Error("Atom should have no bonds")
+            }
+        }
+    })
+
 /* CN
 [[ [ 'C', 6, 4, 4, 0, '68y' ], [ 'N', 7, 5, 3, 0, '690' ] ]
-
  */
-  //  console.log(atoms_with_tokens)
-  //  process.error()
+//   console.log(atoms_with_tokens)
+ //   process.error()
 
     // Filter out brackets
     const w = _.cloneDeep(atoms_with_tokens).filter(
@@ -267,7 +277,10 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
      */
     //console.log(atoms_with_bonds)
     //process.error()
-
+    if(canonicalSMILES==="CN"){
+        atoms_with_bonds[0].bondCount(atoms_with_bonds).should.be.equal(1)
+        atoms_with_bonds[1].bondCount(atoms_with_bonds).should.be.equal(1)
+    }
 
 
     // Remove bonds using filter
@@ -389,90 +402,28 @@ CN
 ]
 
  */
-   console.log(atoms_with_charges)
-    process.error()
+   //console.log(atoms_with_charges)
+    //process.error()
 
     // Add hydrogens
     const molecule = [[12345,atoms_with_charges],1]
     const atoms_with_hydrogens = atoms_with_charges.reduce(
         (carry, current, index, arr) => {
 
-            /*
-            [
-  'C',
-  6,
-  4,
-  4,
-  0,
-  'zwv',
-  'C_1_3bdk46sbkq4rjzwx',
-  'C_1_3bdk46sbkq4rjzwy',
-  'C_1_3bdk46sbkq4rjzwz',
-  'C_1_3bdk46sbkq4rjzx0',
-  'C_2_3bdk46sbkq4rjzx6'
-]
-             */
-        //    process.error()
-
-            if (typeof current.length === "number" && current[0]!=='H') { // we have an atom
-
-
-
-                const free_electrons = current.freeElectrons(atoms_with_charges)
-
+            if (typeof current.length === "number" && current[0]!=='H') {
+                // we have an atom
                 // Add hydrogens where we have a hydrogen count
                 if (atoms_with_charges[index+1] !== undefined && atoms_with_charges[index+1]['type'] !== undefined && atoms_with_charges[index+1]['type'] === "HydrogenCount") {
-
                     range.range(0, atoms_with_charges[index+1]['value'],1).map(
-                        (e_index) => {
-                            if (undefined !== free_electrons[e_index]) { // free electrons from the current atom (not hydrogen)
-                                const current_electrons = electrons(current)
-                                const hydrogen = AtomFactory('H', "", e_index + 1)
-                                hydrogen.addElectron(free_electrons[e_index])
-                                if (current_electrons.length < Constants().max_valence_electrons[current[0]]) {
-                                    current.push(hydrogen[hydrogen.length - 2])
-                                }
-                                carry.push(hydrogen)
-                            } else {
-                            }
+                        (i) => {
+                            const hydrogen = AtomFactory('H', "", i + 1)
+                            //hydrogen.addElectron(free_electrons[i])
+                            //current.push(hydrogen[hydrogen.length - 2])
+                            current.bondAtomToAtom(hydrogen, atoms_with_charges)
+                            carry.addAtom(hydrogen)
                         }
                     )
                 }  else {
-
-                    // [O+]
-                    /*
-                    [
-  'O',
-  8,
-  6,
-  2,
-  '+',
-  'gns',
-  'O_2_1agf8uikq5rugnu',
-  'O_2_1agf8uikq5rugnv',
-  'O_2_1agf8uikq5rugnw',
-  'O_2_1agf8uikq5rugnx',
-  'O_2_1agf8uikq5rugny',
-  'O_2_1agf8uikq5rugnz'
-]
-3 hydrogens
-                     */
-                    //console.log(atoms_with_charges)
-                    //console.log(current)
-                    //console.log(free_electrons)
-                    //process.error()
-
-                    // ignore
-                    if (false) {
-                        let base_number_of_hydrogens_required = 0
-                        if (current[0] === "Hg" || current[0] === "Ac") {
-                            base_number_of_hydrogens_required = 0
-                        } else {
-                            base_number_of_hydrogens_required = free_electrons.length
-                        }
-                        //
-                    }
-
                     // @todo assumes atom is one of C,N,O
                     const offset_map = {
                         "O": 6,
@@ -485,63 +436,17 @@ CN
                     } else if (current[4] === "-") {
                         number_of_hydrogens_req = number_of_hydrogens_req - 1
                     }
-
-                    if (false && current[0] === "N") {
-                        console.log(current[0])
-                        console.log(number_of_hydrogens_req)
-                        process.error()
-                    }
                     range.range(0, number_of_hydrogens_req, 1).map(
                         (e_index) => {
-                            if (undefined !== free_electrons[e_index]) {
-                                const current_electrons =  current.electrons()
-                                const hydrogen = AtomFactory('H', "", e_index + 1)
-                                hydrogen.addElectron(free_electrons[e_index])
-                                if (current_electrons.length < Constants().max_valence_electrons[current[0]]) {
-                                    current.addElectron(hydrogen[hydrogen.length - 2])
-                                }
-                                carry.addAtom(hydrogen)
-                            } else {
-                            }
+                            const hydrogen = AtomFactory('H', "", e_index + 1)
+                            //hydrogen.addElectron(free_electrons[e_index])
+                            //current.addElectron(hydrogen[hydrogen.length - 2])
+                            current.bondAtomToAtom(hydrogen, atoms_with_charges)
+                            carry.addAtom(hydrogen)
                         }
                     )
-
-                    // ignore
-                    if (false) {
-                        if (base_number_of_hydrogens_required > 0) {
-                            const offset_map = {
-                                "O": 4,
-                                "N": 2,
-                                "C": 0,
-                            }
-                            let number_of_hydrogens_required = base_number_of_hydrogens_required - offset_map[current[0]]
-                            if (current[4] === "+") {
-                                number_of_hydrogens_required = number_of_hydrogens_required + 1
-                            } else if (current[4] === "-") {
-                                number_of_hydrogens_required = number_of_hydrogens_required - 1
-                            }
-                            range.range(0, number_of_hydrogens_required, 1).map(
-                                (e_index) => {
-                                    if (undefined !== free_electrons[e_index]) {
-                                        const current_electrons = electrons(current)
-                                        const hydrogen = AtomFactory('H', "", e_index + 1)
-                                        hydrogen.addElectron(free_electrons[e_index])
-                                        if (current_electrons.length < Constants().max_valence_electrons[current[0]]) {
-                                            current.addElectron(hydrogen[hydrogen.length - 2])
-                                        }
-                                        carry.addAtom(hydrogen)
-                                    } else {
-                                    }
-                                }
-                            )
-                        }
-                    }
-                    // ignore
-
                 }
-
             }
-
             if(current['type'] === undefined) {
                 carry.addAtom(current)
             }
@@ -550,541 +455,62 @@ CN
         []
     )
 
-    /* CN coordinate covalent bond
-    C = xs8, N = xse
+    /* CN
 [
   [
-    'H',
-    1,
-    1,
-    1,
-    '',
-    'xsl',
-    'xsl_1_1agfcdakqfs0xsn',
-    'xs8_1_1agfcdakqfs0xsa' (C bond)
+    'H',   1,  1,
+    1,     '', 'c2c',
+    'c1z'
   ],
   [
-    'H',
-    1,
-    1,
-    1,
-    '',
-    'xso',
-    'xso_2_1agfcdakqfs0xsq',
-    'xs8_1_1agfcdakqfs0xsb' (C bond)
+    'H',   1,  1,
+    1,     '', 'c2e',
+    'c1z'
   ],
   [
-    'H',
-    1,
-    1,
-    1,
-    '',
-    'xsr',
-    'xsr_3_1agfcdakqfs0xst', * missing bond to C
-    'xs8_1_1agfcdakqfs0xsc' (C bond)
+    'H',   1,  1,
+    1,     '', 'c2g',
+    'c1z'
   ],
   [
-    'H',
-    1,
-    1,
-    1,
-    '',
-    'xsu',
-    'xsu_4_1agfcdakqfs0xsw', * missing bond to C, additional H
-    'xs8_1_1agfcdakqfs0xsd' (C bond)
+    'C',   6,     4,
+    4,     0,     'c1z',
+    'c21', 'c2c', 'c2e',
+    'c2g'
   ],
   [
-    'C', 4 valence electrons + 1 from N, 4 bonds (3 hydrogen, 1 Nitrogen)
-    6,
-    4,
-    4,
-    0,
-    'xs8',
-    'xs8_1_1agfcdakqfs0xsa',
-    'xs8_1_1agfcdakqfs0xsb',
-    'xs8_1_1agfcdakqfs0xsc',
-    'xs8_1_1agfcdakqfs0xsd',
-    'xse_2_1agfcdakqfs0xsj',
-    'xsl_1_1agfcdakqfs0xsn', (H bond 1)
-    'xso_2_1agfcdakqfs0xsq' (H bond 2)
+    'H',   1,  1,
+    1,     '', 'c2m',
+    'c21'
   ],
   [
-    'H',
-    1,
-    1,
-    1,
-    '',
-    'xsx',
-    'xsx_1_1agfcdakqfs0xsz',
-    'xse_2_1agfcdakqfs0xsg' (bond to N)
+    'H',   1,  1,
+    1,     '', 'c2o',
+    'c21'
   ],
   [
-    'N',  5 valence electrons, 3 bonds (2 hydrogen, 1 C) - missing second carbon bond
-    7,
-    5,
-    3,
-    0,
-    'xse',
-    'xse_2_1agfcdakqfs0xsg',
-    'xse_2_1agfcdakqfs0xsh',
-    'xse_2_1agfcdakqfs0xsi',
-    'xse_2_1agfcdakqfs0xsj',
-    'xse_2_1agfcdakqfs0xsk',
-    'xsx_1_1agfcdakqfs0xsz' (Bond to H)
+    'N',   7,     5,
+    3,     0,     'c21',
+    'c1z', 'c2m', 'c2o'
   ]
 ]
 
      */
- //   console.log(atoms_with_hydrogens)
- //   process.error()
-    const atoms_electrons_checked = []
-    let i = 0
-    for(i in atoms_with_hydrogens) {
-        const atom = atoms_with_hydrogens[i]
-        const bond_count = atom.indexedBonds((atoms_with_hydrogens)).length
-            + atom.indexedDoubleBonds((atoms_with_hydrogens)).length
-            + atom.indexedTripleBonds((atoms_with_hydrogens)).length
-        const free_electrons = atom.freeElectrons(atoms_with_hydrogens)
-        const electrons = atom.slice(Constants().electron_index)
 
-        if (atom[4] === "" || atom[4] === 0) {
-            switch (atom[0]) {
-                case "O":
-                    if (bond_count > 3) {
-                        if (atom.hydrogens(atoms_with_hydrogens).length > 0) {
-                            // Remove a hydrogen
-                            const h_bonds = atom.indexedBonds(atoms_with_hydrogens).filter((bond) => {
-                                return bond.atom[0] === "H"
-                            })
-                            _.remove(atom, (electron) => {
-                                return electron === h_bonds[0].shared_electrons[0] || electron === h_bonds[0].shared_electrons[1]
-                            })
-                            atom.push(uniqid())
-                        }
-                    }
-                    if (bond_count > 2) {
-                        atom[4] = "+"
-                    }
-                    break;
-                case "N":
-
-                    if (bond_count > 4) {
-                        if (atom.hydrogens(atoms_with_hydrogens).length > 0) {
-                            // Remove a hydrogen
-                            const h_bonds = atom.indexedBonds(atoms_with_hydrogens).filter((bond) => {
-                                return bond.atom[0] === "H"
-                            })
-                            _.remove(atom, (electron) => {
-                                return electron === h_bonds[0].shared_electrons[0] || electron === h_bonds[0].shared_electrons[1]
-                            })
-                            atom.push(uniqid())
-                        }
-                    }
-                    if (bond_count > 3) {
-                        atom[4] = "+"
-                    }
-                    if (bond_count === 2) {
-                        // @see BondsAI addHydrogen()
-                        const hydrogen_arr = AtomFactory("H", "")
-                        const hydrogen_electron_to_share = hydrogen_arr[hydrogen_arr.length - 1]
-                        const atom_free_electrons = atom.freeElectrons(atoms_with_hydrogens)
-                        atom.addElectron(hydrogen_electron_to_share)
-                        hydrogen_arr.addElectron(atom_free_electrons[0], "H")
-                        atoms_electrons_checked.addAtom(hydrogen_arr)
-
-                    }
-                    break;
-                case "C":
-                    // // console.log('Bond count on C:'+bond_count+" " + index)
-                    if (bond_count === 5) {
-                        if (atom.hydrogens(atoms_with_hydrogens).length > 0) {
-                            // Remove a hydrogen
-                            const h_bonds = atom.indexedBonds(atoms_with_hydrogens).filter((bond) => {
-                                return bond.atom[0] === "H"
-                            })
-                            _.remove(atom, (electron) => {
-                                return electron === h_bonds[0].shared_electrons[0] || electron === h_bonds[0].shared_electrons[1]
-                            })
-                            atom.push(uniqid())
-                        }
-                    }
-                    if (bond_count === 4) {
-                        if (atom.freeElectrons((atoms_with_hydrogens)).length !== 0) {
-                            // // console.log(atom.indexedBonds(""))
-                            atom.indexedBonds((atoms_with_hydrogens)).map((bond) => {
-                                // // console.log("Bond type:"+bond.bond_type)
-                                // // console.log(bond.shared_electrons)
-                                return bond
-                            })
-                            // // console.log(atom)
-                            // // console.log(jjklkjkl)
-                        }
-                    }
-                    break;
-            }
+    // Check each hydrogen only has one bond
+    atoms_with_hydrogens.map((atom)=>{
+        if (atom[0]==="H") {
+            atom.bondCount(atoms_with_hydrogens).should.be.equal(1)
         }
-        if (atom[4] === "+") {
-            switch (atom[0]) {
-                case "O":
-                    if (6 + bond_count === electrons.length) {
-                        _.remove(atom, (item)=>{
-                            return item === free_electrons[0]
-                        })
-                    }
-                    break
-                case "N":
-                    if (5 + bond_count === electrons.length) {
-                        _.remove(atom, (item)=>{
-                            return item === free_electrons[0]
-                        })
-                    }
-                    break
-                case "C":
-                    // @see https://socratic.org/questions/how-is-carbocation-formed
-                    /*
-                    A carbocation is an organic molecule, an intermediate, that forms as a result of the loss of two valence electrons, normally shared electrons, from a carbon atom that already has four bonds. This leads to the formation of a carbon atom bearing a positive charge and three bonds instead of four. The whole molecule holding the positively charged carbon atom is referred to as a carbocation intermediate.
-                     */
-                    if (bond_count === 4 && (4 + bond_count) === electrons.length) {
-                        _.remove(atom, (item)=>{
-                            return item === electrons[0]
-                        })
-                        _.remove(atom, (item)=>{
-                            return item === electrons[1]
-                        })
-                    }
-                    break
-
-            }
-        }
-        if (atom[4] === "-") {
-            switch (atom[0]) {
-                case "O":
-                    if (6 + bond_count === electrons.length && electrons.length + 1 < 9) {
-                        atom.push(uniqid())
-                    }
-                    if (bond_count === 2) {
-                        // Remove a hydrogen
-                        const h_bonds = atom.indexedBonds("").filter((bond)=>{
-                            return bond.atom[0] === "H"
-                        })
-                        _.remove(atom, (electron)=>{
-                            return electron === h_bonds[0].shared_electrons[0] || electron === h_bonds[0].shared_electrons[1]
-                        })
-                        atom.push(uniqid())
-                        atom.push(uniqid())
-                    }
-                    break
-                case "N":
-                    if (5 + bond_count === electrons.length && electrons.length + 1 < 9) {
-                        atom.push(uniqid())
-                    }
-                    if (bond_count === 3) {
-                        // Remove a hydrogen
-                        const h_bonds = atom.indexedBonds("").filter((bond)=>{
-                            return bond.atom[0] === "H"
-                        })
-                        _.remove(atom, (electron)=>{
-                            return electron === h_bonds[0].shared_electrons[0] || electron === h_bonds[0].shared_electrons[1]
-                        })
-                        atom.push(uniqid())
-                        atom.push(uniqid())
-                    }
-                    break
-                case "C":
-                    if (4 + bond_count === electrons.length) {
-                        atom.push(uniqid())
-                    }
-                    break
-
-            }
-        }
-
-        atoms_electrons_checked.addAtom(atom)
-        //console.log(atom[0] + atom.hydrogens(atoms_electrons_checked).length)
-
-
-    }
-
-
-    if (false) {
-        const xatoms_electrons_checked = atoms_with_hydrogens.map((atom, index, arr) => {
-            const o_atom = atom
-
-            const bond_count = o_atom.indexedBonds((atoms_with_hydrogens)).length
-                + o_atom.indexedDoubleBonds((atoms_with_hydrogens)).length
-                + o_atom.indexedTripleBonds((atoms_with_hydrogens)).length
-            const free_electrons = o_atom.freeElectrons(atoms_with_hydrogens)
-            const electrons = atom.slice(Constants().electron_index)
-
-            if (atom[4] === "" || atom[4] === 0) {
-                switch (atom[0]) {
-                    case "O":
-                        if (bond_count > 3) {
-                            if (o_atom.hydrogens(atoms_with_hydrogens).length > 0) {
-                                // Remove a hydrogen
-                                const h_bonds = o_atom.indexedBonds(atoms_with_hydrogens).filter((bond) => {
-                                    return bond.atom[0] === "H"
-                                })
-                                _.remove(atom, (electron) => {
-                                    return electron === h_bonds[0].shared_electrons[0] || electron === h_bonds[0].shared_electrons[1]
-                                })
-                                atom.push(uniqid())
-                            }
-                        }
-                        if (bond_count > 2) {
-                            atom[4] = "+"
-                        }
-                        break;
-                    case "N":
-
-                        if (bond_count > 4) {
-                            if (o_atom.hydrogens(atoms_with_hydrogens).length > 0) {
-                                // Remove a hydrogen
-                                const h_bonds = o_atom.indexedBonds(atoms_with_hydrogens).filter((bond) => {
-                                    return bond.atom[0] === "H"
-                                })
-                                _.remove(atom, (electron) => {
-                                    return electron === h_bonds[0].shared_electrons[0] || electron === h_bonds[0].shared_electrons[1]
-                                })
-                                atom.push(uniqid())
-                            }
-                        }
-                        if (bond_count > 3) {
-                            atom[4] = "+"
-                        }
-                        if (bond_count === 2) {
-                            // @see BondsAI addHydrogen()
-                            const hydrogen_arr = AtomFactory("H", "")
-                            const hydrogen_electron_to_share = hydrogen_arr[hydrogen_arr.length - 1]
-                            const atom_free_electrons = atom.freeElectrons(atoms_with_hydrogens)
-                            atom.addElectron(hydrogen_electron_to_share)
-                            hydrogen_arr.addElectron(atom_free_electrons[0], "H")
-                            arr.addAtom(hydrogen_arr)
-
-                        }
-                        break;
-                    case "C":
-                        // // console.log('Bond count on C:'+bond_count+" " + index)
-                        if (bond_count === 5) {
-                            if (o_atom.hydrogens(atoms_with_hydrogens).length > 0) {
-                                // Remove a hydrogen
-                                const h_bonds = o_atom.indexedBonds(atoms_with_hydrogens).filter((bond) => {
-                                    return bond.atom[0] === "H"
-                                })
-                                _.remove(atom, (electron) => {
-                                    return electron === h_bonds[0].shared_electrons[0] || electron === h_bonds[0].shared_electrons[1]
-                                })
-                                atom.push(uniqid())
-                            }
-                        }
-                        if (bond_count === 4) {
-                            if (o_atom.freeElectrons((atoms_with_hydrogens)).length !== 0) {
-                                // // console.log(o_atom.indexedBonds(""))
-                                o_atom.indexedBonds((atoms_with_hydrogens)).map((bond) => {
-                                    // // console.log("Bond type:"+bond.bond_type)
-                                    // // console.log(bond.shared_electrons)
-                                    return bond
-                                })
-                                // // console.log(atom)
-                                // // console.log(jjklkjkl)
-                            }
-                        }
-                        break;
-                }
-            }
-            if (atom[4] === "+") {
-                switch (atom[0]) {
-                    case "O":
-                        if (6 + bond_count === electrons.length) {
-                            _.remove(atom, (item) => {
-                                return item === free_electrons[0]
-                            })
-                        }
-                        break
-                    case "N":
-                        if (5 + bond_count === electrons.length) {
-                            _.remove(atom, (item) => {
-                                return item === free_electrons[0]
-                            })
-                        }
-                        break
-                    case "C":
-                        // @see https://socratic.org/questions/how-is-carbocation-formed
-                        /*
-                        A carbocation is an organic molecule, an intermediate, that forms as a result of the loss of two valence electrons, normally shared electrons, from a carbon atom that already has four bonds. This leads to the formation of a carbon atom bearing a positive charge and three bonds instead of four. The whole molecule holding the positively charged carbon atom is referred to as a carbocation intermediate.
-                         */
-                        if (bond_count === 4 && (4 + bond_count) === electrons.length) {
-                            _.remove(atom, (item) => {
-                                return item === electrons[0]
-                            })
-                            _.remove(atom, (item) => {
-                                return item === electrons[1]
-                            })
-                        }
-                        break
-
-                }
-            }
-            if (atom[4] === "-") {
-                switch (atom[0]) {
-                    case "O":
-                        if (6 + bond_count === electrons.length && electrons.length + 1 < 9) {
-                            atom.push(uniqid())
-                        }
-                        if (bond_count === 2) {
-                            // Remove a hydrogen
-                            const h_bonds = o_atom.indexedBonds("").filter((bond) => {
-                                return bond.atom[0] === "H"
-                            })
-                            _.remove(atom, (electron) => {
-                                return electron === h_bonds[0].shared_electrons[0] || electron === h_bonds[0].shared_electrons[1]
-                            })
-                            atom.push(uniqid())
-                            atom.push(uniqid())
-                        }
-                        break
-                    case "N":
-                        if (5 + bond_count === electrons.length && electrons.length + 1 < 9) {
-                            atom.push(uniqid())
-                        }
-                        if (bond_count === 3) {
-                            // Remove a hydrogen
-                            const h_bonds = o_atom.indexedBonds("").filter((bond) => {
-                                return bond.atom[0] === "H"
-                            })
-                            _.remove(atom, (electron) => {
-                                return electron === h_bonds[0].shared_electrons[0] || electron === h_bonds[0].shared_electrons[1]
-                            })
-                            atom.push(uniqid())
-                            atom.push(uniqid())
-                        }
-                        break
-                    case "C":
-                        if (4 + bond_count === electrons.length) {
-                            atom.push(uniqid())
-                        }
-                        break
-
-                }
-            }
-
-            console.log(atom[0] + atom.hydrogens(arr).length)
-
-            return atom
-        })
-    }
-
-    /*
-    atoms_electrons_checked.map((a)=>{
-      console.log(a[0] + a.hydrogens(atoms_electrons_checked).length)
-    })
-    */
-//    process.error()
-
-    /*
-    CN - Nitrogen should have 7 electrons as coordinate bond with C + 2 hydrogens (5 + 0 + 2)
-[
-  [
-    'H',
-    1,
-    1,
-    1,
-    '',
-    'zhv',
-    'zhv_1_1agfj5akqfv4zhx',
-    'zhi_1_1agfj5akqfv4zhk'
-  ],
-  [
-    'H',
-    1,
-    1,
-    1,
-    '',
-    'zhy',
-    'zhy_2_1agfj5akqfv4zi0',
-    'zhi_1_1agfj5akqfv4zhl'
-  ],
-  [
-    'H',
-    1,
-    1,
-    1,
-    '',
-    'zi1',
-    'zi1_3_1agfj5akqfv4zi3',
-    'zhi_1_1agfj5akqfv4zhm'
-  ],
-  [
-    'C',
-    6,
-    4,
-    4,
-    0,
-    'zhi',
-    'zhi_1_1agfj5akqfv4zhk',
-    'zhi_1_1agfj5akqfv4zhl',
-    'zhi_1_1agfj5akqfv4zhm',
-    'zhi_1_1agfj5akqfv4zhn',
-    'zho_2_1agfj5akqfv4zht',
-    'zhv_1_1agfj5akqfv4zhx',
-    'zhy_2_1agfj5akqfv4zi0',
-    'zi1_3_1agfj5akqfv4zi3'
-  ],
-  [
-    'H',
-    1,
-    1,
-    1,
-    '',
-    'zi4',
-    'zi4_1_1agfj5akqfv4zi6',
-    'zho_2_1agfj5akqfv4zhq'
-  ],
-  [
-    'H',
-    1,
-    1,
-    1,
-    '',
-    'zi7',
-    'zi7_2_1agfj5akqfv4zi9',
-    'zho_2_1agfj5akqfv4zhr'
-  ],
-  [
-    'N',
-    7,
-    5,
-    3,
-    0,
-    'zho',
-    'zho_2_1agfj5akqfv4zhq',
-    'zho_2_1agfj5akqfv4zhr',
-    'zho_2_1agfj5akqfv4zhs',
-    'zho_2_1agfj5akqfv4zht',
-    'zho_2_1agfj5akqfv4zhu',
-    'zi4_1_1agfj5akqfv4zi6',
-    'zi7_2_1agfj5akqfv4zi9'
-  ]
-]
-
-     */
-   //console.log(atoms_electrons_checked)
-   // process.error()
-
-    // Remove hydrogens with no bonds
-    const atoms_with_redundant_hydrogens_removed = _.remove(atoms_electrons_checked, (atom, i)=>{
-        if (atom[0] !== "H") {
-            return atom
-        }
-        //const h = CAtom(atom, i, [['12345', atoms_electrons_checked], 1])
-        const h = atom
-        return h.indexedBonds(atoms_electrons_checked).length > 0
     })
 
-//    console.log(atoms_with_redundant_hydrogens_removed)
-  //  process.error()
+//  console.log(atoms_with_hydrogens)
+  // process.error()
 
-   const molecule4 = [[12345,atoms_with_redundant_hydrogens_removed],1]
+
+
+
+//       const molecule4 = [[12345,atoms_with_redundant_hydrogens_removed],1]
    //// console.log(VMolecule(molecule4).compressed())
 
   //const moleculeAI = require("../Components/Stateless/MoleculeAI")(molecule4)
@@ -1093,7 +519,7 @@ CN
      //console.log(VMolecule(molecule4).compressed())
       //process.error()
 
-    return atoms_with_redundant_hydrogens_removed
+    return atoms_with_hydrogens
 
     // We can't do this
     // Sort atoms by atom and number of elements so that they return the same canonical smiles

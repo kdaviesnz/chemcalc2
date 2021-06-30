@@ -72,6 +72,8 @@ const Prototypes = () => {
             source_atom[0].should.be.a.String()
             this[0].should.be.a.String()
 
+            // @todo charges
+
             if (this.bondCount(atoms) + 1 > target_atom_max_number_bonds_allowed) {
                 throw new Error("Target atom already has enough bonds")
             }
@@ -141,6 +143,9 @@ const Prototypes = () => {
             }
 
             this[0].should.be.a.String()
+
+            //console.log('prototype.js bondCount() '+ this[0])
+            //console.log("indexed bonds: " + this.indexedBonds(atoms).length)
 
             return this.indexedBonds(atoms).length + (this.indexedDoubleBonds(atoms).length * 2)  + (this.indexedTripleBonds(atoms).length * 3)
         }
@@ -416,8 +421,8 @@ const Prototypes = () => {
             // "this" is an atom
             return atoms.filter(
                 (__atom) => {
-                    if (__atom[0] === "H") {
-                        return _atom.isBondedTo(this)
+                    if (__atom[0] === "H" && !_.isEqual(__atom, this)) {
+                        return __atom.isBondedTo(this)
                     }
                     return false
                 }
@@ -553,6 +558,8 @@ const Prototypes = () => {
                     }
 
                     if(this.isBondedTo(_atom)) {
+                        //console.log("isBondedTo()")
+                        //process.error()
                         bonds.push({
                             'parent': this[0],
                             'atom': _atom,
@@ -569,6 +576,10 @@ const Prototypes = () => {
                 },
                 []
             )
+
+           // console.log("prototype.js indexedBonds() "+this[0])
+           // console.log(r)
+           // process.error()
             this[0].should.be.a.String()
             return r
         }
@@ -756,7 +767,7 @@ const Prototypes = () => {
                 throw new Error("Atom and sibling atom are the same.")
             }
             return this.filter((atom_id)=>{
-                return atom_id === this.atomId()
+                return atom_id === sibling_atom.atomId()
             }).length === 1
         }
     })

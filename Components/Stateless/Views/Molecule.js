@@ -433,13 +433,7 @@ const VMolecule = (mmolecule) => {
                         }
                     )
 
-                 //   console.log(mmolecule[0][1])
-                  //  process.error()
-
-                    const electrons = atom.slice(Constants().electron_index)
-                    const free_electrons = c.freeElectrons((mmolecule[0][1]))
-
-                    return [atom[0], index, "H " + h.length, "Charge: " + atom[4], bonds, double_bonds, triple_bonds, "Electrons: " + electrons.length, "Free electrons: "+ free_electrons.length, atom[5]]
+                    return [atom[0], index, "H " + h.length, "Charge: " + atom[4], bonds, double_bonds, triple_bonds, null, null, atom[5]]
                 }
             ).filter(
                 (atom) => {
