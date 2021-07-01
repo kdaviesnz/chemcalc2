@@ -19,6 +19,14 @@ const Reaction = require('./Components/State/Reaction')
 let reaction =null
 let stateMoleculeAI = null
 
+const test2 = MoleculeFactory("C=N") // [pka,atoms]
+//console.log("testcommands.js")
+//console.log(test2[1][4])
+//console.log(test2[1][8])
+test2[1][4].indexedDoubleBonds(test2[1]).length.should.be.equal(1)
+//console.log(VMolecule([test2,1]).compressed())
+
+
 //NMethyl1phenylpropane2imine = MoleculeFactory("CC(CC1=CC=CC=C1)[NH1+]=C")
 /*
 console.log("C[N+](C)(C)C")
@@ -33,11 +41,6 @@ process.error()
 // Both carbon and nitrogen have 1 non-hydrogen bond and should be bonded to each other.
 const m = MoleculeFactory("CN")
 console.log(VMolecule([m,1]).compressed())
-const test2 = MoleculeFactory("C=N") // [pka,atoms]
-console.log(test2[1][4])
-console.log(test2[1][8])
-test2[1][4].indexedDoubleBonds(test2[1]).length.should.be.equal(1)
-console.log(VMolecule([test2,1]).compressed())
 process.error()
 
 /*

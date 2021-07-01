@@ -145,9 +145,9 @@ const Prototypes = () => {
             this[0].should.be.a.String()
 
             //console.log('prototype.js bondCount() '+ this[0])
-            //console.log("indexed bonds: " + this.indexedBonds(atoms).length)
+            //console.log("hydrogens " + this.hydrogens(atoms).length)
 
-            return this.indexedBonds(atoms).length + (this.indexedDoubleBonds(atoms).length * 2)  + (this.indexedTripleBonds(atoms).length * 3)
+            return this.hydrogens(atoms).length + this.indexedBonds(atoms).length + (this.indexedDoubleBonds(atoms).length * 2)  + (this.indexedTripleBonds(atoms).length * 3)
         }
     })
     Object.defineProperty(Array.prototype, 'removeHydrogenOnCarbonBond', {
@@ -492,6 +492,10 @@ const Prototypes = () => {
 
                 (bonds, _atom, _atom_index) => {
 
+                    if(_atom[0]==="H") {
+                        return bonds
+                    }
+
                     // not an array
                     if (undefined === _atom.sort) {
                         return bonds
@@ -734,8 +738,8 @@ const Prototypes = () => {
                 throw new Error("Atom and sibling atom are the same.")
             }
             return this.filter((atom_id)=>{
-                return atom_id === this.atomId()
-            }).length === 2
+                return atom_id === sibling_atom.atomId()
+            }).length === 3
         }
     })
     Object.defineProperty(Array.prototype, 'isDoubleBondedTo', {
@@ -749,8 +753,9 @@ const Prototypes = () => {
             if (_.isEqual(this, sibling_atom)) {
                 throw new Error("Atom and sibling atom are the same.")
             }
+
             return this.filter((atom_id)=>{
-                return atom_id === this.atomId()
+                return atom_id === sibling_atom.atomId()
             }).length === 2
         }
     })
