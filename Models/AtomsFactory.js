@@ -430,7 +430,10 @@ CN
                         "N": 5,
                         "C": 4,
                     }
-                    let number_of_hydrogens_req = Constants().max_valence_electrons[current[0]] - (offset_map[current[0]] + current.indexedBonds(atoms_with_charges).length)
+                   // console.log(current)
+                    //let number_of_hydrogens_req = Constants().max_valence_electrons[current[0]] - (offset_map[current[0]] + current.indexedBonds(atoms_with_charges).length)
+                    let number_of_hydrogens_req = current.neutralAtomMaxNumberOfBonds()  - current.bondCount(atoms_with_charges)
+
                     if (current[4] === "+") {
                         number_of_hydrogens_req = number_of_hydrogens_req + 1
                     } else if (current[4] === "-") {

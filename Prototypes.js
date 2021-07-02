@@ -147,7 +147,7 @@ const Prototypes = () => {
             //console.log('prototype.js bondCount() '+ this[0])
             //console.log("hydrogens " + this.hydrogens(atoms).length)
 
-            return this.hydrogens(atoms).length + this.indexedBonds(atoms).length + (this.indexedDoubleBonds(atoms).length * 2)  + (this.indexedTripleBonds(atoms).length * 3)
+            return this.indexedBonds(atoms).length + (this.indexedDoubleBonds(atoms).length * 2)  + (this.indexedTripleBonds(atoms).length * 3)
         }
     })
     Object.defineProperty(Array.prototype, 'removeHydrogenOnCarbonBond', {
@@ -449,6 +449,10 @@ const Prototypes = () => {
                         return bonds
                     }
 
+                    if(_atom[0]==="H") {
+                        return bonds
+                    }
+
                     // current atom is equal to parent atom (this)
                     if ((_.isEqual(_.cloneDeep(this).sort(), _.cloneDeep(_atom).sort()))) {
                         return bonds
@@ -492,12 +496,13 @@ const Prototypes = () => {
 
                 (bonds, _atom, _atom_index) => {
 
-                    if(_atom[0]==="H") {
-                        return bonds
-                    }
 
                     // not an array
                     if (undefined === _atom.sort) {
+                        return bonds
+                    }
+
+                    if(_atom[0]==="H") {
                         return bonds
                     }
 
@@ -548,6 +553,10 @@ const Prototypes = () => {
 
                     // not an array
                     if (undefined === _atom.sort) {
+                        return bonds
+                    }
+
+                    if(_atom[0]==="H") {
                         return bonds
                     }
 

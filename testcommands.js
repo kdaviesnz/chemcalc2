@@ -24,6 +24,8 @@ const test2 = MoleculeFactory("C=N") // [pka,atoms]
 //console.log(test2[1][4])
 //console.log(test2[1][8])
 test2[1][4].indexedDoubleBonds(test2[1]).length.should.be.equal(1)
+test2[1][2].hydrogens(test2[1]).length.should.be.equal(2)
+test2[1][4].hydrogens(test2[1]).length.should.be.equal(1)
 //console.log(VMolecule([test2,1]).compressed())
 
 
@@ -40,7 +42,9 @@ process.error()
 // 2 hydrogens on nitrogen, 3 hydrogens on carbon
 // Both carbon and nitrogen have 1 non-hydrogen bond and should be bonded to each other.
 const m = MoleculeFactory("CN")
-console.log(VMolecule([m,1]).compressed())
+m[1][3].indexedBonds(m[1]).length.should.be.equal(1)
+m[1][3].hydrogens(m[1]).length.should.be.equal(3)
+m[1][6].hydrogens(m[1]).length.should.be.equal(2)
 process.error()
 
 /*
