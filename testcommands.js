@@ -45,13 +45,15 @@ const m = MoleculeFactory("CN")
 m[1][3].indexedBonds(m[1]).length.should.be.equal(1)
 m[1][3].hydrogens(m[1]).length.should.be.equal(3)
 m[1][6].hydrogens(m[1]).length.should.be.equal(2)
-process.error()
+
+let me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
+
 
 /*
 // N has 1 hydrogen, C has 2.
 const m = MoleculeFactory("CN")
 const test2 = MoleculeFactory("[O+]")
-let me = MoleculeFactory("CC(CC1=CC=CC=C1)NC")
+
 let pnm = MoleculeFactory("CC(CC1=CC=CC=C1)=NC")
 let methylamine = MoleculeFactory("CN")
 let me_nitrogen_index = null

@@ -329,19 +329,22 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
             return indexes
         }
         //// console.log(indexes)
-        const e = uniqid()
-        const m = [[12345,atoms],1]
-        const parent_atom = m[0][1][indexes[0]]
-        const child_atom = m[0][1][indexes[1]]
-        const parent_free_electrons = parent_atom.freeElectrons(m[0][1])
-        const child_free_electrons = child_atom.freeElectrons(m[0][1])
+       // const e = uniqid()
+        //const m = [[12345,atoms],1]
+        //const parent_atom = m[0][1][indexes[0]]
+        //const child_atom = m[0][1][indexes[1]]
+        //const parent_free_electrons = parent_atom.freeElectrons(m[0][1])
+        //const child_free_electrons = child_atom.freeElectrons(m[0][1])
+        /*
         if (child_free_electrons[0] !== undefined) {
             atoms[indexes[0]].addElectron(child_free_electrons[0])
         }
         if (parent_free_electrons[0] !== undefined) {
             atoms[indexes[1]].addElectron(parent_free_electrons[0])
-        }
+        }*/
+        atoms[indexes[0]].bondAtomToAtom(atoms[indexes[1]], atoms)
         return indexes
+
     })
 
     const atoms_with_ring_bonds = _.cloneDeep(atoms).filter((atom)=>{
