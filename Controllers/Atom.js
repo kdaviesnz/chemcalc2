@@ -976,7 +976,7 @@ const CAtom = (atom, current_atom_index, mmolecule) => {
             this.removeElectrons([shared_electrons[0]])
             sibling_atom.removeElectrons([shared_electrons[1]])
         } else if(DEBUG) {
-            console.log("CAtom __removeCovalentBond() No shared electrons found")
+            console.log("CAtom __removeBond() No shared electrons found")
         }
 
     }

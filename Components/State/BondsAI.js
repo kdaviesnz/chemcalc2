@@ -184,9 +184,9 @@ class BondsAI {
         } else {
             // Standard covalent bond
 
-            atom1.removeCovalentBond(atom2)
+            atom1.removeBond(atom2)
             if (this.isDoubleBond(atom1, atom2, DEBUG)) {
-                atom1.removeCovalentBond(atom2)
+                atom1.removeBond(atom2)
             }
         }
 
@@ -231,8 +231,7 @@ class BondsAI {
         }
 
         // Standard covalent bond
-        atom1.removeCovalentBond(atom2)
-        atom1.removeCovalentBond(atom2)
+        atom1.removeDoubleBond(atom2)
 
         if (this.isDoubleBond(atom1, atom2, DEBUG)) {
             throw new Error("BondsAI removeBond() Failed to remove double bond")

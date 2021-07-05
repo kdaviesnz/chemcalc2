@@ -163,10 +163,6 @@ class MoleculeAI {
         let carbon_index = this.reaction.MoleculeAI.findAtomIndexByAtomId(carbon_atom_id, DEBUG)
         let nitrogen_index = this.reaction.MoleculeAI.findAtomIndexByAtomId(nitrogen_atom_id, DEBUG)
 
-        console.log("State/MoleculeA 194")
-        console.log(VMolecule(this.reaction.container_substrate).compressed())
-        console.log("#########################")
-
         if(DEBUG) {
             console.log("State/MoleculeAI.js formKetoneFromImine carbon index:")
             console.log("State/MoleculeAI.js formKetoneFromImine Carbon atom id :" + carbon_atom_id)
@@ -193,10 +189,6 @@ class MoleculeAI {
         }
 
 
-        console.log("State/MoleculeA 194")
-        console.log(VMolecule(this.reaction.container_substrate).compressed())
-        console.log(carbon_atom_id)
-        console.log("----------------------------------------------------")
         carbon_index.should.be.greaterThan(-1, "Could not find carbon index by atom id in substrate or reagent " + carbon_atom_id)
 
         // Add =O to carbon

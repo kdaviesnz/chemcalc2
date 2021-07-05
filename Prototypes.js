@@ -4,7 +4,103 @@ const Typecheck = require("./Typecheck")
 const _ = require('lodash');
 const Set = require('./Models/Set')
 // [symbol, atomic number, number of valence electrons, charge, atom_id, bonded_atom_id ...]
+
+// removeSingleBond(sibling_atom)
+// bondMoleculeToMolecule(target_atom, source_atom, source_atoms)
+// bondAtomToAtom(source_atom, atoms)
+// bondAtomToMolecule(target_atom, source_atom)
+// bondCount(atoms)
+// removeHydrogenOnCarbonBond(hydrogen_atom, atoms)
+// carbonBonds(atoms)
+// nitrogenBonds(atoms)
+// oxygenDoubleBonds(atoms)
+// carbonDoubleBonds(atoms)
+// removeHydrogenOnNitrogenBond(hydrogen_atom, atoms)
+// atomMaxNumberOfBonds()
+// neutralAtomMaxNumberOfBonds()
+// doubleBondCount(atoms)
+// tripleBondsNoHydrogens(atoms)
+// doubleBondsNoHydrogens(atoms)
+// singleBondsNoHydrogens(atoms)
+// hydrogens(atoms)
+// indexedTripleBonds(atoms)
+// indexedDoubleBonds(atoms)
+// indexedBonds(atoms)
+// atomId()
+// getAtomById(atom_id)
+// getAtomIndexById(atom_id, allow_failed_searches)
+// removeAtomsByIndex(atoms)
+// typeCheck(name, type)
+// atomIds(atoms)
+// removeAtom(atom, atom_index)
+// addAtoms(atoms)
+// isTripleBondedTo(sibling_atom)
+// isDoubleBondedTo(sibling_atom)
+// isBondedTo(sibling_atom)
 const Prototypes = () => {
+
+    Object.defineProperty(Array.prototype, 'removeSingleBond', {
+        value: function(sibling_atom) {
+
+            Typecheck(
+                {name:"sibling_atom", value:sibling_atom, type:"array"},
+            )
+
+
+            if (sibling_atom === undefined || sibling_atom === null) {
+                throw new Error("sibling_atom is undefined or null")
+            }
+
+            if (_.isEqual(this, sibling_atom)) {
+                throw new Error("Atom and sibling atom are the same.")
+            }
+
+            const sibling_atom_parent_id_index = _.indexOf(sibling_atom, this.atomId())
+
+            if (sibling_atom_parent_id_index === -1) {
+                throw new Error("sibling_atom_parent_id_index not found")
+            }
+
+            const parent_atom_sibling_id_index = _.indexOf(this, sibling_atom.atomId())
+
+            if (parent_atom_sibling_id_index === -1) {
+                throw new Error("parent_atom_sibling_id_index not found")
+            }
+
+            this.splice(parent_atom_sibling_id_index,1)
+            sibling_atom.splice(sibling_atom_parent_id_index,1)
+
+
+            return this
+
+        }
+    })
+
+    Object.defineProperty(Array.prototype, 'removeDoubleBond', {
+        value: function(sibling_atom) {
+
+            Typecheck(
+                {name:"sibling_atom", value:sibling_atom, type:"array"},
+            )
+
+            this.removeSingleBond(sibling_atom).removeSingleBond(sibling_atom)
+
+            return this
+
+        }
+    })
+
+    Object.defineProperty(Array.prototype, 'removeTripleBond', {
+        value: function(sibling_atom) {
+
+            Typecheck(
+                {name:"sibling_atom", value:sibling_atom, type:"array"},
+            )
+
+            return this.removeSingleBond(sibling_atom).removeSingleBond(sibling_atom).this.removeSingleBond(sibling_atom)
+
+        }
+    })
 
     Object.defineProperty(Array.prototype, 'bondMoleculeToMolecule', {
         value: function(target_atom, source_atom, source_atoms) {
