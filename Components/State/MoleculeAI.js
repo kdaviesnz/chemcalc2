@@ -262,11 +262,7 @@ class MoleculeAI {
             carbon = this.reaction.container_substrate[0][1][carbon_index]
             carbon[0].should.be.equal("C", "Carbon index "+carbon_index + " Check database record is correct.")
             this.reaction.container_substrate[0][1][oxygen_index][0].should.be.equal("O")
-//            console.log("State/MoleculeAI 264")
-  //          console.log(VMolecule(this.reaction.container_substrate).compressed())
-    //        console.log(carbon_index)
-            this.reaction.container_substrate[0][1][carbon_index].electrons().length.should.be.equal(6)
-            carbon.freeSlots().should.be.equal(1)
+            carbon.freeSlots(this.reaction.container_substrate[0][1]).should.be.equal(1)
             carbon.freeElectrons(this.reaction.container_substrate[0][1]).length.should.be.equal(2)
             oxygen = this.reaction.container_substrate[0][1][oxygen_index]
             this.reaction.container_substrate[0][1][oxygen_index].electrons().length.should.be.equal(6)
@@ -277,7 +273,6 @@ class MoleculeAI {
                 console.log(VMolecule(this.reaction.container_substrate).compressed())
                 console.log(VMolecule(this.reaction.container_substrate).canonicalSMILES())
             }
-
 
             const bondsAI = new BondsAI(this.reaction)
 

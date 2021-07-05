@@ -5,6 +5,7 @@ const _ = require('lodash');
 const Set = require('./Models/Set')
 // [symbol, atomic number, number of valence electrons, charge, atom_id, bonded_atom_id ...]
 
+// freeSlots(atoms)
 // removeSingleBond(sibling_atom)
 // bondMoleculeToMolecule(target_atom, source_atom, source_atoms)
 // bondAtomToAtom(source_atom, atoms)
@@ -39,6 +40,26 @@ const Set = require('./Models/Set')
 // isBondedTo(sibling_atom)
 const Prototypes = () => {
 
+    Object.defineProperty(Array.prototype, 'freeSlots', {
+        value: function(atoms) {
+
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"},
+            )
+
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("atoms are undefined or null")
+            }
+
+            console.log(this)
+            console.log(this.indexedBonds(atoms))
+            process.error()
+
+            // "this" is an atom
+            return this.neutralAtomMaxNumberOfBonds() - this.bondCount(atoms)
+
+        }
+    })
     Object.defineProperty(Array.prototype, 'removeSingleBond', {
         value: function(sibling_atom) {
 
@@ -75,7 +96,6 @@ const Prototypes = () => {
 
         }
     })
-
     Object.defineProperty(Array.prototype, 'removeDoubleBond', {
         value: function(sibling_atom) {
 
@@ -89,7 +109,6 @@ const Prototypes = () => {
 
         }
     })
-
     Object.defineProperty(Array.prototype, 'removeTripleBond', {
         value: function(sibling_atom) {
 
@@ -239,9 +258,6 @@ const Prototypes = () => {
             }
 
             this[0].should.be.a.String()
-
-            //console.log('prototype.js bondCount() '+ this[0])
-            //console.log("hydrogens " + this.hydrogens(atoms).length)
 
             return this.indexedBonds(atoms).length + (this.indexedDoubleBonds(atoms).length * 2)  + (this.indexedTripleBonds(atoms).length * 3)
         }
@@ -413,6 +429,26 @@ const Prototypes = () => {
 
         }
     })
+    Object.defineProperty(Array.prototype, 'tripleBondCount', {
+        value: function(atoms) {
+            // "this" is an atom
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"},
+            )
+
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("Atoms are  undefined or null")
+            }
+
+            atoms[0].should.be.an.Array()
+            atoms[0][0].should.be.a.String()
+
+            const triple_bonds = this.tripleBond(atoms)
+
+            return triple_bonds === false ? 0 : triple_bond.length / 4
+
+        }
+    })
     Object.defineProperty(Array.prototype, 'doubleBondCount', {
         value: function(atoms) {
             // "this" is an atom
@@ -447,8 +483,8 @@ const Prototypes = () => {
             // "this" is an atom
             return atoms.filter(
                 (__atom) => {
-                    if (__atom[0] !== "H") {
-                        return _atom.isTripleBondedTo(this)
+                    if (__atom[0] !== "H" && !_.isEqual(this, __atom)) {
+                        return __atom.isTripleBondedTo(this)
                     }
                     return false
                 }
@@ -469,8 +505,8 @@ const Prototypes = () => {
             // "this" is an atom
             return atoms.filter(
                 (__atom) => {
-                    if (__atom[0] !== "H") {
-                        return _atom.isDoubleBondedTo(this)
+                    if (__atom[0] !== "H" && !_.isEqual(this, __atom)) {
+                        return __atom.isDoubleBondedTo(this)
                     }
                     return false
                 }
@@ -490,8 +526,8 @@ const Prototypes = () => {
             // "this" is an atom
             return atoms.filter(
                 (__atom) => {
-                    if (__atom[0] !== "H") {
-                        return _atom.isBondedTo(this)
+                    if (__atom[0] !== "H" && !_.isEqual(this, __atom)) {
+                        return __atom.isBondedTo(this)
                     }
                     return false
                 }
