@@ -1119,54 +1119,56 @@ class BondsAI {
         const nitrogen = this.reaction.container_substrate[0][1][nitrogen_index]
         nitrogen[0].should.be.equal("N")
 
-        const freeElectrons = nitrogen.freeElectrons(this.reaction.container_substrate[0][1])
 
         const carbon_index = this.reaction.container_substrate[0][1].getAtomIndexById(carbon_id)
         const carbon_atom = this.reaction.container_substrate[0][1][carbon_index]
         carbon_atom[0].should.be.equal("C")
-        const carbon_atom_free_electrons = carbon_atom.freeElectrons(this.reaction.container_substrate[0][1])
+        //const carbon_atom_free_electrons = carbon_atom.freeElectrons(this.reaction.container_substrate[0][1])
 
-        // Make space for electrons
-        const carbon_electrons_before = this.reaction.container_substrate[0][1][carbon_index].length
-        _.remove(this.reaction.container_substrate[0][1][carbon_index], (e, i)=>{
-            return e === carbon_atom_free_electrons[0] || e === carbon_atom_free_electrons[1]
-        })
-        carbon_electrons_before.should.be.lessThan(this.reaction.container_substrate[0][1][carbon_index].length + 2)
-
-        const nitrogen_hydrogen_bonds = nitrogen.getHydrogenBonds(this.reaction.container_substrate[0][1])
-
-        if (nitrogen_hydrogen_bonds.length > 0) {
-            //const nitrogen_hydrogen =  this.reaction.container_substrate[0][1][nitrogen_hydrogen_bonds[0].atom_index], nitrogen_hydrogen_bonds[0].atom_index, this.reaction.container_substrate)
-            const nitrogen_hydrogen =  this.reaction.container_substrate[0][1][nitrogen_hydrogen_bonds[0].atom_index]
-            nitrogen.removeHydrogenOnNitrogenBond(nitrogen_hydrogen, this.reaction.container_substrate[0][1])
-            // removeAtom(molecule, atom, atom_index) {
-            this.removeAtom(this.reaction.container_substrate, nitrogen_hydrogen, nitrogen_hydrogen_bonds[0].atom_index)
-            this.reaction.setMoleculeAI()
+       // const nitrogen_hydrogen_bonds = nitrogen.getHydrogenBonds(this.reaction.container_substrate[0][1])
+        const hydrogens = nitrogen.hydrogens(this.reaction.container_substrate[0][1])
+        if (hydrogens.length === 0) {
+            throw new Error("Nitrogen atom has no hydrogens")
         }
 
-        const carbon_hydrogen_bonds = carbon_atom.getHydrogenBonds(this.reaction.container_substrate[0][1])
-        if (carbon_hydrogen_bonds.length > 0) {
-            const carbon_hydrogen =  this.reaction.container_substrate[0][1][carbon_hydrogen_bonds[0].atom_index]
-            carbon_atom.removeHydrogenOnCarbonBond(carbon_hydrogen, this.reaction.container_substrate[0][1])
-            this.removeAtom(this.reaction.container_substrate, carbon_hydrogen, carbon_hydrogen_bonds[0].atom_index)
-            this.reaction.setMoleculeAI()
-        }
-
-        if (DEBUG) {
-            console.log(carbon_index)
-            console.log(VMolecule(this.reaction.container_substrate).compressed())
-        }
-
-        // Add electrons from nitrogen to carbon
+        nitrogen.removeHydrogenOnNitrogenBond(hydrogens[0], this.reaction.container_substrate[0][1])
+        // @todo Do we need to pass the second parameter?
+        //console.log(hydrogens[0])
+        //process.error()
+        this.reaction.container_substrate[0][1].removeAtom(hydrogens[0], this.reaction.container_substrate[0][1].getAtomIndexById(hydrogens[0].atomId()))
         this.reaction.setMoleculeAI()
-        this.reaction.setReagentAI()
-        this.createDoubleBond(carbon_atom.atomId(), nitrogen.atomId(), (this.reaction.container_substrate), DEBUG)
 
         if (DEBUG) {
             console.log(carbon_index)
             console.log(VMolecule(this.reaction.container_substrate).compressed())
         }
 
+        // There should be a single bond between the carbon and nitrogen
+        if (!nitrogen.isBondedTo(carbon_atom)) {
+            throw new Error("No single bond between nitrogen and carbon.")
+        }
+
+        // Add another bond to create a double bond between nitrogen and carbon
+        nitrogen.bondAtomToAtom(carbon_atom, this.reaction.container_substrate[0][1])
+
+        // There should be a double bond between the carbon and nitrogen
+        if (!nitrogen.isDoubleBondedTo(carbon_atom)) {
+            throw new Error("Failed to create double bond between nitrogen and carbon.")
+        }
+
+//        this.reaction.setReagentAI()
+     //   this.createDoubleBond(carbon_atom.atomId(), nitrogen.atomId(), (this.reaction.container_substrate), DEBUG)
+
+        this.reaction.setMoleculeAI()
+        if (DEBUG) {
+            console.log("BondsAI breakCarbonNitrogenDoubleBondReverse()")
+            console.log(carbon_index)
+            console.log(VMolecule(this.reaction.container_substrate).compressed())
+        }
+
+        return this.reaction.container_substrate
+
+//        process.error()
 
     }
 

@@ -365,11 +365,16 @@ return result === false? false:[
             nitrogen[0].should.be.equal("N")
             carbon[0].should.be.equal("C")
 
-            this.bondsAI.breakCarbonNitrogenDoubleBondReverse((nitrogen.atomId()), (carbon.atomId()), DEBUG )
+            this.container_substrate = this.bondsAI.breakCarbonNitrogenDoubleBondReverse((nitrogen.atomId()), (carbon.atomId()), DEBUG )
             // An imine is an organic compound containing the group —C=NH or —C=NR where R is an alkyl or other group.
+
+            // this.setMoleculeAI()
+
+
+            //this.stateMoleculeAI.formImineFromKetoneReverse(nitrogen.atomId(), carbon.atomId(), DEBUG)
             this.setMoleculeAI()
 
-            this.stateMoleculeAI.formImineFromKetoneReverse(nitrogen.atomId(), carbon.atomId(), DEBUG)
+            this.stateMoleculeAI.neutraliseMolecule(this.container_substrate)
 
             return [
                 this.container_substrate,

@@ -823,6 +823,7 @@ const Prototypes = () => {
             Typecheck(
                 {name:"atom", value:atom, type:"array"},
                 {name:"atom_index", value:atom_index, type:"number"},
+                {name:"First atom", value:this[0], type:"array"}
             )
 
             if (atom === undefined || atom === null) {
@@ -838,6 +839,7 @@ const Prototypes = () => {
             }
 
             // Remove atom from molecule
+            // "this" is an array of atoms
             _.remove(this, (a, i) => {
                     return i === atom_index
                 }

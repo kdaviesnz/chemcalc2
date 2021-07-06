@@ -63,21 +63,15 @@ class MoleculeAI {
         molecule_container[0][1].map((atom_arr, atom_index) =>{
             if (atom_arr[0] !== "H") {
 
-                const atom = CAtom(molecule_container[0][1][atom_index], atom_index, molecule_container)
+                const atom = molecule_container[0][1][atom_index]
 
-                const single_bonds = atom.indexedBonds("").filter((b)=>{
-                    return b.atom[0] !== "H"
-                })
+                const single_bonds = atom.indexedBonds(molecule_container[0][1])
 
-                const double_bonds = atom.indexedDoubleBonds("").filter((b)=>{
-                    return b.atom[0] !== "H"
-                })
+                const double_bonds = atom.indexedDoubleBonds(molecule_container[0][1])
 
-                const triple_bonds = atom.indexedTripleBonds("").filter((b)=>{
-                    return b.atom[0] !== "H"
-                })
+                const triple_bonds = atom.indexedTripleBonds(molecule_container[0][1])
 
-                switch(atom.symbol) {
+                switch(atom[0]) {
                     case "N":
                         max_bond_count = 3
                         number_of_electrons =  8
@@ -95,54 +89,39 @@ class MoleculeAI {
                         break
                 }
 
-                if (max_bond_count !== null) {
-                    bond_count =  atom.hydrogens().length + (single_bonds.length) + (double_bonds.length*2) + (triple_bonds.length*3)
 
-                    if (bond_count < max_bond_count) {
-                        number_of_hydrogens_to_add = max_bond_count - bond_count
-                        const required_number_of_valence_electrons = molecule_container[0][1][atom_index][2]
+                bond_count =  atom.bondCount(molecule_container[0][1]) + atom.hydrogens(molecule_container[0][1]).length
+                max_bond_count = atom.neutralAtomMaxNumberOfBonds()
 
-                        // Valence electrons
-                        const number_of_electrons_to_add = required_number_of_valence_electrons - atom.freeElectrons().length
-                        /*
-                        for (i=0; i < number_of_electrons_to_add; i++) {
-                            molecule_container[0][1][atom_index].push(uniqid())
-                        }
-                        */
-
-                        for (i=0; i < number_of_hydrogens_to_add; i++) {
-                            molecule_container = bondsAI.addHydrogen(molecule_container, atom_index)
-                        }
-
-                        molecule_container[0][1][atom_index][4] = ""
-
-                    } else if(bond_count > max_bond_count) {
-                        // remove protons
-                        number_of_hydrogens_to_remove = bond_count - max_bond_count
-                        i = 0
-                        for (i=0; i < number_of_hydrogens_to_remove; i++) {
-                            bondsAI.removeProton(molecule_container, atom_index)
-                        }
+                if (bond_count < max_bond_count) {
+                    // Add hydrogens
+                    number_of_hydrogens_to_add = max_bond_count - bond_count
+                    for (i=0; i < number_of_hydrogens_to_add; i++) {
+                        const hydrogen = AtomFactory("H", "")
+                        atom.bondAtomToAtom(hydrogen, molecule_container[0][1])
+                        molecule_container[0][1].addAtom(hydrogen)
                     }
-                }
 
-                if (atom.freeElectrons().length !== number_of_free_electrons) {
-                    let number_of_electrons_to_remove = 0
-                    let number_of_electrons_to_add = 0
-                    if (atom.freeElectrons().length > number_of_free_electrons){
-                        number_of_electrons_to_remove = atom.freeElectrons().length - number_of_free_electrons
-                        atom.removeElectrons(atom.freeElectrons().slice(0, number_of_electrons_to_remove))
-                    } else {
-                        number_of_electrons_to_add = number_of_free_electrons - atom.freeElectrons().length
-                        atom.addElectrons(number_of_electrons_to_add)
+                    molecule_container[0][1][atom_index][4] = ""
+
+                } else if(bond_count > max_bond_count) {
+
+
+
+                    // remove hydrogens
+                    number_of_hydrogens_to_remove = bond_count - max_bond_count
+                    i = 0
+                    const hydrogens = atom.hydrogens(molecule_container[0][1])
+                    for (i=0; i < number_of_hydrogens_to_remove; i++) {
+                        hydrogens[i][0].should.be.equal("H")
+                        molecule_container[0][1].removeAtom(hydrogens[i], molecule_container[0][1].getAtomIndexById(hydrogens[i].atomId()))
                     }
                 }
 
             }
 
         })
-
-        return molecule_container
+//        return molecule_container
     }
 
     removeBranch(start_of_branch_index, replacement) {
