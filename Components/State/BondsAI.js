@@ -1546,8 +1546,8 @@ class BondsAI {
         }
 
         if (n_atom.isDoubleBondedTo(target_atom)) {
-            n_atom.isDoubleBondedTo(target_atom)
-            if (n_atom.isBondedTo(target_atom)) {
+            n_atom.removeDoubleBond(target_atom)
+            if (n_atom.isDoubleBondedTo(target_atom)) {
                 throw new Error("Failed to break double bond between nitrogen and carbon")
             }
         }
@@ -1558,8 +1558,6 @@ class BondsAI {
                 throw new Error("Failed to break double triple between nitrogen and carbon")
             }
         }
-
-
 
 
 /*
@@ -1633,11 +1631,9 @@ class BondsAI {
             throw new Error("When reversing substrate to reagent bond the number of groups should be 2. Got " + groups.length + " instead. Are the database record parameters correct?")
         }
 
-
-        console.log("BondsAI bondSubstrateToReagentReverse() groups:")
-        console.log(groups)
-        console.log(groups.length)
-        process.error()
+        //console.log(groups)
+        //console.log(groups.length)
+        //process.error()
 
 
         // Check that there are no shared atoms between the two groups
@@ -1690,12 +1686,13 @@ class BondsAI {
 
         }
 
-
-
         this.reaction.setMoleculeAI()
         this.reaction.setReagentAI()
 
-
+        //console.log(VMolecule(this.reaction.container_substrate).compressed())
+        //console.log("#####################################################")
+        //console.log(VMolecule(this.reaction.container_reagent).compressed())
+        //process.error()
 
         return this.reaction
 

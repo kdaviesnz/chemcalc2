@@ -873,6 +873,11 @@ const MoleculeAI = (container_molecule) => {
                 console.log("stateless/MoleculeAI container before extracting groups:")
                 console.log(VMolecule(container_molecule).compressed())
             }
+
+            //console.log(atom1)
+            //console.log(atom2)
+            //console.log(VMolecule(container_molecule).compressed())
+            //process.error()
             const groups = this.extractGroupsRecursive([], 0, (atoms), atom_ids_added, 0, DEBUG)
 
 

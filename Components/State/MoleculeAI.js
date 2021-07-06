@@ -265,17 +265,13 @@ class MoleculeAI {
         } else {
 
             this.reaction.container_substrate[0][1].addAtom(oxygen_atom)
+           // console.log(VMolecule(this.reaction.container_substrate).compressed())
             const oxygen_index = this.reaction.container_substrate[0][1].length -1
             carbon_index = this.reaction.MoleculeAI.findAtomIndexByAtomId(carbon_atom_id, DEBUG)
             carbon = this.reaction.container_substrate[0][1][carbon_index]
             carbon[0].should.be.equal("C", "Carbon index "+carbon_index + " Check database record is correct.")
             this.reaction.container_substrate[0][1][oxygen_index][0].should.be.equal("O")
-            carbon.freeSlots(this.reaction.container_substrate[0][1]).should.be.equal(1)
-            carbon.freeElectrons(this.reaction.container_substrate[0][1]).length.should.be.equal(2)
             oxygen = this.reaction.container_substrate[0][1][oxygen_index]
-            this.reaction.container_substrate[0][1][oxygen_index].electrons().length.should.be.equal(6)
-            oxygen.freeSlots().should.be.equal(1)
-            oxygen.freeElectrons(this.reaction.container_substrate[0][1]).length.should.be.equal(6)
             if (DEBUG) {
                 console.log("Substrate (after splitting):")
                 console.log(VMolecule(this.reaction.container_substrate).compressed())
@@ -285,7 +281,14 @@ class MoleculeAI {
             const bondsAI = new BondsAI(this.reaction)
 
             // Create C=O bond
-            this.reaction = bondsAI.makeOxygenCarbonDoubleBond(oxygen, carbon, DEBUG)
+            //this.reaction = bondsAI.makeOxygenCarbonDoubleBond(oxygen, carbon, DEBUG)
+            carbon.bondAtomToAtom(oxygen, this.reaction.container_substrate[0][1])
+            carbon.bondAtomToAtom(oxygen, this.reaction.container_substrate[0][1])
+
+            //console.log(carbon)
+            //console.log(oxygen)
+
+            //process.error()
 
             if(DEBUG) {
                 console.log(VMolecule(this.reaction.container_substrate).compressed())
@@ -301,8 +304,18 @@ class MoleculeAI {
                 }
                 throw new Error("Unable to determine nitrogen index on reagent")
             }
-            bondsAI.addHydrogen(this.reaction.container_reagent, nitrogen_index)
-            bondsAI.addHydrogen(this.reaction.container_reagent, nitrogen_index)
+
+
+            const hydrogen_1 = AtomFactory("H", "")
+            const hydrogen_2 = AtomFactory("H", "")
+            this.reaction.container_reagent[0][1].addAtom(hydrogen_1)
+            this.reaction.container_reagent[0][1].addAtom(hydrogen_2)
+            this.reaction.container_reagent[0][1][nitrogen_index].bondAtomToAtom(hydrogen_1, this.reaction.container_reagent[0][1])
+            this.reaction.container_reagent[0][1][nitrogen_index].bondAtomToAtom(hydrogen_2, this.reaction.container_reagent[0][1])
+            console.log(this.reaction.container_reagent[0][1])
+            process.error()
+            //bondsAI.addHydrogen(this.reaction.container_reagent, nitrogen_index)
+            //bondsAI.addHydrogen(this.reaction.container_reagent, nitrogen_index)
             this.reaction.setChargesOnReagent()
             if (DEBUG) {
                 console.log(VMolecule([this.reaction.container_reagent[0], 1]).compressed())

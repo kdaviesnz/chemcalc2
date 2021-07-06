@@ -53,10 +53,6 @@ const Prototypes = () => {
                 throw new Error("atoms are undefined or null")
             }
 
-            console.log(this)
-            console.log(this.indexedBonds(atoms))
-            process.error()
-
             // "this" is an atom
             return this.neutralAtomMaxNumberOfBonds() - this.bondCount(atoms)
 
