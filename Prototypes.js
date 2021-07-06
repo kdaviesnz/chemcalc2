@@ -461,7 +461,7 @@ const Prototypes = () => {
             atoms[0].should.be.an.Array()
             atoms[0][0].should.be.a.String()
 
-            const double_bonds = this.doubleBond(atoms)
+            const double_bonds = this.indexedDoubleBonds(atoms)
 
             return double_bonds === false ? 0 : double_bonds.length / 4
 

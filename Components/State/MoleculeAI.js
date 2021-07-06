@@ -176,8 +176,13 @@ class MoleculeAI {
 
         const carbon_atom = this.reaction.container_substrate[0][1][carbon_index]
         const nitrogen_atom = this.reaction.container_substrate[0][1][nitrogen_index]
+
         // Check for double bond between carbon and nitrgoen
-        if (!carbon_atom.isDoubleBondedTo(nitrogen_atom)) {
+        if (carbon_atom.isDoubleBondedTo(nitrogen_atom) !==true) {
+            console.log(carbon_atom.isDoubleBondedTo(nitrogen_atom))
+            console.log(VMolecule(this.reaction.container_substrate).compressed())
+            console.log(carbon_index)
+            console.log(nitrogen_index)
             throw new Error("No double bond between carbon and nitrogen")
         }
 
@@ -312,8 +317,6 @@ class MoleculeAI {
             this.reaction.container_reagent[0][1].addAtom(hydrogen_2)
             this.reaction.container_reagent[0][1][nitrogen_index].bondAtomToAtom(hydrogen_1, this.reaction.container_reagent[0][1])
             this.reaction.container_reagent[0][1][nitrogen_index].bondAtomToAtom(hydrogen_2, this.reaction.container_reagent[0][1])
-            console.log(this.reaction.container_reagent[0][1])
-            process.error()
             //bondsAI.addHydrogen(this.reaction.container_reagent, nitrogen_index)
             //bondsAI.addHydrogen(this.reaction.container_reagent, nitrogen_index)
             this.reaction.setChargesOnReagent()
