@@ -152,6 +152,7 @@ class MoleculeAI {
     formImineFromKetoneReverse(nitrogen_atom_id, carbon_atom_id, DEBUG) {
 
 
+
         Typecheck(
             {name:"carbon_atom_id", value:carbon_atom_id, type:"string"},
             {name:"DEBUG", value:DEBUG, type:"boolean"},
@@ -163,6 +164,7 @@ class MoleculeAI {
         let carbon_index = this.reaction.MoleculeAI.findAtomIndexByAtomId(carbon_atom_id, DEBUG)
         let nitrogen_index = this.reaction.MoleculeAI.findAtomIndexByAtomId(nitrogen_atom_id, DEBUG)
 
+
         if(DEBUG) {
             console.log("State/MoleculeAI.js formKetoneFromImine carbon index:")
             console.log("State/MoleculeAI.js formKetoneFromImine Carbon atom id :" + carbon_atom_id)
@@ -172,10 +174,16 @@ class MoleculeAI {
             console.log(VMolecule([this.reaction.container_substrate[0], 1]).canonicalSMILES())
         }
 
+        const carbon_atom = this.reaction.container_substrate[0][1][carbon_index]
+        const nitrogen_atom = this.reaction.container_substrate[0][1][nitrogen_index]
+        // Check for double bond between carbon and nitrgoen
+        if (!carbon_atom.isDoubleBondedTo(nitrogen_atom)) {
+            throw new Error("No double bond between carbon and nitrogen")
+        }
 
         const bondsAI = new BondsAI((this.reaction))
         // We need to set this.reaction as we are using cloned values.
-        this.reaction = bondsAI.bondSubstrateToReagentReverse(nitrogen_atom_id, carbon_atom_id, DEBUG)
+        this.reaction = bondsAI.bondSubstrateToReagentReverseOnNitrogenCarbon(nitrogen_atom_id, carbon_atom_id, DEBUG)
         this.reaction.container_substrate[0][1].length.should.be.greaterThan(0)
         this.reaction.container_reagent[0][1].length.should.be.greaterThan(0)
 

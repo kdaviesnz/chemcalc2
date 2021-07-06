@@ -288,6 +288,13 @@ return result === false? false:[
 
         const nitrogen = this.container_substrate[0][1][nitrogen_index]
         const carbon = this.container_substrate[0][1][carbon_index]
+        nitrogen[0].should.be.equal("N")
+        carbon[0].should.be.equal("C")
+
+        //console.log(VMolecule(this.container_substrate).compressed())
+        //console.log(nitrogen)
+        //console.log(carbon)
+        //process.error()
 
         const result = this.stateMoleculeAI.formImineFromKetoneReverse(nitrogen[5], carbon[5], DEBUG)
 

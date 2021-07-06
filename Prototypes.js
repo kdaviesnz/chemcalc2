@@ -7,6 +7,8 @@ const Set = require('./Models/Set')
 
 // freeSlots(atoms)
 // removeSingleBond(sibling_atom)
+// removeDoubleBond(sibling_atom)
+// removeTripleBond(sibling_atom)
 // bondMoleculeToMolecule(target_atom, source_atom, source_atoms)
 // bondAtomToAtom(source_atom, atoms)
 // bondAtomToMolecule(target_atom, source_atom)

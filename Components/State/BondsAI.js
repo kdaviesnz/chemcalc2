@@ -1445,7 +1445,7 @@ class BondsAI {
     }
 
 
-    bondSubstrateToReagentReverse(n_id=null, c_id=null, DEBUG) {
+    bondSubstrateToReagentReverseOnNitrogenCarbon(n_id=null, c_id=null, DEBUG) {
 
         Typecheck(
             {name:"n_id", value:n_id, type:"string"},
@@ -1476,11 +1476,13 @@ class BondsAI {
             })
         }
 
-
         const n_index = this.reaction.container_substrate[0][1].getAtomIndexById(n_id)
         const n_atom = this.reaction.container_substrate[0][1][n_index]
         const c_index = this.reaction.container_substrate[0][1].getAtomIndexById(c_id)
         const target_atom = this.reaction.container_substrate[0][1][c_index]
+
+        n_atom[0].should.be.equal("N")
+        target_atom[0].should.be.equal("C")
 
         // Use dehydrate() instead
         if (target_atom.symbol === "O" && target_atom.hydrogens().length === 2 && this.reaction.container_substrate[0][1][electrophile_index][4] === "+") {
@@ -1489,9 +1491,6 @@ class BondsAI {
             }
             return false
         }
-
-
-
 
         if (DEBUG) {
             console.log("BondsAI bondSubstrateToReagentReverse() substrate (before splitting)")
@@ -1502,6 +1501,7 @@ class BondsAI {
             console.log(target_atom.atom)
         }
 
+        /*
         if (!this.isSingleBond(
             this.reaction.container_substrate[0][1][n_index],
             this.reaction.container_substrate[0][1][c_index], DEBUG)
@@ -1513,12 +1513,14 @@ class BondsAI {
             console.log(c_index)
             throw new Error("There should be a bond between the nitrogen atom and the carbon atom")
         }
+         */
 
-      //  console.log(this.isSingleBond(this.reaction.container_substrate[0][1][n_index], this.reaction.container_substrate[0][1][c_index], DEBUG))
-       // console.log(this.isDoubleBond(this.reaction.container_substrate[0][1][n_index], this.reaction.container_substrate[0][1][c_index], DEBUG))
-
+        if (!n_atom.isBondedTo(target_atom) && !n_atom.isDoubleBondedTo(target_atom) && !n_atom.isTripleBondedTo(target_atom)) {
+            throw new Error("There should be a bond between the nitrogen atom and the carbon atom")
+        }
 
         // @todo triple bonds
+        /*
         if (this.isSingleBond(this.reaction.container_substrate[0][1][n_index], this.reaction.container_substrate[0][1][c_index], DEBUG)) {
             this.removeBond(n_atom, target_atom, (this.reaction.container_substrate), DEBUG)
             const is_single_bond = this.isSingleBond(n_atom, this.reaction.container_substrate[0][1][c_index], DEBUG)
@@ -1527,6 +1529,7 @@ class BondsAI {
                 throw new Error("Failed to break single bond between nitrogen and carbon atoms")
             }
         }
+         */
 
         if (undefined === this.reaction.container_substrate[0][1][n_index]) {
             throw new Error("Could not find nitrogen atom")
@@ -1535,6 +1538,31 @@ class BondsAI {
             throw new Error("Could not find nitrogen atom")
         }
 
+        if (n_atom.isBondedTo(target_atom)) {
+            n_atom.removeSingleBond(target_atom)
+            if (n_atom.isBondedTo(target_atom)) {
+                throw new Error("Failed to break single bond between nitrogen and carbon")
+            }
+        }
+
+        if (n_atom.isDoubleBondedTo(target_atom)) {
+            n_atom.isDoubleBondedTo(target_atom)
+            if (n_atom.isBondedTo(target_atom)) {
+                throw new Error("Failed to break double bond between nitrogen and carbon")
+            }
+        }
+
+        if (n_atom.isTripleBondedTo(target_atom)) {
+            n_atom.removeTripleBond(target_atom)
+            if (n_atom.isTripleBondedTo(target_atom)) {
+                throw new Error("Failed to break double triple between nitrogen and carbon")
+            }
+        }
+
+
+
+
+/*
         if (this.isDoubleBond(this.reaction.container_substrate[0][1][n_index], this.reaction.container_substrate[0][1][c_index], DEBUG)) {
 
             if (undefined === this.reaction.container_substrate[0][1][n_index]) {
@@ -1572,6 +1600,8 @@ class BondsAI {
             throw new Error("There should no longer be a bond between the nitrogen atom and the carbon atom")
         }
 
+ */
+
         if (DEBUG) {
             console.log("BondsAI bondSubstrateToReagentReverse() substrate after remove NC bond")
             console.log(VMolecule(this.reaction.container_substrate).compressed())
@@ -1585,9 +1615,6 @@ class BondsAI {
             }
         }
 
-        if (undefined === this.reaction.container_substrate[0][1][n_index]) {
-            throw new Error("Atom array is undefined.")
-        }
 
         // Required as otherwise extractGroups will use the old substrate values.
         this.reaction.setMoleculeAI() /// this creates a new MoleculeAI object and sets it to use the new substrate value.
@@ -1605,6 +1632,13 @@ class BondsAI {
             //console.log(VMolecule(this.reaction.container_substrate).compressed())
             throw new Error("When reversing substrate to reagent bond the number of groups should be 2. Got " + groups.length + " instead. Are the database record parameters correct?")
         }
+
+
+        console.log("BondsAI bondSubstrateToReagentReverse() groups:")
+        console.log(groups)
+        console.log(groups.length)
+        process.error()
+
 
         // Check that there are no shared atoms between the two groups
         groups[0].should.be.an.Array()
