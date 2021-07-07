@@ -504,6 +504,9 @@ return result === false? false:[
 
             const formKetoneFromImine_result = this.stateMoleculeAI.formImineFromKetoneReverse(nitrogen.atomId(), carbon.atomId(), DEBUG)
 
+            this.container_substrate = formKetoneFromImine_result[0]
+            this.container_reagent = formKetoneFromImine_result[1]
+
             if (DEBUG) {
                 console.log("Reaction.js reductiveAminationReverse Substrate, reagent and carbon index after converting to imine")
                 console.log(VMolecule(formKetoneFromImine_result[0]).compressed())
@@ -524,8 +527,11 @@ return result === false? false:[
                 }
             }
 
-            console.log(VMolecule(this.container_substrate).compressed())
-            process.error()
+            //console.log("Substrate:")
+            //console.log(VMolecule(this.container_substrate).compressed())
+            //console.log("Reagent")
+            //console.log(VMolecule(this.container_reagent).compressed())
+            //process.error()
 
             return [
                 this.container_substrate,

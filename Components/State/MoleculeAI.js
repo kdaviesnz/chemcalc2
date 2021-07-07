@@ -53,12 +53,23 @@ class MoleculeAI {
         let number_of_electrons = null
         let number_of_free_electrons = null
 
-        /*
-        molecule_container[0][1].map((atom_arr)=>{
-            console.log(atom_arr)
-        })
-         */
-        // return [atom[0], index, "H " + h.length, 'Charge: '+ atom[4],  bonds, double_bonds, triple_bonds, electrons.length, free_electrons.length]
+        molecule_container.should.be.an.Array()
+
+        Typecheck(
+            {name:"container", value: molecule_container, type:"array"},
+            {name:"atoms container", value: molecule_container[0], type:"array"},
+            {name:"atoms", value: molecule_container[0][1], type:"array"},
+        )
+
+        if (molecule_container === undefined) {
+            throw new Error("Molecule container is undefined")
+        }
+
+
+        if (molecule_container[0][1] === undefined) {
+            throw new Error("No atoms found")
+        }
+
 
         molecule_container[0][1].map((atom_arr, atom_index) =>{
             if (atom_arr[0] !== "H") {
@@ -258,12 +269,6 @@ class MoleculeAI {
             this.reaction.setChargesOnReagent()
             this.reaction.setMoleculeAI()
             this.reaction.setChargesOnSubstrate()
-
-            console.log("Substrate:")
-            console.log(VMolecule([this.reaction.container_substrate[0], 1]).compressed())
-            console.log("Reagent:")
-            console.log(VMolecule([this.reaction.container_reagent[0], 1]).compressed())
-            process.error()
 
 
         } else {

@@ -67,11 +67,11 @@ class BondsAI {
 
     }
 
-    bondAtomToCarbonylCarbon() {
+    bondAtomToCarbonylCarbonx() {
 
     }
 
-    creatingCoordinateCovalentBond(donor_atom, base_atom, molecule_container) {
+    creatingCoordinateCovalentBondx(donor_atom, base_atom, molecule_container) {
 
         Typecheck(
             {name:"donor_atom", value:donor_atom, type:"array"},
@@ -102,7 +102,7 @@ class BondsAI {
 
     }
 
-    removeCoordinateCovalentBond(donor_atom, target_atom, molecule_container) {
+    removeCoordinateCovalentBondx(donor_atom, target_atom, molecule_container) {
 
         Typecheck(
             {name:"donor_atom", value:donor_atom, type:"array"},
@@ -137,7 +137,7 @@ class BondsAI {
 
     }
 
-    removeHydrogenBond(atom, hydrogen, molecule_container, DEBUG) {
+    removeHydrogenBondx(atom, hydrogen, molecule_container, DEBUG) {
 
         Typecheck(
             {name:"molecule_container", value:molecule_container, type:"array"},
@@ -163,7 +163,7 @@ class BondsAI {
 
     }
 
-    removeBond(atom1, atom2, molecule_container, DEBUG) {
+    removeBondx(atom1, atom2, molecule_container, DEBUG) {
 
         Typecheck(
             {name:"molecule_container", value:molecule_container, type:"array"},
@@ -200,7 +200,7 @@ class BondsAI {
         return molecule_container
     }
 
-    doubleBondToSingleBond(atom1, atom2, molecule_container, DEBUG){
+    doubleBondToSingleBondx(atom1, atom2, molecule_container, DEBUG){
         Typecheck(
             {name:"molecule_container", value:molecule_container, type:"array"},
             {name:"atom1", value:atom1, type:"object"},
@@ -216,7 +216,7 @@ class BondsAI {
     }
 
 
-    removeDoubleBond(atom1, atom2, molecule_container, DEBUG) {
+    removeDoubleBondx(atom1, atom2, molecule_container, DEBUG) {
 
         Typecheck(
             {name:"molecule_container", value:molecule_container, type:"array"},
