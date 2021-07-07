@@ -57,15 +57,19 @@ class HydrationAI {
         this.reaction.MoleculeAI.validateMolecule()
 
         const water_molecule = MoleculeFactory("O")
-        water_molecule[1][2][4] = "+"
 
         const water_ai = require("../Stateless/MoleculeAI")([water_molecule, 1])
         const water_oxygen_index = water_ai.findWaterOxygenIndex()
-        const electrons = CAtom(water_molecule[1][water_oxygen_index],
-            water_oxygen_index,
-            [water_molecule, 1]).freeElectrons()
-        electrons.length.should.be.greaterThan(1)
+        if (water_oxygen_index === -1) {
+            console.log(VMolecule([water_molecule, 1]).compressed())
+            console.log(VMolecule([water_molecule, 1]).canonicalSMILES())
+            throw new Error("Water oxygen index not found.")
+        }
+        const water_oxygen_atom = water_molecule[1][water_oxygen_index]
+        console.log(water_oxygen_index)
+        process.error()
 
+        // electrophiles have a positive chage
         let electrophile_index = this.reaction.MoleculeAI.findCarbocationIndex()
 
         // Leuckact Wallach reaction
@@ -75,13 +79,15 @@ class HydrationAI {
         }
 
         if (electrophile_index === -1) {
-            return false
+            console.log(VMolecule(this.reaction.container_substrate).compressed())
+            console.log(VMolecule(this.reaction.container_substrate).canonicalSMILES())
+            throw new Error("Electrophile index not found.")
         }
 
-        const e_atom = CAtom(this.reaction.container_substrate[0][1][electrophile_index], electrophile_index, this.reaction.container_substrate)
+        const e_atom = this.reaction.container_substrate[0][1][electrophile_index]
 
+        /*
         const e_free_electrons = e_atom.freeElectrons()
-
         if (e_free_electrons.length === 0) {
             // Check for double bond eg C=N and change to single bond
             // This will free up an electron pair that we can use to bond the O atom
@@ -99,14 +105,24 @@ class HydrationAI {
                 e_free_electrons.addElectron(d_bonds[0].shared_electrons[1])
             }
         }
+         */
+        // Check for double bond eg C=N and change to single bond
+        const double_bonds = e_atom.indexedDoubleBonds(this.reaction.container_substrate[0][1])
+        if (double_bonds.length > 0) {
+            e_atom.removeSingleBond(double_bonds[0].atom)
+        }
 
         // We do this so that the atom does not end up with more then 8 electrons
-        this.reaction.container_substrate[0][1][electrophile_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][electrophile_index], e_free_electrons)
+        //this.reaction.container_substrate[0][1][electrophile_index] = Set().removeFromArray(this.reaction.container_substrate[0][1][electrophile_index], e_free_electrons)
 
         // Create the C(O) bond
         // electrons are the free electrons on the oxygen water atom
-        this.reaction.container_substrate[0][1][electrophile_index].addElectron(electrons[0])
-        this.reaction.container_substrate[0][1][electrophile_index].addElectron(electrons[1])
+        //this.reaction.container_substrate[0][1][electrophile_index].addElectron(electrons[0])
+        //this.reaction.container_substrate[0][1][electrophile_index].addElectron(electrons[1])
+        const water_hydrogens = water_oxygen_atom.hydrogens(this.reaction.container_substrate[0][1])
+        console.log(water_hydrogens)
+        process.error()
+        e_atom.bondAtomToAtom(water_oxygen_atom, this.reaction.container_substrate[0][1])
 
         this.reaction.container_substrate[0][1].addAtom(water_molecule[1][0])
         this.reaction.container_substrate[0][1].addAtom(water_molecule[1][1])
@@ -120,6 +136,10 @@ class HydrationAI {
         this.reaction.MoleculeAI.findWaterOxygenIndex().should.be.greaterThan(-1)
 
         this.reaction.MoleculeAI.validateMolecule()
+
+        console.log(VMolecule(this.reaction.container_substrate).compressed())
+        console.log(electrophile_index)
+        process.error()
 
 
         return true

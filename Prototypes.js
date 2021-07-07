@@ -17,6 +17,7 @@ const Set = require('./Models/Set')
 // carbonBonds(atoms)
 // nitrogenBonds(atoms)
 // oxygenDoubleBonds(atoms)
+// nitrogenDoubleBonds(atoms)
 // carbonDoubleBonds(atoms)
 // removeHydrogenOnNitrogenBond(hydrogen_atom, atoms)
 // atomMaxNumberOfBonds()
@@ -65,7 +66,6 @@ const Prototypes = () => {
                 {name:"sibling_atom", value:sibling_atom, type:"array"},
             )
 
-
             if (sibling_atom === undefined || sibling_atom === null) {
                 throw new Error("sibling_atom is undefined or null")
             }
@@ -73,6 +73,8 @@ const Prototypes = () => {
             if (_.isEqual(this, sibling_atom)) {
                 throw new Error("Atom and sibling atom are the same.")
             }
+
+            sibling_atom[0].should.be.a.String()
 
             const sibling_atom_parent_id_index = _.indexOf(sibling_atom, this.atomId())
 
@@ -337,6 +339,8 @@ const Prototypes = () => {
                 {name:"atoms", value:atoms, type:"array"}
             )
 
+            this[0].should.be.a.String()
+
             if (atoms === undefined || atoms=== null) {
                 throw new Error("Atoms are  undefined or null")
             }
@@ -347,6 +351,28 @@ const Prototypes = () => {
 
             return this.indexedDoubleBonds(atoms).filter((b)=>{
                 return b.atom[0] === "O"
+            })
+        }
+    })
+    Object.defineProperty(Array.prototype, 'nitrogenDoubleBonds', {
+        value: function(atoms) {
+            // "this" is an atom
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"}
+            )
+
+            this[0].should.be.a.String()
+
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("Atoms are  undefined or null")
+            }
+
+            atoms[0].should.be.an.Array()
+            atoms[0][0].should.be.a.String()
+            this[0].should.be.a.String()
+
+            return this.indexedDoubleBonds(atoms).filter((b)=>{
+                return b.atom[0] === "N"
             })
         }
     })

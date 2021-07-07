@@ -537,10 +537,14 @@ const MoleculeAI = (container_molecule) => {
         findImineCarbonIndex: () =>{
             return _.findIndex(container_molecule[0][1], (atom, index)=>{
                 if (atom[0]==="C" && atom[4] !== "+") {
-                    const c_obj = CAtom(container_molecule[0][1][index], index, container_molecule)
+                    const c_obj = container_molecule[0][1][index]
+                    /*
                     const n_double_bonds = c_obj.indexedDoubleBonds("").filter((bond)=>{
                         return bond.atom[0] === "N"
                     })
+                     */
+                    // return n_double_bonds.length === 1
+                    const n_double_bonds = c_obj.nitrogenDoubleBonds(container_molecule[0][1])
                     return n_double_bonds.length === 1
                 }
                 return false
@@ -1979,14 +1983,17 @@ VMolecule
                 }
 
                 // Not -OH2
-                const oxygen_atom_object = CAtom(oxygen_atom, oxygen_atom_index, container_molecule)
-                if(oxygen_atom_object.bondCount()< 1) { // 2 hydrogen bonds plus optionally 1 carbon atom
+                //const oxygen_atom_object = CAtom(oxygen_atom, oxygen_atom_index, container_molecule)
+                const oxygen_atom_object = oxygen_atom
+                if(oxygen_atom_object.bondCount(container_molecule[0][1]) > 2) { // 2 hydrogen bonds plus optionally 1 carbon atom
+                    throw new Error("Too many non hydrogen bonds")
                     return false
                 }
 
-                const indexed_bonds = oxygen_atom_object.indexedBonds("")
+                const indexed_bonds = oxygen_atom_object.indexedBonds(container_molecule[0][1])
 
                 // Check we have 2 hydrogens attached to the oxygen atom
+                /*
                 if (indexed_bonds.filter((bond) => {
                         if (bond.atom[0] !== "H") {
                             return false
@@ -1998,6 +2005,11 @@ VMolecule
                         return true
                     }
                 ).length !== 2) {
+                    return false
+                }
+                 */
+                if (oxygen_atom_object.hydrogens(container_molecule[0][1]).length !==2) {
+                    throw new Error("There should be only two hydrogen bonds")
                     return false
                 }
 

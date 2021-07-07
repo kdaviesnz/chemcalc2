@@ -169,7 +169,12 @@ class Reaction {
             this.ReagentAI.validateMolecule()
         }
 
+      //  console.log("Reaction.js constructor()")
+      //  console.log(VMolecule(this.container_substrate).compressed())
+      //  console.log(VMolecule(this.container_substrate).canonicalSMILES())
         this.setChargesOnSubstrate(DEBUG)
+      //  console.log(VMolecule(this.container_substrate).compressed())
+      //  console.log(VMolecule(this.container_substrate).canonicalSMILES())
         this.MoleculeAI.validateMolecule()
         this.bondsAI = (new BondsAI(_.cloneDeep(this)))
 

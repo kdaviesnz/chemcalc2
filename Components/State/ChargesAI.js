@@ -132,6 +132,7 @@ class ChargesAI {
             Typecheck(
                 {name:"_atom", value:_atom, type:"array"},
             )
+            _atom[0].should.be.a.String()
         })
 
         // https://chemistry.stackexchange.com/questions/22032/how-does-a-carbocation-have-a-positive-charge
@@ -151,6 +152,11 @@ class ChargesAI {
             return bond.atom[0] !== "H"
         })
 
+        //console.log("Bond counts - setChargesAI()")
+        //console.log( a_obj.hydrogens(this.reaction.container_substrate[0][1]).length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
+        //console.log(a_obj.hydrogens(this.reaction.container_substrate[0][1]).length + a_obj.bondCount(this.reaction.container_substrate[0][1]))
+        const bond_count = a_obj.hydrogens(this.reaction.container_substrate[0][1]).length + a_obj.bondCount(this.reaction.container_substrate[0][1])
+
         if (this.reaction.container_substrate[0][1][index][0] === "Br") {
             b = 1 - (a_obj.hydrogens(this.reaction.container_substrate[0][1]).length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
         }
@@ -162,7 +168,10 @@ class ChargesAI {
         }
         if (this.reaction.container_substrate[0][1][index][0] === "N") {
              //b = (5 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
-            b = 3 - (a_obj.hydrogens((this.reaction.container_substrate[0][1])).length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
+            // 3 - 4 = -1
+            // 5 - 4 = 1
+            // b = 3 - (a_obj.hydrogens((this.reaction.container_substrate[0][1])).length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
+            b = bond_count - 3
         }
         if (this.reaction.container_substrate[0][1][index][0] === "C") {
             b = 4 - (a_obj.hydrogens((this.reaction.container_substrate[0][1])).length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
