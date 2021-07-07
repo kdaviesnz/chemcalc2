@@ -975,16 +975,14 @@ const MoleculeAI = (container_molecule) => {
                 if (atom[0] !== "N") {
                     return false
                 }
-                const n = CAtom(atom, index, container_molecule )
+                const n = atom
 
-                if (n.indexedDoubleBonds("").length > 0) {
+                if (n.indexedDoubleBonds(container_molecule[0][1]).length > 0) {
                     return false
                 }
 
                 // Check for carbon bonds
-                const carbon_bonds = n.indexedBonds("").filter((bond)=>{
-                    return bond.atom[0] === "C"
-                })
+                const carbon_bonds = n.carbonBonds(container_molecule[0][1])
                 return carbon_bonds.length > 0
             })
         },

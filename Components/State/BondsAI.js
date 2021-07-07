@@ -249,7 +249,7 @@ class BondsAI {
 
     }
 
-    bondAtomsReverse(atom1, atom2, molecule_container, DEBUG) {
+    bondAtomsReversex(atom1, atom2, molecule_container, DEBUG) {
         Typecheck(
             {name:"molecule_container", value:molecule_container, type:"array"},
             {name:"atom1", value:atom1, type:"object"},
@@ -259,7 +259,7 @@ class BondsAI {
         return this.removeBond(atom1, atom2, molecule_container)
     }
 
-    createDoubleBond(atom1_id, atom2_id, molecule_container, DEBUG, check=true) {
+    createDoubleBondx(atom1_id, atom2_id, molecule_container, DEBUG, check=true) {
 
         Typecheck(
             {name:"atom1_id", value:atom1_id, type:"string"},

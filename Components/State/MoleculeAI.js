@@ -213,22 +213,23 @@ class MoleculeAI {
 
             // Create double bond between oxygen and carbon (reagent is C[H3+])
             // If carbon has 3 hydrogens then we need to remove one of them
-            const hydrogen_bonds = carbon.getHydrogenBonds(this.reaction.container_substrate[0][1])
-            if (hydrogen_bonds.length === 3) {
-                const hydrogen = this.reaction.container_substrate[0][1][hydrogen_bonds[0].atom_index]
-                carbon.removeHydrogenOnCarbonBond(hydrogen, this.reaction.container_substrate[0][1])
-                bondsAI.removeAtom(this.reaction.container_substrate, hydrogen, this.reaction.container_substrate[0][1].getAtomIndexById(hydrogen.atomId()))
-                this.reaction.setMoleculeAI()
-                carbon = this.reaction.container_substrate[0][1][0]
-                carbon.getHydrogenBonds(this.reaction.container_substrate[0][1]).length.should.be.equal(2)
+            const hydrogens = carbon.hydrogens(this.reaction.container_substrate[0][1])
+            if (hydrogens.length === 3) {
+                carbon.removeSingleBond(hydrogens[0])
+                // @todo Do we need second parameter?
+                carbon.removeAtom(hydrogens[0],this.reaction.container_substrate[0][1].getAtomIndexById(hydrogens[0].atomId()))
             }
 
 
-            bondsAI.makeOxygenCarbonDoubleBond(oxygen, carbon, DEBUG)
-            this.reaction.setMoleculeAI()
-            carbon.oxygenDoubleBonds(this.reaction.container_substrate[0][1]).length.should.be.equal(1)
-            oxygen.carbonDoubleBonds(this.reaction.container_substrate[0][1]).length.should.be.equal(1)
-            this.reaction.setChargesOnSubstrate()
+            oxygen[0].should.be.equal("O")
+            carbon[0].should.be.equal("C")
+
+            //console.log(carbon.isBondedTo(oxygen))
+            //bondsAI.makeOxygenCarbonDoubleBond(oxygen, carbon, DEBUG)
+            carbon.bondAtomToAtom(oxygen, this.reaction.container_substrate[0][1])
+            carbon.bondAtomToAtom(oxygen, this.reaction.container_substrate[0][1])
+            carbon.isDoubleBondedTo(oxygen).should.be.equal(true)
+
             if (DEBUG) {
                 console.log(VMolecule([this.reaction.container_substrate[0], 1]).compressed())
                 console.log(VMolecule([this.reaction.container_substrate[0], 1]).canonicalSMILES())
@@ -237,13 +238,32 @@ class MoleculeAI {
             // Add hydrogen to nitrogen atom on reagent to make up for loss of carbon atom
             this.reaction.setReagentAI()
             nitrogen_index = this.reaction.ReagentAI.findAtomIndexByAtomId(nitrogen_atom_id, DEBUG)
-            bondsAI.addHydrogen(this.reaction.container_reagent, nitrogen_index)
-            this.reaction.setChargesOnReagent()
+            //bondsAI.addHydrogen(this.reaction.container_reagent, nitrogen_index)
+            const nitrogen = this.reaction.container_reagent[0][1][nitrogen_index]
+            while(nitrogen.bondCount(this.reaction.container_reagent[0][1])  + nitrogen.hydrogens(this.reaction.container_reagent[0][1]).length < 3) {
+                const hydrogen = AtomFactory("H", "")
+                nitrogen.bondAtomToAtom(hydrogen, this.reaction.container_reagent[0][1])
+                this.reaction.container_reagent[0][1].addAtom(hydrogen)
+            }
+
+           // console.log(nitrogen.hydrogens(this.reaction.container_reagent[0][1]))
+           // process.error()
+
             if (DEBUG) {
                 console.log(VMolecule([this.reaction.container_reagent[0], 1]).compressed())
                 console.log(VMolecule([this.reaction.container_reagent[0], 1]).canonicalSMILES())
             }
 
+            this.reaction.setReagentAI()
+            this.reaction.setChargesOnReagent()
+            this.reaction.setMoleculeAI()
+            this.reaction.setChargesOnSubstrate()
+
+            console.log("Substrate:")
+            console.log(VMolecule([this.reaction.container_substrate[0], 1]).compressed())
+            console.log("Reagent:")
+            console.log(VMolecule([this.reaction.container_reagent[0], 1]).compressed())
+            process.error()
 
 
         } else {
@@ -309,8 +329,8 @@ class MoleculeAI {
         this.reaction.setReagentAI()
         this.reaction.setChargesOnSubstrate()
         this.reaction.setChargesOnReagent()
-        this.reaction.MoleculeAI.validateMolecule() // check each atom does not have more than allowed number of valence electrons
-        this.reaction.ReagentAI.validateMolecule() // check each atom does not have more than allowed number of valence electrons
+       // this.reaction.MoleculeAI.validateMolecule() // check each atom does not have more than allowed number of valence electrons
+       // this.reaction.ReagentAI.validateMolecule() // check each atom does not have more than allowed number of valence electrons
 
         if (DEBUG) {
             console.log("Substrate (after splitting:")

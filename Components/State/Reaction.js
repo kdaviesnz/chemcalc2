@@ -416,6 +416,8 @@ return result === false? false:[
 
     reductiveAminationReverse(carbon_index, DEBUG) {
 
+
+
         Typecheck(
             {name:"carbon_index", value:carbon_index, type:"number"},
             {name:"DEBUG", value:DEBUG, type:"boolean"},
@@ -451,6 +453,7 @@ return result === false? false:[
 
         // Find nitrogen index
         const nitrogen_index = this.MoleculeAI.findNitrogenAttachedToCarbonIndexNoDoubleBonds()
+
         if (DEBUG) {
             console.log("Reaction.js reductiveAminationReverse() nitrogen index="+nitrogen_index)
         }
@@ -462,8 +465,8 @@ return result === false? false:[
         if (undefined !== carbon_index)  {
 
             // Change to double bond
-            const nitrogen = CAtom(this.container_substrate[0][1][nitrogen_index], nitrogen_index, this.container_substrate)
-            const carbon = CAtom(this.container_substrate[0][1][carbon_index], carbon_index, this.container_substrate)
+            const nitrogen = this.container_substrate[0][1][nitrogen_index]
+            const carbon = this.container_substrate[0][1][carbon_index]
             if (DEBUG) {
                 console.log("Reaction.js reductiveAminationReverse Substrate before changing CN bond to C=N tracker="+tracker)
                 console.log(carbon_index)
@@ -472,8 +475,13 @@ return result === false? false:[
             }
 
             // Remove hydrogen from nitrogen to give it a negative charge
-            this.bondsAI.removeHydrogen(this.container_substrate, nitrogen, [], null, DEBUG)
-            this.bondsAI.breakCarbonNitrogenDoubleBondReverse(nitrogen_index, carbon_index, DEBUG)
+            //this.bondsAI.removeHydrogen(this.container_substrate, nitrogen, [], null, DEBUG)
+            // @todo Do we need the second parameter?
+            const hydrogens = nitrogen.hydrogens(this.container_substrate[0][1])
+            nitrogen.removeSingleBond(hydrogens[0])
+            this.container_substrate[0][1].removeAtom(hydrogens[0], this.container_substrate[0][1].getAtomIndexById(hydrogens[0].atomId()) )
+            // this.bondsAI.breakCarbonNitrogenDoubleBondReverse(nitrogen.atomId(), carbon.atomId(), DEBUG)
+            nitrogen.bondAtomToAtom(carbon, this.container_substrate[0][1])
             this.stateMoleculeAI.neutraliseMolecule(this.container_substrate)
             this.setChargesOnSubstrate(false)
             if (DEBUG) {
@@ -489,7 +497,13 @@ return result === false? false:[
                 console.log(VMolecule([this.container_substrate[0], 1]).canonicalSMILES())
             }
 
-            const formKetoneFromImine_result = this.stateMoleculeAI.formImineFromKetoneReverse(nitrogen_index, carbon_index, DEBUG)
+           // console.log(VMolecule(this.container_substrate).compressed())
+           // console.log(carbon.atomId())
+           // process.error()
+            this.setMoleculeAI()
+
+            const formKetoneFromImine_result = this.stateMoleculeAI.formImineFromKetoneReverse(nitrogen.atomId(), carbon.atomId(), DEBUG)
+
             if (DEBUG) {
                 console.log("Reaction.js reductiveAminationReverse Substrate, reagent and carbon index after converting to imine")
                 console.log(VMolecule(formKetoneFromImine_result[0]).compressed())
@@ -509,6 +523,9 @@ return result === false? false:[
                     console.log(VMolecule(this.container_reagent).canonicalSMILES())
                 }
             }
+
+            console.log(VMolecule(this.container_substrate).compressed())
+            process.error()
 
             return [
                 this.container_substrate,
@@ -864,6 +881,7 @@ return result === false? false:[
         this.container_substrate[0][1][0][0].should.be.an.String()
 
         this.MoleculeAI = require("../Stateless/MoleculeAI")((this.container_substrate))
+        this.stateMoleculeAI = new StateMoleculeAI(_.cloneDeep(this))
 
     }
 
