@@ -512,6 +512,18 @@ class BondsAI {
         return molecule_container
     }
 
+    removeProtonReverse(molecule_container, atom, DEBUG) {
+        Typecheck(
+            {name:"molecule_container", value:molecule_container, type:"array"},
+            {name:"atom", value:atom, type:"array"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"}
+        )
+        const proton = AtomFactory("H", "")
+        atom.bondAtomToAtom(proton, molecule_container[0][1])
+        molecule_container[0][1].addAtom(proton)
+        return molecule_container
+    }
+
     addProton(molecule_container, atom, DEBUG) {
         Typecheck(
             {name:"molecule_container", value:molecule_container, type:"array"},
@@ -533,6 +545,28 @@ class BondsAI {
         }
         proton.length.should.be.equal(Constants().electron_index + 2)
     }
+
+    addProtonReverse(molecule_container, atom, DEBUG) {
+
+        // When we remove a proton the number of electrons on the parent should not change.
+        Typecheck(
+            {name:"molecule_container", value:molecule_container, type:"array"},
+            {name:"atom", value:atom, type:"object"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"}
+        )
+
+        const hydrogens = atom.hydrogens()
+        if (hydrogens.length === 0) {
+            throw new Error("Unable to remove proton as no hydrogens found")
+        }
+
+        console.log(hydrogens)
+        process.error()
+        const hydrogen = hydrogens[0]
+        this.removeAtom(molecule_container, molecule_container[0][1][hydrogen.atomIndex])
+
+    }
+
 
     removeProton(molecule_container, atom, DEBUG) {
 
@@ -1380,6 +1414,103 @@ class BondsAI {
 
     }
 
+    breakNitrogenOnReagentToCarbonylCarbonOnSubstrateReverse(carbon_on_substrate, nitrogen_on_reagent) {
+
+        Typecheck(
+            {name:"carbon_on_substrate", value:carbon_on_substrate, type:"object"},
+            {name:"nitrogen_on_reagent", value:nitrogen_on_reagent, type:"object"}
+        )
+
+        let carbon_index = null
+
+        if (nitrogen_on_reagent === undefined || nitrogen_on_reagent === null){
+            const nucleophile_index = _.findIndex(this.reaction.container_reagent[0][1], (atom, index) => {
+                if (atom[0] !== "N") {
+                    return false
+                }
+                const n = this.reaction.container_reagent[0][1][index]
+                return n.indexedDoubleBonds(this.reaction.container_reagent[0][1]).length === 0
+            })
+            if (nucleophile_index ===-1) {
+                throw new Error("Unable to determine nitrogen on reagent index")
+            }
+            nitrogen_on_reagent = this.reaction.container_reagent[0][1][nucleophile_index]
+        }
+
+        // Check for C=O carbon on substrate
+        if (carbon_on_substrate === undefined || carbon_on_substrate === null) {
+            carbon_index = _.findIndex(this.reaction.container_substrate[0][1], (atom, index) => {
+                const c =this.reaction.container_substrate[0][1][index]
+                return c.oxygenDoubleBonds(this.reaction.container_substrate[0][1]).length !== 0
+            })
+            if (carbon_index===-1) {
+                throw new Error("Unable to determine carbon on substrate index")
+            }
+            carbon_on_substrate = this.reaction.container_substrate[0][1][carbon_index]
+        }
+        // @todo change C=O bond to CO
+        // carbon_on_substrate.oxygenDoubleBonds(this.reaction.container_substrate[0][1])
+        process.error()
+        this.breakReagenSubstrateBondReverse(nitrogen_on_reagent, carbon_on_substrate)
+
+        return [
+            this.reaction.container_substrate,
+            this.reaction.container_reagent
+        ]
+
+
+    }
+
+    breakReagenSubstrateBondReverse(nucleophile_atom_on_reagent, electrophile_atom_on_substrate, DEBUG) {
+
+        // Important:
+        // The reagent atom is the nucleophile (Lewis base, (donates a share in an electron pair) and is attacking the substrate (Lewis acid, (accepts a shared in an electron pair)
+        // The substrate is the electrophile
+        Typecheck(
+            {name:"nucleophile_atom_on_reagent", value:nucleophile_atom_on_reagent, type:"array"},
+            {name:"electrophile_atom_on_substrate", value:electrophile_atom_on_substrate, type:"array"},
+            {name:"DEBUG", value:DEBUG, type:"boolean"}
+        )
+
+        if (typeof this.reaction.container_reagent ==="string") {
+            throw new Error("When bonding reagent to substrate, reagent must not be a string.")
+        }
+
+        if (electrophile_atom_on_substrate === undefined || electrophile_atom_on_substrate === null) {
+            const electrophile_index = this.reaction.MoleculeAI.findElectrophileIndex()
+            if (electrophile_index===-1) {
+                throw new Error("Unable to determine electrophile on substrate index")
+            }
+            electrophile_atom_on_substrate = this.reaction.container_substrate[0][1][carbon_index]
+        }
+
+        if ((nucleophile_atom_on_reagent === undefined || nucleophile_atom_on_reagent === null) && typeof nucleophile_atom_on_reagent !== "string") {
+            const nucleophile_index = this.reaction.MoleculeAI.findNucleophileIndex()
+            if (nucleophile_index===-1) {
+                throw new Error("Unable to determine nucleophile on substrate index")
+            }
+            nucleophile_atom_on_reagent = this.reaction.container_reagent[0][1][nucleophile_index]
+        }
+
+        if (typeof this.reaction.container_reagent === "string") {
+            if (this.reaction.container_reagent[0] === "N") {
+                const reagent_container = [MoleculeFactory("NR"),1]
+                nucleophile_atom_on_reagent = CAtom(reagent_container[0][1][0], 0, reagent_container)
+            }
+        }
+
+        // When bonding to substrate the nucleophile atom (Lewis base) on the reagent donates a pair of electrons to the electrophile atom (Lewis acid) on the substrate.
+        console.log(VMolecule(this.reaction.container_substrate).compressed())
+        console.log(electrophile_atom_on_substrate)
+        process.error()
+        electrophile_atom_on_substrate.bondAtomToAtom(nucleophile_atom_on_reagent, this.reaction.container_substrate[0][1])
+
+        // Add reagent atoms to substrate
+        this.reaction.container_substrate[0][1].addAtoms(this.reaction.container_reagent[0][1])
+
+
+    }
+
     //  bondSubstrateToReagent(nucleophile_index = null, electrophile_index = null) {
     bondNitrogenOnReagentToCarbonylCarbonOnSubstrate(carbon_on_substrate, nitrogen_on_reagent) {
 
@@ -1432,17 +1563,17 @@ class BondsAI {
             {name:"DEBUG", value:DEBUG, type:"boolean"}
         )
 
-        const oxygen_atom = CAtom(this.reaction.container_substrate[0][1][oxygen_index], oxygen_index, this.reaction.container_substrate)
-        const carbon_bonds = oxygen_atom.carbonBonds()
-        carbon_bonds.should.be.an.Array()
+        const oxygen_atom = this.reaction.container_substrate[0][1][oxygen_index]
+        const carbon_bonds = oxygen_atom.carbonBonds(this.reaction.container_substrate[0][1])
         if (carbon_bonds.length === 0) {
-            return false
+            throw new Error("No carbon bond found.")
         }
 
-        const carbon_atom = CAtom(this.reaction.container_substrate[0][1][carbon_bonds[0].atom_index], carbon_bonds[0].atom_index, this.reaction.container_substrate)
+        const carbon_atom = this.reaction.container_substrate[0][1][carbon_bonds[0].atom_index]
 
         //  removeBond(atom1, atom2, molecule_container, DEBUG)
-        this.reaction.container_substrate = this.removeBond(oxygen_atom, carbon_atom, this.reaction.container_substrate, DEBUG)
+       // this.reaction.container_substrate = this.removeBond(oxygen_atom, carbon_atom, this.reaction.container_substrate, DEBUG)
+        return oxygen_atom.removeSingleBond(carbon_atom)
 
     }
 

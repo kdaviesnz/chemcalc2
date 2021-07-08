@@ -2029,8 +2029,8 @@ VMolecule
                     return false
                 }
 
-                const oxygen_atom_object = CAtom(oxygen_atom, oxygen_atom_index, container_molecule)
-                if(oxygen_atom_object.doubleBondCount() === 0) {
+                const oxygen_atom_object = oxygen_atom
+                if(oxygen_atom_object.doubleBondCount(container_molecule[0][1]) === 0) {
                     return false
                 }
                 return true

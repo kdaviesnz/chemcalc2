@@ -163,8 +163,8 @@ class ChargesAI {
         if (this.reaction.container_substrate[0][1][index][0] === "O") {
 
             // Formal Charge= (No.of valence electrons in unbonded state - no of lone pair electrons ) - (no. of bond pair electrons/2)
-            b = 2 - (a_obj.hydrogens(this.reaction.container_substrate[0][1]).length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
-
+            //b = 2 - (a_obj.hydrogens(this.reaction.container_substrate[0][1]).length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
+            b = bond_count - 2
         }
         if (this.reaction.container_substrate[0][1][index][0] === "N") {
              //b = (5 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))

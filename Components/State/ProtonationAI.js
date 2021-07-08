@@ -70,6 +70,31 @@ class ProtonationAI {
 
     }
 
+    deprotonateReverse(base_atom, DEBUG) {
+
+        Typecheck(
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+            {name:"base_atom", value:base_atom, type:"array"},
+        )
+
+        const bondsAI = new BondsAI(this.reaction)
+
+        if (typeof this.reaction.container_reagent === "string") {
+            if (this.reaction.container_reagent !== "A") {
+                throw new Error("ProtonationAI protonate() -> Reagent must be acid (A)")
+            }
+            this.reaction.container_reagent = "CB"
+        } else {
+            // Remove proton from reagent
+            bondsAI.addProtonReverse(this.reaction.container_reagent, DEBUG)
+
+        }
+        // Add proton to substrate
+        this.reaction.container_substrate = bondsAI.removeProtonReverse(this.reaction.container_substrate, base_atom, DEBUG)
+
+
+    }
+
     deprotonate(target_atom, DEBUG) {
 
         Typecheck(
@@ -572,6 +597,32 @@ class ProtonationAI {
 
     protonateOxygenOnDoubleBondReverse(carbonyl_oxygen_index, DEBUG) {
         this.deprotonateOxygenOnDoubleBond(carbonyl_oxygen_index, DEBUG)
+    }
+
+    deprotonateOxygenOnDoubleBondReverse(carbonyl_oxygen_index, DEBUG) {
+
+        Typecheck(
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+            {name:"carbonyl_oxygen_index", value:carbonyl_oxygen_index, type:"number"},
+        )
+
+        // Find index of oxygen
+        const oxygen_index = undefined !== carbonyl_oxygen_index && null !== carbonyl_oxygen_index? carbonyl_oxygen_index: this.reaction.MoleculeAI.findOxygenOnDoubleBondIndex()
+        if (oxygen_index === -1) {
+            throw new Error('Unable to find oxygen index')
+        }
+
+        const oxygen = this.reaction.container_substrate[0][1][oxygen_index]
+        oxygen[0].should.be.equal("O")
+
+        this.deprotonateReverse(oxygen, DEBUG)
+
+        //console.log(VMolecule(this.reaction.container_substrate).canonicalSMILES())
+        return [
+            this.reaction.container_substrate,
+            this.reaction.container_reagent
+        ]
+
     }
 
     protonateOxygenOnDoubleBond(carbonyl_oxygen_index, DEBUG) {

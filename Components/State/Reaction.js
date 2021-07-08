@@ -211,6 +211,46 @@ class Reaction {
 
     }
 
+    breakNitrogenOnReagentToCarbonylCarbonOnSubstrateReverse(DEBUG) {
+
+        Typecheck(
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+            {name:"this.container_substrate", value:this.container_substrate, type:"array"},
+            {name:"this.reactions", value:this.reactions, type:"array"},
+            {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
+            {name:"this.horizontalFn", value:this.horizontalFn, type:"function"},
+            {name:"this.commands", value:this.commands, type:"array"},
+            {name:"this.command_index", value:this.command_index, type:"number"},
+            {name:"nitrogen_index", value:this.nitrogen_index, type:"number"},
+            {name:"this.renderCallback", value:this.renderCallback, type:"function"},
+            {name:"this.rule", value:this.rule, type:"string"},
+            {name:"this.stateMoleculeAI", value:this.stateMoleculeAI, type:"object"}
+        )
+
+        const result = this.bondsAI.breakNitrogenOnReagentToCarbonylCarbonOnSubstrateReverse()
+
+        this.setChargesOnSubstrate()
+        this.setMoleculeAI()
+        if (typeof this.container_reagent !== "string") {
+            this.setChargesOnReagent()
+            this.setMoleculeAI()
+        }
+
+        /*
+        result.should.be.an.Array()
+
+return result === false? false:[
+    result[0], // substrate container
+    result[1] // reagent container
+]
+ */
+
+        return result ===  false? false:[
+            result[0],
+            result[1]
+        ]
+    }
+
     bondNitrogenOnReagentToCarbonylCarbonOnSubstrate(DEBUG) {
 
         Typecheck(
@@ -1373,6 +1413,48 @@ return result === false? false:[
         return this.dehydrateReverse(DEBUG)
     }
 
+    hydrateReverse(oxygen_atom_index, DEBUG) {
+
+        Typecheck(
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+            {name:"this.container_substrate", value:this.container_substrate, type:"array"},
+            {name:"this.reactions", value:this.reactions, type:"array"},
+            {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
+            {name:"this.horizontalFn", value:this.horizontalFn, type:"function"},
+            {name:"this.commands", value:this.commands, type:"array"},
+            {name:"this.command_index", value:this.command_index, type:"number"},
+            {name:"this.renderCallback", value:this.renderCallback, type:"function"},
+            {name:"this.rule", value:this.rule, type:"string"}
+        )
+
+        if (typeof this.container_reagent !== "string") {
+            this.container_reagent.should.be.an.Array()
+        }
+
+        const hydrationAI = new HydrationAI(_.cloneDeep(this))
+
+        const result = hydrationAI.hydrateReverse(oxygen_atom_index, DEBUG)
+
+        this.setReagentAI()
+        this.setMoleculeAI()
+        this.setChargesOnSubstrate(DEBUG)
+        this.setChargesOnReagent()
+
+        /*
+                result.should.be.an.Array()
+
+        return result === false? false:[
+            result[0], // substrate container
+            result[1] // reagent container
+        ]
+         */
+        return result ===  false? false:[
+            result[0],
+            result[1],
+            result[2]
+        ]
+    }
+
     dehydrate(oxygen_atom_index, DEBUG) {
 
         Typecheck(
@@ -1444,8 +1526,8 @@ return result === false? false:[
 ]
  */
         return result ===  false? false:[
-            this.container_substrate,
-            this.container_reagent
+            result[0],
+            result[1]
         ]
     }
 
@@ -1972,6 +2054,7 @@ return result === false? false:[
         return protationAI.removeProtonFromOxygen()
     }
 
+
     deprotonateOxygenOnDoubleBond(DEBUG) {
 
         Typecheck(
@@ -2003,6 +2086,41 @@ return result === false? false:[
         const protationAI = new ProtonationAI(_.cloneDeep(this))
         return protationAI.protonateCarbocationReverse()
     }
+
+    deprotonateOxygenOnDoubleBondReverse(carbonyl_oxygen_index,  DEBUG) {
+
+        Typecheck(
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+            {name:"carbonyl_oxygen_index", value:carbonyl_oxygen_index, type:"number"},
+            {name:"this.container_substrate", value:this.container_substrate, type:"array"},
+            {name:"this.reactions", value:this.reactions, type:"array"},
+            {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
+            {name:"this.horizontalFn", value:this.horizontalFn, type:"function"},
+            {name:"this.commands", value:this.commands, type:"array"},
+            {name:"this.command_index", value:this.command_index, type:"number"},
+            {name:"nitrogen_index", value:this.nitrogen_index, type:"number"},
+            {name:"carbon_index", value:this.carbon_index, type:"number"},
+            {name:"this.renderCallback", value:this.renderCallback, type:"function"},
+            {name:"this.rule", value:this.rule, type:"string"},
+            {name:"this.stateMoleculeAI", value:this.stateMoleculeAI, type:"object"}
+        )
+        const protationAI = new ProtonationAI(_.cloneDeep(this))
+        const result = protationAI.deprotonateOxygenOnDoubleBondReverse(carbonyl_oxygen_index, DEBUG)
+
+        /*
+        result.should.be.an.Array()
+
+return result === false? false:[
+    result[0], // substrate container
+    result[1] // reagent container
+]
+ */
+        return result ===  false? false:[
+            result[0],
+            result[1]
+        ]
+    }
+
 
     protonateOxygenOnDoubleBond(carbonyl_oxygen_index,  DEBUG) {
 

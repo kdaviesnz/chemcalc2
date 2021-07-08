@@ -17,6 +17,43 @@ class HydrationAI {
         this.reaction = reaction
     }
 
+    hydrateReverse(oxygen_atom_index, DEBUG) {
+
+        Typecheck(
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+        )
+
+        const bondsAI = new BondsAI(this.reaction)
+
+        oxygen_atom_index = oxygen_atom_index===null || oxygen_atom_index === undefined || oxygen_atom_index === false?this.reaction.MoleculeAI.findWaterOxygenIndex():oxygen_atom_index
+        if (oxygen_atom_index === -1) {
+            throw new Error("Unable to find oxygen atom index")
+        }
+
+        //let oxygen_atom = this.reaction.container_substrate[0][1][oxygen_atom_index]
+        this.reaction.container_substrate[0][1][oxygen_atom_index][0].should.be.equal("O")
+
+        const hydrogen_bonds = this.reaction.container_substrate[0][1][oxygen_atom_index].hydrogens(this.reaction.container_substrate[0][1])
+        hydrogen_bonds.length.should.be.equal(2)
+
+        // Break the non_hydrogen bond
+        this.reaction.container_substrate[0][1][oxygen_atom_index] = bondsAI.breakOxygenCarbonSingleBond(oxygen_atom_index, DEBUG)
+
+        // Remove water atoms
+        this.reaction.container_substrate[0][1].removeAtomsByIndex([oxygen_atom_index, hydrogen_bonds[0].atom_index, hydrogen_bonds[1].atom_index])
+
+        // Add water to leaving group
+        const water = MoleculeFactory("O")
+        this.reaction.leaving_groups.addAtom([water,1])
+
+        return [
+            this.reaction.container_substrate,
+            "",
+            this.reaction.leaving_groups
+        ]
+
+    }
+
     dehydrate(oxygen_atom_index, DEBUG) {
 
         Typecheck(
@@ -66,8 +103,6 @@ class HydrationAI {
             throw new Error("Water oxygen index not found.")
         }
         const water_oxygen_atom = water_molecule[1][water_oxygen_index]
-        console.log(water_oxygen_index)
-        process.error()
 
         // electrophiles have a positive chage
         let electrophile_index = this.reaction.MoleculeAI.findCarbocationIndex()
@@ -119,9 +154,8 @@ class HydrationAI {
         // electrons are the free electrons on the oxygen water atom
         //this.reaction.container_substrate[0][1][electrophile_index].addElectron(electrons[0])
         //this.reaction.container_substrate[0][1][electrophile_index].addElectron(electrons[1])
-        const water_hydrogens = water_oxygen_atom.hydrogens(this.reaction.container_substrate[0][1])
-        console.log(water_hydrogens)
-        process.error()
+        const water_hydrogens = water_oxygen_atom.hydrogens(water_molecule[1])
+        water_hydrogens.length.should.be.equal(2)
         e_atom.bondAtomToAtom(water_oxygen_atom, this.reaction.container_substrate[0][1])
 
         this.reaction.container_substrate[0][1].addAtom(water_molecule[1][0])
@@ -137,12 +171,15 @@ class HydrationAI {
 
         this.reaction.MoleculeAI.validateMolecule()
 
-        console.log(VMolecule(this.reaction.container_substrate).compressed())
-        console.log(electrophile_index)
-        process.error()
+        //console.log(VMolecule(this.reaction.container_substrate).compressed())
+        //console.log(VMolecule(this.reaction.container_substrate).canonicalSMILES())
+        //console.log(electrophile_index)
+        //process.error()
+        return [
+            this.reaction.container_substrate,
+            this.reaction.container_reagent
+        ]
 
-
-        return true
     }
 
     hydrate(DEBUG) {
