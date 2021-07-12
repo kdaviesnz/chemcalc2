@@ -27,6 +27,7 @@ const Set = require('./Models/Set')
 // doubleBondsNoHydrogens(atoms)
 // singleBondsNoHydrogens(atoms)
 // hydrogens(atoms)
+// nonHydrogens(atoms)
 // indexedTripleBonds(atoms)
 // indexedDoubleBonds(atoms)
 // indexedBonds(atoms)
@@ -41,8 +42,189 @@ const Set = require('./Models/Set')
 // isTripleBondedTo(sibling_atom)
 // isDoubleBondedTo(sibling_atom)
 // isBondedTo(sibling_atom)
+// hydroxylOxygenIndex()
+// nucleophileIndex()
 const Prototypes = () => {
+    Object.defineProperty(Array.prototype, 'nucleophileIndex', {
 
+        value: function() {
+
+            // "this" is an array of atoms
+            Typecheck(
+                {name:"first atom symbol", value:this[0][0], type:"string"},
+            )
+
+            ////// console.log((VMolecule(container_molecule).compressed())
+
+            // Look for negatively charged atom
+            const negative_atom_index = _.findIndex(this, (atom, index)=>{
+                return atom[4]==="-"
+            })
+
+
+            if (negative_atom_index !== -1) {
+                return negative_atom_index
+            }
+
+            // Look for =N atom
+            // @see https://www.name-reaction.com/ritter-reaction
+            const nitrogen_on_double_bond_index = _.findIndex((this), (atom, index)=>{
+                if (atom[0] !=="N") {
+                    return false
+                }
+                //const a = CAtom(container_molecule[0][1][index], index, container_molecule)
+                const a = this[index]
+                return a.doubleBondCount(this) === 1
+            })
+
+            if (nitrogen_on_double_bond_index > -1) {
+                return nitrogen_on_double_bond_index
+            }
+
+            // Look for OH
+            //const hyroxyl_oxygen_index = this.findHydroxylOxygenIndex()
+            const hyroxyl_oxygen_index = this.hydroxylOxygenIndex()
+
+            if (hyroxyl_oxygen_index > -1) {
+                return hyroxyl_oxygen_index
+            }
+
+            // Look for N atom
+            // @see https://en.wikipedia.org/wiki/Leuckart_reaction (formamide, step 1)
+            // @see https://en.wikipedia.org/wiki/Ritter_reaction
+            const nitrogen_index = _.findIndex((this[0][1]), (atom, index)=>{
+                return atom[0] === 'N' && atom[4] !== "+"
+            })
+
+            // // console.log(('nitrogen_index:'+nitrogen_index)
+            if (nitrogen_index > -1) {
+                return nitrogen_index
+            }
+
+            // Look for double bond with most hydrogens
+            let hydrogen_count = 0
+
+            let nucleophile_index = this.reduce((carry, atom, index)=> {
+                //const atom_object = CAtom(atom, index,container_molecule)
+                const atom_object = atom
+                const double_bonds = atom_object.indexedDoubleBonds(this).filter((double_bond)=>{
+                    // Check that atom we are bonding to has more than the current number of hydrogens
+                    if (double_bond.atom[0]!=="C") {
+                        return false
+                    }
+                    // CAtom(double_bond.atom, double_bond.atom_index, container_molecule)
+                    const bonded_atom_object_hydrogen_bonds = double_bond.atom.indexedBonds(this).filter(
+                        (bonded_atom_object_bonds)=>{
+                            return bonded_atom_object_bonds.atom[0] === "H"
+                        }
+                    )
+                    if (bonded_atom_object_hydrogen_bonds.length >= hydrogen_count) {
+                        hydrogen_count = bonded_atom_object_hydrogen_bonds.length
+                        return true
+                    } else {
+                        return false
+                    }
+
+                })
+
+                carry = double_bonds.length > 0? double_bonds[0].atom_index:carry
+
+                return carry
+
+            }, -1)
+
+            // Verifications checks
+            if (undefined === this[nucleophile_index]) {
+                nucleophile_index = -1
+            }
+
+            if (nucleophile_index > -1) {
+                return nucleophile_index
+            }
+
+            process.error()
+
+            // Check for atom with free electrons
+            const atoms_with_free_electrons = this.map(
+                (atom, atom_index) => {
+                    return CAtom(atom, atom_index, container_molecule)
+                }
+            ).filter(
+                (atom_object, atom_index) => {
+                    if (atom_object.symbol === "O" && (atom_object.bondCount() + atom_object.doubleBondCount() > 2)) {
+                        return false
+                    }
+                    return atom_object.symbol !== "H" && atom_object.freeElectrons().length > 0
+                }
+            ).sort(
+                (a,b) => {
+                    return a.symbol === 'Hg' ? -1 : 0
+                }
+            )
+
+            nucleophile_index = atoms_with_free_electrons.length === 0? -1: atoms_with_free_electrons[0].atomIndex
+
+            // console.log('MoleculeAI nuuu:'+nucleophile_index)
+
+            /*
+            nucleophile_index = _.findIndex(container_molecule[0][1], (atom, atom_index) => {
+                return atom[0] !== "H" && CAtom(atom, atom_index, container_molecule).freeElectrons().length > 0
+            })
+            */
+
+            nucleophile_index.should.be.an.Number()
+
+            if (nucleophile_index === -1) {
+                return -1
+            }
+
+            return nucleophile_index
+        }
+    })
+    Object.defineProperty(Array.prototype, 'hydroxylOxygenIndex', {
+        value: function() {
+            // "this" is an array of atoms
+            Typecheck(
+                {name:"first atom symbol", value:this[0][0], type:"string"},
+            )
+
+            return _.findIndex(this, (oxygen_atom)=>{
+
+                /*
+                A hydroxy or hydroxyl group is a functional group with the chemical formula -OH and composed of one oxygen atom covalently bonded to one hydrogen atom.
+                ... According to IUPAC definitions, the term hydroxyl refers to the hydroxyl radical (·OH) only, while the functional group −OH is called hydroxy group.
+                 */
+
+                // @todo Famillies alcohol
+                // Not an oxygen atom
+                if (oxygen_atom[0] !== "O") {
+                    return false
+                }
+
+                // Not -OH
+                //const oxygen_atom_object = oxygen_atom, oxygen_atom_index, container_molecule)
+                const oxygen_atom_object = oxygen_atom
+
+                if(oxygen_atom_object.bondCount(container_molecule[0][1])!==2) { // 1 hydrogen + 1 non-hydrogen
+                    return false
+                }
+
+
+                const indexed_bonds = oxygen_atom_object.indexedBonds(container_molecule[0][1])
+
+                const hydrogens = oxygen_atom_object.hydrogens(container_molecule[0][1])
+                if (hydrogens.length !==1) {
+                    return false // incorrect number of hydrogens
+                }
+
+                const non_hydrogen_bonds = oxygen_atom_object.nonHydrogens(this)
+                if (carbon_bonds.length !==1){
+                    return false // incorrect number of non-hydrogens
+                }
+                return true
+            })
+        }
+    })
     Object.defineProperty(Array.prototype, 'freeSlots', {
         value: function(atoms) {
 
@@ -578,6 +760,32 @@ const Prototypes = () => {
             return atoms.filter(
                 (__atom) => {
                     if (__atom[0] === "H" && !_.isEqual(__atom, this)) {
+                        return __atom.isBondedTo(this)
+                    }
+                    return false
+                }
+            )
+        }
+    })
+    Object.defineProperty(Array.prototype, 'nonHydrogens', {
+        value: function(atoms) {
+
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"},
+            )
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("Atoms are  undefined or null")
+            }
+
+            // "this
+            this[0].should.be.a.String()
+            atoms[0].should.be.an.Array()
+            atoms[0][0].should.be.a.String()
+
+            // "this" is an atom
+            return atoms.filter(
+                (__atom) => {
+                    if (__atom[0] !== "H" && !_.isEqual(__atom, this)) {
                         return __atom.isBondedTo(this)
                     }
                     return false

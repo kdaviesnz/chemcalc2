@@ -92,6 +92,22 @@ process.on('unhandledRejection', function(err) {
     console.log(err);
 })
 
+/*
+Commands:
+formImineFromKetoneReverse
+reduceImineToAmineReverse
+reductiveAminationReverse
+dehydrateReverse
+hydrateReverse
+deprotonateOxygenOnDoubleBondReverse
+To do:
+Commands/BreakBondReverse.js                         Commands/HydrolysisReverse.js
+Commands/BreakCarbonOxygenDoubleBondReverse.js       Commands/MakeOxygenCarbonDoubleBondReverse.js
+Commands/CreateEnolateReverse.js
+Commands/HydrideShiftOnCarbonNitrogenBondReverse.js  Commands/TransferProtonReverse.js
+
+ */
+
 console.log("Connecting to database ...")
 
 

@@ -318,9 +318,13 @@ const MoleculeAI = (container_molecule) => {
         return carbonyl_carbon_index
     }
 
-    const __findHydroxylOxygenIndex = () => {
+    const __findHydroxylOxygenIndexx = () => {
         return _.findIndex(container_molecule[0][1], (oxygen_atom, oxygen_atom_index)=>{
 
+            /*
+            A hydroxy or hydroxyl group is a functional group with the chemical formula -OH and composed of one oxygen atom covalently bonded to one hydrogen atom.
+            ... According to IUPAC definitions, the term hydroxyl refers to the hydroxyl radical (·OH) only, while the functional group −OH is called hydroxy group.
+             */
 
             // @todo Famillies alcohol
             // Not an oxygen atom
@@ -329,15 +333,20 @@ const MoleculeAI = (container_molecule) => {
             }
 
             // Not -OH
-            const oxygen_atom_object = CAtom(oxygen_atom, oxygen_atom_index, container_molecule)
+            //const oxygen_atom_object = oxygen_atom, oxygen_atom_index, container_molecule)
+            const oxygen_atom_object = oxygen_atom
 
-            if(oxygen_atom_object.bondCount()!==2) { // 1 hydrogen bond plus 1 carbon atom
+            if(oxygen_atom_object.bondCount(container_molecule[0][1])!==2) { // 1 hydrogen bond plus 1 carbon atom
                 return false
             }
 
 
-            const indexed_bonds = oxygen_atom_object.indexedBonds("")
+            const indexed_bonds = oxygen_atom_object.indexedBonds(container_molecule[0][1])
 
+            const hydrogens = oxygen_atom_object.hydrogens(container_molecule[0][1])
+            if (hydrogens.length === 0) {
+                throw new Error("No hydrogens found")
+            }
             // Check we have 1 hydrogen attached to the oxygen atom
             if (indexed_bonds.filter((bond) => {
                     if (bond.atom[0] !== "H") {
@@ -353,15 +362,10 @@ const MoleculeAI = (container_molecule) => {
                 return false
             }
 
-
-            // Check we have 1 carbon attached to the oxygen atom
-            if (indexed_bonds.filter((bond) => {
-                    return bond.atom[0] === "C"
-                }
-            ).length !== 1) {
-                return false
+            const carbon_bonds = oxygen_atom_object.carbonBonds(container_molecule[0][1])
+            if (carbon_bonds.length ===0){
+                throw new Error("No carbons attached oxygen found")
             }
-
             return true
         })
     }
@@ -1390,7 +1394,7 @@ VMolecule
 
 
 
-        "findNucleophileIndex": function() {
+        "findNucleophileIndexx": function() {
 
             ////// console.log((VMolecule(container_molecule).compressed())
 
@@ -1423,7 +1427,8 @@ VMolecule
             }
 
             // Look for OH
-            const hyroxyl_oxygen_index = this.findHydroxylOxygenIndex()
+            //const hyroxyl_oxygen_index = this.findHydroxylOxygenIndex()
+            const hyroxyl_oxygen_index = container_molecule[0][1].hydroxylOxygenIndex()
 
             if (hyroxyl_oxygen_index > -1) {
                 return hyroxyl_oxygen_index
@@ -1435,6 +1440,7 @@ VMolecule
             const nitrogen_index = _.findIndex((container_molecule[0][1]), (atom, index)=>{
                 return atom[0] === 'N' && atom[4] !== "+"
             })
+
          // // console.log(('nitrogen_index:'+nitrogen_index)
             if (nitrogen_index > -1) {
                 return nitrogen_index
@@ -1966,7 +1972,7 @@ VMolecule
 
         },
 
-        "findHydroxylOxygenIndex":() => {
+        "findHydroxylOxygenIndexx":() => {
 
             return __findHydroxylOxygenIndex()
 
