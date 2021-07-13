@@ -2343,19 +2343,24 @@ return result === false? false:[
     }
 
     breakBondReverse() { // bond atoms
-        //   // console.log('breakBondReverse()')
-        let nucleophile_index = this.MoleculeAI.findNucleophileIndex()
+
+        throw new Error("breakBondReverse() is no longer used.")
+
+        let nucleophile_index = this.container_substrate[0][1].nucleophileIndex()
+
+        console.log(VMolecule(this.container_substrate).compressed())
+        process.error()
         //   // console.log('nucleophile index:'+nucleophile_index)
-        let electrophile_index = this.MoleculeAI.findElectrophileIndex()
-        //   // console.log('electrophile index:' + electrophile_index)
+        let electrophile_index = this.container_substrate[0][1].electrophileIndex()
+
         if (electrophile_index === -1) {
             // Check for epoxide ring
             if (this.container_substrate[0][1][nucleophile_index][0] === 'O') {
                 const oxygen_atom_object = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate)
-                const bonds = oxygen_atom_object.indexedBonds("")
+                const bonds = oxygen_atom_object.indexedBonds(this.container_substrate[0][1])
                     if (bonds.length === 1 && bonds[0].atom[0]==="C") {
-                        const attached_carbon_object = CAtom(bonds[0].atom, bonds[0].atom_index, this.container_substrate)
-                        const attached_carbon_object_carbon_bonds = attached_carbon_object.indexedBonds("").filter((bond)=>{
+                        const attached_carbon_object = bonds[0].atom
+                        const attached_carbon_object_carbon_bonds = attached_carbon_object.indexedBonds(this.container_substrate[0][1]).filter((bond)=>{
                             return bond.atom[0] === "C"
                         })
                         attached_carbon_object_carbon_bonds.map((bond)=>{
@@ -2364,14 +2369,14 @@ return result === false? false:[
                         if (this.rule !== undefined && this.rule.mechanism === 'Epoxide ring opening via methoxide') {
                             // find carbon that is attached to OC group
                             electrophile_index = attached_carbon_object_carbon_bonds.filter((bond)=>{
-                                const c = CAtom(bond.atom, bond.atom_index, this.container_substrate)
-                                const b_o = c.indexedBonds("").filter((bond)=>{
+                                const c = bond.atom
+                                const b_o = c.indexedBonds(this.container_substrate[0][1]).filter((bond)=>{
                                     return bond.atom[0] === "O"
                                 })
                                 if (b_o.length === 0) {
                                     return false
                                 }
-            // @todo check if b_o atom has two carbon bonds with one of the carbon bonds being a terminal carbon
+                                // @todo check if b_o atom has two carbon bonds with one of the carbon bonds being a terminal carbon
                                 return true
                             }).pop().atom_index
                         } else {
@@ -2384,6 +2389,10 @@ return result === false? false:[
             }
         }
 
+        console.log(nucleophile_index)
+        console.log(electrophile_index)
+        process.error()
+        /*
         let nucleophile_free_electrons = CAtom(this.container_substrate[0][1][nucleophile_index], nucleophile_index, this.container_substrate).freeElectrons()
 
         this.container_substrate[0][1][electrophile_index].push(nucleophile_free_electrons[0])
@@ -2391,6 +2400,8 @@ return result === false? false:[
 
         this.container_substrate[0][1][nucleophile_index][4] = this.container_substrate[0][1][nucleophile_index][4] === "-"?0:"+"
         this.container_substrate[0][1][electrophile_index][4] = this.container_substrate[0][1][electrophile_index][4] === "+"?0:"-"
+         */
+        this.container_substrate[0][1][electrophile_index].bondAtomToAtom(this.container_substrate[0][1][nucleophile_index], this.container_substrate[0][1])
 
     }
 

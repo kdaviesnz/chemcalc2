@@ -370,7 +370,7 @@ const MoleculeAI = (container_molecule) => {
         })
     }
 
-    const __findElectrophileIndex = (filterBy, mustBe) => {
+    const __findElectrophileIndexxxx = (filterBy, mustBe) => {
 
 
 
@@ -1722,7 +1722,7 @@ VMolecule
 
 
 
-        "findElectrophileIndex": (filterBy, mustBe) => {
+        "findElectrophileIndexxx": (filterBy, mustBe) => {
 
             let i= __findElectrophileIndex(filterBy, mustBe)
 
@@ -1762,9 +1762,6 @@ VMolecule
                 })
 
             }
-
-
-
 
 
             if (i===-1) {

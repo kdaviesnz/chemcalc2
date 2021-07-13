@@ -45,6 +45,178 @@ const Set = require('./Models/Set')
 // hydroxylOxygenIndex()
 // nucleophileIndex()
 const Prototypes = () => {
+    Object.defineProperty(Array.prototype, 'electrophileIndex', {
+        value: function(atoms, mustBe, filterBy) {
+
+            // "this" is an array of atoms
+            Typecheck(
+                {name:"first atom symbol", value:this[0][0], type:"string"},
+                {name:"Must be", value:mustBe, type:"string"},
+                {name:"filterBy", value:filterBy, type:"function"},
+            )
+
+            let i = -1
+            //let i= __findElectrophileIndex(filterBy, mustBe)
+            // Look for N atom with no charge and two hydrogens
+            // @see https://en.wikipedia.org/wiki/Leuckart_reaction (formamide, step 1)
+            i = _.findIndex((this), (atom, index)=>{
+                if (atom[0] !== 'N' || atom[4] !== "") {
+                    return false
+                }
+                const nitrogen_atom_object = this[index]
+                return nitrogen_atom_object.hydrogens(this).length > 0
+            })
+
+            if (i === -1) {
+
+                i = _.findIndex((this), (atom, index) => {
+                    return atom[4] === '+'
+                })
+
+                if (i === -1) {
+
+                    i =  _.findIndex(this, (atom, index) => {
+
+                        let electrophile_index = null
+
+                        if (atom[4] === "-") {
+                            return false
+                        }
+                        // Ignore metals
+                        if (atom[0] === "Hg") {
+                            return false
+                        }
+
+                        const atom_object = atom
+
+                        if (undefined !== mustBe && atom[0] !== mustBe) {
+                            return false
+                        }
+
+                        if (atom_object.indexedDoubleBonds(this).length > 0) {
+                            return false
+                        }
+
+                        if (atom_object[4] === "+" || atom[4] === "&+") {
+                            electrophile_index = atom_object.getAtomIndexById(this, atom_object.atomId(this))
+                        }
+
+                        if (atom_object.freeSlots(this).length > 0) {
+                            electrophile_index = atom_object.atomIndex
+                        }
+
+                        if (atom[0] === "H" && atom_object.indexedBonds(this).filter((bond) => {
+                            return bond.atom[0] !== "C"
+                        }).length === 0) {
+                            electrophile_index = atom_object.atomIndex
+                        }
+
+                        if (electrophile_index !== null) {
+                            if (filterBy !== undefined && typeof filterBy === 'function') {
+                                return filterBy(electrophile_index) ? electrophile_index : false
+                            }
+                            return true
+                        }
+
+                        return false
+
+                    })
+
+                }
+
+            }
+
+
+            // electrophiles cannot have a positive charge
+            if (i !== -1 && this[i][4]==="-") {
+                i = -1
+            }
+
+            if (i === -1) {
+
+                // check for carbon double bond and return most substituted carbon
+                const carbons = this.filter((atom_object, index) => {
+                    return atom_object.symbol === "C" && atom_object.indexedDoubleBonds(this).filter((bond)=>{
+                        return bond.atom[0] === "C"
+                    }).length > 0
+                }).sort(
+                    (a, b) => {
+                        return a.hydrogens(this).length < b.hydrogens(this).length ? -1 : 0
+                    }
+                )
+
+                if (carbons.length > 0 && this[carbons[0].atomIndex][4] !=="-") {
+                    return carbons[0].getAtomIndexById(this, carbons[0].atomIndex())
+                }
+
+
+                // Check if we have a metal
+                i = _.findIndex(_.cloneDeep(this), (atom, index)=> {
+                    return atom[0] === "Hg" // @todo add isMetal() method to CAtom
+                })
+
+            }
+
+            if (i===-1) {
+
+                // Check for epoxide ring and return index of least substituted carbon
+                i = _.findIndex(_.cloneDeep(this), (atom, index)=> {
+
+                    if (atom[0] !== 'O') {
+                        return false
+                    }
+
+                    const oxygen_atom_object = atom
+                    const bonds = oxygen_atom_object.indexedBonds(this)
+
+
+                    if (bonds.length !== 2) {
+                        return false
+                    }
+
+                    // Carbon bonds
+                    if (bonds.filter((bond)=>{
+                        return bond.atom[0] === "C"
+                    }).length !==2) {
+                        return false
+                    }
+
+                    // Check carbon atoms are bonded together
+                    if(!bond[0].atom.isBondedTo(bonds[1].atom)) {
+                        return false
+                    }
+                    const c1 = bonds[0].atom
+                    const c2 = bonds[1].atom
+
+                    return true
+
+
+                })
+
+
+                if (i !== -1) {
+                    // i is the index of the oxygen atom on the epoxide ring
+                    // we need to find index of the least substituted carbon attached to the oxygen atom
+                    const oxygen_atom_object = this[i]
+                    const bonds = oxygen_atom_object.indexedBonds(this)
+                    // Have oxygen atom bonded to two carbons where the two carbons are bonded together
+                    // Find least substituted carbon
+                    const c1_atom_object = bonds[0].atom
+                    const c2_atom_object = bonds[1].atom
+                    i = c1_atom_object.hydrogens(this).length > c2_atom_object.hydrogens(this).length ? bonds[0].getAtomIndexById(this, bonds[0].atomId())
+                        : bonds[1].getAtomIndexById(this, bonds[1].atomId())
+
+                    if (this[i][4]==="-") {
+                        i = -1
+                    }
+                }
+            }
+
+
+            return i
+
+        }
+    })
     Object.defineProperty(Array.prototype, 'nucleophileIndex', {
 
         value: function() {
@@ -54,7 +226,6 @@ const Prototypes = () => {
                 {name:"first atom symbol", value:this[0][0], type:"string"},
             )
 
-            ////// console.log((VMolecule(container_molecule).compressed())
 
             // Look for negatively charged atom
             const negative_atom_index = _.findIndex(this, (atom, index)=>{
@@ -103,7 +274,6 @@ const Prototypes = () => {
 
             // Look for double bond with most hydrogens
             let hydrogen_count = 0
-
             let nucleophile_index = this.reduce((carry, atom, index)=> {
                 //const atom_object = CAtom(atom, index,container_molecule)
                 const atom_object = atom
@@ -126,9 +296,7 @@ const Prototypes = () => {
                     }
 
                 })
-
                 carry = double_bonds.length > 0? double_bonds[0].atom_index:carry
-
                 return carry
 
             }, -1)
@@ -141,36 +309,6 @@ const Prototypes = () => {
             if (nucleophile_index > -1) {
                 return nucleophile_index
             }
-
-            process.error()
-
-            // Check for atom with free electrons
-            const atoms_with_free_electrons = this.map(
-                (atom, atom_index) => {
-                    return CAtom(atom, atom_index, container_molecule)
-                }
-            ).filter(
-                (atom_object, atom_index) => {
-                    if (atom_object.symbol === "O" && (atom_object.bondCount() + atom_object.doubleBondCount() > 2)) {
-                        return false
-                    }
-                    return atom_object.symbol !== "H" && atom_object.freeElectrons().length > 0
-                }
-            ).sort(
-                (a,b) => {
-                    return a.symbol === 'Hg' ? -1 : 0
-                }
-            )
-
-            nucleophile_index = atoms_with_free_electrons.length === 0? -1: atoms_with_free_electrons[0].atomIndex
-
-            // console.log('MoleculeAI nuuu:'+nucleophile_index)
-
-            /*
-            nucleophile_index = _.findIndex(container_molecule[0][1], (atom, atom_index) => {
-                return atom[0] !== "H" && CAtom(atom, atom_index, container_molecule).freeElectrons().length > 0
-            })
-            */
 
             nucleophile_index.should.be.an.Number()
 
@@ -205,14 +343,14 @@ const Prototypes = () => {
                 //const oxygen_atom_object = oxygen_atom, oxygen_atom_index, container_molecule)
                 const oxygen_atom_object = oxygen_atom
 
-                if(oxygen_atom_object.bondCount(container_molecule[0][1])!==2) { // 1 hydrogen + 1 non-hydrogen
+                if(oxygen_atom_object.bondCount(this)!==2) { // 1 hydrogen + 1 non-hydrogen
                     return false
                 }
 
 
-                const indexed_bonds = oxygen_atom_object.indexedBonds(container_molecule[0][1])
+                const indexed_bonds = oxygen_atom_object.indexedBonds(this)
 
-                const hydrogens = oxygen_atom_object.hydrogens(container_molecule[0][1])
+                const hydrogens = oxygen_atom_object.hydrogens(this)
                 if (hydrogens.length !==1) {
                     return false // incorrect number of hydrogens
                 }
