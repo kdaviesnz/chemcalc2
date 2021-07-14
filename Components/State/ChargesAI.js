@@ -102,6 +102,8 @@ class ChargesAI {
         }
 
         if (b > 0 && container_molecule[0][1][index][4] !=="-") {
+            console.log("atom")
+            console.log(container_molecule[0][1][index])
             throw new Error("Atom should have a negative charge")
         }
 
@@ -174,8 +176,10 @@ class ChargesAI {
             b = bond_count - 3
         }
         if (this.reaction.container_substrate[0][1][index][0] === "C") {
-            b = 4 - (a_obj.hydrogens((this.reaction.container_substrate[0][1])).length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
 
+           // console.log("Set charges carbon bond bond = " + (a_obj.hydrogens((this.reaction.container_substrate[0][1])).length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3))
+           // b = 4 - (a_obj.hydrogens((this.reaction.container_substrate[0][1])).length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
+            b = bond_count - 4
         }
 
 

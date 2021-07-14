@@ -43,6 +43,7 @@ const Set = require('./Models/Set')
 // isDoubleBondedTo(sibling_atom)
 // isBondedTo(sibling_atom)
 // hydroxylOxygenIndex()
+// hydroxylCarbonIndex()
 // nucleophileIndex()
 const Prototypes = () => {
     Object.defineProperty(Array.prototype, 'electrophileIndex', {
@@ -327,40 +328,30 @@ const Prototypes = () => {
             )
 
             return _.findIndex(this, (oxygen_atom)=>{
-
-                /*
-                A hydroxy or hydroxyl group is a functional group with the chemical formula -OH and composed of one oxygen atom covalently bonded to one hydrogen atom.
-                ... According to IUPAC definitions, the term hydroxyl refers to the hydroxyl radical (·OH) only, while the functional group −OH is called hydroxy group.
-                 */
-
-                // @todo Famillies alcohol
-                // Not an oxygen atom
-                if (oxygen_atom[0] !== "O") {
-                    return false
+                if (oxygen_atom[0]==="O") {
+                    return oxygen_atom.carbonBonds(this).length > 0
                 }
-
-                // Not -OH
-                //const oxygen_atom_object = oxygen_atom, oxygen_atom_index, container_molecule)
-                const oxygen_atom_object = oxygen_atom
-
-                if(oxygen_atom_object.bondCount(this)!==2) { // 1 hydrogen + 1 non-hydrogen
-                    return false
-                }
-
-
-                const indexed_bonds = oxygen_atom_object.indexedBonds(this)
-
-                const hydrogens = oxygen_atom_object.hydrogens(this)
-                if (hydrogens.length !==1) {
-                    return false // incorrect number of hydrogens
-                }
-
-                const non_hydrogen_bonds = oxygen_atom_object.nonHydrogens(this)
-                if (carbon_bonds.length !==1){
-                    return false // incorrect number of non-hydrogens
-                }
-                return true
+                return false
             })
+        }
+    })
+    Object.defineProperty(Array.prototype, 'hydroxylCarbonIndex', {
+        value: function() {
+
+            // "this" is an array of atoms
+            Typecheck(
+                {name:"first atom symbol", value:this[0][0], type:"string"},
+            )
+
+            const oxygen_index = this.hydroxylOxygenIndex()
+            const carbon_bonds = this[oxygen_index].carbonBonds(this)
+
+            if (carbon_bonds.length === 0) {
+                return -1
+            }
+            return carbon_bonds[0].atom_index
+
+
         }
     })
     Object.defineProperty(Array.prototype, 'freeSlots', {
