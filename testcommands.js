@@ -123,13 +123,16 @@ client.connect(err => {
             (reaction_test, i) => {
                 console.log("Testing " + reaction_test.reaction +"()")
                 let reagent_container = null
-                if (reaction_test.starting_reagent === "A" || reaction_test.starting_reagent === "") {
+                if (reaction_test.starting_reagent === "A" || reaction_test.starting_reagent === "CB" || reaction_test.starting_reagent === "") {
                     reagent_container = reaction_test.starting_reagent
                 } else {
                     reagent_container = [MoleculeFactory("CN"), 1]
                 }
                 // reaction_test.starting_substrate is a string
                 const reaction = new Reaction([MoleculeFactory(reaction_test.starting_substrate), 1], reagent_container, "", false, null, null, [], 0, [], renderCallback)
+                if (undefined === reaction[reaction_test.reaction]) {
+                    throw new Error('reaction.' + reaction_test.reaction + "() is not defined.")
+                }
                 const result = reaction[reaction_test.reaction](...Object.values(reaction_test.params), false)
                 if (result === false) {
                     console.log("Reaction returned false - " + reaction_test.reaction +"()")

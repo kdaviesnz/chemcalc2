@@ -132,7 +132,7 @@ class Reaction {
             {name:"renderCallback", value:renderCallback, type:"function"}
         )
 
-        if (container_reagent !== "A" && container_reagent !== "") {
+        if (container_reagent !== "A" && container_reagent !== "CB" && container_reagent !== "") {
             container_reagent.should.be.an.Array()
         }
         container_substrate.length.should.be.equal(2) // molecule, units
@@ -201,7 +201,7 @@ class Reaction {
         })
 
         // Check each atom is an array
-        if (this.container_reagent !== "A" && this.container_reagent !== "") {
+        if (this.container_reagent !== "A" && this.container_reagent !== "CB" && this.container_reagent !== "") {
             this.container_reagent[0][1].map((_atom) => {
                 Typecheck(
                     {name: "_atom", value: _atom, type: "array"},
@@ -2539,7 +2539,39 @@ return result === false? false:[
         return protationAI.deprotonateNitrogenReverse()
     }
 
-    
+    addProtonToHydroxylGroupReverse() {
+
+        console.log(VMolecule(this.container_substrate).compressed())
+
+        const oxygen_index = this.container_substrate[0][1].waterOxygenIndex()
+
+        if (oxygen_index === -1) {
+            throw new Error("Water oxygen index not found")
+        }
+
+        console.log(oxygen_index)
+        this.container_substrate[0][1][oxygen_index][0].should.be.equal("O")
+
+        this.container_substrate[0][1][oxygen_index].removeProtonFromOxygen(this.container_substrate[0][1][oxygen_index].hydrogens(this.container_substrate[0][1]).pop(), this.container_substrate[0][1])
+
+        this.removeProtonFromReagentReverse()
+
+        console.log(VMolecule(this.container_substrate).compressed())
+
+        process.error()
+
+        this.setMoleculeAI()
+        this.setReagentAI()
+    }
+
+    removeProtonFromReagentReverse() {
+        if (this.container_reagent === "CB") {
+            this.container_reagent = "A"
+        } else {
+            console.log("Container reagent: " + this.container_reagent)
+            throw new Error("To do: reaction.removeProtonFromReagentReverse()")
+        }
+    }
 
 
     removeProtonFromReagent(proton_index) {
