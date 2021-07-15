@@ -872,7 +872,7 @@ return result === false? false:[
 
         // Look for negatively charged oxygen single bonded to a carbon
         const oxygen_index = this.container_substrate[0][1].hydroxylOxygenIndex("-")
-        console.log(VMolecule(this.container_substrate).compressed())
+        //console.log(VMolecule(this.container_substrate).compressed())
         //console.log(this.container_substrate[0][1][5])
 
         if (oxygen_index === -1) {
@@ -892,16 +892,20 @@ return result === false? false:[
         const carbon_index = hydroxyl_carbon_bonds[0].atom_index
         const carbon_double_bonds = this.container_substrate[0][1][carbon_index].carbonDoubleBonds(this.container_substrate[0][1])
 
-        console.log(carbon_double_bonds)
-        process.error()
-
-        // Create double bond between oxygen and carbon
-        this.container_substrate[0][1][carbon_index].bondAtomToAtom(this.container_substrate[0][1][oxygen_index], this.container_substrate[0][1])
 
         // Change double bond between hydroxyl carbon and carbon to a single bond
         this.container_substrate[0][1][carbon_index].removeSingleBond(this.container_substrate[0][1][carbon_double_bonds[0].atom_index])
 
+        // Create double bond between oxygen and carbon
+        this.container_substrate[0][1][carbon_index].bondAtomToAtom(this.container_substrate[0][1][oxygen_index], this.container_substrate[0][1])
+
+
+
         this.setChargesOnSubstrate()
+
+       // console.log(VMolecule(this.container_substrate).compressed())
+       // process.error()
+
 
         return [
             this.container_substrate,
