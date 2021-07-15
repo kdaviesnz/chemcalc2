@@ -872,10 +872,34 @@ return result === false? false:[
 
         // Look for negatively charged oxygen single bonded to a carbon
         const oxygen_index = this.container_substrate[0][1].hydroxylOxygenIndex("-")
-        const carbon_index = this.container_substrate[0][1].hydroxylCarbonIndex("-")
+        console.log(VMolecule(this.container_substrate).compressed())
+        //console.log(this.container_substrate[0][1][5])
+
+        if (oxygen_index === -1) {
+            throw new Error("Hydroxyl oxygen not found")
+        }
+
+        // Look for carbon bonded to hydroxyl oxygen AND double bonded to another carbon
+        const hydroxyl_carbon_bonds = this.container_substrate[0][1][oxygen_index].carbonBonds(this.container_substrate[0][1]).filter((bond)=>{
+            const carbon_double_bonds = bond.atom.carbonDoubleBonds(this.container_substrate[0][1])
+            return carbon_double_bonds.length === 1
+        })
+        if (hydroxyl_carbon_bonds.length === 0) {
+            throw new Error("Hydroxyl carbon with double bond to carbon not found")
+        }
+
+
+        const carbon_index = hydroxyl_carbon_bonds[0].atom_index
+        const carbon_double_bonds = this.container_substrate[0][1][carbon_index].carbonDoubleBonds(this.container_substrate[0][1])
+
+        console.log(carbon_double_bonds)
+        process.error()
 
         // Create double bond between oxygen and carbon
         this.container_substrate[0][1][carbon_index].bondAtomToAtom(this.container_substrate[0][1][oxygen_index], this.container_substrate[0][1])
+
+        // Change double bond between hydroxyl carbon and carbon to a single bond
+        this.container_substrate[0][1][carbon_index].removeSingleBond(this.container_substrate[0][1][carbon_double_bonds[0].atom_index])
 
         this.setChargesOnSubstrate()
 

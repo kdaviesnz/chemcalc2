@@ -329,7 +329,7 @@ const Prototypes = () => {
             )
 
             return _.findIndex(this, (oxygen_atom)=>{
-                if (oxygen_atom[0]==="O" && (undefined === charge || oxygen_atom[5] === charge)) {
+                if (oxygen_atom[0]==="O" && (undefined === charge || oxygen_atom[4] === charge)) {
                     return oxygen_atom.carbonBonds(this).length > 0
                 }
                 return false
