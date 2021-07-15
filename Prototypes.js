@@ -321,14 +321,15 @@ const Prototypes = () => {
         }
     })
     Object.defineProperty(Array.prototype, 'hydroxylOxygenIndex', {
-        value: function() {
+        value: function(charge) {
             // "this" is an array of atoms
             Typecheck(
                 {name:"first atom symbol", value:this[0][0], type:"string"},
+                {name:"charge", value:charge, type:"string"},
             )
 
             return _.findIndex(this, (oxygen_atom)=>{
-                if (oxygen_atom[0]==="O") {
+                if (oxygen_atom[0]==="O" && (undefined === charge || oxygen_atom[5] === charge)) {
                     return oxygen_atom.carbonBonds(this).length > 0
                 }
                 return false
@@ -336,14 +337,15 @@ const Prototypes = () => {
         }
     })
     Object.defineProperty(Array.prototype, 'hydroxylCarbonIndex', {
-        value: function() {
+        value: function(oxygen_charge) {
 
             // "this" is an array of atoms
             Typecheck(
                 {name:"first atom symbol", value:this[0][0], type:"string"},
+                {name:"oxygen charge", value:oxygen_charge, type:"string"},
             )
 
-            const oxygen_index = this.hydroxylOxygenIndex()
+            const oxygen_index = this.hydroxylOxygenIndex(oxygen_charge)
             const carbon_bonds = this[oxygen_index].carbonBonds(this)
 
             if (carbon_bonds.length === 0) {

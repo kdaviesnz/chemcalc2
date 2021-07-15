@@ -869,32 +869,21 @@ return result === false? false:[
     createEnolateReverse() {
 
         // @see https://chem.libretexts.org/Courses/Oregon_Institute_of_Technology/OIT%3A_CHE_332_--_Organic_Chemistry_II_(Lund)/7%3A_Acid-base_Reactions/07%3A_Carbon_Acids
-        // Make O=C double bond
-        const substrateSaved = this.container_substrate
-        this.setMoleculeAI()
-        const bondsAI = new BondsAI(_.cloneDeep(this))
 
-        if (bondsAI.makeOxygenCarbonDoubleBond(false)) {
+        // Look for negatively charged oxygen single bonded to a carbon
+        const oxygen_index = this.container_substrate[0][1].hydroxylOxygenIndex("-")
+        const carbon_index = this.container_substrate[0][1].hydroxylCarbonIndex("-")
 
-            this.setMoleculeAI()
+        // Create double bond between oxygen and carbon
+        this.container_substrate[0][1][carbon_index].bondAtomToAtom(this.container_substrate[0][1][oxygen_index], this.container_substrate[0][1])
 
-            // Change O=C bond to single bond
-            if (bondsAI.breakCarbonDoubleBond(false)) {
-                this.setMoleculeAI()
-                this.setChargesOnSubstrate()
-                // Protonate carbon atom
-                const protonationAI = new ProtonationAI(_.cloneDeep(this))
-                if (protonationAI.deprotonateCarbonReverse(false)){
-                    this.setMoleculeAI()
-                    this.setChargesOnSubstrate()
-                    return true
-                }
-            }
-        }
+        this.setChargesOnSubstrate()
 
-        this.container_substrate = substrateSaved
+        return [
+            this.container_substrate,
+            this.container_reagent
+        ]
 
-        return false
 
     }
 
