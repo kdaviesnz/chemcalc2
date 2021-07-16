@@ -70,11 +70,16 @@ const Prototypes = () => {
             hydrogen_atom[0].should.be.a.String()
             hydrogen_atom[0].should.be.equal("H")
 
-            if (this.isBondedTo(hydrogen_atom)) {
-                _.remove(this,(_atom_id)=>{
-                    return _atom_id === hydrogen_atom.atomId()
-                })
-            }
+            const number_of_hydrogens_before_removing_hydrogen_from_atom = this.hydrogens(atoms).length
+            this.removeSingleBond(hydrogen_atom)
+            this.hydrogens(atoms).length.should.be.equal(number_of_hydrogens_before_removing_hydrogen_from_atom -1)
+
+            const number_of_atoms_before_removing_proton = atoms.length
+            // removeAtom(atom, atom_index)
+            atoms.removeAtom(hydrogen_atom, atoms.getAtomIndexById(hydrogen_atom.atomId()))
+            atoms.length.should.be.equal(number_of_atoms_before_removing_proton -1)
+
+
         }
     })
     Object.defineProperty(Array.prototype, 'waterOxygenIndex', {

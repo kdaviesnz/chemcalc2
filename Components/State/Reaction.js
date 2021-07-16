@@ -2541,7 +2541,7 @@ return result === false? false:[
 
     addProtonToHydroxylGroupReverse() {
 
-        console.log(VMolecule(this.container_substrate).compressed())
+       // console.log(VMolecule(this.container_substrate).compressed())
 
         const oxygen_index = this.container_substrate[0][1].waterOxygenIndex()
 
@@ -2549,19 +2549,23 @@ return result === false? false:[
             throw new Error("Water oxygen index not found")
         }
 
-        console.log(oxygen_index)
         this.container_substrate[0][1][oxygen_index][0].should.be.equal("O")
 
         this.container_substrate[0][1][oxygen_index].removeProtonFromOxygen(this.container_substrate[0][1][oxygen_index].hydrogens(this.container_substrate[0][1]).pop(), this.container_substrate[0][1])
 
         this.removeProtonFromReagentReverse()
 
-        console.log(VMolecule(this.container_substrate).compressed())
-
-        process.error()
-
+        this.setChargesOnSubstrate()
+        this.setChargesOnReagent()
         this.setMoleculeAI()
         this.setReagentAI()
+
+        //console.log(VMolecule(this.container_substrate).compressed())
+        return [
+            this.container_substrate,
+            this.container_reagent
+        ]
+
     }
 
     removeProtonFromReagentReverse() {
