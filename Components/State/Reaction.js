@@ -2568,6 +2568,159 @@ return result === false? false:[
 
     }
 
+    breakCarbonDoubleBondReverse(parent_carbon_index, child_carbon_index) {
+
+        Typecheck(
+            {name:"parent_carbon_index", value:parent_carbon_index, type:"number"},
+            {name:"child_carbon_index", value:child_carbon_index, type:"number"},
+        )
+
+        if (parent_carbon_index === undefined) {
+            throw new Error("Parent carbon index is undefined")
+        }
+        if (child_carbon_index === undefined) {
+            throw new Error("child_carbon_index is undefined")
+        }
+
+        //console.log(VMolecule(this.container_substrate).compressed())
+        //process.error()
+        const parent_carbon = this.container_substrate[0][1][parent_carbon_index]
+        if (parent_carbon === undefined) {
+            throw new Error("Parent carbon not found")
+        }
+        if (parent_carbon[0] !== "C") {
+            throw new Error("Parent carbon is not a carbon")
+        }
+
+        const child_carbon = this.container_substrate[0][1][child_carbon_index]
+        if (child_carbon === undefined) {
+            throw new Error("Child carbon not found")
+        }
+        if (child_carbon[0] !== "C") {
+            throw new Error("Child carbon is not a carbon")
+        }
+        
+        // Check if carbons are bonded with a single bond
+        if (!parent_carbon.isBondedTo(child_carbon)) {
+            throw new Error("Carbons have no bond")
+        }
+
+        parent_carbon.bondAtomToAtom(child_carbon, this.container_substrate[0][1])
+
+        // Confirm there is now a double bond
+        if (!parent_carbon.isDoubleBondedTo(child_carbon)) {
+            throw new Error("Failed to create double bond")
+        }
+
+        return [
+            this.container_substrate,
+            this.container_reagent
+        ]
+
+    }
+
+    breakCarbonNitrogenTripleBondReverse(carbon_index, nitrogen_index) {
+
+        Typecheck(
+            {name:"parent_carbon_index", value:carbon_index, type:"number"},
+            {name:"nitrogen_index", value:nitrogen_index, type:"number"},
+        )
+
+        if (carbon_index === undefined) {
+            throw new Error("Carbon index is undefined")
+        }
+        if (nitrogen_index === undefined) {
+            throw new Error("Nitrogen ndex is undefined")
+        }
+
+        //console.log(VMolecule(this.container_substrate).compressed())
+        //process.error()
+        const carbon = this.container_substrate[0][1][carbon_index]
+        if (carbon === undefined) {
+            throw new Error("Parent carbon not found")
+        }
+        if (carbon[0] !== "C") {
+            throw new Error("Parent carbon is not a carbon")
+        }
+
+        const nitrogen = this.container_substrate[0][1][nitrogen_index]
+        if (nitrogen === undefined) {
+            throw new Error("Nitrogen not found")
+        }
+        if (nitrogen[0] !== "N") {
+            throw new Error("Nitrogen atom is not a nitrogen")
+        }
+
+        // Check if carbons are bonded with a single bond
+        if (!carbon.isDoubleBondedTo(nitrogen)) {
+            throw new Error("Nitrogen is not double bonded to carbon")
+        }
+
+        carbon.bondAtomToAtom(nitrogen, this.container_substrate[0][1])
+
+        // Confirm there is now a double bond
+        if (!carbon.isTripleBondedTo(nitrogen)) {
+            throw new Error("Failed to create triple bond")
+        }
+
+        return [
+            this.container_substrate,
+            this.container_reagent
+        ]
+
+    }
+
+    breakCarbonNitrogenDoubleBondReverse(carbon_index, nitrogen_index) {
+
+        Typecheck(
+            {name:"parent_carbon_index", value:carbon_index, type:"number"},
+            {name:"nitrogen_index", value:nitrogen_index, type:"number"},
+        )
+
+        if (carbon_index === undefined) {
+            throw new Error("Carbon index is undefined")
+        }
+        if (nitrogen_index === undefined) {
+            throw new Error("Nitrogen ndex is undefined")
+        }
+
+       // console.log(VMolecule(this.container_substrate).compressed())
+       // process.error()
+        const carbon = this.container_substrate[0][1][carbon_index]
+        if (carbon === undefined) {
+            throw new Error("Parent carbon not found")
+        }
+        if (carbon[0] !== "C") {
+            throw new Error("Parent carbon is not a carbon")
+        }
+
+        const nitrogen = this.container_substrate[0][1][nitrogen_index]
+        if (nitrogen === undefined) {
+            throw new Error("Nitrogen not found")
+        }
+        if (nitrogen[0] !== "N") {
+            throw new Error("Nitrogen atom is not a nitrogen")
+        }
+
+        // Check if carbons are bonded with a single bond
+        if (!carbon.isBondedTo(nitrogen)) {
+            throw new Error("Nitrogen is not bonded to carbon")
+        }
+
+        carbon.bondAtomToAtom(nitrogen, this.container_substrate[0][1])
+
+        // Confirm there is now a double bond
+        if (!carbon.isDoubleBondedTo(nitrogen)) {
+            throw new Error("Failed to create double bond")
+        }
+
+        return [
+            this.container_substrate,
+            this.container_reagent
+        ]
+
+    }
+
     removeProtonFromReagentReverse() {
         if (this.container_reagent === "CB") {
             this.container_reagent = "A"
@@ -3250,11 +3403,31 @@ return result === false? false:[
 
     }
 
+    hydrideShiftReverse(carbon_index, carbocation_index) {
+
+        // https://courses.lumenlearning.com/suny-potsdam-organicchemistry/chapter/8-4-rearrangements/#:~:text=Carbocation%20rearrangements%20are%20common%20in,%E2%80%9Cshifts%E2%80%9D%20within%20the%20molecule.
+
+        Typecheck(
+            {name:"carbon_index", value:carbon_index, type:"number"},
+            {name:"carbocation_index", value:carbocation_index, type:"number"},
+        )
+
+        if (carbon_index === undefined) {
+            // Look for C-C bond where one of the carbons is a carbocation (positively charged carbon)
+        }
+
+        const carbon = this.container_substrate[0][1][carbon_index]
+        const carbocation = this.container_substrate[0][1][carbocation_index]
+
+        // Shift hydrogen from carbon to carbocation
+
+    }
    
 
 
     hydrideShift() {
 
+        // https://courses.lumenlearning.com/suny-potsdam-organicchemistry/chapter/8-4-rearrangements/#:~:text=Carbocation%20rearrangements%20are%20common%20in,%E2%80%9Cshifts%E2%80%9D%20within%20the%20molecule.
         let carbon_atom_object = null
         // carbon dioxide
         // Look for carbon atom with O double bond, O single bond, and proton.
