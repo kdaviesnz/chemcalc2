@@ -3412,15 +3412,40 @@ return result === false? false:[
             {name:"carbocation_index", value:carbocation_index, type:"number"},
         )
 
+        console.log(VMolecule(this.container_substrate).compressed())
+        process.error()
+
+        // Look for C-C bond where one of the carbons is a carbocation (positively charged carbon)
         if (carbon_index === undefined) {
-            // Look for C-C bond where one of the carbons is a carbocation (positively charged carbon)
+            const indexes = this.findCarbonCarbocationIndexes()
+            carbon_index = indexes[0]
+            carbocation_index = indexes[1]
         }
 
         const carbon = this.container_substrate[0][1][carbon_index]
         const carbocation = this.container_substrate[0][1][carbocation_index]
 
-        // Shift hydrogen from carbon to carbocation
+        if (carbon[0] !== "C") {
+            throw new Error("Carbon is not a carbon atom")
+        }
 
+        if (carbocation[0] !== "C" || carbocation[4] !=="+") {
+            throw new Error("Carbocation is not a carbocation atom")
+        }
+
+        // Shift hydrogen from carbon to carbocation
+        const carbon_hydrogens = carbon.hydrogens(this.container_substrate[0][1])
+        if (carbon_hydrogens.length === 0) {
+            throw new Error("Carbon has no hydrogens")
+        }
+        carbon.removeHydrogenOnCarbonBond(carbon_hydrogens[0], this.container_substrate[0][1])
+        const hydrogen = AtomFactory("H", "")
+        carbocation.bondAtomToAtom(hydrogen)
+
+        return [
+            this.container_substrate,
+            this.container_reagent
+        ]
     }
    
 

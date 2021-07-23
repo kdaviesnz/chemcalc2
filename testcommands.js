@@ -19,7 +19,9 @@ const Reaction = require('./Components/State/Reaction')
 let reaction =null
 let stateMoleculeAI = null
 
-const test2 = MoleculeFactory("C=N") // [pka,atoms]
+const test2 = MoleculeFactory("[CH2+]C") // [pka,atoms]
+console.log(VMolecule([test2,1]).compressed())
+process.error()
 //console.log("testcommands.js")
 //console.log(test2[1][4])
 //console.log(test2[1][8])

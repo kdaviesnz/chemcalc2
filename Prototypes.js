@@ -47,6 +47,35 @@ const Set = require('./Models/Set')
 // nucleophileIndex()
 // removeProtonFromOxygen
 const Prototypes = () => {
+    Object.defineProperty(Array.prototype, 'findCarbonCarbocationIndexes', {
+        value: function(atoms) {
+            // "this" is an array of atoms
+            Typecheck(
+                {name:"hydrogen_atom", value:hydrogen_atom, type:"array"},
+                {name:"atoms", value:atoms, type:"array"}
+            )
+
+            let carbocation_index = null // a carbocation is a positively charged carbon
+
+            let carbon_index = _.findIndex(this, (atom)=>{
+                if (atom[0] !== "C" || atom[4] !== "") {
+                    return false
+                }
+                const bonds = atom.indexedBonds(this).filter((b)=>{
+                    if (b.atom[0] === "C" && b.atom[4]==="+") {
+                        carbocation_index = b.atom_index
+                        return true
+                    }
+                    return false
+                })
+                return bonds.length > 0
+            })
+            if (carbon_index === -1) {
+                throw new Error("Could not find carbon attached to carbocation")
+            }
+            return [carbon_index, carbocation_index]
+        }
+    })
     Object.defineProperty(Array.prototype, 'removeProtonFromOxygen', {
         value: function(hydrogen_atom, atoms) {
             // "this" is an atom

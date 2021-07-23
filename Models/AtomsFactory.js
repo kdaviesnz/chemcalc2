@@ -24,16 +24,19 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
 
 
     /*
-    [O-]
-[
+    [CH2+]C
+    [
   { type: 'BracketAtom', value: 'begin' },
-  { type: 'ElementSymbol', value: 'O' },
-  { type: 'Charge', value: -1 },
-  { type: 'BracketAtom', value: 'end' }
+  { type: 'ElementSymbol', value: 'C' },
+  { type: 'HydrogenCount', value: 2 },
+  { type: 'Charge', value: 1 },
+  { type: 'BracketAtom', value: 'end' },
+  { type: 'AliphaticOrganic', value: 'C' }
 ]
+
      */
-//    console.log(smiles_tokens)
-//    process.error()
+  //  console.log(smiles_tokens)
+  //  process.error()
     const atoms_with_tokens = _.cloneDeep(smiles_tokens).map(
         (row, i, arr) => {
             if (row.type === "AliphaticOrganic" || row.type === "ElementSymbol") {
@@ -54,10 +57,17 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }
     })
 
-/* CN
-[[ [ 'C', 6, 4, 4, 0, '68y' ], [ 'N', 7, 5, 3, 0, '690' ] ]
+/*  [CH2+]C
+[
+  { type: 'BracketAtom', value: 'begin' },
+  { type: 'ElementSymbol', value: 'C' },
+  { type: 'HydrogenCount', value: 2 },
+  { type: 'Charge', value: 1 },
+  { type: 'BracketAtom', value: 'end' },
+  { type: 'AliphaticOrganic', value: 'C' }
+]
  */
-//   console.log(atoms_with_tokens)
+ //  console.log(atoms_with_tokens)
  //   process.error()
 
     // Filter out brackets
@@ -70,10 +80,6 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }
     )
 
-    /* CN
-[ [ 'C', 6, 4, 4, 0, '68y' ], [ 'N', 7, 5, 3, 0, '690' ] ]
-
-     */
     // Filter out brackets
     const atoms_with_tokens_no_brackets = _.cloneDeep(atoms_with_tokens).filter(
         (row) => {
@@ -83,8 +89,13 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
             return true
         }
     )
-    /*
-    [ [ 'C', 6, 4, 4, 0, 'w13' ], [ 'N', 7, 5, 3, 0, 'w15' ] ]
+    /* [CH2+]C
+[
+  [ 'C', 6, 4, 4, 0, 'ij2' ],
+  { type: 'HydrogenCount', value: 2 },
+  { type: 'Charge', value: 1 },
+  [ 'C', 6, 4, 4, 0, 'ij4' ]
+]
      */
    //   console.log(atoms_with_tokens_no_brackets)
    // process.error()
@@ -260,20 +271,22 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }
     )
 
-    /*
-    CN
+    /* [CH2+]C
 [
   [
     'C',   6, 4,
-    4,     0, '2t2',
-    '2t4'
+    4,     0, '4z1',
+    '4z3'
   ],
+  { type: 'HydrogenCount', value: 2 },
+  { type: 'Charge', value: 1 },
   [
-    'N',   7, 5,
-    3,     0, '2t4',
-    '2t2'
+    'C',   6, 4,
+    4,     0, '4z3',
+    '4z1'
   ]
 ]
+
      */
     //console.log(atoms_with_bonds)
     //process.error()
@@ -291,23 +304,6 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }
     )
 
-    /*
-   CN
-[
-  [
-    'C',   6, 4,
-    4,     0, 'w2q',
-    'w2s'
-  ],
-  [
-    'N',   7, 5,
-    3,     0, 'w2s',
-    'w2q'
-  ]
-]
-     */
-   //console.log(atoms)
-   //process.error()
 
 
     let ring_bond_atom_index = null
@@ -351,24 +347,25 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
        return atom.type !== "Ringbond"
     })
 
-    /*
-    CN
-    [
+    /* [CH2+]C
+[
   [
     'C',   6, 4,
-    4,     0, 'tol',
-    'ton'
+    4,     0, 'byk',
+    'bym'
   ],
+  { type: 'HydrogenCount', value: 2 },
+  { type: 'Charge', value: 1 },
   [
-    'N',   7, 5,
-    3,     0, 'ton',
-    'tol'
+    'C',   6, 4,
+    4,     0, 'bym',
+    'byk'
   ]
 ]
-
      */
    // console.log(atoms_with_ring_bonds)
-    // process.error()
+   // process.error()
+
 
 
 
@@ -382,6 +379,8 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
             } else if (typeof current[0]==="string") {
                 if (undefined !== atoms[index+1] && atoms[index+1].type === "Charge") {
                     current[4] =  atoms[index+1].value === 1 ? "+":"-"
+                } else if (undefined !== atoms[index+2] && atoms[index+2].type === "Charge") {
+                    current[4] =  atoms[index+2].value === 1 ? "+":"-"
                 }
                 carry.push(current)
             }
@@ -389,24 +388,26 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
         }, []
     )
 
-/*
-CN
+    /* [CH2+]C
 [
   [
-    'C',   6, 4,
-    4,     0, 'k6d',
-    'k6f'
+    'C',   6,   4,
+    4,     '+', 'tcd',
+    'tcf'
   ],
+  { type: 'HydrogenCount', value: 2 },
   [
-    'N',   7, 5,
-    3,     0, 'k6f',
-    'k6d'
+    'C',   6, 4,
+    4,     0, 'tcf',
+    'tcd'
   ]
 ]
-
- */
-   //console.log(atoms_with_charges)
-    //process.error()
+     */
+    if (canonicalSMILES === "[CH2+]C") {
+        atoms_with_charges[0][4].should.be.equal("+")
+    }
+   // console.log(atoms_with_charges)
+   // process.error()
 
     // Add hydrogens
     const molecule = [[12345,atoms_with_charges],1]
