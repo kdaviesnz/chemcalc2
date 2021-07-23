@@ -363,6 +363,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
   ]
 ]
      */
+  //  console.log("AtomsFactory")
    // console.log(atoms_with_ring_bonds)
    // process.error()
 
@@ -406,7 +407,7 @@ const AtomsFactory = (canonicalSMILES, verbose) => {
     if (canonicalSMILES === "[CH2+]C") {
         atoms_with_charges[0][4].should.be.equal("+")
     }
-   // console.log(atoms_with_charges)
+  //  console.log(atoms_with_charges)
    // process.error()
 
     // Add hydrogens

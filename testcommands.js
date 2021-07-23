@@ -19,15 +19,15 @@ const Reaction = require('./Components/State/Reaction')
 let reaction =null
 let stateMoleculeAI = null
 
-const test2 = MoleculeFactory("[CH2+]C") // [pka,atoms]
-console.log(VMolecule([test2,1]).compressed())
-process.error()
+//const test2 = MoleculeFactory("[CH2+]C") // [pka,atoms]
+//console.log(VMolecule([test2,1]).compressed())
+//process.error()
 //console.log("testcommands.js")
 //console.log(test2[1][4])
 //console.log(test2[1][8])
-test2[1][4].indexedDoubleBonds(test2[1]).length.should.be.equal(1)
-test2[1][2].hydrogens(test2[1]).length.should.be.equal(2)
-test2[1][4].hydrogens(test2[1]).length.should.be.equal(1)
+//test2[1][4].indexedDoubleBonds(test2[1]).length.should.be.equal(1)
+//test2[1][2].hydrogens(test2[1]).length.should.be.equal(2)
+//test2[1][4].hydrogens(test2[1]).length.should.be.equal(1)
 //console.log(VMolecule([test2,1]).compressed())
 
 
@@ -131,6 +131,8 @@ client.connect(err => {
                     reagent_container = [MoleculeFactory("CN"), 1]
                 }
                 // reaction_test.starting_substrate is a string
+             //   console.log("testcommands")
+               // console.log(MoleculeFactory(reaction_test.starting_substrate))
                 const reaction = new Reaction([MoleculeFactory(reaction_test.starting_substrate), 1], reagent_container, "", false, null, null, [], 0, [], renderCallback)
                 if (undefined === reaction[reaction_test.reaction]) {
                     throw new Error('reaction.' + reaction_test.reaction + "() is not defined.")

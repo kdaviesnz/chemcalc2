@@ -3412,8 +3412,8 @@ return result === false? false:[
             {name:"carbocation_index", value:carbocation_index, type:"number"},
         )
 
-        console.log(VMolecule(this.container_substrate).compressed())
-        process.error()
+      //  console.log(VMolecule(this.container_substrate).compressed())
+      //  process.error()
 
         // Look for C-C bond where one of the carbons is a carbocation (positively charged carbon)
         if (carbon_index === undefined) {
@@ -3440,7 +3440,10 @@ return result === false? false:[
         }
         carbon.removeHydrogenOnCarbonBond(carbon_hydrogens[0], this.container_substrate[0][1])
         const hydrogen = AtomFactory("H", "")
-        carbocation.bondAtomToAtom(hydrogen)
+        carbocation.bondAtomToAtom(hydrogen, this.container_substrate[0][1])
+
+        console.log(VMolecule(this.container_substrate).compressed())
+        process.error()
 
         return [
             this.container_substrate,
