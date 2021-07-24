@@ -45,24 +45,108 @@ const Set = require('./Models/Set')
 // hydroxylOxygenIndex()
 // hydroxylCarbonIndex()
 // nucleophileIndex()
-// removeProtonFromOxygen
+// removeProtonFromOxygen()
+// addAtom(atom)
+// findCarbonCarbocationIndexes(no_hydrogens_on_carbon)
+// extractAkylGroup(akyl_group, atoms)
+// branches(atoms)
+// branch(branch)
 const Prototypes = () => {
-    Object.defineProperty(Array.prototype, 'findCarbonCarbocationIndexes', {
+    Object.defineProperty(Array.prototype, 'branch', {
+        value: function(branch, atoms) { // recursive function
+            // "this" is an atom
+            Typecheck(
+                {name:"branch", value:branch, type:"array"},
+                {name:"atoms", value:atoms, type:"array"}
+            )
+
+            if (atoms === undefined) {
+                throw new Error("Atoms is undefined")
+            }
+
+            if (atoms.length ===0){
+                throw new Error("No atoms")
+            }
+
+          //  console.log(this.indexedBonds(atoms))
+           // process.error()
+
+            const bonds = [...this.indexedBonds(atoms), ...this.indexedDoubleBonds(atoms), ...this.indexedTripleBonds(atoms)]
+
+            // If all hydrogen bonds then quit (@todo ring branches)
+            if (bonds.filter((bond)=>{
+                return bond.atom[0] !== "H"
+            }).length < 2) { // count parent atom
+                console.log(branch)
+                console.log("ending branch")
+                process.error()
+                return branch
+            }
+
+           // process.error()
+            bonds.map((bond)=>{
+                branch.push(bond.atom)
+                //console.log(bond.atom)
+                //console.log(atoms.getAtomIndexById(bond.atom.atomId()))
+                //process.error()
+                bond.atom.branch(branch, atoms.slice(atoms.getAtomIndexById(bond.atom.atomId())))
+            })
+        }
+    })
+    Object.defineProperty(Array.prototype, 'branches', {
         value: function(atoms) {
+            // "this" is an atom
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"}
+            )
+            // Slice atoms starting from "this" index
+           // const parent_atom_index = this.getAtomIndexById(this.atomId())
+           // const child_atoms = atoms.slice(parent_atom_index +1)
+            const branches =[]
+            const bonds = [...this.indexedBonds(atoms), ...this.indexedDoubleBonds(atoms), ...this.indexedTripleBonds(atoms)]
+            //console.log(bonds)
+            //process.error()
+            bonds.map((bond)=>{
+                const branch = bond.atom.branch([bond.atom], atoms.slice(atoms.getAtomIndexById(this.atomId()))) // array of bonded atoms
+                branch.should.be.an.Array()
+                branches.push(branch)
+                //console.log(branches)
+                //process.error()
+            })
+            console.log(branches)
+            return branches
+        }
+    })
+    Object.defineProperty(Array.prototype, 'extractAkylGroup', {
+        value: function(akyl_group, atoms) {
+            // "this" is an atom
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"}
+            )
+            // An akyl group contains only carbons and hydrogens and only single bonds
+            // Trace through each branch of atoms coming off "this" until an akyl group if found
+
+        }
+    })
+    Object.defineProperty(Array.prototype, 'findCarbonCarbocationIndexes', {
+        value: function(no_hydrogens_on_carbocation) {
             // "this" is an array of atoms
             Typecheck(
-                {name:"hydrogen_atom", value:hydrogen_atom, type:"array"},
-                {name:"atoms", value:atoms, type:"array"}
+                {name:"no_hydrogens_on_carbocation", value:no_hydrogens_on_carbocation, type:"boolean"}
             )
 
             let carbocation_index = null // a carbocation is a positively charged carbon
 
+            const atoms = this
             let carbon_index = _.findIndex(this, (atom)=>{
                 if (atom[0] !== "C" || atom[4] !== "") {
                     return false
                 }
                 const bonds = atom.indexedBonds(this).filter((b)=>{
                     if (b.atom[0] === "C" && b.atom[4]==="+") {
+                        if (no_hydrogens_on_carbocation && b.atom.hydrogens(atoms).length > 0) {
+                            return false
+                        }
                         carbocation_index = b.atom_index
                         return true
                     }

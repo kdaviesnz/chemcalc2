@@ -3403,6 +3403,44 @@ return result === false? false:[
 
     }
 
+    akylShiftReverse(carbon_index, carbocation_index) {
+
+        // https://courses.lumenlearning.com/suny-potsdam-organicchemistry/chapter/8-4-rearrangements/#:~:text=Carbocation%20rearrangements%20are%20common%20in,%E2%80%9Cshifts%E2%80%9D%20within%20the%20molecule.
+        // https://chem.libretexts.org/Ancillary_Materials/Reference/Organic_Chemistry_Glossary/12-Alkyl_Shift
+        // https://www.masterorganicchemistry.com/2012/08/22/rearrangement-reactions-2-alkyl-shifts/
+
+        Typecheck(
+            {name:"carbon_index", value:carbon_index, type:"number"},
+            {name:"carbocation_index", value:carbocation_index, type:"number"},
+        )
+
+        //   console.log(VMolecule(this.container_substrate).compressed())
+        //  process.error()
+
+        // Look for C-C bond where one of the carbons is a carbocation (positively charged carbon)
+        if (carbon_index === undefined) {
+            const indexes = this.container_substrate[0][1].findCarbonCarbocationIndexes(true) // carbocation must have no hydrogens
+            carbon_index = indexes[0]
+            carbocation_index = indexes[1]
+        }
+
+        const carbon = this.container_substrate[0][1][carbon_index]
+        const carbocation = this.container_substrate[0][1][carbocation_index]
+
+        if (carbon[0] !== "C") {
+            throw new Error("Carbon is not a carbon atom")
+        }
+
+        if (carbocation[0] !== "C" || carbocation[4] !=="+") {
+            throw new Error("Carbocation is not a carbocation atom")
+        }
+
+        // Shift akyl group from carbon to carbocation
+        // An akyl group contains only carbons and hydrogens and only single bonds
+
+        throw new Error("to do: akylShiftReverse")
+    }
+
     hydrideShiftReverse(carbon_index, carbocation_index) {
 
         // https://courses.lumenlearning.com/suny-potsdam-organicchemistry/chapter/8-4-rearrangements/#:~:text=Carbocation%20rearrangements%20are%20common%20in,%E2%80%9Cshifts%E2%80%9D%20within%20the%20molecule.
@@ -3412,12 +3450,12 @@ return result === false? false:[
             {name:"carbocation_index", value:carbocation_index, type:"number"},
         )
 
-      //  console.log(VMolecule(this.container_substrate).compressed())
+     //   console.log(VMolecule(this.container_substrate).compressed())
       //  process.error()
 
         // Look for C-C bond where one of the carbons is a carbocation (positively charged carbon)
         if (carbon_index === undefined) {
-            const indexes = this.findCarbonCarbocationIndexes()
+            const indexes = this.container_substrate[0][1].findCarbonCarbocationIndexes(false)
             carbon_index = indexes[0]
             carbocation_index = indexes[1]
         }
@@ -3435,15 +3473,26 @@ return result === false? false:[
 
         // Shift hydrogen from carbon to carbocation
         const carbon_hydrogens = carbon.hydrogens(this.container_substrate[0][1])
+        const carbon_hydrogen_count_before = carbon_hydrogens.length
         if (carbon_hydrogens.length === 0) {
             throw new Error("Carbon has no hydrogens")
         }
         carbon.removeHydrogenOnCarbonBond(carbon_hydrogens[0], this.container_substrate[0][1])
-        const hydrogen = AtomFactory("H", "")
-        carbocation.bondAtomToAtom(hydrogen, this.container_substrate[0][1])
+        const hydrogen_index = this.container_substrate[0][1].getAtomIndexById(carbon_hydrogens[0].atomId())
+        this.container_substrate[0][1].removeAtom(carbon_hydrogens[0], hydrogen_index)
+        carbon_hydrogen_count_before.should.be.equal(carbon.hydrogens(this.container_substrate[0][1]).length +1)
+        carbon[4] = "+"
 
-        console.log(VMolecule(this.container_substrate).compressed())
-        process.error()
+        const carbocation_hydrogens = carbocation.hydrogens(this.container_substrate[0][1])
+        const carbocation_hydrogen_count_before = carbocation_hydrogens.length
+        const hydrogen = AtomFactory("H", "")
+        this.container_substrate[0][1].addAtom(hydrogen)
+        carbocation.bondAtomToAtom(hydrogen, this.container_substrate[0][1])
+        carbocation_hydrogen_count_before.should.be.equal(carbocation.hydrogens(this.container_substrate[0][1]).length -1)
+        carbocation[4] = ""
+
+      //  console.log(VMolecule(this.container_substrate).compressed())
+      //  process.error()
 
         return [
             this.container_substrate,
