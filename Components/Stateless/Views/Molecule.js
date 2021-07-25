@@ -6,6 +6,31 @@ const Set = require('../../../Models/Set')
 const Constants = require("../../../Constants")
 const Typecheck = require("../../../Typecheck")
 
+/*
+__isRing()
+__determineIfEndOfBranch()
+__getBondType()
+__addBrackets()
+__endOfBranch()
+__getAtomAsSMILE()
+__addBranches()
+__getIndexOfNextAtom()
+__getBondIds()
+__getChildAtoms()
+__SMILES_recursive()
+__getEndOfBranchIdRecursive()
+.JSON()
+.compressed()
+.formatted()
+.nextAtomIndex(chain, current_index)
+.previousAtomIndex(chain, current_index)
+.rootAtomIndex(current_index)
+.addBrackets(symbol, charge)
+.getBond(chain, atom_index, i)
+.isBranch(compressed_atom, start_of_branch_index, previous_atom_id)
+.canonicalSMILES()
+.render()
+*/
 const VMolecule = (mmolecule) => {
 
     Typecheck(
@@ -68,7 +93,6 @@ const VMolecule = (mmolecule) => {
     const __addBrackets = (atomic_symbol) => {
         return atomic_symbol === "Al"
     }
-
 
     const __endOfBranch = (current_atom, index, mmolecule_sans_hydrogens) => {
         const catom_current = CAtom(current_atom, index, mmolecule)
@@ -375,6 +399,7 @@ const VMolecule = (mmolecule) => {
         }
     }
 
+
     return {
 
         'JSON': function()  {
@@ -483,6 +508,7 @@ const VMolecule = (mmolecule) => {
                 }
             )
         },
+
         nextAtomIndex: function(chain, current_index) {
             if (undefined === chain[current_index]) {
                 return false
@@ -516,8 +542,6 @@ const VMolecule = (mmolecule) => {
         getBond: function(chain, atom_index, i) {
 
             let symbol = mmolecule[0][1][atom_index][0]
-
-
 
             if (i < 0) {
                 return ""
@@ -569,6 +593,282 @@ const VMolecule = (mmolecule) => {
 
             return is_branch
         },
+
+        chains: function() {
+
+            if (mmolecule[0] ==="B") {
+                return "B"
+            }
+
+            const ring_bond_ids = {}
+            let ring_bond_id = 1
+            let start_of_branches_ids = []
+            let end_of_branches_ids = []
+
+            //const compressedMolecule = this.compressed()
+           // console.log(compressedMolecule)
+            const atoms_no_hydrogens = mmolecule[0][1].atomsWithNoHydrogens()
+            console.log(atoms_no_hydrogens)
+            process.error()
+
+            const last_atom = atoms_no_hydrogens[atoms_no_hydroens.length -1]
+
+            atoms_no_hydroens.map((current_atom, i)=>{
+
+                // Ring bonds
+                // Get subsequent atoms that are not bonded to the current atom
+                const subsequent_atoms = current_atom.subsequentAtomsNotBondedToCurrentAtom(atoms_no_hydrogens)
+
+                if (subsequent_atoms.length > 0) {
+
+                    // Identify ring bonds
+                    // Ring bond if current atom id in list of child atoms
+                    const ring_bond_child_atoms = child_atoms.filter((child_atom,i)=>{
+                        const bonds_ids = __getBondIds(child_atom[4]).concat(__getBondIds(child_atom[5])).concat(__getBondIds(child_atom[6]))
+                        const current_atom_bond_index = bonds_ids.indexOf(current_atom[1])
+                        if (current_atom_bond_index !== -1) {
+                            if (testing) {
+                                //console.log("current atom bond index:")
+                                //console.log(current_atom_bond_index)
+                                //console.log("child atom")
+                                //console.log(child_atom)
+                                //console.log("bond ids")
+                                //console.log(bonds_ids)
+                            }
+                            // Filter out current bond id and bond ids > child bond id
+                            const bond_ids_to_test = _.cloneDeep(bonds_ids).filter((b_id)=>{
+                                return b_id !== current_atom[1] && b_id < child_atom[1]
+                            })
+                            return bond_ids_to_test.length > 0
+                        } else {
+                            return false
+                        }
+
+                    })
+                    if (testing) {
+                        console.log("ring bond child atoms")
+                        console.log(ring_bond_child_atoms)
+                    }
+                    if (ring_bond_child_atoms.length > 0) {
+                        const ring_bond_child_atom = ring_bond_child_atoms[0]
+                        const parent_item = {}
+                        const child_atom_id = ring_bond_child_atom[1]
+                        parent_item[current_atom[1]] = ring_bond_id
+                        ring_bond_ids[current_atom[1]+""] = ring_bond_id
+                        ring_bond_ids[child_atom_id] = ring_bond_id
+                        ring_bond_id = ring_bond_id + 1
+                    }
+                }
+
+                // Branches
+                // A bond is a start of a branch if
+                // Bond id is not less than the current atom id
+                // current atom is a ring bond id and the number of bonds is greater than 2 OR current atom is
+                // not a ring bond id and the number of bonds > 1
+
+                // Get ids of bonded atoms
+                const bond_ids = __getBondIds(current_atom[4]).concat(__getBondIds(current_atom[5])).concat(__getBondIds(current_atom[6]))
+
+
+                const min_number_of_bonds = ring_bond_ids[current_atom[1]+""] === undefined?1:1
+
+                // Remove ring bond ids
+                const bond_ids_no_ring_bond_ids = bond_ids.filter((bond_id)=>{
+                    return ring_bond_ids[bond_id+""] === undefined
+                })
+
+
+
+                // Remove bond ids < current atom bond id and if last atom in the molecule
+                const bond_ids_final = bond_ids_no_ring_bond_ids.filter((bond_id)=>{
+                    return bond_id > current_atom[1]
+                })
+
+
+                // Sort and pop last bond_id as this is the last branch attached to the current atom
+                bond_ids_final.sort((a, b) => a - b).pop()
+
+                if (bond_ids_final.length > (min_number_of_bonds - 1)) { // we've removed the last bond_id
+                    bond_ids_final.map((bond_id, k) => {
+                        if (bond_id !== last_atom[1]) { // not last branch on the current atom and bond is not last atom on the molecule
+                            start_of_branches_ids.push(bond_id)
+                        }
+                    })
+                }
+
+                if (testing && current_atom[1] === 6) {
+                    console.log(bond_ids_final)
+                }
+
+
+
+                if (testing) {
+                    console.log("Start of branches -bond_ids_final, current atom = " + current_atom[1])
+                    console.log(bond_ids_final)
+                }
+
+                // End of bond ids
+                bond_ids.sort((a, b) => a - b)
+                if (bond_ids.length === 1 && i !==0 && i < compressedMolecule.length -1) {
+                    end_of_branches_ids.push(current_atom[1])
+                }
+
+                // Ring bond atoms
+                if(undefined !==ring_bond_ids[current_atom[1] +'']) {
+                    const bond_ids_filtered = bond_ids.filter((b_id)=>{
+                        return b_id < current_atom[1] && undefined !== ring_bond_ids[b_id+""]
+                    })
+                    if (bond_ids_filtered.length ==1) {
+                        end_of_branches_ids.push(current_atom[1])
+                    }
+                }
+
+                // Last atom
+                end_of_branches_ids = end_of_branches_ids.filter((b_id)=>{
+                    return b_id !== last_atom[1]
+                })
+
+                // First atom
+                /*
+                if (i === 0) {
+                    if (bond_ids_final.length > 1) {
+                        // Branch
+                        bond_ids_final.map((bond_id) => {
+                            start_of_branches_ids.push(bond_id)
+                        })
+                    }
+                } else {
+                    // Not first atom
+                    if (bond_ids_final.length > 1) {
+                        // Branch
+                        bond_ids_final.map((bond_id) => {
+                            start_of_branches_ids.push(bond_id)
+                        })
+                    }
+                }
+                 */
+
+            })
+
+
+            if (testing) {
+                console.log("compressedMolecule")
+                console.log(compressedMolecule)
+                console.log("Ring bonds")
+                console.log(ring_bond_ids)
+                console.log("Branches")
+                console.log(start_of_branches_ids)
+                console.log("end")
+                console.log(end_of_branches_ids)
+                //process.error()
+            }
+
+
+            let single_bond_indexes = []
+            let bond_indexes = []
+            let branch_depth = -1
+            let previous_branch_depth = 0
+            let branch_tracker = []
+            let previous_atom = null
+            const smiles = compressedMolecule.reduce((s, current_atom, i)=> {
+
+                // Start of branch
+                if (start_of_branches_ids.indexOf(current_atom[1]) > -1) {
+                    s = s + "("
+                }
+
+                // Determine bond type
+                let bond_type = ""
+                const double_parent_bond_ids = current_atom[5].filter((id)=>{
+                    id = id.split(" ")
+                    return (id[0] * 1) < current_atom[1]
+                })
+                if (double_parent_bond_ids.length > 0) {
+                    bond_type = "="
+                }
+                const triple_parent_bond_ids = current_atom[6].filter((id)=>{
+                    id = id.split(" ")
+                    return (id[0] * 1) < current_atom[1]
+                })
+                if (triple_parent_bond_ids.length > 0) {
+                    bond_type = "#"
+                }
+
+                // square brackets if required
+                let add_square_brackets = false
+                // Charge
+                // Hydrogens
+                const number_of_hydrogens = current_atom[2].replace(/H /, "") * 1 + current_atom[4].length + (current_atom[5].length*2)
+                switch(current_atom[0]) {
+                    case "C":
+                        if (number_of_hydrogens !== 4) {
+                            add_square_brackets = true
+                            current_atom[0] = current_atom[0] + ((current_atom[2].replace(/H /, "") * 1 ===0?"":"H"+current_atom[2].replace(/H /, "") * 1))
+                            if (number_of_hydrogens > 4) {
+                                current_atom[0] = current_atom[0] + "+"
+                            }
+                        }
+                        break
+                    case "O":
+                        if (number_of_hydrogens !== 2) {
+                            add_square_brackets = true
+                            current_atom[0] = current_atom[0] + ((current_atom[2].replace(/H /, "") * 1 ===0?"":"H"+current_atom[2].replace(/H /, "") * 1))
+                            if (number_of_hydrogens > 2) {
+                                current_atom[0] = current_atom[0] + "+"
+                            }
+                            if (number_of_hydrogens < 2) {
+                                current_atom[0] = current_atom[0] + "-"
+                            }
+                        }
+                        break
+                    case "N":
+                        if (number_of_hydrogens !== 3) {
+                            add_square_brackets = true
+                            current_atom[0] = current_atom[0] + ((current_atom[2].replace(/H /, "") * 1 ===0?"":"H"+current_atom[2].replace(/H /, "") * 1))
+                            if (number_of_hydrogens > 3) {
+                                current_atom[0] = current_atom[0] + "+"
+                            }
+                            if (number_of_hydrogens < 3) {
+                                current_atom[0] = current_atom[0] + "-"
+                            }
+                        }
+                        break
+                }
+                const charge = current_atom[3].replace("Charge: ", "")
+
+                if (charge !== " " && charge !== "0" && current_atom[0][current_atom[0].length -1] != "+" &&  current_atom[0][current_atom[0].length -1] != "-") {
+                    current_atom[0] = current_atom[0] + charge
+                    add_square_brackets = true
+                }
+                if (add_square_brackets === true) {
+                    current_atom[0] = "[" + current_atom[0] + "]"
+                }
+                s = s + bond_type + current_atom[0]
+
+                // Ring bond ids
+                if (ring_bond_ids[current_atom[1]+""] !== undefined) {
+                    s = s + ring_bond_ids[current_atom[1]+""]
+                }
+
+                if (end_of_branches_ids.indexOf(current_atom[1]) > -1) {
+                    s = s + ")"
+                }
+                // End of branch
+
+                return s
+
+            }, "").replace(/\[C\]/g, "C").replace(/\[O\]/g, "O").replace(/\[N\]/g, "N")
+
+            if (testing) {
+                console.log(smiles)
+                process.error()
+            }
+
+            //process.error()
+            return smiles
+
+        },
+
         canonicalSMILES: function(testing) {
 
             if (mmolecule[0] ==="B") {

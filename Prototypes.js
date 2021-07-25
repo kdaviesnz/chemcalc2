@@ -51,7 +51,36 @@ const Set = require('./Models/Set')
 // extractAkylGroup(akyl_group, atoms)
 // branches(atoms)
 // branch(branch)
+// atomsWithNoHydrogens()
+// subsequentAtomsNotBondedToCurrentAtom(atoms)
 const Prototypes = () => {
+    Object.defineProperty(Array.prototype, 'subsequentAtomsNotBondedToCurrentAtom', {
+        value: function(atoms) {
+            // "this" is an atom
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"}
+            )
+            this[0].should.be.a.String()
+            const current_atom_index = atoms.getAtomIndexById(this.atomId())
+            const subsequent_atoms = atoms.slice(current_atom_index+1)
+            const current_atom = this
+            const first_atom_not_bonded_to_current_atom_index = _.findIndex(subsequent_atoms, (atom) => {
+                return !atom.isBondedTo(current_atom) && !atom.isDoubleBondedTo(current_atom) && !atom.isTripleBondedTo(current_atom)
+            })
+            return first_atom_not_bonded_to_current_atom_index === -1? []:subsequent_atoms.slice(first_atom_not_bonded_to_current_atom_index)
+        }
+    })
+    Object.defineProperty(Array.prototype, 'atomsWithNoHydrogens', {
+        value: function() {
+            // "this" is an array of atoms
+            if (this.length>0) {
+                this[0][0].should.be.a.String()
+            }
+            return this.filter((atom)=>{
+                return atom[0] !== "H"
+            })
+        }
+    })
     Object.defineProperty(Array.prototype, 'branch', {
         value: function(branch, atoms) { // recursive function
             // "this" is an atom
@@ -1073,7 +1102,7 @@ const Prototypes = () => {
                 throw new Error("Atoms are  undefined or null")
             }
 
-            // "this
+            // "this" is an atom
             this[0].should.be.a.String()
             atoms[0].should.be.an.Array()
             atoms[0][0].should.be.a.String()

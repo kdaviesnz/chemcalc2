@@ -22,7 +22,8 @@ let stateMoleculeAI = null
 const branch_test = MoleculeFactory("C(CCC)(C)(N)")
 //console.log(VMolecule([branch_test,1]).compressed())
 //process.error()
-console.log(branch_test[1][1].branches(branch_test[1]))
+//console.log(branch_test[1][1].branches(branch_test[1]))
+console.log(VMolecule([branch_test,1]).chains())
 process.error()
 
 
