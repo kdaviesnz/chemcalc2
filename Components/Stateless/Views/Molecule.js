@@ -399,7 +399,7 @@ const VMolecule = (mmolecule) => {
         }
     }
 
-    const __chainAtoms = function(cache, chain, atom, atoms, terminal_atoms, depth) {
+    const __chainAtoms = function(cache, chain, atom, atoms, terminal_atoms, fixed_number_of_atoms, depth) {
 
         Typecheck(
             {name:"cache", value:cache, type:"array"},
@@ -407,6 +407,7 @@ const VMolecule = (mmolecule) => {
             {name:"atom", value:atom, type:"array"},
             {name:"atoms", value:atoms, type:"array"},
             {name:"terminal_atoms", value:terminal_atoms, type:"array"},
+            {name:"fixed_number_of_atoms", value:fixed_number_of_atoms, type:"number"},
             {name:"depth", value:depth, type:"number"}
         )
         if (undefined === cache) {
@@ -425,16 +426,51 @@ const VMolecule = (mmolecule) => {
             throw new Error("Depth is undefined")
         }
 
-        // "C(CCC)(C)(N)"
+        atom[0].should.be.a.String()
+
+        fixed_number_of_atoms.should.be.equal(atoms.length)
+
+        if(depth > 20) {
+            throw new Error("To much recursion")
+        }
+
+        // chain check
+        //chain.length.should.be.equal(depth)
+        if (chain.length > 1) {
+            if (!chain[chain.length-1].isBondedTo(chain[chain.length-2]) && !chain[chain.length-1].isDoubleBondedTo(chain[chain.length-2]) && !chain[chain.length-1].isTripleBondedTo(chain[chain.length-2])) {
+                throw new Error("Last atom in chain should be bonded to second to last atom")
+            }
+        }
+
+        // "C(OCC)(C)(N)"
         const atom_index =  atoms.getAtomIndexById(atom.atomId())
         const bonds = [...atom.indexedBonds(atoms), ...atom.indexedDoubleBonds(atoms), ...atom.indexedTripleBonds(atoms)].filter((bond)=>{
             return bond.atom_index > atom_index
         })
-        const bond_count = atom.indexedBonds(atoms).length + atom.indexedDoubleBonds(atoms)/2 + atom.indexedTripleBonds(atoms)/3
 
-        if(bond_count === 1) {
+        if(bonds.length === 0) { // We don't count the parent
+            // Terminal atom
+            chain.push(atom)
+            cache.push(chain)
+            console.log("Terminal atom")
+            console.log(atom)
+            console.log("chain:")
             console.log(chain)
-            throw new Error("to do")
+           // console.log(VMolecule(mmolecule).compressed())
+            console.log("===================================================")
+            return
+            //throw new Error("To do: Terminal atom")
+        }
+        else if(bonds.length === 1) { // We don't count the parent
+            chain.push(atom)
+            console.log("Atom with no additional bonds apart from parent and sibling.")
+            console.log("chain")
+            console.log(chain)
+            console.log("atom")
+            console.log(atom)
+            console.log(".................................................................")
+            __chainAtoms(cache, chain, bonds[0].atom, atoms, terminal_atoms, fixed_number_of_atoms, depth +1)
+            //throw new Error("To do: atom with no additional bonds apart from parent and sibling.")
         } else {
             console.log("atom index = " + atom_index)
             chain.push(atom)
@@ -447,7 +483,7 @@ const VMolecule = (mmolecule) => {
                     chain_atom.push(atoms.getAtomIndexById(chain_atom.atomId()))
                     return chain_atom
                 }))
-                __chainAtoms(cache, chain, a, atoms, terminal_atoms, depth +1)
+                __chainAtoms(cache, chain, a, atoms, terminal_atoms, fixed_number_of_atoms, depth)
             })
         }
 
@@ -653,7 +689,7 @@ const VMolecule = (mmolecule) => {
             const atoms = mmolecule[0][1].atomsWithNoHydrogens()
             const atom = atoms[0]
             const terminal_atoms = [] // to do
-            const chains = __chainAtoms(cache, chain, atom, atoms, terminal_atoms, 0)
+            const chains = __chainAtoms(cache, chain, atom, atoms, terminal_atoms, atoms.length, 0)
             return chains
 
         },

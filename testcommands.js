@@ -19,7 +19,7 @@ const Reaction = require('./Components/State/Reaction')
 let reaction =null
 let stateMoleculeAI = null
 
-const branch_test = MoleculeFactory("C(CCC)(C)(N)")
+const branch_test = MoleculeFactory("C(OCC)(C)(N)")
 //console.log(VMolecule([branch_test,1]).compressed())
 //process.error()
 //console.log(branch_test[1][1].branches(branch_test[1]))
