@@ -53,7 +53,19 @@ const Set = require('./Models/Set')
 // branch(branch)
 // atomsWithNoHydrogens()
 // subsequentAtomsNotBondedToCurrentAtom(atoms)
+// ringBondAtoms(atoms_after_current_atom)
 const Prototypes = () => {
+    Object.defineProperty(Array.prototype, 'ringBondAtoms', {
+        value: function(atoms_after_current_atom) {
+            // "this" is an atom
+            // Check if "this" is the start / end  of a ringbond
+            Typecheck(
+                {name:"atoms after current atom", value:atoms_after_current_atom, type:"array"}
+            )
+            this[0].should.be.a.String()
+
+        }
+    })
     Object.defineProperty(Array.prototype, 'subsequentAtomsNotBondedToCurrentAtom', {
         value: function(atoms) {
             // "this" is an atom
