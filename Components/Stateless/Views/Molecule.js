@@ -726,13 +726,12 @@ const VMolecule = (mmolecule) => {
                 __chainAtoms(cache, chain, bonds[0].atom, atoms, terminal_atoms, atoms.length, 0)
             })
 
-            // @todo filter out chains where the last atom in the chain is not a terminal atom (has only parent bond)
-            return cache.filter((chain)=>{
+            return __removeDuplicateChains(cache.filter((chain)=>{
                 const last_atom_in_chain = chain[chain.length-1]
                 return last_atom_in_chain.indexedBonds(atoms).length + last_atom_in_chain.indexedDoubleBonds(atoms).length + last_atom_in_chain.indexedTripleBonds(atoms).length === 1
             }).sort((a, b)=>{
                 return b.length - a.length
-            })
+            }))
         },
 
         canonicalSMILES: function(testing) {
