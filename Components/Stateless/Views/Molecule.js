@@ -431,7 +431,7 @@ const VMolecule = (mmolecule) => {
 
         fixed_number_of_atoms.should.be.equal(atoms.length)
 
-        if(depth > 20) {
+        if(depth > 5) {
             throw new Error("To much recursion")
         }
 
@@ -445,11 +445,14 @@ const VMolecule = (mmolecule) => {
 
         // "C(OCC)(C)(N)"
         const atom_index =  atoms.getAtomIndexById(atom.atomId())
+        /*
         const bonds = [...atom.indexedBonds(atoms), ...atom.indexedDoubleBonds(atoms), ...atom.indexedTripleBonds(atoms)].filter((bond)=>{
             return bond.atom_index > atom_index
         })
+         */
+        const bonds = [...atom.indexedBonds(atoms), ...atom.indexedDoubleBonds(atoms), ...atom.indexedTripleBonds(atoms)]
 
-        if(bonds.length === 0) { // We don't count the parent
+        if(bonds.length === 1 || bonds.length === 0) { // bonded to either parent or no other atoms
             // Terminal atom
             chain.push(atom)
             cache.push(chain)
@@ -462,7 +465,7 @@ const VMolecule = (mmolecule) => {
             return
             //throw new Error("To do: Terminal atom")
         }
-        else if(bonds.length === 1) { // We don't count the parent
+        else if(bonds.length === 2) {
             chain.push(atom)
             console.log("Atom with no additional bonds apart from parent and sibling.")
             console.log("chain")
@@ -470,6 +473,9 @@ const VMolecule = (mmolecule) => {
             console.log("atom")
             console.log(atom)
             console.log(".................................................................")
+            // @todo remove from bonds the bond with atom that is already in the chain
+            // The remaining bond is what we pass to __chainAtoms() as otherwise we end up going backwards.
+            process.error()
             __chainAtoms(cache, chain, bonds[0].atom, atoms, terminal_atoms, fixed_number_of_atoms, depth +1)
             //throw new Error("To do: atom with no additional bonds apart from parent and sibling.")
         } else {
@@ -478,18 +484,15 @@ const VMolecule = (mmolecule) => {
             cache.push(chain)
             bonds.map((bond)=>{
                 const a = bond.atom
+                console.log("Atom with more than one bond")
                 console.log("Depth =" + depth)
                 console.log("Chain:")
                 console.log(chain)
-                console.log(chain.map((chain_atom)=>{
-                    chain_atom.push(atoms.getAtomIndexById(chain_atom.atomId()))
-                    return chain_atom
-                }))
                 console.log("MAP1 cache")
                 console.log(cache.length)
                 console.log(chain.length)
                 // changes "cache"
-                __chainAtoms(cache, _.cloneDeep(chain), a, atoms, terminal_atoms, fixed_number_of_atoms, depth)
+                __chainAtoms(cache, _.cloneDeep(chain), a, atoms, terminal_atoms, fixed_number_of_atoms, depth+1)
                 console.log("MAP2 cache")
                 console.log(cache.length)
                 console.log(chain.length)
@@ -696,17 +699,24 @@ const VMolecule = (mmolecule) => {
             const cache = []
             const chain = []
             const atoms = mmolecule[0][1].atomsWithNoHydrogens()
+            if (atoms.length === 1) {
+                return [[atoms[0]]]
+            }
             const terminal_atoms = atoms.filter((atom)=>{
                 return atom.indexedBonds(atoms).length + atom.indexedDoubleBonds(atoms).length + atom.indexedTripleBonds(atoms).length === 1
             })
-            console.log(terminal_atoms)
-            process.error()
-            const atom = terminal_atoms[0]
+            //console.log(terminal_atoms)
+            //process.error()
+            const atom = terminal_atoms[2] // 0 testing
+            // start from atom bonded to first terminal atom as other wise we end up getting stuck on the terminal atom
+            chain.push(atom)
+            const bonds = [...atom.indexedBonds(atoms), ...atom.indexedDoubleBonds(atoms), ...atom.indexedTripleBonds(atoms)]
+            if (bonds.length > 1) {
+                throw new Error("Starting atom in chain has more than one bond")
+            }
             // Modifies cache
-            // @Todo we can only form chains starting from a terminal atom
-            __chainAtoms(cache, chain, atom, atoms, terminal_atoms, atoms.length, 0)
+            __chainAtoms(cache, chain, bonds[0].atom, atoms, terminal_atoms, atoms.length, 0)
             // @todo filter out chains where the last atom in the chain is not a terminal atom (has only parent bond)
-            process.error()
             return cache.filter((chain)=>{
                 const last_atom_in_chain = chain[chain.length-1]
                 return last_atom_in_chain.indexedBonds(atoms).length + last_atom_in_chain.indexedDoubleBonds(atoms).length + last_atom_in_chain.indexedTripleBonds(atoms).length === 1
