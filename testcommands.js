@@ -25,7 +25,7 @@ const branch_test = MoleculeFactory("C(OCC)(C)(N)")
 //console.log(branch_test[1][1].branches(branch_test[1]))
 
 const chains = VMolecule([branch_test,1]).chains()
-console.log("Chains")
+console.log("Chains (testcommands())")
 console.log(chains)
 
 process.error()
