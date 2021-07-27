@@ -401,6 +401,7 @@ const VMolecule = (mmolecule) => {
 
     const __chainAtoms = function(cache, chain, atom, atoms, terminal_atoms, fixed_number_of_atoms, depth) {
 
+        console.log("__chainAtoms()")
         Typecheck(
             {name:"cache", value:cache, type:"array"},
             {name:"chain", value:chain, type:"array"},
@@ -479,11 +480,19 @@ const VMolecule = (mmolecule) => {
                 const a = bond.atom
                 console.log("Depth =" + depth)
                 console.log("Chain:")
+                console.log(chain)
                 console.log(chain.map((chain_atom)=>{
                     chain_atom.push(atoms.getAtomIndexById(chain_atom.atomId()))
                     return chain_atom
                 }))
-                __chainAtoms(cache, chain, a, atoms, terminal_atoms, fixed_number_of_atoms, depth)
+                console.log("MAP1 cache")
+                console.log(cache.length)
+                console.log(chain.length)
+                // changes "cache"
+                __chainAtoms(cache, _.cloneDeep(chain), a, atoms, terminal_atoms, fixed_number_of_atoms, depth)
+                console.log("MAP2 cache")
+                console.log(cache.length)
+                console.log(chain.length)
             })
         }
 
@@ -687,11 +696,21 @@ const VMolecule = (mmolecule) => {
             const cache = []
             const chain = []
             const atoms = mmolecule[0][1].atomsWithNoHydrogens()
-            const atom = atoms[0]
-            const terminal_atoms = [] // to do
-            const chains = __chainAtoms(cache, chain, atom, atoms, terminal_atoms, atoms.length, 0)
-            return chains
-
+            const terminal_atoms = atoms.filter((atom)=>{
+                return atom.indexedBonds(atoms).length + atom.indexedDoubleBonds(atoms).length + atom.indexedTripleBonds(atoms).length === 1
+            })
+            console.log(terminal_atoms)
+            process.error()
+            const atom = terminal_atoms[0]
+            // Modifies cache
+            // @Todo we can only form chains starting from a terminal atom
+            __chainAtoms(cache, chain, atom, atoms, terminal_atoms, atoms.length, 0)
+            // @todo filter out chains where the last atom in the chain is not a terminal atom (has only parent bond)
+            process.error()
+            return cache.filter((chain)=>{
+                const last_atom_in_chain = chain[chain.length-1]
+                return last_atom_in_chain.indexedBonds(atoms).length + last_atom_in_chain.indexedDoubleBonds(atoms).length + last_atom_in_chain.indexedTripleBonds(atoms).length === 1
+            })
         },
 
         canonicalSMILES: function(testing) {
