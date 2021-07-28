@@ -506,7 +506,6 @@ const VMolecule = (mmolecule) => {
     }
 
     const __removeDuplicateChains = function(chains) {
-        console.log(__removeDuplicateChains)
         Typecheck(
             {name:"chains", value:chains, type:"array"}
         )

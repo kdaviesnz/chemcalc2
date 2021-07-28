@@ -3440,8 +3440,8 @@ return result === false? false:[
 
         // Shift akyl group from carbon that is attached to the carbocation to carbocation
         // An akyl group contains only carbons and hydrogens and only single bonds
-        console.log("Reaction.js")
-        console.log(VMolecule(this.container_substrate).compressed())
+        //console.log("Reaction.js")
+       // console.log(VMolecule(this.container_substrate).compressed())
         const chains = VMolecule(this.container_substrate).chains()
         // Get longest chain that has both the carbon and the carbocation
         const chains_with_carbon_and_carbocation = chains.filter((chain)=>{
@@ -3467,9 +3467,11 @@ return result === false? false:[
         }).pop()
 
         //console.log("reaction.js trunk:")
-        //console.log(trunk)
+        console.log(trunk)
         //process.error()
-        this.container_substrate[0][1].extractAkylGroups(chains, trunk)
+        const akyl_groups = this.container_substrate[0][1].extractAkylGroups(chains, trunk)
+        //console.log("aklygroups")
+        //console.log(akyl_groups)
 
         throw new Error("to do: akylShiftReverse")
     }

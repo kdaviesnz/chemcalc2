@@ -175,11 +175,7 @@ const Prototypes = () => {
             //console.log(chains)
             // For each atom in the trunk find chains containing that atom and that from where the atom is, contains no atoms in the trunk
             let branches = []
-            console.log("trunk")
-            console.log(trunk)
             trunk.map((atom)=>{
-                console.log("Atom:")
-                console.log(atom)
                 const chains_cached = _.cloneDeep(chains)
                 const trunk_cached = _.cloneDeep(trunk)
                 const atom_branches = chains_cached.map((chain)=>{
@@ -189,42 +185,33 @@ const Prototypes = () => {
                     if (atom_in_chain_index=== -1) {
                         return null
                     }
-                    const b =  chain.splice(atom_in_chain_index)
-                    console.log("b")
-                    console.log(b)
-                    console.log("t")
-                    console.log(trunk_cached)
-                    const atoms_in_branch_that_are_also_in_trunk = _.cloneDeep(b).filter((a)=>{
+                    const branch =  chain.splice(atom_in_chain_index)
+                    const atoms_in_branch_that_are_also_in_trunk = _.cloneDeep(branch).filter((a)=>{
                        return _.cloneDeep(trunk_cached).filter((trunk_atom)=>{
                            return _.isEqual(a, trunk_atom)
                        }).length > 0
                     })
-                    console.log("atoms_in_branch_that_are_also_in_trunk")
-                    console.log(atoms_in_branch_that_are_also_in_trunk)
-                    process.error()
-                    if (branch.length !== 1) {
-                        console.log("trunk_cached")
-                        console.log(trunk_cached)
-                        console.log("branch")
-                        console.log(branch)
+                    if (atoms_in_branch_that_are_also_in_trunk.length !== 1) {
                         return null
-                    } else {
-                        console.log("Branch found")
-                        process.error()
                     }
                     return branch
                 }).filter((b)=>{
-                   // return null !== b
-                    return true
+                    return null !== b
                 })
-
-                branches = [...branches, atom_branches]
-
-                return atom
+                if (atom_branches.length>0) {
+                    branches = [...branches, ...atom_branches]
+                }
             })
-            console.log("branches")
-            console.log(branches)
-            process.error()
+
+            // Return only branches with only carbons or hydrogens
+            return branches.filter((branch)=>{
+                return branch.filter((atom)=>{
+                    atom[0].should.be.a.String()
+                    return atom[0] === "C" || atom[0] === "H"
+                }).length > 0
+            }).filter((b)=>{
+                return b.length > 1
+            })
 
         }
     })
