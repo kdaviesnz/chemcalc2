@@ -502,6 +502,58 @@ const VMolecule = (mmolecule) => {
             })
         }
 
+
+    }
+
+    const __removeDuplicateChains = function(chains) {
+        console.log(__removeDuplicateChains)
+        Typecheck(
+            {name:"chains", value:chains, type:"array"}
+        )
+        if (undefined === chains) {
+            throw new Error("Chains is undefined")
+        }
+        let i =0
+        let j =0
+        let chains_length = _.cloneDeep(chains.length)
+        let current_chain = null
+        let chain_reversed = null
+        for(i=0;i<chains_length;i++){
+            if (undefined !==chains[i]) {
+                current_chain = chains[i]
+                j = 0
+                for(j=0;j<chains_length;j++) {
+                    if (chains[j] !== undefined) {
+                        chain_reversed = _.cloneDeep(chains[j]).reverse()
+                        if (_.isEqual(current_chain, chain_reversed)) {
+                            delete (chains[j]) // changes chains[j] to undefined
+                        }
+                    }
+                }
+            }
+        }
+
+        chains = chains.filter((chain)=>{
+            return chain !== undefined
+        })
+//        console.log(chains)
+  //      process.error()
+
+        chains.length.should.greaterThan(0)
+        const chains_cached = _.cloneDeep(chains)
+        const chains_unique = chains.filter((chain)=>{
+            return _.findIndex(chains, (c)=> {
+                const chain_reverse = _.cloneDeep(c).reverse()
+                return _.isEqual(chain, chain_reverse)
+            }) === -1
+        })
+        if (chains_unique.length === 0) {
+            console.log("chains:")
+            console.log(chains)
+           throw new Error("Removing duplicate chains has removed all chains.")
+        }
+        chains_unique.length.should.greaterThan(0)
+        return chains_unique
     }
 
     return {
@@ -725,6 +777,8 @@ const VMolecule = (mmolecule) => {
                 // Modifies cache
                 __chainAtoms(cache, chain, bonds[0].atom, atoms, terminal_atoms, atoms.length, 0)
             })
+
+            cache.length.should.be.greaterThan(0)
 
             return __removeDuplicateChains(cache.filter((chain)=>{
                 const last_atom_in_chain = chain[chain.length-1]

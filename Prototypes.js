@@ -48,7 +48,7 @@ const Set = require('./Models/Set')
 // removeProtonFromOxygen()
 // addAtom(atom)
 // findCarbonCarbocationIndexes(no_hydrogens_on_carbon)
-// extractAkylGroup(akyl_group, atoms)
+// extractAkylGroups(chains, trunk)
 // branches(atoms)
 // branch(branch)
 // atomsWithNoHydrogens()
@@ -158,14 +158,73 @@ const Prototypes = () => {
             return branches
         }
     })
-    Object.defineProperty(Array.prototype, 'extractAkylGroup', {
-        value: function(akyl_group, atoms) {
-            // "this" is an atom
+    Object.defineProperty(Array.prototype, 'extractAkylGroups', {
+        value: function(chains, trunk) {
+            // "this" is array of atoms
             Typecheck(
-                {name:"atoms", value:atoms, type:"array"}
+                {name:"trunk", value:trunk, type:"array"},
+                {name:"chains", value:chains, type:"array"}
             )
+            if(this.length === 1) {
+                throw new Error("No akyl groups as only one chain")
+            }
+
             // An akyl group contains only carbons and hydrogens and only single bonds
             // Trace through each branch of atoms coming off "this" until an akyl group if found
+            //console.log("Prototype.js extractAkylGroups()")
+            //console.log(chains)
+            // For each atom in the trunk find chains containing that atom and that from where the atom is, contains no atoms in the trunk
+            let branches = []
+            console.log("trunk")
+            console.log(trunk)
+            trunk.map((atom)=>{
+                console.log("Atom:")
+                console.log(atom)
+                const chains_cached = _.cloneDeep(chains)
+                const trunk_cached = _.cloneDeep(trunk)
+                const atom_branches = chains_cached.map((chain)=>{
+                    const atom_in_chain_index = _.findIndex(chain, (a)=>{
+                        return a.atomId() === atom.atomId()
+                    })
+                    if (atom_in_chain_index=== -1) {
+                        return null
+                    }
+                    const b =  chain.splice(atom_in_chain_index)
+                    console.log("b")
+                    console.log(b)
+                    console.log("t")
+                    console.log(trunk_cached)
+                    const atoms_in_branch_that_are_also_in_trunk = _.cloneDeep(b).filter((a)=>{
+                       return _.cloneDeep(trunk_cached).filter((trunk_atom)=>{
+                           return _.isEqual(a, trunk_atom)
+                       }).length > 0
+                    })
+                    console.log("atoms_in_branch_that_are_also_in_trunk")
+                    console.log(atoms_in_branch_that_are_also_in_trunk)
+                    process.error()
+                    if (branch.length !== 1) {
+                        console.log("trunk_cached")
+                        console.log(trunk_cached)
+                        console.log("branch")
+                        console.log(branch)
+                        return null
+                    } else {
+                        console.log("Branch found")
+                        process.error()
+                    }
+                    return branch
+                }).filter((b)=>{
+                   // return null !== b
+                    return true
+                })
+
+                branches = [...branches, atom_branches]
+
+                return atom
+            })
+            console.log("branches")
+            console.log(branches)
+            process.error()
 
         }
     })

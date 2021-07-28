@@ -25,11 +25,6 @@ const branch_test = MoleculeFactory("C(OCC)(C)(N)")
 //console.log(branch_test[1][1].branches(branch_test[1]))
 
 const chains = VMolecule([branch_test,1]).chains()
-console.log("Chains (testcommands())")
-console.log(chains)
-
-process.error()
-
 
 //const test2 = MoleculeFactory("[CH2+]C") // [pka,atoms]
 //console.log(VMolecule([test2,1]).compressed())
@@ -94,6 +89,7 @@ const renderCallback = (reactions) => {
 // Preliminary tests
 
 // formKetoneFromImine
+//process.error()
 
 const MongoClient = require('mongodb').MongoClient
 const assert = require('assert');

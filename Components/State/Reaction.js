@@ -3414,6 +3414,9 @@ return result === false? false:[
             {name:"carbocation_index", value:carbocation_index, type:"number"},
         )
 
+        //console.log(VMolecule(this.container_substrate).compressed())
+        //process.error()
+
         //   console.log(VMolecule(this.container_substrate).compressed())
         //  process.error()
 
@@ -3435,8 +3438,38 @@ return result === false? false:[
             throw new Error("Carbocation is not a carbocation atom")
         }
 
-        // Shift akyl group from carbon to carbocation
+        // Shift akyl group from carbon that is attached to the carbocation to carbocation
         // An akyl group contains only carbons and hydrogens and only single bonds
+        console.log("Reaction.js")
+        console.log(VMolecule(this.container_substrate).compressed())
+        const chains = VMolecule(this.container_substrate).chains()
+        // Get longest chain that has both the carbon and the carbocation
+        const chains_with_carbon_and_carbocation = chains.filter((chain)=>{
+            const carbon_in_chain_index = _.findIndex(chain, (atom)=>{
+                return atom.atomId() === carbon.atomId()
+            })
+            if (carbon_in_chain_index === -1) {
+                return false
+            }
+            const carbocation_in_chain_index = _.findIndex(chain, (atom)=>{
+                return atom.atomId() === carbocation.atomId()
+            })
+            if (carbocation_in_chain_index === -1) {
+                return false
+            }
+            return true
+        })
+        if (chains_with_carbon_and_carbocation.length === 0) {
+            throw new Error("No chains found that have both the carbon and the carbocation")
+        }
+        const trunk = chains_with_carbon_and_carbocation.sort((a, b)=>{
+            return b.length - a.length
+        }).pop()
+
+        //console.log("reaction.js trunk:")
+        //console.log(trunk)
+        //process.error()
+        this.container_substrate[0][1].extractAkylGroups(chains, trunk)
 
         throw new Error("to do: akylShiftReverse")
     }
