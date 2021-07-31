@@ -3467,13 +3467,37 @@ return result === false? false:[
         }).pop()
 
         //console.log("reaction.js trunk:")
-        console.log(trunk)
+        //console.log(trunk)
         //process.error()
         const akyl_groups = this.container_substrate[0][1].extractAkylGroups(chains, trunk)
         //console.log("aklygroups")
         //console.log(akyl_groups)
 
-        throw new Error("to do: akylShiftReverse")
+        // Get akly groups where first atom is the carbon attached to carbocation
+        const akyl_groups_attached_to_the_carbon = akyl_groups.filter((akyl_group)=>{
+            return _.isEqual(akyl_group[0], carbon) && akyl_group.length > 1
+        })
+
+        if (akyl_groups_attached_to_the_carbon.length === 0) {
+            throw new Error("No akyl groups that are attached to the carbon atom.")
+        }
+
+        // @todo ability to go through each akly group attached to the carbon atom
+        // Get first akly group
+        const akyl_group_attached_to_the_carbon = akyl_groups_attached_to_the_carbon[0]
+        const atom_attached_to_the_carbon = akyl_group_attached_to_the_carbon[1] // first atom is the carbon
+        // Break akyl bond
+        carbon.removeSingleBond(atom_attached_to_the_carbon)
+        // Bond akyl group to carbocation
+        carbocation.bondAtomToAtom(atom_attached_to_the_carbon, this.container_substrate[0][1])
+
+        //this.setChargesOnSubstrate()
+
+        return [
+            this.container_substrate,
+            this.container_reagent
+        ]
+
     }
 
     hydrideShiftReverse(carbon_index, carbocation_index) {
@@ -3793,8 +3817,19 @@ return result === false? false:[
         this.setMoleculeAI()
     }
 
-    
     hydrolysisReverse() {
+        throw new Error("To do: hydrolysisReverse()")
+        // @see https://study.com/academy/lesson/hydrolysis-definition-reaction-equation-example.html
+        // Hydrolysis is the process of using water to break down a molecule into two parts.
+        // Hydrolysis results in two molecules where both of the molecules are R-OH.
+        // Hydrolysis = breaking apart of a molecule using water
+        // eg ester O=(CR)OR -> O=(CR)OH + HOR (alcohol)
+        // eg acid H2SO4 -> HSO4- + H3O+
+        // eg salts H2O donates H+ (electrophile) to Anion (negatively charged molecule)
+        // eg salts H2O accepts H+ from Cation (positively charged molecule)
+    }
+
+    hydrolysisReverse_old() {
         // @see https://en.wikipedia.org/wiki/Leuckart_reaction/
            // console.log("hydrolysisReverse()")
            // console.log("Start")

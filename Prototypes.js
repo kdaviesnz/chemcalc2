@@ -169,6 +169,7 @@ const Prototypes = () => {
                 throw new Error("No akyl groups as only one chain")
             }
 
+            // @todo check that we get only groups that have only single bonds
             // An akyl group contains only carbons and hydrogens and only single bonds
             // Trace through each branch of atoms coming off "this" until an akyl group if found
             //console.log("Prototype.js extractAkylGroups()")
