@@ -3827,6 +3827,25 @@ return result === false? false:[
         // eg acid H2SO4 -> HSO4- + H3O+
         // eg salts H2O donates H+ (electrophile) to Anion (negatively charged molecule)
         // eg salts H2O accepts H+ from Cation (positively charged molecule)
+
+        // Check if either the substrate or the reagent is an alcohol and whether the substrate or reagent is a ketone
+        let alcohol = null
+        let ketone = null
+        let carboxylic_acid = null
+        if (this.container_substrate[0][1].isAlcohol()){
+            alcohol = this.container_substrate[0][1]
+            if (this.container_reagent[0][1].isCarboxylicAcid()){
+                carboxylic_acid = this.container_reagent[0][1]
+            }
+        } else if (this.container_reagent[0][1].isAlcohol()){
+            alcohol = this.container_reagent[0][1]
+            if (this.container_substrate[0][1].isCarboxylicAcid()){
+                carboxylic_acid = this.container_substrate[0][1]
+            }
+        }
+
+
+
     }
 
     hydrolysisReverse_old() {

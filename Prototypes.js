@@ -54,7 +54,72 @@ const Set = require('./Models/Set')
 // atomsWithNoHydrogens()
 // subsequentAtomsNotBondedToCurrentAtom(atoms)
 // ringBondAtoms(atoms_after_current_atom)
+// isAlcohol()
+// isKetone()
+// isCarboxylicAcid()
+// carbonylCarbonIndex()
 const Prototypes = () => {
+    Object.defineProperty(Array.prototype, 'carbonylCarbonIndex', {
+        value: function() {
+            // "this" is an array of atoms
+            this[0].should.be.a.String()
+            const carbonyl_carbon_index = _.findIndex(this, (atom)=> {
+                if (atom[0] !== "O") {
+                    return false
+                }
+                const bonds = atom.indexedDoubleBonds(this)
+                if (bonds.length !==2) {
+                    return false
+                }
+                return bons.filter((bond) => {
+                    return bond.atom[0] === "C"
+                }).length === 1
+            })
+            return carbonyl_carbon_index
+        }
+    })
+    Object.defineProperty(Array.prototype, 'isCarboxylicAcid', {
+        value: function() {
+            // "this" is an array of atoms
+            // RC(=O)O
+            this[0].should.be.a.String()
+            const carbonyl_carbon_index = this.carbonylCarbonIndex()
+            if (carbonyl_carbon_index === -1) {
+                return false
+            }
+            const carbonyl_atom = this[carbonyl_carbon_index]
+            const carbonyl_single_bonds = carbonyl_atom.indexedBonds(this)
+            if (carbonyl_single_bonds.length !==2) {
+                return false
+            }
+            // Check that we have an -OH group and a carbon bonded to the carbonyl atom
+            process.error()
+        }
+    })
+    Object.defineProperty(Array.prototype, 'isKetone', {
+        value: function() {
+            // "this" is an array of atoms
+            // RC(=O)C
+            this[0].should.be.a.String()
+            const carbonyl_carbon_index = this.carbonylCarbonIndex()
+        }
+    })
+    Object.defineProperty(Array.prototype, 'isAlcohol', {
+        value: function() {
+            // "this" is an array of atoms
+            this[0].should.be.a.String()
+            // find oxygen atom with two bonds, one hydrogen and one carbon
+            return _.findIndex(this, (atom)=>{
+                if (atom[0]!=="O") {
+                    return false
+                }
+                const bonds = atom.indexedBonds(this).filter((bond)=>{
+                    return  bond.atom[4] === "" && (bond.atom[0] === "H" || bond.atom[0] === "C")
+                })
+                return bonds.length === 2
+            }) !== -1
+        }
+    })
     Object.defineProperty(Array.prototype, 'ringBondAtoms', {
         value: function(atoms_after_current_atom) {
             // "this" is an atom
