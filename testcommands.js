@@ -28,6 +28,10 @@ alcohol[1].isAlcohol().should.be.true()
 const ketone = MoleculeFactory("CC(=O)CC")
 //console.log(VMolecule([ketone,1]).compressed())
 ketone[1].isKetone().should.be.true()
+const ester = MoleculeFactory("CC(=O)ON")
+//console.log(VMolecule([ester,1]).compressed())
+ester[1].isEster().should.be.true()
+process.error()
 
 const branch_test = MoleculeFactory("C(OCC)(C)(N)")
 //console.log(VMolecule([branch_test,1]).compressed())
@@ -146,7 +150,7 @@ client.connect(err => {
                 if (reaction_test.starting_reagent === "A" || reaction_test.starting_reagent === "CB" || reaction_test.starting_reagent === "") {
                     reagent_container = reaction_test.starting_reagent
                 } else {
-                    reagent_container = [MoleculeFactory("CN"), 1]
+                    reagent_container = [MoleculeFactory(reaction_test.starting_reagent), 1]
                 }
                 // reaction_test.starting_substrate is a string
              //   console.log("testcommands")

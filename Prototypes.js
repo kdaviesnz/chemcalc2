@@ -60,6 +60,41 @@ const Set = require('./Models/Set')
 // carbonylCarbonIndex()
 // carbonylOxygenIndex()
 const Prototypes = () => {
+    Object.defineProperty(Array.prototype, 'isEster', {
+        value: function() {
+            // https://www.compoundchem.com/2020/02/21/functional-groups/
+            // "this" is an array of atoms
+            // CC(=O)ON
+            const atoms = this
+            this[0][0].should.be.a.String()
+            const carbonyl_carbon_index = this.carbonylCarbonIndex()
+            if (carbonyl_carbon_index === -1 || carbonyl_carbon_index === false) {
+                return false
+            }
+            const carbonyl_atom = this[carbonyl_carbon_index]
+            carbonyl_atom[0].should.be.equal("C")
+            const carbonyl_single_bonds = carbonyl_atom.indexedBonds(this)
+            if (carbonyl_single_bonds.length !==2) {
+                return false
+            }
+
+            const oxygen_single_bonds_attached_to_carbonyl_carbon = carbonyl_single_bonds.filter((carbonyl_single_bond)=>{
+                return carbonyl_single_bond.atom[0] === "O"
+            })
+
+
+            if (oxygen_single_bonds_attached_to_carbonyl_carbon.length === 0) {
+                return false
+            }
+
+            const oxygen = oxygen_single_bonds_attached_to_carbonyl_carbon[0].atom
+
+            //Check that we have at least one non-hydrogen attached to the oxygen
+            const bonds_to_oxygen = oxygen.indexedBonds(this)
+            return bonds_to_oxygen.length > 1 // (counting the carbonyl carbon)
+
+        }
+    })
     Object.defineProperty(Array.prototype, 'carbonylOxygenIndex', {
         value: function() {
             // "this" is an array of atoms
@@ -95,7 +130,7 @@ const Prototypes = () => {
                 return true
             })
             if (carbonyl_carbon_index===-1) {
-                throw new Error("Could not find carbonyl carbon index.")
+                return false
             }
             this[carbonyl_carbon_index][0].should.be.equal("C")
             this[carbonyl_carbon_index].indexedDoubleBonds(this).length.should.be.equal(1)
@@ -110,7 +145,7 @@ const Prototypes = () => {
             const atoms = this
             this[0][0].should.be.a.String()
             const carbonyl_carbon_index = this.carbonylCarbonIndex()
-            if (carbonyl_carbon_index === -1) {
+            if (carbonyl_carbon_index === -1 || carbonyl_carbon_index === false) {
                 return false
             }
             const carbonyl_atom = this[carbonyl_carbon_index]
