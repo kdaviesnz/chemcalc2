@@ -82,6 +82,7 @@ const Prototypes = () => {
         value: function() {
             // "this" is an array of atoms
             // RC(=O)O
+            const atoms = this
             this[0].should.be.a.String()
             const carbonyl_carbon_index = this.carbonylCarbonIndex()
             if (carbonyl_carbon_index === -1) {
@@ -93,7 +94,9 @@ const Prototypes = () => {
                 return false
             }
             // Check that we have an -OH group and a carbon bonded to the carbonyl atom
-            process.error()
+            return carbonyl_single_bonds.filter((carbonyl_single_bonds)=>{
+                return carbonyl_single_bonds.atom[0] === "C" || (carbonyl_single_bonds.atom[0] === "O" && carbonyl_single_bonds.atom[0].hydrogens(atoms).length == 1)
+            }).length === 2
         }
     })
     Object.defineProperty(Array.prototype, 'isKetone', {
@@ -102,6 +105,18 @@ const Prototypes = () => {
             // RC(=O)C
             this[0].should.be.a.String()
             const carbonyl_carbon_index = this.carbonylCarbonIndex()
+            if (carbonyl_carbon_index === -1) {
+                return false
+            }
+            const carbonyl_atom = this[carbonyl_carbon_index]
+            const carbonyl_single_bonds = carbonyl_atom.indexedBonds(this)
+            if (carbonyl_single_bonds.length !==2) {
+                return false
+            }
+            // Check that we have an two carbons bonded to the carbonyl atom
+            return carbonyl_single_bonds.filter((carbonyl_single_bonds)=>{
+                return carbonyl_single_bonds.atom[0] === "C"
+            }).length === 2
         }
     })
     Object.defineProperty(Array.prototype, 'isAlcohol', {
