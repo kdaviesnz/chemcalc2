@@ -63,7 +63,7 @@ const Prototypes = () => {
     Object.defineProperty(Array.prototype, 'carbonylOxygenIndex', {
         value: function() {
             // "this" is an array of atoms
-            this[0].should.be.a.String()
+            this[0][0].should.be.a.String()
             const carbonyl_oxygen_index = _.findIndex(this, (atom)=> {
                 if (atom[0] !== "C") {
                     return false
@@ -74,23 +74,28 @@ const Prototypes = () => {
                 }
                 return bonds[0].atom[0] === "O"
             })
+            this[carbonyl_oxygen_index][0].should.be.equal("O")
             return carbonyl_oxygen_index
         }
     })
     Object.defineProperty(Array.prototype, 'carbonylCarbonIndex', {
         value: function() {
             // "this" is an array of atoms
-            this[0].should.be.a.String()
+            this[0][0].should.be.a.String()
             const carbonyl_carbon_index = _.findIndex(this, (atom)=> {
-                if (atom[0] !== "O") {
+                if (atom[0] !== "C" && atom[4] !== "") {
                     return false
                 }
-                const bonds = atom.indexedDoubleBonds(this)
-                if (bonds.length !==1) {
+                const oxygen_bonds = atom.indexedDoubleBonds(this).filter((bond)=>{
+                    return bond.atom[0] === "O"
+                })
+                if (oxygen_bonds.length !==1) {
                     return false
                 }
-                return bonds[0].atom[0] === "C"
+                return true
             })
+            this[carbonyl_carbon_index][0].should.be.equal("C")
+            this[carbonyl_carbon_index].indexedDoubleBonds(this).length.should.be.equal(1)
             return carbonyl_carbon_index
         }
     })
@@ -100,19 +105,20 @@ const Prototypes = () => {
             // "this" is an array of atoms
             // RC(=O)O
             const atoms = this
-            this[0].should.be.a.String()
+            this[0][0].should.be.a.String()
             const carbonyl_carbon_index = this.carbonylCarbonIndex()
             if (carbonyl_carbon_index === -1) {
                 return false
             }
             const carbonyl_atom = this[carbonyl_carbon_index]
+            carbonyl_atom[0].should.be.equal("C")
             const carbonyl_single_bonds = carbonyl_atom.indexedBonds(this)
             if (carbonyl_single_bonds.length !==2) {
                 return false
             }
             // Check that we have an -OH group bonded to the carbonyl atom
-            return carbonyl_single_bonds.filter((carbonyl_single_bonds)=>{
-                return carbonyl_single_bonds.atom[0] === "O" && carbonyl_single_bonds.atom[0].hydrogens(atoms).length === 1
+            return carbonyl_single_bonds.filter((carbonyl_single_bond)=>{
+                return carbonyl_single_bond.atom[0] === "O" && carbonyl_single_bond.atom.hydrogens(atoms).length === 1
             }).length === 1
         }
     })
@@ -120,35 +126,32 @@ const Prototypes = () => {
         value: function() {
             // "this" is an array of atoms
             // RC(=O)C
-            this[0].should.be.a.String()
+            this[0][0].should.be.a.String()
             const carbonyl_carbon_index = this.carbonylCarbonIndex()
             if (carbonyl_carbon_index === -1) {
                 return false
             }
             const carbonyl_atom = this[carbonyl_carbon_index]
+            carbonyl_atom[0].should.be.equal("C")
             const carbonyl_single_bonds = carbonyl_atom.indexedBonds(this)
             if (carbonyl_single_bonds.length !==2) {
                 return false
             }
             // Check that we have an two carbons bonded to the carbonyl atom
-            return carbonyl_single_bonds.filter((carbonyl_single_bonds)=>{
-                return carbonyl_single_bonds.atom[0] === "C"
-            }).length === 2
+            return carbonyl_single_bonds[0].atom[0] === "C" && carbonyl_single_bonds[1].atom[0] === "C"
         }
     })
     Object.defineProperty(Array.prototype, 'isAlcohol', {
         value: function() {
             // "this" is an array of atoms
-            this[0].should.be.a.String()
+            this[0][0].should.be.a.String()
             // find oxygen atom with two bonds, one hydrogen and one carbon
             return _.findIndex(this, (atom)=>{
-                if (atom[0]!=="O") {
+                if (atom[0]!=="O" || atom.hydrogens(this).length !==1) {
                     return false
                 }
-                const bonds = atom.indexedBonds(this).filter((bond)=>{
-                    return  bond.atom[4] === "" && (bond.atom[0] === "H" || bond.atom[0] === "C")
-                })
-                return bonds.length === 2
+                const bonds = atom.indexedBonds(this)
+                return bonds.length === 1
             }) !== -1
         }
     })

@@ -19,6 +19,16 @@ const Reaction = require('./Components/State/Reaction')
 let reaction =null
 let stateMoleculeAI = null
 
+const carboxylic_acid = MoleculeFactory("CC(=O)O")
+//console.log(VMolecule([carboxylic_acid,1]).compressed())
+carboxylic_acid[1].isCarboxylicAcid().should.be.true()
+const alcohol = MoleculeFactory("OC")
+//console.log(VMolecule([alcohol,1]).compressed())
+alcohol[1].isAlcohol().should.be.true()
+const ketone = MoleculeFactory("CC(=O)CC")
+//console.log(VMolecule([ketone,1]).compressed())
+ketone[1].isKetone().should.be.true()
+
 const branch_test = MoleculeFactory("C(OCC)(C)(N)")
 //console.log(VMolecule([branch_test,1]).compressed())
 //process.error()
