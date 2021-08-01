@@ -3817,31 +3817,67 @@ return result === false? false:[
         this.setMoleculeAI()
     }
 
+    __carboxylicAcidAndAlcoholToEster(carboxylicAcid, alcohol) {
+        Typecheck(
+            {name:"carboxylicAcid", value:carboxylicAcid, type:"array"},
+            {name:"alcohol", value:alcohol, type:"array"}
+        )
+        // Ester = R1C(=O)OR2
+        // R1C(=O)OR2 + O <- HO(R2)
+        // Get from the alcohol atoms but not including the -OH group
+        const hydroxylOxygenIndex = alcohol[0][1].hydroxylOxygenIndex()
+        const hydroxylOxygen =  alcohol[0][1][hydroxylOxygenIndex]
+        const hydroxylOxygenHydrogen =  alcohol[0][1][hydroxylOxygenIndex].hydrogens(this)[0]
+        const hydroxylOxygenHydrogenIndex =  hydroxylOxygenHydrogen.getAtomIndexById(hydroxylOxygenHydrogen.atomId())
+        const hydroxylOxygenNonHydrogen =  alcohol[0][1][hydroxylOxygenIndex].nonHydrogens(this)[0]
+        const hydroxylOxygenNonHydrogenIndex =  hydroxylOxygenHydrogen.getAtomIndexById(hydroxylOxygenNonHydrogen.atomId())
+        // Get all atoms from the hydroxyl oxygen index but don't include the hydroxyl oxygen index
+        const alcohol_atoms = alcohol[0][1].slice(hydroxylOxygenIndex+1).filter((a, i)=>{
+            return i !== hydroxylOxygenHydrogenIndex
+        })
+        // Replace the hydrogen attached to the non-carbonyl oxygen with the alcohol atoms
+        const carbonylCarbonIndex =  carboxylicAcid[0][1].carbonylCarbonIndex()
+        const carbonylCarbon = carboxylicAcid[0][1][carbonylCarbonIndex]
+        const oxygen = carbonylCarbon.indexedBonds(this).filter((bond)=>{
+            return bond.atom[0] === "O"
+        }).map((b)=>{
+            return b.atom
+        })
+        const oxygenHydrogen = oxygen.hydrogens(this)[0]
+        oxygen.removeSingleBond(oxygenHydrogen)
+        oxygenHydrogen.bondAtomToAtom(alcohol_atoms[0], alcohol_atoms)
+        const ester = carboxylicAcid // hyrogen oxygen removed and replaced with atoms from the alcohol
+        // @todo add check to confirm molecule is an ester
+        return ester
+    }
+    
     hydrolysisReverse() {
+
         throw new Error("To do: hydrolysisReverse()")
         // @see https://study.com/academy/lesson/hydrolysis-definition-reaction-equation-example.html
         // Hydrolysis is the process of using water to break down a molecule into two parts.
         // Hydrolysis results in two molecules where both of the molecules are R-OH.
         // Hydrolysis = breaking apart of a molecule using water
-        // eg ester O=(CR)OR -> O=(CR)OH + HOR (alcohol)
+        // eg ester R1C(=O)OR2 -> R1C(=O)O carboxylic acid) + HOR2 (alcohol)
         // eg acid H2SO4 -> HSO4- + H3O+
         // eg salts H2O donates H+ (electrophile) to Anion (negatively charged molecule)
         // eg salts H2O accepts H+ from Cation (positively charged molecule)
 
-        // Check if either the substrate or the reagent is an alcohol and whether the substrate or reagent is a ketone
-        let alcohol = null
-        let ketone = null
-        let carboxylic_acid = null
-        if (this.container_substrate[0][1].isAlcohol()){
-            alcohol = this.container_substrate[0][1]
-            if (this.container_reagent[0][1].isCarboxylicAcid()){
-                carboxylic_acid = this.container_reagent[0][1]
-            }
-        } else if (this.container_reagent[0][1].isAlcohol()){
-            alcohol = this.container_reagent[0][1]
-            if (this.container_substrate[0][1].isCarboxylicAcid()){
-                carboxylic_acid = this.container_substrate[0][1]
-            }
+        // Check if either the substrate or the reagent is an alcohol and whether the substrate or reagent is a carboxylic acid
+        if (this.container_substrate[0][1].isCarboxylicAcid() && this.container_reagent[0][1].isAlcohol()) {
+            // Original substrate was an ester, reagent was water
+            const ester = __carboxylicAcidAndAlcoholToEster(this.container_substrate, this.container_reagent)
+            return [
+                ester,
+                MoleculeFactory("O")
+            ]
+        } else if (this.container_reagent[0][1].isCarboxylicAcid() && this.container_substrate[0][1].isAlcohol()) {
+            // Original reagent was an ester, substrate was water
+            const ester = __carboxylicAcidAndAlcoholToEster(this.container_reagent, this.container_substrate)
+            return [
+                MoleculeFactory("O"),
+                ester
+            ]
         }
 
 

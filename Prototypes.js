@@ -58,7 +58,25 @@ const Set = require('./Models/Set')
 // isKetone()
 // isCarboxylicAcid()
 // carbonylCarbonIndex()
+// carbonylOxygenIndex()
 const Prototypes = () => {
+    Object.defineProperty(Array.prototype, 'carbonylOxygenIndex', {
+        value: function() {
+            // "this" is an array of atoms
+            this[0].should.be.a.String()
+            const carbonyl_oxygen_index = _.findIndex(this, (atom)=> {
+                if (atom[0] !== "C") {
+                    return false
+                }
+                const bonds = atom.indexedDoubleBonds(this)
+                if (bonds.length !==1) {
+                    return false
+                }
+                return bonds[0].atom[0] === "O"
+            })
+            return carbonyl_oxygen_index
+        }
+    })
     Object.defineProperty(Array.prototype, 'carbonylCarbonIndex', {
         value: function() {
             // "this" is an array of atoms
@@ -68,18 +86,17 @@ const Prototypes = () => {
                     return false
                 }
                 const bonds = atom.indexedDoubleBonds(this)
-                if (bonds.length !==2) {
+                if (bonds.length !==1) {
                     return false
                 }
-                return bons.filter((bond) => {
-                    return bond.atom[0] === "C"
-                }).length === 1
+                return bonds[0].atom[0] === "C"
             })
             return carbonyl_carbon_index
         }
     })
     Object.defineProperty(Array.prototype, 'isCarboxylicAcid', {
         value: function() {
+            // https://www.compoundchem.com/2020/02/21/functional-groups/
             // "this" is an array of atoms
             // RC(=O)O
             const atoms = this
@@ -93,10 +110,10 @@ const Prototypes = () => {
             if (carbonyl_single_bonds.length !==2) {
                 return false
             }
-            // Check that we have an -OH group and a carbon bonded to the carbonyl atom
+            // Check that we have an -OH group bonded to the carbonyl atom
             return carbonyl_single_bonds.filter((carbonyl_single_bonds)=>{
-                return carbonyl_single_bonds.atom[0] === "C" || (carbonyl_single_bonds.atom[0] === "O" && carbonyl_single_bonds.atom[0].hydrogens(atoms).length == 1)
-            }).length === 2
+                return carbonyl_single_bonds.atom[0] === "O" && carbonyl_single_bonds.atom[0].hydrogens(atoms).length === 1
+            }).length === 1
         }
     })
     Object.defineProperty(Array.prototype, 'isKetone', {
@@ -663,7 +680,7 @@ const Prototypes = () => {
 
             return _.findIndex(this, (oxygen_atom)=>{
                 if (oxygen_atom[0]==="O" && (undefined === charge || oxygen_atom[4] === charge)) {
-                    return oxygen_atom.carbonBonds(this).length === 1
+                    return oxygen_atom.hydrogens(this).length === 1
                 }
                 return false
             })
