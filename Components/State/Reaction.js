@@ -871,7 +871,7 @@ return result === false? false:[
         // @see https://chem.libretexts.org/Courses/Oregon_Institute_of_Technology/OIT%3A_CHE_332_--_Organic_Chemistry_II_(Lund)/7%3A_Acid-base_Reactions/07%3A_Carbon_Acids
 
         // Look for negatively charged oxygen single bonded to a carbon
-        const oxygen_index = this.container_substrate[0][1].hydroxylOxygenIndex("-")
+        const oxygen_index = this.container_substrate[0][1].hydroxylOxygenAttachedToCarbonIndex("-")
         //console.log(VMolecule(this.container_substrate).compressed())
         //console.log(this.container_substrate[0][1][5])
 
@@ -2363,7 +2363,7 @@ return result === false? false:[
 
         // Look for areas in the molecule where there could have been a bond broken
         // 1. Look for C-O bond
-        const hydroxyl_oxygen_index = this.container_substrate[0][1].hydroxylOxygenIndex() // (electrophile)
+        const hydroxyl_oxygen_index = this.container_substrate[0][1].hydroxylOxygenAttachedToCarbonIndex() // (electrophile)
         if (hydroxyl_oxygen_index !== -1) {
             const hydroxyl_carbon_index = this.container_substrate[0][1].hydroxylCarbonIndex() // (nucleophile)
             if (hydroxyl_oxygen_index !== -1) {
@@ -3853,7 +3853,7 @@ return result === false? false:[
     
     hydrolysisReverse() {
 
-        throw new Error("To do: hydrolysisReverse()")
+
         // @see https://study.com/academy/lesson/hydrolysis-definition-reaction-equation-example.html
         // Hydrolysis is the process of using water to break down a molecule into two parts.
         // Hydrolysis results in two molecules where both of the molecules are R-OH.
@@ -3866,12 +3866,14 @@ return result === false? false:[
         // Check if either the substrate or the reagent is an alcohol and whether the substrate or reagent is a carboxylic acid
         if (this.container_substrate[0][1].isCarboxylicAcid() && this.container_reagent[0][1].isAlcohol()) {
             // Original substrate was an ester, reagent was water
-            const ester = __carboxylicAcidAndAlcoholToEster(this.container_substrate, this.container_reagent)
+            throw new Error("To do: hydrolysisReverse() 1")
+            const ester = this.__carboxylicAcidAndAlcoholToEster(this.container_substrate, this.container_reagent)
             return [
                 ester,
                 MoleculeFactory("O")
             ]
         } else if (this.container_reagent[0][1].isCarboxylicAcid() && this.container_substrate[0][1].isAlcohol()) {
+            throw new Error("To do: hydrolysisReverse() 2")
             // Original reagent was an ester, substrate was water
             const ester = __carboxylicAcidAndAlcoholToEster(this.container_reagent, this.container_substrate)
             return [
@@ -3880,6 +3882,7 @@ return result === false? false:[
             ]
         }
 
+        throw new Error("To do: hydrolysisReverse() 3")
 
 
     }

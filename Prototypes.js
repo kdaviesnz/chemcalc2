@@ -94,6 +94,9 @@ const Prototypes = () => {
                 }
                 return true
             })
+            if (carbonyl_carbon_index===-1) {
+                throw new Error("Could not find carbonyl carbon index.")
+            }
             this[carbonyl_carbon_index][0].should.be.equal("C")
             this[carbonyl_carbon_index].indexedDoubleBonds(this).length.should.be.equal(1)
             return carbonyl_carbon_index
@@ -689,6 +692,22 @@ const Prototypes = () => {
             })
         }
     })
+    Object.defineProperty(Array.prototype, 'hydroxylOxygenAttachedToCarbonIndex', {
+        value: function(charge) {
+            // "this" is an array of atoms
+            Typecheck(
+                {name:"first atom symbol", value:this[0][0], type:"string"},
+                {name:"charge", value:charge, type:"string"},
+            )
+
+            return _.findIndex(this, (oxygen_atom)=>{
+                if (oxygen_atom[0]==="O" && (undefined === charge || oxygen_atom[4] === charge)) {
+                    return oxygen_atom.carbonBonds(this).length === 1
+                }
+                return false
+            })
+        }
+    })
     Object.defineProperty(Array.prototype, 'hydroxylCarbonIndex', {
         value: function(oxygen_charge) {
 
@@ -698,7 +717,7 @@ const Prototypes = () => {
                 {name:"oxygen charge", value:oxygen_charge, type:"string"},
             )
 
-            const oxygen_index = this.hydroxylOxygenIndex(oxygen_charge)
+            const oxygen_index = this.hydroxylOxygenAttachedToCarbonIndex(oxygen_charge)
             const carbon_bonds = this[oxygen_index].carbonBonds(this)
 
             if (carbon_bonds.length === 0) {
