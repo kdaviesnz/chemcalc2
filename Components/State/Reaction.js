@@ -3822,17 +3822,17 @@ return result === false? false:[
             {name:"carboxylicAcid", value:carboxylicAcid, type:"array"},
             {name:"alcohol", value:alcohol, type:"array"}
         )
+
+        alcohol[0][1].isAlcohol().should.be.true()
+        carboxylicAcid[0][1].isCarboxylicAcid().should.be.true()
         alcohol[0][1][0][0].should.be.a.String()
         carboxylicAcid[0][1][0][0].should.be.a.String()
         // Ester = R1C(=O)OR2
         // R1C(=O)OR2 + O <- HO(R2)
         // Get from the alcohol atoms but not including the -OH group
         const hydroxylOxygenIndex = alcohol[0][1].hydroxylOxygenIndex()
-        const hydroxylOxygen =  alcohol[0][1][hydroxylOxygenIndex]
         const hydroxylOxygenHydrogen =  alcohol[0][1][hydroxylOxygenIndex].hydrogens(alcohol[0][1])[0]
         const hydroxylOxygenHydrogenIndex =  alcohol[0][1].getAtomIndexById(hydroxylOxygenHydrogen.atomId())
-        const hydroxylOxygenNonHydrogen =  alcohol[0][1][hydroxylOxygenIndex].nonHydrogens(alcohol[0][1])[0]
-        const hydroxylOxygenNonHydrogenIndex =  alcohol[0][1].getAtomIndexById(hydroxylOxygenNonHydrogen.atomId())
         // Get all atoms from the hydroxyl oxygen index but don't include the hydroxyl oxygen index
         const alcohol_atoms = alcohol[0][1].slice(hydroxylOxygenIndex+1).filter((a, i)=>{
             return i !== hydroxylOxygenHydrogenIndex && a[0] !== "H"  && a[0] !== "O"
@@ -3840,27 +3840,45 @@ return result === false? false:[
         // Replace the hydrogen attached to the non-carbonyl oxygen with the alcohol atoms
         const carbonylCarbonIndex =  carboxylicAcid[0][1].carbonylCarbonIndex()
         const carbonylCarbon = carboxylicAcid[0][1][carbonylCarbonIndex]
-        const carboxylic_oxygen = carbonylCarbon.indexedBonds(carboxylicAcid[0][1]).filter((bond)=>{
+        const carboxylic_oxygen_bond = carbonylCarbon.indexedBonds(carboxylicAcid[0][1]).filter((bond)=>{
             return bond.atom[0] === "O"
-        }).map((b)=>{
-            return b.atom
         })[0]
-       // console.log(carboxylicAcid)
-       // console.log(oxygen)
-        //process.error()
-        const oxygenHydrogen = carboxylic_oxygen.hydrogens(carboxylicAcid[0][1])[0]
-        //console.log(oxygenHydrogen)
-        //console.log(alcohol_atoms[0])
-        //process.error()
-        carboxylic_oxygen.removeSingleBond(oxygenHydrogen)
-        const atom_from_alcohol_to_add_to_carboxylic_oxygen = alcohol_atoms[0]
-        const alcohol_atom_hydrogen = atom_from_alcohol_to_add_to_carboxylic_oxygen.hydrogens(alcohol[0][1])[0]
-        atom_from_alcohol_to_add_to_carboxylic_oxygen.removeSingleBond(alcohol_atom_hydrogen)
-        carboxylic_oxygen.bondAtomToAtom(alcohol_atoms[0], alcohol_atoms)
+        const oxygenHydrogen = carboxylicAcid[0][1][carboxylic_oxygen_bond.atom_index].hydrogens(carboxylicAcid[0][1])[0]
+        carboxylicAcid[0][1][carboxylic_oxygen_bond.atom_index].removeSingleBond(oxygenHydrogen)
+        const atom_from_alcohol_to_add_to_carboxylic_oxygen_index = _.findIndex(alcohol[0][1], (a,i)=>{
+            return i !== hydroxylOxygenHydrogenIndex && a[0] !== "H"  && a[0] !== "O"
+        })
+        const alcohol_atom_hydrogen = alcohol[0][1][atom_from_alcohol_to_add_to_carboxylic_oxygen_index].hydrogens(alcohol[0][1])[0]
+        alcohol[0][1][atom_from_alcohol_to_add_to_carboxylic_oxygen_index].removeSingleBond(alcohol_atom_hydrogen)
+
+        // Remove -OH from alcohol
+        const alcohol_oxygen_index = alcohol[0][1].hydroxylOxygenIndex()
+        const alcohol_atom_before_count = alcohol[0][1].length
+        alcohol[0][1][alcohol_oxygen_index][0].should.be.equal("O")
+        const alcohol_oxygen_hydrogen = alcohol[0][1][alcohol_oxygen_index].hydrogens(alcohol[0][1])[0]
+        alcohol[0][1][alcohol_oxygen_index].removeSingleBond(alcohol_oxygen_hydrogen)
+        const alcohol_oxygen_hydrogen_index = alcohol[0][1].getAtomIndexById(alcohol_oxygen_hydrogen.atomId())
+        alcohol[0][1][alcohol_oxygen_hydrogen_index][0].should.be.equal("H")
+        alcohol[0][1].removeAtom(alcohol[0][1][alcohol_oxygen_index], alcohol_oxygen_index)
+        alcohol[0][1].removeAtom(alcohol_oxygen_hydrogen, alcohol_oxygen_hydrogen_index)
+        alcohol[0][1].length.should.be.equal(alcohol_atom_before_count - 2)
+
+        const atoms_before_count = carboxylicAcid[0][1].length
+        const atom_to_add_to_carboxylic_oxygen_index = _.findIndex(alcohol[0][1], (a,i)=>{
+            return i !== hydroxylOxygenHydrogenIndex && a[0] !== "H"  && a[0] !== "O"
+        })
+        const hydrogen = AtomFactory("H", "")
+        alcohol[0][1].addAtom(hydrogen)
+        alcohol[0][1][atom_to_add_to_carboxylic_oxygen_index].bondAtomToAtom(hydrogen, alcohol[0][1])
+        carboxylicAcid[0][1][carboxylic_oxygen_bond.atom_index].bondAtomToAtom(alcohol[0][1][atom_to_add_to_carboxylic_oxygen_index], alcohol[0][1])
+        carboxylicAcid[0][1] = [...carboxylicAcid[0][1], ...alcohol[0][1]] // we need to add the hydrogens from the alcohol as well.
+        carboxylicAcid[0][1].length.should.be.equal(atoms_before_count + alcohol[0][1].length)
+        //console.log("Carboxlic acid")
+        //console.log(carboxylicAcid[0][1])
         const ester = carboxylicAcid // hydrogen oxygen removed and replaced with atoms from the alcohol
-        // @todo add check to confirm molecule is an ester
-        console.log(ester)
-        process.error()
+        //console.log("Ester")
+        //console.log(ester[0][1])
+        ester[0][1].isEster().should.be.true()
         return ester
     }
     
@@ -3886,10 +3904,9 @@ return result === false? false:[
         if (this.container_substrate[0][1].isCarboxylicAcid() && this.container_reagent[0][1].isAlcohol()) {
             // Original substrate was an ester, reagent was water
             const ester = this.__carboxylicAcidAndAlcoholToEster(this.container_substrate, this.container_reagent)
-            throw new Error("To do: hydrolysisReverse() 1")
             return [
                 ester,
-                MoleculeFactory("O")
+                [MoleculeFactory("O"),1]
             ]
         } else if (this.container_reagent[0][1].isCarboxylicAcid() && this.container_substrate[0][1].isAlcohol()) {
             throw new Error("To do: hydrolysisReverse() 2")

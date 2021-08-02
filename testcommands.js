@@ -31,7 +31,6 @@ ketone[1].isKetone().should.be.true()
 const ester = MoleculeFactory("CC(=O)ON")
 //console.log(VMolecule([ester,1]).compressed())
 ester[1].isEster().should.be.true()
-process.error()
 
 const branch_test = MoleculeFactory("C(OCC)(C)(N)")
 //console.log(VMolecule([branch_test,1]).compressed())
@@ -163,6 +162,10 @@ client.connect(err => {
                 if (result === false) {
                     console.log("Reaction returned false - " + reaction_test.reaction +"()")
                 } else {
+                    if (VMolecule(result[0]).canonicalSMILES() !== reaction_test.finishing_substrate) {
+                        console.log(VMolecule(result[0]).compressed())
+                        throw new Error("Finishing substrate is incorrect - expected " + reaction_test.finishing_substrate + " but got " + VMolecule(result[0]).canonicalSMILES())
+                    }
                     VMolecule(result[0]).canonicalSMILES().should.be.equal(reaction_test.finishing_substrate)
                     if (typeof result[1] !=="string" && result[1] !== null) {
                         VMolecule(result[1]).canonicalSMILES().should.be.equal(reaction_test.finishing_reagent)

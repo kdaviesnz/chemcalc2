@@ -109,6 +109,9 @@ const Prototypes = () => {
                 }
                 return bonds[0].atom[0] === "O"
             })
+            if (carbonyl_oxygen_index == -1) {
+                throw new Error("Could not find carbonyl oxygen")
+            }
             this[carbonyl_oxygen_index][0].should.be.equal("O")
             return carbonyl_oxygen_index
         }
@@ -759,8 +762,6 @@ const Prototypes = () => {
                 return -1
             }
             return carbon_bonds[0].atom_index
-
-
         }
     })
     Object.defineProperty(Array.prototype, 'freeSlots', {
