@@ -22,6 +22,9 @@ let stateMoleculeAI = null
 //const reduce_reverse_1 = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)NC")
 //console.log(VMolecule([reduce_reverse_1,1]).compressed())
 //process.error()
+//const t = MoleculeFactory("CC(O)[NH4]")
+//console.log(VMolecule([t,1]).compressed())
+//process.error()
 
 const carboxylic_acid = MoleculeFactory("CC(=O)O")
 //console.log(VMolecule([carboxylic_acid,1]).compressed())

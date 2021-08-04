@@ -1034,9 +1034,13 @@ return result === false? false:[
     }
 
 
-    breakCarbonOxygenDoubleBondReverse() {
+    breakCarbonOxygenDoubleBondReverse(carbon_index, oxygen_index) {
+
         //const bondsAI = new BondsAI(_.cloneDeep(this))
         //return bondsAI.breakCarbonOxygenDoubleBondReverse()
+        //console.log(carbon_index)
+        //console.log(oxygen_index)
+        //process.error()
 
         if (oxygen_index === undefined) {
             throw new Error("Oxygen index is undefined")
@@ -1062,7 +1066,7 @@ return result === false? false:[
             throw new Error("oxygen atom is not an oxygen")
         }
 
-        // Check if carbons are bonded with a single bond
+        // Check if CO
         if (!carbon.isBondedTo(oxygen)) {
             throw new Error("oxygen is not bonded to carbon")
         }
@@ -1471,7 +1475,11 @@ return result === false? false:[
 
     }
 
-    reduceReverse() {
+    reduceReverse(carbon_index, nitrogen_index) {
+
+        // eg CCNC <----- CCN=C
+        // eg CCNC <----- CC=NC
+
         Typecheck(
             {name:"this.container_substrate", value:this.container_substrate, type:"array"},
             {name:"this.reactions", value:this.reactions, type:"array"},
@@ -1483,23 +1491,30 @@ return result === false? false:[
             {name:"this.rule", value:this.rule, type:"string"}
         )
 
-        const nitrogen_index = this.container_substrate[0][1].nitrogenIndex()
-        const carbon_index = this.container_substrate[0][1].terminalCarbonAttachedToNitrogenSingleBondIndex(nitrogen_index)
+        if(carbon_index === undefined) {
+            carbon_index = this.container_substrate[0][1].terminalCarbonAttachedToNitrogenSingleBondIndex(nitrogen_index)
+        }
 
+        if(nitrogen_index === undefined) {
+            nitrogen_index = this.container_substrate[0][1].nitrogenIndex()
+        }
+
+        // Removed - nitrogen should have four bonds (+charge)
         // Remove hydrogen from nitrogen
-        const nitrogen_hydrogen_atom = this.container_substrate[0][1][nitrogen_index].hydrogens(this.container_substrate[0][1])[0]
-        this.container_substrate[0][1][nitrogen_index].removeHydrogenOnNitrogenBond(nitrogen_hydrogen_atom, this.container_substrate[0][1])
+        //const nitrogen_hydrogen_atom = this.container_substrate[0][1][nitrogen_index].hydrogens(this.container_substrate[0][1])[0]
+        //this.container_substrate[0][1][nitrogen_index].removeHydrogenOnNitrogenBond(nitrogen_hydrogen_atom, this.container_substrate[0][1])
 
         // Remove hydrogen from carbon
         const carbon_hydrogen_atom = this.container_substrate[0][1][carbon_index].hydrogens(this.container_substrate[0][1])[0]
         this.container_substrate[0][1][carbon_index].removeHydrogenOnCarbonBond(carbon_hydrogen_atom, this.container_substrate[0][1])
 
-        // Change double bond between nitrogen and carbon to a single bond
+        // Change the single bond between nitrogen and carbon to a double bond
         this.container_substrate[0][1][nitrogen_index].bondAtomToAtom(this.container_substrate[0][1][carbon_index], this.container_substrate[0][1])
 
-        // Remove the hydrogens from the molecule
-        const nitrogen_hydrogen_atom_index = this.container_substrate[0][1].getAtomIndexById(nitrogen_hydrogen_atom.atomId())
-        this.container_substrate[0][1].removeAtom(nitrogen_hydrogen_atom, nitrogen_hydrogen_atom_index)
+        // Remove hydrogens from the molecule
+        // Removed - nitrogen should have four bonds (+charge)
+        //const nitrogen_hydrogen_atom_index = this.container_substrate[0][1].getAtomIndexById(nitrogen_hydrogen_atom.atomId())
+        //this.container_substrate[0][1].removeAtom(nitrogen_hydrogen_atom, nitrogen_hydrogen_atom_index)
         const carbon_hydrogen_atom_index = this.container_substrate[0][1].getAtomIndexById(carbon_hydrogen_atom.atomId())
         this.container_substrate[0][1].removeAtom(carbon_hydrogen_atom, carbon_hydrogen_atom_index)
 
