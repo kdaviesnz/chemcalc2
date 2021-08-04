@@ -19,6 +19,10 @@ const Reaction = require('./Components/State/Reaction')
 let reaction =null
 let stateMoleculeAI = null
 
+//const reduce_reverse_1 = MoleculeFactory("CC(CC1=CC2=C(C=C1)OCO2)NC")
+//console.log(VMolecule([reduce_reverse_1,1]).compressed())
+//process.error()
+
 const carboxylic_acid = MoleculeFactory("CC(=O)O")
 //console.log(VMolecule([carboxylic_acid,1]).compressed())
 carboxylic_acid[1].isCarboxylicAcid().should.be.true()
@@ -144,7 +148,7 @@ client.connect(err => {
     db.collection("synthesis_testing").find({}).toArray((err, reactions) => {
         reactions.map(
             (reaction_test, i) => {
-                console.log("Testing " + reaction_test.reaction +"()")
+                console.log("Testing " + reaction_test.reaction +"() " + reaction_test.starting_substrate)
                 let reagent_container = null
                 if (reaction_test.starting_reagent === "A" || reaction_test.starting_reagent === "CB" || reaction_test.starting_reagent === "") {
                     reagent_container = reaction_test.starting_reagent

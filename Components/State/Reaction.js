@@ -462,6 +462,11 @@ return result === false? false:[
     reductiveAminationReverse(carbon_index, DEBUG) {
 
 
+        const nitrogen_index = this.container_substrate[0][1].nitrogenIndex()
+
+        if (carbon_index === undefined || carbon_index === false) {
+            carbon_index = this.container_substrate[0][1].carbonAttachedToNitrogenSingleBondIndex(nitrogen_index)
+        }
 
         Typecheck(
             {name:"carbon_index", value:carbon_index, type:"number"},
@@ -495,9 +500,6 @@ return result === false? false:[
             console.log("Calling Reaction.js substrate protected tracker="+tracker)
             console.log(VMolecule([substrateProtected[0],1]).canonicalSMILES())
         }
-
-        // Find nitrogen index
-        const nitrogen_index = this.MoleculeAI.findNitrogenAttachedToCarbonIndexNoDoubleBonds()
 
         if (DEBUG) {
             console.log("Reaction.js reductiveAminationReverse() nitrogen index="+nitrogen_index)
@@ -1033,8 +1035,50 @@ return result === false? false:[
 
 
     breakCarbonOxygenDoubleBondReverse() {
-        const bondsAI = new BondsAI(_.cloneDeep(this))
-        return bondsAI.breakCarbonOxygenDoubleBondReverse()
+        //const bondsAI = new BondsAI(_.cloneDeep(this))
+        //return bondsAI.breakCarbonOxygenDoubleBondReverse()
+
+        if (oxygen_index === undefined) {
+            throw new Error("Oxygen index is undefined")
+        }
+
+        if (carbon_index === undefined) {
+            throw new Error("Carbon index is undefined")
+        }
+
+        const carbon = this.container_substrate[0][1][carbon_index]
+        if (carbon === undefined) {
+            throw new Error("Parent carbon not found")
+        }
+        if (carbon[0] !== "C") {
+            throw new Error("Parent carbon is not a carbon")
+        }
+
+        const oxygen = this.container_substrate[0][1][oxygen_index]
+        if (oxygen === undefined) {
+            throw new Error("oxygen not found")
+        }
+        if (oxygen[0] !== "O") {
+            throw new Error("oxygen atom is not an oxygen")
+        }
+
+        // Check if carbons are bonded with a single bond
+        if (!carbon.isBondedTo(oxygen)) {
+            throw new Error("oxygen is not bonded to carbon")
+        }
+
+        carbon.bondAtomToAtom(oxygen, this.container_substrate[0][1])
+
+        // Confirm there is now a double bond
+        if (!carbon.isDoubleBondedTo(oxygen)) {
+            throw new Error("Failed to create double bond")
+        }
+
+        return [
+            this.container_substrate,
+            this.container_reagent
+        ]
+
     }
 
     __changeDoubleBondToSingleBond(nucleophile_index, electrophile_index) {
@@ -1402,6 +1446,69 @@ return result === false? false:[
         return false
     }
 
+    makeNitrogenCarbonDoubleBondReverse() {
+
+        Typecheck(
+            {name:"this.container_substrate", value:this.container_substrate, type:"array"},
+            {name:"this.reactions", value:this.reactions, type:"array"},
+            {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
+            {name:"this.horizontalFn", value:this.horizontalFn, type:"function"},
+            {name:"this.commands", value:this.commands, type:"array"},
+            {name:"this.command_index", value:this.command_index, type:"number"},
+            {name:"this.renderCallback", value:this.renderCallback, type:"function"},
+            {name:"this.rule", value:this.rule, type:"string"}
+        )
+
+        const nitrogen_index = this.container_substrate[0][1].nitrogenOnCarbonDoubleBondIndex()
+        const carbon_index = this.container_substrate[0][1].carbonAttachedToNitrogenDoubleBondIndex(nitrogen_index)
+        this.container_substrate[0][1][nitrogen_index].removeSingleBond(this.container_substrate[0][1][carbon_index])
+        this.container_substrate[0][1][carbon_index][4] = "+"
+
+        return [
+            this.container_substrate,
+            this.container_reagent
+        ]
+
+    }
+
+    reduceReverse() {
+        Typecheck(
+            {name:"this.container_substrate", value:this.container_substrate, type:"array"},
+            {name:"this.reactions", value:this.reactions, type:"array"},
+            {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
+            {name:"this.horizontalFn", value:this.horizontalFn, type:"function"},
+            {name:"this.commands", value:this.commands, type:"array"},
+            {name:"this.command_index", value:this.command_index, type:"number"},
+            {name:"this.renderCallback", value:this.renderCallback, type:"function"},
+            {name:"this.rule", value:this.rule, type:"string"}
+        )
+
+        const nitrogen_index = this.container_substrate[0][1].nitrogenIndex()
+        const carbon_index = this.container_substrate[0][1].terminalCarbonAttachedToNitrogenSingleBondIndex(nitrogen_index)
+
+        // Remove hydrogen from nitrogen
+        const nitrogen_hydrogen_atom = this.container_substrate[0][1][nitrogen_index].hydrogens(this.container_substrate[0][1])[0]
+        this.container_substrate[0][1][nitrogen_index].removeHydrogenOnNitrogenBond(nitrogen_hydrogen_atom, this.container_substrate[0][1])
+
+        // Remove hydrogen from carbon
+        const carbon_hydrogen_atom = this.container_substrate[0][1][carbon_index].hydrogens(this.container_substrate[0][1])[0]
+        this.container_substrate[0][1][carbon_index].removeHydrogenOnCarbonBond(carbon_hydrogen_atom, this.container_substrate[0][1])
+
+        // Change double bond between nitrogen and carbon to a single bond
+        this.container_substrate[0][1][nitrogen_index].bondAtomToAtom(this.container_substrate[0][1][carbon_index], this.container_substrate[0][1])
+
+        // Remove the hydrogens from the molecule
+        const nitrogen_hydrogen_atom_index = this.container_substrate[0][1].getAtomIndexById(nitrogen_hydrogen_atom.atomId())
+        this.container_substrate[0][1].removeAtom(nitrogen_hydrogen_atom, nitrogen_hydrogen_atom_index)
+        const carbon_hydrogen_atom_index = this.container_substrate[0][1].getAtomIndexById(carbon_hydrogen_atom.atomId())
+        this.container_substrate[0][1].removeAtom(carbon_hydrogen_atom, carbon_hydrogen_atom_index)
+
+        return [
+            this.container_substrate,
+            this.container_reagent
+        ]
+
+    }
 
     hydrateMostSubstitutedCarbon() {
         const electrophile_index = this.MoleculeAI.findMostSubstitutedCarbonIndex()
@@ -1514,6 +1621,42 @@ return result === false? false:[
         ]
     }
 
+    bronstedLowryAcidBaseReactionReverse() {
+        Typecheck(
+            {name:"this.container_substrate", value:this.container_substrate, type:"array"},
+            {name:"this.container_reagent", value:this.container_reagent, type:"string"},
+            {name:"this.reactions", value:this.reactions, type:"array"},
+            {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
+            {name:"this.horizontalFn", value:this.horizontalFn, type:"function"},
+            {name:"this.commands", value:this.commands, type:"array"},
+            {name:"this.command_index", value:this.command_index, type:"number"},
+            {name:"this.renderCallback", value:this.renderCallback, type:"function"},
+            {name:"this.rule", value:this.rule, type:"string"}
+        )
+
+        if (this.container_reagent !== "CB") {
+            throw new Error("Reagent should be 'CB'")
+        }
+
+        // Find at one point in the molecule proton was added (acid donates a proton)
+        // Added to oxygen to create a water group?
+        const water_oxygen_index = this.container_substrate[0][1].waterOxygenIndex()
+        if (water_oxygen_index !== false) {
+            const oxygen_hydrogen = this.container_substrate[0][1][water_oxygen_index].hydrogens(this.container_substrate[0][1])[0]
+            this.container_substrate[0][1][water_oxygen_index].removeHydrogenOnOxygenBond(oxygen_hydrogen, this.container_substrate[0][1])
+            this.container_substrate[0][1][water_oxygen_index][4] = ""
+            const oxygen_hydrogen_index = this.container_substrate[0][1].getAtomIndexById(oxygen_hydrogen.atomId())
+            this.container_substrate[0][1].removeAtom(oxygen_hydrogen, oxygen_hydrogen_index)
+        } else {
+            throw new Error("Could not find point at which a proton was added.")
+        }
+
+        return [
+            this.container_substrate,
+            "A"
+        ]
+    }
+
     dehydrateReverse(DEBUG) {
         Typecheck(
             {name:"DEBUG", value:DEBUG, type:"boolean"},
@@ -1527,12 +1670,32 @@ return result === false? false:[
             {name:"this.rule", value:this.rule, type:"string"}
         )
 
+       // console.log(this.container_substrate[0][1])
+
         if (typeof this.container_reagent !== "string") {
             this.container_reagent.should.be.an.Array()
         }
 
-        const hydrationAI = new HydrationAI(_.cloneDeep(this))
-        const result = hydrationAI.dehydrateReverse(DEBUG)
+        const carbocation_index = this.container_substrate[0][1].carbocationIndex()
+        this.container_substrate[0][1][carbocation_index][0].should.be.equal("C")
+        const water = MoleculeFactory("O")
+        const water_oxygen_index = water[1].waterOxygenIndex()
+        const water_oxygen_atom = water[1][water_oxygen_index]
+        // This does not add the water atoms
+        this.container_substrate[0][1][carbocation_index].bondAtomToAtom(water_oxygen_atom, this.container_substrate[0][1])
+        const water_hydrogens = water_oxygen_atom.hydrogens(water[1])
+        this.container_substrate[0][1].addAtom(water_oxygen_atom)
+        this.container_substrate[0][1].addAtom(water_hydrogens[0])
+        this.container_substrate[0][1].addAtom(water_hydrogens[1])
+
+        this.container_substrate[0][1][carbocation_index][4] = ""
+
+       return [
+           this.container_substrate,
+           this.container_reagent
+       ]
+       // const hydrationAI = new HydrationAI(_.cloneDeep(this))
+       // const result = hydrationAI.dehydrateReverse(DEBUG)
 
         /*
         result.should.be.an.Array()
@@ -1541,11 +1704,13 @@ return result === false? false:[
     result[0], // substrate container
     result[1] // reagent container
 ]
- */
+
         return result ===  false? false:[
             result[0],
             result[1]
         ]
+
+         */
     }
 
     __removeGroup(nucleophile_index, electrophile_index, moleculeAI, substrate) {

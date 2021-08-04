@@ -59,7 +59,129 @@ const Set = require('./Models/Set')
 // isCarboxylicAcid()
 // carbonylCarbonIndex()
 // carbonylOxygenIndex()
+// nitrogenIndex()
+// carbonAttachedToNitrogenSingleBondIndex(nitrogen_index)
+// terminalCarbonAttachedToNitrogenSingleBondIndex(nitrogen_index)
+// carbonAttachedToNitrogenDoubleBondIndex(nitrogen_index)
+// nitrogenOnCarbonDoubleBondIndex()
+// carbocationIndex()
+// waterOxygenIndex()
+// removeHydrogenOnOxygenBond(hydrogen_atom, atoms)
 const Prototypes = () => {
+    Object.defineProperty(Array.prototype, 'carbocationIndex', {
+        value: function() {
+            // "this" is an array of atoms
+            this[0][0].should.be.a.String()
+            const carbocation_index = _.findIndex(this, (atom)=> {
+                if (atom[0] !== "C" || atom[4] !== "+") {
+                    return false
+                }
+                return true
+            })
+            if (carbocation_index === -1) {
+                throw new Error("Could not find carbocation")
+            }
+            this[carbocation_index][0].should.be.equal("C")
+            this[carbocation_index][4].should.be.equal("+")
+            return carbocation_index
+        }
+    })
+    Object.defineProperty(Array.prototype, 'nitrogenOnCarbonDoubleBondIndex', {
+        value: function() {
+            // "this" is an array of atoms
+            this[0][0].should.be.a.String()
+            const atoms = this
+            const nitrogen_index = _.findIndex(this, (atom)=> {
+                if (atom[0] !== "N") {
+                    return false
+                }
+                const carbon_bonds = atom.indexedDoubleBonds(atoms).filter((bond)=>{
+                    return bond.atom[0] === "C"
+                })
+                return carbon_bonds.length > 0
+            })
+            if (nitrogen_index === -1) {
+                throw new Error("Could not find nitrogen")
+            }
+            this[nitrogen_index][0].should.be.equal("N")
+            return nitrogen_index
+        }
+    })
+    Object.defineProperty(Array.prototype, 'nitrogenIndex', {
+        value: function() {
+            // "this" is an array of atoms
+            this[0][0].should.be.a.String()
+            const nitrogen_index = _.findIndex(this, (atom)=> {
+                if (atom[0] !== "N") {
+                    return false
+                }
+                return true
+            })
+            if (nitrogen_index === -1) {
+                throw new Error("Could not find nitrogen")
+            }
+            this[nitrogen_index][0].should.be.equal("N")
+            return nitrogen_index
+        }
+    })
+    Object.defineProperty(Array.prototype, 'carbonAttachedToNitrogenSingleBondIndex', {
+        value: function(nitrogen_index) {
+            // "this" is an array of atoms
+            this[0][0].should.be.a.String()
+            if (nitrogen_index === undefined) {
+                nitrogen_index = this.nitrogenIndex()
+            }
+            if (nitrogen_index === -1) {
+                throw new Error("Could not find nitrogen")
+            }
+            const carbon_bonds = this[nitrogen_index].indexedBonds(this).filter((bond)=>{
+                return bond.atom[0] === "C"
+            })
+            if (carbon_bonds.length === 0){
+                throw new Error("Could not find carbon attached to nitrogen")
+            }
+            return carbon_bonds[0].atom_index
+        }
+    })
+    Object.defineProperty(Array.prototype, 'terminalCarbonAttachedToNitrogenSingleBondIndex', {
+        value: function(nitrogen_index) {
+            // "this" is an array of atoms
+            this[0][0].should.be.a.String()
+            if (nitrogen_index === undefined) {
+                nitrogen_index = this.nitrogenIndex()
+            }
+            if (nitrogen_index === -1) {
+                throw new Error("Could not find nitrogen")
+            }
+            const atoms = this
+            const carbon_bonds = this[nitrogen_index].indexedBonds(this).filter((bond)=>{
+                return bond.atom[0] === "C" && bond.atom.hydrogens(atoms).length === 3
+            })
+            if (carbon_bonds.length === 0){
+                throw new Error("Could not find carbon attached to nitrogen")
+            }
+            return carbon_bonds[0].atom_index
+        }
+    })
+    Object.defineProperty(Array.prototype, 'carbonAttachedToNitrogenDoubleBondIndex', {
+        value: function(nitrogen_index) {
+            // "this" is an array of atoms
+            this[0][0].should.be.a.String()
+            if (nitrogen_index === undefined) {
+                nitrogen_index = this.nitrogenIndex()
+            }
+            if (nitrogen_index === -1) {
+                throw new Error("Could not find nitrogen")
+            }
+            const carbon_bonds = this[nitrogen_index].indexedDoubleBonds(this).filter((bond)=>{
+                return bond.atom[0] === "C"
+            })
+            if (carbon_bonds.length === 0){
+                throw new Error("Could not find carbon double bonded to nitrogen")
+            }
+            return carbon_bonds[0].atom_index
+        }
+    })
     Object.defineProperty(Array.prototype, 'isEster', {
         value: function() {
             // https://www.compoundchem.com/2020/02/21/functional-groups/
@@ -432,12 +554,20 @@ const Prototypes = () => {
                 {name:"first atom symbol", value:this[0][0], type:"string"}
             )
 
-            return _.findIndex(this, (oxygen_atom)=>{
+            const water_oxygen_index =  _.findIndex(this, (oxygen_atom)=>{
                 if (oxygen_atom[0]==="O") {
-                    return oxygen_atom.carbonBonds(this).length === 1 && oxygen_atom.hydrogens(this).length === 2
+                    return oxygen_atom.hydrogens(this).length === 2
                 }
                 return false
             })
+
+            if (water_oxygen_index === -1){
+               return false
+            }
+
+            this[water_oxygen_index][0].should.be.equal("O")
+
+            return water_oxygen_index
         }
     })
     Object.defineProperty(Array.prototype, 'electrophileIndex', {
@@ -730,6 +860,7 @@ const Prototypes = () => {
             })
         }
     })
+
     Object.defineProperty(Array.prototype, 'hydroxylOxygenAttachedToCarbonIndex', {
         value: function(charge) {
             // "this" is an array of atoms
@@ -981,6 +1112,36 @@ const Prototypes = () => {
             this[0].should.be.a.String()
 
             return this.indexedBonds(atoms).length + (this.indexedDoubleBonds(atoms).length * 2)  + (this.indexedTripleBonds(atoms).length * 3)
+        }
+    })
+    Object.defineProperty(Array.prototype, 'removeHydrogenOnOxygenBond', {
+        value: function(hydrogen_atom, atoms) {
+            // "this" is an atom
+            Typecheck(
+                {name:"hydrogen_atom", value:hydrogen_atom, type:"array"},
+                {name:"atoms", value:atoms, type:"array"}
+            )
+
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("Atoms are  undefined or null")
+            }
+
+            if (hydrogen_atom === undefined || hydrogen_atom=== null) {
+                throw new Error("Hydrogen atom is undefined or null")
+            }
+
+            atoms[0].should.be.an.Array()
+            atoms[0][0].should.be.a.String()
+            this[0].should.be.a.String()
+            this[0].should.be.equal("O")
+            hydrogen_atom[0].should.be.a.String()
+            hydrogen_atom[0].should.be.equal("H")
+
+            if (this.isBondedTo(hydrogen_atom)) {
+                _.remove(this,(_atom_id)=>{
+                    return _atom_id === hydrogen_atom.atomId()
+                })
+            }
         }
     })
     Object.defineProperty(Array.prototype, 'removeHydrogenOnCarbonBond', {
