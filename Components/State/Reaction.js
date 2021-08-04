@@ -1324,7 +1324,43 @@ return result === false? false:[
 
     }
 
+    protonTransferReverse(original_base_atom_index, original_target_atom_index) {
 
+        Typecheck(
+            {name:"this.container_substrate", value:this.container_substrate, type:"array"},
+            {name:"this.reactions", value:this.reactions, type:"array"},
+            {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
+            {name:"this.horizontalFn", value:this.horizontalFn, type:"function"},
+            {name:"this.commands", value:this.commands, type:"array"},
+            {name:"this.command_index", value:this.command_index, type:"number"},
+            {name:"this.renderCallback", value:this.renderCallback, type:"function"},
+            {name:"this.rule", value:this.rule, type:"string"}
+        )
+
+       // console.log(original_base_atom_index)
+       // console.log(original_target_atom_index)
+        original_base_atom_index.should.be.a.Number()
+        original_target_atom_index.should.be.a.Number()
+
+        // Remove hydrogen from the original base atom
+        const base_atom_hydrogen = this.container_substrate[0][1][original_base_atom_index].hydrogens(this.container_substrate[0][1])[0]
+        this.container_substrate[0][1][original_base_atom_index].removeHydrogenOnOxygenBond(base_atom_hydrogen, this.container_substrate[0][1])
+
+        // Add hydrogen to original target atom
+        const hydrogen = AtomFactory("H", "")
+        this.container_substrate[0][1][original_target_atom_index].bondAtomToAtom(hydrogen, this.container_substrate[0][1])
+
+        // Remove / add hydrogens from molecule
+        this.container_substrate[0][1].removeAtom(base_atom_hydrogen, this.container_substrate[0][1].getAtomIndexById(base_atom_hydrogen.atomId()))
+        this.container_substrate[0][1].addAtom(hydrogen)
+
+        this.setChargesOnSubstrate()
+
+        return [
+            this.container_substrate,
+            this.container_reagent
+        ]
+    }
 
     transferProtonReverse(check_mode) {
 

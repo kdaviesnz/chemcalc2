@@ -1042,6 +1042,8 @@ const Prototypes = () => {
             // @todo charges
 
             if (this.bondCount(atoms) + 1 > target_atom_max_number_bonds_allowed) {
+                console.log(this)
+                console.log(source_atom)
                 throw new Error("Target atom already has enough bonds")
             }
             source_atom[0].should.be.a.String()
@@ -1315,6 +1317,7 @@ const Prototypes = () => {
             const map = {
                 "O":3,
                 "N":4,
+                "C":5,
             }
             return map[this[0]]
 
