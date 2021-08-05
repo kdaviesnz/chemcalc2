@@ -1710,6 +1710,8 @@ return result === false? false:[
 
     lewisAcidBaseReactionReverse(base_atom_index, acid_atom_index) {
 
+      //  console.log(VMolecule(this.container_substrate).compressed())
+
         Typecheck(
             {name:"this.container_substrate", value:this.container_substrate, type:"array"},
             {name:"this.container_reagent", value:this.container_reagent, type:"string"},
@@ -1722,18 +1724,30 @@ return result === false? false:[
             {name:"this.rule", value:this.rule, type:"string"}
         )
 
-        process.error()
 
         // acid atom is the target of the arrow (substrate)
         // base atom is the start of the arrow  (reagent)
         acid_atom_index.should.be.a.Number()
         base_atom_index.should.be.a.Number()
 
+        //console.log(this.container_substrate[0][1])
+        const base_atom_branches = this.container_substrate[0][1][base_atom_index].branches(this.container_substrate[0][1]).filter((branch)=>{
+            return branch.filter((atom)=>{
+                return atom.atomId() === this.container_substrate[0][1][acid_atom_index].atomId()
+            }).length === 0
+        })
+
         // Break the bond between the base atom and the acid atom
-        this.container_substrate[0][1][acid_atom_index].removeAtom(this.container_substrate[0][1][base_atom_index])
+        this.container_substrate[0][1][acid_atom_index].removeSingleBond(this.container_substrate[0][1][base_atom_index])
 
         // Reagent consists of base atom plus child atoms of base atom
-        this.container_reagent[0][1] = [this.container_substrate[0][1][base_atom_index], ...this.container_substrate[0][1][base_atom_index].childAtoms(this.container_substrate[0][1])]
+        //console.log(this.container_substrate[0][1])
+        this.container_reagent = [MoleculeFactory(""),1]
+        this.container_reagent[0][1] = [this.container_substrate[0][1][base_atom_index], ...base_atom_branches]
+
+        // @todo hydrogens not being added to branches
+        console.log(this.container_reagent[0][1])
+        process.error()
 
         // Remove atoms from substrate
         this.container_substrate[0][1].removeAtomsById(this.container_reagent[0][1])

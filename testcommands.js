@@ -19,9 +19,9 @@ const Reaction = require('./Components/State/Reaction')
 let reaction =null
 let stateMoleculeAI = null
 
-const lewis_acid_base_reaction = MoleculeFactory("C[CH1+](=[OH1+])[NH2+]")
-console.log(VMolecule([lewis_acid_base_reaction,1]).compressed())
-process.error()
+//const lewis_acid_base_reaction = MoleculeFactory("C[CH1+](=[OH1+])[NH2+]C")
+//console.log(VMolecule([lewis_acid_base_reaction,1]).compressed())
+//process.error()
 
 //const transfer_proton = MoleculeFactory("CC([OH2+])N")
 //console.log(VMolecule([transfer_proton,1]).compressed())

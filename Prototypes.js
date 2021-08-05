@@ -68,7 +68,7 @@ const Set = require('./Models/Set')
 // waterOxygenIndex()
 // removeHydrogenOnOxygenBond(hydrogen_atom, atoms)
 // childAtoms(atoms)
-// removeAtmsById(
+// removeAtomsById()
 const Prototypes = () => {
     Object.defineProperty(Array.prototype, 'removeAtomsById', {
         value: function(atoms) {
@@ -95,17 +95,6 @@ const Prototypes = () => {
                 }) !== -1
             })
             return this
-        }
-    })
-    Object.defineProperty(Array.prototype, 'childAtoms', {
-        value: function(atoms) {
-            Typecheck(
-                {name:"atoms", value:atoms, type:"array"}
-            )
-            // "this" is an atom
-            this[0].should.be.a.String()
-            const atom_index = atoms.getAtomIndexById(this.atomId())
-            return atoms.splice(atom_index+1, atoms)
         }
     })
     Object.defineProperty(Array.prototype, 'carbocationIndex', {
@@ -421,9 +410,9 @@ const Prototypes = () => {
             if (bonds.filter((bond)=>{
                 return bond.atom[0] !== "H"
             }).length < 2) { // count parent atom
-                console.log(branch)
-                console.log("ending branch")
-                process.error()
+                //console.log(branch)
+                //console.log("ending branch")
+                //process.error()
                 return branch
             }
 
@@ -457,7 +446,7 @@ const Prototypes = () => {
                 //console.log(branches)
                 //process.error()
             })
-            console.log(branches)
+           // console.log(branches)
             return branches
         }
     })
@@ -1711,6 +1700,8 @@ const Prototypes = () => {
                 {name:"atomId", value:atomId, type:"string"},
             )
             if (atomId === undefined || atomId === null) {
+                console.log("-----")
+                console.log(this)
                 throw new Error("Atom id is undefined or null")
             }
             return atomId
