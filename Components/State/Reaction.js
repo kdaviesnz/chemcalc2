@@ -1708,6 +1708,43 @@ return result === false? false:[
         ]
     }
 
+    lewisAcidBaseReactionReverse(base_atom_index, acid_atom_index) {
+
+        Typecheck(
+            {name:"this.container_substrate", value:this.container_substrate, type:"array"},
+            {name:"this.container_reagent", value:this.container_reagent, type:"string"},
+            {name:"this.reactions", value:this.reactions, type:"array"},
+            {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
+            {name:"this.horizontalFn", value:this.horizontalFn, type:"function"},
+            {name:"this.commands", value:this.commands, type:"array"},
+            {name:"this.command_index", value:this.command_index, type:"number"},
+            {name:"this.renderCallback", value:this.renderCallback, type:"function"},
+            {name:"this.rule", value:this.rule, type:"string"}
+        )
+
+        process.error()
+
+        // acid atom is the target of the arrow (substrate)
+        // base atom is the start of the arrow  (reagent)
+        acid_atom_index.should.be.a.Number()
+        base_atom_index.should.be.a.Number()
+
+        // Break the bond between the base atom and the acid atom
+        this.container_substrate[0][1][acid_atom_index].removeAtom(this.container_substrate[0][1][base_atom_index])
+
+        // Reagent consists of base atom plus child atoms of base atom
+        this.container_reagent[0][1] = [this.container_substrate[0][1][base_atom_index], ...this.container_substrate[0][1][base_atom_index].childAtoms(this.container_substrate[0][1])]
+
+        // Remove atoms from substrate
+        this.container_substrate[0][1].removeAtomsById(this.container_reagent[0][1])
+
+        return [
+            this.container_substrate,
+            this.container_reagent
+        ]
+
+    }
+
     dehydrateReverse(DEBUG) {
         Typecheck(
             {name:"DEBUG", value:DEBUG, type:"boolean"},

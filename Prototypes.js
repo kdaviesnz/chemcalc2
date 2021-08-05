@@ -67,7 +67,47 @@ const Set = require('./Models/Set')
 // carbocationIndex()
 // waterOxygenIndex()
 // removeHydrogenOnOxygenBond(hydrogen_atom, atoms)
+// childAtoms(atoms)
+// removeAtmsById(
 const Prototypes = () => {
+    Object.defineProperty(Array.prototype, 'removeAtomsById', {
+        value: function(atoms) {
+            // "this" is an array of atoms that we are going to remove the atoms from
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"},
+            )
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("Atoms are  undefined or null")
+            }
+
+            const molecule_atoms_ids = this.map((molecule_atom)=>{
+                return molecule_atom.atomId()
+            })
+
+            const atoms_ids = this.map((atom)=>{
+                return atom.atomId()
+            })
+
+            // Remove atom from molecule
+            _.remove(this, (a, i) => {
+                return _.findIndex(molecule_atoms_ids, (molecule_atoms_id)=>{
+                    return a.atomId() === molecule_atoms_id
+                }) !== -1
+            })
+            return this
+        }
+    })
+    Object.defineProperty(Array.prototype, 'childAtoms', {
+        value: function(atoms) {
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"}
+            )
+            // "this" is an atom
+            this[0].should.be.a.String()
+            const atom_index = atoms.getAtomIndexById(this.atomId())
+            return atoms.splice(atom_index+1, atoms)
+        }
+    })
     Object.defineProperty(Array.prototype, 'carbocationIndex', {
         value: function() {
             // "this" is an array of atoms
