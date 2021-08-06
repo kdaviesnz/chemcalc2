@@ -19,6 +19,10 @@ const Reaction = require('./Components/State/Reaction')
 let reaction =null
 let stateMoleculeAI = null
 
+//const bronsted_reverse = MoleculeFactory("CC=[OH1+]")
+//console.log(VMolecule([bronsted_reverse,1]).compressed())
+//process.error()
+
 //const lewis_acid_base_reaction = MoleculeFactory("C[CH1+](=[OH1+])[NH2+]C")
 //console.log(VMolecule([lewis_acid_base_reaction,1]).compressed())
 //process.error()

@@ -599,6 +599,7 @@ const Prototypes = () => {
 
         }
     })
+
     Object.defineProperty(Array.prototype, 'waterOxygenIndex', {
         value: function() {
 
@@ -1167,6 +1168,35 @@ const Prototypes = () => {
             this[0].should.be.a.String()
 
             return this.indexedBonds(atoms).length + (this.indexedDoubleBonds(atoms).length * 2)  + (this.indexedTripleBonds(atoms).length * 3)
+        }
+    })
+    Object.defineProperty(Array.prototype, 'removeHydrogen', {
+        value: function(hydrogen_atom, atoms) {
+            // "this" is an atom
+            Typecheck(
+                {name:"hydrogen_atom", value:hydrogen_atom, type:"array"},
+                {name:"atoms", value:atoms, type:"array"}
+            )
+
+            if (atoms === undefined || atoms=== null) {
+                throw new Error("Atoms are  undefined or null")
+            }
+
+            if (hydrogen_atom === undefined || hydrogen_atom=== null) {
+                throw new Error("Hydrogen atom is undefined or null")
+            }
+
+            atoms[0].should.be.an.Array()
+            atoms[0][0].should.be.a.String()
+            this[0].should.be.a.String()
+            hydrogen_atom[0].should.be.a.String()
+            hydrogen_atom[0].should.be.equal("H")
+
+            if (this.isBondedTo(hydrogen_atom)) {
+                _.remove(this,(_atom_id)=>{
+                    return _atom_id === hydrogen_atom.atomId()
+                })
+            }
         }
     })
     Object.defineProperty(Array.prototype, 'removeHydrogenOnOxygenBond', {

@@ -1672,7 +1672,8 @@ return result === false? false:[
         ]
     }
 
-    bronstedLowryAcidBaseReactionReverse() {
+    bronstedLowryAcidBaseReactionReverse(original_proton_target_index) {
+
         Typecheck(
             {name:"this.container_substrate", value:this.container_substrate, type:"array"},
             {name:"this.container_reagent", value:this.container_reagent, type:"string"},
@@ -1691,16 +1692,20 @@ return result === false? false:[
 
         // Find at one point in the molecule proton was added (acid donates a proton)
         // Added to oxygen to create a water group?
-        const water_oxygen_index = this.container_substrate[0][1].waterOxygenIndex()
-        if (water_oxygen_index !== false) {
-            const oxygen_hydrogen = this.container_substrate[0][1][water_oxygen_index].hydrogens(this.container_substrate[0][1])[0]
-            this.container_substrate[0][1][water_oxygen_index].removeHydrogenOnOxygenBond(oxygen_hydrogen, this.container_substrate[0][1])
-            this.container_substrate[0][1][water_oxygen_index][4] = ""
-            const oxygen_hydrogen_index = this.container_substrate[0][1].getAtomIndexById(oxygen_hydrogen.atomId())
-            this.container_substrate[0][1].removeAtom(oxygen_hydrogen, oxygen_hydrogen_index)
-        } else {
-            throw new Error("Could not find point at which a proton was added.")
+        if (original_proton_target_index === undefined || original_proton_target_index === false) {
+            original_proton_target_index = this.container_substrate[0][1].waterOxygenIndex()
+            if (original_proton_target_index === false) {
+                original_proton_target_index = this.container_substrate[0][1].carbonylOxygenIndex()
+            }
         }
+
+        const hydrogen = this.container_substrate[0][1][original_proton_target_index].hydrogens(this.container_substrate[0][1])[0]
+        this.container_substrate[0][1][original_proton_target_index].removeHydrogen(hydrogen, this.container_substrate[0][1])
+        this.container_substrate[0][1][original_proton_target_index][4] = ""
+        const hydrogen_index = this.container_substrate[0][1].getAtomIndexById(hydrogen.atomId())
+        this.container_substrate[0][1].removeAtom(hydrogen, hydrogen_index)
+
+        this.setChargesOnSubstrate()
 
         return [
             this.container_substrate,
@@ -2482,6 +2487,32 @@ return result === false? false:[
     }
 
     protonateOxygenOnDoubleBondReverse(carbonyl_oxygen_index,  DEBUG) {
+
+        throw new Error("Not used. Use bronstedLowryAcidBaseReactionReverse() instead.")
+        Typecheck(
+            {name:"DEBUG", value:DEBUG, type:"boolean"},
+            {name:"carbonyl_oxygen_index", value:carbonyl_oxygen_index, type:"number"},
+            {name:"this.container_substrate", value:this.container_substrate, type:"array"},
+            {name:"this.reactions", value:this.reactions, type:"array"},
+            {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
+            {name:"this.horizontalFn", value:this.horizontalFn, type:"function"},
+            {name:"this.commands", value:this.commands, type:"array"},
+            {name:"this.command_index", value:this.command_index, type:"number"},
+            {name:"nitrogen_index", value:this.nitrogen_index, type:"number"},
+            {name:"carbon_index", value:this.carbon_index, type:"number"},
+            {name:"this.renderCallback", value:this.renderCallback, type:"function"},
+            {name:"this.rule", value:this.rule, type:"string"},
+            {name:"this.stateMoleculeAI", value:this.stateMoleculeAI, type:"object"}
+        )
+        const protationAI = new ProtonationAI(_.cloneDeep(this))
+        const result = protationAI.protonateOxygenOnDoubleBondReverse(carbonyl_oxygen_index, DEBUG)
+
+        return result ===  false? false:[
+            this.container_substrate,
+            this.container_reagent
+        ]
+    }
+    protonateOxygenOnDoubleBondReverse_old(carbonyl_oxygen_index,  DEBUG) {
 
         Typecheck(
             {name:"DEBUG", value:DEBUG, type:"boolean"},
