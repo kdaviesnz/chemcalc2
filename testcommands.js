@@ -23,6 +23,12 @@ if (false) {
     console.log(VMolecule([bronsted_reverse, 1]).compressed())
     process.error()
 }
+if (false) {
+    const lewis_acid_base_reaction = MoleculeFactory("[Al-](Cl)(Cl)(Cl)[O+](C)(C)" )
+    console.log(VMolecule([lewis_acid_base_reaction,1]).compressed())
+    process.error()
+}
+// [Al-](Cl)(Cl)(Cl)O(C)(C)
 
 //const bronsted_reverse = MoleculeFactory("CC=[OH1+]")
 //console.log(VMolecule([bronsted_reverse,1]).compressed())
