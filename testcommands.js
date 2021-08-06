@@ -18,6 +18,11 @@ const Reaction = require('./Components/State/Reaction')
 
 let reaction =null
 let stateMoleculeAI = null
+if (false) {
+    const bronsted_reverse = MoleculeFactory("[NH4]")
+    console.log(VMolecule([bronsted_reverse, 1]).compressed())
+    process.error()
+}
 
 //const bronsted_reverse = MoleculeFactory("CC=[OH1+]")
 //console.log(VMolecule([bronsted_reverse,1]).compressed())
@@ -163,7 +168,7 @@ client.connect(err => {
     db.collection("synthesis_testing").find({}).toArray((err, reactions) => {
         reactions.map(
             (reaction_test, i) => {
-                console.log("Testing " + reaction_test.reaction +"() " + reaction_test.starting_substrate)
+                console.log("Testing " + reaction_test.reaction +"()")
                 let reagent_container = null
                 if (reaction_test.starting_reagent === "A" || reaction_test.starting_reagent === "CB" || reaction_test.starting_reagent === "") {
                     reagent_container = reaction_test.starting_reagent
