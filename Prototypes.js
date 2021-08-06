@@ -72,29 +72,53 @@ const Set = require('./Models/Set')
 const Prototypes = () => {
     Object.defineProperty(Array.prototype, 'removeAtomsById', {
         value: function(atoms) {
+
             // "this" is an array of atoms that we are going to remove the atoms from
             Typecheck(
                 {name:"atoms", value:atoms, type:"array"},
             )
+
             if (atoms === undefined || atoms=== null) {
-                throw new Error("Atoms are  undefined or null")
+                throw new Error("Atoms are undefined or null")
+            }
+
+            if(atoms.length === 0) {
+                throw new Error("No atoms to remove.")
+            }
+
+            atoms[0][0].should.be.a.String()
+
+            if(this.length === 0) {
+                throw new Error("Molecule has no atoms.")
             }
 
             const molecule_atoms_ids = this.map((molecule_atom)=>{
                 return molecule_atom.atomId()
             })
 
-            const atoms_ids = this.map((atom)=>{
+            if(this.length === 0) {
+                throw new Error("Atoms have been removed from the molecule.")
+            }
+
+            const atoms_ids = atoms.map((atom)=>{
                 return atom.atomId()
             })
 
+            if(this.length === 0) {
+                throw new Error("Atoms have been removed from the molecule.")
+            }
+
             // Remove atom from molecule
-            _.remove(this, (a, i) => {
-                return _.findIndex(molecule_atoms_ids, (molecule_atoms_id)=>{
-                    return a.atomId() === molecule_atoms_id
+            _.remove(this, (molecule_atom, i) => {
+                return _.findIndex(atoms_ids, (atom_id)=>{
+                    return molecule_atom.atomId() === atom_id
                 }) !== -1
             })
-            return this
+
+            if(this.length === 0) {
+                throw new Error("Molecule is now empty.")
+            }
+
         }
     })
     Object.defineProperty(Array.prototype, 'carbocationIndex', {

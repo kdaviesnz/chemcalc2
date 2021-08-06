@@ -1724,7 +1724,6 @@ return result === false? false:[
             {name:"this.rule", value:this.rule, type:"string"}
         )
 
-
         // acid atom is the target of the arrow (substrate)
         // base atom is the start of the arrow  (reagent)
         acid_atom_index.should.be.a.Number()
@@ -1740,17 +1739,59 @@ return result === false? false:[
         // Break the bond between the base atom and the acid atom
         this.container_substrate[0][1][acid_atom_index].removeSingleBond(this.container_substrate[0][1][base_atom_index])
 
+        const atoms_to_add_to_reagent = _.uniqWith(base_atom_branches.reduce((carry, branch)=>{
+            branch.map((atom)=>{
+                carry.addAtom(atom)
+            })
+            return carry
+        }, []), (a,b)=>{
+            return a.atomId() === b.atomId()
+        })
+       // console.log(atoms_to_add_to_reagent)
+
         // Reagent consists of base atom plus child atoms of base atom
-        //console.log(this.container_substrate[0][1])
         this.container_reagent = [MoleculeFactory(""),1]
-        this.container_reagent[0][1] = [this.container_substrate[0][1][base_atom_index], ...base_atom_branches]
+        this.container_reagent[0][1] = [this.container_substrate[0][1][base_atom_index], ...atoms_to_add_to_reagent]
+        //console.log(this.container_reagent[0][1])
+        //process.error()
 
-        // @todo hydrogens not being added to branches
-        console.log(this.container_reagent[0][1])
-        process.error()
+        // Handle hydrogens
+        _.cloneDeep(this.container_reagent[0][1]).map((reagent_atom)=>{
+            // Get hydrogens from reagent atom (note: we use substrate as we have not yet added the hydrogens from the substrate to the reagent)
+            const hydrogens = reagent_atom.hydrogens(this.container_substrate[0][1])
+            // For each hydrogen add it to the reagent and remove it from the substrate.
+            // As we are using the same ids the hydrogen is already bonded to reagent atom.
+            hydrogens.map((hydrogen)=>{
+                this.container_reagent[0][1].addAtom(hydrogen)
+                const hydrogen_index = this.container_substrate[0][1].getAtomIndexById(hydrogen.atomId())
+                this.container_substrate[0][1].removeAtom(hydrogen, hydrogen_index)
+            })
+        })
 
-        // Remove atoms from substrate
+
+
+        // Check carbons
+        this.container_substrate[0][1].map((atom)=> {
+            if (atom[0] === "C" && _.cloneDeep(atom).splice(Constants().electron_index).length ===4 && atom[4] !== "") {
+                atom[4] = ""
+            }
+            return atom
+        })
+
+//        console.log(this.container_substrate[0][1])
+
+
+        // Remove the reagent atoms from substrate
         this.container_substrate[0][1].removeAtomsById(this.container_reagent[0][1])
+
+        this.setChargesOnReagent()
+        this.setChargesOnSubstrate()
+
+       // console.log(this.container_reagent[0][1])
+       // console.log(VMolecule(this.container_reagent).compressed())
+       // console.log(VMolecule(this.container_reagent).canonicalSMILES())
+       // process.error()
+
 
         return [
             this.container_substrate,
@@ -2809,7 +2850,6 @@ return result === false? false:[
     addProtonToHydroxylGroupReverse() {
 
        // console.log(VMolecule(this.container_substrate).compressed())
-
         const oxygen_index = this.container_substrate[0][1].waterOxygenIndex()
 
         if (oxygen_index === -1) {
