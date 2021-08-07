@@ -155,9 +155,18 @@ const PeriodicTable = {
         "electrons_per_shell": "2-8-18-32-18-2",
         "state_of_matter":"liquid",
         "subcategory":"post-transition metal"
+    },
+
+    "P": {
+        "group":15,
+        "column":"VA",
+        "atomic_number":15,
+        "name":"phosphorous",
+        "atomic_weight":30.973761,
+        "electrons_per_shell": "2-8-5",
+        "state_of_matter":"solid",
+        "subcategory":"non metal"
     }
-
-
 
 
 

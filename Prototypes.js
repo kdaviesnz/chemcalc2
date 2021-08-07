@@ -1837,6 +1837,23 @@ const Prototypes = () => {
             })
         }
     })
+    Object.defineProperty(Array.prototype, 'removeAtomById', {
+        value: function(atom) {
+
+            Typecheck(
+                {name:"atom", value:atom, type:"array"},
+                {name:"First atom", value:this[0], type:"array"}
+            )
+
+            if (atom === undefined || atom === null) {
+                throw new Error("Atom is undefined or null")
+            }
+
+            const atom_index = this.getAtomIndexById(atom.atomId())
+            this.removeAtom(atom, atom_index)
+
+        }
+    })
     Object.defineProperty(Array.prototype, 'removeAtom', {
         value: function(atom, atom_index) {
 

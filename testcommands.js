@@ -18,6 +18,20 @@ const Reaction = require('./Components/State/Reaction')
 
 let reaction =null
 let stateMoleculeAI = null
+
+if (false) {
+    // carbon_to_add_iodine_to_index
+    const iodinisationReverse = MoleculeFactory("CC(C(C)NC)[I]" )
+    console.log(VMolecule([iodinisationReverse,1]).compressed())
+    process.error()
+}
+if (false) {
+    // carbon_to_add_iodine_to_index
+    const consumptionOfIodineByPhosphorousReverse = MoleculeFactory("CCC(C)NC" )
+    console.log(VMolecule([consumptionOfIodineByPhosphorousReverse,1]).compressed())
+    process.error()
+}
+
 if (false) {
     const bronsted_reverse = MoleculeFactory("[NH4]")
     console.log(VMolecule([bronsted_reverse, 1]).compressed())
@@ -197,8 +211,14 @@ client.connect(err => {
                         throw new Error("Finishing substrate is incorrect - expected " + reaction_test.finishing_substrate + " but got " + VMolecule(result[0]).canonicalSMILES())
                     }
                     VMolecule(result[0]).canonicalSMILES().should.be.equal(reaction_test.finishing_substrate)
-                    if (typeof result[1] !=="string" && result[1] !== null) {
-                        VMolecule(result[1]).canonicalSMILES().should.be.equal(reaction_test.finishing_reagent)
+                    if (typeof result[1] !== "string" && result[1] !== null) {
+                        if (typeof reaction_test.finishing_reagent === "object") {
+                            _.isEqual(reaction_test.finishing_reagent, result[1].map((r)=>{
+                                return VMolecule(r).canonicalSMILES()
+                            })).should.be.true()
+                        } else {
+                            VMolecule(result[1]).canonicalSMILES().should.be.equal(reaction_test.finishing_reagent)
+                        }
                     } else {
                         result[1].should.be.equal(reaction_test.finishing_reagent)
                     }

@@ -1585,7 +1585,7 @@ return result === false? false:[
             this.container_reagent.should.be.an.Array()
         }
 
-        return this.dehydrateReverse(DEBUG)
+        return this.dehydrateReverse()
     }
 
     hydrateReverse(oxygen_atom_index, DEBUG) {
@@ -1713,6 +1713,86 @@ return result === false? false:[
         ]
     }
 
+    hydroxylOxygenIodinisationReverse(iodine_index, carbon_attached_to_iodine_index) {
+
+        Typecheck(
+            {name:"iodine_index", value:iodine_index, type:"number"},
+            {name:"carbon_attached_to_iodine_index", value:carbon_attached_to_iodine_index, type:"number"},
+            {name:"this.container_substrate", value:this.container_substrate, type:"array"},
+            {name:"this.container_reagent", value:this.container_reagent, type:"string"},
+            {name:"this.reactions", value:this.reactions, type:"array"},
+            {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
+            {name:"this.horizontalFn", value:this.horizontalFn, type:"function"},
+            {name:"this.commands", value:this.commands, type:"array"},
+            {name:"this.command_index", value:this.command_index, type:"number"},
+            {name:"this.renderCallback", value:this.renderCallback, type:"function"},
+            {name:"this.rule", value:this.rule, type:"string"}
+        )
+
+        // Protonate hydroxyl oxygen -> dehydrate -> bond I to the carbon
+        // Reversed: Break iodine - carbon bond -> hydrate carbon -> deprotonate oxygen
+        const iodine = this.container_substrate[0][1][iodine_index]
+        const carbon = this.container_substrate[0][1][carbon_attached_to_iodine_index]
+        iodine.removeSingleBond(carbon)
+        this.dehydrateReverse(carbon_attached_to_iodine_index)
+        const hydroxyl_oxygen_index = carbon.indexedBonds(this.container_substrate[0][1]).filter((b)=>{
+            return b.atom[0] === "O"
+        })[0].atom_index
+        if(this.container_substrate[0][1][hydroxyl_oxygen_index] === undefined) {
+            throw new Error("Could not get hydroxyl oxygen index")
+        }
+        const oxygen_hydrogen = this.container_substrate[0][1][hydroxyl_oxygen_index].hydrogens(this.container_substrate[0][1])[0]
+        this.container_substrate[0][1][hydroxyl_oxygen_index].removeSingleBond(oxygen_hydrogen)
+        this.setChargesOnSubstrate()
+
+        this.container_substrate[0][1].removeAtomById(iodine)
+        this.container_substrate[0][1].removeAtomById(oxygen_hydrogen)
+
+        return [
+            this.container_substrate,
+            [MoleculeFactory("I"), 1]
+        ]
+    }
+
+    consumptionOfIodineByPhosphorousReverse(carbon_to_add_iodine_to_index) {
+
+        Typecheck(
+            {name:"carbon_to_add_iodine_to_index", value:carbon_to_add_iodine_to_index, type:"number"},
+            {name:"this.container_substrate", value:this.container_substrate, type:"array"},
+            {name:"this.container_reagent", value:this.container_reagent, type:"string"},
+            {name:"this.reactions", value:this.reactions, type:"array"},
+            {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
+            {name:"this.horizontalFn", value:this.horizontalFn, type:"function"},
+            {name:"this.commands", value:this.commands, type:"array"},
+            {name:"this.command_index", value:this.command_index, type:"number"},
+            {name:"this.renderCallback", value:this.renderCallback, type:"function"},
+            {name:"this.rule", value:this.rule, type:"string"}
+        )
+
+        // Remove hydrogen from carbon
+        const carbon_hydrogen = this.container_substrate[0][1][carbon_to_add_iodine_to_index].hydrogens(this.container_substrate[0][1])[0]
+        this.container_substrate[0][1][carbon_to_add_iodine_to_index].removeHydrogenOnCarbonBond(carbon_hydrogen, this.container_substrate[0][1])
+
+
+        // Add iodine to carbon
+        const iodine = AtomFactory("I","")
+        this.container_substrate[0][1][carbon_to_add_iodine_to_index].bondAtomToAtom(iodine, this.container_substrate[0][1])
+        this.container_substrate[0][1].addAtom(iodine)
+
+        this.container_substrate[0][1].removeAtomById(carbon_hydrogen)
+
+//        console.log(VMolecule(this.container_substrate).compressed())
+  //      console.log(VMolecule(this.container_substrate).canonicalSMILES())
+    //    process.error()
+
+        return [
+            this.container_substrate,
+            [[MoleculeFactory("I"),1], [MoleculeFactory("P"),1]]
+        ]
+
+
+    }
+
     lewisAcidBaseReactionReverse(base_atom_index, acid_atom_index) {
 
       //  console.log(VMolecule(this.container_substrate).compressed())
@@ -1805,9 +1885,8 @@ return result === false? false:[
 
     }
 
-    dehydrateReverse(DEBUG) {
+    dehydrateReverse(carbocation_index) {
         Typecheck(
-            {name:"DEBUG", value:DEBUG, type:"boolean"},
             {name:"this.container_substrate", value:this.container_substrate, type:"array"},
             {name:"this.reactions", value:this.reactions, type:"array"},
             {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
@@ -1824,7 +1903,9 @@ return result === false? false:[
             this.container_reagent.should.be.an.Array()
         }
 
-        const carbocation_index = this.container_substrate[0][1].carbocationIndex()
+        if (carbocation_index === undefined || carbocation_index === false) {
+            carbocation_index = this.container_substrate[0][1].carbocationIndex()
+        }
         this.container_substrate[0][1][carbocation_index][0].should.be.equal("C")
         const water = MoleculeFactory("O")
         const water_oxygen_index = water[1].waterOxygenIndex()

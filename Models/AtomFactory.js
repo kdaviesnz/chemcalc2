@@ -65,6 +65,10 @@ const AtomFactory = (atomicSymbol, charge, index) => {
         ]
     } else {
 
+        if (PeriodicTable[atomicSymbol] === undefined) {
+            throw new Error("Could not find atom " + atomicSymbol + " in periodic table.")
+        }
+
         const electrons_per_shell = PeriodicTable[atomicSymbol].electrons_per_shell.split("-")
         const atom_id = uniqid().substr(uniqid().length-3,3)
          atom = [
