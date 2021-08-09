@@ -19,6 +19,18 @@ const Reaction = require('./Components/State/Reaction')
 let reaction =null
 let stateMoleculeAI = null
 
+if (true) {
+    // carbon_to_add_iodine_to_index
+    const amineAkylationReverse = MoleculeFactory("CCC(C)N" )
+    console.log(VMolecule([amineAkylationReverse,1]).compressed())
+    process.error()
+}
+if (false) {
+    // carbon_to_add_iodine_to_index
+    const eschweilerClark = MoleculeFactory("CCC(C)NC" )
+    console.log(VMolecule([eschweilerClark,1]).compressed())
+    process.error()
+}
 if (false) {
     // carbon_to_add_iodine_to_index
     const iodinisationReverse = MoleculeFactory("CC(C(C)NC)[I]" )

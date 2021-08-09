@@ -1793,6 +1793,113 @@ return result === false? false:[
 
     }
 
+    eschweilerClarkReactionReverse(nitrogen_atom_index) {
+
+        Typecheck(
+            {name:"nitrogen_atom_index", value:this.nitrogen_atom_index, type:"number"},
+            {name:"this.container_substrate", value:this.container_substrate, type:"array"},
+            {name:"this.container_reagent", value:this.container_reagent, type:"string"},
+            {name:"this.reactions", value:this.reactions, type:"array"},
+            {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
+            {name:"this.horizontalFn", value:this.horizontalFn, type:"function"},
+            {name:"this.commands", value:this.commands, type:"array"},
+            {name:"this.command_index", value:this.command_index, type:"number"},
+            {name:"this.renderCallback", value:this.renderCallback, type:"function"},
+            {name:"this.rule", value:this.rule, type:"string"}
+        )
+
+
+        /*
+        @see https://www.name-reaction.com/eschweiler-clarke-reaction
+        Formic acid is deprotonated by formaldehyde (base) to form to form conjugate base of formic acid and conjugate acid of formaldehyde.
+        Carbon atom on conjugate acid of formaldehyde (lewis acid) is attacked by nitrogen atom on primary of seconday amine molecule (lewis base), breaking the double oxygen-carbon bond on the conjugate acid of formaldehydethe
+        Nitrogen atom on amine-formalydehyde ion molecule is deprotonated by the conjugate base of formic acid forming formic acid which is in turn deprotonated by the  amine-formalydehyde ion molecule.
+        Water group leaves the  amine-formalydehyde molecule resulting in the nitrogen forming a double bond and becoming positively charged.
+        Formic acid is deprotated by the nitrogen resulting in carbon dioxide.
+        Amine-formaldehyde molecule is deprontated by conjugate base of formic acid resulting in tertiary amine.
+         */
+
+        /*
+        Synthesis
+        Check that this.container_substrate[0][1][nitrogen_atom_index] has no hydrogen bonds (we have a tertiary amine) and at least one tertiary carbon.
+        Replace tertiary carbon with hydrogen.
+         */
+        if (this.container_substrate[0][1][nitrogen_atom_index] === undefined) {
+            throw new Error("Nitrogen atom is undefined.")
+        }
+
+        if (this.container_substrate[0][1][nitrogen_atom_index][0] !== "N") {
+            throw new Error("Nitrogen atom is not a nitrogen.")
+        }
+
+        const tertiary_carbon_bonds = this.container_substrate[0][1][nitrogen_atom_index].indexedBonds(this.container_substrate[0][1]).filter((b)=>{
+            return b.atom[0] === "C" && b.atom.hydrogens(this.container_substrate[0][1]).length === 3
+        })
+
+        if (tertiary_carbon_bonds.length === 0) {
+            throw new Error("Nitrogen atom does not have a tertiary carbon")
+        }
+
+        this.container_substrate[0][1][nitrogen_atom_index].removeSingleBond(tertiary_carbon_bonds[0].atom)
+        const hydrogen = AtomFactory("H","")
+        this.container_substrate[0][1][nitrogen_atom_index].bondAtomToAtom(hydrogen, this.container_substrate[0][1])
+        this.container_substrate[0][1].removeAtomById(tertiary_carbon_bonds[0].atom)
+        this.container_substrate[0][1].addAtom(hydrogen)
+
+        return [
+            this.container_substrate,
+            [
+                [MoleculeFactory("C=O"),1], // formaldehyde
+                [MoleculeFactory("C(=O)O"),1] // formic acid
+            ]
+        ]
+
+    }
+
+    amineAkylationReverse(nitrogen_atom_index) {
+
+        // @see https://www.masterorganicchemistry.com/2017/05/26/alkylation-of-amines-is-generally-a-crap-reaction/
+        Typecheck(
+            {name:"nitrogen_atom_index", value:this.nitrogen_atom_index, type:"number"},
+            {name:"this.container_substrate", value:this.container_substrate, type:"array"},
+            {name:"this.container_reagent", value:this.container_reagent, type:"string"},
+            {name:"this.reactions", value:this.reactions, type:"array"},
+            {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
+            {name:"this.horizontalFn", value:this.horizontalFn, type:"function"},
+            {name:"this.commands", value:this.commands, type:"array"},
+            {name:"this.command_index", value:this.command_index, type:"number"},
+            {name:"this.renderCallback", value:this.renderCallback, type:"function"},
+            {name:"this.rule", value:this.rule, type:"string"}
+        )
+
+        if (this.container_substrate[0][1][nitrogen_atom_index] === undefined) {
+            throw new Error("Nitrogen atom is undefined.")
+        }
+
+        if (this.container_substrate[0][1][nitrogen_atom_index][0] !== "N") {
+            throw new Error("Nitrogen atom is not a nitrogen.")
+        }
+
+        if (this.container_substrate[0][1][nitrogen_atom_index][4] !== "") {
+            throw new Error("Nitrogen atom should have neutral charge.")
+        }
+
+        const acid_atom_index = this.container_substrate[0][1][nitrogen_atom_index].indexedBonds(this.container_substrate[0][1])[0].atom_index
+        const acid_atom_id = this.container_substrate[0][1][nitrogen_atom_index].indexedBonds(this.container_substrate[0][1])[0].atom.atomId()
+        this.lewisAcidBaseReactionReverse(nitrogen_atom_index, acid_atom_index) // base atom, acid atom
+
+        // Add "R" to reagent
+        const r = AtomFactory("R", "")
+        const reagent_acid_atom_index = this.container_reagent[0][1].getAtomIndexById(acid_atom_id)
+        this.container_reagent[0][1][reagent_acid_atom_index].bondAtomToAtom(r, this.container_reagent[0][1])
+
+        return [
+            this.container_substrate,
+            this.container_reagent
+        ]
+
+    }
+
     lewisAcidBaseReactionReverse(base_atom_index, acid_atom_index) {
 
       //  console.log(VMolecule(this.container_substrate).compressed())
