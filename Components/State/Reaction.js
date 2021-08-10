@@ -1856,6 +1856,74 @@ return result === false? false:[
 
     }
 
+    alphaSubstitutionReactionReverse(carbonyl_oxygen_index, carbonyl_carbon_index, alpha_carbonyl_carbon_index) {
+
+        /*
+        Mechanism
+        Depronate alpha carbonyl carbon.
+        Change double bond between carbonyl oxygen and carbonyl carbon to a single bond.
+        Change single bond between carbonyl carbon and alpha carbonyl carbon to a double bond.
+        Bond one of the bonds on the double bond between carbonyl carbon and alpha carbonyl carbon to reagent (reagent must be an electrophile
+        (lewis acid).
+        Note: When we create the bond between one of the bonds on the double bond between carbonyl carbon and alpha carbonyl carbon to reagent we
+        change the carbonyl carbon to a carbocation, giving it a positive charge. Carbocations are formed through heterolytic bond cleavage by the loss of a leaving group
+        and by addition of π electrons of a π bond to an electrophile. One of the two carbon atoms involved in the π bond will have three bonds instead of four and bears
+        the positive charge. ref https://socratic.org/questions/how-is-carbocation-formed
+
+        Reversal
+        Get branch that is attached to alpha carbonyl carbon and break bond between alpha carbonyl carbon and first atom of the branch.
+        Set branch as the reagent.
+        Protonate alpha carbonyl carbon.
+         */
+
+        Typecheck(
+            {name:"carbonyl_oxygen_index", value:this.carbonyl_oxygen_index, type:"number"},
+            {name:"carbonyl_carbon_index", value:this.carbonyl_carbon_index, type:"number"},
+            {name:"alpha_carbonyl_carbon_index", value:this.alpha_carbonyl_carbon_index, type:"number"},
+            {name:"this.container_substrate", value:this.container_substrate, type:"array"},
+            {name:"this.container_reagent", value:this.container_reagent, type:"string"},
+            {name:"this.reactions", value:this.reactions, type:"array"},
+            {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
+            {name:"this.horizontalFn", value:this.horizontalFn, type:"function"},
+            {name:"this.commands", value:this.commands, type:"array"},
+            {name:"this.command_index", value:this.command_index, type:"number"},
+            {name:"this.renderCallback", value:this.renderCallback, type:"function"},
+            {name:"this.rule", value:this.rule, type:"string"}
+        )
+
+        // @todo what if there are two alpha carbons with branches?
+        if (this.container_substrate[0][1][carbonyl_oxygen_index] === undefined) {
+            throw new Error("Carbonyl oxygen atom is undefined.")
+        }
+
+        if (this.container_substrate[0][1][carbonyl_oxygen_index][0] !== "O") {
+            throw new Error("Carbonyl oxygen atom is not an oxygen.")
+        }
+
+        if (this.container_substrate[0][1][carbonyl_carbon_index] === undefined) {
+            throw new Error("Carbonyl carbon atom is undefined.")
+        }
+
+        if (this.container_substrate[0][1][carbonyl_carbon_index][0] !== "C") {
+            throw new Error("Carbonyl carbon atom is not a carbon.")
+        }
+
+        if (this.container_substrate[0][1][alpha_carbonyl_carbon_index] === undefined) {
+            throw new Error("Alpha carbonyl carbon atom is undefined.")
+        }
+
+        if (this.container_substrate[0][1][alpha_carbonyl_carbon_index][0] !== "C") {
+            throw new Error("Alpha carbonyl carbon atom is not a carbon.")
+        }
+
+        const branches = this.container_substrate[0][1][alpha_carbonyl_carbon_index].branches(this.container_substrate[0][1])
+
+        console.log(branches)
+
+        process.error()
+
+    }
+
     amineAkylationReverse(nitrogen_atom_index) {
 
         // @see https://www.masterorganicchemistry.com/2017/05/26/alkylation-of-amines-is-generally-a-crap-reaction/
@@ -1884,14 +1952,27 @@ return result === false? false:[
             throw new Error("Nitrogen atom should have neutral charge.")
         }
 
+        // In an amine aklylation reaction, a halide is substituted for a tertiary amine.
+        // Verify that the nitrogen is a tertiary amine (ie has no hydrogens)
+        if (this.container_substrate[0][1][nitrogen_atom_index].hydrogens(this.container_substrate[0][1]).length > 0) {
+            throw new Error("Substrate is not a tertiary amine")
+        }
+        // Replace nitrogen with halide
         const acid_atom_index = this.container_substrate[0][1][nitrogen_atom_index].indexedBonds(this.container_substrate[0][1])[0].atom_index
         const acid_atom_id = this.container_substrate[0][1][nitrogen_atom_index].indexedBonds(this.container_substrate[0][1])[0].atom.atomId()
         this.lewisAcidBaseReactionReverse(nitrogen_atom_index, acid_atom_index) // base atom, acid atom
 
-        // Add "R" to reagent
-        const r = AtomFactory("R", "")
-        const reagent_acid_atom_index = this.container_reagent[0][1].getAtomIndexById(acid_atom_id)
-        this.container_reagent[0][1][reagent_acid_atom_index].bondAtomToAtom(r, this.container_reagent[0][1])
+        // Add "X" to reagent
+        const x = AtomFactory("X", "")
+            //        console.log(VMolecule(this.container_reagent).compressed())
+        //console.log(VMolecule(this.container_substrate).compressed())
+        const substrate_acid_atom_index = this.container_substrate[0][1].getAtomIndexById(acid_atom_id)
+        //console.log(substrate_acid_atom_index)
+        this.container_substrate[0][1][substrate_acid_atom_index].bondAtomToAtom(x, this.container_substrate[0][1])
+        this.container_substrate[0][1].addAtom(x)
+
+        this.setChargesOnSubstrate()
+        this.setChargesOnReagent()
 
         return [
             this.container_substrate,
@@ -1969,6 +2050,10 @@ return result === false? false:[
             }
             return atom
         })
+
+        // Check nitrogens
+        // @todo workaround
+        this.stateMoleculeAI.neutraliseMolecule(this.container_reagent)
 
 //        console.log(this.container_substrate[0][1])
 

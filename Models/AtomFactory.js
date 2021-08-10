@@ -55,13 +55,16 @@ const AtomFactory = (atomicSymbol, charge, index) => {
 
      let atom = null
 
-    if (atomicSymbol === "R") {
+    const atom_id = uniqid().substr(uniqid().length-3,3)
+
+    if (atomicSymbol === "R" || atomicSymbol === "X"  ) {
         atom = [
             atomicSymbol,
             -1,
             -1,
             -1,
-            ""
+            "",
+            atom_id
         ]
     } else {
 
@@ -70,7 +73,7 @@ const AtomFactory = (atomicSymbol, charge, index) => {
         }
 
         const electrons_per_shell = PeriodicTable[atomicSymbol].electrons_per_shell.split("-")
-        const atom_id = uniqid().substr(uniqid().length-3,3)
+
          atom = [
             atomicSymbol,
             PeriodicTable[atomicSymbol].atomic_number * 1,
