@@ -1856,11 +1856,15 @@ return result === false? false:[
 
     }
 
-    alphaSubstitutionReactionReverse(carbonyl_oxygen_index, carbonyl_carbon_index, alpha_carbonyl_carbon_index) {
+    alphaSubstitutionReactionReverse(carbonyl_oxygen_index, carbonyl_carbon_index, alpha_carbonyl_carbon_index, beta_atom_index) {
 
+       // console.log(VMolecule(this.container_substrate).canonicalSMILES())
+       // console.log(this.container_substrate[0][1][beta_atom_index])
+       // process.error()
         /*
+        @see https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Map%3A_Organic_Chemistry_(McMurry)/18%3A_Ethers_and_Epoxides_Thiols_and_Sulfides/18.10%3A_Interchapter-_A_Preview_of_Carbonyl_Chemistry
         Mechanism
-        Depronate alpha carbonyl carbon.
+        Deprotonate alpha carbonyl carbon.
         Change double bond between carbonyl oxygen and carbonyl carbon to a single bond.
         Change single bond between carbonyl carbon and alpha carbonyl carbon to a double bond.
         Bond one of the bonds on the double bond between carbonyl carbon and alpha carbonyl carbon to reagent (reagent must be an electrophile
@@ -1871,9 +1875,96 @@ return result === false? false:[
         the positive charge. ref https://socratic.org/questions/how-is-carbocation-formed
 
         Reversal
-        Get branch that is attached to alpha carbonyl carbon and break bond between alpha carbonyl carbon and first atom of the branch.
-        Set branch as the reagent.
+        Break bond between alpha carbonyl carbon and beta atom.
+        Set beta atom + child atoms of beta atom as reagent.
         Protonate alpha carbonyl carbon.
+         */
+
+        Typecheck(
+            {name:"carbonyl_oxygen_index", value:this.carbonyl_oxygen_index, type:"number"},
+            {name:"carbonyl_carbon_index", value:this.carbonyl_carbon_index, type:"number"},
+            {name:"beta_atom_index", value:this.beta_atom_index, type:"number"},
+            {name:"alpha_carbonyl_carbon_index", value:this.alpha_carbonyl_carbon_index, type:"number"},
+            {name:"this.container_substrate", value:this.container_substrate, type:"array"},
+            {name:"this.container_reagent", value:this.container_reagent, type:"string"},
+            {name:"this.reactions", value:this.reactions, type:"array"},
+            {name:"this.horizontalCallback", value:this.horizontalCallback, type:"function"},
+            {name:"this.horizontalFn", value:this.horizontalFn, type:"function"},
+            {name:"this.commands", value:this.commands, type:"array"},
+            {name:"this.command_index", value:this.command_index, type:"number"},
+            {name:"this.renderCallback", value:this.renderCallback, type:"function"},
+            {name:"this.rule", value:this.rule, type:"string"}
+        )
+
+        // @todo what if there are two alpha carbons with branches?
+        if (this.container_substrate[0][1][carbonyl_oxygen_index] === undefined) {
+            throw new Error("Carbonyl oxygen atom is undefined.")
+        }
+
+        if (this.container_substrate[0][1][carbonyl_oxygen_index][0] !== "O") {
+            throw new Error("Carbonyl oxygen atom is not an oxygen.")
+        }
+
+        if (this.container_substrate[0][1][carbonyl_carbon_index] === undefined) {
+            throw new Error("Carbonyl carbon atom is undefined.")
+        }
+
+        if (this.container_substrate[0][1][carbonyl_carbon_index][0] !== "C") {
+            throw new Error("Carbonyl carbon atom is not a carbon.")
+        }
+
+        if (this.container_substrate[0][1][alpha_carbonyl_carbon_index] === undefined) {
+            throw new Error("Alpha carbonyl carbon atom is undefined.")
+        }
+
+        if (this.container_substrate[0][1][alpha_carbonyl_carbon_index][0] !== "C") {
+            throw new Error("Alpha carbonyl carbon atom is not a carbon.")
+        }
+
+        if (this.container_substrate[0][1][beta_atom_index] === undefined) {
+            console.log(beta_atom_index)
+            console.log(VMolecule(this.container_substrate).compressed())
+            throw new Error("Beta atom is undefined.")
+        }
+
+        const alpha_carbonyl_carbon_id = this.container_substrate[0][1][alpha_carbonyl_carbon_index].atomId()
+
+        this.lewisAcidBaseReactionReverse(beta_atom_index, alpha_carbonyl_carbon_index, false)
+
+        const alpha_carbon_index = this.container_substrate[0][1].getAtomIndexById(alpha_carbonyl_carbon_id)
+        if (undefined === this.container_substrate[0][1][alpha_carbon_index]) {
+            throw new Error("Could not find alpha index")
+        }
+
+        const hydrogen = AtomFactory("H","")
+        this.container_substrate[0][1][alpha_carbon_index].bondAtomToAtom(hydrogen, this.container_substrate[0][1] )
+        this.container_substrate[0][1].addAtom(hydrogen)
+        this.setChargesOnSubstrate()
+//        const branches = this.container_substrate[0][1][alpha_carbonyl_carbon_index].branches(this.container_substrate[0][1])
+
+        //console.log(VMolecule(this.container_reagent).compressed())
+        //console.log("Substrate")
+        //console.log(VMolecule(this.container_substrate).compressed())
+        //console.log(alpha_carbonyl_carbon_index)
+        //console.log(beta_atom_index)
+  //      console.log(branches)
+
+        //process.error()
+        return [
+            this.container_substrate,
+            this.container_reagent
+        ]
+
+    }
+
+    anhydrideSubstitutionReactionReverse(carbonyl_oxygen_index, carbonyl_carbon_index, alpha_carbonyl_carbon_index) {
+
+        //console.log(carbonyl_oxygen_index)
+        //console.log(carbonyl_carbon_index)
+        //console.log(alpha_carbonyl_carbon_index)
+        //process.error()
+        /*
+        @see https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Map%3A_Organic_Chemistry_(McMurry)/21%3A_Carboxylic_Acid_Derivatives-_Nucleophilic_Acyl_Substitution_Reactions/21.02%3A_Nucleophilic_Acyl_Substitution_Reactions
          */
 
         Typecheck(
@@ -1916,16 +2007,48 @@ return result === false? false:[
             throw new Error("Alpha carbonyl carbon atom is not a carbon.")
         }
 
-        const branches = this.container_substrate[0][1][alpha_carbonyl_carbon_index].branches(this.container_substrate[0][1])
 
-        console.log(branches)
+        const alpha_carbonyl_carbon_id = this.container_substrate[0][1][alpha_carbonyl_carbon_index].atomId()
+
+        // reagent atom index , substrate atom index
+        this.lewisAcidBaseReactionReverse(alpha_carbonyl_carbon_index, carbonyl_carbon_index,  true)
+
+        console.log("Reagent")
+        console.log(VMolecule(this.container_reagent).compressed())
+        console.log("Substrate")
+        console.log(VMolecule(this.container_substrate).compressed())
+
 
         process.error()
 
-    }
+        const alpha_carbon_index = this.container_substrate[0][1].getAtomIndexById(alpha_carbonyl_carbon_id)
+        if (undefined === this.container_substrate[0][1][alpha_carbon_index]) {
+            throw new Error("Could not find alpha index")
+        }
 
+        const hydrogen = AtomFactory("H","")
+        this.container_substrate[0][1][alpha_carbon_index].bondAtomToAtom(hydrogen, this.container_substrate[0][1] )
+        this.container_substrate[0][1].addAtom(hydrogen)
+        this.setChargesOnSubstrate()
+//        const branches = this.container_substrate[0][1][alpha_carbonyl_carbon_index].branches(this.container_substrate[0][1])
+
+        //console.log(VMolecule(this.container_reagent).compressed())
+        //console.log("Substrate")
+        //console.log(VMolecule(this.container_substrate).compressed())
+        //console.log(alpha_carbonyl_carbon_index)
+        //console.log(beta_atom_index)
+        //      console.log(branches)
+
+        //process.error()
+        return [
+            this.container_substrate,
+            this.container_reagent
+        ]
+
+    }
     amineAkylationReverse(nitrogen_atom_index) {
 
+        //@ todo needs revision
         // @see https://www.masterorganicchemistry.com/2017/05/26/alkylation-of-amines-is-generally-a-crap-reaction/
         Typecheck(
             {name:"nitrogen_atom_index", value:this.nitrogen_atom_index, type:"number"},
@@ -1960,7 +2083,7 @@ return result === false? false:[
         // Replace nitrogen with halide
         const acid_atom_index = this.container_substrate[0][1][nitrogen_atom_index].indexedBonds(this.container_substrate[0][1])[0].atom_index
         const acid_atom_id = this.container_substrate[0][1][nitrogen_atom_index].indexedBonds(this.container_substrate[0][1])[0].atom.atomId()
-        this.lewisAcidBaseReactionReverse(nitrogen_atom_index, acid_atom_index) // base atom, acid atom
+        this.lewisAcidBaseReactionReverse(nitrogen_atom_index, acid_atom_index, false) // base atom, acid atom
 
         // Add "X" to reagent
         const x = AtomFactory("X", "")
@@ -1981,11 +2104,13 @@ return result === false? false:[
 
     }
 
-    lewisAcidBaseReactionReverse(base_atom_index, acid_atom_index) {
+    lewisAcidBaseReactionReverse(base_atom_index, acid_atom_index, DEBUG) {
 
       //  console.log(VMolecule(this.container_substrate).compressed())
 
         Typecheck(
+            {name:"base_atom_index", value:base_atom_index, type:"number"},
+            {name:"base_atom_index", value:base_atom_index, type:"number"},
             {name:"this.container_substrate", value:this.container_substrate, type:"array"},
             {name:"this.container_reagent", value:this.container_reagent, type:"string"},
             {name:"this.reactions", value:this.reactions, type:"array"},
@@ -1996,6 +2121,31 @@ return result === false? false:[
             {name:"this.renderCallback", value:this.renderCallback, type:"function"},
             {name:"this.rule", value:this.rule, type:"string"}
         )
+
+        if(DEBUG === true) {
+            const chains = VMolecule(this.container_substrate).chains()
+            if (chains.length === 0) {
+                throw new Error("No chains found that have both the carbon and the carbocation")
+            }
+            const trunk = chains.sort((a, b) => {
+                return b.length - a.length
+            }).pop()
+
+            console.log(chains)
+            process.error()
+        }
+
+        if (this.container_substrate[0][1][base_atom_index] === undefined) {
+            console.log(VMolecule(this.container_substrate).compressed())
+            console.log(base_atom_index)
+            throw new Error("Could not find base atom in substrate")
+        }
+
+        if (this.container_substrate[0][1][acid_atom_index] === undefined) {
+            console.log(VMolecule(this.container_substrate).compressed())
+            console.log(acid_atom_index)
+            throw new Error("Could not find acid atom in substrate")
+        }
 
         // acid atom is the target of the arrow (substrate)
         // base atom is the start of the arrow  (reagent)
@@ -2009,6 +2159,20 @@ return result === false? false:[
             }).length === 0
         })
 
+        if (DEBUG) {
+            console.log("Base atom branches")
+            console.log(base_atom_branches)
+        }
+
+        if (DEBUG) {
+            console.log("Substrate before splitting")
+            console.log(VMolecule(this.container_substrate).compressed())
+            console.log("base atom index:")
+            console.log(base_atom_index)
+            console.log("acid atom index:")
+            console.log(acid_atom_index)
+        }
+
         // Break the bond between the base atom and the acid atom
         this.container_substrate[0][1][acid_atom_index].removeSingleBond(this.container_substrate[0][1][base_atom_index])
 
@@ -2020,13 +2184,15 @@ return result === false? false:[
         }, []), (a,b)=>{
             return a.atomId() === b.atomId()
         })
-       // console.log(atoms_to_add_to_reagent)
+
+        if (DEBUG) {
+            console.log("Atoms to add to reagent")
+            console.log(atoms_to_add_to_reagent)
+        }
 
         // Reagent consists of base atom plus child atoms of base atom
         this.container_reagent = [MoleculeFactory(""),1]
         this.container_reagent[0][1] = [this.container_substrate[0][1][base_atom_index], ...atoms_to_add_to_reagent]
-        //console.log(this.container_reagent[0][1])
-        //process.error()
 
         // Handle hydrogens
         _.cloneDeep(this.container_reagent[0][1]).map((reagent_atom)=>{
@@ -2041,7 +2207,31 @@ return result === false? false:[
             })
         })
 
+        this.setChargesOnReagent()
+        this.setChargesOnSubstrate()
+        if (DEBUG) {
+            console.log("reagent after splitting")
+            console.log(VMolecule(this.container_reagent).compressed())
+            console.log("substrate after splitting")
+            console.log(VMolecule(this.container_substrate).compressed())
+            //process.error()
+        }
 
+        if (DEBUG) {
+            console.log("reagent")
+            console.log(VMolecule(this.container_reagent).compressed())
+        }
+
+        // Remove the reagent atoms from substrate
+        this.container_substrate[0][1].removeAtomsById(this.container_reagent[0][1])
+
+        if (DEBUG) {
+            console.log("substrate")
+            console.log(VMolecule(this.container_substrate).compressed())
+        }
+
+        this.setChargesOnReagent()
+        this.setChargesOnSubstrate()
 
         // Check carbons
         this.container_substrate[0][1].map((atom)=> {
@@ -2058,11 +2248,7 @@ return result === false? false:[
 //        console.log(this.container_substrate[0][1])
 
 
-        // Remove the reagent atoms from substrate
-        this.container_substrate[0][1].removeAtomsById(this.container_reagent[0][1])
 
-        this.setChargesOnReagent()
-        this.setChargesOnSubstrate()
 
        // console.log(this.container_reagent[0][1])
        // console.log(VMolecule(this.container_reagent).compressed())

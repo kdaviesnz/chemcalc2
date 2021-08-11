@@ -103,6 +103,10 @@ class ChargesAI {
 
         if (container_molecule[0][1][index][0] !== "C" && b > 0 && container_molecule[0][1][index][4] !=="-") {
             console.log("atom")
+            console.log(single_bonds.length)
+            console.log(a_obj.hydrogens(_.cloneDeep(container_molecule[0][1])).length)
+                // 3 - (0 + 2)
+            console.log(b)
             console.log(container_molecule[0][1][index])
             throw new Error("Atom should have a negative charge")
         }
@@ -213,6 +217,8 @@ class ChargesAI {
             return bond.atom[0] !== "H"
         })
 
+        const bond_count = a_obj.hydrogens(this.reaction.container_reagent[0][1]).length + a_obj.bondCount(this.reaction.container_reagent[0][1])
+
         if (this.reaction.container_reagent[0][1][index][0] === "Br") {
             // b = (7 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
             b = 1 - (a_obj.hydrogens(this.reaction.container_reagent[0][1]).length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
@@ -220,12 +226,14 @@ class ChargesAI {
 
         if (this.reaction.container_reagent[0][1][index][0] === "O") {
              //b = (6 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
-            b = 2 - (a_obj.hydrogens(this.reaction.container_reagent[0][1]).length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
+           // b = 2 - (a_obj.hydrogens(this.reaction.container_reagent[0][1]).length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
+            b = bond_count - 2
         }
 
         if (this.reaction.container_reagent[0][1][index][0] === "N") {
              //b = (5 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
-            b = 3 - (a_obj.hydrogens(this.reaction.container_reagent[0][1]).length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
+           // b = 3 - (a_obj.hydrogens(this.reaction.container_reagent[0][1]).length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
+            b = bond_count - 3
         }
 
         if (this.reaction.container_reagent[0][1][index][0] === "C") {
@@ -233,7 +241,12 @@ class ChargesAI {
             // Formal Charge= (No.of valence electrons in unbonded state - no of lone pair electrons ) - (no. of bond pair electrons/2)
             // In this case the charge comes out to be (4-0) - (6/2) =+1
              //b = (4 - a_obj.freeElectrons().length) - (a_obj.indexedBonds("").length + (a_obj.indexedDoubleBonds("").length*2) + (a_obj.indexedTripleBonds("").length*3))
-            b = 4 - (a_obj.hydrogens(this.reaction.container_reagent[0][1]).length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
+         //   b = 4 - (a_obj.hydrogens(this.reaction.container_reagent[0][1]).length + single_bonds.length + double_bonds.length*2 + triple_bonds.length*3)
+            if (this.reaction.container_reagent[0][1][index][4] === "+") {
+                b = 1 // carbocation
+            } else {
+                b = bond_count - 4
+            }
         }
 
         this.reaction.container_reagent[0][1][index][4] = b  > 0? "+": (b < 0?"-":"")

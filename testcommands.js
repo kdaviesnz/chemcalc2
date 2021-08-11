@@ -20,6 +20,17 @@ let reaction =null
 let stateMoleculeAI = null
 
 if (false) {
+    const anhydrideSubstitutionReactionReverse = MoleculeFactory("CC(=O)CC(N)C" )
+    console.log(VMolecule([anhydrideSubstitutionReactionReverse,1]).compressed())
+    process.error()
+}
+// alphaSubstitutionReactionReverse(carbonyl_oxygen_index, carbonyl_carbon_index, alpha_carbonyl_carbon_index, beta_atom_index)
+if (false) {
+    const alphaSubstitutionReactionReverse = MoleculeFactory("CC(=O)C(C)(C)N" )
+    console.log(VMolecule([alphaSubstitutionReactionReverse,1]).compressed())
+    process.error()
+}
+if (false) {
     const amineAkylationReverse = MoleculeFactory("CCC(C)N(C)(C)" )
     console.log(VMolecule([amineAkylationReverse,1]).compressed())
     process.error()

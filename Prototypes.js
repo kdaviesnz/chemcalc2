@@ -410,7 +410,7 @@ const Prototypes = () => {
         }
     })
     Object.defineProperty(Array.prototype, 'branch', {
-        value: function(branch, atoms) { // recursive function
+        value: function(branch, atoms, DEBUG) { // recursive function
             // "this" is an atom
             Typecheck(
                 {name:"branch", value:branch, type:"array"},
@@ -434,9 +434,6 @@ const Prototypes = () => {
             if (bonds.filter((bond)=>{
                 return bond.atom[0] !== "H"
             }).length < 2) { // count parent atom
-                //console.log(branch)
-                //console.log("ending branch")
-                //process.error()
                 return branch
             }
 
@@ -446,7 +443,7 @@ const Prototypes = () => {
                 //console.log(bond.atom)
                 //console.log(atoms.getAtomIndexById(bond.atom.atomId()))
                 //process.error()
-                bond.atom.branch(branch, atoms.slice(atoms.getAtomIndexById(bond.atom.atomId())))
+                bond.atom.branch(branch, atoms.slice(atoms.getAtomIndexById(bond.atom.atomId())), DEBUG)
             })
         }
     })
@@ -456,6 +453,9 @@ const Prototypes = () => {
             Typecheck(
                 {name:"atoms", value:atoms, type:"array"}
             )
+            if (atoms === undefined) {
+                throw new Error("Atoms are undefined")
+            }
             // Slice atoms starting from "this" index
            // const parent_atom_index = this.getAtomIndexById(this.atomId())
            // const child_atoms = atoms.slice(parent_atom_index +1)
@@ -464,7 +464,16 @@ const Prototypes = () => {
             //console.log(bonds)
             //process.error()
             bonds.map((bond)=>{
-                const branch = bond.atom.branch([bond.atom], atoms.slice(atoms.getAtomIndexById(this.atomId()))) // array of bonded atoms
+                if (bond.atom === undefined) {
+                    throw new Error("Bond has no atom")
+                }
+                const branch = bond.atom.branch([bond.atom], atoms.slice(atoms.getAtomIndexById(this.atomId())), true) // array of bonded atoms
+                if (branch === undefined) {
+                    console.log(this.atomId())
+                    console.log(atoms.getAtomIndexById(this.atomId()))
+                    console.log(bonds)
+                    throw new Error("Branch is undefined")
+                }
                 branch.should.be.an.Array()
                 branches.push(branch)
                 //console.log(branches)
