@@ -409,6 +409,92 @@ const Prototypes = () => {
             })
         }
     })
+    Object.defineProperty(Array.prototype, 'addAtomToBranch', {
+        value: function(atom) {
+
+            // "this" is an array of branches
+            Typecheck(
+                {name:"atom", value:atom, type:"array"}
+            )
+            atom[0].should.be.a.String()
+
+            const i = this.length === 0?0:this.length-1
+
+            this[i].push(atom)
+        }
+    })
+    Object.defineProperty(Array.prototype, 'getBonds', {
+        value: function(atoms) {
+            // "this" is an atom
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"}
+            )
+            this[0].should.be.a.String()
+            return [...this.indexedBonds(atoms), ...this.indexedDoubleBonds(atoms), ...this.indexedTripleBonds(atoms)]
+        }
+    })
+    Object.defineProperty(Array.prototype, 'isTerminalAtom', {
+        value: function(atoms) {
+            // "this" is an atom
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"}
+            )
+            this[0].should.be.a.String()
+            const bonds = this.getBonds(atoms)
+            return bonds.length < 2
+        }
+    })
+    Object.defineProperty(Array.prototype, 'isInBranches', {
+        value: function(branches) {
+            // "this" is an atom
+            Typecheck(
+                {name:"branches", value:branches, type:"array"}
+            )
+            this[0].should.be.a.String()
+            throw new Error("@todo Prototype isInBranches()")
+        }
+    })
+    Object.defineProperty(Array.prototype, 'branchesv2', {
+        value: function(branches, atom_index) {
+
+            Typecheck(
+                {name:"branches", value:branches, type:"array"}
+            )
+
+            // "this" is an array of atoms
+            if (this.length>0) {
+                this[0][0].should.be.a.String()
+            }
+
+            const atom = this[atom_index]
+
+            if (atom === undefined) {
+                return branches
+            }
+
+            if (atom_index ===0) {
+                branches.addAtomToBranch(atom)
+            }
+
+            const atoms = this
+            const child_bonds = this.getBonds(atoms).filter((bond)=>{
+                return !bond.atom.isTerminalAtom(atoms) && !bond.atom.isInBranches(branches)
+            })
+
+            if (child_bonds.length === 0) {
+                // Start new branch and process
+                branches.push([])
+
+            } else {
+                // add bond atom to branch
+                branches.addAtomToBranch(child_bonds[0].atom)
+            }
+
+            this.branchesv2(branches, atom_index + 1)
+
+        }
+
+    })
     Object.defineProperty(Array.prototype, 'branch', {
         value: function(branch, atoms, DEBUG) { // recursive function
             // "this" is an atom
