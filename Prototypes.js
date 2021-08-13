@@ -451,7 +451,15 @@ const Prototypes = () => {
                 {name:"branches", value:branches, type:"array"}
             )
             this[0].should.be.a.String()
-            throw new Error("@todo Prototype isInBranches()")
+
+            const atom = this
+
+            return _.findIndex(branches, (branch)=>{
+                return _.findIndex(branch, (atom_from_branch)=>{
+                    return _.isEqual(atom_from_branch, atom)
+                }) !==-1
+            }) !== -1
+
         }
     })
     Object.defineProperty(Array.prototype, 'branchesv2', {
