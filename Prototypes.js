@@ -410,8 +410,7 @@ const Prototypes = () => {
         }
     })
     Object.defineProperty(Array.prototype, 'addAtomToBranch', {
-        value: function(atom) {
-
+        value: function(atom, atom_index) {
             // "this" is an array of branches
             Typecheck(
                 {name:"atom", value:atom, type:"array"}
@@ -463,20 +462,36 @@ const Prototypes = () => {
         }
     })
     Object.defineProperty(Array.prototype, 'branchesv2', {
-        value: function(branches, atom_index) {
+        value: function(branches, atom_index, new_branch) {
+
 
             // "this" is an array of atoms.
-            // C1C2(=O1)C4(C5)N1C7
-            // Round 1: branches[], atom_index=0
+            // C1P2(=O1)C4(C5)N1C7
+            // Round 1: branches[], atom_index=0, new_branch=true
+            // Round 2: branches[[C1, C2]], atom_index= 1, new_branch=false
+            // Round 3: branches[[C1, C2, "O1"]], atom_index=2, new_branch=false
+            // Round 4: branches[[C1, C2, "O1"], [C1, C2]], atom_index=3, new_branch=3
+            // Round 5: branches[[C1, C2, "O1"], [C1, C2, C4, C5]], atom_index=4, new_branch=false
+            // Round 6: branches[[C1, C2, "O1"], [C1, C2, C4, C5], [C1, C2, C4]], atom_index=5, new_branch=true
+            // Round 7: branches[[C1, C2, "O1"], [C1, C2, C4, C5], [C1, C2, C4, N1, C7]], atom_index=6
+            // Round 8: branches[[C1, C2, "O1"], [C1, C2, C4, C5], [C1, C2, C4, N1, C7]],atom_index=7
             Typecheck(
-                {name:"branches", value:branches, type:"array"}
+                {name:"branches", value:branches, type:"array"},
             )
 
             if (this.length>0) {
                 this[0][0].should.be.a.String()
             }
 
-            // Round 1: branches[[], atom_index=0, atom=C1
+            // C1P2(=O1)C4(C5)N1C7
+            // Round 1: branches[[]], atom_index=0, atom=C1, new_branch=true
+            // Round 2: branches[[C1, C2]], atom_index=1, atom=C2, new_branch=false
+            // Round 3: branches[[C1, C2, "O1"]], atom_index=2, atom="=O1", new_branch=false
+            // Round 4: branches[[C1, C2, "O1"], [C1, C2]], atom_index=3, atom=C4, new_branch=true
+            // Round 5: branches[[C1, C2, "O1"], [C1, C2, C4, C5]], atom_index=4, atom=C5
+            // Round 6: branches[[C1, C2, "O1"], [C1, C2, C5], [C1, C2, C4]], atom_index=5, atom=N1
+            // Round 7: branches[[C1, C2, "O1"], [C1, C2, C5], [C1, C2, C4, N1, C7]], atom_index=6, atom=C7
+            // Round 8: branches[[C1, C2, "O1"], [C1, C2, C5], [C1, C2, C4, N1, C7],[C1, C2, C4, N1, C7]],atom_index=7, atom=undefined
             const atom = this[atom_index]
 
             // Round 1: false
@@ -486,36 +501,82 @@ const Prototypes = () => {
             // Round 5: false
             // Round 6: false
             // Round 7: false
+            // Round 8: true
             if (atom === undefined) {
+                // Round 8: branches[[C1, C2, "O1"], [C1, C2, C5], [C1, C2, C4, N1, C7],[C1, C2, C4, N1, C7]],atom_index=7, atom=undefined
                 throw new Error("This is not correct. Should be [[C1, C2, =O1],[C1, C2, C4, C5],[C1, C2, C4, N1, C6]]")
-                // Round 8: branches[[C1, C2, =O1],[C4, C5],[],[]]
+
                 return branches
             }
 
-            if (atom_index ===0) {
+            // Round 1=true
+            // Round 2=false
+            // Round 3=false
+            // Round 4=true
+            // Round 5=false
+            // Round 6=true
+            if (new_branch) {
                 // Round 1: branches[[C1]]
                 branches.addAtomToBranch(atom)
             }
 
+            new_branch=false
+
             const atoms = this
-            const child_bonds = this.getBonds(atoms).filter((bond)=>{
+            // @todo do not include parent bond
+            // @todo bonds must be sorted by atom index
+            const child_bonds = atom.getBonds(atoms).filter((bond)=>{
                 // *****
-                return !bond.atom.isInBranches(branches) && !bond.atom.isTerminalAtom(this)
+                //return !bond.atom.isInBranches(branches) && !bond.atom.isTerminalAtom(this)
+                return bond.atom_index > atom_index
             })
 
-            // C1C2(=O1)C4(C5)N1C7
-            // Round 1: branches[[C1]], child_bonds[C2], atom=C1
+            if (atom_index===2) {
+                console.log("Child bonds for atom " + atom_index)
+                console.log(atoms[atom_index][0])
+                console.log(child_bonds)
+                process.error()
+            }
+
+            // C1P2(=O1)C4(C5)N1C7
+            // Round 1: branches[[C1]], child_bonds[C2], atom=C1, new_branch=false
+            // Round 2: branches[[C1, C2]], child_bonds=["C4","=O1"], atom_index=1, atom=C2, new_branch=false
+            // Round 3: branches[[C1, C2, "O1"]], child_bonds=[], atom_index=2, atom="=O1", new_branch=false
+            // Round 4: branches[[C1, C2, "O1"], [C1, C2, C4]], child_bonds=[C5,N1], atom_index=3, atom=C4, new_branch=false
+            // Round 5: branches[[C1, C2, "O1"], [C1, C2, C4, C5]], child_bonds=[], atom_index=4, atom=C5, new_branch=false
+            // Round 6: branches[[C1, C2, "O1"], [C1, C2, 4, C5], [C1, C2, C4, N1]], child_bonds=[C7], atom_index=5, atom=N1, new_branch=false
+            // Round 7: branches[[C1, C2, "O1"], [C1, C2, C5], [C1, C2, C4, N1, C7]], child_bonds=[],atom_index=6, atom=C7
             if (child_bonds.length === 0) {
                 // Start new branch and process
-                branches.push(branches.length>0?branches[branches.length-1]:branches[0])
+                // Round 3: branches[[C1, C2, "O1"], [C1, C2]], child_bonds=[], atom_index=2, atom="=O1" (correct)
+                // Round 5: branches[[C1, C2, "O1"], [C1, C2, C4, C5], [C1, C2, C4]], child_bonds=[], atom_index=4, atom=C5
+                // Round 7: branches[[C1, C2, "O1"], [C1, C2, C5], [C1, C2, C4, N1, C7],[C1, C2, C4, N1, C7]],atom_index=6, atom=C7
+                new_branch = true
+                branches.push(branches.length>0?branches[branches.length-1]:branches[0]) // @todo do not include the last atom of the branch
             } else {
                 // add bond atom to branch
-                // Round 1: branches[[C1, C2]]
+                // Round 1: branches[[C1, C2]],
+                // Round 2: branches[[C1, C2, "O1"]], atom_index=1, atom=C2
+                // Round 4: branches[[C1, C2, "O1"], [C1, C2, C4, C5]], atom_index=3, atom=C4, new_branch=false
+                // Round 6: branches[[C1, C2, "O1"], [C1, C2, C4, C5], [C1, C2, C4, N1, C7]], atom_index=5, atom=N1
                 branches.addAtomToBranch(child_bonds[0].atom)
             }
 
+
             // C1C2(=O1)C4(C5)N1C7
-            // Round 1: branches[[C1, C2]], atom_index + 1 = 1
+            if (atom_index === 2) {
+                console.log("Branches (atom index " + atom_index+")")
+                console.log(branches)
+                console.log(new_branch)
+                process.error()
+            }
+            // Round 1: branches[[C1, C2]], atom_index + 1 = 1, new_branch=false
+            // Round 2: branches[[C1, C2, "C4"]], atom_index + 1=2, atom=C2, new_branch=false
+            // Round 3: branches[[C1, C2, "O1"], [C1, C2]], atom_index +1 =3, new_branch=true
+            // Round 4: branches[[C1, C2, "O1"], [C1, C2, C4, C5]], atom_index+1=4, new_branch=false
+            // Round 5: branches[[C1, C2, "O1"], [C1, C2, C4, C5], [C1, C2, C4]], atom_index+1=5, new_branch=true
+            // Round 6: branches[[C1, C2, "O1"], [C1, C2, C4, C5], [C1, C2, C4, N1, C7]], atom_index+1=6
+            // Round 7: branches[[C1, C2, "O1"], [C1, C2, C4, C5], [C1, C2, C4, N1, C7],[C1, C2, C4, N1, C7]],atom_index+1=7
             this.branchesv2(branches, atom_index + 1)
 
         }

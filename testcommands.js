@@ -19,6 +19,14 @@ const Reaction = require('./Components/State/Reaction')
 let reaction =null
 let stateMoleculeAI = null
 
+if (true) {
+    const bondsv2 = MoleculeFactory("CP(=O)C(O)NC" )
+    bondsv2[1].filter((atom)=>{
+        return atom[0] !== "H"
+    }).branchesv2([[]], 0, true)
+    process.error()
+}
+
 if (false) {
     const anhydrideSubstitutionReactionReverse = MoleculeFactory("CC(=O)CC(N)C" )
     console.log(VMolecule([anhydrideSubstitutionReactionReverse,1]).compressed())
