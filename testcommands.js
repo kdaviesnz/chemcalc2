@@ -20,7 +20,7 @@ let reaction =null
 let stateMoleculeAI = null
 
 if (true) {
-    const bondsv2 = MoleculeFactory("CP(=O)C(O)NC" )
+    const bondsv2 = MoleculeFactory("CP(=O)Cl(O)NBr" )
     bondsv2[1].filter((atom)=>{
         return atom[0] !== "H"
     }).branchesv2([[]], 0, true)
