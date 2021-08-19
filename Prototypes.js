@@ -468,6 +468,21 @@ const Prototypes = () => {
             return bonds.length < 2
         }
     })
+    Object.defineProperty(Array.prototype, 'branchAlreadyExists', {
+        value: function(branches) {
+            // "this" is an array of atoms
+            Typecheck(
+                {name:"branches", value:branches, type:"array"}
+            )
+
+            const branch = this
+
+            return _.findIndex(branches, (b)=>{
+                return _.isEqual(b, branch)
+            }) !== -1
+
+        }
+    })
     Object.defineProperty(Array.prototype, 'isInBranches', {
         value: function(branches) {
             // "this" is an atom
@@ -489,12 +504,10 @@ const Prototypes = () => {
     Object.defineProperty(Array.prototype, 'branchesv2', {
         value: function(branches, atom_index, new_branch) {
 
-
             // "this" is an array of atoms.
             Typecheck(
                 {name:"branches", value:branches, type:"array"},
             )
-
 
             if (this.length>0) {
                 this[0][0].should.be.a.String()
@@ -505,13 +518,9 @@ const Prototypes = () => {
             if (atom === undefined) {
                 // "CP(=O)Cl(O)NBr"
                 // Round 8: branches[[C1, C2, "O1"], [C1, C2, C5], [C1, C2, C4, N1, C7],[C1, C2, C4, N1, C7]],atom_index=7, atom=undefined
-                if (atom_index===7) {
-                    console.log("branches")
-                    console.log(branches) // [[C1, P2,"=O1","=O1",Br],[C1,P2,"=O1","=O1", Br], [C1,P2,"=O1","=O1", Br]]
-                    process.error()
-                }
-                throw new Error("This is not correct. Should be [[C1, C2, =O1],[C1, C2, C4, C5],[C1, C2, C4, N1, C6]]")
-
+                branches = branches.filter((branch)=>{
+                    return branch[branch.length-1].isTerminalAtom(this)
+                })
                 return branches
             }
 
@@ -531,9 +540,6 @@ const Prototypes = () => {
             }).sort(function (a, b) {
                 return a.atom_index - b.atom_index
             })
-
-
-
 
 
             // Round 1: branches[[C1]], child_bonds[P2], atom=C1, new_branch=false, atom_index=0
@@ -578,7 +584,7 @@ const Prototypes = () => {
             }
             // Round 4: branches[[C1, C2, "O1"], [C1, C2, C4]], child_bonds=[C5,N1], atom_index=3, atom=C4, new_branch=false
             // "CP(=O)Cl(O)NBr"
-            if (atom_index===3000) {
+            if (atom_index===30000) {
                 console.log("branches")
                 console.log(branches) // [[C1, P2, "=O1"],[C1,P2,"=O"]
                 console.log("child_bonds") //["=O1", "N1"]
@@ -604,7 +610,7 @@ const Prototypes = () => {
             }
             // Round 6: branches[[C1, C2, "O1"], [C1, C2, 4, C5], [C1, C2, C4, N1]], child_bonds=[C7], atom_index=5, atom=N1, new_branch=false
             // "CP(=O)Cl(O)NBr"
-            if (atom_index===50000) {
+            if (atom_index===5000) {
                 console.log("branches")
                 console.log(branches) // [[C1, P2, "=O1","=O1],[C1,P2,"=O1", "=O1"], [C1,P2,"=O1", "=O1"]]
                 console.log("child_bonds")
@@ -634,7 +640,11 @@ const Prototypes = () => {
             if (child_bonds.length === 0) {
                 // Start new branch and process
                 new_branch = true
-                branches.push(branches.length>0?branches[branches.length-1]:branches[0]) // @todo do not include the last atom of the branch
+                const branch = branches.length>0?branches[branches.length-1].slice(0, -1):branches[0]
+                if (branch.branchAlreadyExists(branches)){
+                    throw new Error("Branch already exists")
+                }
+                branches.push(branch) // @todo do not include the last atom of the branch
             } else {
                 // add bond atom to branch
                 // Round 1: branches[[C1, C2]],
@@ -654,7 +664,7 @@ const Prototypes = () => {
 
 
 
-            this.branchesv2(branches, atom_index + 1)
+            this.branchesv2(branches, atom_index + 1, new_branch)
 
         }
 

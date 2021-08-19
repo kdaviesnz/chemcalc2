@@ -20,10 +20,14 @@ let reaction =null
 let stateMoleculeAI = null
 
 if (true) {
-    const bondsv2 = MoleculeFactory("CP(=O)Cl(S)NBr")
-    bondsv2[1].filter((atom)=>{
+    const branches = [[]]
+    const m = MoleculeFactory("CP(=O)Cl(S)NBr")
+     m[1].filter((atom)=>{
         return atom[0] !== "H"
-    }).branchesv2([[]], 0, true)
+    }).branchesv2(branches, 0, true)
+    console.log(branches.filter((branch)=>{
+        return branch[branch.length-1].isTerminalAtom(m[1])
+    }))
     process.error()
 }
 
