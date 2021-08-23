@@ -431,6 +431,13 @@ const Prototypes = () => {
                 process.error()
             }
             if (this[i].length > 0 && _.isEqual(this[i][this[i].length-1], atom)) {
+                console.log("Branches")
+                console.log(this)
+                console.log("Last atom on branch")
+                console.log(this[i][this[i].length-1])
+                console.log("atom")
+                console.log(atom)
+                console.log(_.isEqual(this[i][this[i].length-1], atom))
                 throw new Error("Atom has already been added to the branch")
             }
 
@@ -465,6 +472,9 @@ const Prototypes = () => {
             )
             this[0].should.be.a.String()
             const bonds = this.getBonds(atoms)
+           // console.log("isTerminalAtom() Bonds")
+            //console.log(bonds)
+            //console.log(bonds.length)
             return bonds.length < 2
         }
     })
@@ -511,6 +521,13 @@ const Prototypes = () => {
 
             if (this.length>0) {
                 this[0][0].should.be.a.String()
+                // Check for hyrogens
+                const hydrogens = this.filter((atom)=>{
+                    return atom[0] === 'H'
+                })
+                if (hydrogens.length) {
+                    throw new Error("Atoms should not contain any hydrogens")
+                }
             }
 
             const atom = this[atom_index]
@@ -521,6 +538,8 @@ const Prototypes = () => {
                 branches = branches.filter((branch)=>{
                     return branch[branch.length-1].isTerminalAtom(this)
                 })
+                //console.log(branches)
+                //process.error()
                 return branches
             }
 

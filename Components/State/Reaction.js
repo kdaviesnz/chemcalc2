@@ -2008,6 +2008,23 @@ return result === false? false:[
         }
 
 
+        // acid anhydride
+        // RC(=O)OC(=O)R
+        // Reversal: RC(=O)X -> RC(=O)OC(=O)R
+        // Get group bonded to carbonyl carbon and replace with OC(=O)R
+        const carbonyl_carbon_bonds = this.container_substrate[0][1][carbonyl_carbon_index].indexedBonds(this.container_substrate[0][1])
+
+        console.log("carbonyl_carbon_index:")
+        console.log(carbonyl_carbon_index)
+        console.log("Index of atom bonded to carbonyl carbon")
+        console.log(carbonyl_carbon_bonds[carbonyl_carbon_bonds.length-1].atom_index)
+        process.error()
+
+        // reagent atom index , substrate atom index
+        this.lewisAcidBaseReactionReverse(carbonyl_carbon_bonds[carbonyl_carbon_bonds.length-1].atom_index, carbonyl_carbon_index,  true)
+
+
+        process.error()
         const alpha_carbonyl_carbon_id = this.container_substrate[0][1][alpha_carbonyl_carbon_index].atomId()
 
         // reagent atom index , substrate atom index
@@ -2046,6 +2063,7 @@ return result === false? false:[
         ]
 
     }
+
     amineAkylationReverse(nitrogen_atom_index) {
 
         //@ todo needs revision
@@ -2106,7 +2124,9 @@ return result === false? false:[
 
     lewisAcidBaseReactionReverse(base_atom_index, acid_atom_index, DEBUG) {
 
-      //  console.log(VMolecule(this.container_substrate).compressed())
+      //  console.log("lewisAcidBaseReactionReverse:")
+     //   console.log(VMolecule(this.container_substrate).compressed())
+       // console.log(VMolecule(this.container_substrate).canonicalSMILES())
 
         Typecheck(
             {name:"base_atom_index", value:base_atom_index, type:"number"},
@@ -2121,19 +2141,6 @@ return result === false? false:[
             {name:"this.renderCallback", value:this.renderCallback, type:"function"},
             {name:"this.rule", value:this.rule, type:"string"}
         )
-
-        if(DEBUG === true) {
-            const chains = VMolecule(this.container_substrate).chains()
-            if (chains.length === 0) {
-                throw new Error("No chains found that have both the carbon and the carbocation")
-            }
-            const trunk = chains.sort((a, b) => {
-                return b.length - a.length
-            }).pop()
-
-            console.log(chains)
-            process.error()
-        }
 
         if (this.container_substrate[0][1][base_atom_index] === undefined) {
             console.log(VMolecule(this.container_substrate).compressed())
@@ -2153,15 +2160,64 @@ return result === false? false:[
         base_atom_index.should.be.a.Number()
 
         //console.log(this.container_substrate[0][1])
-        const base_atom_branches = this.container_substrate[0][1][base_atom_index].branches(this.container_substrate[0][1]).filter((branch)=>{
+        if (DEBUG) {
+            const branches = [[]]
+            this.container_substrate[0][1].branchesv2(branches, 0, true)
+            console.log("Branches:")
+            console.log(branches)
+            process.error()
+        }
+
+        let branches = [[]]
+        const atoms_no_hydrogens = _.cloneDeep(this.container_substrate[0][1]).filter((atom)=>{
+            return atom[0] !== "H"
+        })
+        atoms_no_hydrogens.branchesv2(branches, 0, true)
+
+        branches = branches.filter((branch)=>{
+            return branch[branch.length-1].isTerminalAtom(atoms_no_hydrogens)
+        })
+        //console.log(branches)
+        //process.error()
+        //this.container_substrate[0][1].branchesv2(branches, 0, true)
+
+        /*
+        const base_atom_branches = branches.filter((branch)=>{
             return branch.filter((atom)=>{
                 return atom.atomId() === this.container_substrate[0][1][acid_atom_index].atomId()
             }).length === 0
         })
+        */
+        const base_atom_branches = branches
+        if (base_atom_branches.length === 0) {
+            throw new Error("No base atom branches")
+        }
+
+        console.log("Substrate before splitting")
+        console.log(VMolecule(this.container_substrate).compressed())
+        console.log("base atom index:")
+        console.log(base_atom_index)
+        console.log("acid atom index:")
+        console.log(acid_atom_index)
+        console.log("base atom id:")
+        console.log(this.container_substrate[0][1][base_atom_index].atomId())
+        console.log("acid atom id:")
+        console.log(this.container_substrate[0][1][acid_atom_index].atomId())
+        console.log("Base atom branches:")
+        console.log(base_atom_branches)
+        process.error()
+        /*
+        const base_atom_branches = this.container_substrate[0][1][base_atom_index].branchesv2(this.container_substrate[0][1]).filter((branch)=>{
+            return branch.filter((atom)=>{
+                return atom.atomId() === this.container_substrate[0][1][acid_atom_index].atomId()
+            }).length === 0
+        })
+         */
 
         if (DEBUG) {
             console.log("Base atom branches")
             console.log(base_atom_branches)
+            process.error()
         }
 
         if (DEBUG) {

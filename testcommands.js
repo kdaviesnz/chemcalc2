@@ -19,7 +19,7 @@ const Reaction = require('./Components/State/Reaction')
 let reaction =null
 let stateMoleculeAI = null
 
-if (true) {
+if (false) {
     const branches = [[]]
     const m = MoleculeFactory("CP(=O)Cl(S)NBr")
      m[1].filter((atom)=>{
@@ -34,7 +34,7 @@ if (true) {
 if (false) {
     const anhydrideSubstitutionReactionReverse = MoleculeFactory("CC(=O)CC(N)C" )
     console.log(VMolecule([anhydrideSubstitutionReactionReverse,1]).compressed())
-    process.error()
+   // process.error()
 }
 // alphaSubstitutionReactionReverse(carbonyl_oxygen_index, carbonyl_carbon_index, alpha_carbonyl_carbon_index, beta_atom_index)
 if (false) {
