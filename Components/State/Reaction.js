@@ -2181,14 +2181,107 @@ return result === false? false:[
         //process.error()
         //this.container_substrate[0][1].branchesv2(branches, 0, true)
 
+
         /*
         const base_atom_branches = branches.filter((branch)=>{
             return branch.filter((atom)=>{
-                return atom.atomId() === this.container_substrate[0][1][acid_atom_index].atomId()
+                return atom.atomId() === this.container_substrate[0][1][base_atom_index].atomId()
             }).length === 0
         })
-        */
-        const base_atom_branches = branches
+         */
+
+        // Get branches that contain the base atom (this will become the first atom of the reagent) then
+        // change each branch remove all atoms that are before the base atom.
+        const base_atom_branches = _.cloneDeep(branches).filter((branch)=>{
+            return branch.filter((atom)=>{
+                return atom.atomId() === this.container_substrate[0][1][base_atom_index].atomId()
+            }).length > 0
+        }).map((branch)=>{
+            return _.takeRightWhile(
+                branch,
+                (atom)=>{
+                    return atom.atomId() !== this.container_substrate[0][1][base_atom_index].atomId()
+                })
+            }).map((b)=>{
+            b.unshift(this.container_substrate[0][1][base_atom_index])
+            return b
+        }).filter((b)=>{
+            const i = b.length === 0? 0: b.length-1
+            return b[i].isTerminalAtom(atoms_no_hydrogens) === true
+        })
+
+
+        console.log("Base atom branches:")
+        console.log(base_atom_branches)
+
+
+        /*
+        const base_atom_branches = _.takeRightWhile(
+            _.cloneDeep(branches).filter((branch)=>{
+                return branch.filter((atom)=>{
+                    return atom.atomId() === this.container_substrate[0][1][base_atom_index].atomId()
+                }).length > 0
+            }),
+            (branch)=>{
+                console.log(atom)
+                process.error()
+                return atom.atomId() !== this.container_substrate[0][1][base_atom_index].atomId()
+        }).map((branch)=>{
+            branch.unshift(this.container_substrate[0][1][base_atom_index])
+            return branch
+        })
+         */
+
+        // Get branches that contain the acid atom (this will become the last atom of the substrate) then
+        // for each branch remove all atoms that are after the acid atom.
+        const acid_atom_branches = _.cloneDeep(branches).filter((branch)=>{
+            return branch.filter((atom)=>{
+                return atom.atomId() === this.container_substrate[0][1][acid_atom_index].atomId()
+            }).length > 0
+        }).map((branch)=>{
+            return _.takeWhile(
+                branch,
+                (atom)=>{
+                    return atom.atomId() !== this.container_substrate[0][1][base_atom_index].atomId()
+                }
+            )
+        }).map((b)=>{
+            return b
+        }).filter((b)=>{
+            const i = b.length === 0? 0: b.length-1
+            return b[i].isTerminalAtom(atoms_no_hydrogens) === true
+        })
+
+        /*
+        const acid_atom_branches = _.takeWhile(
+            _.cloneDeep(branches).filter((branch)=>{
+                return branch.filter((atom)=>{
+                    return atom.atomId() === this.container_substrate[0][1][acid_atom_index].atomId()
+                }).length > 0
+            }),
+            (atom)=>{
+                return atom.atomId() !== this.container_substrate[0][1][acid_atom_index].atomId()
+            }).map((branch)=>{
+            branch.push(this.container_substrate[0][1][acid_atom_index])
+            return branch
+        })
+         */
+
+
+
+        console.log("acid atom branches:")
+        console.log(acid_atom_branches)
+
+        // @todo
+        // set this.container_substrate[0][1] to []
+        // set this.container_reagent[0][1] to []
+        // for each acid atom branch add atom to this.container_substrate[0][1] making sure not to add the same atom twice
+        // for each base atom branch add atom to this.container_reagent[0][1] making sure not to add the same atom twice
+        // Re-add hydrogens to substrate
+        // Re-add hydrogens to reagent
+
+        process.error()
+
         if (base_atom_branches.length === 0) {
             throw new Error("No base atom branches")
         }
@@ -2245,6 +2338,8 @@ return result === false? false:[
             console.log("Atoms to add to reagent")
             console.log(atoms_to_add_to_reagent)
         }
+
+
 
         // Reagent consists of base atom plus child atoms of base atom
         this.container_reagent = [MoleculeFactory(""),1]
