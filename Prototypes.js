@@ -69,6 +69,7 @@ const Set = require('./Models/Set')
 // removeHydrogenOnOxygenBond(hydrogen_atom, atoms)
 // childAtoms(atoms)
 // removeAtomsById()
+// removeHydrogens()
 const Prototypes = () => {
     Object.defineProperty(Array.prototype, 'removeAtomsById', {
         value: function(atoms) {
@@ -2123,6 +2124,28 @@ const Prototypes = () => {
                 )
                 return atom.atomId()
             })
+        }
+    })
+    Object.defineProperty(Array.prototype, 'removeHydrogens', {
+        value: function(atoms) {
+
+            // "this" is an atom
+            Typecheck(
+                {name:"atoms", value:atoms, type:"array"},
+            )
+
+            if (atoms === undefined || atoms === null) {
+                throw new Error("Atoms are undefined or null")
+            }
+
+            this[0].should.be.a.String()
+            atoms[0][0].should.be.a.String()
+
+            const hydrogens = this.hydrogens(atoms)
+            if (hydrogens.length > 0) {
+                throw new Error("@todo: Finish removeHydrogens()")
+            }
+
         }
     })
     Object.defineProperty(Array.prototype, 'removeAtomById', {

@@ -2124,6 +2124,10 @@ return result === false? false:[
 
     lewisAcidBaseReactionReverse(base_atom_index, acid_atom_index, DEBUG) {
 
+
+        console.log("lewisAcidBaseReactionReverse()")
+        console.log(VMolecule(this.container_substrate).compressed())
+
       //  console.log("lewisAcidBaseReactionReverse:")
      //   console.log(VMolecule(this.container_substrate).compressed())
        // console.log(VMolecule(this.container_substrate).canonicalSMILES())
@@ -2172,6 +2176,19 @@ return result === false? false:[
         const atoms_no_hydrogens = _.cloneDeep(this.container_substrate[0][1]).filter((atom)=>{
             return atom[0] !== "H"
         })
+
+        // Workaround
+        // @todo create a atom id -> number of hydrogens map to save the number of hydrogens for each atom
+        const atom_hydrogens = {}
+        _.cloneDeep(this.container_substrate[0][1]).filter((atom)=>{
+            if (atom[0]!=="H") {
+                atom_hydrogens[atom.atomId()] = atom.hydrogens(this.container_substrate[0][1]).length
+            }
+        })
+        //console.log("atom_hydrogens")
+        //console.log(atom_hydrogens)
+        //process.error()
+
         atoms_no_hydrogens.branchesv2(branches, 0, true)
 
         branches = branches.filter((branch)=>{
@@ -2209,10 +2226,6 @@ return result === false? false:[
             const i = b.length === 0? 0: b.length-1
             return b[i].isTerminalAtom(atoms_no_hydrogens) === true
         })
-
-
-        console.log("Base atom branches:")
-        console.log(base_atom_branches)
 
 
         /*
@@ -2267,144 +2280,71 @@ return result === false? false:[
         })
          */
 
-
-
-        console.log("acid atom branches:")
-        console.log(acid_atom_branches)
-
-        // @todo
         // set this.container_substrate[0][1] to []
         // set this.container_reagent[0][1] to []
         // for each acid atom branch add atom to this.container_substrate[0][1] making sure not to add the same atom twice
         // for each base atom branch add atom to this.container_reagent[0][1] making sure not to add the same atom twice
         // Re-add hydrogens to substrate
         // Re-add hydrogens to reagent
-
-        process.error()
-
-        if (base_atom_branches.length === 0) {
-            throw new Error("No base atom branches")
+        if (typeof this.container_reagent === "string" || this.container_reagent === undefined) {
+            this.container_reagent = [
+                [
+                    12345,
+                    []
+                ]
+            ],
+            1
         }
-
-        console.log("Substrate before splitting")
-        console.log(VMolecule(this.container_substrate).compressed())
-        console.log("base atom index:")
-        console.log(base_atom_index)
-        console.log("acid atom index:")
-        console.log(acid_atom_index)
-        console.log("base atom id:")
-        console.log(this.container_substrate[0][1][base_atom_index].atomId())
-        console.log("acid atom id:")
-        console.log(this.container_substrate[0][1][acid_atom_index].atomId())
-        console.log("Base atom branches:")
-        console.log(base_atom_branches)
-        process.error()
-        /*
-        const base_atom_branches = this.container_substrate[0][1][base_atom_index].branchesv2(this.container_substrate[0][1]).filter((branch)=>{
-            return branch.filter((atom)=>{
-                return atom.atomId() === this.container_substrate[0][1][acid_atom_index].atomId()
-            }).length === 0
-        })
-         */
-
-        if (DEBUG) {
-            console.log("Base atom branches")
-            console.log(base_atom_branches)
-            process.error()
-        }
-
-        if (DEBUG) {
-            console.log("Substrate before splitting")
-            console.log(VMolecule(this.container_substrate).compressed())
-            console.log("base atom index:")
-            console.log(base_atom_index)
-            console.log("acid atom index:")
-            console.log(acid_atom_index)
-        }
-
-        // Break the bond between the base atom and the acid atom
-        this.container_substrate[0][1][acid_atom_index].removeSingleBond(this.container_substrate[0][1][base_atom_index])
-
-        const atoms_to_add_to_reagent = _.uniqWith(base_atom_branches.reduce((carry, branch)=>{
+        const substrate_atoms = []
+        const reagent_atoms = []
+        const acid_branches_atom_ids = []
+        acid_atom_branches.map((branch)=>{
             branch.map((atom)=>{
-                carry.addAtom(atom)
-            })
-            return carry
-        }, []), (a,b)=>{
-            return a.atomId() === b.atomId()
-        })
-
-        if (DEBUG) {
-            console.log("Atoms to add to reagent")
-            console.log(atoms_to_add_to_reagent)
-        }
-
-
-
-        // Reagent consists of base atom plus child atoms of base atom
-        this.container_reagent = [MoleculeFactory(""),1]
-        this.container_reagent[0][1] = [this.container_substrate[0][1][base_atom_index], ...atoms_to_add_to_reagent]
-
-        // Handle hydrogens
-        _.cloneDeep(this.container_reagent[0][1]).map((reagent_atom)=>{
-            // Get hydrogens from reagent atom (note: we use substrate as we have not yet added the hydrogens from the substrate to the reagent)
-            const hydrogens = reagent_atom.hydrogens(this.container_substrate[0][1])
-            // For each hydrogen add it to the reagent and remove it from the substrate.
-            // As we are using the same ids the hydrogen is already bonded to reagent atom.
-            hydrogens.map((hydrogen)=>{
-                this.container_reagent[0][1].addAtom(hydrogen)
-                const hydrogen_index = this.container_substrate[0][1].getAtomIndexById(hydrogen.atomId())
-                this.container_substrate[0][1].removeAtom(hydrogen, hydrogen_index)
+                if (acid_branches_atom_ids.indexOf(atom.atomId()) === -1) {
+                    substrate_atoms.push(atom)
+                    acid_branches_atom_ids.push(atom.atomId())
+                }
             })
         })
 
-        this.setChargesOnReagent()
-        this.setChargesOnSubstrate()
-        if (DEBUG) {
-            console.log("reagent after splitting")
-            console.log(VMolecule(this.container_reagent).compressed())
-            console.log("substrate after splitting")
-            console.log(VMolecule(this.container_substrate).compressed())
-            //process.error()
-        }
+        const base_branches_atom_ids = []
+        base_atom_branches.map((branch)=>{
+            branch.map((atom)=>{
+                if (base_branches_atom_ids.indexOf(atom.atomId()) === -1) {
+                    reagent_atoms.push(atom)
+                    base_branches_atom_ids.push(atom.atomId())
+                }
+            })
+        })
 
-        if (DEBUG) {
-            console.log("reagent")
-            console.log(VMolecule(this.container_reagent).compressed())
-        }
-
-        // Remove the reagent atoms from substrate
-        this.container_substrate[0][1].removeAtomsById(this.container_reagent[0][1])
-
-        if (DEBUG) {
-            console.log("substrate")
-            console.log(VMolecule(this.container_substrate).compressed())
-        }
-
-        this.setChargesOnReagent()
-        this.setChargesOnSubstrate()
-
-        // Check carbons
-        this.container_substrate[0][1].map((atom)=> {
-            if (atom[0] === "C" && _.cloneDeep(atom).splice(Constants().electron_index).length ===4 && atom[4] !== "") {
-                atom[4] = ""
+        // Workaround
+        // @todo create a atom id -> number of hydrogens map to save the number of hydrogens for each atom
+        //const atom_hydrogens = {}
+        const substrate_atoms_with_hydrogens = substrate_atoms.reduce((carry, atom, index, arr)=>{
+            if (atom[0] !=="H") {
+                carry.push(atom)
+                const number_of_hydrogens_to_add = atom_hydrogens[atom.atomId()]
+                atom.removeHydrogens(substrate_atoms) // At this point we have removed the reagent atoms
+                // re-add hydrogens
+                for (let i=0;i<number_of_hydrogens_to_add;i++) {
+                    //console.log("Adding hydrogen")
+                    const hydrogen = AtomFactory("H", "")
+                    atom.bondAtomToAtom(hydrogen, substrate_atoms)
+                    carry.push(hydrogen)
+                }
             }
-            return atom
-        })
-
-        // Check nitrogens
-        // @todo workaround
-        this.stateMoleculeAI.neutraliseMolecule(this.container_reagent)
-
-//        console.log(this.container_substrate[0][1])
+            return carry
+        }, [])
 
 
+        this.container_substrate[0][1] = substrate_atoms_with_hydrogens
+        //console.log(this.container_substrate[0][1])
+        this.setChargesOnSubstrate()
+        console.log(VMolecule(this.container_substrate).compressed())
 
+        // console.log(VMolecule(this.container_reagent).compressed())
+        process.error()
 
-       // console.log(this.container_reagent[0][1])
-       // console.log(VMolecule(this.container_reagent).compressed())
-       // console.log(VMolecule(this.container_reagent).canonicalSMILES())
-       // process.error()
 
 
         return [
