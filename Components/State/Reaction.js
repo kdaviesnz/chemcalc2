@@ -919,7 +919,11 @@ return result === false? false:[
 
     setReagentAI() {
         if (this.container_reagent !== null && this.container_reagent !== undefined && typeof this.container_reagent !== "string") {
-            this.container_reagent.length.should.be.equal(2) // molecule, units
+            if (this.container_reagent.length !==2) {
+                console.log("Error: reagent")
+                console.log(this.container_reagent)
+                throw new Error("Reagent should consist of molecule and number of units")
+            }
             this.container_reagent[0].length.should.be.equal(2) // pKa, atoms
             this.container_reagent[0][0].should.be.an.Number() // pka
             this.container_reagent[0][1].should.be.an.Array()
@@ -2126,7 +2130,7 @@ return result === false? false:[
 
 
         console.log("lewisAcidBaseReactionReverse()")
-        console.log(VMolecule(this.container_substrate).compressed())
+//        console.log(VMolecule(this.container_substrate).compressed())
 
       //  console.log("lewisAcidBaseReactionReverse:")
      //   console.log(VMolecule(this.container_substrate).compressed())
@@ -2185,6 +2189,7 @@ return result === false? false:[
                 atom_hydrogens[atom.atomId()] = atom.hydrogens(this.container_substrate[0][1]).length
             }
         })
+
         //console.log("atom_hydrogens")
         //console.log(atom_hydrogens)
         //process.error()
@@ -2291,9 +2296,9 @@ return result === false? false:[
                 [
                     12345,
                     []
-                ]
-            ],
-            1
+                ],
+                1
+            ]
         }
         const substrate_atoms = []
         const reagent_atoms = []
@@ -2336,14 +2341,35 @@ return result === false? false:[
             return carry
         }, [])
 
+        // @todo repetitive code
+        const reagent_atoms_with_hydrogens = reagent_atoms.reduce((carry, atom, index, arr)=>{
+            if (atom[0] !=="H") {
+                carry.push(atom)
+                const number_of_hydrogens_to_add = atom_hydrogens[atom.atomId()]
+                atom.removeHydrogens(substrate_atoms) // At this point we have removed the reagent atoms
+                // re-add hydrogens
+                for (let i=0;i<number_of_hydrogens_to_add;i++) {
+                    //console.log("Adding hydrogen")
+                    const hydrogen = AtomFactory("H", "")
+                    atom.bondAtomToAtom(hydrogen, substrate_atoms)
+                    carry.push(hydrogen)
+                }
+            }
+            return carry
+        }, [])
 
         this.container_substrate[0][1] = substrate_atoms_with_hydrogens
-        //console.log(this.container_substrate[0][1])
+        this.container_reagent[0][1] = reagent_atoms_with_hydrogens
+        //console.log(this.container_substrate)
+        //console.log(this.container_reagent)
         this.setChargesOnSubstrate()
-        console.log(VMolecule(this.container_substrate).compressed())
+        this.setChargesOnReagent()
+
+        //console.log(VMolecule(this.container_substrate).compressed())
+        //console.log(VMolecule(this.container_reagent).compressed())
 
         // console.log(VMolecule(this.container_reagent).compressed())
-        process.error()
+        //process.error()
 
 
 
